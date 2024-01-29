@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon", "src\Chameleon\Chameleon\Chameleon.csproj", "{DA5697D4-E96B-4063-8A8B-94DC945A3D05}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Architecture", "Architecture", "{EDA2D604-6596-49E3-B16D-010515BD81FA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Application.Shared", "Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj", "{6981B91B-2C62-488A-9447-DA5015B2CC60}"
@@ -25,16 +23,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Interfaces", "src\Chameleon.Interfaces\Chameleon.Interfaces.csproj", "{4D57A1B3-4AB2-4975-ABEE-C44998F3FC86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DA5697D4-E96B-4063-8A8B-94DC945A3D05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA5697D4-E96B-4063-8A8B-94DC945A3D05}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA5697D4-E96B-4063-8A8B-94DC945A3D05}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA5697D4-E96B-4063-8A8B-94DC945A3D05}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6981B91B-2C62-488A-9447-DA5015B2CC60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6981B91B-2C62-488A-9447-DA5015B2CC60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6981B91B-2C62-488A-9447-DA5015B2CC60}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -49,6 +45,10 @@ Global
 		{C25C91D1-9D64-4090-BC72-2FF8B5F4D9F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C25C91D1-9D64-4090-BC72-2FF8B5F4D9F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C25C91D1-9D64-4090-BC72-2FF8B5F4D9F5}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{4D57A1B3-4AB2-4975-ABEE-C44998F3FC86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D57A1B3-4AB2-4975-ABEE-C44998F3FC86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D57A1B3-4AB2-4975-ABEE-C44998F3FC86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D57A1B3-4AB2-4975-ABEE-C44998F3FC86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
