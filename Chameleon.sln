@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Interfaces", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Domain", "src\Chameleon.Domain\Chameleon.Domain.csproj", "{D3BC9E0B-C33F-492F-A1DF-952747FA6A34}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Common", "src\Chameleon.Common\Chameleon.Common.csproj", "{4AE0731E-122B-4130-AFF0-13EE6A1A14FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{D3BC9E0B-C33F-492F-A1DF-952747FA6A34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3BC9E0B-C33F-492F-A1DF-952747FA6A34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3BC9E0B-C33F-492F-A1DF-952747FA6A34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AE0731E-122B-4130-AFF0-13EE6A1A14FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AE0731E-122B-4130-AFF0-13EE6A1A14FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AE0731E-122B-4130-AFF0-13EE6A1A14FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AE0731E-122B-4130-AFF0-13EE6A1A14FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
