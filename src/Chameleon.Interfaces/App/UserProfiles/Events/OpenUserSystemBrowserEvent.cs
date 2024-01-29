@@ -1,5 +1,5 @@
 ﻿using Chameleon.Interfaces.WebBrowser;
-using Prism.Events;
+
 using System;
 
 namespace Chameleon.Interfaces.UserProfiles

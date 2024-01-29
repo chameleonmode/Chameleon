@@ -1,5 +1,5 @@
 ﻿using Chameleon.Interfaces.Views;
-using Prism.Events;
+
 using System;
 
 namespace Chameleon.Interfaces.SidePanel

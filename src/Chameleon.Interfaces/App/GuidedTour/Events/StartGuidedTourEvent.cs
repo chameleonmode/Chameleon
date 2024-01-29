@@ -1,4 +1,4 @@
-﻿using Prism.Events;
+﻿
 using System;
 
 namespace Chameleon.Interfaces.App.GuidedTour.Events

@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 using System;
 using System.IO;
 using System.Reflection;
@@ -59,7 +59,7 @@ namespace Chameleon.Interfaces.WebBrowser
 
             var filePath = GetManifestFilePath();
             var template = File.ReadAllText(filePath);
-            _json = JsonConvert.DeserializeObject<dynamic>(template);
+            _json = JsonSerializer.Deserialize<dynamic>(template);
             return _json;
         }
 
@@ -80,7 +80,7 @@ namespace Chameleon.Interfaces.WebBrowser
                 return;
             }
 
-            var content = JsonConvert.SerializeObject(_json);
+            var content = JsonSerializer.Serialize(_json);
             File.WriteAllText(filePath, content);
         }
 

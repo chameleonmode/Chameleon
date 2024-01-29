@@ -1,13 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <TargetFrameworks>net8.0-windows</TargetFrameworks>
-    <UseWPF>true</UseWPF>
+	  <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.14" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Prism.Core" Version="8.0.0.1909" />
-    <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
+    <PackageReference Include="Prism.Core" Version="9.0.271-pre" />
+    <PackageReference Include="Prism.Maui" Version="9.0.271-pre" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
     <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>

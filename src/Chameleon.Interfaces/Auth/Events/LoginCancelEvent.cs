@@ -1,5 +1,5 @@
 ﻿using System;
-using Prism.Events;
+
 
 namespace Chameleon.Interfaces.Auth
 {

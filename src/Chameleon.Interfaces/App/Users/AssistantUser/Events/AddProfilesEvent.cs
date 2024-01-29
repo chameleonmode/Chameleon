@@ -1,7 +1,7 @@
 ﻿using Chameleon.Interfaces.App.Users.AssistantUser.Events.Base;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Prism.Events;
+
 using System.Collections.Generic;
 
 namespace Chameleon.Interfaces.App.Assistants.Events

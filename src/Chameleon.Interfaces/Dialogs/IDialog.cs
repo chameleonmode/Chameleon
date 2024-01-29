@@ -1,8 +1,8 @@
-﻿using Prism.Services.Dialogs;
+﻿
 
 namespace Chameleon.Interfaces.Dialogs
 {
-    public interface IDialog : IDialogWindow
+    public interface IDialog : Prism.Dialogs.IDialogContainer
     {
         string Title { get; set; }
     }

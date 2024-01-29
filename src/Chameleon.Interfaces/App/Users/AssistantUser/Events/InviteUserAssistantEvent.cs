@@ -1,5 +1,5 @@
 ﻿using Chameleon.Interfaces.App.Users.AssistantUser.Events.Base;
-using Prism.Events;
+
 using System.Collections.Generic;
 
 namespace Chameleon.Interfaces.App.Assistants.Events

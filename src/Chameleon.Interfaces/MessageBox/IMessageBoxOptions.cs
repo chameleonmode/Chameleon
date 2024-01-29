@@ -1,4 +1,4 @@
-﻿using Prism.Services.Dialogs;
+﻿
 using System.Drawing;
 using System.Windows;
 

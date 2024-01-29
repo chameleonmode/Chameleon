@@ -1,4 +1,4 @@
-﻿using Prism.Services.Dialogs;
+﻿
 using System;
 using Chameleon.Interfaces.Ioc;
 
@@ -8,7 +8,7 @@ namespace Chameleon.Interfaces.Dialogs
     /// Extending Prism.Services.Dialogs.IDialogService
     /// </summary>
     public interface IDialogService 
-        : Prism.Services.Dialogs.IDialogService
+        : Prism.Services.IPageDialogService
         , ISingletonDependency
     {
         IDialog Create(string name, IDialogParameters parameters, Action<IDialogResult> callback);

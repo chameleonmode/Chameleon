@@ -1,4 +1,4 @@
-﻿using Prism.Events;
+﻿
 
 namespace Chameleon.Interfaces.Auth.Events
 {

@@ -1,5 +1,5 @@
-﻿using Prism.Events;
-using Prism.Services.Dialogs;
+﻿
+
 
 namespace Chameleon.Interfaces.DialogWindows
 {

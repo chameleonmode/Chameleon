@@ -1,5 +1,4 @@
 ﻿using Chameleon.Interfaces.Ioc;
-using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,7 @@ namespace Chameleon.Interfaces.Logger
 {
     public interface ILogger : ISingletonDependency
     {
-        ILog Log { get; }
+        //TODO: find replacement for log4net
+        //ILog Log { get; }
     }
 }
