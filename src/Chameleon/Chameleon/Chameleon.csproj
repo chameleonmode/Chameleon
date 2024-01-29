@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\dev\projects\Chameleon\src\Chameleon\Chameleon\.editorconfig" />
+  </ItemGroup>
+
 </Project>

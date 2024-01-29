@@ -3,7 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon", "src\Chameleon\Chameleon\Chameleon.csproj", "{DA5697D4-E96B-4063-8A8B-94DC945A3D05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon", "src\Chameleon\Chameleon\Chameleon.csproj", "{DA5697D4-E96B-4063-8A8B-94DC945A3D05}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Architecture", "Architecture", "{EDA2D604-6596-49E3-B16D-010515BD81FA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Application.Shared", "Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj", "{6981B91B-2C62-488A-9447-DA5015B2CC60}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{E57F56C7-ACF8-48E2-9406-DD7C25779808}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Core.Shared", "Chameleon.Web\aspnet-core\src\Chameleon.Core.Shared\Chameleon.Core.Shared.csproj", "{CD38C5E1-3856-411D-B4DA-AE8ECE10B751}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.App.Maui", "Chameleon.App\Maui\src\Chameleon.Maui\Chameleon.App.Maui\Chameleon.App.Maui.csproj", "{C25C91D1-9D64-4090-BC72-2FF8B5F4D9F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{ED41F1A5-E227-4A2A-B6AE-7435A368EE8C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +35,29 @@ Global
 		{DA5697D4-E96B-4063-8A8B-94DC945A3D05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA5697D4-E96B-4063-8A8B-94DC945A3D05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA5697D4-E96B-4063-8A8B-94DC945A3D05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6981B91B-2C62-488A-9447-DA5015B2CC60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6981B91B-2C62-488A-9447-DA5015B2CC60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6981B91B-2C62-488A-9447-DA5015B2CC60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6981B91B-2C62-488A-9447-DA5015B2CC60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD38C5E1-3856-411D-B4DA-AE8ECE10B751}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD38C5E1-3856-411D-B4DA-AE8ECE10B751}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD38C5E1-3856-411D-B4DA-AE8ECE10B751}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD38C5E1-3856-411D-B4DA-AE8ECE10B751}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C25C91D1-9D64-4090-BC72-2FF8B5F4D9F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C25C91D1-9D64-4090-BC72-2FF8B5F4D9F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C25C91D1-9D64-4090-BC72-2FF8B5F4D9F5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C25C91D1-9D64-4090-BC72-2FF8B5F4D9F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C25C91D1-9D64-4090-BC72-2FF8B5F4D9F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C25C91D1-9D64-4090-BC72-2FF8B5F4D9F5}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6981B91B-2C62-488A-9447-DA5015B2CC60} = {E57F56C7-ACF8-48E2-9406-DD7C25779808}
+		{E57F56C7-ACF8-48E2-9406-DD7C25779808} = {EDA2D604-6596-49E3-B16D-010515BD81FA}
+		{CD38C5E1-3856-411D-B4DA-AE8ECE10B751} = {E57F56C7-ACF8-48E2-9406-DD7C25779808}
+		{C25C91D1-9D64-4090-BC72-2FF8B5F4D9F5} = {ED41F1A5-E227-4A2A-B6AE-7435A368EE8C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}
