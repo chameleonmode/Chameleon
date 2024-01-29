@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.Maui;
+using Microsoft.Maui.Controls;
+using System;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Data;
+
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(bool), typeof(Visibility))]
     public class BooleanToVisibilityConverter : IValueConverter
     {
         enum Parameters

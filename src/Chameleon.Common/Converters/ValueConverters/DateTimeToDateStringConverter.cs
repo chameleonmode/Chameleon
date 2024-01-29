@@ -1,10 +1,8 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Data;
+﻿using Microsoft.Maui.Controls;
+using System;
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(DateTime), typeof(string))]
     public class DateTimeToDateStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -14,7 +12,7 @@ namespace Chameleon.Common.ValueConverters
                 DateTime date = (DateTime)value;
                 return date.ToString("yyyy.MM.dd");
             }
-            return DependencyProperty.UnsetValue;
+            return BindableProperty.UnsetValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

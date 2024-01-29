@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Microsoft.Maui.Controls;
+using System;
 using System.Globalization;
-using System.Windows.Data;
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(decimal), typeof(string))]
     public class DecimalConverter : IValueConverter
     {
         private static readonly NumberFormatInfo _numberFormatInfo = CultureInfo.GetCultureInfo("en-Us").NumberFormat;

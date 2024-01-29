@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Media;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
 
 namespace Chameleon.Common.ValueConverters
 {
@@ -19,15 +19,15 @@ namespace Chameleon.Common.ValueConverters
                 return floatingOffset;
             }
 
-            FontFamily fontFamily = (FontFamily)values[0];
+            System.Drawing.FontFamily fontFamily = (System.Drawing.FontFamily)values[0];
             double fontSize = (double)values[1];
             double floatingScale = (double)values[2];
-
-            double floatingHintHeight = fontFamily.LineSpacing * fontSize * floatingScale;
+                                                 //TODO: look into
+            double floatingHintHeight = fontFamily.GetLineSpacing(System.Drawing.FontStyle.Regular) * fontSize * floatingScale;
 
             if (IsType<Point>(targetType))
             {
-                return new Point(0, -floatingHintHeight);
+                return new Point(0, (int)-floatingHintHeight);
             }
 
             if (IsType<Thickness>(targetType))

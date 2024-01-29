@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.Maui.Controls;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Windows;
-using System.Windows.Data;
+
 
 namespace Chameleon.Common.ValueConverters
 {
@@ -14,7 +15,6 @@ namespace Chameleon.Common.ValueConverters
         Female = 2
     }
 
-    [ValueConversion(typeof(int), typeof(bool?))]
     public class GenderToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -41,12 +41,12 @@ namespace Chameleon.Common.ValueConverters
 
             if((isChecked == null)||(!isChecked.HasValue))
             {
-                return DependencyProperty.UnsetValue;
+                return BindableProperty.UnsetValue;
             }
 
             if (!(parameter is Gender) || !isChecked.Value)
             {
-                return DependencyProperty.UnsetValue;
+                return BindableProperty.UnsetValue;
             }
 
             if (isChecked.Value)
@@ -55,7 +55,7 @@ namespace Chameleon.Common.ValueConverters
                 return (int)gender;
             }
 
-            return DependencyProperty.UnsetValue;
+            return BindableProperty.UnsetValue;
         }
     }
 }

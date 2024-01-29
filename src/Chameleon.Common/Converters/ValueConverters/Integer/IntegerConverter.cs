@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Maui.Controls;
+using System;
 using System.Globalization;
-using System.Windows.Data;
+
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(int), typeof(string))]
     public class IntegerConverter : IValueConverter
     {
         enum Parameters

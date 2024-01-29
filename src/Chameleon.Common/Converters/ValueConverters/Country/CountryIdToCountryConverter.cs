@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using System.Windows.Data;
+using Microsoft.Maui.Controls;
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(int), typeof(ICountry))]
     public class CountryIdToCountryConverter : IMultiValueConverter
     {
         private IEnumerable<ICountry> _countries;//HACK use cashed data of Convert operation for converting back
@@ -22,13 +21,13 @@ namespace Chameleon.Common.ValueConverters
 
             if (!(values[1] is IEnumerable<ICountry>))
             {
-                return DependencyProperty.UnsetValue;
+                return BindableProperty.UnsetValue;
             }
 
             _countries = (IEnumerable<ICountry>)values[1];
-            if ( (values[0] != null) && values[0].Equals(DependencyProperty.UnsetValue))
+            if ( (values[0] != null) && values[0].Equals(BindableProperty.UnsetValue))
             {
-                return DependencyProperty.UnsetValue;
+                return BindableProperty.UnsetValue;
             }
 
             var value = values[0];
@@ -49,7 +48,7 @@ namespace Chameleon.Common.ValueConverters
             var selectedCountry = value as ICountry;
             if ((_countries == null) || selectedCountry == null)
             {
-                return new[] { DependencyProperty.UnsetValue };
+                return new[] { BindableProperty.UnsetValue };
             }
 
             var country = _countries
@@ -57,7 +56,7 @@ namespace Chameleon.Common.ValueConverters
                 .FirstOrDefault();
 
             var countryUiId = (country == default(ICountry)) 
-                ? DependencyProperty.UnsetValue 
+                ? BindableProperty.UnsetValue 
                 : country.Id;
 
             return new[] { countryUiId };

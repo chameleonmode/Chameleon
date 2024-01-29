@@ -1,8 +1,9 @@
 ﻿using Chameleon.Interfaces.OutReach;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Graphics.Converters;
 using System;
 using System.Globalization;
-using System.Windows.Data;
-using System.Windows.Media;
 
 namespace Chameleon.Common.Converters.ValueConverters
 {
@@ -26,10 +27,8 @@ namespace Chameleon.Common.Converters.ValueConverters
             return new SolidColorBrush(color);
         }
 
-        private Color ConvertFromString(string color)
-        {
-            return (Color)ColorConverter.ConvertFromString(color);
-        }
+        private Color ConvertFromString(string color) => new ColorTypeConverter().ConvertFromString(color) as Color;
+
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

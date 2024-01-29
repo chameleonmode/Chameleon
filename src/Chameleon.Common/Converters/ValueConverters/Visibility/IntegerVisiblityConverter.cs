@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.Maui;
+using Microsoft.Maui.Controls;
+using System;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Data;
+
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(int), typeof(Visibility))]
     public class IntegerVisiblityConverter : IValueConverter
     {
         public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -1,23 +1,9 @@
 ﻿using System;
-using System.Windows;
 
 namespace Chameleon.Common.Extensions
 {
     public static class EventHandlerExtensions
     {
-        public static void Clear(this DependencyPropertyChangedEventHandler self)
-        {
-            if (self == null)
-            {
-                return;
-            }
-
-            foreach (DependencyPropertyChangedEventHandler eventHandler in self.GetInvocationList())
-            {
-                self -= eventHandler;
-            }
-        }
-
         public static void Clear(this EventHandler self)
         {
             if (self == null)

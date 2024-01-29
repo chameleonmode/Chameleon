@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microsoft.Maui;
+using Microsoft.Maui.Controls;
+using System;
 using System.Globalization;
-using System.Windows;
-using System.Windows.Data;
+
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(bool), typeof(Visibility))]
     public class InverseBooleanToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

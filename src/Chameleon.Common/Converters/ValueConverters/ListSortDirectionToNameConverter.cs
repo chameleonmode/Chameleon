@@ -1,11 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Windows.Data;
+using Microsoft.Maui.Controls;
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(ListSortDirection), typeof(string))]
     public class ListSortDirectionToNameConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

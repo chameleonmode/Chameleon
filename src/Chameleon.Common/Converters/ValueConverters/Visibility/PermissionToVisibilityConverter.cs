@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Windows;
 using System.Globalization;
-using System.Windows.Data;
 using Chameleon.Interfaces.Auth;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(bool), typeof(Visibility))]
     public class PermissionToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

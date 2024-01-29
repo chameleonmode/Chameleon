@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microsoft.Maui.Controls;
+using System;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Data;
+
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(int), typeof(string))]
     public class GenderToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -20,7 +20,7 @@ namespace Chameleon.Common.ValueConverters
                 case Gender.Female:
                     return Properties.Resources.ResourceManager.GetString(Gender.Female.ToString());
                 default:
-                    return DependencyProperty.UnsetValue;
+                    return BindableProperty.UnsetValue;
             }
         }
 

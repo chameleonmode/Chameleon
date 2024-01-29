@@ -1,11 +1,10 @@
-﻿using Prism.Services.Dialogs;
+﻿using Microsoft.Maui.Controls;
+using Prism.Dialogs;
 using System;
 using System.Globalization;
-using System.Windows.Data;
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(ButtonResult), typeof(bool))]
     public class ButtonResultToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

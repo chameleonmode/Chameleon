@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
-  </PropertyGroup>	<PropertyGroup>
-		<TargetFrameworks>net8.0</TargetFrameworks>
-	
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chameleon.Domain\Chameleon.Domain.csproj" />
     <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
@@ -20,5 +18,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Behaviors\" />
+    <Folder Include="Controls\" />
+    <Folder Include="ValidationRules\" />
   </ItemGroup>
 </Project>

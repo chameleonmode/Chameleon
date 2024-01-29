@@ -2,8 +2,10 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Data;
+
 using System.Diagnostics;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui;
 
 namespace Chameleon.Common.Converters.ValueConverters
 {
@@ -23,7 +25,6 @@ namespace Chameleon.Common.Converters.ValueConverters
         AllTasks = InternalTasks | VirtualAsisstantTasks | OutReachManagerTasks,
     }
 
-    [ValueConversion(typeof(bool), typeof(Visibility))]
     public class DashboardTasksEnumToVisibilityConverter : IValueConverter
     {
         private const string Invert = "Invert";

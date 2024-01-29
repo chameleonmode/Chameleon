@@ -1,11 +1,9 @@
 ﻿using Chameleon.Interfaces.Bookmarks;
 using System;
-using System.Windows;
-using System.Windows.Data;
+using Microsoft.Maui.Controls;
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(string), typeof(string))]
     public class NameFolderToImageConvert : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -22,7 +20,7 @@ namespace Chameleon.Common.ValueConverters
                         return "FileOutline";
                 }
             }
-            return DependencyProperty.UnsetValue;
+            return BindableProperty.UnsetValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

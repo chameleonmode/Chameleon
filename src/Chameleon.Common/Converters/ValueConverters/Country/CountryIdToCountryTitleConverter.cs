@@ -1,12 +1,11 @@
 ﻿using Chameleon.Interfaces.Country;
+using Microsoft.Maui.Controls;
 using System;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Data;
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(int), typeof(string))]
     public class CountryIdToCountryTitleConverter 
         : CountryIdToCountryConverter
         , IMultiValueConverter
@@ -15,9 +14,9 @@ namespace Chameleon.Common.ValueConverters
         {
             var result = base.Convert(values, targetType, parameter, culture);
 
-            if(result == null || result == DependencyProperty.UnsetValue)
+            if(result == null || result == BindableProperty.UnsetValue)
             {
-                return DependencyProperty.UnsetValue;
+                return BindableProperty.UnsetValue;
             }
             return ((ICountry)result).Name;
         }

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows.Data;
+using Microsoft.Maui.Controls;
 
 namespace Chameleon.Common.ValueConverters
 {
-    [ValueConversion(typeof(string), typeof(string))]
     public class SvgNameToPathConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

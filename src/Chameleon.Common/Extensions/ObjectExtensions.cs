@@ -1,9 +1,8 @@
-﻿using Chameleon.Common.Exceptions;
+﻿using Microsoft.Maui.Controls;
 using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace Chameleon.Common.Extensions
 {
@@ -11,12 +10,12 @@ namespace Chameleon.Common.Extensions
     {
         public static void InvokeOnUiThread(this object self, Action callback)
         {
-            Application.Current.Dispatcher.Invoke(callback);
+            Application.Current.Dispatcher.InvokeOnUiThread(callback);
         }
 
         public static T InvokeOnUiThread<T>(this object self, Func<T> action)
         {
-            return Application.Current.Dispatcher.Invoke(action);
+            return Application.Current.Dispatcher.InvokeOnUiThread(action);
         }
 
         public static void InvokeOnUiThread(this object self, EventHandler handler, EventArgs args = null)
@@ -99,7 +98,8 @@ namespace Chameleon.Common.Extensions
             }
             catch(Exception ex)
             {
-                ExceptionHandler.ShowException(ex);
+                //TODO:
+                //ExceptionHandler.ShowException(ex);
             }
         }
 
@@ -112,7 +112,8 @@ namespace Chameleon.Common.Extensions
             }
             catch (Exception ex)
             {
-                ExceptionHandler.ShowException(ex);
+                //TODO:
+                //ExceptionHandler.ShowException(ex);
             }
             result = default(T);
             return false;
