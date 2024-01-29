@@ -12,7 +12,7 @@ namespace Chameleon.Interfaces.UserProfiles
     {
         UserProfileViewTab Tab { get; }
         IWebBrowserView WebBrowserView { get; }
-        IWebBrowserInstance WebBrowser { get; }
+        //IWebBrowserInstance WebBrowser { get; }
         void OpenWebBrowserNewTab(string url);
 
         void SetUserProfile(

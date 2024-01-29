@@ -1,5 +1,5 @@
 ﻿using Chameleon.Interfaces.Ioc;
-using System.Windows.Controls;
+using Microsoft.Maui.Controls;
 
 namespace Chameleon.Interfaces.Views.WaitIndicator
 {
@@ -7,7 +7,7 @@ namespace Chameleon.Interfaces.Views.WaitIndicator
         : ITransientDependency
     {
         bool IsIndicatorVisible { get; set; }
-        void AttachTo(ContentControl element);
+        void AttachTo(ContentView element);
         void Detach();
     }
 }

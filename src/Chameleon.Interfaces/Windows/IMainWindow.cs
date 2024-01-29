@@ -1,5 +1,6 @@
 ﻿using Chameleon.Interfaces.Ioc;
 using Chameleon.Interfaces.Views;
+using Microsoft.Maui.Controls;
 using System.Windows;
 
 namespace Chameleon.Interfaces.Windows

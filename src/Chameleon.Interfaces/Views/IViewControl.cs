@@ -1,6 +1,6 @@
 ﻿using Chameleon.Interfaces.Ioc;
+using Microsoft.Maui;
 using System;
-using System.Windows;
 
 namespace Chameleon.Interfaces.Views
 {
@@ -9,12 +9,12 @@ namespace Chameleon.Interfaces.Views
         /// <summary>
         /// Event when view is loaded
         /// </summary>
-        event RoutedEventHandler Loaded;
+        event Action Loaded;
 
         /// <summary>
         /// Event when view is loaded
         /// </summary>
-        event RoutedEventHandler Unloaded;
+        event Action Unloaded;
 
         /// <summary>
         /// Event when view content is rendered
