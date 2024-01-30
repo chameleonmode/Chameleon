@@ -1,19 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-	  <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Prism.Core" Version="9.0.271-pre" />
-    <PackageReference Include="Prism.Maui" Version="9.0.271-pre" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
-    <PackageReference Include="Unity" Version="5.11.10" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App\Bookmarks\Views\Details\" />
-    <Folder Include="App\UserProfiles\Events\Sync\" />
-    <Folder Include="App\UserProfiles\ViewModels\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
-  </ItemGroup>
+
 </Project>

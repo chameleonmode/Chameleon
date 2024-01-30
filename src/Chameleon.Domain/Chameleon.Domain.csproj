@@ -3,6 +3,6 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
+    <ProjectReference Include="..\Chameleon.Wpf.Interfaces\Chameleon.Wpf.Interfaces.csproj" />
   </ItemGroup>
 </Project>
