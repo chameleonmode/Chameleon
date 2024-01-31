@@ -1,5 +1,6 @@
 ﻿
 using Chameleon.Interfaces.Services;
+using Chameleon.Maui.Toolkit.Helpers;
 
 namespace Chameleon.Maui.Toolkit.Services;
 public class MauiNavigationService : INavigationService
@@ -17,7 +18,7 @@ public class MauiNavigationService : INavigationService
                 ? "//Login"
                 : "//Main/Catalog");
 
-    public Task NavigateToAsync(string route, IDictionary<string, object> routeParameters = null)
+    public Task NavigateToAsync(string route, IDictionary<string, object>? routeParameters = null)
     {
         var shellNavigation = new ShellNavigationState(route);
 
@@ -28,9 +29,10 @@ public class MauiNavigationService : INavigationService
 
     public async Task NavigateToAsync(Type viewModel)
     {
-        //await NavigateToAsync();
+        await NavigateToAsync(PageViewModelRouting.Instance.GetPageRoute(viewModel));
     }
 
     public Task PopAsync() =>
         Shell.Current.GoToAsync("..");
+
 }

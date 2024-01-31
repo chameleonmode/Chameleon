@@ -48,7 +48,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maui", "Maui", "{0CBE8269-9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pages", "Pages", "{1F825646-A762-4898-A873-0A1AFCA90035}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Maui.Pages.Settings", "src\Chameleon.Maui.Pages.Settings\Chameleon.Maui.Pages.Settings.csproj", "{1204B52A-3849-4DD7-981D-C217859AE830}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Maui.Pages.Settings", "src\Chameleon.Maui.Pages.Settings\Chameleon.Maui.Pages.Settings.csproj", "{1204B52A-3849-4DD7-981D-C217859AE830}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Maui.Pages.Login", "Chameleon.App\Maui\src\Chameleon.Maui.Pages.Login\Chameleon.Maui.Pages.Login.csproj", "{8A774660-044E-41FD-9132-CAD3807AD9D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +100,10 @@ Global
 		{1204B52A-3849-4DD7-981D-C217859AE830}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1204B52A-3849-4DD7-981D-C217859AE830}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1204B52A-3849-4DD7-981D-C217859AE830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A774660-044E-41FD-9132-CAD3807AD9D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A774660-044E-41FD-9132-CAD3807AD9D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A774660-044E-41FD-9132-CAD3807AD9D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A774660-044E-41FD-9132-CAD3807AD9D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,6 +121,7 @@ Global
 		{0CBE8269-9B38-429D-B104-35671AC60ECA} = {EDA2D604-6596-49E3-B16D-010515BD81FA}
 		{1F825646-A762-4898-A873-0A1AFCA90035} = {0CBE8269-9B38-429D-B104-35671AC60ECA}
 		{1204B52A-3849-4DD7-981D-C217859AE830} = {1F825646-A762-4898-A873-0A1AFCA90035}
+		{8A774660-044E-41FD-9132-CAD3807AD9D8} = {1F825646-A762-4898-A873-0A1AFCA90035}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

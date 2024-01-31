@@ -18,22 +18,23 @@ public abstract class BaseGalleryPage<TViewModel> : BasePage<TViewModel> where T
         }.ItemTemplate(new GalleryDataTemplate())
          .Bind(ItemsView.ItemsSourceProperty,
                     static (BaseGalleryViewModel vm) => vm.Items,
-                    mode: BindingMode.OneTime);
-         //.Invoke(collectionView => collectionView.SelectionChanged += HandleSelectionChanged);
+                    mode: BindingMode.OneTime)
+         .Invoke(collectionView => collectionView.SelectionChanged += HandleSelectionChanged);
     }
 
-    //async void HandleSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    //{
-    //    ArgumentNullException.ThrowIfNull(sender);
+    async void HandleSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        ArgumentNullException.ThrowIfNull(sender);
 
-    //    var collectionView = (CollectionView)sender;
-    //    collectionView.SelectedItem = null;
+        var collectionView = (CollectionView)sender;
+        collectionView.SelectedItem = null;
 
-    //    if (e.CurrentSelection.FirstOrDefault() is SectionModel sectionModel)
-    //    {
-    //        await Shell.Current.GoToAsync(AppShell.GetPageRoute(sectionModel.ViewModelType));
-    //    }
-    //}
+        if (e.CurrentSelection.FirstOrDefault() is SectionModel sectionModel)
+        {
+            //await Shell.Current.GoToAsync(AppShell.GetPageRoute(sectionModel.ViewModelType));
+            await (BindingContext as BaseGalleryViewModel)?.NavigationService.NavigateToAsync(sectionModel.ViewModelType);
+        }
+    }
 
     class GalleryDataTemplate : DataTemplate
     {
