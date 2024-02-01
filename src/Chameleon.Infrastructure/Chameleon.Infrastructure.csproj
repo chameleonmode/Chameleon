@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="log4net" Version="2.0.14" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Prism.Unity" Version="8.0.0.1909" />
+    <PackageReference Include="ToastNotifications" Version="2.5.1" />
+    <PackageReference Include="ToastNotifications.Messages" Version="2.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Core.Shared\Chameleon.Core.Shared.csproj" />
+    <ProjectReference Include="..\Chameleon.Common\Chameleon.Common.csproj" />
+    <ProjectReference Include="..\Chameleon.Domain\Chameleon.Domain.csproj" />
+    <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
+    <ProjectReference Include="..\Modules\Chameleon.MessageBox\Chameleon.MessageBox.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="App\SocialAnimal\Api\Dto\" />
+  </ItemGroup>
+
+</Project>
