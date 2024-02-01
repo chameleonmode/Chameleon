@@ -7,18 +7,19 @@ namespace Chameleon.Infrastructure.Environments
     public class ApplicationConfigurationManager 
         : IApplicationConfigurationManager
     {
-        private readonly Configuration _configuration;
+        //private readonly Configuration _configuration;
 
         public ApplicationConfigurationManager()
         {
-            _configuration = ConfigurationManager
-                .OpenExeConfiguration(ConfigurationUserLevel.None);
+            //_configuration = ConfigurationManager
+            //    .OpenExeConfiguration(ConfigurationUserLevel.None);
         }
 
         public string Get(string key, string defaultValue = "")
         {
-            var value = _configuration.AppSettings.Settings[key];
-            return value?.Value ?? defaultValue;
+            //var value = _configuration.AppSettings.Settings[key];
+            //return value?.Value ?? defaultValue;
+            return defaultValue;
         }
 
         public T Get<T>(string key, T defaultValue = default(T))
@@ -33,8 +34,8 @@ namespace Chameleon.Infrastructure.Environments
 
         public void Set(string key, object value, bool save = true)
         {
-            _configuration.AppSettings.Settings[key].Value 
-                = value?.ToString().Trim() ?? string.Empty;
+            //_configuration.AppSettings.Settings[key].Value 
+            //    = value?.ToString().Trim() ?? string.Empty;
 
             if (save)
             {
@@ -44,8 +45,8 @@ namespace Chameleon.Infrastructure.Environments
 
         public void Save()
         {
-            _configuration.Save(ConfigurationSaveMode.Full, true);
-            ConfigurationManager.RefreshSection("appSettings");
+            //_configuration.Save(ConfigurationSaveMode.Full, true);
+            //ConfigurationManager.RefreshSection("appSettings");
         }
     }
 }

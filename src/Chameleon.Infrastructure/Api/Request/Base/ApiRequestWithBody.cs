@@ -1,9 +1,8 @@
 ﻿using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Environments;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System.IO;
 using System.Net;
+using System.Text.Json;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -13,12 +12,9 @@ namespace Chameleon.Infrastructure.Api
         private object _requestBody;
         private string _requestJson;
         private readonly string _httpMethod;
-        private JsonSerializerSettings _settings = new JsonSerializerSettings
+        private readonly JsonSerializerOptions _settings = new()
         {
-            ContractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            }
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
         public ApiRequestWithBody(
@@ -56,7 +52,7 @@ namespace Chameleon.Infrastructure.Api
 
         private string GetRequestBodyAsJson()
         {
-            _requestJson = JsonConvert.SerializeObject(_requestBody, _settings);
+            _requestJson = JsonSerializer.Serialize(_requestBody, _settings);
             return _requestJson;
         }
     }

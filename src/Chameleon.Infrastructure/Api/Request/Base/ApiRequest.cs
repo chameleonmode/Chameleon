@@ -1,6 +1,5 @@
 ﻿using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Environments;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net;
@@ -9,6 +8,7 @@ using System.Security.Authentication;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
+using System.Text.Json;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -208,8 +208,7 @@ namespace Chameleon.Infrastructure.Api
             ApiResponseDto responseDto;
             try
             {
-                responseDto = JsonConvert
-                    .DeserializeObject<ApiResponseDto>(responseBody);
+                responseDto = JsonSerializer.Deserialize<ApiResponseDto>(responseBody);
             }
             catch
             {

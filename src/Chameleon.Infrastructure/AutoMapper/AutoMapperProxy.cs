@@ -34,8 +34,8 @@ namespace Chameleon.Infrastructure.AutoMapper
 
         public IConfigurationProvider ConfigurationProvider 
             => Mapper.ConfigurationProvider;
-        public Func<Type, object> ServiceCtor 
-            => Mapper.ServiceCtor;
+        //public Func<Type, object> ServiceCtor 
+        //    => Mapper.ServiceCtor;
 
         public TDestination Map<TDestination>(object source, Action<IMappingOperationOptions<object, TDestination>> opts)
         {

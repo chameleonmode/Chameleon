@@ -54,6 +54,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Maui.Pages", "Cha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Core", "src\Chameleon.Core\Chameleon.Core.csproj", "{132925FF-B89C-4FC0-9AA8-E83455FCC2BA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Infrastructure", "src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj", "{08ED3E07-406D-47B3-9927-38B8066FF498}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +116,10 @@ Global
 		{132925FF-B89C-4FC0-9AA8-E83455FCC2BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{132925FF-B89C-4FC0-9AA8-E83455FCC2BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{132925FF-B89C-4FC0-9AA8-E83455FCC2BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08ED3E07-406D-47B3-9927-38B8066FF498}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08ED3E07-406D-47B3-9927-38B8066FF498}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08ED3E07-406D-47B3-9927-38B8066FF498}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08ED3E07-406D-47B3-9927-38B8066FF498}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

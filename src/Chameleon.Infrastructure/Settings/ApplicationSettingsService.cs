@@ -1,6 +1,5 @@
 ﻿using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.Settings;
-using Newtonsoft.Json;
 using System.IO;
 
 namespace Chameleon.Infrastructure.Settings
@@ -34,7 +33,7 @@ namespace Chameleon.Infrastructure.Settings
             }
 
             var json = File.ReadAllText(_settingsFilePath);
-            _settings = JsonConvert.DeserializeObject<ApplicationSettings>(json);
+            _settings = System.Text.Json.JsonSerializer.Deserialize<ApplicationSettings>(json);
             if (_settings == null)
             {
                 _settings = new ApplicationSettings();
@@ -44,7 +43,7 @@ namespace Chameleon.Infrastructure.Settings
 
         public void Save()
         {
-            var json = JsonConvert.SerializeObject(_settings);
+            var json = System.Text.Json.JsonSerializer.Serialize(_settings);
             File.WriteAllText(_settingsFilePath, json);
         }
     }

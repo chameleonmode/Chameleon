@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
 
 namespace Chameleon.Infrastructure.Api
@@ -45,8 +44,7 @@ namespace Chameleon.Infrastructure.Api
         {
             ThrowIfInvalidJson();
 
-            return JsonConvert
-                .DeserializeObject<TResult>(_json);
+            return System.Text.Json.JsonSerializer.Deserialize<TResult>(_json);
         }
 
         private void FixJson()
