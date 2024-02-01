@@ -6,4 +6,21 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="App\UserProfiles\Events\Sync\**" />
+    <Compile Remove="App\UserProfiles\ViewModels\**" />
+    <EmbeddedResource Remove="App\UserProfiles\Events\Sync\**" />
+    <EmbeddedResource Remove="App\UserProfiles\ViewModels\**" />
+    <None Remove="App\UserProfiles\Events\Sync\**" />
+    <None Remove="App\UserProfiles\ViewModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="App\Bookmarks\Views\Details\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -3,10 +3,10 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
     <ProjectReference Include="..\..\Chameleon.Web\aspnet-core\src\Chameleon.Core.Shared\Chameleon.Core.Shared.csproj" />
-    <ProjectReference Include="..\Chameleon.Common\Chameleon.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Domain\Chameleon.Domain.csproj" />
-    <ProjectReference Include="..\Chameleon.Wpf.Interfaces\Chameleon.Wpf.Interfaces.csproj" />
+    <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

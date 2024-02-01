@@ -1,5 +1,4 @@
 ﻿using Chameleon.Interfaces.Settings;
-using Prism.Commands;
 
 namespace Chameleon.Domain.Entities
 {

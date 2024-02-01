@@ -2,6 +2,7 @@
 using Chameleon.Interfaces.AutoMapper;
 using Chameleon.Interfaces.Ioc;
 using Prism.Ioc;
+using Prism.Modularity;
 using System.Reflection;
 
 namespace Chameleon.Infrastructure
@@ -15,9 +16,9 @@ namespace Chameleon.Infrastructure
         {
             var executingAssembly = Assembly.GetExecutingAssembly();
 
-            containerRegistry.RegisterSingleton<IIocManager, IocManager>();
-            self.RegisterTypesFrom(executingAssembly);
-            self.RegisterMapperFrom(executingAssembly);
+            //containerRegistry.RegisterSingleton<IIocManager, IocManager>();
+            //self.RegisterTypesFrom(executingAssembly);
+            //self.RegisterMapperFrom(executingAssembly);
 
             return self;
         }

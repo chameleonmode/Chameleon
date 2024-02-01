@@ -1,0 +1,36 @@
+﻿using System;
+
+namespace Chameleon.Interfaces.WebBrowser
+{
+    public class WebBrowserCookie : IWebBrowserCookie
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Value { get; set; }
+        public string Domain { get; set; }
+        public decimal ExpirationDate { get; set; }
+        public bool HostOnly { get; set; }
+        public bool HttpOnly { get; set; }
+        public string Path { get; set; }
+        public string SameSite { get; set; }
+        public bool Secure { get; set; }
+        public bool Session { get; set; }
+        public string StoreId { get; set; }
+
+        public string Url
+        {
+            get
+            {
+                var url = Uri.UriSchemeHttps;
+                url += Uri.SchemeDelimiter;
+                if (Domain != null && Domain.StartsWith("."))
+                {
+                    url += "www";
+                }
+                url += Domain;
+                url += Path;
+                return url;
+            }
+        }
+    }
+}

@@ -63,8 +63,8 @@ namespace Chameleon.Infrastructure.Modules
         {
             foreach (var assembly in assemblies)
             {
-                _containerProvider.RegisterTypesFrom(assembly);
-                _containerProvider.RegisterMapperFrom(assembly);
+                //_containerProvider.RegisterTypesFrom(assembly);
+                //_containerProvider.RegisterMapperFrom(assembly);
             }
         }
 

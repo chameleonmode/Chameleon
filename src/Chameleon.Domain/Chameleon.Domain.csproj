@@ -1,8 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Chameleon.Wpf.Interfaces\Chameleon.Wpf.Interfaces.csproj" />
+    <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
   </ItemGroup>
+
 </Project>

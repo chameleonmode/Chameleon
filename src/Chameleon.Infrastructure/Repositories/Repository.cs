@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Chameleon.Infrastructure.Dto;
 using Chameleon.Interfaces.Entities;
-using Prism.Events;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 
