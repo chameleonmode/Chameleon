@@ -1,6 +1,7 @@
 ﻿using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.Settings;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Chameleon.Infrastructure.Settings
 {
@@ -41,10 +42,10 @@ namespace Chameleon.Infrastructure.Settings
             return _settings;
         }
 
-        public void Save()
+        public async Task Save()
         {
             var json = System.Text.Json.JsonSerializer.Serialize(_settings);
-            File.WriteAllText(_settingsFilePath, json);
+            await File.WriteAllTextAsync(_settingsFilePath, json);
         }
     }
 }
