@@ -1,5 +1,5 @@
-﻿using Chameleon.Common.Exceptions;
-using Chameleon.Common.Extensions;
+﻿using Chameleon.Core.Exceptions;
+using Chameleon.Core.Extensions;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.ShareFolders;
 using Chameleon.Interfaces.Auth;

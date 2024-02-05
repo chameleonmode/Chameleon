@@ -1,5 +1,5 @@
 ﻿using System;
-using Chameleon.Common.Extensions;
+using Chameleon.Core.Extensions;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.OutReach;
 

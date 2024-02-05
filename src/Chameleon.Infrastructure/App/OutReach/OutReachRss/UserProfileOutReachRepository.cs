@@ -4,7 +4,7 @@ using Chameleon.Infrastructure.Profiles;
 using Chameleon.Interfaces.UserProfiles;
 using Prism.Events;
 using System.Collections.Generic;
-using Chameleon.Common.Extensions;
+using Chameleon.Core.Extensions;
 using Chameleon.Infrastructure.OutReach.Api.Dto;
 using Chameleon.Infrastructure.OutReach.Api;
 using Chameleon.Interfaces.OutReach;

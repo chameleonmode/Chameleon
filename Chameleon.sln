@@ -26,9 +26,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Views", "Views", "{4A7EF5ED-A826-4212-A87F-FD4C64514F59}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DD2E432A-BC2B-432B-BC89-0777702DB877}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Interfaces", "src\Chameleon.Interfaces\Chameleon.Interfaces.csproj", "{F828F9B1-BADC-4F31-B80C-1B7486F77711}"
 EndProject

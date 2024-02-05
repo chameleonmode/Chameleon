@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Chameleon.Common.Extensions;
+using Chameleon.Core.Extensions;
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Infrastructure.Prospector.Api;

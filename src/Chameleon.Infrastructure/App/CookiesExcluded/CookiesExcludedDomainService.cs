@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Chameleon.Interfaces.CookiesExcluded;
 using System.Collections.Generic;
-using Chameleon.Common.Extensions;
+using Chameleon.Core.Extensions;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.Repository;
 

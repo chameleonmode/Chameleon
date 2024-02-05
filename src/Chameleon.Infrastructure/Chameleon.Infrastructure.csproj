@@ -3,8 +3,14 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="App\SocialAnimal\**" />
+    <EmbeddedResource Remove="App\SocialAnimal\**" />
+    <None Remove="App\SocialAnimal\**" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
     <ProjectReference Include="..\..\Chameleon.Web\aspnet-core\src\Chameleon.Core.Shared\Chameleon.Core.Shared.csproj" />
+    <ProjectReference Include="..\Chameleon.Core\Chameleon.Core.csproj" />
     <ProjectReference Include="..\Chameleon.Domain\Chameleon.Domain.csproj" />
     <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
   </ItemGroup>
@@ -22,7 +28,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App\SocialAnimal\Api\Dto\" />
     <Folder Include="Dialogs\" />
     <Folder Include="Logger\" />
     <Folder Include="Services\" />

@@ -1,4 +1,4 @@
-﻿using Chameleon.Common.Extensions;
+﻿using Chameleon.Core.Extensions;
 using Chameleon.Interfaces.Environments;
 using System.IO;
 
