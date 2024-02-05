@@ -4,6 +4,7 @@ using Chameleon.Interfaces.Views;
 using Chameleon.Core.Extensions;
 using Prism.Services.Dialogs;
 using System.Threading.Tasks;
+using Prism.Events;
 
 namespace Chameleon.Auth.Core
 {
