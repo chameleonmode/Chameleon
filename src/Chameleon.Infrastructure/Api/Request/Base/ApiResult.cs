@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.Json;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -44,7 +45,10 @@ namespace Chameleon.Infrastructure.Api
         {
             ThrowIfInvalidJson();
 
-            return System.Text.Json.JsonSerializer.Deserialize<TResult>(_json);
+            return JsonSerializer.Deserialize<TResult>(_json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
         }
 
         private void FixJson()

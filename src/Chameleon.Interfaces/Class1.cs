@@ -1,4 +1,5 @@
 ﻿using Chameleon;
+using Chameleon.Interfaces.Dialogs;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 

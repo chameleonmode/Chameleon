@@ -12,48 +12,25 @@ namespace Chameleon.Auth.Core
     {
         private readonly IAuthSession _authSession;
         private readonly IAuthService _authService;
-        private readonly IDialogManager _dialogManager;
         private readonly IEventAggregator _eventAggregator;
         private readonly IApplicationUser _applicationUser;
 
         public AuthManager(
             IAuthSession authUser,
             IAuthService authService,
-            IDialogManager dialogManager,
             IEventAggregator eventAggregator,
             IApplicationUser applicationUser
             )
         {
             _authSession = authUser;
             _authService = authService;
-            _dialogManager = dialogManager;
             _eventAggregator = eventAggregator;
             _applicationUser = applicationUser;
         }
 
         public void Login()
         {
-            // first create dialog not showing it
-            var dialog = _dialogManager.Create(typeof(IAuthView), result =>
-            {
-                // check for not success result
-                if (result.Result != ButtonResult.OK)
-                {
-                    // reject auth
-                    OnAuthenticateCancel();
-                    return;
-                }
 
-                // get view model from result
-                var viewModel = result.Parameters
-                    .GetValue<IAuthViewModel>(nameof(IViewModel));
-
-                // call success
-                OnAuthenticateSuccess(viewModel);
-            });
-
-            // show
-            dialog.ShowDialog();
         }
 
         public void Logout()
