@@ -11,9 +11,8 @@ namespace Chameleon.Interfaces.OutReach
         void DeleteOutReachRss(UserProfileOutReachRssBindable outReachRss);
     }
 
-    public class UserProfileOutReachRssBindable
-        : BindableBase
-        , IUserProfileOutReachRss
+    public class UserProfileOutReachRssBindable :
+         IUserProfileOutReachRss
     {
         public string RssName { get; set; }
         public string RssLink { get; set; }

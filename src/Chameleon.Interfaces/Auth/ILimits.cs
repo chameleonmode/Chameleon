@@ -1,4 +1,4 @@
-﻿using Chameleon.Auth.Api;
+﻿using Chameleon.Interfaces.Settings;
 
 namespace Chameleon.Interfaces.Auth
 {
@@ -9,7 +9,7 @@ namespace Chameleon.Interfaces.Auth
         bool HasYouTube { get; }
         bool HasWordPress { get; }
         int MaxProfilesCount { get; }
-        ContentDiscoveryLimits ContentDiscoveryLimits { get; }
+        IContentDiscoveryLimits ContentDiscoveryLimits { get; }
         int MaxAssistantsCount { get; }
     }
 }
