@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<pages:BasePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                x:Class="Chameleon.Maui.Pages.Login.Views.LoginPage"
+                xmlns:pages="clr-namespace:Chameleon.Maui.Toolkit.Base;assembly=Chameleon.Maui.Toolkit"
+                xmlns:viewModels="clr-namespace:Chameleon.Maui.Pages.Login.ViewModels"
+                x:TypeArguments="viewModels:LoginPageViewModel"
+                x:DataType="viewModels:LoginPageViewModel">
+    <VerticalStackLayout>
+        <Label Text="LoginPageViewModel"
+               VerticalOptions="Center"
+               HorizontalOptions="Center" />
+        <Button Text="Login"
+                Command="{Binding LoginPopupCommand}"/>
+    </VerticalStackLayout>
+</pages:BasePage>

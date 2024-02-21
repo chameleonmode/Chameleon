@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    x:Class="Chameleon.Maui.Toolkit.Base.BaseGalleryPageResourceDictionary"
+                    xmlns:models="clr-namespace:Chameleon.Maui.Toolkit.Models"
+                    xmlns:viewModels="clr-namespace:Chameleon.Maui.Toolkit.Base">
+    <DataTemplate x:Key="GalleryDataTemplate"
+                  x:DataType="models:SectionModel">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="12" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="12" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="24" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="1"
+                    Grid.Row="1">
+                <Grid RowSpacing="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="24" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+
+                    <Label Text="{Binding Title}"
+                           Style="{DynamicResource LabelSectionTitle}" />
+
+                    <Label Text="{Binding Description}"
+                           Style="{DynamicResource LabelSectionText}"
+                           Grid.Row="1"
+                           MaxLines="4"
+                           LineBreakMode="WordWrap" />
+
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:BaseGalleryViewModel}}, Path=NagiateCommand}"
+                                              CommandParameter="{Binding .}"
+                                              NumberOfTapsRequired="1" />
+                    </Grid.GestureRecognizers>
+                </Grid>
+            </Border>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

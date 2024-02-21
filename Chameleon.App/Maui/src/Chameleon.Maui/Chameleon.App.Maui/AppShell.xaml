@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell x:Class="Chameleon.App.Maui.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:Chameleon.App.Maui"
+       xmlns:pages="clr-namespace:Chameleon.Maui.Pages;assembly=Chameleon.Maui.Pages"
+       xmlns:login="clr-namespace:Chameleon.Maui.Pages.Login.Views;assembly=Chameleon.Maui.Pages.Login"
+       xmlns:settings="clr-namespace:Chameleon.Maui.Pages.Settings.Views;assembly=Chameleon.Maui.Pages.Settings"
+       Title="Chameleon.App.Maui">
+
+    <FlyoutItem Title="Welcome"
+                Route="WelcomePage"
+                Icon="{OnPlatform Default='dotnet_bot.png', MacCatalyst={x:Null}}">
+        <ShellContent ContentTemplate="{DataTemplate pages:WelcomePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Login"
+                Route="LoginGalleryPage"
+                Icon="{OnPlatform Default='dotnet_bot.png', MacCatalyst={x:Null}}">
+        <ShellContent ContentTemplate="{DataTemplate login:LoginGalleryPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Settings"
+                Route="SettingsGalleryPage"
+                Icon="{OnPlatform Default='dotnet_bot.png', MacCatalyst={x:Null}}">
+        <ShellContent ContentTemplate="{DataTemplate settings:SettingsGalleryPage}" />
+    </FlyoutItem>
+</Shell>
