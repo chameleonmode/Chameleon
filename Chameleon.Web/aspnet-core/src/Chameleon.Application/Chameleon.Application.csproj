@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <VersionPrefix>1.0.0.0</VersionPrefix>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+    <AssemblyName>Chameleon.Application</AssemblyName>
+    <PackageId>Chameleon.Application</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>Chameleon</RootNamespace>
+    <Configurations>Debug;Release;Staging</Configurations>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Abp" Version="6.3.0" />
+    <PackageReference Include="RestSharp" Version="106.11.7" />
+    <PackageReference Include="Stripe.net" Version="39.48.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
+    <ProjectReference Include="..\Chameleon.Core\Chameleon.Core.csproj" />
+  </ItemGroup>
+</Project>

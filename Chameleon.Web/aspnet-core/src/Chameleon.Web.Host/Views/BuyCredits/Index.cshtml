@@ -1,0 +1,113 @@
+﻿@model Chameleon.Web.Host.Controllers.BuyCreditsViewModel
+@{
+    ViewData["Title"] = "Buy Credits " + @Model.OrderId;
+    var messageText = ViewData["Message"];
+}
+
+@section head {
+    <script src='https://www.paypal.com/sdk/js?client-id=@ViewData["ClientId"]'>
+    </script>
+}
+
+@section scripts {
+    <script src='/Scripts/buyCredits.js'>
+    </script>
+    <script>
+        (function () {
+            window.cancelPurchase = function () {
+                window.close();
+            };
+
+            window.finishPurchase = function () {
+                location.reload(true);
+            };
+
+            var payPalContainerId = 'paypal-button-container';
+            var payPalContainer = document.getElementById(payPalContainerId);
+            if (payPalContainer) {
+                // This function displays Smart Payment Buttons on your web page.
+                paypal.Buttons({
+                    createOrder: function (data, actions) {
+                        return createBuyCreditsOrder(
+                        ).then(function (data) {
+                            return data.id;
+                        });
+                    },
+                    onApprove: function (data, actions) {
+                        return captureBuyCreditsOrder(
+                        ).then(function (data) {
+                            if (!data.id) {
+                                //TODO: show nice UI alert/toaster
+                                alert('Something went wrong');
+                            }
+                            finishPurchase();
+                        });
+                    }
+                }).render('#' + payPalContainerId);
+            }
+        })();
+    </script>
+}
+
+@section styles {
+    <style>
+        html, body{
+            height: 100%;
+        }
+
+        .header, .message {
+            text-align: center;
+            font-size: 2rem;
+            margin-top: 0;
+            margin-bottom: .5rem;
+            font-weight: 500;
+            line-height: 1.2;
+            display: block;
+        }
+
+        .message{
+            color: green;
+        }
+
+        .header btn{
+            margin-bottom: 8px;
+        }
+
+        .main {
+            height: 100%;
+            width: 100%;
+            display: table;
+        }
+
+        .wrapper {
+            display: table-cell;
+            height: 100%;
+            vertical-align: middle;
+        }
+
+        #paypal-button-container div {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+}
+<div class="main">
+    <div class="wrapper">
+        @if (messageText != null)
+        {
+            <div class="message">@messageText</div>
+        }
+        else
+        {
+            <div class="header">
+                <span>
+                    Buy Proxy Credits: @Model.Amount.ToString("#,00")$
+                </span>
+                <button type="button" class="btn btn-danger" onclick="cancelPurchase();">Cancel purchase</button>
+            </div>
+            <div id="paypal-button-container"></div>
+        }
+    </div>
+</div>
+
+

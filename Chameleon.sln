@@ -59,6 +59,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia", "Avalonia", "{DE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.DesktopApp", "Chameleon.Avalonia\src\Chameleon.Avalonia.DesktopApp\Chameleon.Avalonia.DesktopApp.csproj", "{780A77BB-88B6-499C-8D5A-89E4AD0AD818}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Application", "src\Chameleon.Application\Chameleon.Application.csproj", "{8B2F015D-2EDE-48A0-A1A9-36AE918CF81D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,10 @@ Global
 		{780A77BB-88B6-499C-8D5A-89E4AD0AD818}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{780A77BB-88B6-499C-8D5A-89E4AD0AD818}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{780A77BB-88B6-499C-8D5A-89E4AD0AD818}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B2F015D-2EDE-48A0-A1A9-36AE918CF81D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B2F015D-2EDE-48A0-A1A9-36AE918CF81D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B2F015D-2EDE-48A0-A1A9-36AE918CF81D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B2F015D-2EDE-48A0-A1A9-36AE918CF81D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,6 +158,7 @@ Global
 		{61D57D8B-20D4-42EB-BA1B-9E4FCAFA995F} = {64CDDC0F-0BCE-4990-869C-722E3F7BFF64}
 		{403C174F-1B60-42C5-AC65-1F42422891A9} = {0CBE8269-9B38-429D-B104-35671AC60ECA}
 		{780A77BB-88B6-499C-8D5A-89E4AD0AD818} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
+		{8B2F015D-2EDE-48A0-A1A9-36AE918CF81D} = {DD2E432A-BC2B-432B-BC89-0777702DB877}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}
