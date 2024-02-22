@@ -3,7 +3,7 @@ using Chameleon.Maui.Toolkit.Helpers;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using Microsoft.Extensions.DependencyInjection;
-using Prism.Services.Dialogs;
+using Chameleon.Prism.Services.Dialogs;
 using System.ComponentModel;
 
 namespace Chameleon.Maui.Toolkit.Services;

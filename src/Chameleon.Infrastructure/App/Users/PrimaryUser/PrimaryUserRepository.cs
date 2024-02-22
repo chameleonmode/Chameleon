@@ -3,7 +3,7 @@ using Chameleon.Infrastructure.App.Users.PrimaryUser.Api;
 using Chameleon.Infrastructure.App.Users.PrimaryUser.Api.Dto;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.Users.PrimaryUser;
-using Prism.Events;
+
 
 namespace Chameleon.Infrastructure.App.Users.PrimaryUser
 {

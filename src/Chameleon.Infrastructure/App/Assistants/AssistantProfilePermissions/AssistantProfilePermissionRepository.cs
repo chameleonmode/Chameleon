@@ -5,7 +5,7 @@ using Chameleon.Infrastructure.App.Assistants.AssistantProfilePermissions.Api.Dt
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.Assistants;
 using Chameleon.Interfaces.Repository;
-using Prism.Events;
+
 using System.Collections.Generic;
 using System.Linq;
 

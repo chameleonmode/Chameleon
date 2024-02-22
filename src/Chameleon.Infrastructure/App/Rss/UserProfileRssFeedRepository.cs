@@ -3,7 +3,7 @@ using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.Rss;
-using Prism.Events;
+
 
 namespace Chameleon.Infrastructure.Rss
 {

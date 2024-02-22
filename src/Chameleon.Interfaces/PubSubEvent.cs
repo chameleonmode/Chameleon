@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Resources;
 
-namespace Prism.Events;
+namespace Chameleon.Prism.Events;
 public static class PubSubEventExtensions
 {
     public static void Publish<TPayload>(this PubSubEvent<TPayload> self)

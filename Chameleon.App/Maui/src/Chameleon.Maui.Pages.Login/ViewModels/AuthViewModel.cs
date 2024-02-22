@@ -11,7 +11,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.MessageBox;
 using Chameleon.Interfaces.Alerts;
-using Prism.Events;
+using Chameleon.Prism.Events;
 
 namespace Chameleon.Maui.Pages.Login.ViewModels;
 

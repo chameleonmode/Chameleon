@@ -24,7 +24,7 @@ using Chameleon.Interfaces.Api;
 using Chameleon.Auth.Api;
 using Chameleon.Auth.Services;
 using Chameleon.Interfaces.Dialogs;
-using Prism.Events;
+using Chameleon.Prism.Events;
 using Chameleon.Interfaces.Startup;
 using Chameleon.Maui.Application.Startup;
 using Chameleon.Domain.Entities;

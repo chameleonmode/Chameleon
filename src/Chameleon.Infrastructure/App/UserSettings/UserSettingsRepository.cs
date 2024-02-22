@@ -3,7 +3,7 @@ using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserSettings;
-using Prism.Events;
+
 
 namespace Chameleon.Infrastructure.UserSettings
 {

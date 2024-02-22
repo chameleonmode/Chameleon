@@ -4,7 +4,7 @@ using Chameleon.Infrastructure.Profiles;
 using Chameleon.Interfaces.Bookmarks;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.UserProfiles;
-using Prism.Events;
+
 using System;
 using System.Collections.Concurrent;
 

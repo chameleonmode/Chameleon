@@ -4,7 +4,7 @@ using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Startup;
 using Chameleon.Interfaces.Views;
 using Chameleon.Maui.Pages.Login.ViewModels;
-using Prism.Events;
+using Chameleon.Prism.Events;
 
 namespace Chameleon.Maui.Application.Startup
 {

@@ -2,9 +2,11 @@
 using Chameleon.Infrastructure.Api;
 using Chameleon.Infrastructure.Dto;
 using Chameleon.Infrastructure.Repositories;
+using Chameleon.Interfaces.Api;
+using Chameleon.Interfaces.Entities;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.UserProfiles;
-using Prism.Events;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,6 +14,23 @@ using System.Linq;
 
 namespace Chameleon.Infrastructure.Profiles
 {
+    public class StaticUPFactory
+    {
+        public static UserProfileItemRepository<
+        TEntity, TEntityInterface,
+        TEntityDto, TCreateInput, TUpdateInput>
+            Create<TEntity, TEntityInterface,TEntityDto, TCreateInput, TUpdateInput>()
+        where TEntity : TEntityInterface, new()
+        where TEntityInterface : IUserProfileRequiredEntity
+        where TEntityDto : IEntityDto<int>
+        where TUpdateInput : IEntityDto<int>
+        {
+            return new UserProfileItemRepository<
+        TEntity, TEntityInterface,
+        TEntityDto, TCreateInput, TUpdateInput
+        >();
+        }
+    }
     public class UserProfileItemRepository<
         TEntity, TEntityInterface,
         TEntityDto, TCreateInput, TUpdateInput
@@ -40,6 +59,10 @@ namespace Chameleon.Infrastructure.Profiles
             ) : base(mapper, apiClient, eventAggregator)
         {
             _userProfileRepository = userProfileRepository;
+        }
+
+        public UserProfileItemRepository() : base(null, null, null)
+        {
         }
 
         public override int Insert(TEntityInterface entity)

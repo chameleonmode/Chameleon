@@ -11,6 +11,18 @@ using System.Collections.Concurrent;
 
 namespace Chameleon.Infrastructure.Repositories
 {
+    //<,,,,,,>
+    public class StaticRepositoryFactory
+    {
+        public static IRepository<T1, T2, T3> Create<T1, T2, T3>() where T3 : GetAllRequestDto
+        {
+            return new Abstraction<T1, T2, T3>();
+        }
+        public static IRepository<T1> CreateOne<T1>()
+        {
+            return new Abstraction<T1>();
+        }
+    }
     public abstract class Repository<
         TEntity, TEntityInterface, TPrimaryKey,
         TEntityDto, TCreateInput, TUpdateInput,

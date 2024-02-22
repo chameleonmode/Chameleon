@@ -1,8 +1,4 @@
-﻿using Prism.Services.Dialogs;
-using System.Drawing;
-using System.Windows;
-
-namespace Chameleon.Interfaces.MessageBox
+﻿namespace Chameleon.Interfaces.MessageBox
 {
     public interface IMessageBoxOptions
     {

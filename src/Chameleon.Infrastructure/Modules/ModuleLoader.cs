@@ -1,8 +1,6 @@
 ﻿using Chameleon.Interfaces.AutoMapper;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Interfaces.Modules;
-using Prism.Ioc;
-using Prism.Modularity;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace Chameleon.Infrastructure.Modules
 {
-    public class ModuleLoader : IModuleLoader
+    public abstract class ModuleLoader 
     {
         /// <summary>
         /// Used to search for dll are should loaded without hard reference 
@@ -20,22 +18,16 @@ namespace Chameleon.Infrastructure.Modules
         private const string ModuleFileNamePattern = "Chameleon.*.dll";
         private readonly Regex ModuleFileNameRegex = new Regex(ModuleFileNamePattern);
         private readonly List<Assembly> _assemblies = new List<Assembly>();
-        private readonly IContainerProvider _containerProvider;
 
-        public ModuleLoader(
-            IContainerProvider containerProvider
-            )
+        public ModuleLoader()
         {
-            _containerProvider = containerProvider;
         }
 
-        public void LoadModules(IModuleCatalog catalog)
+        public List<Assembly> Assemblies => _assemblies;
+
+        public void LoadModules()
         {
-            EnsureAllAssembliesLoaded();
-            foreach (var module in GetModules())
-            {
-                catalog.AddModule(module);
-            }
+            EnsureAllAssembliesLoaded();          
         }
 
         private void EnsureAllAssembliesLoaded()
@@ -59,14 +51,7 @@ namespace Chameleon.Infrastructure.Modules
             RegisterTypes(assebliesLoaded);
         }
 
-        private void RegisterTypes(IList<Assembly> assemblies)
-        {
-            foreach (var assembly in assemblies)
-            {
-                //_containerProvider.RegisterTypesFrom(assembly);
-                //_containerProvider.RegisterMapperFrom(assembly);
-            }
-        }
+        public abstract void RegisterTypes(IList<Assembly> assemblies);
 
         private void RetriveAlreadyLoadedAssemblies()
         {
@@ -99,7 +84,7 @@ namespace Chameleon.Infrastructure.Modules
 
         private bool IsAssemblyLoaded(string filePath)
         {
-            return _assemblies.Any(a => 
+            return _assemblies.Any(a =>
                 a.Location.Equals(filePath, StringComparison.OrdinalIgnoreCase)
             );
         }
@@ -109,16 +94,6 @@ namespace Chameleon.Infrastructure.Modules
             var assembly = Assembly.LoadFrom(filePath);
             _assemblies.Add(assembly);
             return assembly;
-        }
-
-        private IList<ModuleInfo> GetModules()
-        {
-            return _assemblies
-                .SelectMany(assembly => assembly.GetTypes())
-                .Where(type => typeof(IModule).IsAssignableFrom(type))
-                .Where(type => !type.IsAbstract)
-                .Select(type => new ModuleInfo(type))
-                .ToList();
         }
     }
 }

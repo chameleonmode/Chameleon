@@ -1,6 +1,5 @@
 ﻿using Chameleon.Interfaces.Ioc;
-using Prism.Services.Dialogs;
-using System;
+using Chameleon.Prism.Services.Dialogs;
 
 namespace Chameleon.Interfaces.Dialogs
 {

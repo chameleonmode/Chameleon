@@ -4,7 +4,7 @@ using Chameleon.Auth.Api;
 using Chameleon.Core.Extensions;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Settings;
-using Prism.Events;
+using Chameleon.Prism.Events;
 
 namespace Chameleon.Auth.Services
 {

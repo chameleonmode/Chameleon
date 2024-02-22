@@ -1,10 +1,9 @@
 ﻿using Chameleon.Interfaces.Ioc;
-using Prism.Modularity;
 
 namespace Chameleon.Interfaces.Modules
 {
-    public interface IModuleLoader : ISingletonDependency
+    public interface IModuleLoader<T> : ISingletonDependency
     {
-        void LoadModules(IModuleCatalog catalog);
+        void LoadModules(T catalog);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Prism.Services.Dialogs;
+﻿using Chameleon.Prism.Services.Dialogs;
 
 namespace Chameleon.Interfaces.Dialogs
 {

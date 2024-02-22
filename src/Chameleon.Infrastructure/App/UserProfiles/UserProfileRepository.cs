@@ -4,7 +4,7 @@ using Chameleon.Infrastructure.Api;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.UserProfiles;
-using Prism.Events;
+
 using System.Collections.Generic;
 
 namespace Chameleon.Infrastructure.Profiles

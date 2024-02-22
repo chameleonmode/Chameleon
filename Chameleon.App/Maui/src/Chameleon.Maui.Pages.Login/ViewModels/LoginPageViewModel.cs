@@ -4,7 +4,7 @@ using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Startup;
 using Chameleon.Maui.Toolkit.Base;
 using CommunityToolkit.Mvvm.Input;
-using Prism.Events;
+using Chameleon.Prism.Events;
 
 namespace Chameleon.Maui.Pages.Login.ViewModels;
 
