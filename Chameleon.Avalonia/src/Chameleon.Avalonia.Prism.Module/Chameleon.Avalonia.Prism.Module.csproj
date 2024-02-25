@@ -7,16 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.0.9" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.9" />
     <PackageReference Include="Prism.Avalonia" Version="8.1.97.11072" />
     <PackageReference Include="Prism.DryIoc.Avalonia" Version="8.1.97.11072" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Modules\Chameleon.Modules.Auth\Chameleon.Modules.Auth.csproj" />
+    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Application\Chameleon.Avalonia.Prism.Application.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Prism.Interfaces\Chameleon.Avalonia.Prism.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Dialogs\" />
     <Folder Include="Extensions\" />
   </ItemGroup>
 

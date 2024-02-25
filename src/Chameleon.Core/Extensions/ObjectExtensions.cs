@@ -6,6 +6,7 @@ public static class ObjectExtensions
 {
     public static void InvokeOnUiThread(this object self, Action callback)
     {
+        throw new NotImplementedException();
         //Application.Current.Dispatcher.Invoke(callback);
     }
 
@@ -13,73 +14,6 @@ public static class ObjectExtensions
     {
         throw new NotImplementedException();
         // return Application.Current.Dispatcher.Invoke(action);
-    }
-
-    public static void InvokeOnUiThread(this object self, EventHandler handler, EventArgs args = null)
-    {
-        self.InvokeOnUiThread(() =>
-        {
-            handler?.Invoke(self, args ?? new EventArgs());
-        });
-    }
-
-    public static Task InvokeOnUiThreadAsync<T>(this object self, Func<T> action, Action<T> handler = null, Action @finally = null)
-    {
-        return Task.Run(() =>
-        {
-            try
-            {
-                if (!TryExecute(action, out var result))
-                {
-                    return;
-                }
-
-                if (handler != null)
-                {
-                    self.InvokeOnUiThread(() =>
-                    {
-                        handler(result);
-                    });
-                }
-            }
-            finally
-            {
-                @finally?.Invoke();
-            }
-        });
-    }
-
-    public static Task InvokeOnUiThreadAsync(this object self, Action action, Action<bool> handler = null, Action @finally = null)
-    {
-        return Task.Run(() =>
-        {
-            try
-            {
-                var success = TryExecute(action);
-
-                if (handler != null)
-                {
-                    self.InvokeOnUiThread(() =>
-                    {
-                        handler(success);
-                    });
-                }
-            }
-            finally
-            {
-                @finally?.Invoke();
-            }
-        });
-    }
-
-    private static Action Noop = () => { };
-    public static Task InvokeOnUiThreadAsync(this object self, Action action)
-    {
-        return Task.Run(() =>
-        {
-            var success = TryExecute(action);
-            self.InvokeOnUiThread(Noop);
-        });
     }
 
     public static async void InvokeAsync(this object self, Func<Task> action)
@@ -99,7 +33,7 @@ public static class ObjectExtensions
         }
     }
 
-    private static bool TryExecute<T>(Func<T> action, out T result)
+    public static bool TryExecute<T>(Func<T> action, out T result)
     {
         try
         {
@@ -114,7 +48,7 @@ public static class ObjectExtensions
         return false;
     }
 
-    private static bool TryExecute(Action action)
+    public static bool TryExecute(Action action)
     {
         return TryExecute(() =>
         {

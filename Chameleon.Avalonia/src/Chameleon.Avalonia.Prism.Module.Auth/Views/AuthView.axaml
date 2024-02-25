@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:prism="http://prismlibrary.com/"
+             mc:Ignorable="d"
+			 d:DesignWidth="300"
+			 d:DesignHeight="290"
+             x:Class="Chameleon.Avalonia.Prism.Module.Auth.AuthView"
+			 Width="300"
+			 Height="270"
+			 prism:ViewModelLocator.AutoWireViewModel="True">
+	<!--<prism:Dialog.WindowStyle>
+		<Style Selector="Window">
+			<Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterScreen" />
+			<Setter Property="ResizeMode" Value="NoResize"/>
+			<Setter Property="Topmost" Value="True"/>
+			<Setter Property="ShowInTaskbar" Value="False"/>
+			<Setter Property="SizeToContent" Value="WidthAndHeight"/>
+		</Style>
+	</prism:Dialog.WindowStyle>-->
+	
+	<Border>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="34" />
+				<RowDefinition Height="1" />
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<Grid Grid.Row="0" Background="White">
+				<StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Margin="8,0,0,0" Height="30">
+					<TextBlock Foreground="DeepSkyBlue"
+                               Text="Chameleon"
+                               FontSize="20"
+                               Margin="8,2,0,0"
+                               FontWeight="Normal"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontFamily="Segoe WP" />
+				</StackPanel>
+			</Grid>
+			<Grid Grid.Row="1" Background="Gray"/>
+			<Grid Grid.Row="2">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid Grid.Column="0"
+                          x:Name="LocalLoginGrid">
+						<StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+							<Label Content="User Login"
+                                   Margin="0,4,0,12"
+                                   HorizontalAlignment="Center"
+                                   FontSize="26"/>
+							<Grid Margin="0,0,0,8">
+								<StackPanel>
+									<Label Content="Email:" HorizontalAlignment="Left"/>
+									<TextBox
+                                        Text="{Binding UserName}"
+                                        IsEnabled="{Binding IsInputEnabled}"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        MaxLength="255"
+                                        />
+								</StackPanel>
+
+							</Grid>
+							<Grid Margin="0,0,0,4">
+								<StackPanel>
+									<Label Content="Licence Key:"/>
+									<TextBox
+                                        Text="{Binding LicenceKey}"
+                                        IsEnabled="{Binding IsInputEnabled}"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        MaxLength="255"
+                                        />
+								</StackPanel>
+							</Grid>
+							<TextBlock
+                                Text="{Binding ErrorMessage}"
+                                Margin="0,0,0,6"
+                                HorizontalAlignment="Center"
+                                TextTrimming="CharacterEllipsis"
+                                ToolTip.Tip="{Binding ErrorMessage}"
+                                VerticalAlignment="Center"
+                                Foreground="Red" />
+							<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+								<Button Content="Cancel"
+                                                 Margin="0,0,4,0"
+                                                 Width="110" Height="30"
+                                                 Command="{Binding CancelCommand}">
+								</Button>
+								<Button
+                                    Content="Login"
+                                    IsDefault="True"
+                                    Width="110" Height="30"
+                                    Command="{Binding AuthCommand}">
+								</Button>
+							</StackPanel>
+						</StackPanel>
+					</Grid>
+				</Grid>
+			</Grid>
+		</Grid>
+	</Border>
+</UserControl>

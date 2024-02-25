@@ -23,6 +23,6 @@ public class LoginGalleryViewModel : BaseGalleryViewModel
 
     public override async Task InitializeAsync()
     {
-        await _authService.Login();
+        await _authService.LoginAsync();
     }
 }

@@ -3,7 +3,7 @@
 //
 // Summary:
 //     The result of the dialog.
-public enum ButtonResult
+public enum PopupDialogButtonResult
 {
     //
     // Summary:
@@ -36,11 +36,15 @@ public enum ButtonResult
     //
     // Summary:
     //     Yes.
-    Yes = 6
+    Yes = 6,
+    //
+    // Summary:
+    //     ???.
+    Unset = 404
 }
 
 public interface IPopupDialogResult
 {
-    ButtonResult ButtonResult { get; }
+    PopupDialogButtonResult ButtonResult { get; }
     public object ResultObject { get; set; }
 }

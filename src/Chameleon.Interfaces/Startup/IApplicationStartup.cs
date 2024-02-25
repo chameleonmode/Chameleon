@@ -4,6 +4,7 @@ namespace Chameleon.Interfaces.Startup
 {
     public interface IApplicationStartup : ISingletonDependency
     {
-        Task Run();
+        Task RunAsync();
+        void Run();
     }
 }

@@ -27,9 +27,24 @@ namespace Chameleon.Maui.Application.Startup
             _authService = authService;
         }
 
-        public async Task Run()
+        public async Task RunAsync()
         {
-            await _authService.Login();
+            await _authService.LoginAsync();
+            //if (string.IsNullOrEmpty(_settingsService.AuthAccessToken))
+            //{
+            // first create dialog not showing it
+
+            //}
+            // else
+            // {
+            //     _authManager.Login();
+            // }
+            //
+            // return Task.CompletedTask;
+        }
+        public void Run()
+        {
+            _authService.Login();
             //if (string.IsNullOrEmpty(_settingsService.AuthAccessToken))
             //{
             // first create dialog not showing it

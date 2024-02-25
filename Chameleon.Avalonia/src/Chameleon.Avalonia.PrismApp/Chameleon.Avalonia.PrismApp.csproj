@@ -35,6 +35,7 @@
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Domain\Chameleon.Avalonia.Prism.Domain.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Interfaces\Chameleon.Avalonia.Prism.Interfaces.csproj" />
+		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Module.Auth\Chameleon.Avalonia.Prism.Module.Auth.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Module\Chameleon.Avalonia.Prism.Module.csproj" />
 	</ItemGroup>
 

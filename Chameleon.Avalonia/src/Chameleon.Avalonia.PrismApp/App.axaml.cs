@@ -25,6 +25,8 @@ using Chameleon.Infrastructure.Repositories;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Avalonia.Prism.Module;
 using Prism.Events;
+using Chameleon.Avalonia.Prism.Module.Auth;
+using Chameleon.Avalonia.Prism.Module.Auth.ViewModels;
 
 namespace Chameleon.Avalonia.PrismApp;
 public partial class App : PrismApplication
@@ -75,6 +77,10 @@ public partial class App : PrismApplication
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
         Console.WriteLine("RegisterTypes()");
+
+        containerRegistry.Register<MainWindow>();
+
+        // Services
         containerRegistry.RegisterSingleton<Chameleon.Prism.Events.IEventAggregator, Chameleon.Prism.Events.EventAggregator>();
 
         RegisterContainerRegistry(containerRegistry);
@@ -87,6 +93,9 @@ public partial class App : PrismApplication
             //.AddModules()
             .AddUi()
             ;
+
+        // Dialogs
+        containerRegistry.RegisterDialog<AuthView, AuthViewModel>();
 
         // Services
         //containerRegistry.RegisterSingleton<INotificationService, NotificationService>();
@@ -154,9 +163,6 @@ public partial class App : PrismApplication
     {
         base.OnInitialized();
           
-        Container
-            .Resolve<IApplicationStartup>()
-            .Run();
 
         // Register Views to the Region it will appear in. Don't register them in the ViewModel.
         //var regionManager = Container.Resolve<IRegionManager>();
@@ -169,5 +175,18 @@ public partial class App : PrismApplication
 
         ////var logService = Container.Resolve<ILogService>();
         ////logService.Configure("swlog.config");
+    }
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        base.OnFrameworkInitializationCompleted();
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && desktopLifetime.MainWindow == null)
+        {
+            desktopLifetime.MainWindow = new MainWindow();
+        }
+
+        Container
+    .Resolve<IApplicationStartup>()
+    .Run();
     }
 }

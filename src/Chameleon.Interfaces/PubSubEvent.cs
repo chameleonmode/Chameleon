@@ -24,7 +24,9 @@ public static class PubSubEventExtensions
     }
 
     public static IDisposable SubscribeOnce<TPayload>(this PubSubEvent<TPayload> self,
-        Action<TPayload> action, ThreadOption thread = ThreadOption.PublisherThread, bool keepSubscriberReferenceAlive = true)
+        Action<TPayload> action, 
+        ThreadOption thread = ThreadOption.PublisherThread,
+        bool keepSubscriberReferenceAlive = true)
     {
         var subscription = new PubSubSubscription();
         var subscriptionToken = self.Subscribe((payload) => {
@@ -37,6 +39,20 @@ public static class PubSubEventExtensions
         subscription.Token = subscriptionToken;
         return subscription;
     }
+    public static IDisposable SubscribeOnce<TPayload>(this PubSubEvent<TPayload> self,
+           Action<TPayload> action, bool keepSubscriberReferenceAlive = true)
+    {
+        return self.SubscribeOnce(action, ThreadOption.PublisherThread, keepSubscriberReferenceAlive);
+    }
+
+    public static IDisposable SubscribeOnce<TPayload>(this PubSubEvent<TPayload> self,
+           Action action,
+           bool keepSubscriberReferenceAlive = true)
+    {
+        return self.SubscribeOnce(_ => action(),
+            keepSubscriberReferenceAlive);
+    }
+
 
 
 
