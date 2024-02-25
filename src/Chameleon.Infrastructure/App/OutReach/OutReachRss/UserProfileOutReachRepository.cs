@@ -2,7 +2,7 @@
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Interfaces.UserProfiles;
-using Prism.Events;
+
 using System.Collections.Generic;
 using Chameleon.Core.Extensions;
 using Chameleon.Infrastructure.OutReach.Api.Dto;

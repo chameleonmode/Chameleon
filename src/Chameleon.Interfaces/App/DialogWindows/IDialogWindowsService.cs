@@ -7,8 +7,8 @@ namespace Chameleon.Interfaces.DialogWindows
 {
     public interface IDialogWindowsService : ISingletonDependency
     {
-        ButtonResult ShowDialogWindow(IViewControl viewControl, string title);
-        ButtonResult ShowDialogWindow<TViewModel>(IViewControl viewControl, string title, Action<TViewModel> initialize)
+        int ShowDialogWindow(IViewControl viewControl, string title);
+        int ShowDialogWindow<TViewModel>(IViewControl viewControl, string title, Action<TViewModel> initialize)
             where TViewModel : class;
     }
 }

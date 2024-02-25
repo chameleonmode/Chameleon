@@ -5,7 +5,7 @@ using Chameleon.Infrastructure.UserProfiles.Api.Additional;
 using Chameleon.Infrastructure.UserProfiles.Api.Dto.Additional;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.UserProfiles.Additional;
-using Prism.Events;
+
 using Chameleon.Core.Extensions;
 
 namespace Chameleon.Infrastructure.UserProfiles

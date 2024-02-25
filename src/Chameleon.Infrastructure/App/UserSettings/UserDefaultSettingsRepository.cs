@@ -4,7 +4,7 @@ using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserSettings;
-using Prism.Events;
+
 
 namespace Chameleon.Infrastructure.UserSettings
 {

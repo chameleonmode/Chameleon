@@ -1,2 +1,1 @@
-﻿global using Prism.Events;
-global using Chameleon.Interfaces.Dialogs;
+﻿global using Chameleon.Prism.Events;

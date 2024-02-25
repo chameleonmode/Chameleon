@@ -5,7 +5,7 @@ using Chameleon.Infrastructure.App.Assistants.AssistantProfiles.Api.Dto;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.Assistants;
 using Chameleon.Interfaces.Repository;
-using Prism.Events;
+
 using System.Collections.Generic;
 using System.Linq;
 

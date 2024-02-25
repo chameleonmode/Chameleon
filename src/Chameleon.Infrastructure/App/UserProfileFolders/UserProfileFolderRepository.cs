@@ -3,7 +3,7 @@ using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.UserProfileFolders;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.UserProfileFolders;
-using Prism.Events;
+
 using Chameleon.Interfaces.Repository;
 
 namespace Chameleon.Infrastructure.Profiles

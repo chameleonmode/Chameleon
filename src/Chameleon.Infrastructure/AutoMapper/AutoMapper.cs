@@ -1,23 +1,23 @@
 ﻿using Chameleon.Interfaces.AutoMapper;
-using Unity;
 using System.Reflection;
 using AutoMapper;
 using System.Collections.Generic;
 using AutoMapper.Configuration;
+using Chameleon.Interfaces.Ioc;
 
 namespace Chameleon.Infrastructure.AutoMapper
 {
     public class AutoMapper : IAutoMapper
-    {
+    {              
         private AutoMapperProxy _mapper = new AutoMapperProxy();
         private MapperConfigurationExpression _config = new MapperConfigurationExpression();
         private readonly List<Assembly> _assemblies = new List<Assembly>();
 
         public AutoMapper(
-            IUnityContainer unityContainer
+           IHaveContainerRegistry _iHaveContainerRegistry
             )
         {
-            unityContainer.RegisterInstance<IMapper>(_mapper);
+            _iHaveContainerRegistry.RegisterInstance<IMapper>(_mapper);
         }
 
         public void RegisterMapper(Assembly assembly)

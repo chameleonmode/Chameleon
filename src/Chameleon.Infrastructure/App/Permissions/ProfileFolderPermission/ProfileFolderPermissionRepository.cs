@@ -3,7 +3,7 @@ using Chameleon.Infrastructure.App.Permissions.ProfileFolderPermission.Api;
 using Chameleon.Infrastructure.App.Permissions.ProfileFolderPermission.Api.Dto;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.Permissions.ProfileFolderPermission;
-using Prism.Events;
+
 
 namespace Chameleon.Infrastructure.App.Permissions.ProfileFolderPermission
 {

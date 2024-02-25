@@ -2,7 +2,7 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Maui.Pages.Login.ViewModels;
 using Chameleon.Maui.Toolkit.Models;
 using CommunityToolkit.Maui.Views;
-using Prism.Events;
+using Chameleon.Prism.Events;
 
 namespace Chameleon.Maui.Pages.Login.Views;
 

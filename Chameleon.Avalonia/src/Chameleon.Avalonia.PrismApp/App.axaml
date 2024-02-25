@@ -1,0 +1,14 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Chameleon.Avalonia.PrismApp.App"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+	<Application.Styles>
+		<SimpleTheme />
+		<!--<FluentTheme />-->
+		<!-- Avalonia v0.10: <FluentTheme Mode="Light" /> -->
+
+		<!-- Custom SVG glyphs -->
+		<StyleInclude Source="avares://Chameleon.Avalonia.Common/Styles/Icons.axaml" />
+	</Application.Styles>
+</Application>

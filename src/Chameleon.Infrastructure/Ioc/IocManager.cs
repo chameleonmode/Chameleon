@@ -8,10 +8,16 @@ namespace Chameleon.Infrastructure.Ioc
 {
     public class IocManager : IIocManager
     {
+        //private readonly IUnityContainer _container;
+        private readonly IHaveContainerRegistry _containerRegistry;
         private readonly List<Assembly> _assemblies = new List<Assembly>();
 
-        public IocManager()
+        public IocManager(
+            IHaveContainerRegistry containerRegistry
+            )
         {
+            _containerRegistry = containerRegistry;
+            //_container = _containerRegistry.GetContainer();
         }
 
         public void RegisterTypes(Assembly assembly)
@@ -43,20 +49,20 @@ namespace Chameleon.Infrastructure.Ioc
 
         private void RegisterSingletons(Type[] types)
         {
-            //Register<ISingletonDependency>(types, (fromType, toType) => 
-            //    _containerRegistry.RegisterSingleton(fromType, toType));
+            Register<ISingletonDependency>(types, (fromType, toType) =>
+                _containerRegistry.RegisterSingleton(fromType, toType));
         }
 
         private void RegisterTransients(Type[] types)
         {
-            //Register<ITransientDependency>(types, (fromType, toType) =>
-            //    _containerRegistry.Register(fromType, toType));
+            Register<ITransientDependency>(types, (fromType, toType) =>
+                _containerRegistry.Register(fromType, toType));
         }
 
         private void RegisterScoped(Type[] types)
         {
-            //Register<IScopedDependency>(types, (fromType, toType) =>
-            //    _containerRegistry.RegisterScoped(fromType, toType));
+            Register<IScopedDependency>(types, (fromType, toType) =>
+                _containerRegistry.RegisterScoped(fromType, toType));
         }
 
         private void Register<TInterface>(Type[] types, Action<Type, Type> register)
@@ -75,24 +81,29 @@ namespace Chameleon.Infrastructure.Ioc
                 var interfaceTypes = GetInterfaceTypesToRegister(typeToRegister);
                 foreach (var interfaceType in interfaceTypes)
                 {
-                    //if (!_containerRegistry.IsRegistered(interfaceType))
+                    //if (typeToRegister.Name != interfaceType.Name.Substring(1))
                     //{
-                    //    register(interfaceType, typeToRegister);
+                    //    continue;
                     //}
 
-                    //if (viewControlType.IsAssignableFrom(interfaceType) && viewControlType != interfaceType)
-                    //{
-                    //    var dependencyName = interfaceType.GetDependencyName();
-                    //    // https://github.com/PrismLibrary/Prism/blob/master/src/Wpf/Prism.Wpf/Services/Dialogs/DialogService.cs
-                    //    if (!_containerRegistry.IsRegistered(objectType, dependencyName))
-                    //    {
-                    //        // NOTE: that when using factory, we can not resolve instance with arguments
-                    //        Func<IUnityContainer, object> factory
-                    //            = c => c.Resolve(interfaceType);
+                    if (!_containerRegistry.IsRegistered(interfaceType))
+                    {
+                        register(interfaceType, typeToRegister);
+                    }
 
-                    //        _container.RegisterFactory(objectType, dependencyName, factory);
-                    //    }
-                    //}
+                    if (viewControlType.IsAssignableFrom(interfaceType) && viewControlType != interfaceType)
+                    {
+                        var dependencyName = interfaceType.GetDependencyName();
+                        // https://github.com/PrismLibrary/Prism/blob/master/src/Wpf/Prism.Wpf/Services/Dialogs/DialogService.cs
+                        if (!_containerRegistry.IsRegistered(objectType, dependencyName))
+                        {
+                            // NOTE: that when using factory, we can not resolve instance with arguments
+                            //Func<IUnityContainer, object> factory
+                            //    = c => c.Resolve(interfaceType);
+
+                            //_container.RegisterFactory(objectType, dependencyName, factory);
+                        }
+                    }
                 }
             }
         }
@@ -102,7 +113,7 @@ namespace Chameleon.Infrastructure.Ioc
         {
             return types
                 .Where(type => typeof(TInterface).IsAssignableFrom(type))
-                //.Where(type => !_containerRegistry.IsRegistered(type))
+                .Where(type => !_containerRegistry.IsRegistered(type))
                 .ToArray();
         }
 
@@ -159,7 +170,7 @@ namespace Chameleon.Infrastructure.Ioc
                     return false;
                 }
 
-                return type.FullName.StartsWith(prefix, 
+                return type.FullName.StartsWith(prefix,
                     StringComparison.InvariantCultureIgnoreCase
                     );
             });

@@ -6,7 +6,7 @@ using Chameleon.Infrastructure.Prospector.Api;
 using Chameleon.Infrastructure.Prospector.Api.Dto;
 using Chameleon.Interfaces.App.Prospector;
 using Chameleon.Interfaces.UserProfiles;
-using Prism.Events;
+
 
 namespace Chameleon.Infrastructure.Prospector
 {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Prism.Events;
+
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Domain.Entities;

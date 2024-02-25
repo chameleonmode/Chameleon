@@ -3,14 +3,16 @@ using System.Threading.Tasks;
 using Chameleon.Auth.Api;
 using Chameleon.Core.Extensions;
 using Chameleon.Interfaces.Auth;
+using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Settings;
-using Prism.Events;
+using Chameleon.Prism.Events;
 
 namespace Chameleon.Auth.Services
 {
     public class AuthService : IAuthService
     {
         private readonly IEventAggregator _eventAggregator;
+        private readonly IPopupDialogService _popupDialogService;
         private readonly IApplicationSettings _appSettings;
         private readonly IApplicationUser _applicationUser;
         private readonly IAuthSession _authSession;
@@ -19,6 +21,7 @@ namespace Chameleon.Auth.Services
         public AuthService(IAuthApiClient apiClient,
             IAuthSession authSession,
             IEventAggregator eventAggregator,
+            IPopupDialogService popupDialogService,
             IApplicationSettingsService settingsService,
             IApplicationUser applicationUser)
         {
@@ -27,11 +30,12 @@ namespace Chameleon.Auth.Services
             _applicationUser = applicationUser;
             _eventAggregator = eventAggregator;
             _apiClient = apiClient;
+            _popupDialogService = popupDialogService;
         }
 
         public bool IsAuthenticated { get; set; }
 
-        public async Task Login()
+        public async Task LoginAsync()
         {
             IAuthResult? loginResult = null;
             try
@@ -56,6 +60,25 @@ namespace Chameleon.Auth.Services
                     await RefreshToken(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
                 }
             }
+        }
+
+        public void Login()
+        {
+            _popupDialogService.ShowDialog("AuthView", "login", async (ResultNum) =>
+            {
+                switch ((PopupDialogButtonResult)ResultNum)
+                {
+                    case PopupDialogButtonResult.Cancel:
+                    case PopupDialogButtonResult.Unset:
+                    case PopupDialogButtonResult.None:
+                    default:
+                        _eventAggregator.GetEvent<LoginCancelEvent>().Publish();
+                        break;
+                    case PopupDialogButtonResult.OK:
+                        await LoginAsync();
+                        break;
+                }
+            });
         }
 
         public IAuthResult Login(string userName, string licenceKey)
@@ -109,7 +132,7 @@ namespace Chameleon.Auth.Services
             var response = await _apiClient.RefreshToken(acessToken, refreshToken, delayInSeconds);
             if (response == null)
             {
-                await Login();
+                await LoginAsync();
                 //return null;
             }
             else

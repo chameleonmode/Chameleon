@@ -3,7 +3,6 @@ using Chameleon.Maui.Toolkit.Helpers;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using Microsoft.Extensions.DependencyInjection;
-using Prism.Services.Dialogs;
 using System.ComponentModel;
 
 namespace Chameleon.Maui.Toolkit.Services;
@@ -54,5 +53,10 @@ public class PopupDialogManagerService : IPopupDialogService
         //}
 
         return currentPopup.CloseAsync(result, cancellationToken);
+    }
+
+    public void ShowDialog(string name, string message, Action<int> result)
+    {
+        throw new NotImplementedException();
     }
 }

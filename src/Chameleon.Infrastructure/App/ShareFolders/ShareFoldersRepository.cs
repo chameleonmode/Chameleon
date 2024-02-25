@@ -4,7 +4,7 @@ using Chameleon.Infrastructure.App.ShareFolders.Api;
 using Chameleon.Infrastructure.App.ShareFolders.Api.Dto;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.ShareFolders;
-using Prism.Events;
+
 using System.Collections.Generic;
 
 namespace Chameleon.Infrastructure.App.ShareFolders

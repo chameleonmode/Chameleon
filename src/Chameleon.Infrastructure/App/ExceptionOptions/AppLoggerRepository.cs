@@ -2,7 +2,7 @@
 using Chameleon.Interfaces.Repository;
 using Chameleon.Domain.Entities;
 using AutoMapper;
-using Prism.Events;
+
 using Chameleon.Interfaces.ExceptionOptions;
 using System.Collections.Concurrent;
 

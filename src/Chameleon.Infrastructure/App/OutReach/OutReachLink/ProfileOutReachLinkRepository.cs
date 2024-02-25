@@ -3,7 +3,7 @@ using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.UserProfiles;
-using Prism.Events;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

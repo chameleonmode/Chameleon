@@ -3,7 +3,7 @@ using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.Bookmarks;
 using Chameleon.Interfaces.Repository;
-using Prism.Events;
+
 
 namespace Chameleon.Infrastructure.Bookmarks
 {

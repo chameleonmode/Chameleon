@@ -11,7 +11,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.MessageBox;
 using Chameleon.Interfaces.Alerts;
-using Prism.Events;
+using Chameleon.Prism.Events;
 
 namespace Chameleon.Maui.Pages.Login.ViewModels;
 
@@ -111,7 +111,7 @@ public partial class AuthViewModel : BaseViewModel, IAuthViewModel
             _appSettings.Login.Set(UserName, LicenceKey);
             await _settingsService.Save();
 
-            await _authService.Login();
+            await _authService.LoginAsync();
             // close dialog
             //CloseDialog(ButtonResult.OK);
 

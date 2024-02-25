@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.Environment;
+﻿using Chameleon.Core.Settings;
+using Chameleon.Interfaces.Environment;
 using Chameleon.Interfaces.Environments;
 using System;
 using System.Configuration;
@@ -9,48 +10,46 @@ namespace Chameleon.Infrastructure.Environments
         : IApplicationConfigurationManager
     {
         //private readonly Configuration _configuration;
-        private readonly IApplicationConfigurationManagerService applicationConfigService;
-        public ApplicationConfigurationManager(IApplicationConfigurationManagerService applicationConfigService)
+        //private readonly IApplicationConfigurationManagerService applicationConfigService;
+        public ApplicationConfigurationManager()
         {
             //_configuration = ConfigurationManager
             //    .OpenExeConfiguration(ConfigurationUserLevel.None);
-            this.applicationConfigService = applicationConfigService;
+           // this.applicationConfigService = applicationConfigService;
         }
 
-        public string Get(string key, string defaultValue = "")
+        public string Get(string key, string defaultValue = "") => key switch
         {
-            //var value = _configuration.AppSettings.Settings[key];
-            //return value?.Value ?? defaultValue;
-            return applicationConfigService.Get(key, defaultValue);
-        }
+            "apiBaseUrl" => GlobalSettings.ApiBaseUrl,
+            "notionProfile" => GlobalSettings.NotionProfile,
+            "notionUrl" => GlobalSettings.NotionUrl,
+            "apiSocialAnimalUrl" => GlobalSettings.ApiSocialAnimalUrl,
+            "websiteUrl" => GlobalSettings.WebsiteUrl,
+            "supportUrl" => GlobalSettings.SupportUrl,
+            "facebookGroupUrl" => GlobalSettings.FacebookGroupUrl,
+            "pricingUrl" => GlobalSettings.PricingUrl,
+            _ => throw new ArgumentOutOfRangeException(nameof(key), $"Not expected value: {key}"),
+        };
 
-        public T Get<T>(string key, T defaultValue = default)
+        public T? Get<T>(string key, T? defaultValue = default)
         {
-            //var value = Get(key);
-            //if (string.IsNullOrWhiteSpace(value))
-            //{
-            //    return defaultValue;
-            //}
-            //return (T)Convert.ChangeType(value, typeof(T));
-            return applicationConfigService.Get<T>(key, defaultValue);
+            var value = Get(key);
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return defaultValue;
+            }
+            return (T?)Convert.ChangeType(value, typeof(T?));
         }
 
         public void Set(string key, object value, bool save = true)
         {
-            //_configuration.AppSettings.Settings[key].Value 
-            //    = value?.ToString().Trim() ?? string.Empty;
-            applicationConfigService.Set(key, value, save);
-            if (save)
-            {
-                Save();
-            }
+            throw new NotImplementedException();
+            // Preferences.Set(key, value?.ToString()?.Trim() ?? string.Empty);
         }
 
         public void Save()
         {
-            applicationConfigService.Save();
-            //_configuration.Save(ConfigurationSaveMode.Full, true);
-            //ConfigurationManager.RefreshSection("appSettings");
+
         }
     }
 }

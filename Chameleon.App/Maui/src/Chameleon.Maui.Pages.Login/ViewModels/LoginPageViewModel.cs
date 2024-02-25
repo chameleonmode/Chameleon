@@ -4,7 +4,7 @@ using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Startup;
 using Chameleon.Maui.Toolkit.Base;
 using CommunityToolkit.Mvvm.Input;
-using Prism.Events;
+using Chameleon.Prism.Events;
 
 namespace Chameleon.Maui.Pages.Login.ViewModels;
 
@@ -27,7 +27,7 @@ public partial class LoginPageViewModel : BaseViewModel
         var result = await _popupDialogService.Create<AuthViewModel>();
         if (result != null)
         {
-            if (result.ButtonResult != ButtonResult.OK)
+            if (result.ButtonResult != PopupDialogButtonResult.OK)
             {
                 // reject auth
                 //OnAuthenticateCancel();

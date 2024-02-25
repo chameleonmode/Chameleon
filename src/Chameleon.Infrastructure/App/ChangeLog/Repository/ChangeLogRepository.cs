@@ -4,7 +4,7 @@ using Chameleon.Infrastructure.App.ChangeLog.Api.Dto;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.ChangeLog;
 using Chameleon.Interfaces.Repository;
-using Prism.Events;
+
 
 namespace Chameleon.Infrastructure.App.ChangeLog.Repository
 {
