@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Chameleon.Domain\Chameleon.Domain.csproj" />
+    <PackageReference Include="Fluxzy.Core" Version="1.21.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chameleon.Core\Chameleon.Core.csproj" />
     <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
   </ItemGroup>
 

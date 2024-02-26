@@ -30,6 +30,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\src\Chameleon.Core\Chameleon.Core.csproj" />
 		<ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
+		<ProjectReference Include="..\..\..\src\Chameleon.SystemBrowser\Chameleon.SystemBrowser.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Application\Chameleon.Avalonia.Prism.Application.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Domain\Chameleon.Avalonia.Prism.Domain.csproj" />

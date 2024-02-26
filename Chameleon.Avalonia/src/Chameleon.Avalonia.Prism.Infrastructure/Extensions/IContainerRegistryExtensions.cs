@@ -18,7 +18,8 @@ public static class IContainerRegistryExtensions
         var executingAssembly = Assembly.GetExecutingAssembly();
         var executingAssemblyBase = AssemblyResolver.GetAssembly();
 
-        containerRegistry.RegisterSingleton<IHaveContainerRegistry, HasContainerRegistryService>();
+        containerRegistry.RegisterSingleton<IHaveContainerRegistry, HasContainerRegistryService>(); 
+        containerRegistry.RegisterSingleton<IHaveContainerProvider, HasContainerProviderService>();
         containerRegistry.RegisterSingleton<IIocManager, IocManager>();
                                                            
         self.RegisterTypesFrom(executingAssemblyBase);

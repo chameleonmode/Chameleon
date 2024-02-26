@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "User-Agent Selector",
+  "description": "Extension to select User-Agent",
+  "version": "1.0",
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "background": {
+    "scripts": ["/background/background.js"]
+  },
+  "browser_action": {
+    "default_popup": "popup/popup.html"
+  },
+  "permissions": ["<all_urls>", "declarativeNetRequest"],
+  "userProfileId": 0,
+  "browserType": 0,
+  "applicationPort": 3377
+}

@@ -77,13 +77,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Prism.Mo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Prism", "Prism", "{4427C0B5-DE4B-4D9F-B92D-02C7BCC15A75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Prism.Module.Auth", "Chameleon.Avalonia\src\Chameleon.Avalonia.Prism.Module.Auth\Chameleon.Avalonia.Prism.Module.Auth.csproj", "{83D766E3-CE07-4B25-B14A-2C0A84B1B85D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Prism.Module.Auth", "Chameleon.Avalonia\src\Chameleon.Avalonia.Prism.Module.Auth\Chameleon.Avalonia.Prism.Module.Auth.csproj", "{83D766E3-CE07-4B25-B14A-2C0A84B1B85D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Module", "Module", "{FB7A50EE-7CE3-4AB0-9F78-EDF7220501E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Prism.Module.MessageBox", "Chameleon.Avalonia\src\Chameleon.Avalonia.Prism.Module.MessageBox\Chameleon.Avalonia.Prism.Module.MessageBox.csproj", "{0EF2601B-88EF-45AD-8A4E-7C9F6F2894D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Prism.Module.MessageBox", "Chameleon.Avalonia\src\Chameleon.Avalonia.Prism.Module.MessageBox\Chameleon.Avalonia.Prism.Module.MessageBox.csproj", "{0EF2601B-88EF-45AD-8A4E-7C9F6F2894D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Common", "src\Chameleon.Common\Chameleon.Common.csproj", "{730174C9-583D-47EA-BEEB-D09013CBFC5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Common", "src\Chameleon.Common\Chameleon.Common.csproj", "{730174C9-583D-47EA-BEEB-D09013CBFC5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.SystemBrowser", "src\Chameleon.SystemBrowser\Chameleon.SystemBrowser.csproj", "{E27709AC-650F-4E95-826D-A353A7A67B20}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "extensions", "extensions", "{F2FD0637-779D-45D1-9A01-CE2FA316B0FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -193,6 +197,10 @@ Global
 		{730174C9-583D-47EA-BEEB-D09013CBFC5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{730174C9-583D-47EA-BEEB-D09013CBFC5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{730174C9-583D-47EA-BEEB-D09013CBFC5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E27709AC-650F-4E95-826D-A353A7A67B20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E27709AC-650F-4E95-826D-A353A7A67B20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E27709AC-650F-4E95-826D-A353A7A67B20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E27709AC-650F-4E95-826D-A353A7A67B20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -231,6 +239,8 @@ Global
 		{FB7A50EE-7CE3-4AB0-9F78-EDF7220501E4} = {4427C0B5-DE4B-4D9F-B92D-02C7BCC15A75}
 		{0EF2601B-88EF-45AD-8A4E-7C9F6F2894D3} = {FB7A50EE-7CE3-4AB0-9F78-EDF7220501E4}
 		{730174C9-583D-47EA-BEEB-D09013CBFC5D} = {DD2E432A-BC2B-432B-BC89-0777702DB877}
+		{E27709AC-650F-4E95-826D-A353A7A67B20} = {DD2E432A-BC2B-432B-BC89-0777702DB877}
+		{F2FD0637-779D-45D1-9A01-CE2FA316B0FC} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}
