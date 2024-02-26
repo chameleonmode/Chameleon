@@ -55,7 +55,7 @@ public class PopupDialogManagerService : IPopupDialogService
         return currentPopup.CloseAsync(result, cancellationToken);
     }
 
-    public void ShowDialog(string name, string message, Action<int> result)
+    public void ShowDialog(string name, string message, Action<int?> result)
     {
         throw new NotImplementedException();
     }

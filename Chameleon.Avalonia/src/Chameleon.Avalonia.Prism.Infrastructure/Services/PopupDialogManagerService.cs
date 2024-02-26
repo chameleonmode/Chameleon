@@ -7,16 +7,24 @@ using Avalonia.Controls;
 using Avalonia;
 using Chameleon.Core.Extensions;
 using Avalonia.Controls.ApplicationLifetimes;
+using Prism.Ioc;
+using Chameleon.Avalonia.Prism.Interfaces.Dialogs;
+using System.Xml.Linq;
+using Tmds.DBus.Protocol;
 
 namespace Chameleon.Avalonia.Prism.Infrastructure.Services;
 
-public class PopupDialogManagerService : IPopupDialogService
+public class PopupDialogManagerService : IPopupDialogWinowService
 {
+    private readonly IContainerExtension _containerExtension;
     private readonly IDialogService _dialogService;
-    public PopupDialogManagerService(IDialogService dialogService)
+    public PopupDialogManagerService(IDialogService dialogService, 
+        IContainerExtension containerExtension)
     {
         _dialogService = dialogService;
+        _containerExtension = containerExtension;
     }
+
 
     public Task<IPopupDialogResult?> Create<T>() where T : INotifyPropertyChanged
     {
@@ -33,22 +41,48 @@ public class PopupDialogManagerService : IPopupDialogService
         throw new NotImplementedException();
     }
 
-    public void ShowDialog(string wname, string message, Action<int> result)
+    public void ShowDialog(string wname, string message, Action<int?> result)
     {
         // PRO TIP: Use `nameof(DialogView)` instead of "DialogView" to catch errors early on
-        _dialogService.ShowDialog(
-            wname,
-            new DialogParameters($"message={message}"),
-            r =>
-            {
-                if (r is null)
-                {
-                }
-                else
-                {
-
-                    result((int)r.Result);
-                }
-            });
+        ShowDialog(wname, new DialogParameters($"message={message}"), (r) => { result((int?)r?.Result); });
     }
+
+    public void ShowDialog(string name, IDialogParameters parameters, Action<IDialogResult?> callback)
+    {
+        _dialogService.ShowDialog(
+        name,
+         parameters,
+             r =>
+             {
+                 if (r is null)
+                 {
+                     callback(null);
+                 }
+                 else
+                 {
+
+                     callback(r);
+                 }
+             });
+    }
+    public void ShowDialog(Window owner, string name, IDialogParameters parameters, Action<IDialogResult> callback)
+    {
+        _dialogService.ShowDialog(
+            owner,
+         name,
+          parameters,
+              r =>
+              {
+                  if (r is null)
+                  {
+                      callback(null);
+                  }
+                  else
+                  {
+
+                      callback(r);
+                  }
+              });
+    }
+
 }

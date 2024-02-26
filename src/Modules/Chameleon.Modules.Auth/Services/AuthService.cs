@@ -59,6 +59,10 @@ namespace Chameleon.Auth.Services
                     OnAuthenticateSuccess(loginResult);
                     await RefreshToken(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
                 }
+                else
+                {
+                    _eventAggregator.GetEvent<LoginFailEvent>().Publish();
+                }
             }
         }
 

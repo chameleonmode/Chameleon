@@ -7,7 +7,7 @@ public interface IPopupDialogService : ISingletonDependency
 {
     Task<IPopupDialogResult?> Create<T>() where T : INotifyPropertyChanged;
    
-    void ShowDialog(string name, string message, Action<int> result);
+    void ShowDialog(string name, string message, Action<int?> result);
 
     // Closes the currently displayed popup. Optionally returning a result.
     void Close(object? result = null);

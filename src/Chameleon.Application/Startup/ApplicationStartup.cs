@@ -26,6 +26,10 @@ namespace Chameleon.Application.Startup
             _eventAggregator
               .GetEvent<LoginSuccessEvent>()
               .SubscribeOnce(ShowMainWindow);
+
+            _eventAggregator
+                .GetEvent<LoginFailEvent>()
+                .SubscribeOnce(Run);
         }
 
         public async Task RunAsync()

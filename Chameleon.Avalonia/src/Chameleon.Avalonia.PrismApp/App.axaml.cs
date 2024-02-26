@@ -15,6 +15,7 @@ using Chameleon.Core.Attributes;
 using Chameleon.Interfaces.Startup;
 using Microsoft.CodeAnalysis;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
+using Chameleon.Avalonia.Prism.Interfaces.Extensions;
 using Chameleon.Avalonia.Prism.Domain.Extensions;
 using Chameleon.Avalonia.Prism.Application.Extensions;
 using Chameleon.Avalonia.PrismApp.Extensions;
@@ -27,6 +28,9 @@ using Chameleon.Avalonia.Prism.Module;
 using Prism.Events;
 using Chameleon.Avalonia.Prism.Module.Auth;
 using Chameleon.Avalonia.Prism.Module.Auth.ViewModels;
+using Chameleon.Avalonia.Prism.Module.MessageBox;
+using Chameleon.Avalonia.Prism.Module.MessageBox.ViewModels;
+
 
 namespace Chameleon.Avalonia.PrismApp;
 public partial class App : PrismApplication
@@ -95,7 +99,9 @@ public partial class App : PrismApplication
             ;
 
         // Dialogs
+        Container.RegisterTypesFrom(Chameleon.Avalonia.Prism.Module.MessageBox.AssemblyResolver.GetAssembly());
         containerRegistry.RegisterDialog<AuthView, AuthViewModel>();
+        containerRegistry.RegisterDialog<MessageBoxView, MessageBoxViewModel>();
 
         // Services
         //containerRegistry.RegisterSingleton<INotificationService, NotificationService>();
@@ -184,7 +190,7 @@ public partial class App : PrismApplication
         {
             desktopLifetime.MainWindow = new MainWindow();
         }
-
+                
         Container
     .Resolve<IApplicationStartup>()
     .Run();
