@@ -1,11 +1,12 @@
 ﻿using Chameleon.Interfaces.Ioc;
+using Chameleon.Interfaces.MessageBox;
 using Prism.Services.Dialogs;
 
 namespace Chameleon.Avalonia.Prism.Interfaces.MessageBox
 {
-    public interface IMessageBoxService
+    public interface IPrismMessageBoxService
         : ISingletonDependency
     {
-        void ShowDialog(IMessageBoxOptions messageBoxOptions, Action<ButtonResult> callback);
+        void ShowDialog(IPrismMessageBoxOptions messageBoxOptions, Action<ButtonResult> callback);
     }
 }

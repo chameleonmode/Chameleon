@@ -25,13 +25,13 @@ namespace Chameleon.SystemBrowser.Proxy
             //    UserName = proxy.UserName,
             //    Password = proxy.Password
             //};
-            var p = new WebProxy(hostName, proxy.Port)
-            {
-                 Credentials = new NetworkCredential(proxy.UserName, proxy.Password)
-        };
+            //var p = new WebProxy(hostName, proxy.Port)
+            //{
+            //     Credentials = new NetworkCredential(proxy.UserName, proxy.Password)
+            //};
 
-            var proxyServer = new DynamicProxyServer(p);
-            proxyServer.Start();
+            var proxyServer = new DynamicProxyServer(null);
+            //proxyServer.Start();
             return proxyServer;
         }
     }

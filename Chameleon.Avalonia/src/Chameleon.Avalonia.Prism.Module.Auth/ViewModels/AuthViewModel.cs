@@ -27,12 +27,12 @@ public class AuthViewModel : DialogViewModelBase, IAuthViewModel
     private readonly IApplicationSettings _settings;
     private readonly IApplicationSettingsService _settingsService;
     private readonly IEventAggregator _eventAggregator;
-    private readonly IMessageBoxService _messageBoxService;
+    private readonly IPrismMessageBoxService _messageBoxService;
     public AuthViewModel(
     IAuthService authService,
         IApplicationSettingsService settingsService,
         IEventAggregator eventAggregator,
-        IMessageBoxService messageBoxService
+        IPrismMessageBoxService messageBoxService
         )
     {
         _authService = authService;
@@ -124,7 +124,7 @@ public class AuthViewModel : DialogViewModelBase, IAuthViewModel
             if (await NeedsConfirmActivation())
             {
                 _messageBoxService.ShowDialog(
-                 new MessageBoxOptions
+                 new PrismMessageBoxOptions
                  {
                      Owner = ParentWindow,
                      Title = "Warning",

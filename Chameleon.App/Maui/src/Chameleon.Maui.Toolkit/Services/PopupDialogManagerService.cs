@@ -59,4 +59,9 @@ public class PopupDialogManagerService : IPopupDialogService
     {
         throw new NotImplementedException();
     }
+
+    public IDialog Create(Type dialogType)
+    {
+        throw new NotImplementedException();
+    }
 }

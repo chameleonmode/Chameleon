@@ -11,17 +11,17 @@ using System.Windows;
 
 namespace Chameleon.Avalonia.Prism.Module.MessageBox.Services
 {
-    public class MessageBoxService : IMessageBoxService
+    public class PrismMessageBoxService : IPrismMessageBoxService
     {
         private readonly IPopupDialogWinowService _popupDialogService;
 
-        public MessageBoxService(
+        public PrismMessageBoxService(
             IPopupDialogWinowService popupDialogService)
         {
             _popupDialogService = popupDialogService;
         }
 
-        public void ShowDialog(IMessageBoxOptions messageBoxOptions, Action<ButtonResult> callback)
+        public void ShowDialog(IPrismMessageBoxOptions messageBoxOptions, Action<ButtonResult> callback)
         {
             if (messageBoxOptions.DefaultButton == ButtonResult.None)
             {

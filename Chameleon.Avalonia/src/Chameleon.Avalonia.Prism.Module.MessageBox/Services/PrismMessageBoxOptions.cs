@@ -8,15 +8,15 @@ using System.Windows;
 
 namespace Chameleon.Avalonia.Prism.Module.MessageBox.Services
 {
-    public class MessageBoxOptions
-        : IMessageBoxOptions
+    public class PrismMessageBoxOptions
+        : IPrismMessageBoxOptions
     {
-        public MessageBoxOptions()
+        public PrismMessageBoxOptions()
         {
 
         }
 
-        public MessageBoxOptions(string title, string text, Icon icon)
+        public PrismMessageBoxOptions(string title, string text, Icon icon)
         {
             Title = title;
             Text = text;
