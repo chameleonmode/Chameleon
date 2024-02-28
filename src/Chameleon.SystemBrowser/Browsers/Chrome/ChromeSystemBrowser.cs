@@ -31,14 +31,15 @@ namespace Chameleon.SystemBrowser.Chrome
                 options,
                 _setPreferencesService,
                 _applicationEnvironment,
-                "chrome"
+                GetBrowserExePath()
                 );
             browser.Open();
         }
 
         private string GetBrowserExePath()
         {
-            return _systemBrowserInfoManager
+            return OperatingSystem.IsMacOS() ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" :
+                _systemBrowserInfoManager
                 .FindByName("chrome")
                 .Path;
         }

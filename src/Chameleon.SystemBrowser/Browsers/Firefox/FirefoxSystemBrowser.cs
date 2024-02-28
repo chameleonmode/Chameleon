@@ -27,14 +27,15 @@ namespace Chameleon.SystemBrowser.Firefox
                 _eventAggregator,
                 options,
                 _applicationEnvironment.ApplicationDataFolderPath,
-                "firefox.exe"
+                GetBrowserExePath()
                 );
             browser.Open();
         }
 
         private string GetBrowserExePath()
         {
-            return _systemBrowserInfoManager
+            return OperatingSystem.IsMacOS() ? "/Applications/firefox.app/Contents/MacOS/firefox" : 
+                _systemBrowserInfoManager
                 .FindByName("firefox")
                 .Path;
         }

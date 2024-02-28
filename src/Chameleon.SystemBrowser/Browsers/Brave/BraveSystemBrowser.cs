@@ -31,14 +31,15 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
                 options,
                 _setPreferencesService,
                 _applicationEnvironment,
-                "brave"
+                GetBrowserExePath()
                 );
             browser.Open();
         }
 
         private string GetBrowserExePath()
         {
-            return _systemBrowserInfoManager
+            return OperatingSystem.IsMacOS() ? "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser" :
+                _systemBrowserInfoManager
                 .FindByName("brave")
                 .Path;
         }
