@@ -211,9 +211,9 @@ public class PopupDialogManagerService : IPopupDialogWinowService
         window.DataContext = viewModel; //we want the host window and the dialog to share the same data context
 
         if (window.Owner == null)
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-            {
-                //window.Se.Owner = desktopLifetime as WindowBase;
-            }
+        {
+
+        }
+
     }
 }

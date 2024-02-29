@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Modules\Chameleon.Modules.Auth\Chameleon.Modules.Auth.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Prism.Application\Chameleon.Avalonia.Prism.Application.csproj" />
+    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Prism.Interfaces\Chameleon.Avalonia.Prism.Interfaces.csproj" />
   </ItemGroup>
 

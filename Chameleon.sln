@@ -85,9 +85,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Prism.Mo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Common", "src\Chameleon.Common\Chameleon.Common.csproj", "{730174C9-583D-47EA-BEEB-D09013CBFC5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.SystemBrowser", "src\Chameleon.SystemBrowser\Chameleon.SystemBrowser.csproj", "{E27709AC-650F-4E95-826D-A353A7A67B20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.SystemBrowser", "src\Chameleon.SystemBrowser\Chameleon.SystemBrowser.csproj", "{E27709AC-650F-4E95-826D-A353A7A67B20}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "extensions", "extensions", "{F2FD0637-779D-45D1-9A01-CE2FA316B0FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controls", "Controls", "{7F983C03-0888-41EA-887A-39AC02BF97D6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutReach", "OutReach", "{586AF8B4-52C7-484A-B063-71320359A2C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Controls.OutReachLinkView", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.OutReachLinkView\Chameleon.Avalonia.Controls.OutReachLinkView.csproj", "{C219AEA7-5E9D-4853-9307-F2AFBC6EE853}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -201,6 +207,10 @@ Global
 		{E27709AC-650F-4E95-826D-A353A7A67B20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E27709AC-650F-4E95-826D-A353A7A67B20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E27709AC-650F-4E95-826D-A353A7A67B20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C219AEA7-5E9D-4853-9307-F2AFBC6EE853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C219AEA7-5E9D-4853-9307-F2AFBC6EE853}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C219AEA7-5E9D-4853-9307-F2AFBC6EE853}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C219AEA7-5E9D-4853-9307-F2AFBC6EE853}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -241,6 +251,9 @@ Global
 		{730174C9-583D-47EA-BEEB-D09013CBFC5D} = {DD2E432A-BC2B-432B-BC89-0777702DB877}
 		{E27709AC-650F-4E95-826D-A353A7A67B20} = {DD2E432A-BC2B-432B-BC89-0777702DB877}
 		{F2FD0637-779D-45D1-9A01-CE2FA316B0FC} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
+		{7F983C03-0888-41EA-887A-39AC02BF97D6} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
+		{586AF8B4-52C7-484A-B063-71320359A2C7} = {7F983C03-0888-41EA-887A-39AC02BF97D6}
+		{C219AEA7-5E9D-4853-9307-F2AFBC6EE853} = {586AF8B4-52C7-484A-B063-71320359A2C7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

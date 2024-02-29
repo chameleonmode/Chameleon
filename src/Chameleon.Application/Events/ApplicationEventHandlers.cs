@@ -16,7 +16,7 @@ namespace Chameleon.Application.Events
             IUserProfileFolderEventHandler userProfileFolderEventHandler,
             IProspectorEventHandler prospectorEventHandler,
             ICookiesExcludedDomainEventHandler cookiesExcludedDomainEventHandler,
-            ITourHandler tourHandler,
+            //ITourHandler tourHandler,
             ISyncChangesEventHandler syncChangesEventHandler
             )
         {

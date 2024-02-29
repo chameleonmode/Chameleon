@@ -4,8 +4,7 @@ using System;
 namespace Chameleon.Interfaces.Dialogs
 {
     public interface IToastNotificationService
-        : IDisposable
-        , ITransientDependency
+        : ISingletonDependency
     {
         void ShowInformation(string message);
         void ShowError(string message);

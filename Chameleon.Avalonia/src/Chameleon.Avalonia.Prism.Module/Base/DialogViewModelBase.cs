@@ -6,6 +6,7 @@ using Chameleon.Avalonia.Prism.Application.Extensions;
 using Prism.Commands;
 using Prism.Services.Dialogs;
 using System.Runtime.CompilerServices;
+using Chameleon.Interfaces.Services;
 
 namespace Chameleon.Avalonia.Prism.Module.Base;
 
@@ -50,7 +51,7 @@ public class DialogViewModelBase : ViewModelBase
 
     public virtual void CloseDialog(DialogResult dialogResult)
     {
-        this.InvokeOnUiThread(() => RequestClose?.Invoke(dialogResult));
+        DispatcherService.InvokeOnUiThread(() => RequestClose?.Invoke(dialogResult));
         //Dispatcher.UIThread.Post(() => {  });
 
        // Application.Current.Dispatcher.InvokeOnUiThread(() => RequestClose?.Invoke(dialogResult));

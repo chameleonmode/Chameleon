@@ -14,4 +14,9 @@ public class HasContainerProviderService : IHaveContainerProvider
     {
         return _containerProvider.Resolve(type);
     }
+    public T Resolve<T>()
+    {
+        return _containerProvider.Resolve<T>() ?? throw new ArgumentNullException();
+    }
 }
+

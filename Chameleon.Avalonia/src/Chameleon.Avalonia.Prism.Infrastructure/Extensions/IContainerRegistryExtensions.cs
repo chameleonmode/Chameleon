@@ -5,6 +5,7 @@ using System.Reflection;
 using Chameleon.Avalonia.Prism.Interfaces.Extensions;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Infrastructure;
+using Chameleon.Core.Services;
 
 namespace Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 
@@ -19,7 +20,10 @@ public static class IContainerRegistryExtensions
         var executingAssemblyBase = AssemblyResolver.GetAssembly();
 
         containerRegistry.RegisterSingleton<IHaveContainerRegistry, HasContainerRegistryService>(); 
+
         containerRegistry.RegisterSingleton<IHaveContainerProvider, HasContainerProviderService>();
+        ContainerProviderServiceLocator.Current.ContainerProvider = self.Resolve<IHaveContainerProvider>();
+
         containerRegistry.RegisterSingleton<IIocManager, IocManager>();
                                                            
         self.RegisterTypesFrom(executingAssemblyBase);

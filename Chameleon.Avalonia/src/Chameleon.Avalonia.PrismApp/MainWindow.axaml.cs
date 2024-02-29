@@ -3,7 +3,7 @@ using Chameleon.Interfaces.Views;
 using Chameleon.Interfaces.Windows;
 
 namespace Chameleon.Avalonia.PrismApp;
-public partial class MainWindow : Window  , IMainWindow
+public partial class MainWindow : Window, IMainWindow
 {
     public MainWindow()
     {

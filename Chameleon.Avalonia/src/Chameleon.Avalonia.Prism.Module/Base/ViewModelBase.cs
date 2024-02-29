@@ -1,4 +1,8 @@
-﻿using Chameleon.Interfaces.Views;
+﻿using Chameleon.Avalonia.Prism.Infrastructure.Services;
+using Chameleon.Core.Services;
+using Chameleon.Interfaces.Services;
+using Chameleon.Interfaces.Views;
+using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 
@@ -6,65 +10,48 @@ namespace Chameleon.Avalonia.Prism.Module.Base;
 
 public class ViewModelBase : BindableBase, INavigationAware ,IViewModel
 {
-    private string _title = "";
+                    
+    private string _title= "ViewModelBase";
+    private readonly IDispatcherService _dispatcherService;
+    public ViewModelBase()
+    {
+        _dispatcherService = ContainerProviderServiceLocator.Current.ContainerProvider.Resolve<IDispatcherService>();
+    }
 
-    // Provide wire-ups to NavigationService (aka: RegionManager).
-    //
-    ////private string _baseNavPage = string.Empty;
-    ////private readonly IRegionManager _regionManager;
-    ////private IRegionNavigationJournal? _journal;
-    ////
-    ////public ViewModelBase()
-    ////{
-    ////}
-    ////
-    ////public ViewModelBase(IRegionManager region, string baseNavPage = "")
-    ////{
-    ////    _baseNavPage = baseNavPage;
-    ////}
-    ////
-    ////public IRegionManager Navigation => _regionManager;
-    ////
-    ////public virtual DelegateCommand CmdNavigateBack => new DelegateCommand(() =>
-    ////{
-    ////    // Go back to the previous calling page, otherwise, Dashboard.
-    ////    if (_journal != null && _journal.CanGoBack)
-    ////        _journal.GoBack();
-    ////    else
-    ////        _regionManager.RequestNavigate(RegionNames.ContentRegion, _baseNavPage); // nameof(DashboardView));
-    ////});
+    public IDispatcherService DispatcherService => _dispatcherService;
 
-    /// <summary>Gets or sets the title of the View.</summary>
-    public virtual string Title { get => _title; set => SetProperty(ref _title, value); }
+
+    public virtual string Title
+    {
+        get => _title;
+        set => SetProperty(ref _title, value);
+    }
 
     /// <summary>
-    ///   Called to determine if this instance can handle the navigation request.
-    ///   Don't call this directly, use <seealso cref="OnNavigatingTo(NavigationContext)"/>.
+    ///   Handles Prism's request to navigate to.
+    ///   Don't call this directly, use OnNavigatingTo
+    ///   to comply with Prism v8.x
     /// </summary>
-    /// <param name="navigationContext">The navigation context.</param>
-    /// <returns><see langword="true"/> if this instance accepts the navigation request; otherwise, <see langword="false"/>.</returns>
-    public virtual bool IsNavigationTarget(NavigationContext navigationContext)
+    /// <param name="navigationContext">Navigation Context.</param>
+    /// <returns>Return True to allow navigation, False to deny it.</returns>
+    public bool IsNavigationTarget(NavigationContext navigationContext)
     {
         // Auto-allow navigation
         return OnNavigatingTo(navigationContext);
     }
 
-    /// <summary>Called when the implementer is being navigated away from.</summary>
-    /// <param name="navigationContext">The navigation context.</param>
+    /// <summary>Perform any (event) cleanup, we're navigating away.</summary>
+    /// <param name="navigationContext">Navigation parameters.</param>
     public virtual void OnNavigatedFrom(NavigationContext navigationContext)
     {
     }
 
-    /// <summary>Called when the implementer has been navigated to.</summary>
-    /// <param name="navigationContext">The navigation context.</param>
+    /// <summary>Navigated to view.</summary>
+    /// <param name="navigationContext">Navigation parameters.</param>
     public virtual void OnNavigatedTo(NavigationContext navigationContext)
     {
     }
 
-    /// <summary>Navigation validation checker.</summary>
-    /// <remarks>Override for Prism 7.2's IsNavigationTarget.</remarks>
-    /// <param name="navigationContext">The navigation context.</param>
-    /// <returns><see langword="true"/> if this instance accepts the navigation request; otherwise, <see langword="false"/>.</returns>
     public virtual bool OnNavigatingTo(NavigationContext navigationContext)
     {
         return true;

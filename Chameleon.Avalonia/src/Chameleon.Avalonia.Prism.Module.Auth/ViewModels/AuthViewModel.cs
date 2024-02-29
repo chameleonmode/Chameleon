@@ -32,8 +32,7 @@ public class AuthViewModel : DialogViewModelBase, IAuthViewModel
     IAuthService authService,
         IApplicationSettingsService settingsService,
         IEventAggregator eventAggregator,
-        IPrismMessageBoxService messageBoxService
-        )
+        IPrismMessageBoxService messageBoxService)
     {
         _authService = authService;
         _settingsService = settingsService;

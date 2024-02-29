@@ -30,6 +30,8 @@ using Chameleon.Avalonia.Prism.Module.Auth;
 using Chameleon.Avalonia.Prism.Module.Auth.ViewModels;
 using Chameleon.Avalonia.Prism.Module.MessageBox;
 using Chameleon.Avalonia.Prism.Module.MessageBox.ViewModels;
+using Chameleon.Avalonia.Prism.Infrastructure.Services;
+using Chameleon.Core.Services;
 
 
 namespace Chameleon.Avalonia.PrismApp;
@@ -97,9 +99,11 @@ public partial class App : PrismApplication
             //.AddModules()
             .AddUi()
             ;
+        //Assemblys                                                                      
+        Container.RegisterTypesFrom(Chameleon.Avalonia.Common.AssemblyResolver.GetAssembly());
+        Container.RegisterTypesFrom(Chameleon.Avalonia.Prism.Module.MessageBox.AssemblyResolver.GetAssembly());
 
         // Dialogs
-        Container.RegisterTypesFrom(Chameleon.Avalonia.Prism.Module.MessageBox.AssemblyResolver.GetAssembly());
         containerRegistry.RegisterDialog<AuthView, AuthViewModel>();
         containerRegistry.RegisterDialog<MessageBoxView, MessageBoxViewModel>();
 
@@ -192,7 +196,7 @@ public partial class App : PrismApplication
         }
                 
         Container
-    .Resolve<IApplicationStartup>()
-    .Run();
+            .Resolve<IApplicationStartup>()
+            .Run();
     }
 }
