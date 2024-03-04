@@ -1,8 +1,6 @@
-﻿using Chameleon.Avalonia.Prism.Infrastructure.Services;
-using Chameleon.Core.Services;
+﻿using Chameleon.Common.Services;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Views;
-using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 

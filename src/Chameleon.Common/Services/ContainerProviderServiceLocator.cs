@@ -1,6 +1,6 @@
 ﻿using Chameleon.Interfaces.Ioc;
 
-namespace Chameleon.Core.Services;
+namespace Chameleon.Common.Services;
 
 //TODO: move to common
 public class ContainerProviderServiceLocator

@@ -5,7 +5,7 @@ using System.Reflection;
 using Chameleon.Avalonia.Prism.Interfaces.Extensions;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Infrastructure;
-using Chameleon.Core.Services;
+using Chameleon.Common.Services;
 
 namespace Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 

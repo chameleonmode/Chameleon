@@ -65,6 +65,6 @@ public class DialogWindowsService : IDialogWindowsService
 
     int IDialogWindowsService.ShowDialogWindow<TViewModel>(IViewControl viewControl, string title, Action<TViewModel> initialize)
     {
-        return (int)ShowDialogWindow<TViewModel>(viewControl, title, null);
+        return (int)ShowDialogWindow<TViewModel>(viewControl, title, initialize);
     }
 }

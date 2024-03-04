@@ -28,12 +28,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
+		<ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Core.Shared\Chameleon.Core.Shared.csproj" />
+		<ProjectReference Include="..\..\..\src\Chameleon.Application\Chameleon.Application.csproj" />
+		<ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
 		<ProjectReference Include="..\..\..\src\Chameleon.Core\Chameleon.Core.csproj" />
+		<ProjectReference Include="..\..\..\src\Chameleon.Domain\Chameleon.Domain.csproj" />
+		<ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
 		<ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
 		<ProjectReference Include="..\..\..\src\Chameleon.SystemBrowser\Chameleon.SystemBrowser.csproj" />
+		<ProjectReference Include="..\..\..\src\Modules\Chameleon.Modules.Auth\Chameleon.Modules.Auth.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
+		<ProjectReference Include="..\Chameleon.Avalonia.Controls.BlogOfInterestView\Chameleon.Avalonia.Controls.BlogOfInterestView.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.OutReachLinkView\Chameleon.Avalonia.Controls.OutReachLinkView.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.OutReachTemplate\Chameleon.Avalonia.Controls.OutReachTemplate.csproj" />
+		<ProjectReference Include="..\Chameleon.Avalonia.Controls.RssFeed\Chameleon.Avalonia.Controls.RssFeed.csproj" />
+		<ProjectReference Include="..\Chameleon.Avalonia.Controls.UpgradePlan\Chameleon.Avalonia.Controls.UpgradePlan.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Application\Chameleon.Avalonia.Prism.Application.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Domain\Chameleon.Avalonia.Prism.Domain.csproj" />

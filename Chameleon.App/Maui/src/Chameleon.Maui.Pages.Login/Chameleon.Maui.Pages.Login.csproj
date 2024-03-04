@@ -17,11 +17,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Chameleon.Maui.Interfaces\Chameleon.Maui.Interfaces.csproj" />
-	  <ProjectReference Include="..\Chameleon.Maui.Toolkit\Chameleon.Maui.Toolkit.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <MauiXaml Update="Views\AuthView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

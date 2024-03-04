@@ -31,7 +31,6 @@ using Chameleon.Avalonia.Prism.Module.Auth.ViewModels;
 using Chameleon.Avalonia.Prism.Module.MessageBox;
 using Chameleon.Avalonia.Prism.Module.MessageBox.ViewModels;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
-using Chameleon.Core.Services;
 
 
 namespace Chameleon.Avalonia.PrismApp;

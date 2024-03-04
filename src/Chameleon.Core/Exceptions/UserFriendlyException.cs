@@ -1,5 +1,6 @@
 ﻿namespace Chameleon.Core.Exceptions;
 
+//TODO: maybe move to common
 public class UserFriendlyException : Exception
 {
     public string? Title { get; }
