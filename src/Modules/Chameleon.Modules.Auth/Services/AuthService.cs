@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using Chameleon.Auth.Api;
+using Chameleon.Common.Helpers;
 using Chameleon.Core.Extensions;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
@@ -68,6 +69,8 @@ namespace Chameleon.Auth.Services
 
         public void Login()
         {
+            CurrentApplicationUser.Current.SetCurrentUser(_applicationUser);
+
             _popupDialogService.ShowDialog("AuthView", "login", async (ResultNum) =>
             {
                 switch ((PopupDialogButtonResult)ResultNum)

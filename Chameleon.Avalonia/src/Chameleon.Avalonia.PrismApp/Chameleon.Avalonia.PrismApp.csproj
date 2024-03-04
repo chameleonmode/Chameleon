@@ -32,6 +32,9 @@
 		<ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
 		<ProjectReference Include="..\..\..\src\Chameleon.SystemBrowser\Chameleon.SystemBrowser.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
+		<ProjectReference Include="..\Chameleon.Avalonia.Controls.OutReachLinkView\Chameleon.Avalonia.Controls.OutReachLinkView.csproj" />
+		<ProjectReference Include="..\Chameleon.Avalonia.Controls.OutReachTemplate\Chameleon.Avalonia.Controls.OutReachTemplate.csproj" />
+		<ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Application\Chameleon.Avalonia.Prism.Application.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Domain\Chameleon.Avalonia.Prism.Domain.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
@@ -39,6 +42,7 @@
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Module.Auth\Chameleon.Avalonia.Prism.Module.Auth.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Module.MessageBox\Chameleon.Avalonia.Prism.Module.MessageBox.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Module\Chameleon.Avalonia.Prism.Module.csproj" />
+		<ProjectReference Include="..\Chameleon.Controls.Settings\Chameleon.Avalonia.Controls.Settings.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

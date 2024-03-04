@@ -20,11 +20,18 @@ namespace Chameleon.SystemBrowser
             };
 
 
+        private readonly IHaveContainerProvider _containerProvider;
+
+        public SystemBrowserManager(IHaveContainerProvider containerProvider)
+        {
+            _containerProvider = containerProvider;
+        }
+
         public ISystemBrowser Get(SystemBrowserType browserType)
         {
             if (_mapping.TryGetValue(browserType, out var type))
             {
-                return (ISystemBrowser)ContainerProviderServiceLocator.Current.ContainerProvider.Resolve(type);
+                return (ISystemBrowser)_containerProvider.Resolve(type);
             }
             throw new KeyNotFoundException(browserType.ToString());
         }

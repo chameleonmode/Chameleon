@@ -11,4 +11,12 @@
     <PackageReference Include="System.Drawing.Common" Version="8.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
+  </ItemGroup>
+
 </Project>

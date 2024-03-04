@@ -93,7 +93,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controls", "Controls", "{7F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutReach", "OutReach", "{586AF8B4-52C7-484A-B063-71320359A2C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Controls.OutReachLinkView", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.OutReachLinkView\Chameleon.Avalonia.Controls.OutReachLinkView.csproj", "{C219AEA7-5E9D-4853-9307-F2AFBC6EE853}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Controls.OutReachLinkView", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.OutReachLinkView\Chameleon.Avalonia.Controls.OutReachLinkView.csproj", "{C219AEA7-5E9D-4853-9307-F2AFBC6EE853}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Controls.OutReachTemplate", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.OutReachTemplate\Chameleon.Avalonia.Controls.OutReachTemplate.csproj", "{7002B85C-5050-4A2F-92C8-D6877BE4DC72}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Profiles", "Profiles", "{E1AD0618-F3A1-418F-B07F-E24C919102B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Controls.UserProfileView", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj", "{7A643B19-4A1F-4FA3-BC9D-602B8F36ACFC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Settings", "Settings", "{9E366904-BF6B-4E48-88AC-AA8FE97659AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Controls.Settings", "Chameleon.Avalonia\src\Chameleon.Controls.Settings\Chameleon.Avalonia.Controls.Settings.csproj", "{D886DD62-5802-4DB8-B9B7-4AE8D365AE86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -211,6 +221,18 @@ Global
 		{C219AEA7-5E9D-4853-9307-F2AFBC6EE853}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C219AEA7-5E9D-4853-9307-F2AFBC6EE853}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C219AEA7-5E9D-4853-9307-F2AFBC6EE853}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7002B85C-5050-4A2F-92C8-D6877BE4DC72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7002B85C-5050-4A2F-92C8-D6877BE4DC72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7002B85C-5050-4A2F-92C8-D6877BE4DC72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7002B85C-5050-4A2F-92C8-D6877BE4DC72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A643B19-4A1F-4FA3-BC9D-602B8F36ACFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A643B19-4A1F-4FA3-BC9D-602B8F36ACFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A643B19-4A1F-4FA3-BC9D-602B8F36ACFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A643B19-4A1F-4FA3-BC9D-602B8F36ACFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D886DD62-5802-4DB8-B9B7-4AE8D365AE86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D886DD62-5802-4DB8-B9B7-4AE8D365AE86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D886DD62-5802-4DB8-B9B7-4AE8D365AE86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D886DD62-5802-4DB8-B9B7-4AE8D365AE86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -254,6 +276,11 @@ Global
 		{7F983C03-0888-41EA-887A-39AC02BF97D6} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
 		{586AF8B4-52C7-484A-B063-71320359A2C7} = {7F983C03-0888-41EA-887A-39AC02BF97D6}
 		{C219AEA7-5E9D-4853-9307-F2AFBC6EE853} = {586AF8B4-52C7-484A-B063-71320359A2C7}
+		{7002B85C-5050-4A2F-92C8-D6877BE4DC72} = {586AF8B4-52C7-484A-B063-71320359A2C7}
+		{E1AD0618-F3A1-418F-B07F-E24C919102B7} = {7F983C03-0888-41EA-887A-39AC02BF97D6}
+		{7A643B19-4A1F-4FA3-BC9D-602B8F36ACFC} = {E1AD0618-F3A1-418F-B07F-E24C919102B7}
+		{9E366904-BF6B-4E48-88AC-AA8FE97659AA} = {7F983C03-0888-41EA-887A-39AC02BF97D6}
+		{D886DD62-5802-4DB8-B9B7-4AE8D365AE86} = {9E366904-BF6B-4E48-88AC-AA8FE97659AA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

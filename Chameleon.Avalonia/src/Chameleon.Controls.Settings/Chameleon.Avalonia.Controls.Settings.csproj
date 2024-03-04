@@ -8,17 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.9" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.2" />
+    <PackageReference Include="Prism.Avalonia" Version="8.1.97.11072" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Interfaces\Chameleon.Avalonia.Prism.Interfaces.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controls\" />
-    <Folder Include="Extensions\" />
+    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Module\Chameleon.Avalonia.Prism.Module.csproj" />
   </ItemGroup>
 
 </Project>

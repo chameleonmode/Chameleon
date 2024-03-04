@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.9" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.9" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Chameleon.Core\Chameleon.Core.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Prism.Module\Chameleon.Avalonia.Prism.Module.csproj" />
   </ItemGroup>
