@@ -39,15 +39,15 @@ namespace Chameleon.Application.Events
             IUserProfileView userProfileView,
             IEventAggregator eventAggregator,
             ISystemBrowserManager systemBrowserManager,
-            IMessageBoxService messageBoxService,
+            //TODO: IMessageBoxService messageBoxService,
             IOutReachTemplateView outReachView,
             IAuthSession authSession,
-            IDialogWindowsService dialogWindowsService,
-            IErrorContentDialogView userFriendlyExceptionView
+            IDialogWindowsService dialogWindowsService
+            //TODO: IErrorContentDialogView userFriendlyExceptionView
             )
         {
             _outReachView = outReachView;
-            _messageBoxService = messageBoxService;
+            //_messageBoxService = messageBoxService;
             _mainWindow = mainWindow;
             _userProfileView = userProfileView;
             _eventAggregator = eventAggregator;
@@ -55,7 +55,7 @@ namespace Chameleon.Application.Events
             _systemBrowserManager = systemBrowserManager;
             _authSession = authSession;
             _dialogWindowsService = dialogWindowsService;
-            _userFriendlyExceptionView = userFriendlyExceptionView;
+            //_userFriendlyExceptionView = userFriendlyExceptionView;
 
             _eventAggregator
                 .GetEvent<OpenUserProfileEvent>()

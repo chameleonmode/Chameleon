@@ -1,4 +1,5 @@
 ﻿using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
+using Chameleon.Avalonia.Prism.Interfaces.MessageBox;
 using Chameleon.Avalonia.Prism.Module.Base;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
@@ -26,7 +27,7 @@ public class DashboardViewModel
     private readonly IAuthSession _authSession;
     private readonly IEventAggregator _eventAggregator;
     private readonly IUserProfileService _userProfileService;
-    private readonly IMessageBoxService _messageBoxService;
+    private readonly IPrismMessageBoxService _messageBoxService;
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly DebounceDispatcher _debounceTimer = new DebounceDispatcher();
@@ -38,68 +39,65 @@ public class DashboardViewModel
     private ObservableCollection<IUserProfile, UserProfileViewModel> _mapping;
     private ObservableCollection<IUserProfileFolder, FolderViewModel> _folderMapping;
 
-    public DashboardViewModel()
-    {
-        
-    }
-   //public DashboardViewModel(
-   //    IAuthSession authSession,
-   //    IEventAggregator eventAggregator,
-   //    IUserProfileService userProfileService,
-   //    IMessageBoxService messageBoxService,
-   //    IUserProfileFolderService userProfileFolderService,
-   //    IShareUserProfilePopupService shareUserProfilePopupService,
-   //    IApplicationUser applicationUser,
-   //    IUserAssistantService userAssistantService
-   //    )
-   //{
-   //    _authSession = authSession;
-   //    _eventAggregator = eventAggregator;
-   //    _userProfileService = userProfileService;
-   //    _messageBoxService = messageBoxService;
-   //    _userProfileFolderService = userProfileFolderService;
-   //    _shareUserProfilePopupService = shareUserProfilePopupService;
-   //    _applicationUser = applicationUser;
-   //    _userAssistantService = userAssistantService;
-   //
-   //    SyncChangesCommand = new DelegateCommand(SyncChanges);
-   //
-   //    _eventAggregator
-   //        .GetEvent<LoginSuccessEvent>()
-   //        .SubscribeOnce(OnAuthenticated);
-   //
-   //    _eventAggregator
-   //       .GetEvent<DeleteUserProfileEvent>()
-   //       .Subscribe(OnUpdateViewModel);
-   //
-   //    _eventAggregator
-   //        .GetEvent<FavoriteUserProfileEvent>()
-   //        .Subscribe(OnUpdateViewModel);
-   //
-   //    _eventAggregator
-   //        .GetEvent<UnfavoriteUserProfileEvent>()
-   //        .Subscribe(OnUpdateViewModel);
-   //
-   //    _eventAggregator
-   //        .GetEvent<UpdateFavoriteFolderEvent>()
-   //        .Subscribe(OnUpdateFavoriteFolders);
-   //
-   //    _eventAggregator
-   //        .GetEvent<SavedUserProfileEvent>()
-   //        .Subscribe(OnUpdateViewModel);
-   //
-   //    _eventAggregator
-   //        .GetEvent<SavedUserAssistantEvent>()
-   //        .Subscribe(args => SyncBtnVisibilityChange());
-   //
-   //    _eventAggregator
-   //        .GetEvent<DeletedUserAssistantEvent>()
-   //        .Subscribe(args => SyncBtnVisibilityChange());
-   //
-   //    _eventAggregator
-   //        .GetEvent<UpdateStaleDataEvent>()
-   //        .Subscribe(LoadAsync);
-   //}
+
+  public DashboardViewModel(
+      IAuthSession authSession,
+      IEventAggregator eventAggregator,
+      IUserProfileService userProfileService,
+      IPrismMessageBoxService messageBoxService,
+      IUserProfileFolderService userProfileFolderService,
+      IShareUserProfilePopupService shareUserProfilePopupService,
+      IApplicationUser applicationUser,
+      IUserAssistantService userAssistantService
+      )
+  {
+      _authSession = authSession;
+      _eventAggregator = eventAggregator;
+      _userProfileService = userProfileService;
+      _messageBoxService = messageBoxService;
+      _userProfileFolderService = userProfileFolderService;
+      _shareUserProfilePopupService = shareUserProfilePopupService;
+      _applicationUser = applicationUser;
+      _userAssistantService = userAssistantService;
+  
+      SyncChangesCommand = new DelegateCommand(SyncChanges);
+  
+      _eventAggregator
+          .GetEvent<LoginSuccessEvent>()
+          .SubscribeOnce(OnAuthenticated);
+  
+      _eventAggregator
+         .GetEvent<DeleteUserProfileEvent>()
+         .Subscribe(OnUpdateViewModel);
+  
+      _eventAggregator
+          .GetEvent<FavoriteUserProfileEvent>()
+          .Subscribe(OnUpdateViewModel);
+  
+      _eventAggregator
+          .GetEvent<UnfavoriteUserProfileEvent>()
+          .Subscribe(OnUpdateViewModel);
+  
+      _eventAggregator
+          .GetEvent<UpdateFavoriteFolderEvent>()
+          .Subscribe(OnUpdateFavoriteFolders);
+  
+      _eventAggregator
+          .GetEvent<SavedUserProfileEvent>()
+          .Subscribe(OnUpdateViewModel);
+  
+      _eventAggregator
+          .GetEvent<SavedUserAssistantEvent>()
+          .Subscribe(args => SyncBtnVisibilityChange());
+  
+      _eventAggregator
+          .GetEvent<DeletedUserAssistantEvent>()
+          .Subscribe(args => SyncBtnVisibilityChange());
+  
+      _eventAggregator
+          .GetEvent<UpdateStaleDataEvent>()
+          .Subscribe(LoadAsync);
+  }
 
     private void OnUpdateViewModel(UserProfileEventArgs args)
     {

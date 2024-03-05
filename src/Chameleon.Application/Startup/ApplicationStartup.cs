@@ -1,4 +1,5 @@
-﻿using Chameleon.Common.Regions;
+﻿using Chameleon.Application.Events;
+using Chameleon.Common.Regions;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
@@ -22,7 +23,9 @@ namespace Chameleon.Application.Startup
         public ApplicationStartup(
              IEventAggregator eventAggregator,
              IAuthService authService,
-             ISystemBrowserManager systemBrowserManager)
+             ISystemBrowserManager systemBrowserManager,
+            // injected just to create all event handlers to start them up
+            IEnumerable<IApplicationEventHandlers> _)
         {
             _authService = authService;
              _eventAggregator = eventAggregator;

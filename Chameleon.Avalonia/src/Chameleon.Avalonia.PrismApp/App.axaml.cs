@@ -37,6 +37,8 @@ using Chameleon.Avalonia.Controls.Settings.ViewModels;
 using Chameleon.Avalonia.Controls.Settings;
 using Chameleon.Avalonia.Controls.Sidebar;
 using Chameleon.Common.Regions;
+using Chameleon.Interfaces.Windows;
+using Chameleon.Interfaces.Settings;
 
 
 namespace Chameleon.Avalonia.PrismApp;
@@ -80,10 +82,10 @@ public partial class App : PrismApplication
             var viewModelName = String.Format(CultureInfo.InvariantCulture, "{0}{1}, {2}", viewName, suffix, viewAssemblyName);
             var viewModelType = Type.GetType(viewModelName);
 
-           //if(viewModelType == null)
-           //{
-           //   viewModelType = Type.GetType($"{viewType.FullName}Model");
-           //}
+            if (viewModelType == null)
+            {
+                viewModelType = Type.GetType($"{viewType.FullName}Model");
+            }
             return viewModelType;
         });
     }
@@ -94,7 +96,9 @@ public partial class App : PrismApplication
     {
         Console.WriteLine("RegisterTypes()");
 
-        containerRegistry.Register<MainWindow>();
+       // containerRegistry.Register<MainWindow>();
+        containerRegistry.RegisterSingleton<IMainWindow, MainWindow>();
+        containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
 
         // Services
         containerRegistry.RegisterSingleton<Chameleon.Prism.Events.IEventAggregator, Chameleon.Prism.Events.EventAggregator>();

@@ -1,5 +1,7 @@
 ﻿using Chameleon.Authorization;
+using Chameleon.Avalonia.Prism.Interfaces.MessageBox;
 using Chameleon.Avalonia.Prism.Module.Base;
+using Chameleon.Avalonia.Prism.Module.MessageBox.Services;
 using Chameleon.Avalonia.Prism.Module.MessageBox.ViewModels;
 using Chameleon.Interfaces.App.ContentDiscoverey;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
@@ -21,7 +23,7 @@ public class UserProfileViewModel : ViewModelBase
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfile _userProfile;
     private readonly IEventAggregator _eventAggregator;
-    private readonly IMessageBoxService _messageBoxService;
+    private readonly IPrismMessageBoxService _messageBoxService;
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _applicationUser;
 
@@ -29,7 +31,7 @@ public class UserProfileViewModel : ViewModelBase
         IUserProfileService userProfileService,
         IUserProfile userProfile,
         IEventAggregator eventAggregator,
-        IMessageBoxService messageBoxService,
+        IPrismMessageBoxService messageBoxService,
         IShareUserProfilePopupService shareUserProfilePopupService,
         IApplicationUser applicationUser,
         bool isShowCheckboxColumn = true
@@ -120,24 +122,27 @@ public class UserProfileViewModel : ViewModelBase
 
     private void DeleteUserProfile()
     {
-        var messageBoxOptions = new MessageBoxOptions
+        var messageBoxOptions = new PrismMessageBoxOptions
         {
             Title = "Delete User Profile",
             Text = "Are you sure you want to delete this profile?",
             Buttons = MessageBoxButton.YesNo,
             Icon = SystemIcons.Question,
-            //TODO: ? DefaultButton = ButtonResult.No,
+            DefaultButton = ButtonResult.No,
             ContentButtons = new MessageBoxContentButtonsViewModel { ContentOkButton = "Yes" }
         };
 
-        ButtonResult result = (ButtonResult)_messageBoxService.ShowDialog(messageBoxOptions);
-
-        if (result == ButtonResult.OK)
+       _messageBoxService.ShowDialog(messageBoxOptions, (br) =>
         {
-            _eventAggregator
-                .GetEvent<DeleteUserProfileEvent>()
-                .Publish(new UserProfileEventArgs(_userProfile));
-        }
+            if (br == ButtonResult.OK)
+            {
+                _eventAggregator
+                    .GetEvent<DeleteUserProfileEvent>()
+                    .Publish(new UserProfileEventArgs(_userProfile));
+            }
+        });
+
+       
     }
 
     private void OpenUserProfile()

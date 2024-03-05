@@ -3,7 +3,7 @@
     public class UserProfileFolderBaseDto
     {
         public string Title { get; set; }
-        public string IsFavorite { get; set; }
+        public bool IsFavorite { get; set; }
         public int ProfilesCount { get; set; }
         public long? CreatorUserId { get; set; }
 

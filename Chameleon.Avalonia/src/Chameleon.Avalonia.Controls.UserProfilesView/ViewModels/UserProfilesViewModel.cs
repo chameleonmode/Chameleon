@@ -1,5 +1,7 @@
 ﻿using Chameleon.Avalonia.Controls.Paginator.ViewModels;
+using Chameleon.Avalonia.Prism.Interfaces.MessageBox;
 using Chameleon.Avalonia.Prism.Module.Base;
+using Chameleon.Avalonia.Prism.Module.MessageBox.Services;
 using Chameleon.Avalonia.Prism.Module.MessageBox.ViewModels;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
@@ -34,7 +36,7 @@ public class UserProfilesViewModel
     private readonly IEventAggregator _eventAggregator;
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfilesPopupService _userProfilesPopupService;
-    private readonly IMessageBoxService _messageBoxService;
+    private readonly IPrismMessageBoxService _messageBoxService;
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _currentUser;
@@ -47,7 +49,7 @@ public class UserProfilesViewModel
         IEventAggregator eventAggregator,
         IUserProfileService userProfileService,
         IUserProfilesPopupService userProfilesPopupService,
-        IMessageBoxService messageBoxService,
+        IPrismMessageBoxService messageBoxService,
         IUserProfileFolderService userProfileFolderService,
         IShareUserProfilePopupService shareUserProfilePopupService,
         IApplicationUser currentUser)
@@ -372,24 +374,28 @@ public class UserProfilesViewModel
 
     private void DeletedProfilesAsync()
     {
-        var messageBoxOptions = new MessageBoxOptions
+        var messageBoxOptions = new PrismMessageBoxOptions
         {
             Title = "Delete User Profiles",
             Text = $"Are you sure you want to delete {SelectedCount} profiles?",
             Buttons = MessageBoxButton.YesNo,
             Icon = SystemIcons.Question,
-            //DefaultButton = ButtonResult.No,
+            DefaultButton = ButtonResult.No,
             ContentButtons = new MessageBoxContentButtonsViewModel { ContentOkButton = "Yes" }
         };
 
-        ButtonResult result = (ButtonResult)_messageBoxService.ShowDialog(messageBoxOptions);
-
-        if (result != ButtonResult.OK)
+        _messageBoxService.ShowDialog(messageBoxOptions, (result) =>
         {
-            return;
-        }
+            if (result != ButtonResult.OK)
+            {
+                return;
+            }
 
-        DispatcherService.InvokeOnUiThread(DeleteProfiles);
+
+            DispatcherService.InvokeOnUiThread(DeleteProfiles);
+        });
+
+
     }
 
     private void DeleteProfiles()
