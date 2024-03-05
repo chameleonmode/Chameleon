@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.0.9" />
+    <PackageReference Include="Prism.Avalonia" Version="8.1.97.11072" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.Dashboard\Chameleon.Avalonia.Controls.Dashboard.csproj" />
+    <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Avalonia.Prism.Module\Chameleon.Avalonia.Prism.Module.csproj" />
+    <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Controls.Settings\Chameleon.Avalonia.Controls.Settings.csproj" />
+    <ProjectReference Include="..\src\Chameleon.Common\Chameleon.Common.csproj" />
+  </ItemGroup>
+
+</Project>

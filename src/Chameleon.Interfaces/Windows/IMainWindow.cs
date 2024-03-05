@@ -11,6 +11,7 @@ namespace Chameleon.Interfaces.Windows
         //Window GetWindow();
         void Show();
         void SetContent(object content, string title = "TEMP");
+        void SetContent(string content);
         void ShowWaitIndicator();
         void HideWaitIndicator();
     }

@@ -3,6 +3,7 @@ using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Views;
 using Prism.Mvvm;
 using Prism.Regions;
+using Prism.Ioc;
 
 namespace Chameleon.Avalonia.Prism.Module.Base;
 
@@ -13,7 +14,7 @@ public class ViewModelBase : BindableBase, INavigationAware ,IViewModel
     private readonly IDispatcherService _dispatcherService;
     public ViewModelBase()
     {
-        _dispatcherService = ContainerProviderServiceLocator.Current.ContainerProvider.Resolve<IDispatcherService>();
+        _dispatcherService = ContainerLocator.Current.Resolve<IDispatcherService>(); //TODO: ??? ContainerProviderServiceLocator.Current.ContainerProvider.Resolve<IDispatcherService>();
     }
 
     public IDispatcherService DispatcherService => _dispatcherService;

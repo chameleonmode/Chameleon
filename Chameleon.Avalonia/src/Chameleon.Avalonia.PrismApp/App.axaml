@@ -11,4 +11,109 @@
 		<!-- Custom SVG glyphs -->
 		<StyleInclude Source="avares://Chameleon.Avalonia.Common/Styles/Icons.axaml" />
 	</Application.Styles>
+	<Application.Resources>
+
+		<SolidColorBrush x:Key="PrimaryHueMidForegroundBrush"
+						 Color="#FAFAFA" />
+		<SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush"
+						 Color="#FAFAFA" />
+		<!-- new color -->
+		<SolidColorBrush x:Key="Orange"
+						 Color="#F25022" />
+
+		<SolidColorBrush x:Key="LightGrayBackground"
+						 Color="#F8F8F8" />
+
+		<SolidColorBrush x:Key="PrimaryHueLightBrush"
+						 Color="#6E3BD2" />
+		<SolidColorBrush x:Key="PrimaryHueMidBrush"
+						 Color="#5D25A6" />
+		<SolidColorBrush x:Key="PrimaryHueMidBrush40"
+						 Color="#665D25A6" />
+
+		<SolidColorBrush x:Key="PrimaryHueDarkBrush"
+						 Color="#6634C2" />
+
+		<SolidColorBrush x:Key="ButtonDarkBrush"
+						 Color="#673D9C" />
+
+		<SolidColorBrush x:Key="ChameleonGray"
+						 Color="#F6F6F9" />
+		<SolidColorBrush x:Key="SecondaryText"
+						 Color="#8094AE" />
+		<SolidColorBrush x:Key="BackGroundColor"
+						 Color="#106E3BD2" />
+		<SolidColorBrush x:Key="BackGroundGreyColor"
+						 Color="#FBFBFB" />
+
+		<SolidColorBrush x:Key="MainBlack"
+						 Color="#141315" />
+		<SolidColorBrush x:Key="MainGray"
+						 Color="#B5B5B5" />
+		<SolidColorBrush x:Key="MouseOverMainBlack"
+						 Color="#2A141315" />
+		<SolidColorBrush x:Key="DarkGray"
+						 Color="#404349" />
+		<SolidColorBrush x:Key="DarkGray02"
+						 Color="#05404349" />
+		<SolidColorBrush x:Key="DividerLine"
+						 Color="#D9E1F1" />
+		<SolidColorBrush x:Key="BackGroundDivider"
+						 Color="#80D9E1F1" />
+		<SolidColorBrush x:Key="InsertProfilesLine"
+						 Color="#C4D8F2" />
+		<SolidColorBrush x:Key="BorderOutlineButton"
+						 Color="#DADADA" />
+
+		<SolidColorBrush x:Key="BorderOutlineButton40"
+						 Color="#66DADADA" />
+
+		<SolidColorBrush x:Key="BorderOutline"
+						 Color="#E7E7E7" />
+
+		<SolidColorBrush x:Key="LightPurple"
+						 Color="#F2EFFC" />
+		<SolidColorBrush x:Key="LightPurple29"
+						 Color="#4AF2EFFC" />
+		<SolidColorBrush x:Key="VeryLightPurple"
+						 Color="#FBFAFE" />
+
+		<SolidColorBrush x:Key="FolderProfiles"
+						 Color="#425A70" />
+		<SolidColorBrush x:Key="FolderMenu"
+						 Color="#88858A" />
+
+		<SolidColorBrush x:Key="BackGroundSelectedProfilesBlock"
+						 Color="#373845" />
+		<SolidColorBrush x:Key="OrangeDeleteProfiles"
+						 Color="#FF592B" />
+		<SolidColorBrush x:Key="SecondaryTextPopup"
+						 Color="#7B7B7B" />
+		<SolidColorBrush x:Key="ScrollBackground"
+						 Color="#EDEEEE" />
+		<SolidColorBrush x:Key="ScrollForeground"
+						 Color="#A7ABB3" />
+
+		<SolidColorBrush x:Key="RedCloseButton"
+						 Color="#C42B1C" />
+		<SolidColorBrush x:Key="RedClickCloseButton"
+						 Color="#C94132" />
+		<SolidColorBrush x:Key="MainWindowBlackout26"
+						 Color="#42292929" />
+
+		<SolidColorBrush x:Key="White"
+						 Color="White" />
+
+		<SolidColorBrush x:Key="MainTabControlHeaderBackgrount"
+						 Color="#fbfcfe" />
+
+		<LinearGradientBrush x:Key="GradientButtonBackground"
+							 StartPoint="0,0"
+							 EndPoint="0,1">
+			<GradientStop Color="#FDFDFD"
+						  Offset="0" />
+			<GradientStop Color="#F2F2F2"
+						  Offset="1" />
+		</LinearGradientBrush>
+	</Application.Resources>
 </Application>

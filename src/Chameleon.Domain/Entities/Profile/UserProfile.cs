@@ -124,5 +124,10 @@ namespace Chameleon.Domain.Entities
             = new List<IUserProfileProspectorBlogsOfInterest>();
 
         public string[] PermissionNames { get; set; } = new string[] { };
+
+        public bool HasPermission(string permissionName)
+        {
+            return PermissionNames.Contains(permissionName);
+        }
     }
 }

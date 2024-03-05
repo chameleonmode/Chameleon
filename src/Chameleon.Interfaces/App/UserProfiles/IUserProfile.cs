@@ -21,5 +21,7 @@ namespace Chameleon.Interfaces.UserProfiles
         IList<IUserProfileAddress> Addresses { get; }
         IList<IUserProfileOutReachRss> OutReachRsses { get; }
         IList<IUserProfileProspectorBlogsOfInterest> ProspectorBlogsOfInterest { get; }
+
+        bool HasPermission(string permissionName);
     }    
 }

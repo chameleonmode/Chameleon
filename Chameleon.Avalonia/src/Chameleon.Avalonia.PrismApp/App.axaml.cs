@@ -31,6 +31,12 @@ using Chameleon.Avalonia.Prism.Module.Auth.ViewModels;
 using Chameleon.Avalonia.Prism.Module.MessageBox;
 using Chameleon.Avalonia.Prism.Module.MessageBox.ViewModels;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
+using Chameleon.Avalonia.Controls.Dashboard.ViewModels;
+using Chameleon.Avalonia.Controls.Dashboard;
+using Chameleon.Avalonia.Controls.Settings.ViewModels;
+using Chameleon.Avalonia.Controls.Settings;
+using Chameleon.Avalonia.Controls.Sidebar;
+using Chameleon.Common.Regions;
 
 
 namespace Chameleon.Avalonia.PrismApp;
@@ -73,6 +79,11 @@ public partial class App : PrismApplication
             var suffix = viewName.EndsWith("View") ? "Model" : "ViewModel";
             var viewModelName = String.Format(CultureInfo.InvariantCulture, "{0}{1}, {2}", viewName, suffix, viewAssemblyName);
             var viewModelType = Type.GetType(viewModelName);
+
+           //if(viewModelType == null)
+           //{
+           //   viewModelType = Type.GetType($"{viewType.FullName}Model");
+           //}
             return viewModelType;
         });
     }
@@ -114,9 +125,8 @@ public partial class App : PrismApplication
         //// containerRegistry.Register<MainWindow>();
 
         // Views - Region Navigation
-        //containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>();
-        //containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
-        //containerRegistry.RegisterForNavigation<SubSettingsView, SubSettingsViewModel>();
+        containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>();
+        containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
     }
     private void RegisterContainerRegistry(IContainerRegistry containerRegistry)
     {
@@ -171,16 +181,15 @@ public partial class App : PrismApplication
     protected override void OnInitialized()
     {
         base.OnInitialized();
-          
 
         // Register Views to the Region it will appear in. Don't register them in the ViewModel.
-        //var regionManager = Container.Resolve<IRegionManager>();
+        var regionManager = Container.Resolve<IRegionManager>();
 
         // WARNING: Prism v11.0.0-prev4
         // - DataTemplates MUST define a DataType or else an XAML error will be thrown
-        // - Error: DataTemplate inside of DataTemplates must have a DataType set
-        //regionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(DashboardView));
-        //regionManager.RegisterViewWithRegion(RegionNames.SidebarRegion, typeof(SidebarView));
+        // - Error: DataTemplate inside of DataTemplates must have a DataType set                
+        regionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(DashboardView));              
+        regionManager.RegisterViewWithRegion(RegionNames.SidebarRegion, typeof(SidebarView));
 
         ////var logService = Container.Resolve<ILogService>();
         ////logService.Configure("swlog.config");
