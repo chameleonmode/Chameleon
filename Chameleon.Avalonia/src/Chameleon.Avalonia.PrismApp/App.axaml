@@ -115,5 +115,6 @@
 			<GradientStop Color="#F2F2F2"
 						  Offset="1" />
 		</LinearGradientBrush>
+
 	</Application.Resources>
 </Application>

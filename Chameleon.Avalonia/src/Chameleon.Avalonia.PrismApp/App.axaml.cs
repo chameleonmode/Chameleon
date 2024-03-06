@@ -39,6 +39,7 @@ using Chameleon.Avalonia.Controls.Sidebar;
 using Chameleon.Common.Regions;
 using Chameleon.Interfaces.Windows;
 using Chameleon.Interfaces.Settings;
+using Chameleon.Interfaces.Dashboard;
 
 
 namespace Chameleon.Avalonia.PrismApp;
@@ -96,7 +97,9 @@ public partial class App : PrismApplication
     {
         Console.WriteLine("RegisterTypes()");
 
-       // containerRegistry.Register<MainWindow>();
+        // containerRegistry.Register<MainWindow>();
+        containerRegistry.RegisterSingleton<IDashboardViewModel,DashboardViewModel>();
+        containerRegistry.RegisterSingleton<ISettingsViewModel,SettingsViewModel>();
         containerRegistry.RegisterSingleton<IMainWindow, MainWindow>();
         containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
 
@@ -129,8 +132,8 @@ public partial class App : PrismApplication
         //// containerRegistry.Register<MainWindow>();
 
         // Views - Region Navigation
-        containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>();
-        containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
+        containerRegistry.RegisterForNavigation<DashboardView, IDashboardViewModel>();
+        containerRegistry.RegisterForNavigation<SettingsView, ISettingsViewModel>();
     }
     private void RegisterContainerRegistry(IContainerRegistry containerRegistry)
     {

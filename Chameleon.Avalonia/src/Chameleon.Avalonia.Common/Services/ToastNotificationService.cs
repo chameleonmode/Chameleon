@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Interfaces.Dialogs;
@@ -10,19 +11,19 @@ public class ToastNotificationService
         : IToastNotificationService
 {
     private int _notificationTimeout = 10;
-    private readonly WindowNotificationManager _notificationManager;
+    private WindowNotificationManager _notificationManager;
     private readonly IDispatcherService _dispatcher;
 
     public ToastNotificationService(IDispatcherService dispatcher)
     {
         _dispatcher = dispatcher;
 
-        _notificationManager = new WindowNotificationManager(ApplicationHelper.GetMainWindow())
-        {
-            Position = NotificationPosition.BottomRight,
-            MaxItems = 4,
-            Margin = new Thickness(0, 0, 15, 40),
-        };
+       // _notificationManager = new WindowNotificationManager(ApplicationHelper.GetMainWindow())
+       // {
+       //     Position = NotificationPosition.BottomRight,
+       //     MaxItems = 4,
+       //     Margin = new Thickness(0, 0, 15, 40),
+       // };
     }
 
     public int NotificationTimeout
@@ -53,6 +54,19 @@ public class ToastNotificationService
         }
     }
 
+    /// <summary>Set the host window.</summary>
+    /// <param name="hostWindow">Parent window.</param>
+    public void SetHostWindow(object? hostWindow)
+    {
+        var notificationManager = new WindowNotificationManager((hostWindow as TopLevel) ?? ApplicationHelper.GetMainWindow())
+        {
+            Position = NotificationPosition.BottomRight,
+            MaxItems = 4,
+            Margin = new Thickness(0, 0, 15, 40)
+        };
+
+        _notificationManager = notificationManager;
+    }
     public void ShowInformation(string message)
     {
         ShowOnUI(message, NotificationType.Information);

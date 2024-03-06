@@ -6,6 +6,7 @@ namespace Chameleon.Interfaces.Dialogs
     public interface IToastNotificationService
         : ISingletonDependency
     {
+        void SetHostWindow(object? hostWindow);
         void ShowInformation(string message);
         void ShowError(string message);
         void ShowSuccess(string message);
