@@ -93,4 +93,19 @@ public interface IHaveContainerRegistry : ISingletonDependency
     void ResolveAndRegister(Type interfaceType, Type objectType, string dependencyName);
 
     void RegisterInstance<TInterface>(TInterface instance);
+    object Resolve(Type interfaceType);
+    //
+    // Summary:
+    //     Registers a Transient Service using a delegate method
+    //
+    // Parameters:
+    //   type:
+    //     The service System.Type
+    //
+    //   factoryMethod:
+    //     The delegate method.
+    //
+    // Returns:
+    //     The Prism.Ioc.IContainerRegistry instance
+    void Register(Type objectType, Type interfaceType, string dependencyName, Func<IHaveContainerRegistry, object> factoryMethod);
 }

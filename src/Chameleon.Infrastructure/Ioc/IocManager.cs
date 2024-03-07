@@ -98,10 +98,9 @@ namespace Chameleon.Infrastructure.Ioc
                         if (!_containerRegistry.IsRegistered(objectType, dependencyName))
                         {
                             // NOTE: that when using factory, we can not resolve instance with arguments
-                            //Func<IUnityContainer, object> factory
-                            //    = c => c.Resolve(interfaceType);
+                            Func<IHaveContainerRegistry, object> factory = c => c.Resolve(interfaceType);
 
-                            //_container.RegisterFactory(objectType, dependencyName, factory);
+                            _containerRegistry.Register(objectType, interfaceType, dependencyName, factory);
                         }
                     }
                 }

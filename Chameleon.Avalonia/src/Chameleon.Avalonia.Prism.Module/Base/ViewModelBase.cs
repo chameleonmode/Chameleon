@@ -12,12 +12,16 @@ public class ViewModelBase : BindableBase, INavigationAware ,IViewModel
                     
     private string _title= "ViewModelBase";
     private readonly IDispatcherService _dispatcherService;
+    private readonly IRegionManager _regionManager;
+
     public ViewModelBase()
     {
         _dispatcherService = ContainerLocator.Current.Resolve<IDispatcherService>(); //TODO: ??? ContainerProviderServiceLocator.Current.ContainerProvider.Resolve<IDispatcherService>();
+        _regionManager = ContainerLocator.Current.Resolve<IRegionManager>();
     }
 
     public IDispatcherService DispatcherService => _dispatcherService;
+    public IRegionManager RegionManager => _regionManager;
 
 
     public virtual string Title

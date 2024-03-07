@@ -8,6 +8,6 @@ namespace Chameleon.Interfaces.DialogWindows
         , ITransientDependency
     {
         object InnerContent { get; set; }
-        string Title { get; set; }
+        //string Title { get; set; }
     }
 }

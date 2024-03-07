@@ -6,6 +6,6 @@ public interface IDialog
     int Result { get; }
     object Content { get; set; }
     void Show();
-    void ShowDialog();
+    Task ShowDialog();
     object GetDialogViewModel();
 }

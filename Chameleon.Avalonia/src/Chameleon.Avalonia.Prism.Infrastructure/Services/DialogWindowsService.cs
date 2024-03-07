@@ -20,7 +20,7 @@ public class DialogWindowsService : IDialogWindowsService
         _eventAggregator = eventAggregator;
     }
 
-    public ButtonResult ShowDialogWindow<TViewModel>(IViewControl viewControl, string title, Action<TViewModel?>? initialize)
+    public async Task<ButtonResult> ShowDialogWindow<TViewModel>(IViewControl viewControl, string title, Action<TViewModel?>? initialize)
         where TViewModel : class
     {
         var dialog = _dialogManager.Create(typeof(IDialogWindowView));
@@ -37,18 +37,18 @@ public class DialogWindowsService : IDialogWindowsService
             }
         }
 
-        dialogView.Title = title;
+        //TODO:??dialogView.Title = title;
 
         SetBlackout(true);
-        dialog.ShowDialog();
+        await dialog.ShowDialog();
         SetBlackout(false);
 
         return (ButtonResult)dialog.Result;
     }
 
-    public ButtonResult ShowDialogWindow(IViewControl viewControl, string title)
+    public async Task<ButtonResult> ShowDialogWindow(IViewControl viewControl, string title)
     {
-        return ShowDialogWindow<object>(viewControl, title, null);
+        return await ShowDialogWindow<object>(viewControl, title, null);
     }
 
     private void SetBlackout(bool args)
@@ -58,13 +58,13 @@ public class DialogWindowsService : IDialogWindowsService
             .Publish(new MainWindowBlackoutEventArgs(args));
     }
 
-    int IDialogWindowsService.ShowDialogWindow(IViewControl viewControl, string title)
+    async Task<int> IDialogWindowsService.ShowDialogWindow(IViewControl viewControl, string title)
     {
-        return (int)ShowDialogWindow(viewControl, title);
+        return (int)await ShowDialogWindow(viewControl, title);
     }
 
-    int IDialogWindowsService.ShowDialogWindow<TViewModel>(IViewControl viewControl, string title, Action<TViewModel> initialize)
+    async Task<int> IDialogWindowsService.ShowDialogWindow<TViewModel>(IViewControl viewControl, string title, Action<TViewModel> initialize)
     {
-        return (int)ShowDialogWindow<TViewModel>(viewControl, title, initialize);
+        return (int)await ShowDialogWindow<TViewModel>(viewControl, title, initialize);
     }
 }

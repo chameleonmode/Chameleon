@@ -40,6 +40,9 @@ using Chameleon.Common.Regions;
 using Chameleon.Interfaces.Windows;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.Dashboard;
+using Chameleon.Interfaces.UserProfileFolders;
+using Chameleon.Interfaces.DialogWindows;
+using Chameleon.Avalonia.Prism.Dialogs;
 
 
 namespace Chameleon.Avalonia.PrismApp;
@@ -97,12 +100,6 @@ public partial class App : PrismApplication
     {
         Console.WriteLine("RegisterTypes()");
 
-        // containerRegistry.Register<MainWindow>();
-        containerRegistry.RegisterSingleton<IDashboardViewModel,DashboardViewModel>();
-        containerRegistry.RegisterSingleton<ISettingsViewModel,SettingsViewModel>();
-        containerRegistry.RegisterSingleton<IMainWindow, MainWindow>();
-        containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
-
         // Services
         containerRegistry.RegisterSingleton<Chameleon.Prism.Events.IEventAggregator, Chameleon.Prism.Events.EventAggregator>();
 
@@ -123,17 +120,22 @@ public partial class App : PrismApplication
         // Dialogs
         containerRegistry.RegisterDialog<AuthView, AuthViewModel>();
         containerRegistry.RegisterDialog<MessageBoxView, MessageBoxViewModel>();
+        //containerRegistry.Register<object>();
 
-        // Services
-        //containerRegistry.RegisterSingleton<INotificationService, NotificationService>();
+        // Views - Viewmodels                                                     
+        containerRegistry.RegisterSingleton<IMainWindow, MainWindow>();
 
-        // Views - Generic
-        //// containerRegistry.Register<SidebarView>();  // Not required
-        //// containerRegistry.Register<MainWindow>();
+        containerRegistry.RegisterSingleton<IDashboardViewModel, DashboardViewModel>();
+
+        containerRegistry.RegisterSingleton<ISettingsViewModel, SettingsViewModel>();
+        containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
+        containerRegistry.RegisterSingleton<IUserDefaultSettingsViewModel, UserDefaultSettingsViewModel>();
+        containerRegistry.Register<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
 
         // Views - Region Navigation
         containerRegistry.RegisterForNavigation<DashboardView, IDashboardViewModel>();
         containerRegistry.RegisterForNavigation<SettingsView, ISettingsViewModel>();
+        containerRegistry.RegisterForNavigation<UserDefaultSettingsView, IUserDefaultSettingsViewModel>();
     }
     private void RegisterContainerRegistry(IContainerRegistry containerRegistry)
     {

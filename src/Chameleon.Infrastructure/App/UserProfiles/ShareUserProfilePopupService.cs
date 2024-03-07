@@ -20,12 +20,12 @@ public class ShareUserProfilePopupService : IShareUserProfilePopupService
         _containerProvider = containerProvider;
     }
 
-    public void ShowPopup(IUserProfile userProfile)
+    public async void ShowPopup(IUserProfile userProfile)
     {
         var title = "SHARING OPTIONS FOR " + userProfile.Title.ToUpper();
         var popup = _containerProvider.Resolve<ISharingOptionsForUserProfilePopupView>();
         popup.UserProfile = userProfile;
 
-        _dialogWindowsService.ShowDialogWindow(popup, title);
+        await _dialogWindowsService.ShowDialogWindow(popup, title);
     }
 }

@@ -104,7 +104,7 @@ public class PopupDialogManagerService : IPopupDialogWinowService
     {
         IDialogWindow dialogWindow = CreateDialogWindow(null);
         ConfigureDialogWindowEvents(dialogWindow, null);
-        ConfigureDialogWindowContent(dialogType.GetDependencyName(), dialogWindow, null);
+        ConfigureDialogWindowContent(dialogType, dialogWindow, null);
         return new Chameleon.Infrastructure.Dialogs.DialogWindow(dialogWindow);
     }
 
@@ -178,9 +178,9 @@ public class PopupDialogManagerService : IPopupDialogWinowService
     /// <param name="dialogName">The name of the dialog to show.</param>
     /// <param name="window">The hosting window.</param>
     /// <param name="parameters">The parameters to pass to the dialog.</param>
-    protected virtual void ConfigureDialogWindowContent(string dialogName, IDialogWindow window, IDialogParameters? parameters)
+    protected virtual void ConfigureDialogWindowContent(Type dialogName, IDialogWindow window, IDialogParameters? parameters)
     {
-        var content = _containerExtension.Resolve<object>(dialogName);
+        var content = _containerExtension.Resolve(dialogName);
         var dialogContent = content as TemplatedControl;
         if (dialogContent == null)
             throw new NullReferenceException("A dialog's content must be a FrameworkElement");
@@ -206,13 +206,17 @@ public class PopupDialogManagerService : IPopupDialogWinowService
         if (windowStyle != null)
         {
         }
+        else
+        {
+
+        }
 
         window.Content = dialogContent;
         window.DataContext = viewModel; //we want the host window and the dialog to share the same data context
 
         if (window.Owner == null)
         {
-
+            //var tl = TopLevel.GetTopLevel(dialogContent);
         }
 
     }

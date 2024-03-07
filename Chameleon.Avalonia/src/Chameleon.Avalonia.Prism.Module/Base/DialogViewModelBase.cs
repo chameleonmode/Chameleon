@@ -7,6 +7,7 @@ using Prism.Commands;
 using Prism.Services.Dialogs;
 using System.Runtime.CompilerServices;
 using Chameleon.Interfaces.Services;
+using System.Reflection.Metadata;
 
 namespace Chameleon.Avalonia.Prism.Module.Base;
 
@@ -27,6 +28,18 @@ public class DialogViewModelBase : ViewModelBase
         {
             _closeCommand ??= new DelegateCommand<string>(CloseDialog);
             return _closeCommand;
+        }
+    }
+
+    public virtual void CloseDialog(int obj)
+    {
+        if ((ButtonResult)obj is ButtonResult result)
+        {
+            CloseDialog(result);
+        }
+        else
+        {
+            CloseDialog(ButtonResult.None);
         }
     }
 

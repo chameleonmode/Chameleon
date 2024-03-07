@@ -50,4 +50,15 @@ public class HasContainerRegistryService : IHaveContainerRegistry
     {
         _containerRegistry.GetContainer().RegisterInstance(instance);
     }
+
+    public object Resolve(Type interfaceType)
+    {
+        return _containerRegistry.GetContainer().Resolve(interfaceType);
+    }
+
+    public void Register(Type objectType, Type interfaceType, string depName, Func<IHaveContainerRegistry, object> factoryMethoda)
+    {
+        Func<IContainerProvider, object> factoryMethod = c =>c.Resolve(interfaceType);
+        _containerRegistry.Register(objectType, factoryMethod);
+    }
 }

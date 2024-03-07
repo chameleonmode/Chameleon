@@ -1,10 +1,13 @@
 ﻿using Chameleon.Authorization;
 using Chameleon.Avalonia.Prism.Module.Base;
 using Chameleon.Common.Helpers;
+using Chameleon.Common.Regions;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Prism.Events;
+using Prism.Commands;
+using Prism.Regions;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -13,6 +16,7 @@ public class SettingsViewModel
        , ISettingsViewModel
 {
     private readonly IEventAggregator _eventAggregator;
+
 
     public SettingsViewModel(IEventAggregator eventAggregator)
     {
@@ -27,6 +31,27 @@ public class SettingsViewModel
           .Subscribe(args => InitializeTabControl());
 
         CustomTabs = new CustomTabs();
+    }
+
+    public DelegateCommand<string> CmdNavigateToChild => new ((param) =>
+    {
+        var source = nameof(UserDefaultSettingsView); 
+        switch (param)
+        {
+            case "DEFAULTS":
+                source = nameof(UserDefaultSettingsView);
+                break;
+
+            default:
+                break;
+        }
+
+        RegionManager.RequestNavigate(RegionNames.ContentRegion, source);
+    });
+
+    public override void OnNavigatedFrom(NavigationContext navigationContext)
+    {
+        base.OnNavigatedFrom(navigationContext);
     }
 
     public EventHandler ChangeSettingTab { get; set; }

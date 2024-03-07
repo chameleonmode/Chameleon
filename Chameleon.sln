@@ -111,6 +111,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sidebar", "Sidebar", "{E736
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Controls.Sidebar", "Chameleon.Avalonia.Controls.Sidebar\Chameleon.Avalonia.Controls.Sidebar.csproj", "{E45CAC57-CF6B-471B-89C4-0D0A32EBC049}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Prism.Dialogs", "Chameleon.Avalonia\src\Chameleon.Avalonia.Prism.Dialogs\Chameleon.Avalonia.Prism.Dialogs.csproj", "{111C3A90-17FF-4255-A78C-A2C33BDE7DCA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -237,6 +239,10 @@ Global
 		{E45CAC57-CF6B-471B-89C4-0D0A32EBC049}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E45CAC57-CF6B-471B-89C4-0D0A32EBC049}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E45CAC57-CF6B-471B-89C4-0D0A32EBC049}.Release|Any CPU.Build.0 = Release|Any CPU
+		{111C3A90-17FF-4255-A78C-A2C33BDE7DCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{111C3A90-17FF-4255-A78C-A2C33BDE7DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{111C3A90-17FF-4255-A78C-A2C33BDE7DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{111C3A90-17FF-4255-A78C-A2C33BDE7DCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -289,6 +295,7 @@ Global
 		{30224840-5572-40DB-8FB8-0F6F786E2072} = {E2DF95ED-632D-43ED-B047-E9F3D0C756CF}
 		{E736B5AE-CDB9-4F77-AD0A-1379D03E9182} = {7F983C03-0888-41EA-887A-39AC02BF97D6}
 		{E45CAC57-CF6B-471B-89C4-0D0A32EBC049} = {E736B5AE-CDB9-4F77-AD0A-1379D03E9182}
+		{111C3A90-17FF-4255-A78C-A2C33BDE7DCA} = {4427C0B5-DE4B-4D9F-B92D-02C7BCC15A75}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Avalonia.Controls;
+using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Interfaces.Dialogs;
 using Prism.Services.Dialogs;
 
@@ -77,7 +78,8 @@ namespace Chameleon.Infrastructure.Dialogs
 
         public Task ShowDialog(Window owner)
         {
-            return _dialogWindow.ShowDialog(owner);
+            _dialogWindow.Show();
+            return _dialogWindow.ShowDialog(owner ?? ApplicationHelper.GetMainWindow());
         }
 
         public WindowBase Owner
@@ -85,9 +87,9 @@ namespace Chameleon.Infrastructure.Dialogs
             get => _dialogWindow.Owner;
         }
 
-        public void ShowDialog()
+        public Task ShowDialog()
         {
-            ShowDialog(Owner as Window).Wait();//.ConfigureAwait(false).;
+            return ShowDialog(Owner as Window);
         }
 
         int IDialog.Result { get => (int)Result.Result; }

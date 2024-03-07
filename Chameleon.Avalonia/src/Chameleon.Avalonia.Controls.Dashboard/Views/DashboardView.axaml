@@ -84,7 +84,8 @@
                 Grid.ColumnSpan="2"
                 BorderBrush="{StaticResource DividerLine}"
                 BorderThickness="1"
-                Height="60">
+			    Height="60"
+				IsVisible="{Binding IsSyncChangesBtnVisible}">
 			<Grid>
 				<Button Width="153"
                         Height="40"
@@ -93,8 +94,7 @@
                         Foreground="{StaticResource ButtonDarkBrush}"
                         BorderThickness="0"
                         Command="{Binding SyncChangesCommand}"
-                        HorizontalAlignment="Right"
-                        IsVisible="{Binding IsSyncChangesBtnVisible}">
+                        HorizontalAlignment="Right">
 					<StackPanel Orientation="Horizontal">
 						<!--<svgIcons:SvgIconView IconName="sync"
                                               Foreground="{StaticResource ButtonDarkBrush}"
