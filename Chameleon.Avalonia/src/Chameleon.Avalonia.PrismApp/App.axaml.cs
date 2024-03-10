@@ -133,6 +133,7 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
         containerRegistry.RegisterSingleton<IUserDefaultSettingsViewModel, UserDefaultSettingsViewModel>();
         containerRegistry.RegisterSingleton<IUserProxySettingsViewModel, UserProxySettingsViewModel>();
+        containerRegistry.RegisterSingleton<IProxyCreditViewModel, ProxyCreditViewModel>();
         containerRegistry.Register<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
         containerRegistry.Register<IProxyAccessViewModels, ProxyAccessViewModels>();
 
@@ -141,6 +142,7 @@ public partial class App : PrismApplication
         containerRegistry.RegisterForNavigation<SettingsView, ISettingsViewModel>();
         containerRegistry.RegisterForNavigation<UserDefaultSettingsView, IUserDefaultSettingsViewModel>();
         containerRegistry.RegisterForNavigation<UserProxySettingsView, IUserProxySettingsViewModel>();
+        containerRegistry.RegisterForNavigation<ProxyCreditView, IProxyCreditViewModel>();
     }
     private void RegisterContainerRegistry(IContainerRegistry containerRegistry)
     {

@@ -34,6 +34,8 @@ public class SettingsViewModel
           .Subscribe(args => InitializeTabControl());
 
         CustomTabs = new CustomTabs();
+
+        Title = "Settings";
     }
 
     public DelegateCommand<string> CmdNavigateToChild => new ((param) =>
@@ -47,6 +49,10 @@ public class SettingsViewModel
 
             case "PROXY":
                 source = nameof(UserProxySettingsView);
+                break;
+
+            case "PROXYCREDIT":
+                source = nameof(ProxyCreditView);
                 break;
 
             default:

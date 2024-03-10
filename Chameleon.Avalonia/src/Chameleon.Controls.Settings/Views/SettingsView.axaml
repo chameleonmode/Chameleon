@@ -19,7 +19,6 @@
 
 		<ScrollViewer Margin="5">
 			<StackPanel>
-
 				<Label Content="Some content here for SettingsView" FontSize="18" />
 				<Button Content="DEFAULTS"
 						Command="{Binding CmdNavigateToChild}"
@@ -27,6 +26,9 @@
 				<Button Content="PROXY"
 						Command="{Binding CmdNavigateToChild}"
 						CommandParameter="PROXY"/>
+				<Button Content="PROXY CREDIT"
+						Command="{Binding CmdNavigateToChild}"
+						CommandParameter="PROXYCREDIT"/>
 			</StackPanel>
 		</ScrollViewer>
 	</DockPanel>

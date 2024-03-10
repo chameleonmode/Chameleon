@@ -28,7 +28,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\Chameleon.Avalonia.Controls.Sidebar\Chameleon.Avalonia.Controls.Sidebar.csproj" />
 		<ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
 		<ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Core.Shared\Chameleon.Core.Shared.csproj" />
 		<ProjectReference Include="..\..\..\src\Chameleon.Application\Chameleon.Application.csproj" />
@@ -40,12 +39,14 @@
 		<ProjectReference Include="..\..\..\src\Chameleon.SystemBrowser\Chameleon.SystemBrowser.csproj" />
 		<ProjectReference Include="..\..\..\src\Modules\Chameleon.Modules.Auth\Chameleon.Modules.Auth.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
+		<ProjectReference Include="..\Chameleon.Avalonia.Controlls.Common\Chameleon.Avalonia.Controlls.Common.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.BlogOfInterestView\Chameleon.Avalonia.Controls.BlogOfInterestView.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.Dashboard\Chameleon.Avalonia.Controls.Dashboard.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.OutReachLinkView\Chameleon.Avalonia.Controls.OutReachLinkView.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.OutReachTemplate\Chameleon.Avalonia.Controls.OutReachTemplate.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.RssFeed\Chameleon.Avalonia.Controls.RssFeed.csproj" />
+		<ProjectReference Include="..\Chameleon.Avalonia.Controls.Sidebar\Chameleon.Avalonia.Controls.Sidebar.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.UpgradePlan\Chameleon.Avalonia.Controls.UpgradePlan.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfilesView\Chameleon.Avalonia.Controls.UserProfilesView.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj" />

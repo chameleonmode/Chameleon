@@ -50,6 +50,8 @@ public class UserProxySettingsViewModel
         IProxyAccessViewModels proxyAccessViewModels,
         IUserProfileFolderService userProfileFolderService)
     {
+        Title = "Proxy";
+
         _mapper = mapper;
         _proxyService = proxyService;
         _eventAggregator = eventAggregator;

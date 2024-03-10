@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:commonCntrl="using:Chameleon.Avalonia.Controlls.Common"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -57,57 +58,48 @@
 	</UserControl.Resources>
 
 	<DockPanel>
-		<StackPanel DockPanel.Dock="Top" Spacing="5">
-			<Grid Background="LightGray" ColumnDefinitions="Auto, *">
-				<Button Command="{Binding CmdNavigateBack}" CornerRadius="10">
-					<PathIcon Data="{StaticResource arrow_reply_regular}" />
-				</Button>
-				<TextBlock Grid.Column="1" Text="{Binding Title}" FontWeight="Bold" Margin="5"  VerticalAlignment="Center" />
-			</Grid>
-		</StackPanel>
-
-		<ScrollViewer Margin="5">
-			<Border BorderThickness="0" 
-					BorderBrush="{StaticResource DividerLine}" 
-					Background="{StaticResource BackGroundGreyColor}">
-				<Grid Margin="24 0 24  27">
+		<commonCntrl:NavigateBackControl DockPanel.Dock="Top" />
+		<Border BorderThickness="0"
+				BorderBrush="{StaticResource DividerLine}"
+				Background="{StaticResource BackGroundGreyColor}">
+			<Grid Margin="24 0 24  27">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<TextBlock Grid.Row="0"
+					   Margin="1 28 0 4"
+					   FontSize="16"
+					   FontWeight="Bold"
+					   Text="Default homepages"/>
+				<TextBlock Grid.Row="1"
+					   Margin="1 0 0 25"
+					   Foreground="#8094AE"
+					   FontSize="12"
+					   Text="Customize your default homepages here"/>
+				<Grid Grid.Row="2">
 					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
-					<TextBlock Grid.Row="0"
-						   Margin="1 28 0 4"
-						   FontSize="16"
-						   FontWeight="Bold"
-						   Text="Default homepages"/>
-					<TextBlock Grid.Row="1"
-						   Margin="1 0 0 25"
-						   Foreground="#8094AE"
-						   FontSize="12"
-						   Text="Customize your default homepages here"/>
-					<Grid Grid.Row="2">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto"/>
-							<RowDefinition Height="*"/>
-						</Grid.RowDefinitions>
-						<Border Grid.Row="0"
-							BorderThickness="1"
-							BorderBrush="{StaticResource DividerLine}"
-							Height="45" Background="{StaticResource ChameleonGray}">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition/>
-									<ColumnDefinition/>
-								</Grid.ColumnDefinitions>
-								<StackPanel Grid.Column="1"
-										Cursor="Hand"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Right"
-										Orientation="Horizontal">
-									<StackPanel Orientation="Horizontal"
-											Background="Transparent">
-										<!--<i:Interaction.Triggers>
+					<Border Grid.Row="0"
+						BorderThickness="1"
+						BorderBrush="{StaticResource DividerLine}"
+						Height="45" Background="{StaticResource ChameleonGray}">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<StackPanel Grid.Column="1"
+									Cursor="Hand"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Right"
+									Orientation="Horizontal">
+								<StackPanel Orientation="Horizontal"
+										Background="Transparent">
+									<!--<i:Interaction.Triggers>
 											<i:EventTrigger EventName="PreviewMouseLeftButtonDown">
 												<i:InvokeCommandAction Command="{Binding CreateCommand}"/>
 											</i:EventTrigger>
@@ -118,15 +110,15 @@
 										Height="15.83"
 										Width="15.83"
 										Foreground="{StaticResource PrimaryHueMidBrush}"/>-->
-										<Button Content="Add web page"
-											   Margin="0 0 40 0"
-											   FontSize="14"
-											   Foreground="{StaticResource PrimaryHueMidBrush}"
-												Command="{Binding CreateCommand}"/>
-									</StackPanel>
-									<StackPanel Orientation="Horizontal"
-											Background="Transparent">
-										<!--<i:Interaction.Triggers>
+									<Button Content="Add web page"
+										   Margin="0 0 40 0"
+										   FontSize="14"
+										   Foreground="{StaticResource PrimaryHueMidBrush}"
+											Command="{Binding CreateCommand}"/>
+								</StackPanel>
+								<StackPanel Orientation="Horizontal"
+										Background="Transparent">
+									<!--<i:Interaction.Triggers>
 											<i:EventTrigger EventName="PreviewMouseLeftButtonDown">
 												<i:InvokeCommandAction Command="{Binding BulkAddPagesCommand}"/>
 											</i:EventTrigger>
@@ -137,100 +129,99 @@
 										Height="17.42"
 										Width="18.42"
 										Foreground="{StaticResource PrimaryHueMidBrush}"/>-->
-										<Button Content="Bulk add pages"
-											   Margin="0 0 6.58 0"
-											   FontSize="14"
-											   Foreground="{StaticResource PrimaryHueMidBrush}"
-												Command="{Binding BulkAddPagesCommand}"/>
-									</StackPanel>
+									<Button Content="Bulk add pages"
+										   Margin="0 0 6.58 0"
+										   FontSize="14"
+										   Foreground="{StaticResource PrimaryHueMidBrush}"
+											Command="{Binding BulkAddPagesCommand}"/>
 								</StackPanel>
-							</Grid>
-						</Border>
-						<Border Grid.Row="1"
-							BorderThickness="1 0 1 1"
-							BorderBrush="#D9E1F1"
-							Background="White">
-							<ScrollViewer x:Name="ScrollViewer"
-									  VerticalScrollBarVisibility="Auto">
-								<ItemsControl x:Name="itemsList"
-										  Padding="143 45 189 0"
-										  ItemsSource="{Binding ViewModels}"
-										  ItemTemplate="{StaticResource SettingsListItemTemplate}"
-										  VerticalAlignment="Top"
-										  Background="White">
-								</ItemsControl>
-							</ScrollViewer>
-						</Border>
+							</StackPanel>
+						</Grid>
+					</Border>
+					<Border Grid.Row="1"
+						BorderThickness="1 0 1 1"
+						BorderBrush="#D9E1F1"
+						Background="White">
+						<ScrollViewer x:Name="ScrollViewer"
+								  VerticalScrollBarVisibility="Auto">
+							<ItemsControl x:Name="itemsList"
+									  Padding="143 45 189 0"
+									  ItemsSource="{Binding ViewModels}"
+									  ItemTemplate="{StaticResource SettingsListItemTemplate}"
+									  VerticalAlignment="Top"
+									  Background="White">
+							</ItemsControl>
+						</ScrollViewer>
+					</Border>
 
-						<Border Grid.Row="1"
-							IsVisible="{Binding HasSelectedItems}"
-							Margin="37"
-							Width="339"
-							Height="50"
-							CornerRadius="2"
-							Background="#373845"
-							VerticalAlignment="Bottom">
-							<Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="100"/>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="100"/>
-								</Grid.ColumnDefinitions>
-								<StackPanel Orientation="Horizontal"
-										Grid.Column="0"
-										Margin="24 0 0 0">
-									<TextBlock Foreground="#C3C3C7"
-										   VerticalAlignment="Center"
-										   Text="{Binding SelectedCount}"/>
-									<TextBlock Foreground="#C3C3C7"
-										   VerticalAlignment="Center"
-										   Text=" secected:"/>
-								</StackPanel>
-								<StackPanel Grid.Column="1"
-									Orientation="Horizontal"
-									VerticalAlignment="Center"
-									Cursor="Hand"
-									Background="Transparent"
-									Margin="0 0 16 0">
-									<!--<i:Interaction.Triggers>
+					<Border Grid.Row="1"
+						IsVisible="{Binding HasSelectedItems}"
+						Margin="37"
+						Width="339"
+						Height="50"
+						CornerRadius="2"
+						Background="#373845"
+						VerticalAlignment="Bottom">
+						<Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="100"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="100"/>
+							</Grid.ColumnDefinitions>
+							<StackPanel Orientation="Horizontal"
+									Grid.Column="0"
+									Margin="24 0 0 0">
+								<TextBlock Foreground="#C3C3C7"
+									   VerticalAlignment="Center"
+									   Text="{Binding SelectedCount}"/>
+								<TextBlock Foreground="#C3C3C7"
+									   VerticalAlignment="Center"
+									   Text=" secected:"/>
+							</StackPanel>
+							<StackPanel Grid.Column="1"
+								Orientation="Horizontal"
+								VerticalAlignment="Center"
+								Cursor="Hand"
+								Background="Transparent"
+								Margin="0 0 16 0">
+								<!--<i:Interaction.Triggers>
 										<i:EventTrigger EventName="PreviewMouseLeftButtonDown">
 											<i:InvokeCommandAction Command="{Binding RemoveSelectedItemsCommand}"/>
 										</i:EventTrigger>
 									</i:Interaction.Triggers>-->
-									<!--<svgIcons:SvgIconView
+								<!--<svgIcons:SvgIconView
 										IconName="delete"
 										Width="13.34"
 										Height="14"
 										Foreground="{StaticResource OrangeDeleteProfiles}"
 										Margin="0 0 10.67 0"/>-->
-									<Button Content="Delete pages"
+								<Button Content="Delete pages"
+								   FontSize="14"
+								   Foreground="{StaticResource OrangeDeleteProfiles}"
+										 Command="{Binding RemoveSelectedItemsCommand}"/>
+							</StackPanel>
+							<Border Grid.Column="2"
+								BorderThickness="1 0 0 0"
+								BorderBrush="#C3C3C7"
+								Height="26"
+								Cursor="Hand">
+								<Button Content="Unselect"
+									   VerticalAlignment="Center"
 									   FontSize="14"
-									   Foreground="{StaticResource OrangeDeleteProfiles}"
-											 Command="{Binding RemoveSelectedItemsCommand}"/>
-								</StackPanel>
-								<Border Grid.Column="2"
-									BorderThickness="1 0 0 0"
-									BorderBrush="#C3C3C7"
-									Height="26"
-									Cursor="Hand">
-									<Button Content="Unselect"
-										   VerticalAlignment="Center"
-										   FontSize="14"
-										   Foreground="White"
-										   HorizontalAlignment="Center"
-											Command="{Binding UnselectItemsCommand}">
-										<!--<i:Interaction.Triggers>
+									   Foreground="White"
+									   HorizontalAlignment="Center"
+										Command="{Binding UnselectItemsCommand}">
+									<!--<i:Interaction.Triggers>
 											<i:EventTrigger EventName="PreviewMouseLeftButtonDown">
 												<i:InvokeCommandAction Command="{Binding UnselectItemsCommand}"/>
 											</i:EventTrigger>
 										</i:Interaction.Triggers>-->
-									</Button>
-								</Border>
-							</Grid>
-						</Border>
-					</Grid>
+								</Button>
+							</Border>
+						</Grid>
+					</Border>
 				</Grid>
-			</Border>
-		</ScrollViewer>
+			</Grid>
+		</Border>
 	</DockPanel>
 </UserControl>
