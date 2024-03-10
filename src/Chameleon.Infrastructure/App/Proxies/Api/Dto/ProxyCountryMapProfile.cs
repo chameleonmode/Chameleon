@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Chameleon.Interfaces.Proxies;
+using System.Collections.Generic;
 
 namespace Chameleon.Infrastructure.Proxies.Api.Dto
 {
@@ -10,6 +11,7 @@ namespace Chameleon.Infrastructure.Proxies.Api.Dto
             var map = CreateMap<ProxyCountryDto, IProxyCountry>();
 
             map.ReverseMap();
+
         }
     }
 }

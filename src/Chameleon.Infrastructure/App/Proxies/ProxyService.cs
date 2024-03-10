@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Chameleon.App.Shared.Proxies;
+using Chameleon.Core.Extensions;
 using Chameleon.Domain.Entities.Proxy;
 using Chameleon.Infrastructure.Proxies.Api;
 using Chameleon.Infrastructure.Proxies.Api.Dto;
@@ -52,7 +53,9 @@ namespace Chameleon.Infrastructure.Proxies
             };
 
             countries.Insert(0, randomCountry);
-            _countries = _mapper.Map<IList<IProxyCountry>>(countries);
+            _countries = new List<IProxyCountry>(countries);
+            // _countries = _mapper.Map<IList<IProxyCountry>>(countries);
+           // _countries.AddRange(countries);
             return _countries;
         }
     }

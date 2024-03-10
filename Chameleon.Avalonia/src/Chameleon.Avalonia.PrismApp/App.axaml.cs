@@ -43,6 +43,8 @@ using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Avalonia.Prism.Dialogs;
+using Chameleon.Interfaces.App.Settings;
+using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
 
 
 namespace Chameleon.Avalonia.PrismApp;
@@ -130,12 +132,15 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<ISettingsViewModel, SettingsViewModel>();
         containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
         containerRegistry.RegisterSingleton<IUserDefaultSettingsViewModel, UserDefaultSettingsViewModel>();
+        containerRegistry.RegisterSingleton<IUserProxySettingsViewModel, UserProxySettingsViewModel>();
         containerRegistry.Register<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
+        containerRegistry.Register<IProxyAccessViewModels, ProxyAccessViewModels>();
 
         // Views - Region Navigation
         containerRegistry.RegisterForNavigation<DashboardView, IDashboardViewModel>();
         containerRegistry.RegisterForNavigation<SettingsView, ISettingsViewModel>();
         containerRegistry.RegisterForNavigation<UserDefaultSettingsView, IUserDefaultSettingsViewModel>();
+        containerRegistry.RegisterForNavigation<UserProxySettingsView, IUserProxySettingsViewModel>();
     }
     private void RegisterContainerRegistry(IContainerRegistry containerRegistry)
     {

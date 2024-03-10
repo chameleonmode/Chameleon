@@ -23,6 +23,31 @@ public class DispatcherService : IDispatcherService
         });
     }
 
+    public Task InvokeOnUiThreadAsync<T>(Func<T> action, Action<T> handler = null, Action @finally = null)
+    {
+        return Task.Run(() =>
+        {
+            try
+            {
+                if (!TryExecute(action, out var result))
+                {
+                    return;
+                }
+
+                if (handler != null)
+                {
+                    InvokeOnUiThread(() =>
+                    {
+                        handler(result);
+                    });
+                }
+            }
+            finally
+            {
+                @finally?.Invoke();
+            }
+        });
+    }
     public Task InvokeOnUiThreadAsync(Action action, Action<bool> handler = null, Action @finally = null)
     {
         return Task.Run(() =>

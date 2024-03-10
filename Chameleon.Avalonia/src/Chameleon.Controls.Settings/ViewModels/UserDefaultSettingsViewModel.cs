@@ -11,13 +11,9 @@ using Prism.Commands;
 using Prism.Services.Dialogs;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Prism.Events;
+using Chameleon.Interfaces.App.Settings;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
-
-public interface IUserDefaultSettingsViewModel
-    : ISingletonDependency
-{
-}
 
 public class UserDefaultSettingsViewModel
        : SubViewModelBase
@@ -55,6 +51,8 @@ public class UserDefaultSettingsViewModel
         RemoveSelectedItemsCommand = new DelegateCommand(RemoveSelectedItems);
         UnselectItemsCommand = new DelegateCommand(UnselectItems);
         BulkAddPagesCommand = new DelegateCommand(BulkAddPages);
+
+        Title = "Default Home Pages";
     }
 
     private const string DialogTitle = "BULK ADD PAGES";
@@ -131,14 +129,13 @@ public class UserDefaultSettingsViewModel
 
     private void CreateNewDefaultSettings()
     {
-        //TODO: ???
-       // var viewModels = ViewModels.Where(m => m.HasChanged);
-       //
-       // foreach (var viewModel in viewModels)
-       // {
-       //     viewModel.SaveUrlFromViewText();
-       // }
-       //
+        var viewModels = ViewModels.Where(m => m.HasChanged);
+       
+        foreach (var viewModel in viewModels)
+        {
+            viewModel.SaveUrlFromViewText();
+        }
+       
         _eventAggregator
             .GetEvent<CreateUserDefaultSettingsEvent>()
             .Publish();

@@ -6,6 +6,56 @@
 			 xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              x:Class="Chameleon.Avalonia.Controls.Settings.UserDefaultSettingsView">
+	<UserControl.Resources>
+		<DataTemplate x:Key="SettingsListItemTemplate">
+			<Grid HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center"
+                  Margin="0 12 0 12">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<CheckBox Grid.Column="0"
+                          IsChecked="{Binding IsChecked}"/>
+				<!--materialDesign:HintAssist.Hint="URL"-->
+				<!--Style="{StaticResource MaterialDesignOutlinedTextBox}"-->
+				<TextBox Grid.Column="1"
+                         Margin="16 0 22 0"
+                         Text="{Binding DefaultUrl}"
+                         BorderBrush="{StaticResource BorderOutlineButton}"
+                         x:Name="URL"
+                         Focusable="True">
+					<!--<i:Interaction.Triggers>
+						<i:EventTrigger EventName="LostFocus">
+							<i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+						</i:EventTrigger>
+					</i:Interaction.Triggers>-->
+				</TextBox>
+				<StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Cursor="Hand"
+                            Background="Transparent">
+					<!--<i:Interaction.Triggers>
+						<i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+							<i:InvokeCommandAction Command="{Binding DeleteCommand}"/>
+						</i:EventTrigger>
+					</i:Interaction.Triggers>
+					<svgIcons:SvgIconView
+                                IconName="delete"
+                                Width="13.34"
+                                Height="14"
+                                Foreground="{StaticResource OrangeDeleteProfiles}"
+                                Margin="0 0 10.67 0"/>-->
+					<TextBlock Text="Delete"
+                               FontSize="14"
+                               Foreground="{StaticResource OrangeDeleteProfiles}"/>
+				</StackPanel>
+			</Grid>
+		</DataTemplate>
+	</UserControl.Resources>
+
 	<DockPanel>
 		<StackPanel DockPanel.Dock="Top" Spacing="5">
 			<Grid Background="LightGray" ColumnDefinitions="Auto, *">

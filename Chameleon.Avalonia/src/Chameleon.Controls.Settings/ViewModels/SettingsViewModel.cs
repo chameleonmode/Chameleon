@@ -3,6 +3,7 @@ using Chameleon.Avalonia.Prism.Module.Base;
 using Chameleon.Common.Helpers;
 using Chameleon.Common.Regions;
 using Chameleon.Domain.Entities;
+using Chameleon.Interfaces.App.Settings;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Prism.Events;
@@ -18,7 +19,9 @@ public class SettingsViewModel
     private readonly IEventAggregator _eventAggregator;
 
 
-    public SettingsViewModel(IEventAggregator eventAggregator)
+    public SettingsViewModel(IEventAggregator eventAggregator, 
+        //for init
+        IUserDefaultSettingsViewModel userDefaultSettingsViewModel)
     {
         _eventAggregator = eventAggregator;
 
@@ -40,6 +43,10 @@ public class SettingsViewModel
         {
             case "DEFAULTS":
                 source = nameof(UserDefaultSettingsView);
+                break;
+
+            case "PROXY":
+                source = nameof(UserProxySettingsView);
                 break;
 
             default:

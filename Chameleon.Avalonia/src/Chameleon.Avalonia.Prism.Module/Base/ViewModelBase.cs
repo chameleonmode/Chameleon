@@ -4,6 +4,7 @@ using Chameleon.Interfaces.Views;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Ioc;
+using Prism.Commands;
 
 namespace Chameleon.Avalonia.Prism.Module.Base;
 
@@ -59,5 +60,45 @@ public class ViewModelBase : BindableBase, INavigationAware ,IViewModel
     {
         return true;
     }
+
+    #region Commands
+    private readonly List<DelegateCommandBase> _commands
+        = new List<DelegateCommandBase>();
+
+    protected void AddCommand(DelegateCommandBase command)
+    {
+        _commands.Add(command);
+    }
+
+    protected DelegateCommand CreateCommand(
+        Action executeMethod,
+        Func<bool> canExecuteMethod = null)
+    {
+        var command = canExecuteMethod != null
+            ? new DelegateCommand(executeMethod, canExecuteMethod)
+            : new DelegateCommand(executeMethod);
+        AddCommand(command);
+        return command;
+    }
+
+    protected DelegateCommand<T> CreateCommand<T>(
+        Action<T> executeMethod,
+        Func<T, bool> canExecuteMethod = null)
+    {
+        var command = canExecuteMethod != null
+            ? new DelegateCommand<T>(executeMethod, canExecuteMethod)
+            : new DelegateCommand<T>(executeMethod);
+        AddCommand(command);
+        return command;
+    }
+
+    protected virtual void RaiseCanExecuteChanged()
+    {
+        foreach (var command in _commands)
+        {
+            command.RaiseCanExecuteChanged();
+        }
+    }
+    #endregion
 }
 
