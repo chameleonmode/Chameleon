@@ -29,6 +29,9 @@
 				<Button Content="PROXY CREDIT"
 						Command="{Binding CmdNavigateToChild}"
 						CommandParameter="PROXYCREDIT"/>
+				<Button Content="PHONE VERIFICATION"
+						Command="{Binding CmdNavigateToChild}"
+						CommandParameter="PHONEVERIFICATION"/>
 			</StackPanel>
 		</ScrollViewer>
 	</DockPanel>

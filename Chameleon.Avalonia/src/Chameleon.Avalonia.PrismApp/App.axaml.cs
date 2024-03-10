@@ -134,6 +134,7 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IUserDefaultSettingsViewModel, UserDefaultSettingsViewModel>();
         containerRegistry.RegisterSingleton<IUserProxySettingsViewModel, UserProxySettingsViewModel>();
         containerRegistry.RegisterSingleton<IProxyCreditViewModel, ProxyCreditViewModel>();
+        containerRegistry.RegisterSingleton<IPhoneVerificationViewModel, PhoneVerificationViewModel>();
         containerRegistry.Register<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
         containerRegistry.Register<IProxyAccessViewModels, ProxyAccessViewModels>();
 
@@ -143,6 +144,7 @@ public partial class App : PrismApplication
         containerRegistry.RegisterForNavigation<UserDefaultSettingsView, IUserDefaultSettingsViewModel>();
         containerRegistry.RegisterForNavigation<UserProxySettingsView, IUserProxySettingsViewModel>();
         containerRegistry.RegisterForNavigation<ProxyCreditView, IProxyCreditViewModel>();
+        containerRegistry.RegisterForNavigation<PhoneVerificationView, IPhoneVerificationViewModel>();
     }
     private void RegisterContainerRegistry(IContainerRegistry containerRegistry)
     {

@@ -55,6 +55,10 @@ public class SettingsViewModel
                 source = nameof(ProxyCreditView);
                 break;
 
+            case "PHONEVERIFICATION":
+                source = nameof(PhoneVerificationView);
+                break;
+
             default:
                 break;
         }
