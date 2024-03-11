@@ -11,6 +11,11 @@
 	<ItemGroup>
 		<AvaloniaResource Include="Assets\**" />
 	</ItemGroup>
+
+
+	<ItemGroup>
+	  <None Remove="Assets\FAIcon.ico" />
+	</ItemGroup>
 	
   <ItemGroup>
 	  <PackageReference Include="Avalonia" />
@@ -21,7 +26,7 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <Folder Include="Assets\" />
+    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Module\Chameleon.Avalonia.Prism.Module.csproj" />
   </ItemGroup>
 
 </Project>

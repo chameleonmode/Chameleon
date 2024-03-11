@@ -3,10 +3,11 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
-
+using Chameleon.Avalonia.FluentAvalonia.Views;
+using Applications = Avalonia.Application;
 namespace Chameleon.Avalonia.FluentAvalonia;
 
-public partial class App : Application
+public partial class App : Applications
 {
     public override void Initialize()
     {
