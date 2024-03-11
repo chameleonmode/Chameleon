@@ -1,0 +1,54 @@
+﻿<Project>
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+	<PropertyGroup>
+		<AvaloniaVersion>11.0.10</AvaloniaVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageVersion Include="Avalonia" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.Xaml.Behaviors" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.Controls.ItemsRepeater" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.Skia" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.Browser" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.Android" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.iOS" Version="$(AvaloniaVersion)" />
+
+		<PackageVersion Include="AutoMapper" Version="13.0.1" />
+		<PackageVersion Include="Fluxzy.Core" Version="1.22.12" />
+		<PackageVersion Include="FluentAvaloniaUI" Version="2.0.5" />
+		<PackageVersion Include="System.Drawing.Common" Version="8.0.2" />
+		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageVersion Include="Prism.Avalonia" Version="8.1.97.11072" />
+		<PackageVersion Include="Prism.DryIoc.Avalonia" Version="8.1.97.11072" />
+
+		<PackageVersion Include="MicroCom.CodeGenerator.MSBuild" Version="0.11.0" />
+		<PackageVersion Include="MicroCom.Runtime" Version="0.11.0" />
+		<PackageVersion Include="System.Text.Json" Version="6.0.5" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
+		<PackageVersion Include="System.Text.Json" Version="6.0.5" Condition="'$(TargetFramework)' == 'netstandard2.1'" />
+		<PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.AvaloniaEdit" Version="11.0" />
+		<PackageVersion Include="AvaloniaEdit.TextMate" Version="11.0" />
+
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+
+		<PackageVersion Include="Avalonia.Headless" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Avalonia.Headless.XUnit" Version="$(AvaloniaVersion)" />
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+		<PackageVersion Include="Moq" Version="4.16.1" />
+		<PackageVersion Include="xunit" Version="2.4.1" />
+		<PackageVersion Include="xunit.runner.visualstudio" Version="2.4.3" />
+		<PackageVersion Include="coverlet.collector" Version="3.0.2" />
+
+		<!-- Begin Android -->
+		<!--<PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1" />-->
+		<!-- End   Android -->
+
+	</ItemGroup>
+</Project>

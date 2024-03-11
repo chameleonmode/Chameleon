@@ -16,15 +16,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="11.0.10" />
-		<PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
-		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
-		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
-		<PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
+		<PackageReference Include="Avalonia"  />
+		<PackageReference Include="Avalonia.Desktop"  />
+		<PackageReference Include="Avalonia.Themes.Fluent"  />
+		<PackageReference Include="Avalonia.Fonts.Inter"  />
+		<PackageReference Include="Avalonia.ReactiveUI"  />
 		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
-		<PackageReference Include="Prism.Avalonia" Version="8.1.97.11072" />
-		<PackageReference Include="Prism.DryIoc.Avalonia" Version="8.1.97.11072" />
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"  />
+		<PackageReference Include="Prism.Avalonia" />
+		<PackageReference Include="Prism.DryIoc.Avalonia" />
 	</ItemGroup>
 
 	<ItemGroup>

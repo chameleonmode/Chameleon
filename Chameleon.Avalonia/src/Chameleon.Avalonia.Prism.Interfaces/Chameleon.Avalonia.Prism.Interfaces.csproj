@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Prism.Avalonia" Version="8.1.97.11072" />
-    <PackageReference Include="Prism.DryIoc.Avalonia" Version="8.1.97.11072" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.2" />
+    <PackageReference Include="Prism.Avalonia"  />
+    <PackageReference Include="Prism.DryIoc.Avalonia"  />
+    <PackageReference Include="System.Drawing.Common" />
   </ItemGroup>
 
   <ItemGroup>

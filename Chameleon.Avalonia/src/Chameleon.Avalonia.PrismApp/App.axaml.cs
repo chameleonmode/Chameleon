@@ -45,6 +45,9 @@ using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Avalonia.Prism.Dialogs;
 using Chameleon.Interfaces.App.Settings;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
+using Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
+using Chameleon.Controls.AssistantUsers.Interfaces;
+using Chameleon.Avalonia.Controls.Settings.ViewModels.ImportExport;
 
 
 namespace Chameleon.Avalonia.PrismApp;
@@ -135,6 +138,9 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IUserProxySettingsViewModel, UserProxySettingsViewModel>();
         containerRegistry.RegisterSingleton<IProxyCreditViewModel, ProxyCreditViewModel>();
         containerRegistry.RegisterSingleton<IPhoneVerificationViewModel, PhoneVerificationViewModel>();
+        containerRegistry.RegisterSingleton<IAssistantUsersViewModel, AssistantUsersViewModel>();
+        containerRegistry.RegisterSingleton<IAssistantUsersViewModel, AssistantUsersViewModel>();
+        containerRegistry.RegisterSingleton<ImportViewModel>();
         containerRegistry.Register<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
         containerRegistry.Register<IProxyAccessViewModels, ProxyAccessViewModels>();
 
@@ -145,6 +151,8 @@ public partial class App : PrismApplication
         containerRegistry.RegisterForNavigation<UserProxySettingsView, IUserProxySettingsViewModel>();
         containerRegistry.RegisterForNavigation<ProxyCreditView, IProxyCreditViewModel>();
         containerRegistry.RegisterForNavigation<PhoneVerificationView, IPhoneVerificationViewModel>();
+        containerRegistry.RegisterForNavigation<AssistantUsersView, IAssistantUsersViewModel>();
+        containerRegistry.RegisterForNavigation<ImportView, ImportViewModel>();
     }
     private void RegisterContainerRegistry(IContainerRegistry containerRegistry)
     {

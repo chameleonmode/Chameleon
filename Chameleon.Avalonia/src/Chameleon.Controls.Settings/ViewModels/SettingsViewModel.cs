@@ -59,6 +59,14 @@ public class SettingsViewModel
                 source = nameof(PhoneVerificationView);
                 break;
 
+            case "USERS":
+                source = nameof(AssistantUsersView);
+                break;
+
+            case "IMPORTPROFILES":
+                source = nameof(ImportView);
+                break;
+
             default:
                 break;
         }

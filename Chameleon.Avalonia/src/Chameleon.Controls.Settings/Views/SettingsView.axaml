@@ -32,6 +32,12 @@
 				<Button Content="PHONE VERIFICATION"
 						Command="{Binding CmdNavigateToChild}"
 						CommandParameter="PHONEVERIFICATION"/>
+				<Button Content="USERS"
+						Command="{Binding CmdNavigateToChild}"
+						CommandParameter="USERS"/>
+				<Button Content="IMPORT PROFILES"
+						Command="{Binding CmdNavigateToChild}"
+						CommandParameter="IMPORTPROFILES"/>
 			</StackPanel>
 		</ScrollViewer>
 	</DockPanel>

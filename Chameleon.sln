@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		Directory.Packages.props = Directory.Packages.props
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -114,6 +115,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Controlls.Common", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controlls.Common\Chameleon.Avalonia.Controlls.Common.csproj", "{423FEFA0-B563-48E6-95F7-89DFEB9AB4C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Controls.Sidebar", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.Sidebar\Chameleon.Avalonia.Controls.Sidebar.csproj", "{13CB2956-635B-4000-9691-23DD44780F21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HanumanInstitute", "HanumanInstitute", "{5193B1EE-8659-4116-9B46-27B23DEA34FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MvvmDialogs", "MvvmDialogs", "{1837197D-9020-473D-ACDA-7DB17BBACABF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.HanumanInstitute.MvvmDialogs", "Chameleon.Avalonia\src\Chameleon.Avalonia.HanumanInstitute.MvvmDialogs\Chameleon.Avalonia.HanumanInstitute.MvvmDialogs.csproj", "{F0DEC46C-3C72-45C7-8D46-A8810FBF2A81}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Desktop", "Chameleon.Avalonia\src\Chameleon.Avalonia.Desktop\Chameleon.Avalonia.Desktop.csproj", "{ABEAB877-7688-494A-84DF-7B44989A2F3E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.FluentAvalonia", "Chameleon.Avalonia\src\Chameleon.Avalonia.FluentAvalonia\Chameleon.Avalonia.FluentAvalonia.csproj", "{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -249,6 +260,18 @@ Global
 		{13CB2956-635B-4000-9691-23DD44780F21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13CB2956-635B-4000-9691-23DD44780F21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13CB2956-635B-4000-9691-23DD44780F21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0DEC46C-3C72-45C7-8D46-A8810FBF2A81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0DEC46C-3C72-45C7-8D46-A8810FBF2A81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0DEC46C-3C72-45C7-8D46-A8810FBF2A81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0DEC46C-3C72-45C7-8D46-A8810FBF2A81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -303,6 +326,11 @@ Global
 		{111C3A90-17FF-4255-A78C-A2C33BDE7DCA} = {4427C0B5-DE4B-4D9F-B92D-02C7BCC15A75}
 		{423FEFA0-B563-48E6-95F7-89DFEB9AB4C0} = {7F983C03-0888-41EA-887A-39AC02BF97D6}
 		{13CB2956-635B-4000-9691-23DD44780F21} = {E736B5AE-CDB9-4F77-AD0A-1379D03E9182}
+		{5193B1EE-8659-4116-9B46-27B23DEA34FF} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
+		{1837197D-9020-473D-ACDA-7DB17BBACABF} = {5193B1EE-8659-4116-9B46-27B23DEA34FF}
+		{F0DEC46C-3C72-45C7-8D46-A8810FBF2A81} = {1837197D-9020-473D-ACDA-7DB17BBACABF}
+		{ABEAB877-7688-494A-84DF-7B44989A2F3E} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
+		{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}
