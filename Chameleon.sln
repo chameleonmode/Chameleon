@@ -112,7 +112,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sidebar", "Sidebar", "{E736
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Prism.Dialogs", "Chameleon.Avalonia\src\Chameleon.Avalonia.Prism.Dialogs\Chameleon.Avalonia.Prism.Dialogs.csproj", "{111C3A90-17FF-4255-A78C-A2C33BDE7DCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Controlls.Common", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controlls.Common\Chameleon.Avalonia.Controlls.Common.csproj", "{423FEFA0-B563-48E6-95F7-89DFEB9AB4C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Controlls.Common", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controlls.Common\Chameleon.Avalonia.Controlls.Common.csproj", "{423FEFA0-B563-48E6-95F7-89DFEB9AB4C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Controls.Sidebar", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.Sidebar\Chameleon.Avalonia.Controls.Sidebar.csproj", "{13CB2956-635B-4000-9691-23DD44780F21}"
 EndProject
@@ -120,11 +120,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HanumanInstitute", "Hanuman
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MvvmDialogs", "MvvmDialogs", "{1837197D-9020-473D-ACDA-7DB17BBACABF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.HanumanInstitute.MvvmDialogs", "Chameleon.Avalonia\src\Chameleon.Avalonia.HanumanInstitute.MvvmDialogs\Chameleon.Avalonia.HanumanInstitute.MvvmDialogs.csproj", "{F0DEC46C-3C72-45C7-8D46-A8810FBF2A81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.HanumanInstitute.MvvmDialogs", "Chameleon.Avalonia\src\Chameleon.Avalonia.HanumanInstitute.MvvmDialogs\Chameleon.Avalonia.HanumanInstitute.MvvmDialogs.csproj", "{F0DEC46C-3C72-45C7-8D46-A8810FBF2A81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Desktop", "Chameleon.Avalonia\src\Chameleon.Avalonia.Desktop\Chameleon.Avalonia.Desktop.csproj", "{ABEAB877-7688-494A-84DF-7B44989A2F3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Desktop", "Chameleon.Avalonia\src\Chameleon.Avalonia.Desktop\Chameleon.Avalonia.Desktop.csproj", "{ABEAB877-7688-494A-84DF-7B44989A2F3E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.FluentAvalonia", "Chameleon.Avalonia\src\Chameleon.Avalonia.FluentAvalonia\Chameleon.Avalonia.FluentAvalonia.csproj", "{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Av.Fluent", "Chameleon.Avalonia\src\Chameleon.Av.Fluent\Chameleon.Av.Fluent.csproj", "{AD9B695F-B074-4788-9D4C-645719EA0716}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Av.Fluent.Common", "Chameleon.Avalonia\src\Chameleon.Av.Fluent.Common\Chameleon.Av.Fluent.Common.csproj", "{332C26D1-5E70-4486-B5E4-653BF586F3F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -272,6 +276,14 @@ Global
 		{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD9B695F-B074-4788-9D4C-645719EA0716}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD9B695F-B074-4788-9D4C-645719EA0716}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD9B695F-B074-4788-9D4C-645719EA0716}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD9B695F-B074-4788-9D4C-645719EA0716}.Release|Any CPU.Build.0 = Release|Any CPU
+		{332C26D1-5E70-4486-B5E4-653BF586F3F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{332C26D1-5E70-4486-B5E4-653BF586F3F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{332C26D1-5E70-4486-B5E4-653BF586F3F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{332C26D1-5E70-4486-B5E4-653BF586F3F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -331,6 +343,8 @@ Global
 		{F0DEC46C-3C72-45C7-8D46-A8810FBF2A81} = {1837197D-9020-473D-ACDA-7DB17BBACABF}
 		{ABEAB877-7688-494A-84DF-7B44989A2F3E} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
 		{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
+		{AD9B695F-B074-4788-9D4C-645719EA0716} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
+		{332C26D1-5E70-4486-B5E4-653BF586F3F9} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

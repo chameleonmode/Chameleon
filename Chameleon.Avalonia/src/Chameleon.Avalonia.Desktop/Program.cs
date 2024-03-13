@@ -1,7 +1,5 @@
 ﻿using System;
-
 using Avalonia;
-using Chameleon.Avalonia.FluentAvalonia;
 
 namespace Chameleon.Avalonia.Desktop;
 
@@ -16,7 +14,7 @@ class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+        => AppBuilder.Configure<Av.Fluent.App>()
             .UsePlatformDetect()
             .LogToTrace();
 }

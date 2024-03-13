@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<!--<ItemGroup>
+		<None Remove=".gitignore" />
+	</ItemGroup>-->
+
+	<!--<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>-->
+	
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia" />
+		<PackageReference Include="FluentAvaloniaUI" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Styling\ControlThemes\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
+	  <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
+	</ItemGroup>
+</Project>

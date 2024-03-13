@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:ui="using:FluentAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Chameleon.Av.Fluent.Views.MainAppSplashContent">
+	<UserControl.Resources>
+		<ui:BitmapIconSource x:Key="BmpIcon" UriSource="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico" />
+	</UserControl.Resources>
+	<Panel Width="512" Height="512">
+		<ui:IconSourceElement IconSource="{StaticResource BmpIcon}"
+							  Width="25"
+							  Height="25"/>
+	</Panel>
+</UserControl>
