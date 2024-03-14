@@ -2,6 +2,8 @@
 using DryIoc;
 using Prism.DryIoc;
 using Prism.Ioc;
+using Chameleon.Core.Extensions;
+using Chameleon.Common.Helpers;
 
 namespace Chameleon.Avalonia.Prism.Infrastructure.Services;
 
@@ -12,19 +14,29 @@ public class HasContainerRegistryService : IHaveContainerRegistry
     public HasContainerRegistryService(IContainerRegistry containerRegistry)
     {
         _containerRegistry = containerRegistry;
+        ContainerServiceHelper.Current.ContainerRegistry = this;
     }
+ 
     public void RegisterSingleton(Type from, Type to)
     {
+        ContainerServiceHelper.Current.ContainerTypes.AddOrUpdate(from, to);
         _containerRegistry.RegisterSingleton(from, to);
+    }
+
+    public void RegisterSingleton<F,T>() where T : F
+    {
+        RegisterSingleton(typeof(F), typeof(T));
     }
 
     public void Register(Type from, Type to)
     {
+        ContainerServiceHelper.Current.ContainerTypes.AddOrUpdate(from, to);
         _containerRegistry.Register(from, to);
     }
 
     public void RegisterScoped(Type from, Type to)
     {
+        ContainerServiceHelper.Current.ContainerTypes.AddOrUpdate(from, to);
         _containerRegistry.RegisterScoped(from, to);
     }
 

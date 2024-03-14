@@ -2,6 +2,13 @@
 
 public static class CollectionExtentions
 {
+    public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key, TValue val)
+    {
+        if(dic.ContainsKey(key))
+            dic[key] = val;
+       else dic.Add(key, val);
+    }
+
     public static void AddRangeOverride<TKey, TValue>(this IDictionary<TKey, TValue> dic, IDictionary<TKey, TValue> dicToAdd)
     {
         dicToAdd.ForEach(x => dic[x.Key] = x.Value);

@@ -8,7 +8,7 @@
 			 d:DesignHeight="290"
              x:Class="Chameleon.Avalonia.Prism.Module.Auth.AuthView"
 			 Width="300"
-			 Height="270"
+			 Height="288"
 			 prism:ViewModelLocator.AutoWireViewModel="True">
 	<!--<prism:Dialog.WindowStyle>
 		<Style Selector="Window">
@@ -91,13 +91,14 @@
 							<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 								<Button Content="Cancel"
                                                  Margin="0,0,4,0"
-                                                 Width="110" Height="30"
+                                                 Width="110"
                                                  Command="{Binding CancelCommand}">
 								</Button>
 								<Button
+									Width="110"
+									 Classes="accent"
                                     Content="Login"
                                     IsDefault="True"
-                                    Width="110" Height="30"
                                     Command="{Binding AuthCommand}">
 								</Button>
 							</StackPanel>

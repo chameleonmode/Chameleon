@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.VisualTree;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Dialogs;
 using Prism.Ioc;

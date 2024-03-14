@@ -6,4 +6,9 @@ namespace Chameleon.Interfaces.Auth
         : ISingletonDependency
     {
     }
+
+    public interface IAuthTaskDialogViewModel
+      : ISingletonDependency
+    {
+    }
 }

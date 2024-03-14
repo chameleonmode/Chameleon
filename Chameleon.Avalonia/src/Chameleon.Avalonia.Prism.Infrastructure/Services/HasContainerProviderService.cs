@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.Ioc;
+﻿using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.Ioc;
 using Prism.Ioc;
 
 namespace Chameleon.Avalonia.Prism.Infrastructure.Services;
@@ -9,6 +10,7 @@ public class HasContainerProviderService : IHaveContainerProvider
     public HasContainerProviderService(IContainerProvider containerProvider)
     {
         _containerProvider = containerProvider;
+        ContainerServiceHelper.Current.ContainerProvider = this;
     }
     public object Resolve(Type type)
     {
@@ -18,5 +20,10 @@ public class HasContainerProviderService : IHaveContainerProvider
     {
         return _containerProvider.Resolve<T>() ?? throw new ArgumentNullException();
     }
+
+    public T Resolve<T>(Type type) where T : class
+    {
+        return Resolve(type) as T ?? default;
+    } 
 }
 

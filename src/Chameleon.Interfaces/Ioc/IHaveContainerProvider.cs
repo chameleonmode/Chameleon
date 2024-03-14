@@ -14,4 +14,5 @@ public interface IHaveContainerProvider : ISingletonDependency
     //     The resolved Service System.Type
     object Resolve(Type type);
     T Resolve<T>();
+    T Resolve<T>(Type type) where T : class;
 }

@@ -21,6 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Base\" />
 	  <Folder Include="Styling\ControlThemes\" />
 	</ItemGroup>
 
