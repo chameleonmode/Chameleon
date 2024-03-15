@@ -2,6 +2,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Chameleon.Av.Fluent.Common.Startup;
+using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.Startup;
 using Chameleon.Interfaces.Views;
 using Chameleon.Interfaces.Windows;
 using FluentAvalonia.UI.Windowing;

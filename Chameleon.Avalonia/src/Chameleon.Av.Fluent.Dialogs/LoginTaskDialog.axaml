@@ -2,35 +2,72 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                    xmlns:ui="using:FluentAvalonia.UI.Controls"
+                    xmlns:core="using:FluentAvalonia.Core"
+                    xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+			 xmlns:vm="using:Chameleon.Modules.Auth.ViewModels"
+			 xmlns:regions="using:Chameleon.Common.Regions"
+                    x:CompileBindings="True"
+			 x:DataType="vm:AuthTaskDialogViewModel"
+             mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="380"
              x:Class="Chameleon.Av.Fluent.Dialogs.LoginTaskDialog">
-	<Panel IsHitTestVisible="False"
-		   MinWidth="{DynamicResource TaskDialogMinWidth}"
-		   MaxWidth="{DynamicResource TaskDialogMaxWidth}"
-		   MinHeight="{DynamicResource TaskDialogMinHeight}"
-		   MaxHeight="{DynamicResource TaskDialogMaxHeight}">
-		<ui:TaskDialog Name="TaskDialog1"
-		   IsVisible="True"
-		   Title="FluentAvalonia"
-		   Header="Header Here"
-		   SubHeader="SubHeader"
-		   Content="This is some sample text, but you can put more advanced content here if you like">
-			<!--<ui:TaskDialog.Commands>
-			<ui:TaskDialogCommand Text="{Binding #CommandText.Text}"
-								  Description="{Binding #DescText.Text}"
-								  IsEnabled="{Binding #CommandEnabledCheck.IsChecked}"
-								  DialogResult="{Binding #CommandDialogResult.Text}"/>
-		</ui:TaskDialog.Commands>-->
 
-			<ui:TaskDialog.Buttons>
-				<ui:TaskDialogButton Text="OK" DialogResult="OK" />
-				<ui:TaskDialogButton Text="Cancel" DialogResult="Cancel" />
-			</ui:TaskDialog.Buttons>
+	<!--<StaticResource x:Key="TaskDialogHeaderBackground" ResourceKey="LayerFillColorAltBrush" />
+	<StaticResource x:Key="TaskDialogBackground" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+	<StaticResource x:Key="TaskDialogButtonAreaBackground" ResourceKey="SolidBackgroundFillColorSecondaryBrush" />
+	<StaticResource x:Key="TaskDialogProgressBarErrorColor" ResourceKey="SystemFillColorCriticalBrush" />
+	<StaticResource x:Key="TaskDialogProgressBarSuspendColor" ResourceKey="SystemFillColorCautionBrush" />
+	<StaticResource x:Key="TaskDialogProgressBarErrorBackgroundColor" ResourceKey="SystemFillColorCriticalBackgroundBrush" />
+	<StaticResource x:Key="TaskDialogProgressBarSuspendBackgroundColor" ResourceKey="SystemFillColorCautionBackgroundBrush" />
+	<StaticResource x:Key="TaskDialogFooterButtonForeground" ResourceKey="AccentTextFillColorPrimaryBrush" />
+	<StaticResource x:Key="TaskDialogFooterButtonForegroundPointerOver" ResourceKey="AccentTextFillColorPrimaryBrush" />
+	<StaticResource x:Key="TaskDialogFooterButtonForegroundPressed" ResourceKey="AccentTextFillColorPrimaryBrush" />
+	<StaticResource x:Key="TaskDialogSmokeFill" ResourceKey="SmokeFillColorDefaultBrush" />
+	<StaticResource x:Key="TaskDialogBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush" />
+	<Thickness x:Key="TaskDialogBorderWidth">1</Thickness>-->
+	<!--<StaticResource x:Key="TaskDialogButtonBackground" ResourceKey="ControlFillColorDefaultBrush" />
+            <StaticResource x:Key="TaskDialogButtonBackgroundPointerOver" ResourceKey="ControlFillColorSecondaryBrush" />
+            <StaticResource x:Key="TaskDialogButtonBackgroundPressed" ResourceKey="ControlFillColorTertiaryBrush" />
+            <StaticResource x:Key="TaskDialogButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
+            <StaticResource x:Key="TaskDialogButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+            <StaticResource x:Key="TaskDialogButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+            <StaticResource x:Key="TaskDialogButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+            <StaticResource x:Key="TaskDialogButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+            <StaticResource x:Key="TaskDialogButtonBorderBrush" ResourceKey="ControlElevationBorderBrush" />
+            <StaticResource x:Key="TaskDialogButtonBorderBrushPointerOver" ResourceKey="ControlElevationBorderBrush" />
+            <StaticResource x:Key="TaskDialogButtonBorderBrushPressed" ResourceKey="ControlStrokeColorDefaultBrush" />
+            <StaticResource x:Key="TaskDialogButtonBorderBrushDisabled" ResourceKey="ControlStrokeColorDefaultBrush" />
+            <Thickness x:Key="TaskDialogButtonBorderThickness">1</Thickness>-->
+	<!--<StaticResource x:Key="TaskDialogCommandBackground" ResourceKey="SystemControlTransparentBrush" />
+	<StaticResource x:Key="TaskDialogCommandBorderBrush" ResourceKey="SystemControlTransparentBrush" />
+	<Thickness x:Key="TaskDialogCommandBorderThickness">0</Thickness>
+	<StaticResource x:Key="TaskDialogCommandTextForeground" ResourceKey="AccentTextFillColorPrimaryBrush" />
+	<StaticResource x:Key="TaskDialogCommandDescriptionForeground" ResourceKey="TextFillColorSecondaryBrush" />
+	<StaticResource x:Key="TaskDialogCommandBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+	<StaticResource x:Key="TaskDialogCommandTextForegroundPointerOver" ResourceKey="AccentTextFillColorPrimaryBrush" />
+	<StaticResource x:Key="TaskDialogCommandDescriptionForegroundPointerOver" ResourceKey="TextFillColorSecondaryBrush" />
+	<StaticResource x:Key="TaskDialogCommandBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+	<StaticResource x:Key="TaskDialogCommandTextForegroundPressed" ResourceKey="AccentTextFillColorSecondaryBrush" />
+	<StaticResource x:Key="TaskDialogCommandDescriptionForegroundPressed" ResourceKey="TextFillColorTertiaryBrush" />
+	<StaticResource x:Key="TaskDialogCommandBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
+	<StaticResource x:Key="TaskDialogCommandTextForegroundDisabled" ResourceKey="AccentTextFillColorDisabledBrush" />
+	<StaticResource x:Key="TaskDialogCommandDescriptionForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />-->
 
-			<ui:TaskDialog.Footer>
-				<CheckBox Content="Never show me this again" />
-			</ui:TaskDialog.Footer>
-		</ui:TaskDialog>
+	<Panel>
+	<ui:TaskDialog  Name="{x:Static regions:DialogNames.LoginDialog}"
+		IsVisible="True"
+		FooterVisibility="Never"
+		ShowProgressBar="False"
+		core:VisualStateHelper.ForcedClassesProperty=":open,:progressSuspend:hosted">
+				<ui:TaskDialog.Buttons>
+			<ui:TaskDialogButton Text="OK" 
+								 IconSource="Checkmark"
+								 IsDefault="True"
+								 DialogResult="OK" />
+			<ui:TaskDialogButton Text="Cancel" 
+								 IconSource="Dismiss" 
+								 DialogResult="Cancel" />
+		</ui:TaskDialog.Buttons>
+	</ui:TaskDialog>
 	</Panel>
 </UserControl>

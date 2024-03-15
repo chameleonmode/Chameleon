@@ -43,11 +43,14 @@ using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Dialogs;
 using Chameleon.Avalonia.Prism.Module.Auth;
 using Chameleon.Avalonia.Prism.Module.Auth.ViewModels;
+using Chameleon.Avalonia.Prism.Module.MessageBox;
 
 namespace Chameleon.Av.Fluent;
 
 public partial class App : PrismApplication
 {
+    public static bool FrameworkInitComplete = false;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -82,7 +85,7 @@ public partial class App : PrismApplication
             var viewModelName = String.Format(CultureInfo.InvariantCulture, "{0}{1}, {2}", viewName, suffix, viewAssemblyName);
             var viewModelType = Type.GetType(viewModelName);
 
-            if (viewModelType == null)
+            if (viewModelType == null && viewType.Name != "MainWindow")
             {
                 viewModelType = Type.GetType($"{viewType.FullName}Model");
             }
@@ -101,9 +104,11 @@ public partial class App : PrismApplication
 
         // Services
         containerRegistry.RegisterSingleton<IHaveContainerRegistry, HasContainerRegistryService>();
-        containerRegistry.RegisterSingleton<IHaveContainerProvider, HasContainerProviderService>();
 
         var cr = Container.Resolve<IHaveContainerRegistry>();
+        cr.RegisterSingleton<IHaveContainerProvider, HasContainerProviderService>(true);
+        //Container.Resolve<IHaveContainerProvider>();
+
         cr.RegisterSingleton<Prism.Events.IEventAggregator, Prism.Events.EventAggregator>();
         cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
 
@@ -123,18 +128,22 @@ public partial class App : PrismApplication
             .RegisterTypesFrom(Assembly.GetExecutingAssembly());
         //Assemblys                                                                      
         Container.RegisterTypesFrom(Chameleon.Avalonia.Common.AssemblyResolver.GetAssembly());
-        Container.RegisterTypesFrom(Chameleon.Avalonia.Prism.Module.MessageBox.AssemblyResolver.GetAssembly());
+        Container.RegisterTypesFrom(Chameleon.Avalonia.Prism.Module.MessageBox.AssemblyResolver.GetAssembly());   
 
-        // Dialogs
-        cr.RegisterSingleton<ILoginTaskDialog, LoginTaskDialog>();
-        containerRegistry.RegisterDialog<AuthView, AuthViewModel>();
+       // cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();
+
+        // Dialogs                                                  
+        containerRegistry.RegisterDialog<AuthView, AuthViewModel>(nameof(IAuthLoginView));
+        //containerRegistry.RegisterDialogWindow<DialogWindowsWindow>(nameof(IWindowWindowDialog));
+        cr.RegisterSingleton<ILoginTaskDialog, LoginTaskDialog>(false, Chameleon.Common.Regions.DialogNames.LoginDialog);
+        cr.RegisterSingleton<ILoginTaskDialog, LoginTaskDialog>(false, Chameleon.Common.Regions.DialogNames.LoginDialog);
         //containerRegistry.RegisterDialog<MessageBoxView, MessageBoxViewModel>();
         //containerRegistry.Register<object>();
 
         // Views - Viewmodels                                                     
         containerRegistry.RegisterSingleton<IMainWindow, MainWindow>();
 
-        containerRegistry.RegisterSingleton<IDashboardViewModel, DashboardViewModel>(); 
+        containerRegistry.RegisterSingleton<IDashboardViewModel, DashboardViewModel>();
         containerRegistry.RegisterSingleton<IDashboardView, DashboardView>();
 
         containerRegistry.RegisterSingleton<ISettingsViewModel, SettingsViewModel>();
@@ -147,7 +156,8 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<ImportViewModel>();
         containerRegistry.Register<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
         containerRegistry.Register<IProxyAccessViewModels, ProxyAccessViewModels>();
-
+                                                                                        
+        
         // Views - Region Navigation
         //containerRegistry.RegisterForNavigation<DashboardView, IDashboardViewModel>();
         //containerRegistry.RegisterForNavigation<SettingsView, ISettingsViewModel>();
@@ -208,9 +218,7 @@ public partial class App : PrismApplication
 
         base.OnFrameworkInitializationCompleted();
 
-        Container
-         .Resolve<IApplicationStartup>()
-         .Run();
+        FrameworkInitComplete = true;
     }
 
     protected override AvaloniaObject CreateShell()

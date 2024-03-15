@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vm="using:Chameleon.Modules.Auth.ViewModels"
+                    x:CompileBindings="True"
+			 x:DataType="vm:AuthTaskDialogViewModel"
+             x:Class="Chameleon.Av.Fluent.Dialogs.LoginTaskDialogContent">
+	<Border x:Name="brdrc"
+			Name="BorderContent"
+			Padding="{StaticResource TaskDialogBorderWidth}">
+		<StackPanel Orientation="Vertical"
+					VerticalAlignment="Center"
+					HorizontalAlignment="Stretch">
+
+			<Label Content="Chameleon User Login"
+				   Margin="6"
+				   HorizontalAlignment="Center"
+				   FontSize="26"/>
+
+			<StackPanel>
+				<TextBlock Text="Email:"
+							Margin="{StaticResource ContentDialogTitleFieldMargin}"/>
+				<TextBox Margin="{StaticResource ContentDialogTextboxFieldMargin}"
+					Text="{Binding UserName}"
+					IsEnabled="{Binding IsInputEnabled}" />
+			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Text="Licence Key:"
+						   Margin="{StaticResource ContentDialogTitleFieldMargin}"/>
+				<TextBox Margin="{StaticResource ContentDialogTextboxFieldMargin}"
+					Text="{Binding LicenceKey}"
+					IsEnabled="{Binding IsInputEnabled}" />
+			</StackPanel>
+			<TextBlock Text="{Binding ErrorMessage}"
+						IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+						Margin="{StaticResource ContentDialogTitleFieldMargin}"
+						HorizontalAlignment="Center"
+						ToolTip.Tip="{Binding ErrorMessage}"
+						VerticalAlignment="Center"
+						Foreground="{StaticResource SystemFillColorCriticalBrush}" />
+		</StackPanel>
+	</Border>
+</UserControl>

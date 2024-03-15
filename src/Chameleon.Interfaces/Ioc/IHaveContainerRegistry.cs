@@ -17,8 +17,8 @@ public interface IHaveContainerRegistry : ISingletonDependency
     //
     // Returns:
     //     The Prism.Ioc.IContainerRegistry instance
-    void RegisterSingleton(Type from, Type to);
-    void RegisterSingleton<F,T>() where T : F;
+    void RegisterSingleton(Type from, Type to, string? name = null);
+    void RegisterSingleton<F,T>(bool resolve = false, string? name = null) where T : F;
     //
     // Summary:
     //     Registers a Transient with the given service and mapping to the specified implementation

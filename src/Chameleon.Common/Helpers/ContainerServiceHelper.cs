@@ -9,7 +9,7 @@ public class ContainerServiceHelper
 
     }
     public static ContainerServiceHelper Current { get; } = new ContainerServiceHelper();
-    public Dictionary<Type, Type> ContainerTypes { get; } = [];
+    public Dictionary<Type, Tuple<Type,string>> ContainerTypes { get; } = [];
     public IHaveContainerProvider? ContainerProvider { get; set; }
     public IHaveContainerRegistry? ContainerRegistry { get; set; }
 }

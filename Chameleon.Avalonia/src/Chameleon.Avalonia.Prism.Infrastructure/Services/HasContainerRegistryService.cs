@@ -4,6 +4,7 @@ using Prism.DryIoc;
 using Prism.Ioc;
 using Chameleon.Core.Extensions;
 using Chameleon.Common.Helpers;
+using System.Xml.Linq;
 
 namespace Chameleon.Avalonia.Prism.Infrastructure.Services;
 
@@ -17,26 +18,28 @@ public class HasContainerRegistryService : IHaveContainerRegistry
         ContainerServiceHelper.Current.ContainerRegistry = this;
     }
  
-    public void RegisterSingleton(Type from, Type to)
+    public void RegisterSingleton(Type from, Type to, string? name = null)
     {
-        ContainerServiceHelper.Current.ContainerTypes.AddOrUpdate(from, to);
+        ContainerServiceHelper.Current.ContainerTypes.AddOrUpdate(from, new Tuple<Type, string>(to, name ?? to.Name));
         _containerRegistry.RegisterSingleton(from, to);
     }
 
-    public void RegisterSingleton<F,T>() where T : F
+    public void RegisterSingleton<F,T>(bool resolve = false, string? name = null) where T : F
     {
-        RegisterSingleton(typeof(F), typeof(T));
+        RegisterSingleton(typeof(F), typeof(T), name);
+        if(resolve)
+            _containerRegistry.GetContainer().Resolve<T>();
     }
 
     public void Register(Type from, Type to)
     {
-        ContainerServiceHelper.Current.ContainerTypes.AddOrUpdate(from, to);
+        ContainerServiceHelper.Current.ContainerTypes.AddOrUpdate(from, new Tuple<Type, string>(to,to.Name));
         _containerRegistry.Register(from, to);
     }
 
     public void RegisterScoped(Type from, Type to)
     {
-        ContainerServiceHelper.Current.ContainerTypes.AddOrUpdate(from, to);
+        ContainerServiceHelper.Current.ContainerTypes.AddOrUpdate(from, new Tuple<Type, string>(to,to.Name));
         _containerRegistry.RegisterScoped(from, to);
     }
 

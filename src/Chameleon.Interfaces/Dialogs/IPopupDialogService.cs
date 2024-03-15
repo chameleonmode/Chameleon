@@ -16,4 +16,5 @@ public interface IPopupDialogService : ISingletonDependency
 
     // Closes the currently displayed popup.  Optionally returning a result.
     Task CloseAsync(object? result = null, CancellationToken cancellationToken = default);
+    void ShowDialogInWindow<TDialog, TWindow>(string message, Action<int?> result);
 }

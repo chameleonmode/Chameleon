@@ -3,16 +3,24 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Chameleon.Av.Fluent.Common.Controls;
 using Chameleon.Av.Fluent.Common.Models;
 using Chameleon.Av.Fluent.Common.Pages;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Common.Startup;
+using Chameleon.Av.Fluent.Dialogs;
 using Chameleon.Av.Fluent.ViewModels;
+using Chameleon.Avalonia.Prism.Infrastructure.Services;
+using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.Auth;
+using Chameleon.Interfaces.Dashboard;
+using Chameleon.Interfaces.Startup;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Navigation;
 using FluentAvalonia.UI.Windowing;
+using System.Xml.Linq;
 
 namespace Chameleon.Av.Fluent.Views;
 
@@ -48,10 +56,22 @@ public partial class MainView : UserControl
         NavigationService.Instance.SetFrame(FrameView);
 
         // On desktop, the window will call this during the splashscreen
-        if (e.Root is AppWindow aw && aw.SplashScreen is MainAppSplashScreen mass)
+        if (e.Root is AppWindow aw && aw.SplashScreen is MainAppSplashScreen mass)// && mass.SplashScreenContent is MainAppSplashContent mas)
         {
-            mass.InitApp += () =>
+            mass.InitApp += async () =>
             {
+
+                var waited = 0;
+                while (!App.FrameworkInitComplete && waited++ < 5)
+                    await Task.Delay(500);
+
+                 //ContainerServiceHelper.Current.ContainerProvider
+                 //   .Resolve<IDashboardViewModel>();
+                if (ContainerServiceHelper.Current.ContainerProvider is not null)
+                    await ContainerServiceHelper.Current.ContainerProvider
+                       .Resolve<IApplicationStartup>()
+                       .RunAsync();
+
                 InitializeNavigationPages();
             };
         }
@@ -60,7 +80,7 @@ public partial class MainView : UserControl
             InitializeNavigationPages();
         }
 
-       // FrameView.Navigated += OnFrameViewNavigated;
+        // FrameView.Navigated += OnFrameViewNavigated;
     }
 
 
@@ -75,7 +95,6 @@ public partial class MainView : UserControl
         //ChameleonContentControl s = new ChameleonContentControl();
         Dispatcher.UIThread.Post(() =>
         {
-
             NavView.MenuItemsSource = new List<NavigationViewItemBase>(1)
             {
               new NavigationViewItem

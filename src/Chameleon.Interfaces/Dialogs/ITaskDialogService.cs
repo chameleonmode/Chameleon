@@ -12,4 +12,5 @@
 public interface ITaskDialogService
 {
     Task ShowTaskDialog(Type content, Action action); 
+    Task<object?> ShowTaskDialog(Type content);
 }

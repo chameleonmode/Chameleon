@@ -37,17 +37,17 @@ namespace Chameleon.Auth.Api
             return response;
         }
 
-        public async Task<IAuthRefreshTokenResponse> RefreshToken(string acessToken, string refreshToken, long delayInSeconds)
+        public IAuthRefreshTokenResponse? RefreshToken(string acessToken, string refreshToken)
         {
-            await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
+            //await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
 
             var requestDto = new RefreshTokenRequestDto
             {
                 AccessToken = acessToken,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
             };
 
-            AuthRefreshTokenResponse response = null;
+            AuthRefreshTokenResponse? response = null;
 
             try
             {

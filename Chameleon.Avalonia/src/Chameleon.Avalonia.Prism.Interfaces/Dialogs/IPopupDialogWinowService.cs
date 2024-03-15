@@ -9,4 +9,5 @@ public interface IPopupDialogWinowService : IPopupDialogService
     new IDialog Create(Type dialogType);
     void ShowDialog(string name, IDialogParameters parameters, Action<IDialogResult?> callback);
     void ShowDialog(Window owner, string name, IDialogParameters parameters, Action<IDialogResult?> callback);
+ 
 }

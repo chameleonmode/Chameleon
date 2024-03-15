@@ -2,6 +2,7 @@
 using Chameleon.Common.Regions;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.Auth;
+using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Startup;
@@ -23,9 +24,11 @@ namespace Chameleon.Application.Startup
         public ApplicationStartup(
              IEventAggregator eventAggregator,
              IAuthService authService,
-             ISystemBrowserManager systemBrowserManager,
             // injected just to create all event handlers to start them up
-            IEnumerable<IApplicationEventHandlers> _)
+            IDashboardViewModel __,
+             ISystemBrowserManager systemBrowserManager 
+            ,IEnumerable<IApplicationEventHandlers> _
+            )
         {
             _authService = authService;
              _eventAggregator = eventAggregator;
@@ -48,7 +51,9 @@ namespace Chameleon.Application.Startup
 
         public async Task RunAsync()
         {
-            await _authService.LoginAsync();
+            await _authService.ShowLoginDialogAsync();
+
+           // await _authService.LoginAsync();
             //if (string.IsNullOrEmpty(_settingsService.AuthAccessToken))
             //{
             // first create dialog not showing it

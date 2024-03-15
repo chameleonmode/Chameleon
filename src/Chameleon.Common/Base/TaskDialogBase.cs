@@ -11,7 +11,10 @@ public partial class TaskDialogBase : CTViewModelBase
     public string? header;
 
     [ObservableProperty]
-    public string? subHeader;
+    public string? subHeader;       
+
+    [ObservableProperty]
+    public bool isInputEnabled = true;
 
     public virtual void Close(TaskDialogResul res = TaskDialogResul.None)
     {

@@ -16,6 +16,7 @@ namespace Chameleon.Interfaces.Auth
         //    /// Start auth process
         //    /// </summary>
         Task LoginAsync();
+        Task ShowLoginDialogAsync();
         void Login();
     }
 }

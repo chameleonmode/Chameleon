@@ -56,6 +56,16 @@ public class PopupDialogManagerService : IPopupDialogWinowService
         throw new NotImplementedException();
     }
 
+    public void ShowDialogInWindow<TDialog,TWindow>(string message, Action<int?> result)
+    {
+        // PRO TIP: Use `nameof(DialogView)` instead of "DialogView" to catch errors early on
+        _dialogService.ShowDialog(Common.Helpers.ApplicationHelper.GetMainWindow(),
+            typeof(TDialog).Name, 
+            new DialogParameters($"message={message}"),
+            (r) => { result((int?)r?.Result); },
+            typeof(TWindow).Name);
+    }
+
     public void ShowDialog(string wname, string message, Action<int?> result)
     {
         // PRO TIP: Use `nameof(DialogView)` instead of "DialogView" to catch errors early on

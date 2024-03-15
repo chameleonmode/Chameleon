@@ -3,14 +3,39 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Chameleon.Av.Fluent.Views.MainAppSplashContent">
 	<UserControl.Resources>
-		<ui:BitmapIconSource x:Key="BmpIcon" UriSource="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico" />
+		<ui:BitmapIconSource x:Key="logosymbolIcon" UriSource="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico" />
+		<ui:ImageIconSource x:Key="logo_big" Source="avares://Chameleon.Avalonia.Common/Assets/logo-big.png" />
+		<ui:ImageIconSource x:Key="logo_symbol" Source="avares://Chameleon.Avalonia.Common/Assets/logo-symbol.png" />
 	</UserControl.Resources>
-	<Panel Width="512" Height="512">
-		<ui:IconSourceElement IconSource="{StaticResource BmpIcon}"
-							  Width="25"
-							  Height="25"/>
+
+	<Panel>
+		<StackPanel Spacing="1"
+                    VerticalAlignment="Center">
+			<ui:IconSourceElement IconSource="{StaticResource logo_symbol}"
+								   Width="150"
+								  Height="160"/>
+
+			<ProgressBar Name="TargetProgressBar"
+						 IsIndeterminate="False"
+						 IsVisible="True"
+						 MaxWidth="250"
+						 MaxHeight="200"
+						 Margin="10 20 0 20"
+						 Orientation="Horizontal"
+						 HorizontalAlignment="Stretch"
+						 VerticalAlignment="Stretch" />
+
+
+			<TextBlock Text="Loading..."
+                       Name="LoadingText"
+                       HorizontalAlignment="Center"
+                       FontSize="20"/>
+		</StackPanel>
+		<!--<dialogs:LoginTaskDialog IsVisible="False"
+						 Name="LoginTaskDialogHost" />-->
 	</Panel>
 </UserControl>

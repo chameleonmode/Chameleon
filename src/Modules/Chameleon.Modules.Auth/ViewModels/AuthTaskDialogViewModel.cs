@@ -35,8 +35,8 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
         _settingsService = settingsService;
 
         _settings = _settingsService.Get();
-        userName = _settings.Login.LoginName;
-        licenceKey = _settings.Login.LicenseKey;
+        UserName = _settings.Login.LoginName;
+        LicenceKey = _settings.Login.LicenseKey;
 
         //CancelCommand = new DelegateCommand(CloseDialog);
 
@@ -46,6 +46,8 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
             .Subscribe(async() => { await SubmitAsync(new CancellationToken()); });
 
         _tasksDialogService = messageBoxService;
+
+        IsInputEnabled = true;
     }
 
     //private string _title = string.Empty;

@@ -18,13 +18,15 @@ namespace Chameleon.Auth.Services
         private readonly IApplicationUser _applicationUser;
         private readonly IAuthSession _authSession;
         private readonly IAuthApiClient _apiClient;
+        private readonly ITaskDialogService _tasksDialogService;
 
         public AuthService(IAuthApiClient apiClient,
             IAuthSession authSession,
             IEventAggregator eventAggregator,
             IPopupDialogService popupDialogService,
             IApplicationSettingsService settingsService,
-            IApplicationUser applicationUser)
+            IApplicationUser applicationUser,
+            ITaskDialogService tasksDialogService)
         {
             _appSettings = settingsService.Get();
             _authSession = authSession;
@@ -32,6 +34,8 @@ namespace Chameleon.Auth.Services
             _eventAggregator = eventAggregator;
             _apiClient = apiClient;
             _popupDialogService = popupDialogService;
+            _tasksDialogService = tasksDialogService;
+            CurrentApplicationUser.Current.SetCurrentUser(_applicationUser);
         }
 
         public bool IsAuthenticated { get; set; }
@@ -43,10 +47,10 @@ namespace Chameleon.Auth.Services
             {
                 if (_appSettings.Login.LoginName.HasAny() && _appSettings.Login.LicenseKey.HasAny())
                 {
-                    await Task.Run(() =>
-                    {
+                    //await Task.Run(() =>
+                    //{
                         loginResult = Login(_appSettings.Login.LoginName, _appSettings.Login.LicenseKey);
-                    });
+                    //});
                 }
             }
             catch
@@ -66,26 +70,41 @@ namespace Chameleon.Auth.Services
                 }
             }
         }
-
-        public void Login()
+        public async Task ShowLoginDialogAsync()
         {
-            CurrentApplicationUser.Current.SetCurrentUser(_applicationUser);
-
-            _popupDialogService.ShowDialog("AuthView", "login", async (ResultNum) =>
+            var result = await _tasksDialogService.ShowTaskDialog(typeof(ILoginTaskDialog));
+            if (result is string resultstring)
             {
-                switch ((PopupDialogButtonResult)ResultNum)
+                if (resultstring == "OK")
                 {
-                    case PopupDialogButtonResult.Cancel:
-                    case PopupDialogButtonResult.Unset:
-                    case PopupDialogButtonResult.None:
-                    default:
-                        _eventAggregator.GetEvent<LoginCancelEvent>().Publish();
-                        break;
-                    case PopupDialogButtonResult.OK:
-                        await LoginAsync();
-                        break;
+                    await LoginAsync();
                 }
-            });
+                else
+                {
+                    _eventAggregator.GetEvent<LoginCancelEvent>().Publish();
+                }
+            }
+        }
+        public  void Login()
+        {
+           // _popupDialogService.ShowDialogInWindow<IAuthLoginView, IWindowWindowDialog>("login", async (ResultNum) =>
+           // {
+           //     if (ResultNum is not null && (PopupDialogButtonResult)ResultNum is PopupDialogButtonResult r)
+           //         switch (r)
+           //         {
+           //             //case PopupDialogButtonResult.Cancel:
+           //             //case PopupDialogButtonResult.Unset:
+           //             //case PopupDialogButtonResult.None:
+           //             default:
+           //                 //_eventAggregator.GetEvent<LoginCancelEvent>().Publish();
+           //                 break;
+           //             case PopupDialogButtonResult.OK:
+           //                 await LoginAsync();
+           //                 return;
+           //         }
+           //
+           //     _eventAggregator.GetEvent<LoginCancelEvent>().Publish();
+           // });
         }
 
         public IAuthResult Login(string userName, string licenceKey)
@@ -136,10 +155,10 @@ namespace Chameleon.Auth.Services
 
         public async Task<IAuthRefreshTokenResponse?> RefreshToken(string acessToken, string refreshToken, long delayInSeconds)
         {
-            var response = await _apiClient.RefreshToken(acessToken, refreshToken, delayInSeconds);
+            var response = _apiClient.RefreshToken(acessToken, refreshToken);
             if (response == null)
             {
-                await LoginAsync();
+                await ShowLoginDialogAsync();
                 //return null;
             }
             else

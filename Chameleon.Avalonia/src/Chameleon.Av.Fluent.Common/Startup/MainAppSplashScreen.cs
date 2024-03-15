@@ -10,13 +10,17 @@ public class MainAppSplashScreen(object splashScreenContent) : IApplicationSplas
     public object SplashScreenContent { get; } = splashScreenContent;
     public int MinimumShowTime => 2000;
 
-    public Action? InitApp { get; set; }
+    public Func<Task>? InitApp { get; set; }
 
-    public Task RunTasks(CancellationToken cancellationToken)
+    public async Task RunTasks(CancellationToken cancellationToken)
     {
-        if (InitApp == null)
-            return Task.CompletedTask;
+        //if (InitApp == null)
+        //    return Task.CompletedTask;
 
-        return Task.Run(InitApp, cancellationToken);
+        //return Task.Run(InitApp, cancellationToken);
+        //await Task.Delay(10000);
+
+        if (InitApp != null)
+            await InitApp.Invoke();
     }
 }

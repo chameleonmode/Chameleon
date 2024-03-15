@@ -9,7 +9,7 @@ namespace Chameleon.Auth.Api
     {
         IAuthResponse Login(NetworkCredential credentials);
 
-        Task<IAuthRefreshTokenResponse> RefreshToken(string acessToken, string refreshToken, long delayInSeconds);
+        IAuthRefreshTokenResponse? RefreshToken(string acessToken, string refreshToken);
 
         bool IsLicenseActive(string license);
     }

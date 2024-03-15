@@ -14,6 +14,10 @@
 				<ResourceInclude Source="/Styling/ChameleonContentControlStyles.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
+
+		<Thickness x:Key="ContentDialogActualTitleMargin">12</Thickness>
+		<Thickness x:Key="ContentDialogTitleFieldMargin">12,0,0,12</Thickness>
+		<Thickness x:Key="ContentDialogTextboxFieldMargin">12,0,12,12</Thickness>
 	</Styles.Resources>
 
 	<StyleInclude Source="/Styling/ControlsPageBaseStyles.axaml" />

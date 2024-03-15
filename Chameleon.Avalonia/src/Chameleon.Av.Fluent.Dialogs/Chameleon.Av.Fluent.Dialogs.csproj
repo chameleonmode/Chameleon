@@ -10,7 +10,11 @@
 		<PackageReference Include="FluentAvaloniaUI" />
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
 	  <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
+	  <ProjectReference Include="..\..\..\src\Modules\Chameleon.Modules.Auth\Chameleon.Modules.Auth.csproj" />
+	  <ProjectReference Include="..\Chameleon.Av.Fluent.Common\Chameleon.Av.Fluent.Common.csproj" />
+	  <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
 	</ItemGroup>
 
 </Project>
