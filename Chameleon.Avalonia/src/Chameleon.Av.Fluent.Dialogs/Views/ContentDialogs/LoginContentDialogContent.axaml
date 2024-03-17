@@ -2,19 +2,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 mc:Ignorable="d" d:DesignWidth="640"
-			 xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
+			 mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="450"
+			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
 			 xmlns:vm="using:Chameleon.Av.Fluent.Dialogs.ViewModels"
 			 x:DataType="vm:AuthTaskDialogViewModel"
              x:CompileBindings="True"
              x:Class="Chameleon.Av.Fluent.Dialogs.LoginContentDialogContent">
-	<ctrls:ChameleonDialogControl>
-		<ctrls:ChameleonDialogControl.Header>
+	<dialogs:ChameleonDialogControl>
+		<dialogs:ChameleonDialogControl.Header>
 			<StackPanel>
 				<TextBlock Text="{Binding Title}" />
 			</StackPanel>
-		</ctrls:ChameleonDialogControl.Header>
-		<StackPanel>
+		</dialogs:ChameleonDialogControl.Header>
+		<dialogs:ChameleonDialogControl.DialogInputs>
+			<dialogs:DialogInputHost TextLabel="Email:" 
+									 Text="{Binding UserName}" />
+			<dialogs:DialogInputHost TextLabel="Licence Key:" 
+									 Text="{Binding LicenceKey}" />
+		</dialogs:ChameleonDialogControl.DialogInputs>
+		<!--<StackPanel>
 			<StackPanel>
 				<TextBlock Text="Email:"
 							Margin="{StaticResource ContentDialogTitleFieldMargin}"/>
@@ -30,6 +36,6 @@
 					Text="{Binding LicenceKey}"
 					IsEnabled="{Binding IsInputEnabled}" />
 			</StackPanel>
-		</StackPanel>
-	</ctrls:ChameleonDialogControl>
+		</StackPanel>-->
+	</dialogs:ChameleonDialogControl>
 </UserControl>

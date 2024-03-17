@@ -22,13 +22,13 @@ public partial class LoginTaskDialog : UserControl, ILoginTaskDialog
 {
     bool _loaded = false;
     TaskDialog _apiInActionTD;
-    LoginTaskDialogContent _content;
+    //LoginTaskDialogContent _content;
 
     public LoginTaskDialog()
     {
         InitializeComponent();
         _apiInActionTD = this.FindControl<TaskDialog>(Chameleon.Common.Regions.DialogNames.LoginDialog) ?? new TaskDialog();
-        _content = new LoginTaskDialogContent();
+       // _content = new LoginTaskDialogContent();
 
         DataContext = ContainerServiceHelper.Current.ContainerProvider?.Resolve<IAuthTaskDialogViewModel>();
     }
@@ -59,7 +59,7 @@ public partial class LoginTaskDialog : UserControl, ILoginTaskDialog
             Title = _apiInActionTD.Title,
             Header = _apiInActionTD.Header,
             SubHeader = _apiInActionTD.SubHeader,
-            Content = _content, //_apiInActionTD.Content,
+            Content =null,// _content, //_apiInActionTD.Content,
             IconSource = _apiInActionTD.IconSource,
             ShowProgressBar = _apiInActionTD.ShowProgressBar,
             FooterVisibility = _apiInActionTD.FooterVisibility,
@@ -125,7 +125,7 @@ public partial class LoginTaskDialog : UserControl, ILoginTaskDialog
             Title = _apiInActionTD.Title,
             Header = _apiInActionTD.Header,
             SubHeader = _apiInActionTD.SubHeader,
-            Content = _content, //_apiInActionTD.Content,
+            Content = null, //_apiInActionTD.Content,
             IconSource = _apiInActionTD.IconSource,
             ShowProgressBar = _apiInActionTD.ShowProgressBar,
             FooterVisibility = _apiInActionTD.FooterVisibility,

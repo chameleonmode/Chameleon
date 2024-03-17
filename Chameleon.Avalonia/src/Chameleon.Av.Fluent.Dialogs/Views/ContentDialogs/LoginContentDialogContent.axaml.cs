@@ -7,11 +7,12 @@ using Chameleon.Interfaces.Dialogs.Views;
 namespace Chameleon.Av.Fluent.Dialogs;
 
 public partial class LoginContentDialogContent : ContentDialogControlBase, ILoginContentDialogContent
-{
+{             
+    public override string PrimaryButtonText  => "Login";
+    
     public LoginContentDialogContent()
     {
         InitializeComponent();
         DataContext = ContainerServiceHelper.Current.ContainerProvider?.Resolve<IAuthTaskDialogViewModel>();
-    }
-    public override string PrimaryButtonText  => "Login";       
+    }     
 }

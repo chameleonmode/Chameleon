@@ -11,6 +11,7 @@ public class ContentDialogService : IContentDialogService
         var c = ContainerServiceHelper.Current.ContainerProvider?.Resolve<IContentDialogView>(contentDialog);
         var dialog = new ContentDialog()
         {
+            Title = c.Title,
             Content = c,
             PrimaryButtonText = c.PrimaryButtonText,
             SecondaryButtonText = c.SecondaryButtonText,

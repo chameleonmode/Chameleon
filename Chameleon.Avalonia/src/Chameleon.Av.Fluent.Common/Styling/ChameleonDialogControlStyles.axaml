@@ -1,55 +1,57 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
+		xmlns:dilgs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
 		xmlns:ui="using:FluentAvalonia.UI.Controls">
 	<Design.PreviewWith>
-		<Border Width="640">
+		<Border Width="640" Height="500">
 			<Grid>
-				<ctrls:ChameleonDialogControl>
-					<StackPanel>
-						<StackPanel>
-							<TextBlock Text="Email:"
-										Margin="{StaticResource ContentDialogTitleFieldMargin}"/>
-							<TextBox Margin="{StaticResource ContentDialogTextboxFieldMargin}"
-								Text="email@email.com" />
-						</StackPanel>
-
-						<StackPanel>
-							<TextBlock Text="Licence Key:"
-									   Margin="{StaticResource ContentDialogTitleFieldMargin}"/>
-							<TextBox Margin="{StaticResource ContentDialogTextboxFieldMargin}"
-								Text="123-456-7789" />
-						</StackPanel>
-					</StackPanel>
-					<ctrls:ChameleonDialogControl.Header>
+				<dilgs:ChameleonDialogControl>
+					<dilgs:ChameleonDialogControl.Header>
 						<StackPanel>
 							<TextBlock Text="Sample Header" />
 						</StackPanel>
-					</ctrls:ChameleonDialogControl.Header>
-				</ctrls:ChameleonDialogControl>
+					</dilgs:ChameleonDialogControl.Header>
+					<dilgs:ChameleonDialogControl.DialogInputs>
+						<dilgs:DialogInputHost TextLabel="Email:" Text="email@email.com" />
+
+					</dilgs:ChameleonDialogControl.DialogInputs>
+
+					<StackPanel>
+						<Button Content="hi" />
+					</StackPanel>
+
+			</dilgs:ChameleonDialogControl>
 
 				<!--<GridSplitter Grid.Column="1" />-->
 			</Grid>
 		</Border>
 	</Design.PreviewWith>
 
-	<ControlTheme TargetType="ctrls:ChameleonDialogControl"
-                  x:Key="{x:Type ctrls:ChameleonDialogControl}">
+	<ControlTheme TargetType="dilgs:ChameleonDialogControl"
+                  x:Key="{x:Type dilgs:ChameleonDialogControl}">
 		<Setter Property="Template">
 			<ControlTemplate>
 				<ThemeVariantScope Name="ThemeScopeProvider">
 					<StackPanel>
 						<!-- Header -->
-						<Panel>
-							<ContentPresenter Name="HeaderPresenter"
-											  Content="{TemplateBinding Header}"
-											  ContentTemplate="{TemplateBinding HeaderTemplate}"
-											  FontSize="26"
-											  FontWeight="SemiBold"
-											  Margin="6"
-											  HorizontalContentAlignment="Center"
-											  VerticalContentAlignment="Center" />
-						</Panel>
+						<ContentPresenter Name="HeaderPresenter"
+										  Content="{TemplateBinding Header}"
+										  ContentTemplate="{TemplateBinding HeaderTemplate}"
+										  FontSize="20"
+										  LineHeight="36"
+										  FontWeight="SemiBold"
+										  HorizontalContentAlignment="Center"
+										  VerticalContentAlignment="Center" />
+
+						<!--Input Options-->
+						<ItemsControl Name="DialogsHost">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Spacing="2" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+						</ItemsControl>
 
 						<!-- Area -->
 						<ui:FABorder Name="ControlPreviewAreaHost"
@@ -63,11 +65,7 @@
 											  HorizontalAlignment="Stretch"
 											  VerticalAlignment="Stretch"
 											  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-											  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-											  Margin="0"
-											  Grid.ColumnSpan="1"
-											  Grid.Row="1"
-											  Padding="12">
+											  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
 								<ContentPresenter.Transitions>
 									<Transitions>
 										<ThicknessTransition Duration="00:00:00.167" Property="Padding" />
@@ -83,6 +81,186 @@
 		<Style Selector="^ /template/ ui|FABorder#ControlPreviewAreaHost">
 			<Setter Property="CornerRadius"
 					Value="{Binding Source={StaticResource OverlayCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}" />
+		</Style>
+	</ControlTheme>
+
+	<x:Double x:Key="TaskDialogCommandMinHeight">48</x:Double>
+
+	<ControlTheme x:Key="{x:Type dilgs:DialogInputHost}"
+				  TargetType="dilgs:DialogInputHost"
+                  x:DataType="dilgs:DialogInputHost">
+		<Setter Property="Foreground" Value="{DynamicResource TextControlForeground}" />
+		<Setter Property="Background" Value="{DynamicResource TextControlBackground}" />
+		<Setter Property="CaretBrush" Value="{DynamicResource TextControlForeground}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrush}" />
+		<Setter Property="SelectionBrush" Value="{DynamicResource TextControlSelectionHighlightColor}" />
+		<Setter Property="SelectionForegroundBrush" Value="{DynamicResource TextOnAccentFillColorSelectedTextBrush}" />
+		<Setter Property="BorderThickness" Value="{DynamicResource TextControlBorderThemeThickness}" />
+		<Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
+		<Setter Property="MinHeight" Value="{DynamicResource TextControlThemeMinHeight}" />
+		<Setter Property="MinWidth" Value="{DynamicResource TextControlThemeMinWidth}" />
+		<Setter Property="Padding" Value="{DynamicResource TextControlThemePadding}" />
+		<Setter Property="FocusAdorner" Value="{x:Null}" />
+		<Setter Property="ContextFlyout" Value="{StaticResource DefaultTextBoxContextFlyout}" />
+		<Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+		<Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<StackPanel>
+					<TextBlock Text="{TemplateBinding TextLabel}"
+							   Margin="{StaticResource ContentDialogTitleFieldMargin}"
+							   Name="TextLabel" />
+					<DataValidationErrors>
+						<Panel Margin="{StaticResource ContentDialogTextboxFieldMargin}" >
+						<Border Name="PART_BorderElement"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                MinWidth="{TemplateBinding MinWidth}"
+                                MinHeight="{TemplateBinding MinHeight}">
+						</Border>
+
+						<Border Margin="{TemplateBinding BorderThickness}">
+							<Grid ColumnDefinitions="Auto,*,Auto" >
+								<ContentPresenter Grid.Column="0"
+                                                  Grid.ColumnSpan="1"
+                                                  Content="{TemplateBinding InnerLeftContent}"/>
+								<DockPanel x:Name="PART_InnerDockPanel"
+                                           Grid.Column="1"
+                                           Grid.ColumnSpan="1"
+                                           Cursor="IBeam"
+                                           Margin="{TemplateBinding Padding}">
+									<TextBlock Name="PART_FloatingWatermark"
+                                               Foreground="{DynamicResource SystemAccentColor}"
+                                               FontSize="{TemplateBinding FontSize}"
+                                               IsVisible="False"
+                                               Text="{TemplateBinding Watermark}"
+                                               DockPanel.Dock="Top" />
+									<ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                                  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                                                  IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                                  AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}">
+										<Panel>
+												<TextBlock Name="PART_Watermark"
+														   Foreground="{DynamicResource TextControlPlaceholderForeground}"
+														   Text="{TemplateBinding Watermark}"
+														   TextAlignment="{TemplateBinding TextAlignment}"
+														   TextWrapping="{TemplateBinding TextWrapping}"
+														   IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+														   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+														   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												<TextPresenter Name="PART_TextPresenter"
+															  Text="{TemplateBinding Text, Mode=TwoWay}"
+															  CaretIndex="{TemplateBinding CaretIndex}"
+															  SelectionStart="{TemplateBinding SelectionStart}"
+															  SelectionEnd="{TemplateBinding SelectionEnd}"
+															  TextAlignment="{TemplateBinding TextAlignment}"
+															  TextWrapping="{TemplateBinding TextWrapping}"
+															  LineHeight="{TemplateBinding LineHeight}"
+															  LetterSpacing="{TemplateBinding LetterSpacing}"
+															  PasswordChar="{TemplateBinding PasswordChar}"
+															  RevealPassword="{TemplateBinding RevealPassword}"
+															  SelectionBrush="{TemplateBinding SelectionBrush}"
+															  SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+															  CaretBrush="{TemplateBinding CaretBrush}"
+															  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+															  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+										</Panel>
+									</ScrollViewer>
+								</DockPanel>
+								<ContentPresenter Grid.Column="2" Grid.ColumnSpan="1" Content="{TemplateBinding InnerRightContent}"/>
+							</Grid>
+						</Border>
+					</Panel>
+				</DataValidationErrors>
+				</StackPanel>
+			</ControlTemplate>
+		</Setter>
+
+		<!-- Disabled State -->
+		<Style Selector="^:disabled">
+			<Setter Property="Foreground" Value="{DynamicResource TextControlForegroundDisabled}" />
+
+			<Style Selector="^ /template/ Border#PART_BorderElement">
+				<Setter Property="Background" Value="{DynamicResource TextControlBackgroundDisabled}" />
+				<Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrushDisabled}" />
+			</Style>
+
+			<Style Selector="^ /template/ TextBlock#PART_Watermark, ^ /template/ TextBlock#PART_FloatingWatermark">
+				<Setter Property="Foreground" Value="{DynamicResource TextControlPlaceholderForegroundDisabled}" />
+			</Style>
+		</Style>
+
+		<!-- PointerOver State-->
+		<Style Selector="^:pointerover">
+			<Setter Property="Foreground" Value="{DynamicResource TextControlForegroundPointerOver}" />
+
+			<Style Selector="^ /template/ Border#PART_BorderElement">
+				<Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrushPointerOver}"/>
+				<Setter Property="Background" Value="{DynamicResource TextControlBackgroundPointerOver}" />
+			</Style>
+
+			<Style Selector="^ /template/ TextBlock#PART_Watermark">
+				<Setter Property="Foreground" Value="{DynamicResource TextControlPlaceholderForegroundPointerOver}" />
+			</Style>
+		</Style>
+
+		<!-- Focused State -->
+		<Style Selector="^:focus">
+			<Setter Property="Foreground" Value="{DynamicResource TextControlForegroundFocused}" />
+
+			<Style Selector="^ /template/ TextBlock#PART_Watermark">
+				<Setter Property="Foreground" Value="{DynamicResource TextControlPlaceholderForegroundFocused}" />
+			</Style>
+
+			<Style Selector="^ /template/ Border#PART_BorderElement">
+				<Setter Property="Background" Value="{DynamicResource TextControlBackgroundFocused}"/>
+				<Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrushFocused}"/>
+				<Setter Property="BorderThickness" Value="{DynamicResource TextControlBorderThemeThicknessFocused}" />
+			</Style>
+		</Style>
+
+		<Style Selector="^:error /template/ Border#PART_BorderElement">
+			<Setter Property="BorderBrush" Value="{DynamicResource SystemFillColorCriticalBrush}"/>
+		</Style>
+
+		<Style Selector="^[UseFloatingWatermark=true]:not(:empty) /template/ TextBlock#PART_FloatingWatermark">
+			<Setter Property="IsVisible" Value="True" />
+		</Style>
+
+		<Style Selector="^.revealPasswordButton[AcceptsReturn=False][IsReadOnly=False]:not(TextBox:empty)">
+			<Setter Property="InnerRightContent">
+				<Template>
+					<ToggleButton Theme="{StaticResource TextBoxPasswordButtonStyle}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  CornerRadius="{DynamicResource ControlCornerRadius}"
+                                  Padding="{StaticResource HelperButtonThemePadding}"
+                                  IsTabStop="False"
+                                  Focusable="False"
+                                  FontSize="{TemplateBinding FontSize}"
+                                  Width="30"
+                                  VerticalAlignment="Stretch"
+                                  IsChecked="{Binding $parent[TextBox].RevealPassword, Mode=TwoWay}"/>
+				</Template>
+			</Setter>
+		</Style>
+
+		<Style Selector="^.clearButton[AcceptsReturn=False][IsReadOnly=False]:focus:not(TextBox:empty)">
+			<Setter Property="InnerRightContent">
+				<Template>
+					<Button Theme="{StaticResource TextBoxDeleteButtonStyle}"
+                            Command="{Binding $parent[TextBox].Clear}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource ControlCornerRadius}"
+                            Padding="{StaticResource HelperButtonThemePadding}"
+                            IsTabStop="False"
+                            Focusable="False"
+                            FontSize="{TemplateBinding FontSize}"
+                            Width="30"
+                            VerticalAlignment="Stretch" />
+				</Template>
+			</Setter>
 		</Style>
 	</ControlTheme>
 </ResourceDictionary>

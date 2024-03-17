@@ -6,12 +6,6 @@
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Chameleon.Av.Fluent.Views.MainAppSplashContent">
-	<UserControl.Resources>
-		<ui:BitmapIconSource x:Key="logosymbolIcon" UriSource="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico" />
-		<ui:ImageIconSource x:Key="logo_big" Source="avares://Chameleon.Avalonia.Common/Assets/logo-big.png" />
-		<ui:ImageIconSource x:Key="logo_symbol" Source="avares://Chameleon.Avalonia.Common/Assets/logo-symbol.png" />
-	</UserControl.Resources>
-
 	<Panel>
 		<StackPanel Spacing="1"
                     VerticalAlignment="Center">

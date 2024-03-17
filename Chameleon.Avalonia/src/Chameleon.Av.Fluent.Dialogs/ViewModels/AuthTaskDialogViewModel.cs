@@ -12,7 +12,7 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
         IEventAggregator eventAggregator,
         ITaskDialogService messageBoxService)
     {
-        Title = "Chameleon User Login";
+        Title = "User Login";
 
         _authService = authService;
         _settingsService = settingsService;

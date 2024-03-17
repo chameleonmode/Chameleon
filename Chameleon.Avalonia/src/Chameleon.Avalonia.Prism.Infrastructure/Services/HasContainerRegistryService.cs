@@ -38,7 +38,11 @@ public class HasContainerRegistryService : IHaveContainerRegistry
     }
     public void Register<F, T>() where T : F
     {
-        _containerRegistry.Register(typeof(F), typeof(T));
+        Register(typeof(F), typeof(T));
+    }
+    public void Register<T>()
+    {
+        _containerRegistry.Register<T>();
     }
 
     public void RegisterScoped(Type from, Type to)

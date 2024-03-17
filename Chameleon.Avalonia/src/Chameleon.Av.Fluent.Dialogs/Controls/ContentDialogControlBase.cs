@@ -8,6 +8,7 @@ namespace Chameleon.Av.Fluent.Dialogs.Controls;
 public abstract class ContentDialogControlBase : UserControl,
     IContentDialogView
 {
+    public virtual object? Title => ContainerServiceHelper.Current.ContainerProvider?.Resolve<DefaultContentDialogTitle>();
     public virtual string PrimaryButtonText => "OK";
     public virtual string SecondaryButtonText => string.Empty;
     public virtual string CloseButtonText => "Cancel";

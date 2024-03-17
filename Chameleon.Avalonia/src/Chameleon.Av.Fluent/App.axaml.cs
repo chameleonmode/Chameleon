@@ -142,6 +142,7 @@ public partial class App : PrismApplication
         cr.RegisterSingleton<IContentDialogService, ContentDialogService>();
         //cr.RegisterSingleton<ILoginTaskDialog, LoginTaskDialog>(false, Chameleon.Common.Regions.DialogNames.LoginDialog);
         cr.Register<ILoginContentDialogContent, LoginContentDialogContent>();
+        cr.Register<DefaultContentDialogTitle>();
         cr.RegisterSingleton<IAuthTaskDialogViewModel, AuthTaskDialogViewModel>();
         //cr.RegisterSingleton<ILoginTaskDialog, LoginTaskDialog>(false, Chameleon.Common.Regions.DialogNames.LoginDialog);
         //containerRegistry.RegisterDialog<MessageBoxView, MessageBoxViewModel>();
