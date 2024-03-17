@@ -1,0 +1,88 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
+		xmlns:ui="using:FluentAvalonia.UI.Controls">
+	<Design.PreviewWith>
+		<Border Width="640">
+			<Grid>
+				<ctrls:ChameleonDialogControl>
+					<StackPanel>
+						<StackPanel>
+							<TextBlock Text="Email:"
+										Margin="{StaticResource ContentDialogTitleFieldMargin}"/>
+							<TextBox Margin="{StaticResource ContentDialogTextboxFieldMargin}"
+								Text="email@email.com" />
+						</StackPanel>
+
+						<StackPanel>
+							<TextBlock Text="Licence Key:"
+									   Margin="{StaticResource ContentDialogTitleFieldMargin}"/>
+							<TextBox Margin="{StaticResource ContentDialogTextboxFieldMargin}"
+								Text="123-456-7789" />
+						</StackPanel>
+					</StackPanel>
+					<ctrls:ChameleonDialogControl.Header>
+						<StackPanel>
+							<TextBlock Text="Sample Header" />
+						</StackPanel>
+					</ctrls:ChameleonDialogControl.Header>
+				</ctrls:ChameleonDialogControl>
+
+				<!--<GridSplitter Grid.Column="1" />-->
+			</Grid>
+		</Border>
+	</Design.PreviewWith>
+
+	<ControlTheme TargetType="ctrls:ChameleonDialogControl"
+                  x:Key="{x:Type ctrls:ChameleonDialogControl}">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ThemeVariantScope Name="ThemeScopeProvider">
+					<StackPanel>
+						<!-- Header -->
+						<Panel>
+							<ContentPresenter Name="HeaderPresenter"
+											  Content="{TemplateBinding Header}"
+											  ContentTemplate="{TemplateBinding HeaderTemplate}"
+											  FontSize="26"
+											  FontWeight="SemiBold"
+											  Margin="6"
+											  HorizontalContentAlignment="Center"
+											  VerticalContentAlignment="Center" />
+						</Panel>
+
+						<!-- Area -->
+						<ui:FABorder Name="ControlPreviewAreaHost"
+								BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+								BorderThickness="0"
+								TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+								CornerRadius="{DynamicResource ControlCornerRadius}">
+							<ContentPresenter Name="ExamplePresenter"
+											  Content="{TemplateBinding Content}"
+											  ContentTemplate="{TemplateBinding ContentTemplate}"
+											  HorizontalAlignment="Stretch"
+											  VerticalAlignment="Stretch"
+											  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+											  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+											  Margin="0"
+											  Grid.ColumnSpan="1"
+											  Grid.Row="1"
+											  Padding="12">
+								<ContentPresenter.Transitions>
+									<Transitions>
+										<ThicknessTransition Duration="00:00:00.167" Property="Padding" />
+									</Transitions>
+								</ContentPresenter.Transitions>
+							</ContentPresenter>
+						</ui:FABorder>
+					</StackPanel>
+				</ThemeVariantScope>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^ /template/ ui|FABorder#ControlPreviewAreaHost">
+			<Setter Property="CornerRadius"
+					Value="{Binding Source={StaticResource OverlayCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}" />
+		</Style>
+	</ControlTheme>
+</ResourceDictionary>

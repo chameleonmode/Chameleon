@@ -34,6 +34,7 @@ public interface IHaveContainerRegistry : ISingletonDependency
     // Returns:
     //     The Prism.Ioc.IContainerRegistry instance
     void Register(Type from, Type to);
+    void Register<F, T>() where T : F;
 
     //
     // Summary:

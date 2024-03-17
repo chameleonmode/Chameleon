@@ -3,8 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Chameleon.Avalonia.Common.Helpers;
-using Chameleon.Common.Base;
 using Chameleon.Common.Helpers;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Ioc;
@@ -101,11 +101,11 @@ public class TaskDialogService : ITaskDialogService
             ShowProgressBar = false,
             Content = c,
         };
-        vm.RequestClose += (TaskDialogResul r) => 
-        {
-            TaskDialogStandardResult re = (TaskDialogStandardResult)r;
+        //vm.RequestClose += (TaskDialogResul r) => 
+        //{
+        //    TaskDialogStandardResult re = (TaskDialogStandardResult)r;
          
-        };
+        //};
         // Use the closing event to grab a deferral
         // You can also cancel closing here if you like
         td.Closing += (s, e) =>
@@ -158,5 +158,10 @@ public class TaskDialogService : ITaskDialogService
                       
         //await Task.Delay(500);
         return null;
+    }
+
+    Task<ITaskDialogResult?> ITaskDialogService.ShowTaskDialog(Type content)
+    {
+        throw new NotImplementedException();
     }
 }

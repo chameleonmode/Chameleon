@@ -1,23 +1,4 @@
-﻿using Avalonia;
-using Chameleon.Auth.Services;
-using Chameleon.Common.Base;
-using Chameleon.Core.Extensions;
-using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.Auth.Events;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.MessageBox;
-using Chameleon.Interfaces.Services;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Prism.Events;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.Drawing;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Runtime;
-using System.Security.Authentication;
-
-namespace Chameleon.Modules.Auth.ViewModels;
+﻿namespace Chameleon.Av.Fluent.Dialogs.ViewModels;
 
 public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogViewModel
 {
@@ -31,6 +12,8 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
         IEventAggregator eventAggregator,
         ITaskDialogService messageBoxService)
     {
+        Title = "Chameleon User Login";
+
         _authService = authService;
         _settingsService = settingsService;
 
@@ -43,19 +26,12 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
         _eventAggregator = eventAggregator;
         _eventAggregator
             .GetEvent<SubmitAsyncEvent>()
-            .Subscribe(async() => { await SubmitAsync(new CancellationToken()); });
+            .Subscribe(async () => { await SubmitAsync(new CancellationToken()); });
 
         _tasksDialogService = messageBoxService;
 
         IsInputEnabled = true;
     }
-
-    //private string _title = string.Empty;
-    //public override string Title
-    //{
-    //    get => _title;
-    //    set => SetProperty(ref _title, value);
-    //}
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
@@ -69,9 +45,6 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
     private bool _isSubmiting;
 
     [ObservableProperty]
-    private bool isInputEnabled;
-
-    [ObservableProperty]
     private string? _errorMessage;
 
     //public IAuthResult AuthResult { get; private set; }
@@ -80,11 +53,10 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
     [RelayCommand(IncludeCancelCommand = true, CanExecute = nameof(CanSubmit))]
     private async Task SubmitAsync(CancellationToken token)
     {
-        string errorMessage = string.Empty;
         try
         {
-             await DoSave();
-            if (await NeedsConfirmActivation())
+            await DoSave();
+            if (NeedsConfirmActivation())
             {
                 //await _tasksDialogService.ShowTaskDialog(typeof(IAuthDialogView));
                 // new PrismMessageBoxOptions
@@ -100,40 +72,35 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
                 //     }
                 // }, (r) => { CloseDialog(r); });
             }
-            else
-                Close(TaskDialogResul.OK);
             return;
         }
         catch (AuthenticationException ex)
         {
-            errorMessage = $"Login failed: Invalid email or licence key";
+            ErrorMessage = $"Login failed: Invalid email or licence key";
         }
         catch (WebException ex)
         {
-            //ExceptionHandler.ShowException(ex);
-            errorMessage = $"Login failed: {ex.Message}";
+            //TODO: ExceptionHandler.ShowException(ex);
+            ErrorMessage = $"Login failed: {ex.Message}";
         }
         catch (Exception ex)
         {
-            errorMessage = "Error with login";
+            ErrorMessage = "Error with login";
         }
         finally
         {
             IsSubmiting = false;
         }
-
-        ErrorMessage = errorMessage;
     }
-    async Task<bool> NeedsConfirmActivation()
+    bool NeedsConfirmActivation()
     {
-        await Task.Delay(0);
         return LicenceKey is not null && !LicenceKey.StartsWith("KEY") &&
                 !_authService.IsLicenseActive(LicenceKey);
-    } 
+    }
     async Task DoSave()
     {
         // store auth info to reuse next startup
-        _settings.Login.Set(userName, licenceKey);
+        _settings.Login.Set(UserName, LicenceKey);
         await _settingsService.Save();
     }
     async Task DoRequest()
@@ -151,11 +118,5 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
         return !string.IsNullOrEmpty(LicenceKey)
             && !string.IsNullOrEmpty(UserName)
             && !IsSubmiting;
-    }
-
-    [RelayCommand]
-    private void Cancel()
-    {
-        Close();
     }
 }

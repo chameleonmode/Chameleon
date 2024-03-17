@@ -22,28 +22,28 @@
                   x:Key="{x:Type ctrls:ChameleonContentControl}">
 		<Setter Property="Template">
 			<ControlTemplate>
-				<StackPanel>
-					<!-- Header -->
-					<Panel>
-						<!--<Button Theme="{StaticResource TransparentButton}"
+				<ThemeVariantScope Name="ThemeScopeProvider">
+					<StackPanel>
+						<!-- Header -->
+						<Panel>
+							<!--<Button Theme="{StaticResource TransparentButton}"
                                 Margin="8"
                                 HorizontalAlignment="Right"
                                 Name="MoreButton">
 							<ui:SymbolIcon Symbol="More" FontSize="18" />
 						</Button>-->
 
-						<ContentPresenter Name="HeaderPresenter"
-                                          Content="{TemplateBinding Header}"
-                                          ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                          FontSize="16"
-                                          FontWeight="SemiBold"
-                                          Padding="8"
-                                          HorizontalContentAlignment="Left"
-                                          VerticalContentAlignment="Center" />
-					</Panel>
+							<ContentPresenter Name="HeaderPresenter"
+											  Content="{TemplateBinding Header}"
+											  ContentTemplate="{TemplateBinding HeaderTemplate}"
+											  FontSize="16"
+											  FontWeight="SemiBold"
+											  Padding="8"
+											  HorizontalContentAlignment="Left"
+											  VerticalContentAlignment="Center" />
+						</Panel>
 
-					<!-- Area -->
-					<ThemeVariantScope Name="ThemeScopeProvider">
+						<!-- Area -->
 						<ui:FABorder Name="ControlPreviewAreaHost"
                                 BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
                                 BorderThickness="1"
@@ -52,7 +52,7 @@
                                 CornerRadius="{DynamicResource ControlCornerRadius}">
 							<Grid ColumnDefinitions="*,Auto"
                                   RowDefinitions="Auto,*,Auto">
-								
+
 								<ContentPresenter Name="ExamplePresenter"
                                                   Content="{TemplateBinding Content}"
                                                   ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -72,8 +72,8 @@
 								</ContentPresenter>
 							</Grid>
 						</ui:FABorder>
-					</ThemeVariantScope>
-				</StackPanel>
+					</StackPanel>
+				</ThemeVariantScope>
 			</ControlTemplate>
 		</Setter>
 

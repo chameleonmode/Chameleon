@@ -1,0 +1,24 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ui="using:FluentAvalonia.UI.Controls"
+                    xmlns:core="using:FluentAvalonia.Core"
+                    xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+                    x:CompileBindings="True">
+	<Design.PreviewWith>
+		<Border Padding="20" Background="{StaticResource SurfaceStrokeColorDefaultBrush}" Height="530" Width="600">
+			<Border BorderBrush="{StaticResource AccentControlElevationBorderBrush}" BorderThickness="1">
+				<ui:ContentDialog  Title="hi"
+								   CloseButtonText="close"
+								  SecondaryButtonText="secondary"
+								  PrimaryButtonText="primary"
+								  core:VisualStateHelper.ForcedClassesProperty=":primary,:secondary,:close">
+					<ui:ContentDialog.Content>
+						<StackPanel>
+							<TextBlock Text="content textblock" />
+						</StackPanel>
+					</ui:ContentDialog.Content>
+				</ui:ContentDialog>
+			</Border>
+		</Border>
+	</Design.PreviewWith>
+</ResourceDictionary>

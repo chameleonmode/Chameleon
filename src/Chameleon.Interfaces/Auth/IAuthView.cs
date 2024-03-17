@@ -14,6 +14,7 @@ namespace Chameleon.Interfaces.Auth
      ISingletonDependency
     {
     }
+
     public interface ITaskDialogView
     {
         T? FindTControl<T>(string name) where T : class;

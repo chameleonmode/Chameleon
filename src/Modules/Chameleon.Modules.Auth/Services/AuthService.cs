@@ -5,6 +5,7 @@ using Chameleon.Common.Helpers;
 using Chameleon.Core.Extensions;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
+using Chameleon.Interfaces.Dialogs.Views;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Prism.Events;
 
@@ -18,7 +19,7 @@ namespace Chameleon.Auth.Services
         private readonly IApplicationUser _applicationUser;
         private readonly IAuthSession _authSession;
         private readonly IAuthApiClient _apiClient;
-        private readonly ITaskDialogService _tasksDialogService;
+        private readonly IContentDialogService _contentDialogService;
 
         public AuthService(IAuthApiClient apiClient,
             IAuthSession authSession,
@@ -26,7 +27,7 @@ namespace Chameleon.Auth.Services
             IPopupDialogService popupDialogService,
             IApplicationSettingsService settingsService,
             IApplicationUser applicationUser,
-            ITaskDialogService tasksDialogService)
+            IContentDialogService contentDialogService)
         {
             _appSettings = settingsService.Get();
             _authSession = authSession;
@@ -34,7 +35,7 @@ namespace Chameleon.Auth.Services
             _eventAggregator = eventAggregator;
             _apiClient = apiClient;
             _popupDialogService = popupDialogService;
-            _tasksDialogService = tasksDialogService;
+            _contentDialogService = contentDialogService;
             CurrentApplicationUser.Current.SetCurrentUser(_applicationUser);
         }
 
@@ -72,18 +73,11 @@ namespace Chameleon.Auth.Services
         }
         public async Task ShowLoginDialogAsync()
         {
-            var result = await _tasksDialogService.ShowTaskDialog(typeof(ILoginTaskDialog));
-            if (result is string resultstring)
-            {
-                if (resultstring == "OK")
-                {
-                    await LoginAsync();
-                }
-                else
-                {
-                    _eventAggregator.GetEvent<LoginCancelEvent>().Publish();
-                }
-            }
+            var result = await _contentDialogService.ShowContentDialogAsync(typeof(ILoginContentDialogContent));
+            if (result == IContentDialogResult.Primary)
+                await LoginAsync();
+            else
+                _eventAggregator.GetEvent<LoginCancelEvent>().Publish();
         }
         public  void Login()
         {

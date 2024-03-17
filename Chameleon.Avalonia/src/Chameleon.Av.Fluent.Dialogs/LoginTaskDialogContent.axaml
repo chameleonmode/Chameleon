@@ -2,19 +2,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:vm="using:Chameleon.Modules.Auth.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="640" 
+		xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:vm="using:Chameleon.Av.Fluent.Dialogs.ViewModels"
                     x:CompileBindings="True"
 			 x:DataType="vm:AuthTaskDialogViewModel"
              x:Class="Chameleon.Av.Fluent.Dialogs.LoginTaskDialogContent">
-	<Border x:Name="brdrc"
+	<ctrls:ChameleonDialogControl>
+		<ctrls:ChameleonDialogControl.Header>
+			<StackPanel>
+				<TextBlock Text="{Binding Title}" />
+			</StackPanel>
+		</ctrls:ChameleonDialogControl.Header>
+		<StackPanel>
+			<StackPanel>
+				<TextBlock Text="Email:"
+							Margin="{StaticResource ContentDialogTitleFieldMargin}"/>
+				<TextBox Margin="{StaticResource ContentDialogTextboxFieldMargin}"
+					Text="{Binding UserName}"
+					IsEnabled="{Binding IsInputEnabled}" />
+			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Text="Licence Key:"
+						   Margin="{StaticResource ContentDialogTitleFieldMargin}"/>
+				<TextBox Margin="{StaticResource ContentDialogTextboxFieldMargin}"
+					Text="{Binding LicenceKey}"
+					IsEnabled="{Binding IsInputEnabled}" />
+			</StackPanel>
+		</StackPanel>
+	</ctrls:ChameleonDialogControl>
+	<!--<Border x:Name="brdrc"
 			Name="BorderContent"
 			Padding="{StaticResource TaskDialogBorderWidth}">
 		<StackPanel Orientation="Vertical"
 					VerticalAlignment="Center"
 					HorizontalAlignment="Stretch">
 
-			<Label Content="Chameleon User Login"
+			<Label Content="{Binding Title}"
 				   Margin="6"
 				   HorizontalAlignment="Center"
 				   FontSize="26"/>
@@ -42,5 +67,5 @@
 						VerticalAlignment="Center"
 						Foreground="{StaticResource SystemFillColorCriticalBrush}" />
 		</StackPanel>
-	</Border>
+	</Border>-->
 </UserControl>

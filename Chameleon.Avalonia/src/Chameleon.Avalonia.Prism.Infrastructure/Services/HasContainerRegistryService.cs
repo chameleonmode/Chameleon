@@ -33,8 +33,12 @@ public class HasContainerRegistryService : IHaveContainerRegistry
 
     public void Register(Type from, Type to)
     {
-        ContainerServiceHelper.Current.ContainerTypes.AddOrUpdate(from, new Tuple<Type, string>(to,to.Name));
+        ContainerServiceHelper.Current.ContainerTypes.AddOrUpdate(from, new Tuple<Type, string>(to,from.Name));
         _containerRegistry.Register(from, to);
+    }
+    public void Register<F, T>() where T : F
+    {
+        _containerRegistry.Register(typeof(F), typeof(T));
     }
 
     public void RegisterScoped(Type from, Type to)

@@ -1,0 +1,16 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="using:Chameleon.Av.Fluent.Common.Controls"
+                    xmlns:ui="using:FluentAvalonia.UI.Controls"
+                    xmlns:sty="using:FluentAvalonia.Styling">
+	<Design.PreviewWith>
+		<!---->
+		<ThemeVariantScope RequestedThemeVariant="Light">
+			<StackPanel Spacing="10" Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
+                    Margin="50" Width="500">
+				
+				<!--<local:PageHeaderControl Classes="smaller" />-->
+			</StackPanel>
+		</ThemeVariantScope>
+	</Design.PreviewWith>
+</ResourceDictionary>

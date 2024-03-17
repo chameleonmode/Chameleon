@@ -12,6 +12,7 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceInclude Source="/Styling/ChameleonContentControlStyles.axaml" />
+				<ResourceInclude Source="/Styling/ChameleonDialogControlStyles.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 

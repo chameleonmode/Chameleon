@@ -126,13 +126,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Desktop"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.FluentAvalonia", "Chameleon.Avalonia\src\Chameleon.Avalonia.FluentAvalonia\Chameleon.Avalonia.FluentAvalonia.csproj", "{B1FAF0FD-BE03-4C2F-AA0C-309FC668FD42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Av.Fluent", "Chameleon.Avalonia\src\Chameleon.Av.Fluent\Chameleon.Av.Fluent.csproj", "{AD9B695F-B074-4788-9D4C-645719EA0716}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Av.Fluent", "Chameleon.Avalonia\src\Chameleon.Av.Fluent\Chameleon.Av.Fluent.csproj", "{AD9B695F-B074-4788-9D4C-645719EA0716}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Av.Fluent.Common", "Chameleon.Avalonia\src\Chameleon.Av.Fluent.Common\Chameleon.Av.Fluent.Common.csproj", "{332C26D1-5E70-4486-B5E4-653BF586F3F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Av.Fluent.Common", "Chameleon.Avalonia\src\Chameleon.Av.Fluent.Common\Chameleon.Av.Fluent.Common.csproj", "{332C26D1-5E70-4486-B5E4-653BF586F3F9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dialogs", "Dialogs", "{3C9BA5F3-8C8F-4451-A521-38179E5256C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Av.Fluent.Dialogs", "Chameleon.Avalonia\src\Chameleon.Av.Fluent.Dialogs\Chameleon.Av.Fluent.Dialogs.csproj", "{089453ED-4D62-438C-ABED-2EA7DFDA197D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Av.Fluent.Dialogs", "Chameleon.Avalonia\src\Chameleon.Av.Fluent.Dialogs\Chameleon.Av.Fluent.Dialogs.csproj", "{089453ED-4D62-438C-ABED-2EA7DFDA197D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommunityToolkit", "CommunityToolkit", "{31D09692-9476-4B2B-A3D0-04C8F71BA830}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.CT.Common", "Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj", "{61A73058-5D30-48C4-90BF-5814A6584B06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -292,6 +296,10 @@ Global
 		{089453ED-4D62-438C-ABED-2EA7DFDA197D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{089453ED-4D62-438C-ABED-2EA7DFDA197D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{089453ED-4D62-438C-ABED-2EA7DFDA197D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61A73058-5D30-48C4-90BF-5814A6584B06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61A73058-5D30-48C4-90BF-5814A6584B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61A73058-5D30-48C4-90BF-5814A6584B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61A73058-5D30-48C4-90BF-5814A6584B06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -355,6 +363,7 @@ Global
 		{332C26D1-5E70-4486-B5E4-653BF586F3F9} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
 		{3C9BA5F3-8C8F-4451-A521-38179E5256C2} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
 		{089453ED-4D62-438C-ABED-2EA7DFDA197D} = {3C9BA5F3-8C8F-4451-A521-38179E5256C2}
+		{61A73058-5D30-48C4-90BF-5814A6584B06} = {31D09692-9476-4B2B-A3D0-04C8F71BA830}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

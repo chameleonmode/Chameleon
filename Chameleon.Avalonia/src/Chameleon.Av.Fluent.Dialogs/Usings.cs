@@ -1,0 +1,11 @@
+﻿global using CommunityToolkit.Mvvm.ComponentModel;
+global using Chameleon.Common.Helpers;
+global using Chameleon.CT.Common.Base;
+global using Chameleon.Interfaces.Auth;
+global using Chameleon.Interfaces.Auth.Events;
+global using Chameleon.Interfaces.Dialogs;
+global using Chameleon.Interfaces.Settings;
+global using Chameleon.Prism.Events;
+global using CommunityToolkit.Mvvm.Input;
+global using System.Net;
+global using System.Security.Authentication;
