@@ -12,7 +12,6 @@
 		<!--<converter:MultiStringJoinConverter x:Key="MultiStringJoin"/>-->
 	</UserControl.Resources>
 	<DockPanel>
-		<commonCntrl:NavigateBackControl DockPanel.Dock="Top" />
 		<Border BorderThickness="0" BorderBrush="{StaticResource DividerLine}">
 			<Grid Background="{StaticResource BackGroundGreyColor}">
 				<Grid Margin="24 0 24  27">

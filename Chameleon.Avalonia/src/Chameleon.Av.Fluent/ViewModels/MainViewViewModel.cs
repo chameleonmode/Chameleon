@@ -26,9 +26,8 @@ public partial class MainViewViewModel:ObservableObjectBase
             .SubscribeOnce(LoginSuccessEventMethod);
     }
 
-    private async void LoginSuccessEventMethod()
+    private void LoginSuccessEventMethod()
     {
-        await _authService.ShowLoginDialogAsync();
         IsSplashVisible = false;
     }
 

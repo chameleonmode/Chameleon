@@ -3,8 +3,6 @@ using Chameleon.App.Shared.Proxies;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Avalonia.Prism.Interfaces.MessageBox;
 using Chameleon.Avalonia.Prism.Module.Base;
-using Chameleon.Avalonia.Prism.Module.MessageBox.Services;
-using Chameleon.Avalonia.Prism.Module.MessageBox.ViewModels;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.Domain.Entities;
@@ -22,18 +20,19 @@ using System.Drawing;
 using Chameleon.Core.Extensions;
 using Chameleon.Avalonia.Prism.Module.Collections;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
+using Chameleon.CT.Common.Base;
+using Chameleon.Common.Base;
+using Chameleon.Interfaces.Dialogs;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
 public class UserProxySettingsViewModel
-       : SubViewModelBase
+       : SubPageViewModelBase
        , IUserProxySettingsViewModel
 {
     private readonly IMapper _mapper;
     private readonly IProxyService _proxyService;
-    private readonly IEventAggregator _eventAggregator;
     private readonly IUserProfileService _userProfileService;
-    private readonly IPrismMessageBoxService _messageBoxService;
     private readonly IProxyAccessViewModels _proxyAccessViewModels;
     private ObservableCollection<IUserProfile, UserProxySettingViewModel> _mapping;
     private const int CountProxies = 5;
@@ -43,9 +42,7 @@ public class UserProxySettingsViewModel
 
     public UserProxySettingsViewModel(
         IMapper mapper,
-        IEventAggregator eventAggregator,
         IUserProfileService userProfileService,
-        IPrismMessageBoxService messageBoxService,
         IProxyService proxyService,
         IProxyAccessViewModels proxyAccessViewModels,
         IUserProfileFolderService userProfileFolderService)
@@ -54,38 +51,36 @@ public class UserProxySettingsViewModel
 
         _mapper = mapper;
         _proxyService = proxyService;
-        _eventAggregator = eventAggregator;
         _userProfileService = userProfileService;
-        _messageBoxService = messageBoxService;
         _proxyAccessViewModels = proxyAccessViewModels;
         _proxyAccessViewModels.AddItems(CountProxies);
         _userProfileFolderService = userProfileFolderService;
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<SavedUserProfileEvent>()
             .Subscribe(args => OnUserProfileSaved());
 
-        _eventAggregator
+        EventAggregator
           .GetEvent<UpdateStaleDataEvent>()
           .Subscribe(() => OnUserProfileSaved());
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<SelectedChangeUserProfileEvent>()
             .Subscribe(args => OnUserProfileSelected());
 
-        _eventAggregator
+        EventAggregator
            .GetEvent<SelectedUserProxySettingEvent>()
            .Subscribe(args => OnSelectedChanged(args));
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<UserProxySetFolderIdEvent>()
             .Subscribe(args => FolderId = args.FolderId);
 
-        _eventAggregator
+        EventAggregator
            .GetEvent<AfterCreateOrRemoveFolderEvent>()
            .Subscribe(ChangeFoldersCollection);
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<RenameFolderEvent>()
             .Subscribe(args => OnRenameFolder(args.FolderId, args.Title));
 
@@ -94,10 +89,14 @@ public class UserProxySettingsViewModel
         UnselectItemsCommand = new DelegateCommand(UnselectItems);
         ChangeProxiesCommand = new DelegateCommand(ChangeProxies);
         HideCustomizeProxiesCommand = new DelegateCommand(HideCustomizeProxies);
-
-        Load();
+        InitializeCountriesAsync();
     }
-
+    public override Task LoadAsync()
+    {
+        if(!base.Loaded)
+            Load();
+        return base.LoadAsync();
+    }
     private void OnRenameFolder(int folderId, string title)
     {
         var item = FolderViewModels.First(a => a.Id == folderId);
@@ -111,9 +110,9 @@ public class UserProxySettingsViewModel
 
     private void Load()
     {
-        DispatcherService.InvokeOnUiThreadAsync(InitializeViewModels);
+        InitializeViewModels();
         LoadUserProfileFolderViewModels();
-        InitializeCountriesAsync();
+       
     }
 
     public AsyncCollectionViewModel<IProxyCountry> Countries { get; private set; }
@@ -139,7 +138,7 @@ public class UserProxySettingsViewModel
             if (_proxyService.CurrentCountry != value)
             {
                 _proxyService.CurrentCountry = value;
-                RaisePropertyChanged();
+                OnPropertyChanged();
                 UpdateProxyAccessAsync();
             }
         }
@@ -187,7 +186,7 @@ public class UserProxySettingsViewModel
 
     private void OnUserProfileSelected()
     {
-        RaisePropertyChanged(nameof(FillProxiesIsEnabled));
+        OnPropertyChanged(nameof(FillProxiesIsEnabled));
     }
 
     private void InitializeViewModels()
@@ -195,13 +194,13 @@ public class UserProxySettingsViewModel
         var userProfiles = _userProfileService.GetAll();
 
         _mapping = new ObservableCollection<IUserProfile, UserProxySettingViewModel>(
-            userProfiles, userProfile => new UserProxySettingViewModel(_mapper, userProfile, _eventAggregator)
+            userProfiles, userProfile => new UserProxySettingViewModel(_mapper, userProfile, EventAggregator)
             );
 
         InitViewModels = true;
-        RaisePropertyChanged(nameof(ViewModels));
-        RaisePropertyChanged(nameof(HasSelectedItems));
-        RaisePropertyChanged(nameof(FillProxiesIsEnabled));
+        OnPropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(HasSelectedItems));
+        OnPropertyChanged(nameof(FillProxiesIsEnabled));
     }
 
     private bool _isSelectedAll;
@@ -386,7 +385,7 @@ public class UserProxySettingsViewModel
         ApplyProxy(proxies, profiles);
 
         IsSelectedAll = false;
-        RaisePropertyChanged(nameof(IsSelectedAll));
+        OnPropertyChanged(nameof(IsSelectedAll));
     }
 
     private List<UserProxySettingViewModel> SelectedProfiles()
@@ -405,40 +404,25 @@ public class UserProxySettingsViewModel
 
     private void ErrorMessage(string message)
     {
-        var messageBoxOptions = new PrismMessageBoxOptions
-        {
-            Title = "Warning",
-            Text = message,
-            Buttons = MessageBoxButton.OK,
-            Icon = SystemIcons.Warning
-        };
-
-        _messageBoxService.ShowDialog(messageBoxOptions, (c) => { });
+        ContentDialogService.ShowContentDialogAsync(
+            ContentDialogButtons.OK,
+            message,
+            "Warning");
     }
 
-    private void PurchaseMessage()
+    private async void PurchaseMessage()
     {
-        var messageBoxOptions = new PrismMessageBoxOptions
+        var result = await ContentDialogService.ShowContentDialogAsync( 
+            ContentDialogButtons.OKCancel, 
+            "You have no proxy to set. Purchase them on Proxy Credit tab", 
+            "You have no proxy to set");
+        if(result == IContentDialogResult.Primary)
         {
-            Title = "You have no proxy to set",
-            Text = "You have no proxy to set. Purchase them on Proxy Credit tab",
-            Buttons = MessageBoxButton.OKCancel,
-            ContentButtons = new MessageBoxContentButtonsViewModel { ContentOkButton = "Purchase" },
-            Icon = SystemIcons.Question
-        };
-
-       _messageBoxService.ShowDialog(messageBoxOptions, (r) => {
-           if (r == ButtonResult.OK)
-           {
-               // 2 is index proxy credit tab in settings view
-               var args = new ChangeSelectedTabIndexEventArgs() { SelectedIndex = 2 };
-               _eventAggregator
-                   .GetEvent<ChangeSelectedTabIndexEvent>()
-                   .Publish(args);
-           }
-       });
-
-       
+            var args = new ChangeSelectedTabIndexEventArgs() { SelectedIndex = 2 };
+            EventAggregator
+                .GetEvent<ChangeSelectedTabIndexEvent>()
+                .Publish(args);
+        }
     }
 
     private bool InitViewModels = false;
@@ -466,7 +450,7 @@ public class UserProxySettingsViewModel
                 }
 
                 SelectedCount = 0;
-                RaisePropertyChanged(nameof(SelectedCount));
+                OnPropertyChanged(nameof(SelectedCount));
 
                 _mapping.CollectionChanged += OnViewModelChange;
                 InitPaginator();
@@ -514,7 +498,7 @@ public class UserProxySettingsViewModel
             SelectedFolder = _folderViewModels.Items.First(a => a.Id == 0);
         }
 
-        RaisePropertyChanged(nameof(SelectedFolder));
+        OnPropertyChanged(nameof(SelectedFolder));
     }
 
     private ProfileFolderViewModel _selectedFolder;
@@ -526,7 +510,7 @@ public class UserProxySettingsViewModel
             if (SetProperty(ref _selectedFolder, value) && ViewModels != null)
             {
                 IsSelectedAll = false;
-                RaisePropertyChanged(nameof(IsSelectedAll));
+                OnPropertyChanged(nameof(IsSelectedAll));
                 DispatcherService.InvokeOnUiThreadAsync(InitializeViewModels);
             }
         }
@@ -554,7 +538,7 @@ public class UserProxySettingsViewModel
             folders, folder => new ProfileFolderViewModel(folder.Id, folder.Title));
 
         _initFolderViewModels = true;
-        RaisePropertyChanged(nameof(FolderViewModels));
+        OnPropertyChanged(nameof(FolderViewModels));
     }
 
     private void InitPaginator()
@@ -609,10 +593,10 @@ public class UserProxySettingsViewModel
         SelectedCount = _viewModels.Items.Count(a => a.IsSelected);
         HasSelectedItems = SelectedCount > 0;
 
-        RaisePropertyChanged(nameof(ViewModels));
-        RaisePropertyChanged(nameof(SelectedCount));
-        RaisePropertyChanged(nameof(HasSelectedItems));
-        RaisePropertyChanged(nameof(FillProxiesIsEnabled));
+        OnPropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(SelectedCount));
+        OnPropertyChanged(nameof(HasSelectedItems));
+        OnPropertyChanged(nameof(FillProxiesIsEnabled));
     }
 
     private int _totalCount;
@@ -682,7 +666,7 @@ public class UserProxySettingsViewModel
             if (SetProperty(ref _selectedCount, value))
             {
                 HasSelectedItems = _selectedCount > 0;
-                RaisePropertyChanged(nameof(HasSelectedItems));
+                OnPropertyChanged(nameof(HasSelectedItems));
             }
         }
     }

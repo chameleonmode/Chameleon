@@ -2,10 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.ViewModels"
 			 xmlns:commonCntrl="using:Chameleon.Avalonia.Controlls.Common"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:prism="http://prismlibrary.com/"
-             prism:ViewModelLocator.AutoWireViewModel="True"
+			 x:DataType="vm:UserDefaultSettingsViewModel"
              x:Class="Chameleon.Avalonia.Controls.Settings.UserDefaultSettingsView">
 	<UserControl.Resources>
 		<DataTemplate x:Key="SettingsListItemTemplate">
@@ -49,16 +50,17 @@
                                 Height="14"
                                 Foreground="{StaticResource OrangeDeleteProfiles}"
                                 Margin="0 0 10.67 0"/>-->
-					<TextBlock Text="Delete"
+					<!--<TextBlock Text="Delete"
                                FontSize="14"
-                               Foreground="{StaticResource OrangeDeleteProfiles}"/>
+                               Foreground="{StaticResource OrangeDeleteProfiles}"/>-->
+					<Button Content="Delete"
+							Command="{Binding DeleteCommand}"/>
 				</StackPanel>
 			</Grid>
 		</DataTemplate>
 	</UserControl.Resources>
 
 	<DockPanel>
-		<commonCntrl:NavigateBackControl DockPanel.Dock="Top" />
 		<Border BorderThickness="0"
 				BorderBrush="{StaticResource DividerLine}"
 				Background="{StaticResource BackGroundGreyColor}">

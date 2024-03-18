@@ -14,9 +14,9 @@ public abstract partial class ObservableObjectBase : ObservableObject
 
     public ObservableObjectBase()
     {
-        _dispatcherService = ContainerServiceHelper.Current.ContainerProvider.Resolve<IDispatcherService>();
-        _cntentDialogService = ContainerServiceHelper.Current.ContainerProvider.Resolve<IContentDialogService>();
-        eventAggregator = ContainerServiceHelper.Current.ContainerProvider.Resolve<IEventAggregator>();
+        _dispatcherService = ContainerServiceHelper.Resolve<IDispatcherService>();
+        _cntentDialogService = ContainerServiceHelper.Resolve<IContentDialogService>();
+        eventAggregator = ContainerServiceHelper.Resolve<IEventAggregator>();
     }
 
     public IDispatcherService DispatcherService => _dispatcherService;

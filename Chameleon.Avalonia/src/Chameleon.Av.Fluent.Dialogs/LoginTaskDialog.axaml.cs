@@ -31,7 +31,7 @@ public partial class LoginTaskDialog : UserControl, ILoginTaskDialog
         _apiInActionTD = this.FindControl<TaskDialog>(Chameleon.Common.Regions.DialogNames.LoginDialog) ?? new TaskDialog();
        // _content = new LoginTaskDialogContent();
 
-        DataContext = ContainerServiceHelper.Current.ContainerProvider?.Resolve<IAuthTaskDialogViewModel>();
+        DataContext = ContainerServiceHelper.Resolve<IAuthTaskDialogViewModel>();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

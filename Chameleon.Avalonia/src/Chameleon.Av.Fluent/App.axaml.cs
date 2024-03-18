@@ -17,7 +17,6 @@ using Chameleon.Interfaces.Modules;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.Startup;
-using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.Windows;
 using DryIoc;
 using Prism.DryIoc;
@@ -133,8 +132,9 @@ public partial class App : PrismApplication
         //Assemblys                                                                      
         Container.RegisterTypesFrom(Chameleon.Avalonia.Common.AssemblyResolver.GetAssembly());
         Container.RegisterTypesFrom(Chameleon.Avalonia.Prism.Module.MessageBox.AssemblyResolver.GetAssembly());   
+        Container.RegisterTypesFrom(Chameleon.Avalonia.Controls.Settings.AssemblyResolver.GetAssembly());
 
-       // cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();
+        // cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();
 
         // Dialogs                                                  
         //containerRegistry.RegisterDialog<AuthView, AuthViewModel>(nameof(IAuthLoginView));
@@ -144,6 +144,8 @@ public partial class App : PrismApplication
         cr.Register<ILoginContentDialogContent, LoginContentDialogContent>();
         cr.RegisterSingleton<IDefaultContentDialogTitle, DefaultContentDialogTitle>();
         cr.RegisterSingleton<IAuthTaskDialogViewModel, AuthTaskDialogViewModel>();
+        cr.RegisterSingleton<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
+        cr.RegisterSingleton<IBulkAddPagesPopupViewModel, BulkAddPagesPopupViewModel>();
         //cr.RegisterSingleton<ILoginTaskDialog, LoginTaskDialog>(false, Chameleon.Common.Regions.DialogNames.LoginDialog);
         //containerRegistry.RegisterDialog<MessageBoxView, MessageBoxViewModel>();
         //containerRegistry.Register<object>();
@@ -156,19 +158,19 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IDashboardViewModel, DashboardViewModel>();
         containerRegistry.RegisterSingleton<IDashboardView, DashboardView>();
 
-        containerRegistry.RegisterSingleton<ISettingsViewModel, SettingsViewModel>();
-        containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
-        containerRegistry.RegisterSingleton<IUserDefaultSettingsViewModel, UserDefaultSettingsViewModel>();
-        containerRegistry.RegisterSingleton<IUserProxySettingsViewModel, UserProxySettingsViewModel>();
-        containerRegistry.RegisterSingleton<IProxyCreditViewModel, ProxyCreditViewModel>();
-        containerRegistry.RegisterSingleton<IPhoneVerificationViewModel, PhoneVerificationViewModel>();
-        containerRegistry.RegisterSingleton<IAssistantUsersViewModel, AssistantUsersViewModel>();
-        containerRegistry.RegisterSingleton<ImportViewModel>();
-        containerRegistry.Register<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
-        containerRegistry.Register<IProxyAccessViewModels, ProxyAccessViewModels>();
-                                                                                        
-        
-        // Views - Region Navigation
+        //containerRegistry.RegisterSingleton<ISettingsViewModel, SettingsViewModel>();
+        //containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
+        //containerRegistry.RegisterSingleton<IUserProxySettingsViewModel, UserProxySettingsViewModel>();
+        //containerRegistry.RegisterSingleton<IProxyCreditViewModel, ProxyCreditViewModel>();
+        //containerRegistry.RegisterSingleton<IPhoneVerificationViewModel, PhoneVerificationViewModel>();
+        //containerRegistry.RegisterSingleton<IAssistantUsersViewModel, AssistantUsersViewModel>();
+        //containerRegistry.RegisterSingleton<ImportViewModel>();
+        //containerRegistry.RegisterSingleton<IProxyAccessViewModels, ProxyAccessViewModels>();
+
+
+        // Views - Region Navigation 
+        //containerRegistry.RegisterSingleton<IUserDefaultSettingsViewModel, UserDefaultSettingsViewModel>();
+        //containerRegistry.RegisterSingleton<IUserDefaultSettingsView, UserDefaultSettingsView>();
         //containerRegistry.RegisterForNavigation<DashboardView, IDashboardViewModel>();
         //containerRegistry.RegisterForNavigation<SettingsView, ISettingsViewModel>();
         //containerRegistry.RegisterForNavigation<UserDefaultSettingsView, IUserDefaultSettingsViewModel>();

@@ -3,6 +3,7 @@ using Chameleon.Controls.ImportExport.Models;
 using Chameleon.Controls.ImportExport.Services;
 using Chameleon.Controls.ImportExport.ViewModels;
 using Chameleon.Domain.Entities;
+using Chameleon.Interfaces.App.ImportExport.Views;
 using Chameleon.Interfaces.UserProfileFolders;
 using Prism.Commands;
 using System.Collections.ObjectModel;
@@ -10,7 +11,8 @@ using System.Collections.Specialized;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.ImportExport;
 
-public class ImportViewModel : SubViewModelBase
+public class ImportViewModel : SubViewModelBase,
+    IImportViewModel
 {
     private readonly IUserProfileViewModelImporter _viewModelImporter;
     private readonly IUserProfileFileSystemImporter _fileSystemImporter;

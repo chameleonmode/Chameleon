@@ -6,6 +6,6 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Chameleon.Avalonia.Controls.Settings.ImportView">
 	<DockPanel>
-		<commonCntrl:NavigateBackControl DockPanel.Dock="Top" />
+		
 	</DockPanel>
 </UserControl>

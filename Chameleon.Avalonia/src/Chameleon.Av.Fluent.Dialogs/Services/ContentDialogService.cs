@@ -1,4 +1,5 @@
 ﻿
+using Chameleon.Common.Base;
 using Chameleon.Interfaces.Dialogs.Views;
 using FluentAvalonia.UI.Controls;
 
@@ -37,5 +38,10 @@ public class ContentDialogService : IContentDialogService
 
         var res = await dialog.ShowAsync();
         return (IContentDialogResult)res;
+    }
+
+    public async Task<IContentDialogResult> ShowContentDialogAsync(ContentDialogButtons btns, object content, object? title = null, string primaryBtnTxt = "OK", string secondaryBtnTxt = "", string closebtnTxt = "")
+    {
+        return await ShowContentDialogAsync(new DefaultContentDialogView(btns, content, title, primaryBtnTxt, secondaryBtnTxt, closebtnTxt));
     }
 }

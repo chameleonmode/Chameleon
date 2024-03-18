@@ -37,7 +37,6 @@ using Chameleon.Common.Regions;
 using Chameleon.Interfaces.Windows;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.Dashboard;
-using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Avalonia.Prism.Dialogs;
 using Chameleon.Interfaces.App.Settings;
@@ -45,6 +44,7 @@ using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 using Chameleon.Controls.AssistantUsers.Interfaces;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.ImportExport;
+using Chameleon.Interfaces.Dialogs.Views;
 
 
 namespace Chameleon.Avalonia.PrismApp;
@@ -138,7 +138,7 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IAssistantUsersViewModel, AssistantUsersViewModel>();
         containerRegistry.RegisterSingleton<IAssistantUsersViewModel, AssistantUsersViewModel>();
         containerRegistry.RegisterSingleton<ImportViewModel>();
-        containerRegistry.Register<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
+        //containerRegistry.Register<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
         containerRegistry.Register<IProxyAccessViewModels, ProxyAccessViewModels>();
 
         // Views - Region Navigation

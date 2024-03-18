@@ -5,6 +5,7 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Services;
+using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.Startup;
 using Chameleon.Interfaces.Views;
 using Chameleon.Interfaces.WebBrowser;
@@ -25,6 +26,7 @@ namespace Chameleon.Application.Startup
              IEventAggregator eventAggregator,
              IAuthService authService,
             // injected just to create all event handlers to start them up
+            ISettingsViewModel ___,
             IDashboardViewModel __,
              ISystemBrowserManager systemBrowserManager 
             ,IEnumerable<IApplicationEventHandlers> _

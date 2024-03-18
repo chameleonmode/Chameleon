@@ -2,12 +2,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:prism="http://prismlibrary.com/"
-             prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.ViewModels"
              mc:Ignorable="d"
+			 x:DataType="vm:SettingsViewModel"
+			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.Settings.SettingsView">
+	<UserControl.Resources>
+		<ui:SymbolIconSource x:Key="Pages" Symbol="TwoPage" />
+		<ui:SymbolIconSource x:Key="Proxy" Symbol="WifiProtected" />
+		<ui:SymbolIconSource x:Key="ProxyCred" Symbol="WifiWarning" />
+		<ui:SymbolIconSource x:Key="CellPhone" Symbol="CellPhone" />
+		<ui:SymbolIconSource x:Key="User" Symbol="OtherUser" />
+		<ui:SymbolIconSource x:Key="Import" Symbol="Import" />
+		<ui:SymbolIconSource x:Key="GoIcon" Symbol="ChevronRight" />
+	</UserControl.Resources>
+	
 	<DockPanel>
-		<StackPanel DockPanel.Dock="Top" Spacing="5">
+		<!--<StackPanel DockPanel.Dock="Top" Spacing="5">
 			<Grid Background="LightGray" ColumnDefinitions="Auto, *">
 				<TextBlock Text="{Binding Title}"
 						   Grid.Column="1"
@@ -15,29 +27,52 @@
 						   VerticalAlignment="Center"
 						   FontWeight="Bold" />
 			</Grid>
-		</StackPanel>
+		</StackPanel>-->
 
 		<ScrollViewer Margin="5">
 			<StackPanel>
-				<Label Content="Some content here for SettingsView" FontSize="18" />
-				<Button Content="DEFAULTS"
-						Command="{Binding CmdNavigateToChild}"
-						CommandParameter="DEFAULTS"/>
-				<Button Content="PROXY"
-						Command="{Binding CmdNavigateToChild}"
-						CommandParameter="PROXY"/>
-				<Button Content="PROXY CREDIT"
-						Command="{Binding CmdNavigateToChild}"
-						CommandParameter="PROXYCREDIT"/>
-				<Button Content="PHONE VERIFICATION"
-						Command="{Binding CmdNavigateToChild}"
-						CommandParameter="PHONEVERIFICATION"/>
-				<Button Content="USERS"
-						Command="{Binding CmdNavigateToChild}"
-						CommandParameter="USERS"/>
-				<Button Content="IMPORT PROFILES"
-						Command="{Binding CmdNavigateToChild}"
-						CommandParameter="IMPORTPROFILES"/>
+				<ui:SettingsExpander Header="Default"
+					 IconSource="{StaticResource Pages}"
+					 Description="Default home pages"
+					 IsClickEnabled="True"
+					 ActionIconSource="{StaticResource GoIcon}"
+					 Command="{Binding CmdNavigateToChildCommand}"
+					 CommandParameter="DEFAULTS"/>
+				<ui:SettingsExpander Header="PROXY"
+					 IconSource="{StaticResource Proxy}"
+					 Description="Proxy settings"
+					 IsClickEnabled="True"
+					 ActionIconSource="{StaticResource GoIcon}"
+					 Command="{Binding CmdNavigateToChildCommand}"
+					 CommandParameter="PROXY"/>
+				<ui:SettingsExpander Header="PROXY CREDIT"
+					 IconSource="{StaticResource ProxyCred}"
+					 Description="Proxy credit settings"
+					 IsClickEnabled="True"
+					 ActionIconSource="{StaticResource GoIcon}"
+					 Command="{Binding CmdNavigateToChildCommand}"
+					 CommandParameter="PROXYCREDIT"/>
+				<ui:SettingsExpander Header="PHONE VERIFICATION"
+					 IconSource="{StaticResource CellPhone}"
+					 Description="Phone verification settings"
+					 IsClickEnabled="True"
+					 ActionIconSource="{StaticResource GoIcon}"
+					 Command="{Binding CmdNavigateToChildCommand}"
+					 CommandParameter="PHONEVERIFICATION"/>
+				<ui:SettingsExpander Header="USERS"
+					 IconSource="{StaticResource User}"
+					 Description="Users settings"
+					 IsClickEnabled="True"
+					 ActionIconSource="{StaticResource GoIcon}"
+					 Command="{Binding CmdNavigateToChildCommand}"
+					 CommandParameter="USERS"/>
+				<ui:SettingsExpander Header="IMPORT PROFILES"
+					 IconSource="{StaticResource Import}"
+					 Description="Import profiles from file"
+					 IsClickEnabled="True"
+					 ActionIconSource="{StaticResource GoIcon}"
+					 Command="{Binding CmdNavigateToChildCommand}"
+					 CommandParameter="IMPORTPROFILES"/>
 			</StackPanel>
 		</ScrollViewer>
 	</DockPanel>

@@ -4,7 +4,6 @@ using Chameleon.Core.Collections;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.UserSettings;
 using Prism.Commands;
@@ -12,36 +11,36 @@ using Prism.Services.Dialogs;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Prism.Events;
 using Chameleon.Interfaces.App.Settings;
+using Chameleon.Interfaces.Dialogs.Views;
+using Chameleon.Interfaces.App.UserSettings;
+using Chameleon.Interfaces.Dialogs.ViewModels;
+using Chameleon.Interfaces.Dialogs;
+using Chameleon.CT.Common.Base;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
 public class UserDefaultSettingsViewModel
-       : SubViewModelBase
+       : SubPageViewModelBase
        , IUserDefaultSettingsViewModel
 {
     private readonly IEventAggregator _eventAggregator;
-    private readonly IDialogWindowsService _dialogWindowsService;
-    private readonly IBulkAddPagesPopupView _bulkAddPagesPopupView;
+    private readonly IBulkAddPagesPopupViewModel _bulkAddPagesPopupViewModel;
     private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
     private ObservableCollection<IUserDefaultSetting, UserDefaultSettingViewModel> _mapping;
 
     public UserDefaultSettingsViewModel(
-        IEventAggregator eventAggregator,
-        IDialogWindowsService dialogWindowsService,
         IUserDefaultSettingsService userDefaultsSettingsService,
-        IBulkAddPagesPopupView bulkAddPagesPopupView
+        IBulkAddPagesPopupViewModel bulkAddPagesPopupView
         )
     {
-        _eventAggregator = eventAggregator;
-        _dialogWindowsService = dialogWindowsService;
         _userDefaultsSettingsService = userDefaultsSettingsService;
-        _bulkAddPagesPopupView = bulkAddPagesPopupView;
+        _bulkAddPagesPopupViewModel = bulkAddPagesPopupView;
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<LoginSuccessEvent>()
             .SubscribeOnce(OnAuthenticated);
 
-        _eventAggregator
+        EventAggregator
            .GetEvent<SelectedUserDefaultSettingEvent>()
            .Subscribe(_ => OnSelectedChanged());
 
@@ -60,14 +59,14 @@ public class UserDefaultSettingsViewModel
     public DelegateCommand BulkAddPagesCommand { get; }
     private async void BulkAddPages()
     {
-        var result = await _dialogWindowsService.ShowDialogWindow(_bulkAddPagesPopupView, DialogTitle);
-        if ((ButtonResult)result == ButtonResult.OK)
+        var result = await _bulkAddPagesPopupViewModel.ShowAsync();
+        if (result == IContentDialogResult.Primary)
         {
-            AddPages(_bulkAddPagesPopupView.Urls);
+            AddPages(_bulkAddPagesPopupViewModel.Urls);
         }
         else
         {
-            _bulkAddPagesPopupView.Urls = null;
+            _bulkAddPagesPopupViewModel.Urls = null;
         }
     }
 
@@ -77,7 +76,7 @@ public class UserDefaultSettingsViewModel
         {
             AddPages(urls.Split(BulkAddSeparator));
         }
-        _bulkAddPagesPopupView.Urls = null;
+        _bulkAddPagesPopupViewModel.Urls = null;
     }
 
     private void AddPages(string[] urls)
@@ -161,7 +160,7 @@ public class UserDefaultSettingsViewModel
             userSettings, userSetting => new UserDefaultSettingViewModel(_eventAggregator, userSetting, _userDefaultsSettingsService)
             );
 
-        RaisePropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(ViewModels));
     }
 
     private List<UserDefaultSettingViewModel> _selectedDefaultSetting;
@@ -182,7 +181,7 @@ public class UserDefaultSettingsViewModel
         {
             if (SetProperty(ref _selectedCount, value))
             {
-                RaisePropertyChanged(nameof(HasSelectedItems));
+                OnPropertyChanged(nameof(HasSelectedItems));
             }
         }
     }

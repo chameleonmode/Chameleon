@@ -5,9 +5,11 @@ using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Ioc;
+using Chameleon.Interfaces.Settings;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Primitives;
 using FluentAvalonia.UI.Media.Animation;
+using FluentAvalonia.UI.Navigation;
 using System.Configuration;
 
 namespace Chameleon.Av.Fluent.Common.Services;
@@ -37,21 +39,29 @@ public class NavigationService
     {
         _frame?.Navigate(t);
     }
-
-    public void NavigateFromContext(object dataContext, NavigationTransitionInfo transitionInfo = null)
+    public void NavigateToType(Type t,object? parameter = null, NavigationTransitionInfo? transitionInfo = null)
     {
-        _frame?.NavigateFromObject(dataContext,
-            new FluentAvalonia.UI.Navigation.FrameNavigationOptions
-            {
-                IsNavigationStackEnabled = true,
-                TransitionInfoOverride = transitionInfo ?? new SuppressNavigationTransitionInfo()
-            });
+        _frame?.NavigateToType(t,  parameter, BuildOptions(transitionInfo));
+    }
+
+    public void NavigateFromContext(object dataContext, NavigationTransitionInfo? transitionInfo = null)
+    {
+        _frame?.NavigateFromObject(dataContext,BuildOptions(transitionInfo));
     }
 
     public void ClearOverlay()
     {
         _overlayHost?.Children.Clear();
 
+    }
+
+    FrameNavigationOptions BuildOptions(NavigationTransitionInfo? transitionInfo = null)
+    {
+        return new FrameNavigationOptions
+        {
+            IsNavigationStackEnabled = true,
+            TransitionInfoOverride = transitionInfo ?? new SuppressNavigationTransitionInfo()
+        };
     }
 
     private Frame? _frame;
@@ -66,17 +76,26 @@ public class NavigationFactory : INavigationPageFactory
     }
     public Control GetPage(Type srcType)
     {
-        return null;
+        var c = ContainerServiceHelper.Resolve(srcType) as Control;
+        return c;
     }
 
-    public Control GetPageFromObject(object target)
+    public Control? GetPageFromObject(object target)
     {
         if (target is HomePageModel)
         {
-            var c = ContainerServiceHelper.Current.ContainerProvider.Resolve<IDashboardView>() as Control;
-            if (c.DataContext == null)
-                c.DataContext = ContainerServiceHelper.Current.ContainerProvider.Resolve<IDashboardViewModel>();
+            var c = ContainerServiceHelper.Resolve<IDashboardView>() as Control;
             return c;
+        }
+        else if (target is SettingsPageModel)
+        {
+            var c = ContainerServiceHelper.Resolve<ISettingsView>() as Control;
+            return c;
+        }
+        else if (target is string nameOf)
+        {
+            var c = ContainerServiceHelper.Resolve<ISettingsView>() as Control;
+            return ResolvePage(nameOf);
         }
         else
         {
@@ -111,6 +130,18 @@ public class NavigationFactory : INavigationPageFactory
 
         return page;
     }
+    private Control? ResolvePage(string pbvm)
+    {
+        Control? page = null;
+
+        if (SettingsPages.TryGetValue(pbvm, out var func))
+        {
+            page = func();
+            //(page as ChameleonPageBase).CreationContext = pbvm;
+        }
+
+        return page;
+    }
 
     // Do this to avoid needing Activator.CreateInstance to create from type info
     // and to avoid a ridiculous amount of 'ifs'
@@ -122,5 +153,10 @@ public class NavigationFactory : INavigationPageFactory
     private readonly Dictionary<string, Func<Control>> FAPages = new Dictionary<string, Func<Control>>
     {
 
+    };
+
+    private readonly Dictionary<string, Func<Control?>> SettingsPages = new()
+    {
+         { nameof(IUserDefaultSettingsView), () =>  ContainerServiceHelper.Resolve<IUserDefaultSettingsView>() as Control },
     };
 }

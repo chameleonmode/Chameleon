@@ -6,8 +6,6 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Chameleon.Avalonia.Controls.Settings.ProxyCreditView">
 	<DockPanel>
-		<commonCntrl:NavigateBackControl DockPanel.Dock="Top" />
-		
 		<Border BorderThickness="0"
 				BorderBrush="{StaticResource DividerLine}"
 				Background="{StaticResource BackGroundGreyColor}">

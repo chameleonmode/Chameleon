@@ -1,4 +1,5 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.Avalonia.Common.Util;
+using Chameleon.Avalonia.Prism.Module.Base;
 using Chameleon.Core.Util;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserProfiles;

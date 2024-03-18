@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia"  />
+    <PackageReference Include="Avalonia" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Prism.Avalonia" />
   </ItemGroup>
@@ -15,13 +15,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
+    <ProjectReference Include="..\Chameleon.Av.Fluent.Common\Chameleon.Av.Fluent.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controlls.Common\Chameleon.Avalonia.Controlls.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Dialogs\Chameleon.Avalonia.Prism.Dialogs.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Module.MessageBox\Chameleon.Avalonia.Prism.Module.MessageBox.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Module\Chameleon.Avalonia.Prism.Module.csproj" />
   </ItemGroup>
 
 </Project>

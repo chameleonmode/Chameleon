@@ -3,7 +3,8 @@
 namespace Chameleon.Interfaces.App.Settings;
 
 public interface IUserProxySettingsViewModel
-    : ISingletonDependency
+    : ISubPageViewModel,
+    ISingletonDependency
 {
     int FolderId { get; set; }
 }

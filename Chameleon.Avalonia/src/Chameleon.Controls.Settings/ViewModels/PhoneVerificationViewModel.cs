@@ -1,4 +1,5 @@
 ﻿using Chameleon.Avalonia.Prism.Module.Base;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.Settings;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Prism.Events;
@@ -7,29 +8,29 @@ using Prism.Commands;
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
 public class PhoneVerificationViewModel
-       : SubViewModelBase
+       : SubPageViewModelBase
        , IPhoneVerificationViewModel
 {
     private IUserSetting _userSetting;
-    private readonly IEventAggregator _eventAggregator;
     private readonly IUserSettingsService _userSettingsService;
 
     public PhoneVerificationViewModel(
-        IEventAggregator eventAggregator,
         IUserSettingsService userSettingsService
         )
     {
         Title = "Phone Verification";            
 
-        _eventAggregator = eventAggregator;
         _userSettingsService = userSettingsService;
 
         SaveCommand = new DelegateCommand(Save)
             .ObservesCanExecute(() => IsChangeApiKey);
-
-        InitializeApiKey();
     }
-
+    public override Task LoadAsync()
+    {
+        if (!base.Loaded)
+            InitializeApiKey();
+        return base.LoadAsync();
+    }
     private void InitializeApiKey()
     {
         _userSetting = _userSettingsService.Get();

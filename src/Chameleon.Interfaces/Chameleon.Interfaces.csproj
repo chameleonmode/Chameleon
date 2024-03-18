@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="App\Bookmarks\Views\Details\" />
+    <Folder Include="App\Settings\UserDefaultSettings\" />
   </ItemGroup>
 
   <ItemGroup>

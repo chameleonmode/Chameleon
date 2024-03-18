@@ -1,100 +1,93 @@
 ﻿using Chameleon.Authorization;
+using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Avalonia.Prism.Module.Base;
 using Chameleon.Common.Helpers;
 using Chameleon.Common.Regions;
+using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
+using Chameleon.Interfaces.App.ImportExport.Views;
+using Chameleon.Interfaces.App.ProxyCredit.Views;
 using Chameleon.Interfaces.App.Settings;
+using Chameleon.Interfaces.App.UserSettings.View;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Settings;
+using Chameleon.Interfaces.UserSettings;
 using Chameleon.Prism.Events;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Prism.Commands;
 using Prism.Regions;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
-public class SettingsViewModel
-       : ViewModelBase
+public partial class SettingsViewModel
+       : ObservableObjectBase
        , ISettingsViewModel
 {
-    private readonly IEventAggregator _eventAggregator;
     private readonly IApplicationUser _applicationUser;
 
-    public SettingsViewModel(IEventAggregator eventAggregator,
-        IApplicationUser user,
+
+    [ObservableProperty]
+    private bool _hasProxySettingsView;
+    [ObservableProperty]
+    private bool _hasProxyCredit;
+    [ObservableProperty]
+    private bool _hasPhoneVerification;
+    [ObservableProperty]
+    private bool _hasAssistantUsers;
+    [ObservableProperty]
+    public bool _hasImport;
+    [ObservableProperty]
+    public bool _hasExport;
+
+    public SettingsViewModel(IApplicationUser user,
         //for init
         IUserDefaultSettingsViewModel userDefaultSettingsViewModel)
     {
-        _eventAggregator = eventAggregator;
         _applicationUser = user;
 
-        _eventAggregator
-            .GetEvent<ChangeSelectedTabIndexEvent>()
-            .Subscribe(args => SelectedIndex = args.SelectedIndex);
-
-        _eventAggregator
+        EventAggregator
           .GetEvent<LoginSuccessEvent>()
           .Subscribe(args => InitializeTabControl());
-
-        CustomTabs = new CustomTabs();
 
         Title = "Settings";
     }
 
-    public DelegateCommand<string> CmdNavigateToChild => new ((param) =>
+    [RelayCommand]
+    public void CmdNavigateToChild(string param)
     {
-        var source = nameof(UserDefaultSettingsView); 
+        var type = typeof(IUserDefaultSettingsView);
         switch (param)
         {
             case "DEFAULTS":
-                source = nameof(UserDefaultSettingsView);
+                type = typeof(IUserDefaultSettingsView);
                 break;
 
             case "PROXY":
-                source = nameof(UserProxySettingsView);
+                type = typeof(IUserProxySettingsView);
                 break;
 
             case "PROXYCREDIT":
-                source = nameof(ProxyCreditView);
+                type = typeof(IProxyCreditView);
                 break;
 
             case "PHONEVERIFICATION":
-                source = nameof(PhoneVerificationView);
+                type = typeof(IPhoneVerificationView);
                 break;
 
             case "USERS":
-                source = nameof(AssistantUsersView);
+                type = typeof(IAssistantUsersView);
                 break;
 
             case "IMPORTPROFILES":
-                source = nameof(ImportView);
+                type = typeof(IImportView);
                 break;
 
             default:
                 break;
         }
 
-        RegionManager.RequestNavigate(RegionNames.ContentRegion, source);
-    });
-
-    public override void OnNavigatedFrom(NavigationContext navigationContext)
-    {
-        base.OnNavigatedFrom(navigationContext);
-    }
-
-    public EventHandler ChangeSettingTab { get; set; }
-    public CustomTabs CustomTabs { get; set; }
-
-    private int _selectedIndex;
-    public int SelectedIndex
-    {
-        get => _selectedIndex;
-        set
-        {
-            if (SetProperty(ref _selectedIndex, value))
-            {
-                ChangeSettingTab?.Invoke(this, null);
-            }
-        }
+        NavigationService.Instance.NavigateToType(type);
     }
 
     private void InitializeTabControl()
@@ -102,24 +95,24 @@ public class SettingsViewModel
         //TODO: refactor
         if (_applicationUser.HasPemission(PermissionNames.Pages_Proxy))
         {
-            CustomTabs.HasProxySettingsView = true;
+            HasProxySettingsView = true;
         }
 
         if (_applicationUser.HasPemission(PermissionNames.Pages_ProxyCredits))
         {
-            CustomTabs.HasProxyCredit = true;
+            HasProxyCredit = true;
         }
 
         if (_applicationUser.HasPemission(PermissionNames.Pages_Users_Primary))
         {
-            CustomTabs.HasPhoneVerification = true;
-            CustomTabs.HasAssistantUsers = true;
+            HasPhoneVerification = true;
+            HasAssistantUsers = true;
         }
 
         if (_applicationUser.HasPemission(PermissionNames.Pages_ImportExport))
         {
-            CustomTabs.HasImport = true;
-            CustomTabs.HasExport = true;
+            HasImport = true;
+            HasExport = true;
         }
     }
 }

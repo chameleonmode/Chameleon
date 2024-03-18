@@ -7,14 +7,11 @@ using Chameleon.Interfaces.Dialogs.Views;
 
 namespace Chameleon.Av.Fluent.Dialogs;
 
-public partial class LoginContentDialogContent : ContentDialogControlBase, ILoginContentDialogContent
+public partial class BulkAddPagesPopupView : ContentDialogControlBase, IBulkAddPagesPopupView
 {
-    public override object? Title => ContainerServiceHelper.Current.ContainerProvider?.Resolve<IDefaultContentDialogTitle>();
-    public override string PrimaryButtonText  => "Login";
-    
-    public LoginContentDialogContent()
+    public BulkAddPagesPopupView()
     {
         InitializeComponent();
         DataContext = ContainerServiceHelper.Resolve<IBulkAddPagesPopupViewModel>();
-    }     
+    }
 }
