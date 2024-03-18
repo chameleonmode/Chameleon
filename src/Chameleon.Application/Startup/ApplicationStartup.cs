@@ -43,21 +43,13 @@ namespace Chameleon.Application.Startup
             _eventAggregator
               .GetEvent<LoginSuccessEvent>()
               .SubscribeOnce(ShowMainWindow);
-
-            _eventAggregator
-                .GetEvent<LoginFailEvent>()
-                .SubscribeOnce(LoginFailEventMethod);
-        }
-
-        private void LoginFailEventMethod()
-        {
         }
 
         public async Task RunAsync()
         {
-            await _authService.ShowLoginDialogAsync();
+            //await _authService.ShowLoginDialogAsync();
 
-           // await _authService.LoginAsync();
+           await _authService.LoginAsync();
             //if (string.IsNullOrEmpty(_settingsService.AuthAccessToken))
             //{
             // first create dialog not showing it

@@ -3,14 +3,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-                    xmlns:core="using:FluentAvalonia.Core"
+			 xmlns:core="using:FluentAvalonia.Core"
 			 xmlns:regions="using:Chameleon.Common.Regions"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
-			 xmlns:vm="using:Chameleon.Modules.Auth.ViewModels"
+			 xmlns:vm="using:Chameleon.Av.Fluent.ViewModels"
+			 xmlns:local="using:Chameleon.Av.Fluent.Views"
              mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
+			 x:CompileBindings="True"
+			 x:DataType="vm:MainViewViewModel"
              x:Class="Chameleon.Av.Fluent.Views.MainView">
 
 	<Grid RowDefinitions="Auto,*">
+
 		<Grid Name="TitleBarHost"
               ColumnDefinitions="Auto,Auto,*,Auto"
               Background="Transparent">
@@ -49,8 +53,10 @@
                            IsBackEnabled="{Binding #FrameView.CanGoBack}">
 			<ui:Frame Name="FrameView" />
 		</ui:NavigationView>
-		
 
+		<local:MainAppSplashContent Grid.RowSpan="2"
+									Background="{StaticResource CoreSplashScreenBackground}"
+									IsVisible="{Binding IsSplashVisible}"/>
 		<!--<Grid x:DataType="vm:AuthTaskDialogViewModel"
 			  Grid.Row="1">
 			<ui:TaskDialog Name="{x:Static regions:DialogNames.LoginDialog}"

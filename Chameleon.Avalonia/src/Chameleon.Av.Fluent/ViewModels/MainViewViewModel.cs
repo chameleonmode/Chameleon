@@ -1,5 +1,40 @@
-﻿namespace Chameleon.Av.Fluent.ViewModels;
+﻿using Chameleon.Auth.Services;
+using Chameleon.CT.Common.Base;
+using Chameleon.Interfaces.Auth;
+using Chameleon.Prism.Events;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-public class MainViewViewModel
+namespace Chameleon.Av.Fluent.ViewModels;
+
+public partial class MainViewViewModel:ObservableObjectBase
 {
+    [ObservableProperty]
+    private bool isSplashVisible = true;
+
+    private readonly IAuthService _authService;
+
+    public MainViewViewModel(IAuthService authService)
+    {
+        _authService = authService;
+
+        EventAggregator
+            .GetEvent<LoginFailEvent>()
+            .SubscribeOnce(LoginFailEventMethod);
+
+        EventAggregator
+            .GetEvent<LoginSuccessEvent>()
+            .SubscribeOnce(LoginSuccessEventMethod);
+    }
+
+    private async void LoginSuccessEventMethod()
+    {
+        await _authService.ShowLoginDialogAsync();
+        IsSplashVisible = false;
+    }
+
+    private async void LoginFailEventMethod()
+    {
+        IsSplashVisible = true;
+        await _authService.ShowLoginDialogAsync();
+    }
 }

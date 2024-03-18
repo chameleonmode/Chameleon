@@ -41,14 +41,12 @@ namespace Chameleon.Auth.Services
         public async Task<bool> LoginAsync()
         {
             IAuthResult? loginResult = null;
+            IAuthRefreshTokenResponse? refreshTokenResponse = null;
             try
             {
                 if (_appSettings.Login.LoginName.HasAny() && _appSettings.Login.LicenseKey.HasAny())
                 {
-                    //await Task.Run(() =>
-                    //{
-                        loginResult = await Login(_appSettings.Login.LoginName, _appSettings.Login.LicenseKey);
-                    //});
+                    loginResult = await Login(_appSettings.Login.LoginName, _appSettings.Login.LicenseKey);
                 }
             }
             catch
@@ -57,18 +55,27 @@ namespace Chameleon.Auth.Services
             }
             finally
             {
-                if (loginResult is not null)
+                try
                 {
-                    OnAuthenticateSuccess(loginResult);
-                    await RefreshToken(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
+                    if (loginResult is not null)
+                    {
+                        OnAuthenticateSuccess(loginResult);
+                        refreshTokenResponse = await RefreshToken(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
+                        // trigger event
+                        _eventAggregator
+                            .GetEvent<LoginSuccessEvent>()
+                            .Publish(new LoginEventArgs(_authSession));
+                    }
                 }
-                else
+                catch
                 {
-                    _eventAggregator.GetEvent<LoginFailEvent>().Publish();
+                    refreshTokenResponse = null;
                 }
             }
+            if (loginResult is null || refreshTokenResponse is null)
+                _eventAggregator.GetEvent<LoginFailEvent>().Publish();
 
-            return loginResult is not null;
+            return loginResult is not null && refreshTokenResponse is not null;
         }
         public async Task ShowLoginDialogAsync()
         {
@@ -143,10 +150,6 @@ namespace Chameleon.Auth.Services
             _authSession.TookGuidedTour = authResult.TookGuidedTour;
             _authSession.CanCreateProfiles = authResult.CanCreateProfiles;
 
-            // trigger event
-            _eventAggregator
-                .GetEvent<LoginSuccessEvent>()
-                .Publish(new LoginEventArgs(_authSession));
         }
 
 
@@ -155,8 +158,8 @@ namespace Chameleon.Auth.Services
             var response = await _apiClient.RefreshTokenAsync(acessToken, refreshToken);
             if (response == null)
             {
-                await ShowLoginDialogAsync();
-                //return null;
+                //await ShowLoginDialogAsync();
+                return null;
             }
             else
             {

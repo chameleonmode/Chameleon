@@ -47,6 +47,7 @@ using Chameleon.Interfaces.Dialogs.Views;
 using Chameleon.Av.Fluent.Dialogs.Controls;
 using Chameleon.Av.Fluent.Dialogs.Services;
 using Chameleon.Interfaces.Dialogs.ViewModels;
+using Chameleon.Av.Fluent.ViewModels;
 
 namespace Chameleon.Av.Fluent;
 
@@ -149,6 +150,8 @@ public partial class App : PrismApplication
 
         // Views - Viewmodels                                                     
         containerRegistry.RegisterSingleton<IMainWindow, MainWindow>();
+
+        containerRegistry.RegisterSingleton<MainViewViewModel>();
 
         containerRegistry.RegisterSingleton<IDashboardViewModel, DashboardViewModel>();
         containerRegistry.RegisterSingleton<IDashboardView, DashboardView>();

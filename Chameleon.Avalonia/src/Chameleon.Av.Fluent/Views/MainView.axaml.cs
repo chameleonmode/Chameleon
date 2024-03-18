@@ -49,8 +49,7 @@ public partial class MainView : UserControl
 
         _isDesktop = TopLevel.GetTopLevel(this) is Window;
 
-        var vm = new MainViewViewModel();
-        DataContext = vm;
+
 
         FrameView.NavigationPageFactory = NavigationService.Instance.NavFactory;
         NavigationService.Instance.SetFrame(FrameView);
@@ -65,12 +64,16 @@ public partial class MainView : UserControl
                 while (!App.FrameworkInitComplete && waited++ < 5)
                     await Task.Delay(500);
 
-                 //ContainerServiceHelper.Current.ContainerProvider
-                 //   .Resolve<IDashboardViewModel>();
+                //ContainerServiceHelper.Current.ContainerProvider
+                //   .Resolve<IDashboardViewModel>();
                 if (ContainerServiceHelper.Current.ContainerProvider is not null)
+                {
+                    DataContext = ContainerServiceHelper.Current.ContainerProvider.Resolve<MainViewViewModel>();
+
                     await ContainerServiceHelper.Current.ContainerProvider
                        .Resolve<IApplicationStartup>()
                        .RunAsync();
+                }
 
                 InitializeNavigationPages();
             };
