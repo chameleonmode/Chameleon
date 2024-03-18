@@ -84,7 +84,7 @@ public partial class SettingsViewModel
                 break;
         }
 
-        NavigationService.Instance.NavigateToType(type);
+        NavigationService.Instance.NavigateToType(type,param);
     }
 
     private void InitializeTabControl()

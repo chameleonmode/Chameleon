@@ -7,7 +7,9 @@
 	</Design.PreviewWith>
     <!-- Override this so content doesn't appear in title bar area -->
     <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
-    <Thickness x:Key="ChameleonAppPageMargin">10</Thickness>
+	<Thickness x:Key="ChameleonAppPageMargin">10</Thickness>
+	<Thickness x:Key="ChameleonControlMargin">8</Thickness>
+	<Thickness x:Key="ChameleonInnerControlMargin">4</Thickness>
 	
     <!--Icons-->
 	<ui:BitmapIconSource x:Key="logosymbolIcon" UriSource="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico" />
@@ -76,6 +78,9 @@
 
 	<!-- PageIcons -->
 	<ui:SymbolIconSource x:Key="DashboardPageIcon" Symbol="Home" />
+
+	<!-- SubPageIcons -->
+	<ui:SymbolIconSource x:Key="DefaultSettingsPageIcon" Symbol="TwoPage" />
     <!--<ui:ImageIconSource x:Key="BasicInputPageIcon" Source="avares://FAControlsGallery/Assets/Icons/BasicInputIcon.png" />
     <ui:ImageIconSource x:Key="TextPageIcon" Source="avares://FAControlsGallery/Assets/Icons/TextIcon.png" />
     <ui:ImageIconSource x:Key="ListPageIcon" Source="avares://FAControlsGallery/Assets/Icons/ListIcon.png" />

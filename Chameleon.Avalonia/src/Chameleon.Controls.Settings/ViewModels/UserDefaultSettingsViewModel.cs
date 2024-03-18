@@ -23,7 +23,6 @@ public class UserDefaultSettingsViewModel
        : SubPageViewModelBase
        , IUserDefaultSettingsViewModel
 {
-    private readonly IEventAggregator _eventAggregator;
     private readonly IBulkAddPagesPopupViewModel _bulkAddPagesPopupViewModel;
     private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
     private ObservableCollection<IUserDefaultSetting, UserDefaultSettingViewModel> _mapping;
@@ -41,8 +40,6 @@ public class UserDefaultSettingsViewModel
            .Subscribe(_ => OnSelectedChanged());
 
         CreateCommand = new DelegateCommand(CreateNewDefaultSettings);
-        UnduCommand = new DelegateCommand(Undu);
-        RedoCommand = new DelegateCommand(Redo);
         RemoveSelectedItemsCommand = new DelegateCommand(RemoveSelectedItems);
         UnselectItemsCommand = new DelegateCommand(UnselectItems);
         BulkAddPagesCommand = new DelegateCommand(BulkAddPages);
@@ -113,18 +110,6 @@ public class UserDefaultSettingsViewModel
         OnSelectedChanged();
     }
 
-    public DelegateCommand RedoCommand { get; }
-    private void Redo()
-    {
-
-    }
-
-    public DelegateCommand UnduCommand { get; }
-    private void Undu()
-    {
-
-    }
-
     public DelegateCommand CreateCommand { get; }
 
     private void CreateNewDefaultSettings()
@@ -135,8 +120,8 @@ public class UserDefaultSettingsViewModel
         {
             viewModel.SaveUrlFromViewText();
         }
-       
-        _eventAggregator
+
+        EventAggregator
             .GetEvent<CreateUserDefaultSettingsEvent>()
             .Publish();
     }
@@ -158,7 +143,7 @@ public class UserDefaultSettingsViewModel
         var userSettings = _userDefaultsSettingsService.GetAll();
 
         _mapping = new ObservableCollection<IUserDefaultSetting, UserDefaultSettingViewModel>(
-            userSettings, userSetting => new UserDefaultSettingViewModel(_eventAggregator, userSetting, _userDefaultsSettingsService)
+            userSettings, userSetting => new UserDefaultSettingViewModel(EventAggregator, userSetting, _userDefaultsSettingsService)
             );
 
         OnPropertyChanged(nameof(ViewModels));

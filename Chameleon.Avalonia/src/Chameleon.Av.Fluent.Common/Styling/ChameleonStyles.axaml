@@ -3,8 +3,23 @@
         xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives">
   <Design.PreviewWith>
-    <Border Padding="20">
-      <!-- Add Controls for Previewer Here -->
+    <Border Padding="20" Width="720"
+			Height="480">
+		<ui:NavigationView AlwaysShowHeader="True"
+						   
+                           PaneDisplayMode="Left"
+                           Grid.RowSpan="2"
+                           Name="NavView"
+						   Header="hiiii"
+                           IsSettingsVisible="False"
+                           IsBackEnabled="{Binding #FrameView.CanGoBack}">
+			<ui:NavigationView.MenuItems>
+				<ui:NavigationViewItem Content="hi">
+					
+				</ui:NavigationViewItem>
+			</ui:NavigationView.MenuItems>
+			<ui:Frame Name="FrameView" />
+		</ui:NavigationView>
     </Border>
   </Design.PreviewWith>
 
@@ -13,6 +28,7 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceInclude Source="/Styling/ChameleonContentControlStyles.axaml" />
 				<ResourceInclude Source="/Styling/ChameleonDialogControlStyles.axaml" />
+				<ResourceInclude Source="/Styling/ControlThemes.axaml" />
 				<ResourceInclude Source="/Styling/ResourceDictionaryContentDialog.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>

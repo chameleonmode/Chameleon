@@ -4,12 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.ViewModels"
-             mc:Ignorable="d"
+             xmlns:contrls="using:Chameleon.Av.Fluent.Common.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:SettingsViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.Settings.SettingsView">
 	<UserControl.Resources>
-		<ui:SymbolIconSource x:Key="Pages" Symbol="TwoPage" />
 		<ui:SymbolIconSource x:Key="Proxy" Symbol="WifiProtected" />
 		<ui:SymbolIconSource x:Key="ProxyCred" Symbol="WifiWarning" />
 		<ui:SymbolIconSource x:Key="CellPhone" Symbol="CellPhone" />
@@ -29,10 +29,17 @@
 			</Grid>
 		</StackPanel>-->
 
-		<ScrollViewer Margin="5">
+		<ScrollViewer>
 			<StackPanel>
+				<contrls:PageHeaderControl TextType="FAControls"
+										   Classes="smaller"/>
+				<!--<TextBlock Text="Settings"
+                        Margin="30 -30 0 0"
+						   Theme="{StaticResource TitleLargeTextBlockStyle}"/>-->
+			<StackPanel Spacing="15"
+                        Margin="30 0 30 30">
 				<ui:SettingsExpander Header="Default"
-					 IconSource="{StaticResource Pages}"
+					 IconSource="{StaticResource DefaultSettingsPageIcon}"
 					 Description="Default home pages"
 					 IsClickEnabled="True"
 					 ActionIconSource="{StaticResource GoIcon}"
@@ -73,6 +80,7 @@
 					 ActionIconSource="{StaticResource GoIcon}"
 					 Command="{Binding CmdNavigateToChildCommand}"
 					 CommandParameter="IMPORTPROFILES"/>
+			</StackPanel>
 			</StackPanel>
 		</ScrollViewer>
 	</DockPanel>

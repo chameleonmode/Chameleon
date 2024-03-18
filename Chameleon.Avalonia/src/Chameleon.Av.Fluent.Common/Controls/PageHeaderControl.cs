@@ -53,17 +53,17 @@ public class PageHeaderControl : TemplatedControl
     private void OnSizeChanged(object? sender, SizeChangedEventArgs e)
     {
         var wid = e.NewSize.Width;
-        if (wid < 630)
-        {
-            var delta = 630 - wid;
+        //if (wid < 630)
+        //{
+        //    var delta = 630 - wid;
 
-            _text1.Width = 400 - delta;
-        }
-        else
-        {
-            _text1.Width = double.NaN;
-        }
-
+        //    _text1.Width = 400 - delta;
+        //}
+        //else
+        //{
+        //    _text1.Width = double.NaN;
+        //}
+        _text1.Width = 180;
         PseudoClasses.Set(":small", wid < 450);
     }
 
@@ -90,7 +90,8 @@ public class PageHeaderControl : TemplatedControl
 
         header += ".png";
 
-        using var s = AssetLoader.Open(new Uri($"{asset}{header}"));
+        //using var s = AssetLoader.Open(new Uri($"{asset}{header}"));
+        using var s = AssetLoader.Open(new Uri($"avares://Chameleon.Avalonia.Common/Assets/logo-big.png"));
         _text1.Source = new Bitmap(s);
     }
 

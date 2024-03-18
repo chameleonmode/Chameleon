@@ -61,6 +61,16 @@ public static class ApplicationHelper
         return Application.Current?.FindResource(key) as T ?? default;
     }
 
+    public static T? TryGetResource<T>(object key) where T : class
+    {
+        if(Application.Current != null && 
+            Application.Current.TryGetResource(key, null, out var icon) && 
+            icon is T i)
+            return i;
+
+        return  default;
+    }
+
     public static Visual? GetToplevetVisual()
     {
         return GetMainWindow()?.GetVisualRoot() as Visual;

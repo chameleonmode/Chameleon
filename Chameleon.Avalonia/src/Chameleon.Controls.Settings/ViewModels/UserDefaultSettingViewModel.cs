@@ -14,7 +14,6 @@ public class UserDefaultSettingViewModel : ViewModelBase
     private readonly IEventAggregator _eventAggregator;
     private readonly IUserDefaultSetting _userDefaultSetting;
     private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
-    private DebounceDispatcher debounceTimer = new DebounceDispatcher();
 
     public UserDefaultSettingViewModel(
         IEventAggregator eventAggregator,
@@ -83,11 +82,8 @@ public class UserDefaultSettingViewModel : ViewModelBase
 
         HasChanged = false;
 
-        debounceTimer.Debounce(2000, () =>
-        {
-            _userDefaultSetting.DefaultUrl = DefaultUrl;
-            _userDefaultsSettingsService.Save(_userDefaultSetting);
-        });
+        _userDefaultSetting.DefaultUrl = DefaultUrl;
+        _userDefaultsSettingsService.Save(_userDefaultSetting);
     }
 
     public DelegateCommand DeleteCommand { get; }

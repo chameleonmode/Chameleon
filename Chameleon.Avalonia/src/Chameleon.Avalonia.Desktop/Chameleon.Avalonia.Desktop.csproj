@@ -20,6 +20,7 @@
   </ItemGroup>
 	
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj" />
     <ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
     <ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Core.Shared\Chameleon.Core.Shared.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Application\Chameleon.Application.csproj" />

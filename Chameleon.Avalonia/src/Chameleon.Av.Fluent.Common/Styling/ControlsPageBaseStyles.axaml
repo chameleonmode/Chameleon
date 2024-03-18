@@ -10,10 +10,31 @@
 							  ControlName="Dashboard"
 							  Description="Your favorited profiles and folders">
 				<ctrls:ChameleonContentControl Header="Dashboard Header">
-					<ListBox>
-						<ListBoxItem Content="Hello" IsSelected="True"/>
+					<Grid RowDefinitions="Auto,*">
+						<Button Content="Add pages"
+								HorizontalAlignment="Right"
+								Margin="0 12 12 12"
+									Command="{Binding BulkAddPagesCommand}"/>
+					<ListBox Grid.Row="1">
+						<ListBoxItem>
+							<Grid Margin="{StaticResource ChameleonInnerControlMargin}"
+								  ColumnDefinitions="Auto,*,Auto">
+								<CheckBox Grid.Column="0"
+										  IsChecked="{Binding IsChecked}"/>
+								<TextBox Grid.Column="1"
+										  Margin="{StaticResource ChameleonInnerControlMargin}"
+										 Text="dfg"  />
+								<Button Grid.Column="2"
+										HorizontalAlignment="Stretch"
+										 Margin="{StaticResource ChameleonInnerControlMargin}"
+										Content="Delete"
+										 Classes="accent"
+										Command="{Binding DeleteCommand}"/>
+							</Grid>
+						</ListBoxItem>
 						<ListBoxItem Content="World" IsSelected="False"/>
 					</ListBox>
+						</Grid>
 				</ctrls:ChameleonContentControl>	
 		</pg:ChameleonPageBase>
     </Border>
@@ -31,7 +52,7 @@
                            ClipToBounds="False">
 						<Border Background="{DynamicResource PageHeaderBackgroundBrush}"
                                 OpacityMask="{DynamicResource HeaderOpacityMaskBrush}"
-                                Height="8"
+                                Height="80"
                                 VerticalAlignment="Top"/>
 						<Grid ColumnDefinitions="*,Auto"
                               RowDefinitions="*,Auto"
@@ -40,8 +61,7 @@
 							<Panel Name="PageDetails"
                                    Margin="2 0 0 0"
                                    ClipToBounds="False">
-								<Border Background="{DynamicResource ControlOnImageFillColorDefaultBrush}"
-                                        Width="50"
+								<Border Width="50"
 										Height="50"
                                         CornerRadius="{DynamicResource OverlayCornerRadius}"
                                         HorizontalAlignment="Left"
@@ -51,7 +71,7 @@
 									<Border.Transitions>
 										<Transitions>
 											<DoubleTransition Property="Width"
-                                                              Duration="00:00:00.25"
+                                                              Duration="00:00:01.25"
                                                               Easing="0,0 0,1" />
 											<DoubleTransition Property="Height"
                                                               Duration="00:00:00.25"
@@ -69,7 +89,7 @@
                                             Name="DetailsTextHost">
 									<TextBlock Text="{TemplateBinding ControlName}"
                                                Theme="{StaticResource TitleTextBlockStyle}"
-                                               FontSize="26"
+                                               FontSize="28"
                                                Name="ControlNameTextBlock">
 										<TextBlock.Transitions>
 											<Transitions>

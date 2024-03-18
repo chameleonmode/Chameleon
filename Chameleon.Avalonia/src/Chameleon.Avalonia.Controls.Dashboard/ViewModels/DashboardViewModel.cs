@@ -31,7 +31,6 @@ public class DashboardViewModel
     private readonly IPrismMessageBoxService _messageBoxService;
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
-    private readonly DebounceDispatcher _debounceTimer = new DebounceDispatcher();
     private readonly IApplicationUser _applicationUser;
     private readonly IUserAssistantService _userAssistantService;
 
@@ -266,12 +265,9 @@ public class DashboardViewModel
         {
             if (SetProperty(ref _searchText, value))
             {
-                _debounceTimer.Debounce(2000, () =>
-                {
-                    RaisePropertyChanged(nameof(ViewModels));
-                    RaisePropertyChanged(nameof(FolderViewModels));
-                    RaisePropertyChanged(nameof(NoSearchResultsInFavorite));
-                });
+                RaisePropertyChanged(nameof(ViewModels));
+                RaisePropertyChanged(nameof(FolderViewModels));
+                RaisePropertyChanged(nameof(NoSearchResultsInFavorite));
             }
         }
     }

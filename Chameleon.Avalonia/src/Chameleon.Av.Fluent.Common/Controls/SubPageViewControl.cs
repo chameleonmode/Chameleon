@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Chameleon.Av.Fluent.Common.Pages;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.Settings;
@@ -8,7 +9,7 @@ using System.Reflection;
 
 namespace Chameleon.Av.Fluent.Common.Controls;
 
-public class SubPageViewControl : UserControl 
+public class SubPageViewControl : ChameleonPageBase
 {
     public SubPageViewControl()
     {
