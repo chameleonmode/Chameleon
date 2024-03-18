@@ -1,8 +1,11 @@
-﻿namespace Chameleon.CT.Common.Base;
+﻿using Chameleon.Interfaces.Dialogs;
 
-public partial class ObservableObjectBase : ObservableObject
+namespace Chameleon.CT.Common.Base;
+
+public abstract partial class ObservableObjectBase : ObservableObject
 {              
     private readonly IDispatcherService _dispatcherService;
+    private readonly IContentDialogService _cntentDialogService;
 
     [ObservableProperty]
     public string title = "ObservableObjectBase";
@@ -10,7 +13,9 @@ public partial class ObservableObjectBase : ObservableObject
     public ObservableObjectBase()
     {
         _dispatcherService = ContainerServiceHelper.Current.ContainerProvider.Resolve<IDispatcherService>();
+        _cntentDialogService = ContainerServiceHelper.Current.ContainerProvider.Resolve<IContentDialogService>();
     }
 
     public IDispatcherService DispatcherService => _dispatcherService;
+    public IContentDialogService ContentDialogService => _cntentDialogService;
 }

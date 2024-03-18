@@ -5,6 +5,7 @@ using Chameleon.Common.Helpers;
 using Chameleon.Core.Extensions;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
+using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Prism.Events;
@@ -14,34 +15,30 @@ namespace Chameleon.Auth.Services
     public class AuthService : IAuthService
     {
         private readonly IEventAggregator _eventAggregator;
-        private readonly IPopupDialogService _popupDialogService;
         private readonly IApplicationSettings _appSettings;
         private readonly IApplicationUser _applicationUser;
         private readonly IAuthSession _authSession;
         private readonly IAuthApiClient _apiClient;
-        private readonly IContentDialogService _contentDialogService;
+        private readonly IAuthTaskDialogViewModel _authContentDialogService;
 
         public AuthService(IAuthApiClient apiClient,
             IAuthSession authSession,
             IEventAggregator eventAggregator,
-            IPopupDialogService popupDialogService,
             IApplicationSettingsService settingsService,
             IApplicationUser applicationUser,
-            IContentDialogService contentDialogService)
+            IAuthTaskDialogViewModel contentDialogService)
         {
             _appSettings = settingsService.Get();
             _authSession = authSession;
             _applicationUser = applicationUser;
             _eventAggregator = eventAggregator;
             _apiClient = apiClient;
-            _popupDialogService = popupDialogService;
-            _contentDialogService = contentDialogService;
-            CurrentApplicationUser.Current.SetCurrentUser(_applicationUser);
+            _authContentDialogService = contentDialogService;
         }
 
         public bool IsAuthenticated { get; set; }
 
-        public async Task LoginAsync()
+        public async Task<bool> LoginAsync()
         {
             IAuthResult? loginResult = null;
             try
@@ -50,7 +47,7 @@ namespace Chameleon.Auth.Services
                 {
                     //await Task.Run(() =>
                     //{
-                        loginResult = Login(_appSettings.Login.LoginName, _appSettings.Login.LicenseKey);
+                        loginResult = await Login(_appSettings.Login.LoginName, _appSettings.Login.LicenseKey);
                     //});
                 }
             }
@@ -70,15 +67,21 @@ namespace Chameleon.Auth.Services
                     _eventAggregator.GetEvent<LoginFailEvent>().Publish();
                 }
             }
+
+            return loginResult is not null;
         }
         public async Task ShowLoginDialogAsync()
         {
-            var result = await _contentDialogService.ShowContentDialogAsync(typeof(ILoginContentDialogContent));
+            var result = await _authContentDialogService.ShowAsync();
+          
             if (result == IContentDialogResult.Primary)
+            {
                 await LoginAsync();
+            }
             else
                 _eventAggregator.GetEvent<LoginCancelEvent>().Publish();
         }
+        
         public  void Login()
         {
            // _popupDialogService.ShowDialogInWindow<IAuthLoginView, IWindowWindowDialog>("login", async (ResultNum) =>
@@ -101,9 +104,9 @@ namespace Chameleon.Auth.Services
            // });
         }
 
-        public IAuthResult Login(string userName, string licenceKey)
+        public async Task<IAuthResult> Login(string userName, string licenceKey)
         {
-            var response =  _apiClient.Login(
+            var response = await _apiClient.LoginAsync(
                 new NetworkCredential(userName, licenceKey)
                 );
 
@@ -149,7 +152,7 @@ namespace Chameleon.Auth.Services
 
         public async Task<IAuthRefreshTokenResponse?> RefreshToken(string acessToken, string refreshToken, long delayInSeconds)
         {
-            var response = _apiClient.RefreshToken(acessToken, refreshToken);
+            var response = await _apiClient.RefreshTokenAsync(acessToken, refreshToken);
             if (response == null)
             {
                 await ShowLoginDialogAsync();
@@ -175,9 +178,10 @@ namespace Chameleon.Auth.Services
                 .Publish();
         }
 
-        public bool IsLicenseActive(string license) 
+        public async Task<bool> IsLicenseActive(string license) 
         {
-            return _apiClient.IsLicenseActive(license);
+            return await _apiClient.IsLicenseActiveAsync(license);
         }
+
     }
 }

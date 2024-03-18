@@ -17,13 +17,15 @@ public class SettingsViewModel
        , ISettingsViewModel
 {
     private readonly IEventAggregator _eventAggregator;
+    private readonly IApplicationUser _applicationUser;
 
-
-    public SettingsViewModel(IEventAggregator eventAggregator, 
+    public SettingsViewModel(IEventAggregator eventAggregator,
+        IApplicationUser user,
         //for init
         IUserDefaultSettingsViewModel userDefaultSettingsViewModel)
     {
         _eventAggregator = eventAggregator;
+        _applicationUser = user;
 
         _eventAggregator
             .GetEvent<ChangeSelectedTabIndexEvent>()
@@ -98,25 +100,23 @@ public class SettingsViewModel
     private void InitializeTabControl()
     {
         //TODO: refactor
-        var currentUser = CurrentApplicationUser.Current.GetCurrentUser();
-
-        if (currentUser.HasPemission(PermissionNames.Pages_Proxy))
+        if (_applicationUser.HasPemission(PermissionNames.Pages_Proxy))
         {
             CustomTabs.HasProxySettingsView = true;
         }
 
-        if (currentUser.HasPemission(PermissionNames.Pages_ProxyCredits))
+        if (_applicationUser.HasPemission(PermissionNames.Pages_ProxyCredits))
         {
             CustomTabs.HasProxyCredit = true;
         }
 
-        if (currentUser.HasPemission(PermissionNames.Pages_Users_Primary))
+        if (_applicationUser.HasPemission(PermissionNames.Pages_Users_Primary))
         {
             CustomTabs.HasPhoneVerification = true;
             CustomTabs.HasAssistantUsers = true;
         }
 
-        if (currentUser.HasPemission(PermissionNames.Pages_ImportExport))
+        if (_applicationUser.HasPemission(PermissionNames.Pages_ImportExport))
         {
             CustomTabs.HasImport = true;
             CustomTabs.HasExport = true;

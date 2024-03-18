@@ -94,7 +94,7 @@ public class TaskDialogService : ITaskDialogService
     public async Task ShowTaskDialog(Type content, Action action)
     {
         var c = ContainerServiceHelper.Current.ContainerProvider?.Resolve(content);
-        var vm = ContainerServiceHelper.Current.ContainerProvider?.Resolve<TaskDialogBase>(ContainerServiceHelper.Current.ContainerTypes[content].Item1);
+        var vm = ContainerServiceHelper.Current.ContainerProvider?.Resolve<DialogBase>(ContainerServiceHelper.Current.ContainerTypes[content].Item1);
         var td = new TaskDialog
         {
             Title = "FluentAvalonia",

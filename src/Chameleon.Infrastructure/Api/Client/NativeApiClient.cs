@@ -1,5 +1,6 @@
 ﻿using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Environments;
+using System.Threading.Tasks;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -25,6 +26,10 @@ namespace Chameleon.Infrastructure.Api
                 .Send()
                 .GetResult<TResponse>();
         }
+        public virtual async Task<TResponse> GetAsync<TResponse>(string url, object query = null)
+        {
+            return await Task.Run(()=> { return Get<TResponse>(url, query); });
+        }
 
         protected virtual ApiPostRequest CreatePostRequest() => 
             new ApiPostRequest(_session, _configuration);
@@ -40,6 +45,10 @@ namespace Chameleon.Infrastructure.Api
                 .Send()
                 .GetResult<TResponse>();
             return result;
+        }
+        public virtual async Task<TResponse> PostAsync<TResponse>(string url, object query = null)
+        {
+            return await Task.Run(() => { return Post<TResponse>(url, query); });
         }
 
         public virtual void Post(string url, object body = null)

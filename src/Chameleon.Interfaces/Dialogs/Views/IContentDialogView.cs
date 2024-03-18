@@ -1,9 +1,14 @@
 ﻿namespace Chameleon.Interfaces.Dialogs.Views;
 
-public interface IContentDialogView
+public interface IContentDialogView : IDefaultContentDialogView
+{
+    T?  GetDataContext<T>();
+}
+public interface IDefaultContentDialogView
 {
     object? Title { get; }
-    string PrimaryButtonText { get;  }
-    string SecondaryButtonText { get;  }
+    object? DialogContent { get; }
+    string PrimaryButtonText { get; }
+    string SecondaryButtonText { get; }
     string CloseButtonText { get; }
 }

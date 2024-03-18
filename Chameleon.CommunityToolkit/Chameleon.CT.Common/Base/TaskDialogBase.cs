@@ -1,6 +1,9 @@
-﻿namespace Chameleon.CT.Common.Base;
+﻿using Chameleon.Interfaces.Dialogs;
+using Chameleon.Interfaces.Dialogs.ViewModels;
 
-public partial class TaskDialogBase : ObservableObjectBase
+namespace Chameleon.CT.Common.Base;
+
+public abstract partial class DialogBase :  ObservableObjectBase, IDialogViewModelBase
 {
     [ObservableProperty]
     public string? header;
@@ -10,4 +13,6 @@ public partial class TaskDialogBase : ObservableObjectBase
 
     [ObservableProperty]
     public bool isInputEnabled = true;
+
+    public abstract Task<IContentDialogResult> ShowAsync();
 }

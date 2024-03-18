@@ -39,7 +39,7 @@
 										  Content="{TemplateBinding Header}"
 										  ContentTemplate="{TemplateBinding HeaderTemplate}"
 										  FontSize="20"
-										  LineHeight="28"
+										  LineHeight="36"
 										  FontWeight="SemiBold"
 										  HorizontalContentAlignment="Center"
 										  VerticalContentAlignment="Center" />
@@ -48,7 +48,8 @@
 						<ItemsControl Name="DialogsHost">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
-									<StackPanel Spacing="2" />
+									<StackPanel Spacing="2" 
+												Margin="{StaticResource ContentDialogFooterMargin}" />
 								</ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
 						</ItemsControl>

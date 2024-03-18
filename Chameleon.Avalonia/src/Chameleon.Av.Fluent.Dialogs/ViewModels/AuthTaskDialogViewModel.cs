@@ -1,44 +1,37 @@
-﻿namespace Chameleon.Av.Fluent.Dialogs.ViewModels;
+﻿using Chameleon.Auth.Api;
+using Chameleon.Common.Base;
+using Chameleon.Interfaces.Dialogs.ViewModels;
+using Chameleon.Interfaces.Dialogs.Views;
+using Chameleon.Interfaces.MessageBox;
 
-public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogViewModel
+namespace Chameleon.Av.Fluent.Dialogs.ViewModels;
+
+public partial class AuthTaskDialogViewModel : DialogBase, IAuthTaskDialogViewModel
 {
-    private readonly IAuthService _authService;
+    private readonly IAuthApiClient _apiClient;
     private readonly IApplicationSettings _settings;
     private readonly IApplicationSettingsService _settingsService;
-    private readonly IEventAggregator _eventAggregator;
-    private readonly ITaskDialogService _tasksDialogService;
-    public AuthTaskDialogViewModel(IAuthService authService,
-        IApplicationSettingsService settingsService,
-        IEventAggregator eventAggregator,
-        ITaskDialogService messageBoxService)
+    public AuthTaskDialogViewModel(IAuthApiClient authService,
+        IApplicationSettingsService settingsService)
     {
         Title = "User Login";
 
-        _authService = authService;
+        _apiClient = authService;
         _settingsService = settingsService;
 
         _settings = _settingsService.Get();
         UserName = _settings.Login.LoginName;
         LicenceKey = _settings.Login.LicenseKey;
 
-        //CancelCommand = new DelegateCommand(CloseDialog);
-
-        _eventAggregator = eventAggregator;
-        _eventAggregator
-            .GetEvent<SubmitAsyncEvent>()
-            .Subscribe(async () => { await SubmitAsync(new CancellationToken()); });
-
-        _tasksDialogService = messageBoxService;
 
         IsInputEnabled = true;
     }
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
     private string? licenceKey;
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
+    //[NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
     private string? userName;
 
     [ObservableProperty]
@@ -47,32 +40,25 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
     [ObservableProperty]
     private string? _errorMessage;
 
-    //public IAuthResult AuthResult { get; private set; }
-
-
-    [RelayCommand(IncludeCancelCommand = true, CanExecute = nameof(CanSubmit))]
-    private async Task SubmitAsync(CancellationToken token)
+    //[RelayCommand(IncludeCancelCommand = true, CanExecute = nameof(CanSubmit))]
+    private async Task<IContentDialogResult> SubmitAsync()
     {
+        IContentDialogResult result = IContentDialogResult.None;
+        IsSubmiting = true;
+        IsInputEnabled = false;
         try
         {
             await DoSave();
-            if (NeedsConfirmActivation())
+            if (LicenceKey is not null && !LicenceKey.StartsWith("KEY") &&
+                !await _apiClient.IsLicenseActiveAsync(LicenceKey))
             {
-                //await _tasksDialogService.ShowTaskDialog(typeof(IAuthDialogView));
-                // new PrismMessageBoxOptions
-                // {
-                //     Owner = ParentWindow,
-                //     Title = "Warning",
-                //     Text = "Do you want to activate another license? Current one will not be active anymore.",
-                //     Icon = SystemIcons.Warning,
-                //     Buttons = MessageBoxButton.OKCancel,
-                //     ContentButtons = new MessageBoxContentButtonsViewModel
-                //     {
-                //         ContentOkButton = "Activate"
-                //     }
-                // }, (r) => { CloseDialog(r); });
+
+                result = await ContentDialogService.ShowContentDialogAsync(
+                   new DefaultContentDialogView(
+                       ContentDialogButtons.OKCancel,
+                       "Do you want to activate another license? Current one will not be active anymore.",
+                       "Warning"));
             }
-            return;
         }
         catch (AuthenticationException ex)
         {
@@ -90,12 +76,20 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
         finally
         {
             IsSubmiting = false;
+            IsInputEnabled = true;
         }
+
+        return result;
     }
-    bool NeedsConfirmActivation()
+
+    public override async Task<IContentDialogResult> ShowAsync()
     {
-        return LicenceKey is not null && !LicenceKey.StartsWith("KEY") &&
-                !_authService.IsLicenseActive(LicenceKey);
+        var result = await ContentDialogService.ShowContentDialogAsync(typeof(ILoginContentDialogContent));
+        if (result == IContentDialogResult.Primary)
+        {
+            await SubmitAsync();
+        }
+        return result;
     }
     async Task DoSave()
     {
@@ -119,4 +113,5 @@ public partial class AuthTaskDialogViewModel : TaskDialogBase, IAuthTaskDialogVi
             && !string.IsNullOrEmpty(UserName)
             && !IsSubmiting;
     }
+
 }

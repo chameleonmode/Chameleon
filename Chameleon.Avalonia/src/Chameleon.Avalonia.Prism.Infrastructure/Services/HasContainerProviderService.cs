@@ -16,9 +16,9 @@ public class HasContainerProviderService : IHaveContainerProvider
     {
         return _containerProvider.Resolve(type);
     }
-    public T Resolve<T>()
+    public T? Resolve<T>()
     {
-        return _containerProvider.Resolve<T>() ?? throw new ArgumentNullException();
+        return _containerProvider.Resolve<T>() ?? default;
     }
 
     public T Resolve<T>(Type type) where T : class

@@ -46,6 +46,7 @@ using Chameleon.Av.Fluent.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
 using Chameleon.Av.Fluent.Dialogs.Controls;
 using Chameleon.Av.Fluent.Dialogs.Services;
+using Chameleon.Interfaces.Dialogs.ViewModels;
 
 namespace Chameleon.Av.Fluent;
 
@@ -140,7 +141,7 @@ public partial class App : PrismApplication
         cr.RegisterSingleton<IContentDialogService, ContentDialogService>();
         //cr.RegisterSingleton<ILoginTaskDialog, LoginTaskDialog>(false, Chameleon.Common.Regions.DialogNames.LoginDialog);
         cr.Register<ILoginContentDialogContent, LoginContentDialogContent>();
-        cr.Register<DefaultContentDialogTitle>();
+        cr.RegisterSingleton<IDefaultContentDialogTitle, DefaultContentDialogTitle>();
         cr.RegisterSingleton<IAuthTaskDialogViewModel, AuthTaskDialogViewModel>();
         //cr.RegisterSingleton<ILoginTaskDialog, LoginTaskDialog>(false, Chameleon.Common.Regions.DialogNames.LoginDialog);
         //containerRegistry.RegisterDialog<MessageBoxView, MessageBoxViewModel>();

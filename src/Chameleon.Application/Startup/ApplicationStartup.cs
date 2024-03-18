@@ -46,7 +46,11 @@ namespace Chameleon.Application.Startup
 
             _eventAggregator
                 .GetEvent<LoginFailEvent>()
-                .SubscribeOnce(Run);
+                .SubscribeOnce(LoginFailEventMethod);
+        }
+
+        private void LoginFailEventMethod()
+        {
         }
 
         public async Task RunAsync()

@@ -20,7 +20,7 @@ namespace Chameleon.Auth.Api
             _apiClient = apiClient;
         }
 
-        public IAuthResponse Login(NetworkCredential credentials)
+        public async Task<IAuthResponse> LoginAsync(NetworkCredential credentials)
         {
             var requestDto = new AuthRequestDto
             {
@@ -28,7 +28,7 @@ namespace Chameleon.Auth.Api
                 Password = credentials.Password
             };
 
-            var response = _apiClient.Post<AuthResponse>("TokenAuth/Authenticate", requestDto);
+            var response = await _apiClient.PostAsync<AuthResponse>("TokenAuth/Authenticate", requestDto);
 
             if (!response.IsValid)
             {
@@ -37,7 +37,7 @@ namespace Chameleon.Auth.Api
             return response;
         }
 
-        public IAuthRefreshTokenResponse? RefreshToken(string acessToken, string refreshToken)
+        public async Task<IAuthRefreshTokenResponse?> RefreshTokenAsync(string acessToken, string refreshToken)
         {
             //await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
 
@@ -51,16 +51,16 @@ namespace Chameleon.Auth.Api
 
             try
             {
-                response = _apiClient.Post<AuthRefreshTokenResponse>("TokenAuth/RefreshToken", requestDto);
+                response = await _apiClient.PostAsync<AuthRefreshTokenResponse>("TokenAuth/RefreshToken", requestDto);
             }
             catch { }
 
             return response;
         }
 
-        public bool IsLicenseActive(string license) 
+        public async Task<bool> IsLicenseActiveAsync(string license) 
         {
-            var response = _apiClient.Get<IsLicActiveResponseDTO>($"TokenAuth/IsLicenseActive?key={license}");
+            var response = await _apiClient.GetAsync<IsLicActiveResponseDTO>($"TokenAuth/IsLicenseActive?key={license}");
             return response.isActive;
         }
     }

@@ -8,12 +8,14 @@ namespace Chameleon.Av.Fluent.Dialogs.Controls;
 public abstract class ContentDialogControlBase : UserControl,
     IContentDialogView
 {
-    public virtual object? Title => ContainerServiceHelper.Current.ContainerProvider?.Resolve<DefaultContentDialogTitle>();
+    public virtual object? Title => ContainerServiceHelper.Current.ContainerProvider?.Resolve<IDefaultContentDialogTitle>();
     public virtual string PrimaryButtonText => "OK";
     public virtual string SecondaryButtonText => string.Empty;
     public virtual string CloseButtonText => "Cancel";
-    //public object? Title { get => Header; set => Header = value; }
-    //public string PrimaryButtonText { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    //public string SecondaryButtonText { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    //public string CloseButtonText { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public virtual object? DialogContent => throw new NotImplementedException();
+
+    public T GetDataContext<T>()
+    {
+        return (T)DataContext ?? ContainerServiceHelper.Current.ContainerProvider.Resolve<T>();
+    }
 }

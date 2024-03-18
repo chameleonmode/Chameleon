@@ -9,6 +9,7 @@ using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
+using Chameleon.Interfaces.Dialogs.ViewModels;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
 using Splat;

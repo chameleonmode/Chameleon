@@ -22,4 +22,20 @@ public class ContentDialogService : IContentDialogService
         var res = await dialog.ShowAsync();
         return (IContentDialogResult)res;
     }
+
+    public async Task<IContentDialogResult> ShowContentDialogAsync(IDefaultContentDialogView contentDialog)
+    {
+        var dialog = new ContentDialog()
+        {
+            Title = contentDialog.Title,
+            Content = contentDialog.DialogContent,
+            PrimaryButtonText = contentDialog.PrimaryButtonText,
+            SecondaryButtonText = contentDialog.SecondaryButtonText,
+            CloseButtonText = contentDialog.CloseButtonText,
+            DefaultButton = ContentDialogButton.Primary,
+        };
+
+        var res = await dialog.ShowAsync();
+        return (IContentDialogResult)res;
+    }
 }

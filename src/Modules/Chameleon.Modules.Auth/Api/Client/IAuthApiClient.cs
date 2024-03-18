@@ -7,10 +7,10 @@ namespace Chameleon.Auth.Api
 {
     public interface IAuthApiClient : ISingletonDependency
     {
-        IAuthResponse Login(NetworkCredential credentials);
+        Task<IAuthResponse> LoginAsync(NetworkCredential credentials);
 
-        IAuthRefreshTokenResponse? RefreshToken(string acessToken, string refreshToken);
+        Task<IAuthRefreshTokenResponse?> RefreshTokenAsync(string acessToken, string refreshToken);
 
-        bool IsLicenseActive(string license);
+        Task<bool> IsLicenseActiveAsync(string license);
     }
 }
