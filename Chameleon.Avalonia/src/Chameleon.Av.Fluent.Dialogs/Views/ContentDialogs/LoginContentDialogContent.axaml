@@ -39,3 +39,26 @@
 		</StackPanel>-->
 	</dialogs:ChameleonDialogControl>
 </UserControl>
+
+<!--<TextBlock
+	Text="{Binding ErrorMessage}"
+	Margin="0,0,0,6"
+	HorizontalAlignment="Center"
+	TextTrimming="CharacterEllipsis"
+	ToolTip.Tip="{Binding ErrorMessage}"
+	VerticalAlignment="Center"
+	Foreground="Red" />
+<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+	<Button Content="Cancel"
+					 Margin="0,0,4,0"
+					 Width="110"
+					 Command="{Binding CancelCommand}">
+	</Button>
+	<Button
+		Width="110"
+		 Classes="accent"
+		Content="Login"
+		IsDefault="True"
+		Command="{Binding AuthCommand}">
+	</Button>
+</StackPanel>-->

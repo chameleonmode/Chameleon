@@ -16,13 +16,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia"  />
-		<PackageReference Include="Avalonia.Desktop"  />
-		<PackageReference Include="Avalonia.Themes.Fluent"  />
-		<PackageReference Include="Avalonia.Fonts.Inter"  />
-		<PackageReference Include="Avalonia.ReactiveUI"  />
+		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Desktop" />
+		<PackageReference Include="Avalonia.Themes.Fluent" />
+		<PackageReference Include="Avalonia.Fonts.Inter" />
+		<PackageReference Include="Avalonia.ReactiveUI" />
 		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"  />
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
 		<PackageReference Include="Prism.Avalonia" />
 		<PackageReference Include="Prism.DryIoc.Avalonia" />
 	</ItemGroup>
@@ -55,7 +55,6 @@
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Domain\Chameleon.Avalonia.Prism.Domain.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Interfaces\Chameleon.Avalonia.Prism.Interfaces.csproj" />
-		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Module.Auth\Chameleon.Avalonia.Prism.Module.Auth.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Module.MessageBox\Chameleon.Avalonia.Prism.Module.MessageBox.csproj" />
 		<ProjectReference Include="..\Chameleon.Avalonia.Prism.Module\Chameleon.Avalonia.Prism.Module.csproj" />
 		<ProjectReference Include="..\Chameleon.Controls.Settings\Chameleon.Avalonia.Controls.Settings.csproj" />

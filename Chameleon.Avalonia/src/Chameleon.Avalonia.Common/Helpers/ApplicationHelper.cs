@@ -1,8 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Primitives;
 using Avalonia.VisualTree;
 using Chameleon.Interfaces.Windows;
+using Splat;
 
 namespace Chameleon.Avalonia.Common.Helpers;
 
@@ -14,6 +16,44 @@ public static class ApplicationHelper
             return desktopLifetime.MainWindow;
 
         return null;
+    }
+
+    public static OverlayLayer? GetOverlayLayer(TopLevel? topLevel = null)
+    {
+        OverlayLayer? ol;
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime al)
+        {
+            var windows = al.Windows;
+            for (int i = 0; i < windows.Count; i++)
+            {
+                if (windows[i].IsActive)
+                {
+                    topLevel = windows[i];
+                    break;
+                }
+            }
+
+            if (topLevel == null)
+            {
+                if (al.MainWindow == null)
+                    throw new NotSupportedException("No TopLevel root found to parent ContentDialog");
+                topLevel = al.MainWindow;
+            }
+
+            ol = OverlayLayer.GetOverlayLayer(topLevel);
+        }
+        else if (Application.Current?.ApplicationLifetime is ISingleViewApplicationLifetime sl)
+        {
+            topLevel = TopLevel.GetTopLevel(sl.MainView);
+            ol = OverlayLayer.GetOverlayLayer(sl.MainView);
+        }
+        else
+        {
+            throw new InvalidOperationException("No TopLevel found for GetMainOverlayLayer and no ApplicationLifetime is set. " +
+                "Please either supply a valid ApplicationLifetime");
+        }
+
+        return ol;
     }
 
     public static T? FindResource<T>(object key)  where T : class

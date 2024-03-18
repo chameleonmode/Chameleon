@@ -5,13 +5,17 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              mc:Ignorable="d"
              x:Class="Chameleon.Av.Fluent.Dialogs.DefaultContentDialogTitle">
-	<StackPanel Orientation="Horizontal"
-				 Margin="2 -6 4 2">
-		<ui:IconSourceElement IconSource="{StaticResource logo_symbol}"
-							   Width="50"
-							  Height="55"/>
-		<TextBlock Text="hameleon"
-				   VerticalAlignment="Center"
-				   Theme="{StaticResource TitleTextBlockStyle}"/>
+	<Border BorderThickness="0 0 0 1"
+			HorizontalAlignment="Stretch"
+			BorderBrush="{StaticResource SurfaceStrokeColorDefault}"
+			Padding="0 0 0 8">
+		<StackPanel Orientation="Horizontal" >
+			<ui:IconSourceElement IconSource="{StaticResource logo_symbol}"
+								  Width="29"
+								  Height="32" />
+			<TextBlock Text="hameleon"
+					   VerticalAlignment="Bottom"
+					   Theme="{StaticResource TitleTextBlockStyle}"/>
 		</StackPanel>
+	</Border>
 </UserControl>

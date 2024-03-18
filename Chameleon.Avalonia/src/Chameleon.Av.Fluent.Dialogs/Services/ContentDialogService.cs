@@ -16,6 +16,7 @@ public class ContentDialogService : IContentDialogService
             PrimaryButtonText = c.PrimaryButtonText,
             SecondaryButtonText = c.SecondaryButtonText,
             CloseButtonText = c.CloseButtonText,
+            DefaultButton = ContentDialogButton.Primary,
         };
 
         var res = await dialog.ShowAsync();

@@ -41,8 +41,6 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Dialogs;
-using Chameleon.Avalonia.Prism.Module.Auth;
-using Chameleon.Avalonia.Prism.Module.Auth.ViewModels;
 using Chameleon.Avalonia.Prism.Module.MessageBox;
 using Chameleon.Av.Fluent.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
@@ -137,7 +135,7 @@ public partial class App : PrismApplication
        // cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();
 
         // Dialogs                                                  
-        containerRegistry.RegisterDialog<AuthView, AuthViewModel>(nameof(IAuthLoginView));
+        //containerRegistry.RegisterDialog<AuthView, AuthViewModel>(nameof(IAuthLoginView));
         //containerRegistry.RegisterDialogWindow<DialogWindowsWindow>(nameof(IWindowWindowDialog));  
         cr.RegisterSingleton<IContentDialogService, ContentDialogService>();
         //cr.RegisterSingleton<ILoginTaskDialog, LoginTaskDialog>(false, Chameleon.Common.Regions.DialogNames.LoginDialog);

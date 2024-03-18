@@ -25,9 +25,6 @@ using DryIoc;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Avalonia.Prism.Module;
-using Prism.Events;
-using Chameleon.Avalonia.Prism.Module.Auth;
-using Chameleon.Avalonia.Prism.Module.Auth.ViewModels;
 using Chameleon.Avalonia.Prism.Module.MessageBox;
 using Chameleon.Avalonia.Prism.Module.MessageBox.ViewModels;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
@@ -123,7 +120,7 @@ public partial class App : PrismApplication
         Container.RegisterTypesFrom(Chameleon.Avalonia.Prism.Module.MessageBox.AssemblyResolver.GetAssembly());
 
         // Dialogs
-        containerRegistry.RegisterDialog<AuthView, AuthViewModel>();
+        //containerRegistry.RegisterDialog<AuthView, AuthViewModel>();
         containerRegistry.RegisterDialog<MessageBoxView, MessageBoxViewModel>();
         //containerRegistry.Register<object>();
 
