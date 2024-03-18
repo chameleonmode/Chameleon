@@ -26,7 +26,6 @@ public partial class SettingsViewModel
 {
     private readonly IApplicationUser _applicationUser;
 
-
     [ObservableProperty]
     private bool _hasProxySettingsView;
     [ObservableProperty]
@@ -40,9 +39,7 @@ public partial class SettingsViewModel
     [ObservableProperty]
     public bool _hasExport;
 
-    public SettingsViewModel(IApplicationUser user,
-        //for init
-        IUserDefaultSettingsViewModel userDefaultSettingsViewModel)
+    public SettingsViewModel(IApplicationUser user)
     {
         _applicationUser = user;
 

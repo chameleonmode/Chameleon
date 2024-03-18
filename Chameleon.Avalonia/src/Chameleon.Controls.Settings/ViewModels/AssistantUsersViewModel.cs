@@ -1,4 +1,5 @@
 ﻿using Chameleon.Avalonia.Controls.Paginator.ViewModels;
+using Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 using Chameleon.Avalonia.Prism.Module.Base;
 using Chameleon.Controls.AssistantUsers.Interfaces;
 using Chameleon.Core.Collections;
@@ -17,7 +18,7 @@ using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
 using Prism.Commands;
 
-namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
+namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
 public class AssistantUsersViewModel
        : SubViewModelBase
@@ -28,7 +29,7 @@ public class AssistantUsersViewModel
     //private readonly IUnshareItemPopupView _unshareProfilePopupView;
     private readonly IDialogWindowsService _dialogWindowsService;
     //private readonly IInviteUserOrAddProfilesPopupService _inviteUserOrAddProfilesPopupService;
-   // private readonly IDeleteAssistantUserPopupView _deleteAssistantUserPopupView;
+    // private readonly IDeleteAssistantUserPopupView _deleteAssistantUserPopupView;
     private readonly IAuthSession _authSession;
     private readonly IUpgradePlanPopupView _upgradePlanPopupView;
     private readonly IShareFoldersService _shareFoldersService;
@@ -41,8 +42,8 @@ public class AssistantUsersViewModel
         IEventAggregator eventAggregator,
         IUserAssistantService userAssistantService,
         //IUnshareItemPopupView unshareProfilePopupView,
-        IDialogWindowsService dialogWindowsService,
-       // IInviteUserOrAddProfilesPopupService inviteUserOrAddProfilesPopupService,
+        //IDialogWindowsService dialogWindowsService,
+        // IInviteUserOrAddProfilesPopupService inviteUserOrAddProfilesPopupService,
         IDeleteAssistantUserPopupView deleteAssistantUserPopupView,
         IAuthSession authSession,
         IUpgradePlanPopupView upgradePlanPopupView,
@@ -54,9 +55,9 @@ public class AssistantUsersViewModel
         _eventAggregator = eventAggregator;
         _userAssistantService = userAssistantService;
         //_unshareProfilePopupView = unshareProfilePopupView;
-        _dialogWindowsService = dialogWindowsService;
-       // _inviteUserOrAddProfilesPopupService = inviteUserOrAddProfilesPopupService;
-       // _deleteAssistantUserPopupView = deleteAssistantUserPopupView;
+        //_dialogWindowsService = dialogWindowsService;
+        // _inviteUserOrAddProfilesPopupService = inviteUserOrAddProfilesPopupService;
+        // _deleteAssistantUserPopupView = deleteAssistantUserPopupView;
         _authSession = authSession;
         _upgradePlanPopupView = upgradePlanPopupView;
         _shareFoldersService = shareFoldersService;
@@ -140,10 +141,10 @@ public class AssistantUsersViewModel
                 (userAssistant,
                 _userAssistantService,
                 _eventAggregator,
-               // _unshareProfilePopupView,
+                // _unshareProfilePopupView,
                 _dialogWindowsService,
-               // _inviteUserOrAddProfilesPopupService,
-               // _deleteAssistantUserPopupView,
+                // _inviteUserOrAddProfilesPopupService,
+                // _deleteAssistantUserPopupView,
                 _shareFoldersService,
                 _toastNotificationService,
                 _userProfileService)
@@ -198,10 +199,10 @@ public class AssistantUsersViewModel
             userAssistant,
             _userAssistantService,
             _eventAggregator,
-           // _unshareProfilePopupView,
+            // _unshareProfilePopupView,
             _dialogWindowsService,
-           // _inviteUserOrAddProfilesPopupService,
-           // _deleteAssistantUserPopupView,
+            // _inviteUserOrAddProfilesPopupService,
+            // _deleteAssistantUserPopupView,
             _shareFoldersService,
             _toastNotificationService,
             _userProfileService);

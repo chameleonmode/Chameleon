@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Chameleon.CT.Common.Base;
 
-public class SubPageViewModelBase:ObservableObjectBase , ISubPageViewModel
+public class SubPageViewModelBase : ObservableObjectBase, ISubPageViewModel
 {
     public bool Loaded;
     public virtual Task LoadAsync()

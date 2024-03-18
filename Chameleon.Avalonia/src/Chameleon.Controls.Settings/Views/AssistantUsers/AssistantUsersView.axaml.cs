@@ -1,11 +1,12 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Chameleon.Av.Fluent.Common.Controls;
 using Chameleon.Interfaces.App.UserSettings.View;
 
 namespace Chameleon.Avalonia.Controls.Settings;
 
-public partial class AssistantUsersView : UserControl , IAssistantUsersView
+public partial class AssistantUsersView : SubPageViewControl, IAssistantUsersView
 {
     public AssistantUsersView()
     {

@@ -41,10 +41,6 @@ namespace Chameleon.Application.Startup
             _eventAggregator
                 .GetEvent<LoginCancelEvent>()
                 .SubscribeOnce(CloseApplication);
-
-            _eventAggregator
-              .GetEvent<LoginSuccessEvent>()
-              .SubscribeOnce(ShowMainWindow);
         }
 
         public async Task RunAsync()
@@ -63,40 +59,6 @@ namespace Chameleon.Application.Startup
             // }
             //
             // return Task.CompletedTask;
-        }
-
-        private void ShowMainWindow()
-        {
-            //_mainWindow.SetContent(RegionNames.ContentRegion);
-            //AutoUpdater.NET - check if newer version of app exists
-            //AutoUpdater.Start("https://chameleonaccess.s3-us-west-2.amazonaws.com/AutoUpdater.xml");
-
-           // _systemBrowserManager
-           //       .Get(SystemBrowserType.Chrome)
-           //       .Open(new SystemBrowserLaunchOptions
-           //       {
-           //           Url = new Uri("https://stackoverflow.com/questions/38326055/setting-network-credentials-for-simple-webrequest"),
-           //           SignIn = false,
-           //           UserProfile = new UserProfile() { Id = 123, FolderId = 123 }
-           //       });
-           //
-           // _systemBrowserManager
-           //  .Get(SystemBrowserType.Firefox)
-           //  .Open(new SystemBrowserLaunchOptions
-           //  {
-           //      Url = new Uri("https://stackoverflow.com/questions/38326055/setting-network-credentials-for-simple-webrequest"),
-           //      SignIn = false,
-           //      UserProfile = new UserProfile() { Id = 123, FolderId = 123 }
-           //  });
-           //
-           //_systemBrowserManager
-           //.Get(SystemBrowserType.Brave)
-           //.Open(new SystemBrowserLaunchOptions
-           //{
-           //    Url = new Uri("https://stackoverflow.com/questions/38326055/setting-network-credentials-for-simple-webrequest"),
-           //    SignIn = false,
-           //    UserProfile = new UserProfile() { Id = 123, FolderId = 123 }
-           //});
         }
 
         private void CloseApplication()

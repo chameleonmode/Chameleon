@@ -41,9 +41,7 @@ using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Avalonia.Prism.Dialogs;
 using Chameleon.Interfaces.App.Settings;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
-using Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 using Chameleon.Controls.AssistantUsers.Interfaces;
-using Chameleon.Avalonia.Controls.Settings.ViewModels.ImportExport;
 using Chameleon.Interfaces.Dialogs.Views;
 
 

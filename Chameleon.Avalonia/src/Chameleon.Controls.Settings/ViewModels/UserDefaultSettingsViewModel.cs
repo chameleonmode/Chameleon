@@ -37,10 +37,6 @@ public class UserDefaultSettingsViewModel
         _bulkAddPagesPopupViewModel = bulkAddPagesPopupView;
 
         EventAggregator
-            .GetEvent<LoginSuccessEvent>()
-            .SubscribeOnce(OnAuthenticated);
-
-        EventAggregator
            .GetEvent<SelectedUserDefaultSettingEvent>()
            .Subscribe(_ => OnSelectedChanged());
 
@@ -52,6 +48,11 @@ public class UserDefaultSettingsViewModel
         BulkAddPagesCommand = new DelegateCommand(BulkAddPages);
 
         Title = "Default Home Pages";
+    }
+    public override Task LoadAsync()
+    {
+        OnAuthenticated();
+        return base.LoadAsync();
     }
 
     private const string DialogTitle = "BULK ADD PAGES";

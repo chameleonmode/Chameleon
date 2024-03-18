@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\ImportExport\" />
+  </ItemGroup>
+
 </Project>

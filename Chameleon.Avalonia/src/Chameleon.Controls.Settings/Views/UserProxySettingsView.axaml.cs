@@ -10,9 +10,10 @@ using Chameleon.Interfaces.UserSettings;
 
 namespace Chameleon.Avalonia.Controls.Settings;
 
-public partial class UserProxySettingsView : SubPageViewControl<IUserProxySettingsViewModel>, IUserProxySettingsView
+public partial class UserProxySettingsView : SubPageViewControl, IUserProxySettingsView
 {
     public UserProxySettingsView()
     {
-        InitializeComponent();    }
+        InitializeComponent();    
+    }
 }

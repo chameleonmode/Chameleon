@@ -9,7 +9,7 @@ using Prism.Commands;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace Chameleon.Avalonia.Controls.Settings.ViewModels.ImportExport;
+namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
 public class ImportViewModel : SubViewModelBase,
     IImportViewModel
@@ -145,16 +145,16 @@ public class ImportViewModel : SubViewModelBase,
     public DelegateCommand OpenFileCommand { get; }
     private void OnOpenFile()
     {
-       // OpenFileDialog dialog = new OpenFileDialog
-       // {
-       //     Multiselect = false,
-       //     Filter = FileDialogFilter
-       // };
-       //
-       // if (dialog.ShowDialog().GetValueOrDefault())
-       // {
-       //     OnOpenFile(dialog.FileName);
-       // }
+        // OpenFileDialog dialog = new OpenFileDialog
+        // {
+        //     Multiselect = false,
+        //     Filter = FileDialogFilter
+        // };
+        //
+        // if (dialog.ShowDialog().GetValueOrDefault())
+        // {
+        //     OnOpenFile(dialog.FileName);
+        // }
     }
 
     private void OnOpenFile(string filePath)
