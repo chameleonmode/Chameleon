@@ -19,6 +19,6 @@ public partial class UserProxySettingsView : SubPageViewControl, IUserProxySetti
         InitializeComponent();
         ControlName = "Proxy Settings";
         Description = "Customize your default homepages here";
-        PreviewImage = ApplicationHelper.TryGetResource<IconSource>("WifiProtected");
+        PreviewImage = ApplicationHelper.TryGetResource<IconSource>("Proxy");
     }
 }
