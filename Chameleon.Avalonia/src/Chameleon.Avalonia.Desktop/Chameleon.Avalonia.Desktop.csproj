@@ -47,7 +47,6 @@
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfilesView\Chameleon.Avalonia.Controls.UserProfilesView.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Interfaces\Chameleon.Avalonia.Prism.Interfaces.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Prism.Module\Chameleon.Avalonia.Prism.Module.csproj" />
     <ProjectReference Include="..\Chameleon.Controls.Settings\Chameleon.Avalonia.Controls.Settings.csproj" />
   </ItemGroup>

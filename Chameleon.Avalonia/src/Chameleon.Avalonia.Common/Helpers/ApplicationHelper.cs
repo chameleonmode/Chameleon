@@ -3,8 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
 using Avalonia.VisualTree;
-using Chameleon.Interfaces.Windows;
-using Splat;
 
 namespace Chameleon.Avalonia.Common.Helpers;
 

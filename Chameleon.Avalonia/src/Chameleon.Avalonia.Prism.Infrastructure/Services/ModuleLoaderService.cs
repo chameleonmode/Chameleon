@@ -1,10 +1,9 @@
 ﻿using Chameleon.Infrastructure.Modules;
-using Chameleon.Interfaces.Ioc;
+using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 using Chameleon.Interfaces.Modules;
 using Prism.Ioc;
 using Prism.Modularity;
 using System.Reflection;
-using Chameleon.Avalonia.Prism.Interfaces.Extensions;
 
 namespace Chameleon.Avalonia.Prism.Infrastructure.Services;
 

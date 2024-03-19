@@ -2,9 +2,9 @@
 using Chameleon.Interfaces.Ioc;
 using Prism.Ioc;
 using System.Reflection;
-using Chameleon.Avalonia.Prism.Interfaces.Extensions;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Infrastructure;
+using Chameleon.Interfaces.AutoMapper;
 
 namespace Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 
@@ -18,10 +18,6 @@ public static class IContainerRegistryExtensions
         var executingAssembly = Assembly.GetExecutingAssembly();
         var executingAssemblyBase = AssemblyResolver.GetAssembly();
 
-       
-
-
-
         containerRegistry.RegisterSingleton<IIocManager, IocManager>();
                                                            
         self.RegisterTypesFrom(executingAssemblyBase);
@@ -31,5 +27,15 @@ public static class IContainerRegistryExtensions
         self.RegisterMapperFrom(executingAssembly);
 
         return self;
+    }
+
+    public static void RegisterTypesFrom(this IContainerProvider self, Assembly assembly)
+    {
+        self.Resolve<IIocManager>().RegisterTypes(assembly);
+    }
+
+    public static void RegisterMapperFrom(this IContainerProvider self, Assembly assembly)
+    {
+        self.Resolve<IAutoMapper>().RegisterMapper(assembly);
     }
 }

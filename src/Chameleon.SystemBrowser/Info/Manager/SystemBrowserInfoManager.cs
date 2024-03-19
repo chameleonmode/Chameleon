@@ -108,13 +108,9 @@ namespace Chameleon.SystemBrowser
         public ISystemBrowserInfo FindByName(string browserName)
         {
             var browserInfo = GetAll()
-                .Where(info => info.Name.IndexOf(browserName, StringComparison.InvariantCultureIgnoreCase) != -1)
+                .Where(info => info.Name.Contains(browserName, StringComparison.InvariantCultureIgnoreCase))
                 .FirstOrDefault();
-            if (browserInfo == null)
-            {
-                throw new NotSupportedException(browserName);
-            }
-            return browserInfo;
+            return browserInfo ?? throw new NotSupportedException(browserName);
         }
     }
 }

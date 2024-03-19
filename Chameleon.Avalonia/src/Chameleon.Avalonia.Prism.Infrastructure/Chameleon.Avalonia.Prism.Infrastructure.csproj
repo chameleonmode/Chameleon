@@ -7,10 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia"  />
-    <PackageReference Include="Avalonia.Desktop"  />
-    <PackageReference Include="Prism.Avalonia"  />
-    <PackageReference Include="Prism.DryIoc.Avalonia"  />
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Prism.Avalonia" />
+    <PackageReference Include="Prism.DryIoc.Avalonia" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,7 +19,6 @@
     <ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Interfaces\Chameleon.Avalonia.Prism.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

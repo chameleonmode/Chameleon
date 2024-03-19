@@ -12,7 +12,6 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Dialogs.ViewModels;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
-using Splat;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using System.Xml.Linq;

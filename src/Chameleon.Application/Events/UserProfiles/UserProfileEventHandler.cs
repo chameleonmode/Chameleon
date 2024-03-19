@@ -1,5 +1,5 @@
 ﻿using Chameleon.Core.Extensions;
-using Chameleon.Core.Exceptions;
+using Chameleon.Common.Exceptions;
 using Chameleon.Interfaces.App.ContentDiscoverey;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;

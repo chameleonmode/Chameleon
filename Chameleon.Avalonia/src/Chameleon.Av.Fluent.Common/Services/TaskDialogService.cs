@@ -9,7 +9,6 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Ioc;
 using FluentAvalonia.UI.Controls;
-using Prism.Services.Dialogs;
 
 namespace Chameleon.Av.Fluent.Common.Services;
 
