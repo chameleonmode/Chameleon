@@ -8,27 +8,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:SettingsViewModel"
 			 x:CompileBindings="True"
-             x:Class="Chameleon.Avalonia.Controls.Settings.SettingsView">
-	<UserControl.Resources>
-		<ui:SymbolIconSource x:Key="Proxy" Symbol="WifiProtected" />
-		<ui:SymbolIconSource x:Key="ProxyCred" Symbol="WifiWarning" />
-		<ui:SymbolIconSource x:Key="CellPhone" Symbol="CellPhone" />
-		<ui:SymbolIconSource x:Key="User" Symbol="OtherUser" />
-		<ui:SymbolIconSource x:Key="Import" Symbol="Import" />
-		<ui:SymbolIconSource x:Key="GoIcon" Symbol="ChevronRight" />
-	</UserControl.Resources>
-	
-	<DockPanel>
-		<!--<StackPanel DockPanel.Dock="Top" Spacing="5">
-			<Grid Background="LightGray" ColumnDefinitions="Auto, *">
-				<TextBlock Text="{Binding Title}"
-						   Grid.Column="1"
-						   Margin="5"
-						   VerticalAlignment="Center"
-						   FontWeight="Bold" />
-			</Grid>
-		</StackPanel>-->
-
+             x:Class="Chameleon.Avalonia.Controls.Settings.SettingsView">	
 		<ScrollViewer>
 			<StackPanel>
 				<contrls:PageHeaderControl TextType="FAControls"
@@ -83,53 +63,4 @@
 			</StackPanel>
 			</StackPanel>
 		</ScrollViewer>
-	</DockPanel>
-	<!--<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition />
-		</Grid.RowDefinitions>
-		<Border Grid.Row="0"
-                BorderBrush="{StaticResource DividerLine}"
-                BorderThickness="0 1 0 0">
-			<TextBlock Foreground="Black"
-                       Text="Settings"
-                       FontSize="18"
-                       Margin="23 18 0 18" />
-		</Border>
-		<TabControl Grid.Row="1"
-					SelectedIndex="{Binding SelectedIndex}">
-			<TabItem Header="DEFAULTS">
-				<ContentControl x:Name="userDefaultSettingsView" />
-			</TabItem>
-			<TabItem Header="PROXY"
-                     IsVisible="{Binding CustomTabs.HasProxySettingsView}">
-				<ContentControl x:Name="userProxySettingsView" />
-			</TabItem>
-			<TabItem Header="PROXY CREDIT"
-                     IsVisible="{Binding CustomTabs.HasProxyCredit}">
-				<ContentControl x:Name="proxyCreditView" />
-			</TabItem>
-			<TabItem Header="PHONE VERIFICATION"
-                     IsVisible="{Binding CustomTabs.HasPhoneVerification}">
-				<ContentControl x:Name="phoneVerificationView" />
-			</TabItem>
-			<TabItem Header="USERS"
-                     IsVisible="{Binding CustomTabs.HasAssistantUsers}">
-				<ContentControl x:Name="assistantUsersView" />
-			</TabItem>
-			<TabItem Header="IMPORT PROFILES"
-                     IsVisible="{Binding CustomTabs.HasImport}">
-				<ContentControl x:Name="importView" />
-			</TabItem>
-			<TabItem Header="EXPORT PROFILES"
-                     IsVisible="{Binding CustomTabs.HasExport}">
-				<ContentControl x:Name="exportView" />
-			</TabItem>
-		</TabControl>
-
-		<materialDesign:Snackbar Style="{StaticResource SnackbarBinded}">
-			<materialDesign:SnackbarMessage Style="{StaticResource SnackbarMessageBinded}" />
-		</materialDesign:Snackbar>
-	</Grid>-->
 </UserControl>

@@ -20,7 +20,7 @@ public partial class UserDefaultSettingsView : SubPageViewControl
     {
         InitializeComponent();
         ControlName = "Default Home Pages";
-        Description = "Customize your default homepages here";
+        Description = "Customize proxy addresses for your profiles";
         PreviewImage = ApplicationHelper.TryGetResource<IconSource>("DefaultSettingsPageIcon");
     }
 }

@@ -10,8 +10,9 @@
 	<Thickness x:Key="ChameleonAppPageMargin">10</Thickness>
 	<Thickness x:Key="ChameleonControlMargin">8</Thickness>
 	<Thickness x:Key="ChameleonInnerControlMargin">4</Thickness>
-	
-    <!--Icons-->
+
+	<!--Icons-->
+	<ui:SymbolIconSource x:Key="ClosePane" Symbol="ClosePane" />
 	<ui:BitmapIconSource x:Key="logosymbolIcon" UriSource="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico" />
 	<ui:ImageIconSource x:Key="logo_big" Source="avares://Chameleon.Avalonia.Common/Assets/logo-big.png" />
 	<ui:ImageIconSource x:Key="logo_symbol" Source="avares://Chameleon.Avalonia.Common/Assets/logo-symbol.png" />
@@ -81,6 +82,12 @@
 
 	<!-- SubPageIcons -->
 	<ui:SymbolIconSource x:Key="DefaultSettingsPageIcon" Symbol="TwoPage" />
+	<ui:SymbolIconSource x:Key="Proxy" Symbol="WifiProtected" />
+	<ui:SymbolIconSource x:Key="ProxyCred" Symbol="WifiWarning" />
+	<ui:SymbolIconSource x:Key="CellPhone" Symbol="CellPhone" />
+	<ui:SymbolIconSource x:Key="User" Symbol="OtherUser" />
+	<ui:SymbolIconSource x:Key="Import" Symbol="Import" />
+	<ui:SymbolIconSource x:Key="GoIcon" Symbol="ChevronRight" />
     <!--<ui:ImageIconSource x:Key="BasicInputPageIcon" Source="avares://FAControlsGallery/Assets/Icons/BasicInputIcon.png" />
     <ui:ImageIconSource x:Key="TextPageIcon" Source="avares://FAControlsGallery/Assets/Icons/TextIcon.png" />
     <ui:ImageIconSource x:Key="ListPageIcon" Source="avares://FAControlsGallery/Assets/Icons/ListIcon.png" />
