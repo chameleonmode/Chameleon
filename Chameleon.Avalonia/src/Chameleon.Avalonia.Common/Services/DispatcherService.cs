@@ -1,4 +1,5 @@
 ﻿using Avalonia.Threading;
+using Chameleon.Common.Exceptions;
 using Chameleon.Interfaces.Services;
 
 namespace Chameleon.Avalonia.Common.Services;
@@ -80,7 +81,7 @@ public class DispatcherService : IDispatcherService
         }
         catch (Exception ex)
         {
-            //TODO: ExceptionHandler.ShowException(ex);
+            ExceptionHandler.ShowException(ex);
         }
         result = default(T);
         return false;

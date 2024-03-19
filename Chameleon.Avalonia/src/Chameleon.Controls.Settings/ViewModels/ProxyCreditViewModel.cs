@@ -169,7 +169,7 @@ public class ProxyCreditViewModel
 
     private void PurchaseCredits()
     {
-        MakePaymentAsync().Wait();
+        MakePaymentAsync();
     }
 
     public DelegateCommand RefreshCommand { get; }
@@ -179,7 +179,7 @@ public class ProxyCreditViewModel
         UpdateProxyAccessAsync();
     }
 
-    private async Task MakePaymentAsync()
+    private void MakePaymentAsync()
     {
         IProxyCreditOrder proxyCreditOrder;
         IsLoadingIndicatorVisible = true;
@@ -198,7 +198,6 @@ public class ProxyCreditViewModel
             IsLoadingIndicatorVisible = false;
         }
 
-        //Process.Start(proxyCreditOrder.Url);
         Core.Util.ProcessesUtil.GoToUrlDefault(proxyCreditOrder.Url);
     }
 

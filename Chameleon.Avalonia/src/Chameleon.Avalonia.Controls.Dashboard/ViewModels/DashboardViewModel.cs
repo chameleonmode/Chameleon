@@ -1,10 +1,8 @@
-﻿using Chameleon.Avalonia.Common.Util;
-using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
-using Chameleon.Avalonia.Prism.Interfaces.MessageBox;
-using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.Core.Util;
+using Chameleon.CT.Common.Base;
 using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.Assistants.Events;
 using Chameleon.Interfaces.App.Synchronization.Events;
@@ -12,23 +10,21 @@ using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles.Services;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dashboard;
-using Chameleon.Interfaces.MessageBox;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.Dashboard.ViewModels;
 
-public class DashboardViewModel
-       : ViewModelBase
+public partial class DashboardViewModel
+       : PageViewModelBase
        , IDashboardViewModel
 {
     private readonly IAuthSession _authSession;
     private readonly IEventAggregator _eventAggregator;
     private readonly IUserProfileService _userProfileService;
-    private readonly IPrismMessageBoxService _messageBoxService;
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _applicationUser;
@@ -44,7 +40,6 @@ public class DashboardViewModel
       IAuthSession authSession,
       IEventAggregator eventAggregator,
       IUserProfileService userProfileService,
-      IPrismMessageBoxService messageBoxService,
       IUserProfileFolderService userProfileFolderService,
       IShareUserProfilePopupService shareUserProfilePopupService,
       IApplicationUser applicationUser,
@@ -54,13 +49,10 @@ public class DashboardViewModel
       _authSession = authSession;
       _eventAggregator = eventAggregator;
       _userProfileService = userProfileService;
-      _messageBoxService = messageBoxService;
       _userProfileFolderService = userProfileFolderService;
       _shareUserProfilePopupService = shareUserProfilePopupService;
       _applicationUser = applicationUser;
       _userAssistantService = userAssistantService;
-  
-      SyncChangesCommand = new DelegateCommand(SyncChanges);
   
       _eventAggregator
           .GetEvent<LoginSuccessEvent>()
@@ -101,7 +93,7 @@ public class DashboardViewModel
 
     private void OnUpdateViewModel(UserProfileEventArgs args)
     {
-        RaisePropertyChanged(nameof(HasNoItems));
+        OnPropertyChanged(nameof(HasNoItems));
     }
 
     private bool _isWaiting = true;
@@ -135,7 +127,7 @@ public class DashboardViewModel
                 _viewModels = new ObservableCollectionView<UserProfileViewModel>(_mapping)
                 {
                     TrackItemChanges = true,
-                    Order = profile => profile.Title
+                    Order = profile => profile.UserProfileTitle
                 };
             }
 
@@ -143,7 +135,7 @@ public class DashboardViewModel
             {
                 _viewModels.Filter = profile => FilterProfiles(profile.UserProfile);
 
-                RaisePropertyChanged(nameof(HasNoItems));
+                OnPropertyChanged(nameof(HasNoItems));
             }
 
             return _viewModels;
@@ -175,7 +167,7 @@ public class DashboardViewModel
                 _folderViewModels = new ObservableCollectionView<FolderViewModel>(_folderMapping)
                 {
                     TrackItemChanges = true,
-                    Order = folder => folder.Title
+                    Order = folder => folder.FolderTitle
                 };
             }
 
@@ -184,7 +176,7 @@ public class DashboardViewModel
                 _folderViewModels.Filter = folder => FilterFolders(folder.Folder);
 
                 FoldersCount = _folderViewModels.Count;
-                RaisePropertyChanged(nameof(FoldersCount));
+                OnPropertyChanged(nameof(FoldersCount));
             }
 
             return _folderViewModels;
@@ -199,7 +191,7 @@ public class DashboardViewModel
         {
             if (SetProperty(ref _foldersCount, value))
             {
-                RaisePropertyChanged(nameof(HasNoFolderItems));
+                OnPropertyChanged(nameof(HasNoFolderItems));
             }
         }
     }
@@ -265,9 +257,9 @@ public class DashboardViewModel
         {
             if (SetProperty(ref _searchText, value))
             {
-                RaisePropertyChanged(nameof(ViewModels));
-                RaisePropertyChanged(nameof(FolderViewModels));
-                RaisePropertyChanged(nameof(NoSearchResultsInFavorite));
+                OnPropertyChanged(nameof(ViewModels));
+                OnPropertyChanged(nameof(FolderViewModels));
+                OnPropertyChanged(nameof(NoSearchResultsInFavorite));
             }
         }
     }
@@ -291,14 +283,13 @@ public class DashboardViewModel
                     _userProfileService,
                     profile,
                     _eventAggregator,
-                    _messageBoxService,
                     _shareUserProfilePopupService,
                     _applicationUser,
                     false
                 )
             );
 
-        RaisePropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(ViewModels));
     }
 
     private void LoadUserProfileFolderViewModels()
@@ -316,7 +307,7 @@ public class DashboardViewModel
             FolderViewModels.Ascending = ascending;
         }
 
-        RaisePropertyChanged(nameof(FolderViewModels));
+        OnPropertyChanged(nameof(FolderViewModels));
     }
 
     private void OnUpdateFavoriteFolders()
@@ -324,7 +315,7 @@ public class DashboardViewModel
         LoadUserProfileFolderViewModels();
     }
 
-    public DelegateCommand SyncChangesCommand { get; }
+    [RelayCommand]
     private void SyncChanges()
     {
         _eventAggregator
@@ -334,7 +325,7 @@ public class DashboardViewModel
 
     private void SyncBtnVisibilityChange()
     {
-        RaisePropertyChanged(nameof(IsSyncChangesBtnVisible));
+        OnPropertyChanged(nameof(IsSyncChangesBtnVisible));
     }
 
     private bool HasAssistants()

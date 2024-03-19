@@ -67,7 +67,7 @@ namespace Chameleon.Infrastructure.Api
                 ReadResponse();
                 return (TApiRequest)this;
             }
-            catch (Exception ex)
+            catch
             {
                 if (++_retryIndex >= _retryCount)
                 {

@@ -12,29 +12,30 @@ namespace Chameleon.Common.Base;
 /// <param name="content"></param>
 /// <param name="secondaryBtnTxt"></param>
 /// <param name="title"></param>
-public class DefaultContentDialogView(ContentDialogButtons btns, object content, object? title = null, string primaryBtnTxt = "OK", string secondaryBtnTxt = "", string closebtnTxt = "") :
+public class DefaultContentDialogView(ContentDialogButtons btns, object content, object? title = null, string? primaryBtnTxt = null, string? secondaryBtnTxt = null, string? closebtnTxt = null) :
     IDefaultContentDialogView
 {
-    public object? Title => title ?? ContainerServiceHelper.Current.ContainerProvider?.Resolve<IDefaultContentDialogTitle>();    
+    public object? Title => title ?? ContainerServiceHelper.Current.ContainerProvider?.Resolve<IDefaultContentDialogTitle>();
     public object? DialogContent => content;
-    public string PrimaryButtonText => btns switch
+    public string PrimaryButtonText => primaryBtnTxt ?? btns switch
     {
         ContentDialogButtons.OK or ContentDialogButtons.OKCancel => "OK",
         ContentDialogButtons.YesNoCancel or ContentDialogButtons.YesNo => "Yes",
-        _ => primaryBtnTxt
+        _ => "OK"
     };
-    public string SecondaryButtonText => btns switch
+    public string SecondaryButtonText => secondaryBtnTxt ?? btns switch
     {
-        ContentDialogButtons.OK or 
-        ContentDialogButtons.OKCancel or 
-        ContentDialogButtons.YesNo => secondaryBtnTxt,
-        ContentDialogButtons.YesNoCancel  => "No",
-        _ => secondaryBtnTxt
+        ContentDialogButtons.YesNoCancel => "No",
+        ContentDialogButtons.OK or
+        ContentDialogButtons.OKCancel or
+        ContentDialogButtons.YesNo or
+         _ => "No"
     };
-    public string CloseButtonText => btns switch
+    public string CloseButtonText => closebtnTxt ?? btns switch
     {
-        ContentDialogButtons.YesNoCancel or ContentDialogButtons.OKCancel => "Cancel",
         ContentDialogButtons.YesNo => "No",
-        _ => closebtnTxt
+        ContentDialogButtons.YesNoCancel or
+        ContentDialogButtons.OKCancel or
+        _ => "Cancel"
     };
 }

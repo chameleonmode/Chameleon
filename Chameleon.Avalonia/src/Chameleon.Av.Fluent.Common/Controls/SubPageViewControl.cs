@@ -24,7 +24,7 @@ public class SubPageViewControl : ChameleonPageBase
             if (!Design.IsDesignMode)
             {
                 if (subPageViewModel is ISubPageViewModel sp)
-                    sp.LoadAsync();
+                    sp.InitAsync();
             }
             DataContext = subPageViewModel;
         }

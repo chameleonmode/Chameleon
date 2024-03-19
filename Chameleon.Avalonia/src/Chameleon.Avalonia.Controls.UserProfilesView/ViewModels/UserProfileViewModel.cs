@@ -1,29 +1,26 @@
 ﻿using Chameleon.Authorization;
-using Chameleon.Avalonia.Prism.Interfaces.MessageBox;
-using Chameleon.Avalonia.Prism.Module.Base;
-using Chameleon.Avalonia.Prism.Module.MessageBox.Services;
-using Chameleon.Avalonia.Prism.Module.MessageBox.ViewModels;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.ContentDiscoverey;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles.Services;
 using Chameleon.Interfaces.Auth;
+using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.MessageBox;
 using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
-using Prism.Commands;
-using Prism.Services.Dialogs;
+using CommunityToolkit.Mvvm.Input;
 using System.Drawing;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
-public class UserProfileViewModel : ViewModelBase
+public partial class UserProfileViewModel : SubPageViewModelBase
 {
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfile _userProfile;
     private readonly IEventAggregator _eventAggregator;
-    private readonly IPrismMessageBoxService _messageBoxService;
+    //private readonly IPrismMessageBoxService _messageBoxService;
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _applicationUser;
 
@@ -31,7 +28,6 @@ public class UserProfileViewModel : ViewModelBase
         IUserProfileService userProfileService,
         IUserProfile userProfile,
         IEventAggregator eventAggregator,
-        IPrismMessageBoxService messageBoxService,
         IShareUserProfilePopupService shareUserProfilePopupService,
         IApplicationUser applicationUser,
         bool isShowCheckboxColumn = true
@@ -40,39 +36,23 @@ public class UserProfileViewModel : ViewModelBase
         _userProfileService = userProfileService;
         _userProfile = userProfile;
         _eventAggregator = eventAggregator;
-        _messageBoxService = messageBoxService;
         _shareUserProfilePopupService = shareUserProfilePopupService;
         _applicationUser = applicationUser;
         IsShowCheckboxColumn = isShowCheckboxColumn && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
         IsEnabledCheckboxColumn = !_userProfileService.IsSharedProfile(_userProfile);
-
-        OpenFirefoxCommand = new DelegateCommand(OpenFirefox);
-        OpenChromeCommand = new DelegateCommand(OpenChrome);
-        OpenBraveCommand = new DelegateCommand(OpenBrave);
-        OpenDetailsCommand = new DelegateCommand(OpenUserProfile);
-        OpenBrowserCommand = new DelegateCommand(OpenUserBrowser);
-        OpenRssCommand = new DelegateCommand(OpenUserRss);
-        DeleteCommand = new DelegateCommand(DeleteUserProfile);
-        UnfavoriteCommand = new DelegateCommand(UnfavoriteUserProfile);
-        FavouriteCommand = new DelegateCommand(FavoriteUserProfile);
-        OpenOutReachRssCommand = new DelegateCommand(OnOpenOutRssReach);
-        OpenOutReachLinkCommand = new DelegateCommand(OnOpenOutReachLink);
-        OpenOutReachCommand = new DelegateCommand(OpenOutReach);
-        OpenMenuCommand = new DelegateCommand(OpenMenu);
-        OpenSharingOptionsCommand = new DelegateCommand(OpenSharingOptions);
 
         _eventAggregator
              .GetEvent<SavedUserProfileEvent>()
              .Subscribe(args => OnUserProfileSaved(args.UserProfile));
     }
 
-    public DelegateCommand OpenOutReachCommand { get; }
+    [RelayCommand]
     private void OpenOutReach()
     {
         IsOpenPopup = !IsOpenPopup;
     }
 
-    public DelegateCommand OpenOutReachLinkCommand { get; }
+    [RelayCommand]
     private void OnOpenOutReachLink()
     {
         _eventAggregator
@@ -80,8 +60,7 @@ public class UserProfileViewModel : ViewModelBase
             .Publish(new OutReachEventArgs(_userProfile));
     }
 
-    public DelegateCommand OpenOutReachRssCommand { get; }
-
+    [RelayCommand]
     private void OnOpenOutRssReach()
     {
         _eventAggregator
@@ -98,6 +77,7 @@ public class UserProfileViewModel : ViewModelBase
         //TODO: ?? RaiseAllPropertiesChanged();
     }
 
+    [RelayCommand]
     private void FavoriteUserProfile()
     {
         _eventAggregator
@@ -108,7 +88,7 @@ public class UserProfileViewModel : ViewModelBase
             .GetEvent<UpdateFavoriteFolderEvent>()
             .Publish();
     }
-
+    [RelayCommand]
     private void UnfavoriteUserProfile()
     {
         _eventAggregator
@@ -119,46 +99,34 @@ public class UserProfileViewModel : ViewModelBase
             .GetEvent<UpdateFavoriteFolderEvent>()
             .Publish();
     }
-
+    [RelayCommand]
     private void DeleteUserProfile()
     {
-        var messageBoxOptions = new PrismMessageBoxOptions
-        {
-            Title = "Delete User Profile",
-            Text = "Are you sure you want to delete this profile?",
-            Buttons = MessageBoxButton.YesNo,
-            Icon = SystemIcons.Question,
-            DefaultButton = ButtonResult.No,
-            ContentButtons = new MessageBoxContentButtonsViewModel { ContentOkButton = "Yes" }
-        };
-
-       _messageBoxService.ShowDialog(messageBoxOptions, (br) =>
-        {
-            if (br == ButtonResult.OK)
+        ContentDialogService.ShowContentDialogAsync(
+            content: "Are you sure you want to delete this profile?",
+            title: "Delete User Profile",
+            action: () =>
             {
                 _eventAggregator
-                    .GetEvent<DeleteUserProfileEvent>()
-                    .Publish(new UserProfileEventArgs(_userProfile));
-            }
-        });
-
-       
+                .GetEvent<DeleteUserProfileEvent>()
+                .Publish(new UserProfileEventArgs(_userProfile));
+            });
     }
-
+    [RelayCommand]
     private void OpenUserProfile()
     {
         _eventAggregator
             .GetEvent<OpenUserProfileEvent>()
             .Publish(new UserProfileEventArgs(_userProfile));
     }
-
+    [RelayCommand]
     private void OpenUserBrowser()
     {
         _eventAggregator
             .GetEvent<OpenUserBrowserEvent>()
             .Publish(new UserProfileEventArgs(_userProfile));
     }
-
+    [RelayCommand]
     private void OpenUserRss()
     {
         _eventAggregator
@@ -169,22 +137,22 @@ public class UserProfileViewModel : ViewModelBase
             .GetEvent<OpenContentDiscovereyTabEvent>()
             .Publish(new OpenContentDiscovereyTabEventArgs(ContentDiscovereyTabs.RSS));
     }
-
+    [RelayCommand]
     private void OpenFirefox()
     {
         OpenSystemBrowser(SystemBrowserType.Firefox);
     }
-
+    [RelayCommand]
     private void OpenChrome()
     {
         OpenSystemBrowser(SystemBrowserType.Chrome);
     }
-
+    [RelayCommand]
     private void OpenBrave()
     {
         OpenSystemBrowser(SystemBrowserType.Brave);
     }
-
+    [RelayCommand]
     private void OpenSystemBrowser(SystemBrowserType browserType)
     {
         var args = new UserProfileSystemBrowserEventArgs(
@@ -194,12 +162,12 @@ public class UserProfileViewModel : ViewModelBase
             .GetEvent<OpenUserSystemBrowserEvent>()
             .Publish(args);
     }
-
+    [RelayCommand]
     private void OpenMenu()
     {
         IsOpenMenuPopup = !IsOpenMenuPopup;
     }
-
+    [RelayCommand]
     private void OpenSharingOptions()
     {
         _shareUserProfilePopupService.ShowPopup(_userProfile);
@@ -207,20 +175,9 @@ public class UserProfileViewModel : ViewModelBase
 
 
     public IUserProfile UserProfile => _userProfile;
-    public DelegateCommand OpenChromeCommand { get; }
-    public DelegateCommand OpenBraveCommand { get; }
-    public DelegateCommand OpenFirefoxCommand { get; }
-    public DelegateCommand OpenBrowserCommand { get; }
-    public DelegateCommand OpenRssCommand { get; }
-    public DelegateCommand OpenDetailsCommand { get; }
-    public DelegateCommand DeleteCommand { get; }
-    public DelegateCommand UnfavoriteCommand { get; }
-    public DelegateCommand FavouriteCommand { get; }
-    public DelegateCommand OpenMenuCommand { get; }
-    public DelegateCommand OpenSharingOptionsCommand { get; }
 
     public bool IsFavorite => _userProfile?.IsFavourite ?? false;
-    public string Title => _userProfile?.Title;
+    public string UserProfileTitle => _userProfile?.Title;
     public bool IsSharedProfile => _userProfileService.IsSharedProfile(UserProfile);
 
     public string SubTitle => "Profiles";
@@ -256,7 +213,7 @@ public class UserProfileViewModel : ViewModelBase
         get => _isOpenMenuPopup;
         set => SetProperty(ref _isOpenMenuPopup, value);
     }
-    public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
+    public char Code => string.IsNullOrWhiteSpace(UserProfileTitle) ? '0' : UserProfileTitle[0];
 
     public bool IsDeleteProfileBtnVisible => !IsSharedProfile && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
 

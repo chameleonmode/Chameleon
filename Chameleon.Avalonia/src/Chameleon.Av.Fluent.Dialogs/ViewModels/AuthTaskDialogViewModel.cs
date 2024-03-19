@@ -62,7 +62,7 @@ public partial class AuthTaskDialogViewModel : DialogBase, IAuthTaskDialogViewMo
         }
         catch (AuthenticationException ex)
         {
-            ErrorMessage = $"Login failed: Invalid email or licence key";
+            ErrorMessage = $"Login failed: Invalid email or licence key: {ex.Message}";
         }
         catch (WebException ex)
         {
@@ -71,7 +71,7 @@ public partial class AuthTaskDialogViewModel : DialogBase, IAuthTaskDialogViewMo
         }
         catch (Exception ex)
         {
-            ErrorMessage = "Error with login";
+            ErrorMessage = $"Error with login: {ex.Message}";
         }
         finally
         {

@@ -1,5 +1,5 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
-using Chameleon.Core.Util;
+﻿using Chameleon.Core.Util;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.UpgradePlan;
@@ -10,7 +10,7 @@ using Prism.Services.Dialogs;
 namespace Chameleon.Avalonia.Controls.UpgradePlan.ViewModels
 {
     public class UpgradePlanViewModel
-        : ViewModelBase,
+        : SubPageViewModelBase,
         IUpgradePlanViewModel
     {
         private readonly IUrlConfiguration _configuration;
@@ -34,14 +34,6 @@ namespace Chameleon.Avalonia.Controls.UpgradePlan.ViewModels
             _eventAggregator
                 .GetEvent<CloseDialogWindowEvent>()
                 .Publish((int)ButtonResult.OK);
-        }
-
-
-        private string _title;
-        public string Title
-        {
-            get => _title;
-            set => SetProperty(ref _title, value);
         }
 
         private string _limitExceededText;

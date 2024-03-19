@@ -27,6 +27,7 @@ namespace Chameleon.SystemBrowser
         }
 
         private List<SystemBrowserInfo> _installedBrowsers;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:Chameleon.SystemBrowser.SystemBrowserInfoManager.GetAll~System.Collections.Generic.IReadOnlyList{Chameleon.SystemBrowser.ISystemBrowserInfo}")]
         public IReadOnlyList<ISystemBrowserInfo> GetAll()
         {
             if (_installedBrowsers != null)
@@ -61,6 +62,7 @@ namespace Chameleon.SystemBrowser
             return _installedBrowsers.ToArray();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
         private bool TryGetSystemBrowserInfo(RegistryKey browserKey, out SystemBrowserInfo browser)
         {
             var browserKeyPath = (string)browserKey

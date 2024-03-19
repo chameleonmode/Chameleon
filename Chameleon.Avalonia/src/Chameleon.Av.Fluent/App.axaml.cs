@@ -26,7 +26,6 @@ using Prism.Mvvm;
 using System.Globalization;
 using System.Reflection;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
-using Chameleon.Avalonia.Prism.Domain.Extensions;
 using Chameleon.Avalonia.Prism.Application.Extensions;
 using Chameleon.Avalonia.Prism.Interfaces.Extensions;
 using Chameleon.Avalonia.Controls.Dashboard.ViewModels;
@@ -39,7 +38,6 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Dialogs;
-using Chameleon.Avalonia.Prism.Module.MessageBox;
 using Chameleon.Av.Fluent.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
 using Chameleon.Av.Fluent.Dialogs.Controls;
@@ -122,32 +120,31 @@ public partial class App : PrismApplication
         //containerRegistry.RegisterSingleton<IIocManager, IocManager>();
 
         Container
-            .AddInfrastructure(containerRegistry)
-            .AddDomain()
-            .AddApplication()
+            .AddInfrastructure(containerRegistry);
+            //.AddApplication()
             //.AddModules()
             //.AddUi()
-            .RegisterTypesFrom(Assembly.GetExecutingAssembly());
-        //Assemblys                                                                      
-        Container.RegisterTypesFrom(Chameleon.Avalonia.Common.AssemblyResolver.GetAssembly());
-        Container.RegisterTypesFrom(Chameleon.Avalonia.Prism.Module.MessageBox.AssemblyResolver.GetAssembly());   
-        Container.RegisterTypesFrom(Chameleon.Avalonia.Controls.Settings.AssemblyResolver.GetAssembly());
+            //.RegisterTypesFrom(Assembly.GetExecutingAssembly());
+
+        //Assemblys
+        Container.RegisterTypesFrom(Chameleon.Domain.AssemblyResolver.GetAssembly());
+        Container.RegisterTypesFrom(Chameleon.Application.AssemblyResolver.GetAssembly());
+        Container.RegisterMapperFrom(Chameleon.Application.AssemblyResolver.GetAssembly());                 
+        Container.RegisterTypesFrom(Chameleon.Avalonia.Common.AssemblyResolver.GetAssembly());  
+        Container.RegisterTypesFrom(Chameleon.Avalonia.Controls.Settings.AssemblyResolver.GetAssembly());     
+        Container.RegisterTypesFrom(Assembly.GetExecutingAssembly());
 
         // cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();
 
-        // Dialogs                                                  
-        //containerRegistry.RegisterDialog<AuthView, AuthViewModel>(nameof(IAuthLoginView));
-        //containerRegistry.RegisterDialogWindow<DialogWindowsWindow>(nameof(IWindowWindowDialog));  
-        cr.RegisterSingleton<IContentDialogService, ContentDialogService>();
-        //cr.RegisterSingleton<ILoginTaskDialog, LoginTaskDialog>(false, Chameleon.Common.Regions.DialogNames.LoginDialog);
+        // Dialogs
+        // //Chameleon.Av.Fluent.Dialogs
+        Container.RegisterTypesFrom(Chameleon.Av.Fluent.Dialogs.AssemblyResolver.GetAssembly());
+        //cr.RegisterSingleton<IContentDialogService, ContentDialogService>();
         cr.Register<ILoginContentDialogContent, LoginContentDialogContent>();
-        cr.RegisterSingleton<IDefaultContentDialogTitle, DefaultContentDialogTitle>();
-        cr.RegisterSingleton<IAuthTaskDialogViewModel, AuthTaskDialogViewModel>();
-        cr.RegisterSingleton<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
-        cr.RegisterSingleton<IBulkAddPagesPopupViewModel, BulkAddPagesPopupViewModel>();
-        //cr.RegisterSingleton<ILoginTaskDialog, LoginTaskDialog>(false, Chameleon.Common.Regions.DialogNames.LoginDialog);
-        //containerRegistry.RegisterDialog<MessageBoxView, MessageBoxViewModel>();
-        //containerRegistry.Register<object>();
+        //cr.RegisterSingleton<IDefaultContentDialogTitle, DefaultContentDialogTitle>();
+        //cr.RegisterSingleton<IAuthTaskDialogViewModel, AuthTaskDialogViewModel>();
+        //cr.RegisterSingleton<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
+        //cr.RegisterSingleton<IBulkAddPagesPopupViewModel, BulkAddPagesPopupViewModel>();
 
         // Views - Viewmodels                                                     
         containerRegistry.RegisterSingleton<IMainWindow, MainWindow>();

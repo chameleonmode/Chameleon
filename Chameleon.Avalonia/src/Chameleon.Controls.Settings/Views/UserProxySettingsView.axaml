@@ -3,316 +3,278 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.ViewModels"
+			 xmlns:interfaces="using:Chameleon.Interfaces.Proxies"
 			 xmlns:paginator="using:Chameleon.Avalonia.Controls.Paginator"
 			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
 			 xmlns:commonCntrl="using:Chameleon.Avalonia.Controlls.Common"
 			 xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
+             mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="800"
+			 x:DataType="vm:UserProxySettingsViewModel"
              x:Class="Chameleon.Avalonia.Controls.Settings.UserProxySettingsView">
 	<UserControl.Resources>
 		<conv:MultiStringJoinConverter x:Key="MultiStringJoin" />
 		<!--<converter:MultiStringJoinConverter x:Key="MultiStringJoin"/>-->
 	</UserControl.Resources>
-	<DockPanel>
 		<Border Padding="20"
-			Background="{DynamicResource LayerFillColorDefaultBrush}">
-			<StackPanel Spacing="8">
-				<ctrls:ChameleonContentControl Header="Proxies list">
-					<StackPanel>
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition/>
-							</Grid.RowDefinitions>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="Auto"/>
-							</Grid.ColumnDefinitions>
-							<StackPanel Grid.Row="0"
-										Grid.RowSpan="2"
-									Grid.Column="1"
-									Orientation="Horizontal"
-									HorizontalAlignment="Right">
-								<TextBlock Text="Current proxy country:"
-										   Margin="0 0 8 0"
-										   VerticalAlignment="Center"/>
-								<ComboBox MinWidth="94"
-									  VerticalAlignment="Center"
-									  ItemsSource="{Binding Countries.Items}"
-									  SelectedItem="{Binding Country}">
-									<ComboBox.ItemTemplate>
-										<DataTemplate>
-											<Label Content="{Binding Name}"/>
-										</DataTemplate>
-									</ComboBox.ItemTemplate>
-								</ComboBox>
-								<Button Classes="accent"
-										Margin="4" Width="175"
-										Content="Auto Update Proxies"
-										VerticalAlignment="Center"
-										Command="{Binding FillProxiesCommand}"
-										IsEnabled="{Binding FillProxiesIsEnabled}"/>
-							</StackPanel>
-							<StackPanel Grid.Row="1"
-									  Grid.RowSpan="2"
-									  Grid.Column="0"
-										Grid.ColumnSpan="2">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition/>
-										<ColumnDefinition/>
-									</Grid.ColumnDefinitions>
-									<StackPanel Orientation="Horizontal"
-												Grid.Column="0"
-												HorizontalAlignment="Left"
-												VerticalAlignment="Center"
-												Margin="0 0 0 5">
-										<TextBlock FontSize="12"
-													   Foreground="{StaticResource SecondaryText}"
-													   Text="Folder:"
-													   Margin="0 0 8 0"
-													   VerticalAlignment="Center"/>
-										<ComboBox MinWidth="94"
-													  VerticalAlignment="Center"
-													  ItemsSource="{Binding FolderViewModels.Items}"
-													  SelectedItem="{Binding SelectedFolder}"
-													   BorderThickness="0">
-											<ComboBox.ItemTemplate>
-												<DataTemplate>
-													<Label Content="{Binding Title}"/>
-												</DataTemplate>
-											</ComboBox.ItemTemplate>
-										</ComboBox>
-									</StackPanel>
-								</Grid>
-								<Border BorderThickness="0 1 0 0"
-										CornerRadius="4 0 4 0"
-										BorderBrush="{StaticResource InsertProfilesLine}">
-									<StackPanel>
-										<DataGrid ItemsSource="{Binding ViewModels}">
-											<DataGrid.Columns>
-												<DataGridTemplateColumn  Width="45">
-													<DataGridTemplateColumn.Header>
-														<CheckBox HorizontalAlignment="Center"
-															  IsChecked="{Binding Path=DataContext.IsSelectedAll,
-													  RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid, AncestorLevel=1}}"/>
-													</DataGridTemplateColumn.Header>
-													<DataGridTemplateColumn.CellTemplate>
-														<DataTemplate>
-															<CheckBox Margin="4 0 0 0" IsChecked="{Binding IsSelected}"/>
-														</DataTemplate>
-													</DataGridTemplateColumn.CellTemplate>
-												</DataGridTemplateColumn>
-												<DataGridTextColumn IsReadOnly="True"
-																	Header="PROJECT NAME"
-																	Binding="{Binding InProject}"
-																	MinWidth="120"
-																	CanUserSort="True"/>
-												<DataGridTemplateColumn IsReadOnly="True"
-																		Header="PROFILE"
-																		MinWidth="216">
-													<DataGridTemplateColumn.CellTemplate>
-														<DataTemplate>
-															<StackPanel Orientation="Horizontal">
-																<Grid>
-																	<Ellipse Grid.Column="1"
-																			 Fill="{StaticResource AccentFillColorDefaultBrush}"
-																			 Stroke="{StaticResource ControlStrokeColorDefaultBrush}"
-																			 Width="28"
-																			 Height="28"
-																			 VerticalAlignment="Center">
-																	</Ellipse>
-																	<TextBlock Text="{Binding Code}"
-																			   VerticalAlignment="Center"
-																			   HorizontalAlignment="Center"  />
-																</Grid>
-																<TextBlock VerticalAlignment="Center" Margin="13 0 0 0" Text="{Binding Title}"/>
-															</StackPanel>
-														</DataTemplate>
-													</DataGridTemplateColumn.CellTemplate>
-												</DataGridTemplateColumn>
-												<DataGridTextColumn IsReadOnly="True"
-																	Width="Auto"
-																	Header="IP"
-																	Binding="{Binding UserProfileModel.Proxy.Host}"/>
-												<DataGridTextColumn IsReadOnly="True"
-																	Width="Auto"
-																	Header="PORT"
-																	Binding="{Binding UserProfileModel.Proxy.Port}"
-																	MinWidth="80"/>
-												<DataGridTextColumn IsReadOnly="True"
-																	Width="Auto"
-																	Header="USERNAME"
-																	Binding="{Binding UserProfileModel.Proxy.UserName}"
-																	MinWidth="136"/>
-												<DataGridTextColumn IsReadOnly="True"
+				Background="{DynamicResource LayerFillColorDefaultBrush}">
+			<Grid RowDefinitions="*,Auto">
+				<ctrls:ChameleonContentControl Title="Proxies list">
+					<ctrls:ChameleonContentControl.Header>
+						<Grid Margin="12">
+							<ui:CommandBar DefaultLabelPosition="Right">
+								<ui:CommandBar.PrimaryCommands>
+									<ui:CommandBarElementContainer>
+										<ui:FAComboBox 
+													    PlaceholderText="Current proxy country:"
+													   DisplayMemberBinding="{Binding Name, x:DataType=interfaces:IProxyCountry}"
+													ItemsSource="{Binding Countries.Items}"
+													SelectedItem="{Binding Country}"
+													 IsEditable="False"
+													 IsTextSearchEnabled="True"
+													HorizontalAlignment="Stretch"
+														VerticalAlignment="Center"/>
+									</ui:CommandBarElementContainer>
+									<ui:CommandBarButton IconSource="Refresh"
+														 Label="Auto Update Proxies"
+														 Command="{Binding FillProxiesCommand}"
+														 IsEnabled="{Binding FillProxiesIsEnabled}"/>
+								</ui:CommandBar.PrimaryCommands>
+							</ui:CommandBar>
+						</Grid>
+					</ctrls:ChameleonContentControl.Header>
+					
+					<ctrls:ChameleonContentControl.Options>
+						<StackPanel Spacing="12"
+									Margin="4">
+							<ui:FAComboBox Header="Folder:"
+										   SelectedItem="{Binding SelectedFolder}"
+										   ItemsSource="{Binding FolderViewModels.Items}"
+										   DisplayMemberBinding="{Binding Title, x:DataType=vm:ProfileFolderViewModel}"
+										   IsEditable="False"
+										   IsTextSearchEnabled="True"
+										  HorizontalAlignment="Stretch"/>
+
+						</StackPanel>
+					</ctrls:ChameleonContentControl.Options>
+					
+					<ctrls:ChameleonContentControl.Content>
+						<Grid RowDefinitions="*,Auto">
+							
+									<DataGrid Name="ProxiesDataGrid"
+											  ScrollViewer.VerticalScrollBarVisibility="Disabled"
+								  ItemsSource="{Binding ViewModels}"
+						  AutoGenerateColumns="False"
+					  GridLinesVisibility="All"
+					  CanUserResizeColumns="False"
+					  CanUserReorderColumns="False"
+					  SelectionMode="Single"
+					  CanUserSortColumns="True"
+					  BorderThickness="1 0 1 0">
+
+										<DataGrid.Columns>
+											<DataGridTemplateColumn Width="Auto">
+												<DataGridTemplateColumn.Header>
+													<CheckBox HorizontalAlignment="Center"
+												IsChecked="{Binding Path=DataContext.IsSelectedAll,
+                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid, AncestorLevel=1}}"/>
+												</DataGridTemplateColumn.Header>
+												<DataGridTemplateColumn.CellTemplate>
+													<DataTemplate>
+														<CheckBox IsChecked="{Binding IsSelected}"/>
+													</DataTemplate>
+												</DataGridTemplateColumn.CellTemplate>
+											</DataGridTemplateColumn>
+											<DataGridTextColumn IsReadOnly="True"
+																Header="PROJECT NAME"
+																Binding="{Binding InProject}"
+																CanUserSort="True"/>
+											<DataGridTemplateColumn IsReadOnly="True"
 																	Width="*"
-																	Header="PASSWORD"
-																	Binding="{Binding UserProfileModel.Proxy.Password}"/>
-												<DataGridTemplateColumn IsReadOnly="True" >
-													<DataGridTemplateColumn.CellTemplate>
-														<DataTemplate>
-															<StackPanel Orientation="Horizontal"
-																		Cursor="Hand"
-																		Background="Transparent">
-																<Button Command="{Binding ClickIconChangeProxiesCommand}">
-																	<ui:SymbolIcon Symbol="Add" />
-																</Button>
-
-															</StackPanel>
-														</DataTemplate>
-													</DataGridTemplateColumn.CellTemplate>
-												</DataGridTemplateColumn>
-											</DataGrid.Columns>
-										</DataGrid>
-										<Border BorderBrush="{StaticResource InsertProfilesLine}"
-												BorderThickness="1 0 1 1"
-												CornerRadius="0 0 2 2">
-											<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
-										</Border>
+																	Header="PROFILE">
+												<DataGridTemplateColumn.CellTemplate>
+													<DataTemplate>
+														<StackPanel Orientation="Horizontal">
+															<Grid>
+																<Ellipse Grid.Column="1"
+																		 Fill="{StaticResource AccentFillColorSelectedTextBackgroundBrush}"
+																		 Width="28"
+																		 Height="28"
+																		 VerticalAlignment="Center">
+																</Ellipse>
+																<TextBlock Text="{Binding Code}"
+																		   Foreground="{StaticResource TextOnAccentFillColorSelectedTextBrush}"
+																		   VerticalAlignment="Center"
+																		   HorizontalAlignment="Center"  />
+															</Grid>
+															<TextBlock VerticalAlignment="Center"
+																	   Margin="13 0 0 0"
+																	   Text="{Binding Title}"/>
+														</StackPanel>
+													</DataTemplate>
+												</DataGridTemplateColumn.CellTemplate>
+											</DataGridTemplateColumn>
+											<DataGridTextColumn IsReadOnly="True"
+																Width="Auto"
+																Header="IP"
+																Binding="{Binding UserProfileModel.Proxy.Host}"/>
+											<DataGridTextColumn IsReadOnly="True"
+																Width="Auto"
+																Header="PORT"
+																Binding="{Binding UserProfileModel.Proxy.Port}"/>
+											<DataGridTextColumn IsReadOnly="True"
+																Width="Auto"
+																Header="USERNAME"
+																Binding="{Binding UserProfileModel.Proxy.UserName}"/>
+											<DataGridTextColumn IsReadOnly="True"
+																Header="PASSWORD"
+																Binding="{Binding UserProfileModel.Proxy.Password}"/>
+											<DataGridTemplateColumn IsReadOnly="True" >
+												<DataGridTemplateColumn.CellTemplate>
+													<DataTemplate>
+														<StackPanel Orientation="Horizontal"
+																	Cursor="Hand"
+																	Background="Transparent">
+															<Button Theme="{StaticResource TransparentButton}"
+																	Command="{Binding ClickIconChangeProxiesCommand}">
+																<ui:SymbolIcon Symbol="Add" />
+															</Button>
+														</StackPanel>
+													</DataTemplate>
+												</DataGridTemplateColumn.CellTemplate>
+											</DataGridTemplateColumn>
+										</DataGrid.Columns>
+									</DataGrid>
+									<paginator:PaginatorView Grid.Row="1"
+															 DataContext="{Binding PaginatorViewModel}" />
+							<!--{Binding HasSelectedItems}-->
+							<Border Grid.Row="0"
+									Grid.Column="0"
+									Grid.ColumnSpan="2"
+									Grid.RowSpan="2"
+									IsVisible="{Binding HasSelectedItems}"
+									Background="{StaticResource AccentFillColorDefaultBrush}"
+									Padding="{StaticResource ChameleonControlMargin}"
+									VerticalAlignment="Bottom">
+								<StackPanel Orientation="Horizontal"
+											HorizontalAlignment="Center"
+											Spacing="16">
+									<StackPanel Orientation="Horizontal"
+												VerticalAlignment="Center">
+										<TextBlock Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+												   Text="{Binding SelectedCount}"/>
+										<TextBlock Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+												   Text=" Selected"/>
 									</StackPanel>
-								</Border>
-							</StackPanel>
+									<Button Content="Unselect"
+											Grid.Column="1"
+											 Classes="accent"
+											Command="{Binding UnselectItemsCommand}" />
+									<Button Content="Change proxies"
+											 Grid.Column="2"
+											 Command="{Binding ChangeProxiesCommand}"/>
+								</StackPanel>
+							</Border>
 						</Grid>
-					</StackPanel>
+					</ctrls:ChameleonContentControl.Content>
+
+					<ctrls:ChameleonContentControl.Footer>
+						<ui:SettingsExpander Header="PROXIES EDITOR"
+											 VerticalAlignment="Bottom"
+											 IsExpanded="{Binding ShowCustomizeProxies}"
+									 IconSource="Image">
+							<ui:SettingsExpanderItem>
+								<Grid>
+									<!--{Binding ShowCustomizeProxies}-->
+									<Border CornerRadius="5 0"
+										  VerticalAlignment="Bottom"
+										  IsVisible="True">
+										<Grid>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="Auto"/>
+												<RowDefinition Height="*"/>
+											</Grid.RowDefinitions>
+											<Grid  Grid.Row="1">
+												<Grid.RowDefinitions>
+													<RowDefinition Height="Auto"/>
+													<RowDefinition Height="Auto"/>
+													<RowDefinition Height="*"/>
+												</Grid.RowDefinitions>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition/>
+													<ColumnDefinition/>
+												</Grid.ColumnDefinitions>
+												<TextBlock FontSize="14"
+													   Text="Please add your proxies using the format below"
+													   Margin="36 0 0 0"
+													   VerticalAlignment="Center"/>
+												<Button Width="148"
+													Height="46"
+													Margin="0 12 33 10"
+													Content="Apply changes"
+													VerticalAlignment="Center"
+													HorizontalAlignment="Right"
+													Grid.Column="1"
+													Command="{Binding ApplyProxyCommand}"/>
+												<TextBlock Grid.Row="1" Grid.Column="0"
+														   FontSize="14"
+														   Text="NEW PROXY"
+														   Margin="36 0 0 0"
+														   VerticalAlignment="Center"/>
+												<TextBlock Grid.Row="1" Grid.Column="1"
+														   FontSize="14"
+														   Text="CURRENT PROXY"
+														   Margin="36 0 0 0"
+														   VerticalAlignment="Center"/>
+												<StackPanel Grid.Row="2"
+															Grid.Column="0">
+													<TextBox
+															 Margin="24 9 0 0"
+															 AcceptsReturn="True"
+															 TextWrapping="NoWrap"
+															 Height="199"
+															 Text="{Binding ApplingProxy}"
+															 BorderBrush="{StaticResource BorderOutlineButton}">
+													</TextBox>
+													<TextBox
+															 Margin="24 10 0 0"
+															 Text=":"
+															 BorderBrush="{StaticResource BorderOutlineButton}"
+															 IsHitTestVisible="False">
+													</TextBox>
+												</StackPanel>
+												<ListBox Grid.Row="2"
+															  Grid.Column="1"
+															  x:Name="itemsList"
+															  ItemsSource="{Binding ViewModels}"
+															  Margin="16 0 22 0"
+														 IsHitTestVisible="False">
+													<ListBox.ItemTemplate>
+														<DataTemplate>
+															<TextBox IsReadOnly="True"
+																	 VerticalAlignment="Center"
+																	 Margin="0 8 0 0"
+																	 BorderBrush="{StaticResource BorderOutlineButton}">
+																<TextBox.Text>
+																	<MultiBinding Converter="{StaticResource MultiStringJoin}">
+																		<Binding Path="UserProfileModel.Proxy.Host"/>
+																		<Binding Path="UserProfileModel.Proxy.Port" />
+																		<Binding Path="UserProfileModel.Proxy.UserName" />
+																		<Binding Path="UserProfileModel.Proxy.Password" />
+																	</MultiBinding>
+																</TextBox.Text>
+															</TextBox>
+														</DataTemplate>
+													</ListBox.ItemTemplate>
+												</ListBox>
+											</Grid>
+										</Grid>
+									</Border>
+								</Grid>
+							</ui:SettingsExpanderItem>
+						</ui:SettingsExpander>
+					</ctrls:ChameleonContentControl.Footer>
 				</ctrls:ChameleonContentControl>
-
-
-				<Border Height="405"
-					CornerRadius="5 0"
-					  Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-					  VerticalAlignment="Bottom"
-					  IsVisible="{Binding ShowCustomizeProxies}">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="*"/>
-					</Grid.RowDefinitions>
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition/>
-								<ColumnDefinition/>
-							</Grid.ColumnDefinitions>
-							<TextBlock Text="CUSTOMIZE PROXIES"
-									   Theme="{StaticResource SubtitleTextBlockStyle}"
-									   Grid.Column="0"
-									   VerticalAlignment="Center"
-									   HorizontalAlignment="Left"
-									   Margin="25 0 0 0"/>
-							<DockPanel Grid.Column="1"
-									   HorizontalAlignment="Right"
-									   VerticalAlignment="Center" >
-								<Button Classes="accent" Command="{Binding HideCustomizeProxiesCommand}">
-									<ui:SymbolIcon Symbol="Clear" />
-								</Button>
-							</DockPanel>
-						</Grid>
-					<Grid  Grid.Row="1">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto"/>
-							<RowDefinition Height="Auto"/>
-							<RowDefinition Height="*"/>
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition/>
-							<ColumnDefinition/>
-						</Grid.ColumnDefinitions>
-						<TextBlock FontSize="14"
-							   Text="Please add your proxies using the format below"
-							   Margin="36 0 0 0"
-							   VerticalAlignment="Center"/>
-						<Button Width="148"
-							Height="46"
-							Margin="0 12 33 10"
-							Content="Apply changes"
-							VerticalAlignment="Center"
-							HorizontalAlignment="Right"
-							Grid.Column="1"
-							Command="{Binding ApplyProxyCommand}"/>
-						<TextBlock Grid.Row="1" Grid.Column="0"
-								   FontSize="14"
-								   Text="NEW PROXY"
-								   Margin="36 0 0 0"
-								   VerticalAlignment="Center"/>
-						<TextBlock Grid.Row="1" Grid.Column="1"
-								   FontSize="14"
-								   Text="CURRENT PROXY"
-								   Margin="36 0 0 0"
-								   VerticalAlignment="Center"/>
-						<StackPanel Grid.Row="2"
-									Grid.Column="0">
-							<TextBox
-									 Margin="24 9 0 0"
-									 AcceptsReturn="True"
-									 TextWrapping="NoWrap"
-									 Height="199"
-									 Text="{Binding ApplingProxy}"
-									 BorderBrush="{StaticResource BorderOutlineButton}">
-							</TextBox>
-							<TextBox
-									 Margin="24 10 0 0"
-									 Text=":"
-									 BorderBrush="{StaticResource BorderOutlineButton}"
-									 IsHitTestVisible="False">
-							</TextBox>
-						</StackPanel>
-						<ListBox Grid.Row="2"
-									  Grid.Column="1"
-									  x:Name="itemsList"
-									  ItemsSource="{Binding ViewModels}"
-									  Margin="16 0 22 0"
-								 IsHitTestVisible="False">
-							<ListBox.ItemTemplate>
-								<DataTemplate>
-									<TextBox IsReadOnly="True"
-											 VerticalAlignment="Center"
-											 Margin="0 8 0 0"
-											 BorderBrush="{StaticResource BorderOutlineButton}">
-										<TextBox.Text>
-											<MultiBinding Converter="{StaticResource MultiStringJoin}">
-												<Binding Path="UserProfileModel.Proxy.Host"/>
-												<Binding Path="UserProfileModel.Proxy.Port" />
-												<Binding Path="UserProfileModel.Proxy.UserName" />
-												<Binding Path="UserProfileModel.Proxy.Password" />
-											</MultiBinding>
-										</TextBox.Text>
-									</TextBox>
-								</DataTemplate>
-							</ListBox.ItemTemplate>
-						</ListBox>
-					</Grid>
-				</Grid>
-				</Border>
-				
-				<!--{Binding HasSelectedItems}-->
-				<Border Grid.Row="2"
-						Grid.Column="0"
-						Grid.ColumnSpan="2"
-						IsVisible="{Binding HasSelectedItems}"
-						Background="{StaticResource AccentFillColorDefaultBrush}"
-						Padding="{StaticResource ChameleonControlMargin}"
-						VerticalAlignment="Bottom">
-					<StackPanel Orientation="Horizontal"
-								HorizontalAlignment="Center"
-								Spacing="16">
-						<StackPanel Orientation="Horizontal"
-									VerticalAlignment="Center">
-							<TextBlock Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}" 
-									   Text="{Binding SelectedCount}"/>
-							<TextBlock Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}" 
-									   Text=" Selected"/>
-						</StackPanel>
-						<Button Content="Unselect"
-								Grid.Column="1"
-								 Classes="accent"
-								Command="{Binding UnselectItemsCommand}" />
-						<Button Content="Change proxies"
-								 Grid.Column="2"
-								 Command="{Binding ChangeProxiesCommand}"/>
-					</StackPanel>
-				</Border>
-			</StackPanel>
+			</Grid>
 		</Border>
-	</DockPanel>
 </UserControl>

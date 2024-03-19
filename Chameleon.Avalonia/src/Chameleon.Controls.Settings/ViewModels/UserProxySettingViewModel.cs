@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using Chameleon.Avalonia.Controls.UserProfileView.Models.Profile;
-using Chameleon.Avalonia.Prism.Module.Base;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
-public class UserProxySettingViewModel
-       : ViewModelBase
+public partial class UserProxySettingViewModel
+       : SubPageViewModelBase
 {
     private readonly IMapper _mapper;
     public readonly IUserProfile _userProfile;
@@ -25,7 +25,6 @@ public class UserProxySettingViewModel
         _eventAggregator = eventAggregator;
 
         UserProfileModel = _mapper.Map<UserProfileBindable>(_userProfile);
-        ClickIconChangeProxiesCommand = new DelegateCommand(ClickIconChangeProxies);
     }
 
     private UserProfileBindable _userProfileModel;
@@ -34,14 +33,11 @@ public class UserProxySettingViewModel
         get => _userProfileModel;
         set
         {
-            if (SetProperty(ref _userProfileModel, value))
-            {
-                RaiseCanExecuteChanged();
-            }
+            SetProperty(ref _userProfileModel, value);
         }
     }
 
-    public string Title => _userProfile.Title;
+    public string UserProfileTitle => _userProfile.Title;
 
     private string _inProject;
     public string InProject
@@ -60,7 +56,7 @@ public class UserProxySettingViewModel
         }
     }
 
-    public string CurrentProxyTitle => $"{InProject} \"{Title}\"";
+    public string CurrentProxyTitle => $"{InProject} \"{UserProfileTitle}\"";
 
     private void ChangeSelected()
     {
@@ -81,7 +77,7 @@ public class UserProxySettingViewModel
         {
             if (string.IsNullOrEmpty(_code))
             {
-                var list = Title.Split(" ")
+                var list = UserProfileTitle.Split(" ")
                     .Select(a => a.Trim().ToUpper()[0])
                     .ToList();
 
@@ -118,7 +114,7 @@ public class UserProxySettingViewModel
     }
 
     private bool _openChangeProxies = false;
-    public DelegateCommand ClickIconChangeProxiesCommand { get; private set; }
+    [RelayCommand]
     private void ClickIconChangeProxies()
     {
         _openChangeProxies = true;

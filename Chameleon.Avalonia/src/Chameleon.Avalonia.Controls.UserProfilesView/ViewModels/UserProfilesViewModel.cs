@@ -1,22 +1,19 @@
 ﻿using Chameleon.Avalonia.Controls.Paginator.ViewModels;
-using Chameleon.Avalonia.Prism.Interfaces.MessageBox;
-using Chameleon.Avalonia.Prism.Module.Base;
-using Chameleon.Avalonia.Prism.Module.MessageBox.Services;
-using Chameleon.Avalonia.Prism.Module.MessageBox.ViewModels;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
+using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles.Services;
 using Chameleon.Interfaces.Auth;
+using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.MessageBox;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
-using Prism.Commands;
-using Prism.Services.Dialogs;
+using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 using System.Drawing;
 
@@ -29,14 +26,13 @@ public interface IUserProfilesViewModel
     void Refresh();
 }
 
-public class UserProfilesViewModel
-    : ViewModelBase
+public partial class UserProfilesViewModel
+    : SubPageViewModelBase
     , IUserProfilesViewModel
 {
     private readonly IEventAggregator _eventAggregator;
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfilesPopupService _userProfilesPopupService;
-    private readonly IPrismMessageBoxService _messageBoxService;
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _currentUser;
@@ -49,7 +45,6 @@ public class UserProfilesViewModel
         IEventAggregator eventAggregator,
         IUserProfileService userProfileService,
         IUserProfilesPopupService userProfilesPopupService,
-        IPrismMessageBoxService messageBoxService,
         IUserProfileFolderService userProfileFolderService,
         IShareUserProfilePopupService shareUserProfilePopupService,
         IApplicationUser currentUser)
@@ -57,16 +52,9 @@ public class UserProfilesViewModel
         _eventAggregator = eventAggregator;
         _userProfileService = userProfileService;
         _userProfilesPopupService = userProfilesPopupService;
-        _messageBoxService = messageBoxService;
         _userProfileFolderService = userProfileFolderService;
         _shareUserProfilePopupService = shareUserProfilePopupService;
         _currentUser = currentUser;
-
-        UnselectCommand = new DelegateCommand(UnselectProfiles);
-        DeleteCommand = new DelegateCommand(DeletedProfilesAsync);
-        RemoveProfilesFromFolderCommand = new DelegateCommand(RemoveProfilesFromFolder);
-        AddProfilesToFolderCommand = new DelegateCommand(AddProfilesToFolder);
-        SetFavoriteCommand = new DelegateCommand(OnSetFavorite);
 
         _eventAggregator
             .GetEvent<LoginSuccessEvent>()
@@ -119,16 +107,16 @@ public class UserProfilesViewModel
         {
             OnViewModelChange(this, EventArgs.Empty);
             SetViewModelsFilter();
-            RaisePropertyChanged(nameof(ViewModels));
-            RaisePropertyChanged(nameof(HasNoItems));
+            OnPropertyChanged(nameof(ViewModels));
+            OnPropertyChanged(nameof(HasNoItems));
         });
     }
 
-    public DelegateCommand SetFavoriteCommand { get; }
+    [RelayCommand]
     private void OnSetFavorite()
     {
         Folder.IsFavorite = !Folder.IsFavorite;
-        RaisePropertyChanged(nameof(Folder));
+        OnPropertyChanged(nameof(Folder));
 
         _userProfileFolderService.Save(_folder);
 
@@ -145,10 +133,10 @@ public class UserProfilesViewModel
 
     private void OnHandleUserEvent()
     {
-        RaisePropertyChanged(nameof(HasNoItems));
-        RaisePropertyChanged(nameof(HasSelectedProfiles));
-        RaisePropertyChanged(nameof(HasProfileWithoutFolder));
-        RaisePropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
+        OnPropertyChanged(nameof(HasNoItems));
+        OnPropertyChanged(nameof(HasSelectedProfiles));
+        OnPropertyChanged(nameof(HasProfileWithoutFolder));
+        OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
     }
 
     private void OnDeleteUserProfileEvent(object obj)
@@ -181,7 +169,7 @@ public class UserProfilesViewModel
 
     private void OnSaveFolder(UserProfileFolderEventArgs args)
     {
-        RaisePropertyChanged(nameof(Folder));
+        OnPropertyChanged(nameof(Folder));
 
         if (HasFolder)
         {
@@ -235,7 +223,7 @@ public class UserProfilesViewModel
         Folder = userProfileFolder;
 
         UnselectProfiles();
-        RaisePropertyChanged(nameof(HasNoItems));
+        OnPropertyChanged(nameof(HasNoItems));
     }
 
     private IUserProfileFolder _folder;
@@ -250,8 +238,8 @@ public class UserProfilesViewModel
                 UpdateBreadcrumbsViewModel();
             }
 
-            RaisePropertyChanged(nameof(ShowFavoriteIcon));
-            RaisePropertyChanged(nameof(IsSharedFolder));
+            OnPropertyChanged(nameof(ShowFavoriteIcon));
+            OnPropertyChanged(nameof(IsSharedFolder));
         }
     }
 
@@ -331,7 +319,7 @@ public class UserProfilesViewModel
         {
             if (SetProperty(ref _selectedCount, value))
             {
-                RaisePropertyChanged(nameof(HasSelectedProfiles));
+                OnPropertyChanged(nameof(HasSelectedProfiles));
             }
         }
     }
@@ -355,8 +343,7 @@ public class UserProfilesViewModel
         }
     }
 
-    public DelegateCommand UnselectCommand { get; }
-
+    [RelayCommand]
     private void UnselectProfiles()
     {
         if (_selectedProfiles == null)
@@ -370,32 +357,16 @@ public class UserProfilesViewModel
         }
     }
 
-    public DelegateCommand DeleteCommand { get; }
-
+    [RelayCommand]
     private void DeletedProfilesAsync()
     {
-        var messageBoxOptions = new PrismMessageBoxOptions
-        {
-            Title = "Delete User Profiles",
-            Text = $"Are you sure you want to delete {SelectedCount} profiles?",
-            Buttons = MessageBoxButton.YesNo,
-            Icon = SystemIcons.Question,
-            DefaultButton = ButtonResult.No,
-            ContentButtons = new MessageBoxContentButtonsViewModel { ContentOkButton = "Yes" }
-        };
-
-        _messageBoxService.ShowDialog(messageBoxOptions, (result) =>
-        {
-            if (result != ButtonResult.OK)
+        ContentDialogService.ShowContentDialogAsync(
+            content: $"Are you sure you want to delete {SelectedCount} profiles?",
+            title: "Delete User Profile",
+            action: () =>
             {
-                return;
-            }
-
-
-            DispatcherService.InvokeOnUiThread(DeleteProfiles);
-        });
-
-
+                DispatcherService.InvokeOnUiThread(DeleteProfiles);
+            });
     }
 
     private void DeleteProfiles()
@@ -418,8 +389,7 @@ public class UserProfilesViewModel
         }
     }
 
-    public DelegateCommand RemoveProfilesFromFolderCommand { get; }
-
+    [RelayCommand]
     private void RemoveProfilesFromFolder()
     {
         if (!_selectedProfiles.Any())
@@ -442,13 +412,13 @@ public class UserProfilesViewModel
         UpdateProfilesInFolder();
     }
 
-    public DelegateCommand AddProfilesToFolderCommand { get; }
+    [RelayCommand]
     private void AddProfilesToFolder()
     {
         _userProfilesPopupService.ShowPopup(_folder);
 
-        RaisePropertyChanged(nameof(HasProfileWithoutFolder));
-        RaisePropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
+        OnPropertyChanged(nameof(HasProfileWithoutFolder));
+        OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
 
         ChangeProfilesInFavoriteFolder();
     }
@@ -478,8 +448,8 @@ public class UserProfilesViewModel
             .GetEvent<CreateUserProfileEvent>()
             .Publish(new CreateUserProfileEventArgs(folderId));
 
-        RaisePropertyChanged(nameof(HasProfileWithoutFolder));
-        RaisePropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
+        OnPropertyChanged(nameof(HasProfileWithoutFolder));
+        OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
     }
 
     private ObservableCollectionView<UserProfileViewModel> _viewModels;
@@ -493,12 +463,12 @@ public class UserProfilesViewModel
                 {
                     TrackItemChanges = true,
                     TrackCollectionChanges = true,
-                    Order = profile => profile.Title
+                    Order = profile => profile.UserProfileTitle
                 };
 
                 InitPaginator();
                 SetViewModelsFilter();
-                RaisePropertyChanged(nameof(HasNoItems));
+                OnPropertyChanged(nameof(HasNoItems));
             }
 
             return _viewModels;
@@ -585,19 +555,19 @@ public class UserProfilesViewModel
 
         _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
             userProfiles, profile => new UserProfileViewModel
-            (_userProfileService, profile, _eventAggregator, _messageBoxService, _shareUserProfilePopupService,_currentUser));
+            (_userProfileService, profile, _eventAggregator, _shareUserProfilePopupService,_currentUser));
 
         _mapping.CollectionChanged += OnViewModelChange;
 
-        RaisePropertyChanged(nameof(ViewModels));
-        RaisePropertyChanged(nameof(HasProfileWithoutFolder));
-        RaisePropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
+        OnPropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(HasProfileWithoutFolder));
+        OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
     }
 
     public void Refresh()
     {
         _viewModels.Refresh();
         Folder = new UserProfileFolder { Title = "All profiles" };
-        RaisePropertyChanged(nameof(Folder));
+        OnPropertyChanged(nameof(Folder));
     }
 }

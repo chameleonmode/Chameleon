@@ -6,7 +6,7 @@ namespace Chameleon.CT.Common.Base;
 public class SubPageViewModelBase : ObservableObjectBase, ISubPageViewModel
 {
     public bool Loaded;
-    public virtual Task LoadAsync()
+    public virtual Task InitAsync()
     {
         Loaded = true;
         return Task.CompletedTask;

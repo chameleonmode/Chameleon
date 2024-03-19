@@ -2,5 +2,5 @@
 
 public interface ISubPageViewModel
 {
-    Task LoadAsync();
+    Task InitAsync();
 }

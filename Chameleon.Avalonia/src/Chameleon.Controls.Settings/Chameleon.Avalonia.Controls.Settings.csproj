@@ -9,7 +9,6 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Prism.Avalonia" />
   </ItemGroup>
 
   <ItemGroup>

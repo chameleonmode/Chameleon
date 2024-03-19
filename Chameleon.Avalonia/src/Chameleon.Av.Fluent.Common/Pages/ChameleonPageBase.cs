@@ -28,7 +28,6 @@ public class ChameleonPageBase : UserControl
     private StackPanel? _detailsHost;
     private ScrollViewer? _scroller;
 
-    public Func<Task>? Loaded { get; set; }
 
     public ChameleonPageBase()
     {

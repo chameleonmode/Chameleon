@@ -25,11 +25,11 @@ public class PhoneVerificationViewModel
         SaveCommand = new DelegateCommand(Save)
             .ObservesCanExecute(() => IsChangeApiKey);
     }
-    public override Task LoadAsync()
+    public override Task InitAsync()
     {
         if (!base.Loaded)
             InitializeApiKey();
-        return base.LoadAsync();
+        return base.InitAsync();
     }
     private void InitializeApiKey()
     {

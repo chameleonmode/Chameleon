@@ -1,14 +1,15 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles.Events;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
+using System.Reactive.Linq;
 
 namespace Chameleon.Avalonia.Controls.Dashboard.ViewModels;
 
-public class FolderViewModel : ViewModelBase
+public partial class FolderViewModel : SubPageViewModelBase
 {
     private readonly IUserProfileFolder _folder;
     private readonly IEventAggregator _eventAggregator;
@@ -25,9 +26,6 @@ public class FolderViewModel : ViewModelBase
         _eventAggregator = eventAggregator;
         _userProfileService = userProfileService;
         _userProfileFolderService = userProfileFolderService;
-
-        ViewGroupCommand = new DelegateCommand(OnViewGroup);
-        SetFavoriteFolderCommand = new DelegateCommand(OnSetFavoriteFolder);
 
         IsFavorite = _folder.IsFavorite;
         ProfilesCount = _folder.ProfilesCount;
@@ -46,10 +44,10 @@ public class FolderViewModel : ViewModelBase
 
         var folder = _userProfileFolderService.Get(folderId);
         ProfilesCount = _userProfileService.GetAll().Count(a => a.FolderId == folderId);
-        RaisePropertyChanged(nameof(ProfilesCount));
+        OnPropertyChanged(nameof(ProfilesCount));
     }
 
-    public DelegateCommand ViewGroupCommand { get; }
+    [RelayCommand]
     private void OnViewGroup()
     {
         _eventAggregator
@@ -61,11 +59,11 @@ public class FolderViewModel : ViewModelBase
             .Publish(new UserProfileFolderEventArgs(_folder));
     }
 
-    public DelegateCommand SetFavoriteFolderCommand { get; }
+    [RelayCommand]
     private void OnSetFavoriteFolder()
     {
         IsFavorite = !IsFavorite;
-        RaisePropertyChanged(nameof(IsFavorite));
+        OnPropertyChanged(nameof(IsFavorite));
 
         _folder.IsFavorite = IsFavorite;
         _userProfileFolderService.Save(_folder);
@@ -89,18 +87,18 @@ public class FolderViewModel : ViewModelBase
         set => SetProperty(ref _id, value);
     }
 
-    private string _title;
-    public string Title
+    private string _foldertitle;
+    public string FolderTitle
     {
         get
         {
-            if (string.IsNullOrWhiteSpace(_title))
+            if (string.IsNullOrWhiteSpace(_foldertitle))
             {
-                _title = _folder.Title;
+                _foldertitle = _folder.Title;
             }
-            return _title;
+            return _foldertitle;
         }
-        set => SetProperty(ref _title, value);
+        set => SetProperty(ref _foldertitle, value);
     }
 
     private bool _isFavorite;

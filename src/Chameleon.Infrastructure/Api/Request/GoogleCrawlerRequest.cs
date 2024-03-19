@@ -55,9 +55,9 @@ namespace Chameleon.Infrastructure.Api
             {
                 return (TResult)Convert.ChangeType(googleCrawlerResponse, typeof(TResult));
             }
-            catch(Exception e)
+            catch
             {
-                return default(TResult);
+                return default;
             }
         }
     }

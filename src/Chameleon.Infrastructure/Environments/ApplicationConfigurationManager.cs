@@ -31,14 +31,14 @@ namespace Chameleon.Infrastructure.Environments
             _ => throw new ArgumentOutOfRangeException(nameof(key), $"Not expected value: {key}"),
         };
 
-        public T? Get<T>(string key, T? defaultValue = default)
+        public T Get<T>(string key, T defaultValue = default)
         {
             var value = Get(key);
             if (string.IsNullOrWhiteSpace(value))
             {
                 return defaultValue;
             }
-            return (T?)Convert.ChangeType(value, typeof(T?));
+            return (T)Convert.ChangeType(value, typeof(T));
         }
 
         public void Set(string key, object value, bool save = true)

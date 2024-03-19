@@ -15,50 +15,9 @@ public static class ObjectExtensions
         throw new NotImplementedException();
         // return Application.Current.Dispatcher.Invoke(action);
     }
-
-    public static async void InvokeAsync(this object self, Func<Task> action)
-    {
-        await _InvokeAsync(action);
-    }
-
-    private static async Task _InvokeAsync(Func<Task> action)
-    {
-        try
-        {
-            await action();
-        }
-        catch (Exception ex)
-        {
-            //ExceptionHandler.ShowException(ex);
-        }
-    }
-
-    public static bool TryExecute<T>(Func<T> action, out T result)
-    {
-        try
-        {
-            result = action();
-            return true;
-        }
-        catch (Exception ex)
-        {
-            //ExceptionHandler.ShowException(ex);
-        }
-        result = default(T);
-        return false;
-    }
-
-    public static bool TryExecute(Action action)
-    {
-        return TryExecute(() =>
-        {
-            action();
-            return true;
-        }, out var result);
-    }
-
     public static void TryCatchIgnore(this object self, Action action)
     {
+        //TODO: refactu ??
         try
         {
             action();

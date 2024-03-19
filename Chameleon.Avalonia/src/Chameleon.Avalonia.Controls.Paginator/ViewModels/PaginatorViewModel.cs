@@ -1,12 +1,12 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
-using Chameleon.Core.Collections.Views;
+﻿using Chameleon.Core.Collections.Views;
 using Chameleon.Interfaces.Paginator;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Paginator.ViewModels;
 
-public class PaginatorViewModel
-    : ViewModelBase
+public partial class PaginatorViewModel
+    : ObservableObject
     , IPaginatorViewModel
 {
     public PaginatorViewModel(int totalCount, int onPageItems = 10)
@@ -14,17 +14,15 @@ public class PaginatorViewModel
         OnPageItems = onPageItems;
         TotalCount = totalCount;
 
-        NextPageCommand = new DelegateCommand(OnNextPage);
-        PrevPageCommand = new DelegateCommand(OnPrevPage);
     }
 
-    public DelegateCommand NextPageCommand { get; }
-    public DelegateCommand PrevPageCommand { get; }
 
+    [RelayCommand]
     private void OnNextPage()
     {
         PageIndex++;
     }
+    [RelayCommand]
     private void OnPrevPage()
     {
         PageIndex--;

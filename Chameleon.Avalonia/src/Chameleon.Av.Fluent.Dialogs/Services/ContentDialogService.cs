@@ -40,8 +40,31 @@ public class ContentDialogService : IContentDialogService
         return (IContentDialogResult)res;
     }
 
-    public async Task<IContentDialogResult> ShowContentDialogAsync(ContentDialogButtons btns, object content, object? title = null, string primaryBtnTxt = "OK", string secondaryBtnTxt = "", string closebtnTxt = "")
+    public async Task<IContentDialogResult> ShowContentDialogAsync(ContentDialogButtons btns, object content,
+        object? title = null,
+        string? primaryBtnTxt = null,
+        string? secondaryBtnTxt = null,
+        string? closebtnTxt = null)
     {
         return await ShowContentDialogAsync(new DefaultContentDialogView(btns, content, title, primaryBtnTxt, secondaryBtnTxt, closebtnTxt));
+    }   
+    public async Task<IContentDialogResult> ShowContentDialogAsync(ContentDialogButtons btns, object content, object title)
+    {
+        return await ShowContentDialogAsync(btns, content, title, 
+            null, 
+            null, 
+            null);
+    }
+    public async Task ShowContentDialogAsync(object content,  
+        object? title = null,
+        Action? action = null,
+        IContentDialogResult onResult = IContentDialogResult.Primary, 
+        ContentDialogButtons btns = ContentDialogButtons.YesNo,
+        string? primaryBtnTxt = null,
+        string? secondaryBtnTxt = null,
+        string? closebtnTxt = null)
+    {
+        if (await ShowContentDialogAsync(btns, content, title, primaryBtnTxt, secondaryBtnTxt, closebtnTxt) == onResult)
+            action?.Invoke();
     }
 }

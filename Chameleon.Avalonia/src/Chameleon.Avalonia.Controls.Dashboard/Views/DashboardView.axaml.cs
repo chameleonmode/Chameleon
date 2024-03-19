@@ -5,7 +5,6 @@ using Avalonia.VisualTree;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Dialogs;
-using Prism.Ioc;
 
 namespace Chameleon.Avalonia.Controls.Dashboard;
 
@@ -23,7 +22,7 @@ public partial class DashboardView : UserControl
         base.OnAttachedToVisualTree(e);
 
         // Initialize the WindowNotificationManager with the "TopLevel". Previously (v0.10), MainWindow
-        var notifyService = ContainerLocator.Current.Resolve<IToastNotificationService>();
+        var notifyService = ContainerServiceHelper.Resolve<IToastNotificationService>();
         notifyService.SetHostWindow(TopLevel.GetTopLevel(this));
     }
 }

@@ -6,7 +6,6 @@ using Chameleon.Interfaces.UpgradePlan;
 
 namespace Chameleon.Avalonia.Controls.UpgradePlan;
 
-[ViewModel(typeof(IUpgradePlanViewModel))]
 public partial class UpgradePlanPopupView : UserControl,
         IUpgradePlanPopupView
 {

@@ -46,10 +46,10 @@ public class UserDefaultSettingsViewModel
 
         Title = "Default Home Pages";
     }
-    public override Task LoadAsync()
+    public override Task InitAsync()
     {
         OnAuthenticated();
-        return base.LoadAsync();
+        return base.InitAsync();
     }
 
     private const string DialogTitle = "BULK ADD PAGES";

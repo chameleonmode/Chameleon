@@ -1,4 +1,4 @@
-﻿using Chameleon.Core.Exceptions;
+﻿using Chameleon.Common.Exceptions;
 using Chameleon.Core.Extensions;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.ShareFolders;

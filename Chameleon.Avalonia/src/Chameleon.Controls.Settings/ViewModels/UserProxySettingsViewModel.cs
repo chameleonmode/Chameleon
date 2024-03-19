@@ -91,11 +91,11 @@ public class UserProxySettingsViewModel
         HideCustomizeProxiesCommand = new DelegateCommand(HideCustomizeProxies);
         InitializeCountriesAsync();
     }
-    public override Task LoadAsync()
+    public override Task InitAsync()
     {
         if(!base.Loaded)
             Load();
-        return base.LoadAsync();
+        return base.InitAsync();
     }
     private void OnRenameFolder(int folderId, string title)
     {
@@ -110,9 +110,8 @@ public class UserProxySettingsViewModel
 
     private void Load()
     {
-        InitializeViewModels();
+        DispatcherService.InvokeOnUiThreadAsync(InitializeViewModels);
         LoadUserProfileFolderViewModels();
-       
     }
 
     public AsyncCollectionViewModel<IProxyCountry> Countries { get; private set; }
@@ -181,7 +180,7 @@ public class UserProxySettingsViewModel
 
     private void OnUserProfileSaved()
     {
-        InitializeViewModels();
+        DispatcherService.InvokeOnUiThreadAsync(InitializeViewModels);
     }
 
     private void OnUserProfileSelected()
@@ -437,10 +436,10 @@ public class UserProxySettingsViewModel
                 _viewModels = new ObservableCollectionView<UserProxySettingViewModel>(_mapping)
                 {
                     TrackItemChanges = true,
-                    Order = profile => profile.Title
+                    Order = profile => profile.UserProfileTitle
                 };
 
-                if (SelectedFolder.Id == 0)
+                if (SelectedFolder == null || SelectedFolder.Id == 0)
                 {
                     ViewModels.Filter = null;
                 }
@@ -452,6 +451,7 @@ public class UserProxySettingsViewModel
                 SelectedCount = 0;
                 OnPropertyChanged(nameof(SelectedCount));
 
+                _mapping.CollectionChanged -= OnViewModelChange;
                 _mapping.CollectionChanged += OnViewModelChange;
                 InitPaginator();
             }

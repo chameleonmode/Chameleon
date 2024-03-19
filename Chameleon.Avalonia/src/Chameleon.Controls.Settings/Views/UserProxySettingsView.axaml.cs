@@ -1,8 +1,10 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
 using Chameleon.Av.Fluent.Common.Controls;
 using Chameleon.Avalonia.Common.Helpers;
+using Chameleon.Avalonia.Controls.Settings.ViewModels;
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Attributes;
 using Chameleon.Interfaces.App.Settings;
@@ -20,5 +22,22 @@ public partial class UserProxySettingsView : SubPageViewControl, IUserProxySetti
         ControlName = "Proxy Settings";
         Description = "Customize your default homepages here";
         PreviewImage = ApplicationHelper.TryGetResource<IconSource>("Proxy");
+        //if (DataContext is UserProxySettingsViewModel vm)
+        //{
+        //    vm.PropertyChanged += (o, e) =>
+        //    {
+        //        if (e.PropertyName == nameof(vm.ViewModels))
+        //        {
+        //            vm.DispatcherService.InvokeOnUiThread(() => 
+        //            {
+        //                // Note: Attached properties not propagating correctly, workaround
+        //                ProxiesDataGrid.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+
+        //                this.InvalidateArrange();
+        //                ProxiesDataGrid.InvalidateArrange();
+        //            });
+        //        }
+        //    };
+        //}
     }
 }

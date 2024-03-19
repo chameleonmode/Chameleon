@@ -29,7 +29,7 @@
 	<Border Padding="20"
 			Background="{DynamicResource LayerFillColorDefaultBrush}">
 		<StackPanel Spacing="8">
-			<ctrls:ChameleonContentControl Header="Saved Pages">
+			<ctrls:ChameleonContentControl Title="Saved Pages">
 				<Grid RowDefinitions="Auto,*">
 					<StackPanel Spacing="8"
 								HorizontalAlignment="Right"

@@ -1,9 +1,10 @@
 ﻿using Chameleon.Avalonia.Prism.Module.Base;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
 public class ProfileFolderViewModel
-    : ViewModelBase
+    : ObservableObject
 {
     public ProfileFolderViewModel(int id, string title)
     {

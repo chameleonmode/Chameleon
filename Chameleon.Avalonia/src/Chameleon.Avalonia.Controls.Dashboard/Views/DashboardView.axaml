@@ -2,8 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:prism="http://prismlibrary.com/"
-			 xmlns:converter="clr-namespace:Chameleon.Common.ValueConverters;assembly=Chameleon.Avalonia.Common"
+			 xmlns:converter="using:Chameleon.Common.ValueConverters"
              xmlns:userProfiles="using:Chameleon.Avalonia.Controls.UserProfilesView"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Chameleon.Avalonia.Controls.Dashboard.DashboardView">
