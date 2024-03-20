@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Chameleon.Av.Fluent.Common.Controls;
-using Chameleon.Interfaces.Dialogs.Views;
 
 namespace Chameleon.Av.Fluent.Dialogs.Controls;
 
@@ -18,4 +17,15 @@ public abstract class ContentDialogControlBase : UserControl,
     {
         return (T)DataContext ?? ContainerServiceHelper.Current.ContainerProvider.Resolve<T>();
     }
+
+    public ContentDialogButtons DialogButtons { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public Task<IContentDialogResult> ShowAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    object? IContentDialogAware.Title { get => Title; set => throw new NotImplementedException(); }
+    object? IContentDialogAware.DialogContent { get => DialogContent; set => throw new NotImplementedException(); }
+    public string? Glyph { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }

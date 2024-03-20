@@ -21,7 +21,6 @@ using Chameleon.Core.Extensions;
 using Chameleon.Avalonia.Prism.Module.Collections;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
 using Chameleon.CT.Common.Base;
-using Chameleon.Common.Base;
 using Chameleon.Interfaces.Dialogs;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;

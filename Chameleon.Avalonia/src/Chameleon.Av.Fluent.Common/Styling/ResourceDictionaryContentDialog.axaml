@@ -104,7 +104,8 @@
 														<Setter Property="TextWrapping" Value="Wrap"/>
 													</Style>
 												</Grid.Styles>
-												<ContentControl Name="Title"
+												<ContentControl IsVisible="{Binding Path=$self.Content}" 
+																Name="Title"
                                                                 Margin="{StaticResource ContentDialogTitleMargin}"
                                                                 Content="{TemplateBinding Title}"
                                                                 ContentTemplate="{TemplateBinding TitleTemplate}"
@@ -113,7 +114,8 @@
                                                                 FontWeight="SemiBold"
                                                                 Foreground="{TemplateBinding Foreground}"
                                                                 HorizontalAlignment="Stretch"
-                                                                VerticalAlignment="Top">
+                                                                VerticalAlignment="Top"
+																>
 													<ContentControl.Template>
 														<ControlTemplate>
 															<ContentPresenter Content="{TemplateBinding Content}"

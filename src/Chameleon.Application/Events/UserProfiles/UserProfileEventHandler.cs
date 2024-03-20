@@ -15,6 +15,9 @@ using Chameleon.Prism.Events;
 using System;
 using System.Drawing;
 using System.Windows;
+using Chameleon.Interfaces.Dialogs;
+using Chameleon.Interfaces.Dialogs.ViewModels;
+using Chameleon.Common.Icons;
 //using Chameleon.Avalonia.Prism.Interfaces.MessageBox;
 //using MessageBoxOptions = Chameleon.MessageBox.Services.MessageBoxOptions;
 
@@ -22,7 +25,8 @@ namespace Chameleon.Application.Events
 {
     public class UserProfileEventHandler : IUserProfileEventHandler
     {
-        private readonly IMessageBoxService _messageBoxService;
+        readonly IContentDialogService contentDialogService;
+        // private readonly IMessageBoxService _messageBoxService;
         private readonly IMainWindow _mainWindow;
         private readonly IUserProfileView _userProfileView;
         private readonly IEventAggregator _eventAggregator;
@@ -30,7 +34,7 @@ namespace Chameleon.Application.Events
         private readonly ISystemBrowserManager _systemBrowserManager;
         private readonly IOutReachTemplateView _outReachView;
         private readonly IAuthSession _authSession;
-        private readonly IDialogWindowsService _dialogWindowsService;
+       // private readonly IDialogWindowsService _dialogWindowsService;
         private readonly IErrorContentDialogView _userFriendlyExceptionView;
 
         public UserProfileEventHandler(
@@ -42,7 +46,8 @@ namespace Chameleon.Application.Events
             //TODO: IMessageBoxService messageBoxService,
             IOutReachTemplateView outReachView,
             IAuthSession authSession,
-            IDialogWindowsService dialogWindowsService
+            IContentDialogService contentDialogService
+            // IDialogWindowsService dialogWindowsService
             //TODO: IErrorContentDialogView userFriendlyExceptionView
             )
         {
@@ -54,8 +59,10 @@ namespace Chameleon.Application.Events
             _userProfileService = userProfileService;
             _systemBrowserManager = systemBrowserManager;
             _authSession = authSession;
-            _dialogWindowsService = dialogWindowsService;
+            //_dialogWindowsService = dialogWindowsService;
             //_userFriendlyExceptionView = userFriendlyExceptionView;
+
+            this.contentDialogService = contentDialogService;
 
             _eventAggregator
                 .GetEvent<OpenUserProfileEvent>()
@@ -192,7 +199,7 @@ namespace Chameleon.Application.Events
             {
                 if (ex.Message == "limit_ex")
                     _userProfileService.ShowOutOfLimitPopup();
-                else throw ex;
+                else throw;
                 return;
             }
 
@@ -271,15 +278,21 @@ namespace Chameleon.Application.Events
             }
             catch (NotSupportedException ex)
             {
-                var messageBoxOptions = new MessageBoxOptions
-                {
-                    Title = "Browser is not installed",
-                    Text = "Please install browser first",
-                    Buttons = MessageBoxButton.OK,
-                    Icon = SystemIcons.Error
-                };
+                
+                contentDialogService.ShowContentDialogAsync(
+                    "Browser is not installed",
+                    "Please install browser first", 
+                    ContentDialogButtons.OK, 
+                    FontIcons.Filter("Error"));
+                //var messageBoxOptions = new MessageBoxOptions
+                //{
+                //    Title = ,
+                //    Text = ,
+                //    Buttons = MessageBoxButton.OK,
+                //    Icon = SystemIcons.Error
+                //};
 
-                _messageBoxService.ShowDialog(messageBoxOptions);
+                //_messageBoxService.ShowDialog(messageBoxOptions);
             }
             catch (UserFriendlyException ex)
             {
@@ -289,12 +302,12 @@ namespace Chameleon.Application.Events
 
         private void ShowErrorDialog(string title, string text)
         {
-            Action<IErrorContentDialogViewModel> initialize = viewModel =>
-            {
-                viewModel.Text = text;
-            };
+            //Action<IErrorContentDialogViewModel> initialize = viewModel =>
+            //{
+            //    viewModel.Text = text;
+            //};
 
-            _dialogWindowsService.ShowDialogWindow(_userFriendlyExceptionView, title, initialize);
+            //_dialogWindowsService.ShowDialogWindow(_userFriendlyExceptionView, title, initialize);
         }
     }
 }

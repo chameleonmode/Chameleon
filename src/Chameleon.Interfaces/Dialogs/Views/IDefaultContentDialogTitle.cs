@@ -2,6 +2,6 @@
 
 namespace Chameleon.Interfaces.Dialogs.Views;
 
-public interface IDefaultContentDialogTitle :ISingletonDependency
+public interface IDefaultContentDialogTitle :ITransientDependency
 {
 }

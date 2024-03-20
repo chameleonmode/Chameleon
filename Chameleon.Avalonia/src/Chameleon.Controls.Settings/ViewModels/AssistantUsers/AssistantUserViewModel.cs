@@ -45,7 +45,7 @@ public class AssistantUserViewModel
         IUserAssistantService userAssistantService,
         IEventAggregator eventAggregator,
         //IUnshareItemPopupView unshareProfilePopupView,
-        IDialogWindowsService dialogWindowsService,
+        //IDialogWindowsService dialogWindowsService,
         //IInviteUserOrAddProfilesPopupService inviteUserOrAddProfilesPopupService,
         //IDeleteAssistantUserPopupView deleteAssistantUserPopupView,
         IShareFoldersService shareFoldersService,
@@ -56,7 +56,7 @@ public class AssistantUserViewModel
         _userAssistantService = userAssistantService;
         _eventAggregator = eventAggregator;
        // _unshareProfilePopupView = unshareProfilePopupView;
-        _dialogWindowsService = dialogWindowsService;
+        //_dialogWindowsService = dialogWindowsService;
        // _inviteUserOrAddProfilesPopupService = inviteUserOrAddProfilesPopupService;
        // _deleteAssistantUserPopupView = deleteAssistantUserPopupView;
         _shareFoldersService = shareFoldersService;

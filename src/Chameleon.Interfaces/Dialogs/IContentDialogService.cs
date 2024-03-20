@@ -1,4 +1,4 @@
-﻿using Chameleon.Interfaces.Dialogs.Views;
+﻿using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Ioc;
 
 namespace Chameleon.Interfaces.Dialogs;
@@ -7,7 +7,11 @@ public interface IContentDialogService :
     ISingletonDependency
 {
     Task<IContentDialogResult> ShowContentDialogAsync(Type contentDialog);
-    Task<IContentDialogResult> ShowContentDialogAsync(IDefaultContentDialogView contentDialog);
+    Task<IContentDialogResult> ShowContentDialogAsync(IContentDialogAware contentDialog);  
+    Task<IContentDialogResult> ShowContentDialogAsync(string title,
+        string content, 
+        ContentDialogButtons btns = ContentDialogButtons.YesNo,
+        IFontIconInfo? fontIconInfo = null);
     Task<IContentDialogResult> ShowContentDialogAsync(ContentDialogButtons btns, object content, object title);
     Task<IContentDialogResult> ShowContentDialogAsync(ContentDialogButtons btns, object content, 
         object? title = null, 

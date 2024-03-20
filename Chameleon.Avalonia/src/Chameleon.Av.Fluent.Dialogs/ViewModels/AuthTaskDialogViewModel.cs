@@ -1,5 +1,4 @@
 ﻿using Chameleon.Auth.Api;
-using Chameleon.Common.Base;
 using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
 using Chameleon.Interfaces.MessageBox;
@@ -14,7 +13,7 @@ public partial class AuthTaskDialogViewModel : DialogBase, IAuthTaskDialogViewMo
     public AuthTaskDialogViewModel(IAuthApiClient authService,
         IApplicationSettingsService settingsService)
     {
-        Title = "User Login";
+        title = "User Login";
 
         _apiClient = authService;
         _settingsService = settingsService;

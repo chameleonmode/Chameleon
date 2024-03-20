@@ -1,5 +1,4 @@
-﻿
-using Chameleon.Common.Base;
+﻿using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
 using FluentAvalonia.UI.Controls;
 
@@ -24,7 +23,7 @@ public class ContentDialogService : IContentDialogService
         return (IContentDialogResult)res;
     }
 
-    public async Task<IContentDialogResult> ShowContentDialogAsync(IDefaultContentDialogView contentDialog)
+    public async Task<IContentDialogResult> ShowContentDialogAsync(IContentDialogAware contentDialog)
     {
         var dialog = new ContentDialog()
         {
@@ -39,6 +38,8 @@ public class ContentDialogService : IContentDialogService
         var res = await dialog.ShowAsync();
         return (IContentDialogResult)res;
     }
+
+
 
     public async Task<IContentDialogResult> ShowContentDialogAsync(ContentDialogButtons btns, object content,
         object? title = null,
@@ -66,5 +67,31 @@ public class ContentDialogService : IContentDialogService
     {
         if (await ShowContentDialogAsync(btns, content, title, primaryBtnTxt, secondaryBtnTxt, closebtnTxt) == onResult)
             action?.Invoke();
+    }
+
+    public async Task<IContentDialogResult> ShowContentDialogAsync(string title, string content, ContentDialogButtons btns = ContentDialogButtons.YesNo, IFontIconInfo? fontIconInfo = null)
+    {
+        var v = ContainerServiceHelper.Resolve<IDefaultContentDialogContentView>();
+        var c = v.GetDataContext<IDefaultContentDialogContentViewModel>();
+        c.Title = title;
+        c.DialogContent = content;
+        c.DialogButtons = btns;
+        c.Glyph = fontIconInfo?.Glyph;
+        return await ShowContentDialogAsync(c, v);
+    }
+    internal async Task<IContentDialogResult> ShowContentDialogAsync(IDefaultContentDialogContentViewModel contentDialog, IDefaultContentDialogContentView v)
+    {
+        var dialog = new ContentDialog()
+        {
+            Title = "False",
+            Content = v,
+            PrimaryButtonText = contentDialog.PrimaryButtonText,
+            SecondaryButtonText = contentDialog.SecondaryButtonText,
+            CloseButtonText = contentDialog.CloseButtonText,
+            DefaultButton = ContentDialogButton.Primary,
+        };
+
+        var res = await dialog.ShowAsync();
+        return (IContentDialogResult)res;
     }
 }

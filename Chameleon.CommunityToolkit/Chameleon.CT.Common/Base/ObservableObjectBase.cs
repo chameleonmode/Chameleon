@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.Dialogs;
+﻿using Chameleon.Common.Icons;
+using Chameleon.Interfaces.Dialogs;
 using Chameleon.Prism.Events;
 
 namespace Chameleon.CT.Common.Base;
@@ -12,11 +13,14 @@ public abstract partial class ObservableObjectBase : ObservableObject
     [ObservableProperty]
     public string title = "ObservableObjectBase";
 
+    [ObservableProperty]
+    public string glyph = FontIcons.FontIconsInfos[0].Glyph;
+
     public ObservableObjectBase()
     {
-        _dispatcherService = ContainerServiceHelper.Resolve<IDispatcherService>();
+        _dispatcherService = ContainerServiceHelper.Resolve<IDispatcherService>();// ?? new DispatcherService();
         _cntentDialogService = ContainerServiceHelper.Resolve<IContentDialogService>();
-        eventAggregator = ContainerServiceHelper.Resolve<IEventAggregator>();
+        eventAggregator = ContainerServiceHelper.Resolve<IEventAggregator>() ?? new EventAggregator();
     }
 
     public IDispatcherService DispatcherService => _dispatcherService;

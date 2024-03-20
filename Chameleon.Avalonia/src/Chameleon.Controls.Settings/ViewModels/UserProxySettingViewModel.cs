@@ -9,7 +9,9 @@ namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
 public partial class UserProxySettingViewModel
        : SubPageViewModelBase
-{
+{         
+    public static string InProject => "Profile";
+
     private readonly IMapper _mapper;
     public readonly IUserProfile _userProfile;
     private readonly IEventAggregator _eventAggregator;
@@ -39,12 +41,6 @@ public partial class UserProxySettingViewModel
 
     public string UserProfileTitle => _userProfile.Title;
 
-    private string _inProject;
-    public string InProject
-    {
-        get => "Profile";
-    }
-
     private bool _isSelected;
     public bool IsSelected
     {
@@ -56,7 +52,7 @@ public partial class UserProxySettingViewModel
         }
     }
 
-    public string CurrentProxyTitle => $"{InProject} \"{UserProfileTitle}\"";
+    public new string Title => $"{InProject} \"{UserProfileTitle}\"";
 
     private void ChangeSelected()
     {

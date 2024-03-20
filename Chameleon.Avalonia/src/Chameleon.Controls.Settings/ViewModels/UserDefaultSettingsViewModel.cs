@@ -16,6 +16,7 @@ using Chameleon.Interfaces.App.UserSettings;
 using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.CT.Common.Base;
+using Chameleon.Common.Icons;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 

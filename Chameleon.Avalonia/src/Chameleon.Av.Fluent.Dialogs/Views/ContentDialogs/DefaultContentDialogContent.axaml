@@ -1,0 +1,72 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:vm="using:Chameleon.Av.Fluent.Dialogs.ViewModels"
+             mc:Ignorable="d" 
+			 x:Class="Chameleon.Av.Fluent.Dialogs.DefaultContentDialogContentView"
+			 x:CompileBindings="True"
+			 x:DataType="vm:DefaultContentDialogContentViewModel">
+	<Design.DataContext>
+		<vm:DefaultContentDialogContentViewModel />
+	</Design.DataContext>
+	<UserControl.Resources>
+		<x:Double x:Key="DefaultContentDialogIconSize">36</x:Double>
+		<Thickness x:Key="DefaultContentTaskDialogIconMargin">12</Thickness>
+	</UserControl.Resources>
+	<ui:FABorder MinWidth="{DynamicResource TaskDialogMinWidth}"
+		MaxWidth="{DynamicResource TaskDialogMaxWidth}"
+		MinHeight="{DynamicResource TaskDialogMinHeight}"
+		MaxHeight="{DynamicResource TaskDialogMaxHeight}"
+		Name="ContentRoot"
+		HorizontalAlignment="Stretch"
+		VerticalAlignment="Top">
+		<Grid RowDefinitions="Auto,*">
+			<Panel Grid.Row="0"
+				   Name="HeaderHost">
+				<Viewbox Name="IconHost"
+						 Width="{StaticResource DefaultContentDialogIconSize}"
+						 Height="{StaticResource DefaultContentDialogIconSize}"
+						 VerticalAlignment="Center"
+						 HorizontalAlignment="Left"
+						 Margin="{StaticResource DefaultContentTaskDialogIconMargin}">
+					<ui:FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}"
+								 Glyph="{Binding Glyph}"
+								 FontSize="28"
+								 VerticalAlignment="Center"
+								 HorizontalAlignment="Center"/>
+				</Viewbox>
+				<TextBlock Text="{Binding Title}"
+						   TextWrapping="Wrap"
+						   FontSize="{DynamicResource TaskDialogHeaderFontSize}"
+						   FontWeight="{StaticResource TaskDialogHeaderFontWeight}"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Left"
+						   Margin="{DynamicResource TaskDialogHeaderPadding}"
+						   IsVisible="True"
+						   Name="HeaderText"/>
+
+			</Panel>
+
+			<ScrollViewer HorizontalScrollBarVisibility="Disabled"
+						  VerticalScrollBarVisibility="Auto"
+						  Grid.Row="2"
+						  Margin="{StaticResource TaskDialogContentMargin}">
+				<ContentPresenter Name="ContentPresenter"
+								  Content="{Binding DialogContent}"
+								  HorizontalContentAlignment="Stretch"
+								  VerticalContentAlignment="Stretch"
+								  HorizontalAlignment="Stretch"
+								  VerticalAlignment="Stretch"
+								  Grid.Row="2">
+					<ContentPresenter.Styles>
+						<Style Selector="TextBlock">
+							<Setter Property="TextWrapping" Value="Wrap" />
+						</Style>
+					</ContentPresenter.Styles>
+				</ContentPresenter>
+			</ScrollViewer>
+		</Grid>
+	</ui:FABorder>
+</UserControl>

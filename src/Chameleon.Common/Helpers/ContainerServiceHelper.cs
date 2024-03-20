@@ -13,7 +13,7 @@ public class ContainerServiceHelper
     public IHaveContainerProvider? ContainerProvider { get; set; }
     public IHaveContainerRegistry? ContainerRegistry { get; set; }
 
-    public static T Resolve<T>() 
+    public static T? Resolve<T>() 
     {
         return ContainerServiceHelper.Current.ContainerProvider.Resolve<T>();
     }

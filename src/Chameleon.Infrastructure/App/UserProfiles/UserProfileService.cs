@@ -44,7 +44,7 @@ namespace Chameleon.Infrastructure.Profiles
             IWebBrowserUserAgentRepository webBrowserUserAgentRepository,
             IUserProfileOutReachRssRepository outReachRssRepository,
             IAuthSession authSession,
-            IDialogWindowsService dialogWindowsService,
+            //TODO: IDialogWindowsService dialogWindowsService,
             IUpgradePlanPopupView upgradePlanPopupView,
             IApplicationUser applicationUser,
             IShareFoldersService shareFoldersService
@@ -58,7 +58,7 @@ namespace Chameleon.Infrastructure.Profiles
             _webBrowserUserAgentRepository = webBrowserUserAgentRepository;
             _outReachRssRepository = outReachRssRepository;
             _authSession = authSession;
-            _dialogWindowsService = dialogWindowsService;
+            //_dialogWindowsService = dialogWindowsService;
             _upgradePlanPopupView = upgradePlanPopupView;
             _applicationUser = applicationUser;
             _shareFoldersService = shareFoldersService;

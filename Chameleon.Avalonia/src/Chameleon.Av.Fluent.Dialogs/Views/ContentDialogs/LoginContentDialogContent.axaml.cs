@@ -15,6 +15,6 @@ public partial class LoginContentDialogContent : ContentDialogControlBase, ILogi
     public LoginContentDialogContent()
     {
         InitializeComponent();
-        DataContext = ContainerServiceHelper.Resolve<IBulkAddPagesPopupViewModel>();
+        DataContext = ContainerServiceHelper.Resolve<IAuthTaskDialogViewModel>();
     }     
 }
