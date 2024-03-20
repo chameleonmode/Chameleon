@@ -19,10 +19,116 @@
 	  <None Remove="Assets\Images\FAHeader_CoreControls_Dark.png" />
 	  <None Remove="Assets\Images\FAHeader_NewControls.png" />
 	  <None Remove="Assets\Images\FAHeader_NewControls_Dark.png" />
+	  <None Remove="Assets\Svgs\add.svg" />
+	  <None Remove="Assets\Svgs\advanced-settings.svg" />
+	  <None Remove="Assets\Svgs\arrow-down.svg" />
+	  <None Remove="Assets\Svgs\arrow-left.svg" />
+	  <None Remove="Assets\Svgs\arrow-right-in-circle.svg" />
+	  <None Remove="Assets\Svgs\arrow-right.svg" />
+	  <None Remove="Assets\Svgs\automation.svg" />
+	  <None Remove="Assets\Svgs\blogger.svg" />
+	  <None Remove="Assets\Svgs\bookmark-add-folder.svg" />
+	  <None Remove="Assets\Svgs\brave.svg" />
+	  <None Remove="Assets\Svgs\brave2.svg" />
+	  <None Remove="Assets\Svgs\browsers.svg" />
+	  <None Remove="Assets\Svgs\buffer-gray.svg" />
+	  <None Remove="Assets\Svgs\buffer.svg" />
+	  <None Remove="Assets\Svgs\bulk-plus.svg" />
+	  <None Remove="Assets\Svgs\chameleon-logo.svg" />
+	  <None Remove="Assets\Svgs\change-proxies.svg" />
+	  <None Remove="Assets\Svgs\chrome.svg" />
+	  <None Remove="Assets\Svgs\close.svg" />
+	  <None Remove="Assets\Svgs\copy.svg" />
+	  <None Remove="Assets\Svgs\dashboard.svg" />
+	  <None Remove="Assets\Svgs\delete.svg" />
+	  <None Remove="Assets\Svgs\details.svg" />
+	  <None Remove="Assets\Svgs\digg.svg" />
+	  <None Remove="Assets\Svgs\end-call.svg" />
+	  <None Remove="Assets\Svgs\expand.svg" />
+	  <None Remove="Assets\Svgs\facebook-group.svg" />
+	  <None Remove="Assets\Svgs\facebook.svg" />
+	  <None Remove="Assets\Svgs\firefox.svg" />
+	  <None Remove="Assets\Svgs\folder.svg" />
+	  <None Remove="Assets\Svgs\help.svg" />
+	  <None Remove="Assets\Svgs\hide-expander.svg" />
+	  <None Remove="Assets\Svgs\hootsuite.svg" />
+	  <None Remove="Assets\Svgs\import-close-item.svg" />
+	  <None Remove="Assets\Svgs\in-favorites.svg" />
+	  <None Remove="Assets\Svgs\launch-profiles.svg" />
+	  <None Remove="Assets\Svgs\line.svg" />
+	  <None Remove="Assets\Svgs\linkedin.svg" />
+	  <None Remove="Assets\Svgs\mailto.svg" />
+	  <None Remove="Assets\Svgs\minus-in-circle.svg" />
+	  <None Remove="Assets\Svgs\new-folder.svg" />
+	  <None Remove="Assets\Svgs\next.svg" />
+	  <None Remove="Assets\Svgs\no-address.svg" />
+	  <None Remove="Assets\Svgs\no-business.svg" />
+	  <None Remove="Assets\Svgs\no-logins.svg" />
+	  <None Remove="Assets\Svgs\no-peresons.svg" />
+	  <None Remove="Assets\Svgs\not-favorites.svg" />
+	  <None Remove="Assets\Svgs\not-profiles.svg" />
+	  <None Remove="Assets\Svgs\outreach-no-saved-links.svg" />
+	  <None Remove="Assets\Svgs\phone-chat.svg" />
+	  <None Remove="Assets\Svgs\phone-verification.svg" />
+	  <None Remove="Assets\Svgs\pins-gray.svg" />
+	  <None Remove="Assets\Svgs\pins.svg" />
+	  <None Remove="Assets\Svgs\plus-in-circle.svg" />
+	  <None Remove="Assets\Svgs\plus.svg" />
+	  <None Remove="Assets\Svgs\prev.svg" />
+	  <None Remove="Assets\Svgs\profile-addresses.svg" />
+	  <None Remove="Assets\Svgs\profile-businesses.svg" />
+	  <None Remove="Assets\Svgs\profile-logins.svg" />
+	  <None Remove="Assets\Svgs\profile-main.svg" />
+	  <None Remove="Assets\Svgs\profile-persons.svg" />
+	  <None Remove="Assets\Svgs\profiles.svg" />
+	  <None Remove="Assets\Svgs\prospector.svg" />
+	  <None Remove="Assets\Svgs\purchase.svg" />
+	  <None Remove="Assets\Svgs\re-do.svg" />
+	  <None Remove="Assets\Svgs\re-name.svg" />
+	  <None Remove="Assets\Svgs\reddit-gray.svg" />
+	  <None Remove="Assets\Svgs\reddit.svg" />
+	  <None Remove="Assets\Svgs\refresh.svg" />
+	  <None Remove="Assets\Svgs\release-number.svg" />
+	  <None Remove="Assets\Svgs\reminder.svg" />
+	  <None Remove="Assets\Svgs\rss.svg" />
+	  <None Remove="Assets\Svgs\save.svg" />
+	  <None Remove="Assets\Svgs\saved-links.svg" />
+	  <None Remove="Assets\Svgs\scoop-it.svg" />
+	  <None Remove="Assets\Svgs\search.svg" />
+	  <None Remove="Assets\Svgs\select-all.svg" />
+	  <None Remove="Assets\Svgs\selected-folder.svg" />
+	  <None Remove="Assets\Svgs\settings.svg" />
+	  <None Remove="Assets\Svgs\shares.svg" />
+	  <None Remove="Assets\Svgs\sharing-purple.svg" />
+	  <None Remove="Assets\Svgs\sharing.svg" />
+	  <None Remove="Assets\Svgs\shavron-list.svg" />
+	  <None Remove="Assets\Svgs\shavron.svg" />
+	  <None Remove="Assets\Svgs\show-expander.svg" />
+	  <None Remove="Assets\Svgs\socials.svg" />
+	  <None Remove="Assets\Svgs\start-youtube-uploading.svg" />
+	  <None Remove="Assets\Svgs\subredits.svg" />
+	  <None Remove="Assets\Svgs\SumSymbol.svg" />
+	  <None Remove="Assets\Svgs\support.svg" />
+	  <None Remove="Assets\Svgs\sync.svg" />
+	  <None Remove="Assets\Svgs\synch.svg" />
+	  <None Remove="Assets\Svgs\text-search.svg" />
+	  <None Remove="Assets\Svgs\three-dots.svg" />
+	  <None Remove="Assets\Svgs\triangle-for-button.svg" />
+	  <None Remove="Assets\Svgs\tumblr.svg" />
+	  <None Remove="Assets\Svgs\twitter.svg" />
+	  <None Remove="Assets\Svgs\undo.svg" />
+	  <None Remove="Assets\Svgs\up-folder.svg" />
+	  <None Remove="Assets\Svgs\Vector.svg" />
+	  <None Remove="Assets\Svgs\website.svg" />
+	  <None Remove="Assets\Svgs\wordpress.svg" />
+	  <None Remove="Assets\Svgs\wrench.svg" />
+	  <None Remove="Assets\Svgs\x.svg" />
+	  <None Remove="Assets\Svgs\youtube.svg" />
 	</ItemGroup>
 	
   <ItemGroup>
     <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Svg.Skia" />
     <PackageReference Include="System.Drawing.Common" />
   </ItemGroup>
 
@@ -32,7 +138,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controls\" />
     <Folder Include="Converters\ValueConverters\Visibility\" />
   </ItemGroup>
 

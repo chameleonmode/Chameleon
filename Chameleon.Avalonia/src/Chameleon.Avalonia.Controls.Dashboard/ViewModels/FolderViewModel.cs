@@ -27,6 +27,7 @@ public partial class FolderViewModel : SubPageViewModelBase
         _userProfileService = userProfileService;
         _userProfileFolderService = userProfileFolderService;
 
+        Title = _folder.Title;
         IsFavorite = _folder.IsFavorite;
         ProfilesCount = _folder.ProfilesCount;
 
@@ -87,19 +88,6 @@ public partial class FolderViewModel : SubPageViewModelBase
         set => SetProperty(ref _id, value);
     }
 
-    private string _foldertitle;
-    public string FolderTitle
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(_foldertitle))
-            {
-                _foldertitle = _folder.Title;
-            }
-            return _foldertitle;
-        }
-        set => SetProperty(ref _foldertitle, value);
-    }
 
     private bool _isFavorite;
     public bool IsFavorite

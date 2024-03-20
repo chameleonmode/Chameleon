@@ -1,5 +1,5 @@
 ﻿<linker>
   <!-- Can be removed if CompiledBinding and no reflection are used -->
-  <assembly fullname="Chameleon.Avalonia.Desktop" preserve="All" />
+  <assembly fullname="Chameleon.Av.Desktop" preserve="All" />
   <assembly fullname="Avalonia.Themes.Fluent" preserve="All" />
 </linker>

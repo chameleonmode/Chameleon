@@ -47,6 +47,7 @@ using Chameleon.Av.Fluent.ViewModels;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Views;
 using System.ComponentModel;
+using Avalonia.Svg.Skia;
 
 namespace Chameleon.Av.Fluent;
      public class tempinits : IDialogWindowsService  , IPopupDialogService
@@ -166,17 +167,17 @@ public partial class App : PrismApplication
 
         Container
             .AddInfrastructure(containerRegistry);
-            //.AddApplication()
-            //.AddModules()
-            //.AddUi()
-            //.RegisterTypesFrom(Assembly.GetExecutingAssembly());
+        //.AddApplication()
+        //.AddModules()
+        //.AddUi()
+        //.RegisterTypesFrom(Assembly.GetExecutingAssembly());
 
         //Assemblys
-        Container.RegisterTypesFrom(Chameleon.Domain.AssemblyResolver.GetAssembly());
-        Container.RegisterTypesFrom(Chameleon.Application.AssemblyResolver.GetAssembly());
-        Container.RegisterMapperFrom(Chameleon.Application.AssemblyResolver.GetAssembly());                 
-        Container.RegisterTypesFrom(Chameleon.Avalonia.Common.AssemblyResolver.GetAssembly());  
-        Container.RegisterTypesFrom(Chameleon.Avalonia.Controls.Settings.AssemblyResolver.GetAssembly());     
+        Container.RegisterTypesFrom(typeof(Chameleon.Domain.AssemblyResolver).Assembly);
+        Container.RegisterTypesFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);
+        Container.RegisterMapperFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);                 
+        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Common.AssemblyResolver).Assembly );  
+        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.AssemblyResolver).Assembly);     
         Container.RegisterTypesFrom(Assembly.GetExecutingAssembly());
 
         // cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();

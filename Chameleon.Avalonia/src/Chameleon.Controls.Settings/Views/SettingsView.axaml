@@ -10,9 +10,9 @@
 			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.Settings.SettingsView">	
 		<ScrollViewer>
-			<StackPanel>
-				<contrls:PageHeaderControl TextType="FAControls"
-										   Classes="smaller"/>
+			<StackPanel Spacing="-5">
+				<contrls:PageHeaderControl TextType="Settings"
+										   Classes="smallest"/>
 				<!--<TextBlock Text="Settings"
                         Margin="30 -30 0 0"
 						   Theme="{StaticResource TitleLargeTextBlockStyle}"/>-->

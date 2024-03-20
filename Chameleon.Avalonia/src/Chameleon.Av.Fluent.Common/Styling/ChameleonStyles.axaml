@@ -30,6 +30,7 @@
 				<ResourceInclude Source="/Styling/ChameleonDialogControlStyles.axaml" />
 				<ResourceInclude Source="/Styling/ControlThemes.axaml" />
 				<ResourceInclude Source="/Styling/ResourceDictionaryContentDialog.axaml" />
+				<ResourceInclude Source="/Styling/SvgIconsResourceDictionary.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 

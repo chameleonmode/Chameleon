@@ -1,7 +1,8 @@
 ﻿using System;
 using Avalonia;
-
-namespace Chameleon.Avalonia.Desktop;
+using Svga = Avalonia.Svg.Skia.Svg;
+using SvgaImageExtension = Avalonia.Svg.Skia.SvgImageExtension;
+namespace Chameleon.Av.Desktop;
 
 class Program
 {
@@ -14,7 +15,15 @@ class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<Av.Fluent.App>()
+    {
+        GC.KeepAlive(typeof(SvgaImageExtension).Assembly);
+        GC.KeepAlive(typeof(Svga).Assembly);
+        return AppBuilder.Configure<Av.Fluent.App>()
             .UsePlatformDetect()
+            .With(new X11PlatformOptions
+            {
+            })
+            .UseSkia()
             .LogToTrace();
+    }
 }

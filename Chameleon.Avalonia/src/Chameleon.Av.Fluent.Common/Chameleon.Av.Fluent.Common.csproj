@@ -17,6 +17,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Svg" />
+		<PackageReference Include="Avalonia.Svg.Skia" />
 		<PackageReference Include="FluentAvaloniaUI" />
 	</ItemGroup>
 

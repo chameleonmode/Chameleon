@@ -127,7 +127,7 @@ public partial class DashboardViewModel
                 _viewModels = new ObservableCollectionView<UserProfileViewModel>(_mapping)
                 {
                     TrackItemChanges = true,
-                    Order = profile => profile.UserProfileTitle
+                    Order = profile => profile.Title
                 };
             }
 
@@ -167,7 +167,7 @@ public partial class DashboardViewModel
                 _folderViewModels = new ObservableCollectionView<FolderViewModel>(_folderMapping)
                 {
                     TrackItemChanges = true,
-                    Order = folder => folder.FolderTitle
+                    Order = folder => folder.Title
                 };
             }
 

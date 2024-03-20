@@ -17,6 +17,8 @@
 	  <PackageReference Include="Avalonia" />
 	  <PackageReference Include="Avalonia.Desktop" />
 	  <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
+	  <PackageReference Include="Avalonia.Svg" />
+	  <PackageReference Include="Avalonia.Svg.Skia" />
   </ItemGroup>
 	
   <ItemGroup>

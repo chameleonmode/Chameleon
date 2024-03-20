@@ -9,9 +9,11 @@ namespace Chameleon.Av.Fluent.Common.Controls;
 
 public enum PageHeaderTextType
 {
+    Dashboard,
     Main,
     CoreControls,
     FAControls,
+    Settings
 }
 
 public class PageHeaderControl : TemplatedControl
@@ -64,7 +66,7 @@ public class PageHeaderControl : TemplatedControl
         //    _text1.Width = double.NaN;
         //}
         _text1.Width = 180;
-        PseudoClasses.Set(":small", wid < 450);
+        //PseudoClasses.Set(":small", wid < 450);
     }
 
     private void UpdateTitleText()

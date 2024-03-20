@@ -463,7 +463,7 @@ public partial class UserProfilesViewModel
                 {
                     TrackItemChanges = true,
                     TrackCollectionChanges = true,
-                    Order = profile => profile.UserProfileTitle
+                    Order = profile => profile.Title
                 };
 
                 InitPaginator();

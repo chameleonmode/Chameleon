@@ -8,7 +8,7 @@
 		<ThemeVariantScope RequestedThemeVariant="Light">
 			<StackPanel Spacing="10" Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
                     Margin="50" Width="500">
-				<local:PageHeaderControl Classes="smaller" />
+				<local:PageHeaderControl Classes="smallest" />
 			</StackPanel>
 		</ThemeVariantScope>
 	</Design.PreviewWith>
@@ -123,18 +123,22 @@
                                   Easing="0,0 0,1" />
 			</Transitions>
 		</Setter>
-
-		<Style Selector="^.smaller">
-			<Setter Property="Height" Value="200" />
+		<Style Selector="^.smallest">
+			<Setter Property="Height" Value="100" />
 			<Style Selector="^ /template/ Image#TitleTextImageHost">
 				<Setter Property="Margin" Value="30 25 0 0" />
 			</Style>
 		</Style>
-		<Style Selector="^:small">
+		<Style Selector="^.smaller">
 			<Setter Property="Height" Value="150" />
-
 			<Style Selector="^ /template/ Image#TitleTextImageHost">
-				<Setter Property="Margin" Value="30 25 0 25" />
+				<Setter Property="Margin" Value="30 25 0 0" />
+			</Style>
+		</Style>
+		<Style Selector="^.small">
+			<Setter Property="Height" Value="200" />
+			<Style Selector="^ /template/ Image#TitleTextImageHost">
+				<Setter Property="Margin" Value="30 25 0 0" />
 			</Style>
 		</Style>
 	</ControlTheme>

@@ -21,6 +21,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase
     private readonly IUserProfile _userProfile;
     private readonly IEventAggregator _eventAggregator;
     //private readonly IPrismMessageBoxService _messageBoxService;
+    //private readonly IViewProfileWindowService _viewProfileWindowService;
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _applicationUser;
 
@@ -37,13 +38,21 @@ public partial class UserProfileViewModel : SubPageViewModelBase
         _userProfile = userProfile;
         _eventAggregator = eventAggregator;
         _shareUserProfilePopupService = shareUserProfilePopupService;
-        _applicationUser = applicationUser;
+        _applicationUser = applicationUser;   
+
+        Title = _userProfile.Title;
+
         IsShowCheckboxColumn = isShowCheckboxColumn && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
         IsEnabledCheckboxColumn = !_userProfileService.IsSharedProfile(_userProfile);
 
         _eventAggregator
              .GetEvent<SavedUserProfileEvent>()
              .Subscribe(args => OnUserProfileSaved(args.UserProfile));
+    }
+    [RelayCommand]
+    private void OnShowViewProfileSidePanel()
+    {
+        //_viewProfileWindowService.OpenWindow(UserProfile);
     }
 
     [RelayCommand]
@@ -177,7 +186,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase
     public IUserProfile UserProfile => _userProfile;
 
     public bool IsFavorite => _userProfile?.IsFavourite ?? false;
-    public string UserProfileTitle => _userProfile?.Title;
     public bool IsSharedProfile => _userProfileService.IsSharedProfile(UserProfile);
 
     public string SubTitle => "Profiles";
@@ -213,7 +221,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase
         get => _isOpenMenuPopup;
         set => SetProperty(ref _isOpenMenuPopup, value);
     }
-    public char Code => string.IsNullOrWhiteSpace(UserProfileTitle) ? '0' : UserProfileTitle[0];
+    public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
 
     public bool IsDeleteProfileBtnVisible => !IsSharedProfile && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
 
