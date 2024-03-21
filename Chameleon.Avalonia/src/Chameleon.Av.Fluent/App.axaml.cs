@@ -26,8 +26,6 @@ using Prism.Mvvm;
 using System.Globalization;
 using System.Reflection;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
-using Chameleon.Avalonia.Prism.Application.Extensions;
-using Chameleon.Avalonia.Prism.Interfaces.Extensions;
 using Chameleon.Avalonia.Controls.Dashboard.ViewModels;
 using Chameleon.Avalonia.Controls.Settings.ViewModels;
 using Chameleon.Avalonia.Controls.Settings;

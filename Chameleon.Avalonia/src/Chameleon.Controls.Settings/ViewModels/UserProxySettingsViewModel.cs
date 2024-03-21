@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Chameleon.App.Shared.Proxies;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
-using Chameleon.Avalonia.Prism.Interfaces.MessageBox;
 using Chameleon.Avalonia.Prism.Module.Base;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;

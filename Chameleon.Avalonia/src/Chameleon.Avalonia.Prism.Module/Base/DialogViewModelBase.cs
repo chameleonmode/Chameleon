@@ -2,7 +2,6 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Chameleon.Interfaces.Views;
-using Chameleon.Avalonia.Prism.Application.Extensions;
 using Prism.Commands;
 using Prism.Services.Dialogs;
 using System.Runtime.CompilerServices;
