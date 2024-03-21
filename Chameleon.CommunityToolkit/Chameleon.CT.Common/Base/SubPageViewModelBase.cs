@@ -1,14 +1,11 @@
 ﻿using Chameleon.Interfaces;
+using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
 
 namespace Chameleon.CT.Common.Base;
 
-public class SubPageViewModelBase : ObservableObjectBase, ISubPageViewModel
+public partial class SubPageViewModelBase : ObservableObjectBase, ISubPageViewModel
 {
-    public bool Loaded;
-    public virtual Task InitAsync()
-    {
-        Loaded = true;
-        return Task.CompletedTask;
-    }
+
+
 }

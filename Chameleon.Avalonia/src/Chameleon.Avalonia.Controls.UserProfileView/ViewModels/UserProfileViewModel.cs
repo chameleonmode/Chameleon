@@ -1,5 +1,6 @@
 ﻿using Chameleon.Authorization;
-using Chameleon.Avalonia.Prism.Module.Base;
+
+using Chameleon.CT.Common.Base;
 using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.ContentDiscoverey;
 using Chameleon.Interfaces.App.UserProfiles;
@@ -12,7 +13,7 @@ using Chameleon.Prism.Events;
 namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 
 public class UserProfileViewModel
-       : ViewModelBase
+       : SubPageViewModelBase
        , IUserProfileViewModel
 {
     private readonly IEventAggregator _eventAggregator;

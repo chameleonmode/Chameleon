@@ -1,6 +1,6 @@
 ﻿using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
-using Chameleon.Avalonia.Prism.Module.Base;
+using Chameleon.CT.Common.Base;
 using Chameleon.Controls.AssistantUsers.Interfaces;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
@@ -16,15 +16,14 @@ using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.UpgradePlan;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
-public class AssistantUsersViewModel
-       : SubViewModelBase
+public partial class AssistantUsersViewModel
+       : SubPageViewModelBase
        , IAssistantUsersViewModel
 {
-    private readonly IEventAggregator _eventAggregator;
     private readonly IUserAssistantService _userAssistantService;
     //private readonly IUnshareItemPopupView _unshareProfilePopupView;
     private readonly IDialogWindowsService _dialogWindowsService;
@@ -39,7 +38,6 @@ public class AssistantUsersViewModel
     private ObservableCollection<IUserAssistant, AssistantUserViewModel> _mapping;
 
     public AssistantUsersViewModel(
-        IEventAggregator eventAggregator,
         IUserAssistantService userAssistantService,
         //IUnshareItemPopupView unshareProfilePopupView,
         //IDialogWindowsService dialogWindowsService,
@@ -52,7 +50,6 @@ public class AssistantUsersViewModel
         IUserProfileService userProfileService
         )
     {
-        _eventAggregator = eventAggregator;
         _userAssistantService = userAssistantService;
         //_unshareProfilePopupView = unshareProfilePopupView;
         //_dialogWindowsService = dialogWindowsService;
@@ -64,21 +61,21 @@ public class AssistantUsersViewModel
         _toastNotificationService = toastNotificationService;
         _userProfileService = userProfileService;
 
-        _eventAggregator
-            .GetEvent<InviteUserAssistantEvent>()
-            .Subscribe(args => OnCreate(args));
 
-        _eventAggregator
-            .GetEvent<SavedUserAssistantEvent>()
-            .Subscribe(args => OnUserAssistantSaved(args));
+    }
+    public override async Task InitAsync()
+    {
+        EventAggregator.SetEventSubscription<InviteUserAssistantEvent, InviteUserAssistantEventArgs>(OnCreate);
 
-        _eventAggregator
+        EventAggregator.SetEventSubscription<SavedUserAssistantEvent, SavedUserAssistantEventArgs>(OnUserAssistantSaved);
+            //.GetEvent<SavedUserAssistantEvent>()
+            //.Subscribe(args => OnUserAssistantSaved(args));
+
+        EventAggregator
             .GetEvent<DeletedUserAssistantEvent>()
-            .Subscribe(args => OnUserAssistantDeleted(args));
-
-        DispatcherService.InvokeOnUiThreadAsync(InitUserAssistants);
-
-        CreateNewUserCommand = new DelegateCommand(CreateNewUserAssistant);
+            .Subscribe(OnUserAssistantDeleted);
+       
+        await InitUserAssistantsAsync();
     }
 
     private int _totalCount;
@@ -118,7 +115,7 @@ public class AssistantUsersViewModel
         }
     }
 
-    public DelegateCommand CreateNewUserCommand { get; }
+    [RelayCommand]
     private void CreateNewUserAssistant()
     {
         if (_viewModels?.Items.Count >= _authSession.Limits.MaxAssistantsCount)
@@ -131,16 +128,16 @@ public class AssistantUsersViewModel
         }
     }
 
-    private void InitUserAssistants()
+    private async Task InitUserAssistantsAsync()
     {
-        var assistants = _userAssistantService.Get();
+        var assistants = await Task.Run(()=>_userAssistantService.Get()); 
 
         _mapping = new ObservableCollection<IUserAssistant, AssistantUserViewModel>(
             assistants, userAssistant =>
             new AssistantUserViewModel
                 (userAssistant,
                 _userAssistantService,
-                _eventAggregator,
+                EventAggregator,
                 // _unshareProfilePopupView,
                 //_dialogWindowsService,
                 // _inviteUserOrAddProfilesPopupService,
@@ -150,7 +147,7 @@ public class AssistantUsersViewModel
                 _userProfileService)
             );
 
-        RaisePropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(ViewModels));
     }
 
     private void InitPaginator()
@@ -198,7 +195,7 @@ public class AssistantUsersViewModel
         var assistantUserViewModel = new AssistantUserViewModel(
             userAssistant,
             _userAssistantService,
-            _eventAggregator,
+            EventAggregator,
             // _unshareProfilePopupView,
             //_dialogWindowsService,
             // _inviteUserOrAddProfilesPopupService,
@@ -257,6 +254,6 @@ public class AssistantUsersViewModel
         PaginatorViewModel.TotalCount = count;
         TotalCount = count;
 
-        RaisePropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(ViewModels));
     }
 }

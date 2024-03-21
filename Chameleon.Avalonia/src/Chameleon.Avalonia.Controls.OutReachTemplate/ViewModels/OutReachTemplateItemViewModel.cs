@@ -1,13 +1,13 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.OutReach;
 using Chameleon.Interfaces.OutReach;
 using Chameleon.Prism.Events;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.OutReachTemplate.ViewModels;
 
-public class OutReachTemplateItemViewModel
-       : ViewModelBase
+public partial class OutReachTemplateItemViewModel
+       : SubPageViewModelBase
        , IOutReachTemplateItemViewModel
 {
     private readonly IOutReachTemplateService _outReachTemplateService;
@@ -22,11 +22,6 @@ public class OutReachTemplateItemViewModel
         _eventAggregator = eventAggregator;
         OutReachTemplate = template;
 
-        UseTemplateCommand = new DelegateCommand<string>(OnUseTemplate);
-        DeleteTemplateCommand = new DelegateCommand(OnDeleteTemplate);
-        SelectCommand = new DelegateCommand(OnSelect);
-        EditCommand = new DelegateCommand(OnEdit);
-        SaveCommand = new DelegateCommand(OnSave);
 
         InitilizePropertties();
     }
@@ -37,7 +32,7 @@ public class OutReachTemplateItemViewModel
         ItemContent = OutReachTemplate.Content;
     }
 
-    public DelegateCommand<string> UseTemplateCommand { get; }
+    [RelayCommand]
     private void OnUseTemplate(string content)
     {
         _eventAggregator
@@ -45,6 +40,7 @@ public class OutReachTemplateItemViewModel
             .Publish(new OutReachTemplateEventArgs(OutReachTemplate));
     }
 
+    [RelayCommand]
     private void OnDeleteTemplate()
     {
         IsSelected = false;
@@ -55,7 +51,6 @@ public class OutReachTemplateItemViewModel
         _outReachTemplateService.Delete(OutReachTemplate);
     }
 
-    public DelegateCommand DeleteTemplateCommand { get; }
 
     private IOutReachTemplate _outReachTemplate;
     public IOutReachTemplate OutReachTemplate
@@ -91,7 +86,8 @@ public class OutReachTemplateItemViewModel
         set => SetProperty(ref _isSelected, value);
     }
 
-    public DelegateCommand SelectCommand { get; }
+
+    [RelayCommand]
     public void OnSelect()
     {
         _eventAggregator
@@ -109,13 +105,13 @@ public class OutReachTemplateItemViewModel
         set => SetProperty(ref _isEdit, value);
     }
 
-    public DelegateCommand EditCommand { get; }
+    [RelayCommand]
     public void OnEdit()
     {
         IsEdit = true;
     }
 
-    public DelegateCommand SaveCommand { get; }
+    [RelayCommand]
     private void OnSave()
     {
         OnUseTemplate(OutReachTemplate.Content);

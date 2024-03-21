@@ -7,8 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj" />
+    <ProjectReference Include="..\..\..\src\Chameleon.Domain\Chameleon.Domain.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Module\Chameleon.Avalonia.Prism.Module.csproj" />
+    <ProjectReference Include="..\Chameleon.Av.Fluent.Common\Chameleon.Av.Fluent.Common.csproj" />
   </ItemGroup>
 
 </Project>

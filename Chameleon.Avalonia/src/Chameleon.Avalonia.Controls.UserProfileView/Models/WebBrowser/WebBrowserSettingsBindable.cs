@@ -1,9 +1,10 @@
-﻿using Chameleon.Interfaces.WebBrowser;
-using Prism.Mvvm;
+﻿using Chameleon.CT.Common.Base;
+using Chameleon.Interfaces.WebBrowser;
+
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.Models.WebBrowser;
 
-public class WebBrowserSettingsBindable : BindableBase, IWebBrowserSettings
+public class WebBrowserSettingsBindable : ObservableObjectBase, IWebBrowserSettings
 {
     private bool _webRTC;
     public bool WebRTC

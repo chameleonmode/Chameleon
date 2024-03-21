@@ -1,11 +1,11 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.CreditPlan;
 
 public class CreditPlan
-    : ViewModelBase
+    : SubPageViewModelBase
 {
     private readonly IEventAggregator _eventAggregator;
     public CreditPlan(IEventAggregator eventAggregator, decimal amount, string size)

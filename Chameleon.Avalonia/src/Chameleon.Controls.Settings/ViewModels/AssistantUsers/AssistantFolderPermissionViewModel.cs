@@ -1,12 +1,12 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.ShareFolders;
 using Chameleon.Interfaces.Dialogs;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
-public class AssistantFolderPermissionViewModel
-       : ViewModelBase
+public partial class AssistantFolderPermissionViewModel
+       : SubPageViewModelBase
 {
     private readonly IShareFoldersService _shareFoldersService;
     private readonly IToastNotificationService _toastNotificationService;
@@ -22,8 +22,6 @@ public class AssistantFolderPermissionViewModel
 
         ShareFolderPermission = shareFolderPermission;
         ShareFolder = shareFolder;
-
-        UpdatePermissionCommand = new DelegateCommand(UpdatePermission);
     }
 
     public IShareFolderPermission ShareFolderPermission { get; }
@@ -38,12 +36,12 @@ public class AssistantFolderPermissionViewModel
             if (ShareFolderPermission.IsGranted != value)
             {
                 ShareFolderPermission.IsGranted = value;
-                RaisePropertyChanged(nameof(IsGranted));
+                OnPropertyChanged(nameof(IsGranted));
             }
         }
     }
 
-    public DelegateCommand UpdatePermissionCommand { get; }
+    [RelayCommand]
     private void UpdatePermission()
     {
         try

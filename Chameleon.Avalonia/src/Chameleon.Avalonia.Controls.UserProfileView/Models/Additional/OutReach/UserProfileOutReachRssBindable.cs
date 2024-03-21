@@ -1,5 +1,4 @@
 ﻿using Chameleon.Interfaces.OutReach;
-using Prism.Mvvm;
 
 namespace Chameleon.Controls.UserProfileView.Models.Additional
 {

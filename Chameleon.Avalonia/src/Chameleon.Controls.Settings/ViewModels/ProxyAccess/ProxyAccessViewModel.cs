@@ -1,18 +1,17 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.Dialogs;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
 
-public class ProxyAccessViewModel
-    : ViewModelBase
+public partial class ProxyAccessViewModel
+    : SubPageViewModelBase
 {
     private readonly IToastNotificationService _toastNotificationService;
     public ProxyAccessViewModel(
         IToastNotificationService toastNotificationService
         )
     {
-        CopyUrlCommand = new DelegateCommand(CopyUrl);
         _toastNotificationService = toastNotificationService;
     }
     private string _url;
@@ -22,8 +21,7 @@ public class ProxyAccessViewModel
         set => SetProperty(ref _url, value);
     }
 
-    public DelegateCommand CopyUrlCommand { get; set; }
-
+   [RelayCommand]
     private void CopyUrl()
     {
         if (_url == null)

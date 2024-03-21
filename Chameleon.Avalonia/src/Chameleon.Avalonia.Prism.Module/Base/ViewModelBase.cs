@@ -1,6 +1,6 @@
 ﻿using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Views;
-using Prism.Mvvm;
+
 using Prism.Regions;
 using Prism.Ioc;
 using Prism.Commands;

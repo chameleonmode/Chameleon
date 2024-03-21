@@ -1,13 +1,13 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.Assistants;
 using Chameleon.Interfaces.Dialogs;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
-public class AssistantProfilePermissionViewModel
-        : ViewModelBase
+public partial class AssistantProfilePermissionViewModel
+        : SubPageViewModelBase
 {
     private readonly IUserAssistantService _userAssistantService;
     private readonly IToastNotificationService _toastNotificationService;
@@ -22,8 +22,6 @@ public class AssistantProfilePermissionViewModel
         _toastNotificationService = toastNotificationService;
 
         AssistantProfilePermission = assistantProfilePermission;
-
-        UpdatePermissionCommand = new DelegateCommand(UpdatePermission);
     }
 
     public IAssistantProfilePermission AssistantProfilePermission { get; }
@@ -36,12 +34,12 @@ public class AssistantProfilePermissionViewModel
             if (AssistantProfilePermission.IsGranted != value)
             {
                 AssistantProfilePermission.IsGranted = value;
-                RaisePropertyChanged(nameof(IsGranted));
+                OnPropertyChanged(nameof(IsGranted));
             }
         }
     }
 
-    public DelegateCommand UpdatePermissionCommand { get; }
+    [RelayCommand]
     private void UpdatePermission()
     {
         try

@@ -1,11 +1,12 @@
-﻿using Chameleon.Interfaces.UserProfiles;
-using Prism.Mvvm;
+﻿using Chameleon.CT.Common.Base;
+using Chameleon.Interfaces.UserProfiles;
+
 using System.Collections.ObjectModel;
 
 namespace Chameleon.Controls.ImportExport.Models
 {
     public class ImportColumnViewModel 
-        : BindableBase
+        : ObservableObjectBase
         , IImportColumnViewModel
     {
         public ImportColumnViewModel(IImportColumnOptions importColumnOptions)

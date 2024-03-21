@@ -1,13 +1,14 @@
 ﻿using Chameleon.Avalonia.Controls.Dashboard;
 using Chameleon.Avalonia.Controls.Settings;
-using Chameleon.Avalonia.Prism.Module.Base;
+
 using Chameleon.Common.Regions;
+using Chameleon.CT.Common.Base;
 using Prism.Commands;
 using Prism.Regions;
 
 namespace Chameleon.Avalonia.Controls.Sidebar.ViewModels;
 
-public class SidebarViewModel : ViewModelBase
+public class SidebarViewModel : SubPageViewModelBase
 {
     private const int Collapsed = 40;
     private const int Expanded = 200;

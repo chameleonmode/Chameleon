@@ -1,9 +1,8 @@
 ﻿using Chameleon.Authorization;
 using Chameleon.Av.Fluent.Common.Services;
-using Chameleon.Avalonia.Prism.Module.Base;
+using Chameleon.CT.Common.Base;
 using Chameleon.Common.Helpers;
 using Chameleon.Common.Regions;
-using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.ImportExport.Views;
 using Chameleon.Interfaces.App.ProxyCredit.Views;
@@ -15,8 +14,6 @@ using Chameleon.Interfaces.UserSettings;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Prism.Commands;
-using Prism.Regions;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 

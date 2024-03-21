@@ -1,10 +1,11 @@
-﻿using Chameleon.Interfaces.Country;
-using Prism.Mvvm;
+﻿using Chameleon.CT.Common.Base;
+using Chameleon.Interfaces.Country;
+
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.Models.Country;
 
 public class CountryBindable
-    : BindableBase
+    : ObservableObjectBase
     , ICountry
 {
     private int _id;

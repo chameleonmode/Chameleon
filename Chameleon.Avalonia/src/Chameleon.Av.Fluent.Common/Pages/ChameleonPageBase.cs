@@ -7,6 +7,7 @@ using Avalonia.Media;
 using Avalonia.Rendering.Composition;
 using Avalonia.Styling;
 using Chameleon.Av.Fluent.Common.Services;
+using Chameleon.Interfaces;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
@@ -196,9 +197,12 @@ public class ChameleonPageBase : UserControl
         //}
     }
 
-    private void FrameNavigatedTo(object sender, NavigationEventArgs e)
+    private async void FrameNavigatedTo(object sender, NavigationEventArgs e)
     {
-        var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
+        if (DataContext is IPageViewModel pageViewModel)
+            await pageViewModel.InvokeAsyncRelayCommand();
+
+            var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
         var animation = svc.GetAnimation("ForwardAnimation");
 
         if (animation != null)
@@ -213,6 +217,7 @@ public class ChameleonPageBase : UserControl
             // PreviewImageHost is inside a Viewbox which can really mess with the Composition 
             // animation - use the viewbox directly for the animation to ensure it works correctly
             animation.TryStart((Control)_previewImageHost.Parent, coordinated);
+            
         }
     }
 }

@@ -1,13 +1,12 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
-using Chameleon.CT.Common.Base;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.Settings;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Prism.Events;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
-public class PhoneVerificationViewModel
+public partial class PhoneVerificationViewModel
        : SubPageViewModelBase
        , IPhoneVerificationViewModel
 {
@@ -21,9 +20,6 @@ public class PhoneVerificationViewModel
         Title = "Phone Verification";            
 
         _userSettingsService = userSettingsService;
-
-        SaveCommand = new DelegateCommand(Save)
-            .ObservesCanExecute(() => IsChangeApiKey);
     }
     public override Task InitAsync()
     {
@@ -37,7 +33,7 @@ public class PhoneVerificationViewModel
         _apiKey = _userSetting.SmsPvaApiKey;
     }
 
-    public DelegateCommand SaveCommand { get; }
+    [RelayCommand]
     public void Save()
     {
         _userSettingsService.Save(_userSetting);

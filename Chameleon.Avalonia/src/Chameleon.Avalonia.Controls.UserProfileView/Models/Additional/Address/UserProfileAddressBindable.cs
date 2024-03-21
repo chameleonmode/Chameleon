@@ -1,11 +1,11 @@
-﻿using Chameleon.Interfaces.UserProfiles.Additional;
-using Prism.Mvvm;
+﻿using Chameleon.CT.Common.Base;
+using Chameleon.Interfaces.UserProfiles.Additional;
 using System.ComponentModel;
 
 namespace Chameleon.Controls.UserProfileView.Models.Additional
 {
     public class UserProfileAddressBindable 
-        : BindableBase
+        : ObservableObjectBase
         , IUserProfileAddress
     {
         public UserProfileAddressBindable()

@@ -1,17 +1,18 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
-using Chameleon.Controls.ImportExport.Models;
+﻿using Chameleon.Controls.ImportExport.Models;
 using Chameleon.Controls.ImportExport.Services;
 using Chameleon.Controls.ImportExport.ViewModels;
+using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
+using Chameleon.Core.Extensions;
 using Chameleon.Interfaces.App.ImportExport.Views;
 using Chameleon.Interfaces.UserProfileFolders;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
-public class ImportViewModel : SubViewModelBase,
+public partial class ImportViewModel : SubPageViewModelBase,
     IImportViewModel
 {
     private readonly IUserProfileViewModelImporter _viewModelImporter;
@@ -29,16 +30,15 @@ public class ImportViewModel : SubViewModelBase,
         _fileSystemImporter = fileSystemImporter;
         _userProfileFolderService = userProfileFolderService;
 
-        Folders = _userProfileFolderService.GetAll();
+          
         Columns = (ImportColumnViewModels)importColumnViewModels;
+    }
+    public override async Task InitAsync()
+    {
+        await base.InitAsync();
 
+        Folders = await Task.Run(()=> _userProfileFolderService.GetAll());
         Folders.CollectionChanged += Folders_CollectionChanged;
-
-        ImportCommand = new DelegateCommand(OnImport);
-        DiscardCommand = new DelegateCommand(OnDiscard);
-        OpenFileCommand = new DelegateCommand(OnOpenFile);
-        RemoveColumnCommand = new DelegateCommand<ImportColumnViewModel>(OnRemoveColumn);
-        SaveCommand = new DelegateCommand(OnSave).ObservesCanExecute(() => Columns.HasSelected);
     }
 
     private ObservableCollection<IUserProfileFolder> _displayFolders;
@@ -79,7 +79,7 @@ public class ImportViewModel : SubViewModelBase,
     private void AddFolders()
     {
         DisplayFolders.AddRange(Folders);
-        RaisePropertyChanged(nameof(SelectedFolder));
+        OnPropertyChanged(nameof(SelectedFolder));
     }
 
     private void SelectFolder(int id)
@@ -104,7 +104,7 @@ public class ImportViewModel : SubViewModelBase,
             if (SetProperty(ref _folders, value))
             {
                 InitDisplayFolders();
-                RaisePropertyChanged(nameof(DisplayFolders));
+                OnPropertyChanged(nameof(DisplayFolders));
 
             }
         }
@@ -117,10 +117,11 @@ public class ImportViewModel : SubViewModelBase,
         set => SetProperty(ref _selectedFolder, value);
     }
 
+    [RelayCommand]
     private void OnRemoveColumn(ImportColumnViewModel item)
     {
         Columns.Remove(item);
-        RaisePropertyChanged(nameof(HasItems));
+        OnPropertyChanged(nameof(HasItems));
     }
 
     private string _filePath;
@@ -138,11 +139,10 @@ public class ImportViewModel : SubViewModelBase,
         set => SetProperty(ref _delimiter, value);
     }
 
-    public DelegateCommand<ImportColumnViewModel> RemoveColumnCommand { get; }
     public ImportColumnViewModels Columns { get; }
 
     private const string FileDialogFilter = "Csv files|*.csv|Text files|*.txt";
-    public DelegateCommand OpenFileCommand { get; }
+    [RelayCommand]
     private void OnOpenFile()
     {
         // OpenFileDialog dialog = new OpenFileDialog
@@ -179,20 +179,21 @@ public class ImportViewModel : SubViewModelBase,
 
             var columnViewModel = Columns.GetOrCreateAt(i);
             columnViewModel.AddItem(columnItemViewModel);
-            RaisePropertyChanged(nameof(HasItems));
+           OnPropertyChanged(nameof(HasItems));
         }
     }
 
-    public DelegateCommand DiscardCommand { get; }
+    [RelayCommand]
     private void OnDiscard()
     {
         Delimiter = DefaultDelimiter;
         FilePath = string.Empty;
         Columns.Clear();
-        RaisePropertyChanged(nameof(HasItems));
+        OnPropertyChanged(nameof(HasItems));
     }
 
-    public DelegateCommand SaveCommand { get; }
+    //ObservesCanExecute(() => Columns.HasSelected)
+    [RelayCommand]
     private void OnSave()
     {
         var folderId = SelectedFolder?.Id;
@@ -200,7 +201,7 @@ public class ImportViewModel : SubViewModelBase,
         _viewModelImporter.ImportAsync(Columns, folderId);
     }
 
-    public DelegateCommand ImportCommand { get; }
+   [RelayCommand]
     private void OnImport()
     {
         DispatcherService.InvokeOnUiThread(() => _fileSystemImporter.ImportAsync());

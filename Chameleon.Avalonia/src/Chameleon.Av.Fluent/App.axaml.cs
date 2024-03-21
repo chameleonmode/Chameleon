@@ -22,7 +22,7 @@ using DryIoc;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Mvvm;
+
 using System.Globalization;
 using System.Reflection;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
@@ -113,27 +113,27 @@ public partial class App : PrismApplication
     {
         base.ConfigureViewModelLocator();
 
-        ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType) =>
-        {
-            var attr = viewType.GetCustomAttribute<ViewModelAttribute>();
-            if (attr != null)
-            {
-                return attr.Type;
-            }
+        //ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType) =>
+        //{
+        //    var attr = viewType.GetCustomAttribute<ViewModelAttribute>();
+        //    if (attr != null)
+        //    {
+        //        return attr.Type;
+        //    }
 
-            var viewName = viewType.FullName;
-            viewName = viewName.Replace(".Views.", ".ViewModels.");
-            var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName;
-            var suffix = viewName.EndsWith("View") ? "Model" : "ViewModel";
-            var viewModelName = String.Format(CultureInfo.InvariantCulture, "{0}{1}, {2}", viewName, suffix, viewAssemblyName);
-            var viewModelType = Type.GetType(viewModelName);
+        //    var viewName = viewType.FullName;
+        //    viewName = viewName.Replace(".Views.", ".ViewModels.");
+        //    var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName;
+        //    var suffix = viewName.EndsWith("View") ? "Model" : "ViewModel";
+        //    var viewModelName = String.Format(CultureInfo.InvariantCulture, "{0}{1}, {2}", viewName, suffix, viewAssemblyName);
+        //    var viewModelType = Type.GetType(viewModelName);
 
-            if (viewModelType == null && viewType.Name != "MainWindow")
-            {
-                viewModelType = Type.GetType($"{viewType.FullName}Model");
-            }
-            return viewModelType;
-        });
+        //    if (viewModelType == null && viewType.Name != "MainWindow")
+        //    {
+        //        viewModelType = Type.GetType($"{viewType.FullName}Model");
+        //    }
+        //    return viewModelType;
+        //});
     }
 
     /// <summary>Register Services and Views.</summary>

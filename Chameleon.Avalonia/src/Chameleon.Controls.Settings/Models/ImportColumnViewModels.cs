@@ -1,5 +1,5 @@
 ﻿using Chameleon.Controls.ImportExport.Models;
-using Prism.Ioc;
+using Chameleon.Interfaces.Ioc;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -11,8 +11,8 @@ namespace Chameleon.Controls.ImportExport.ViewModels
         : ObservableCollection<IImportColumnViewModel>
         , IImportColumnViewModels
     {
-        private readonly IContainerProvider _containerProvider;
-        public ImportColumnViewModels(IContainerProvider containerProvider)
+        private readonly IHaveContainerProvider _containerProvider;
+        public ImportColumnViewModels(IHaveContainerProvider containerProvider)
         {
             _containerProvider = containerProvider;
         }

@@ -1,63 +1,58 @@
 ﻿using Chameleon.App.Shared.Proxies;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.CreditPlan;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
-using Chameleon.Avalonia.Prism.Module.Base;
-using Chameleon.Avalonia.Prism.Module.Collections;
 using Chameleon.Core.Collections.Views;
+using Chameleon.CT.Common.Base;
+using Chameleon.CT.Common.Collections;
 using Chameleon.Interfaces.App.Settings;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Proxies;
 using Chameleon.Interfaces.ProxyCredit;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
-using Prism.Commands;
-using System.Diagnostics;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
-public class ProxyCreditViewModel
-      : SubViewModelBase
+public partial class ProxyCreditViewModel
+      : SubPageViewModelBase
       , IProxyCreditViewModel
 {
     private readonly IProxyService _proxyService;
     private readonly IProxyCreditService _proxyCreditService;
     private readonly IProxyAccessViewModels _proxyAccessViewModels;
-    private readonly IEventAggregator _eventAggregator;
     private readonly IToastNotificationService _toastNotificationService;
     public ProxyCreditViewModel(
         IProxyService proxyService,
         IProxyCreditService proxyCreditService,
         IProxyAccessViewModels proxyAccessViewModels,
-        IEventAggregator eventAggregator,
         IToastNotificationService toastNotificationService
         )
     {
         Title = "Proxy Credit";
+        CountProxies = 5;
 
         _proxyService = proxyService;
         _proxyCreditService = proxyCreditService;
         _proxyAccessViewModels = proxyAccessViewModels;
         _proxyAccessViewModels.AddItems(CountProxies);
-        _eventAggregator = eventAggregator;
         _toastNotificationService = toastNotificationService;
+    }
 
-        _eventAggregator
-           .GetEvent<SelectedCreditPlanEvent>()
-           .Subscribe(args => OnSelectedCreditPlan(args));
+    public override async Task InitAsync()
+    {       
+        await base.InitAsync();  
 
-        PurchaseCreditCommand = new DelegateCommand(PurchaseCredit);
-        RefreshCommand = new DelegateCommand(Refresh);
-        CopyAllUrlsCommand = new DelegateCommand(CopyAllUrls);
+        await InitializeBalanceAsync();
+        await InitializeCountriesAsync();
+        InitializeCreditPlans();    
 
-        InitializeBalanceAsync();
-        InitializeCountriesAsync();
-        InitializeCreditPlans();
-
-        CountProxies = 5;
+        EventAggregator
+            .GetEvent<SelectedCreditPlanEvent>()
+            .Subscribe(args => OnSelectedCreditPlan(args));
     }
 
     private const string ClipboardText = "Copied to clipboard";
-    public DelegateCommand CopyAllUrlsCommand { get; set; }
+   [RelayCommand]
     public void CopyAllUrls()
     {
         var list = Access.Select(a => a.Url);
@@ -67,14 +62,12 @@ public class ProxyCreditViewModel
 
     private void InitializeCreditPlans()
     {
-        CreditPlans = new CreditPlans(_eventAggregator);
+        CreditPlans = new CreditPlans(EventAggregator);
     }
 
-    private void InitializeBalanceAsync()
+    private async Task InitializeBalanceAsync()
     {
-        DispatcherService.InvokeOnUiThreadAsync(GetBalance,
-            balance => BalanceAmount = balance
-            );
+        BalanceAmount = await Task.Run(GetBalance);
     }
 
     private decimal GetBalance()
@@ -84,11 +77,11 @@ public class ProxyCreditViewModel
             .Amount;
     }
 
-    private void InitializeCountriesAsync()
+    private Task InitializeCountriesAsync()
     {
         Countries = new AsyncCollectionViewModel<IProxyCountry>(GetCountries, true);
         Countries.Clear();
-        Countries.Load();
+        return Countries.Load();
     }
 
     private IList<IProxyCountry> GetCountries()
@@ -106,14 +99,14 @@ public class ProxyCreditViewModel
         {
             if (SetProperty(ref _balanceAmount, value))
             {
-                RaisePropertyChanged(nameof(Balance));
+                OnPropertyChanged(nameof(Balance));
             }
         }
     }
 
     public string Balance => $"${_balanceAmount}";
 
-    public DelegateCommand PurchaseCreditCommand { get; }
+    [RelayCommand]
     private void PurchaseCredit()
     {
         IsLoadingIndicatorVisible = true;
@@ -133,8 +126,8 @@ public class ProxyCreditViewModel
         SelectedCreditPlan = CreditPlans.First(a => a.IsChecked);
         HasSelectedCreditPlan = true;
 
-        RaisePropertyChanged(nameof(SelectedCreditPlan));
-        RaisePropertyChanged(nameof(HasSelectedCreditPlan));
+        OnPropertyChanged(nameof(SelectedCreditPlan));
+        OnPropertyChanged(nameof(HasSelectedCreditPlan));
     }
 
     public CreditPlans _creditPlans;
@@ -172,7 +165,7 @@ public class ProxyCreditViewModel
         MakePaymentAsync();
     }
 
-    public DelegateCommand RefreshCommand { get; }
+    [RelayCommand]
     private void Refresh()
     {
         UpdateBalance();
@@ -260,7 +253,7 @@ public class ProxyCreditViewModel
         }
 
         UpdateProxyAccess();
-        RaisePropertyChanged(nameof(Access));
+        OnPropertyChanged(nameof(Access));
     }
 
     public IProxyCountry Country
@@ -271,7 +264,7 @@ public class ProxyCreditViewModel
             if (_proxyService.CurrentCountry != value)
             {
                 _proxyService.CurrentCountry = value;
-                RaisePropertyChanged();
+                OnPropertyChanged();
                 UpdateProxyAccessAsync();
             }
         }

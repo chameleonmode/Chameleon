@@ -1,8 +1,9 @@
-﻿using Chameleon.Interfaces.YouTube;
-using Prism.Mvvm;
+﻿using Chameleon.CT.Common.Base;
+using Chameleon.Interfaces.YouTube;
+
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.Models.Youtube;
-public class YoutubeSettingsBindable : BindableBase, IYouTubeSettings
+public class YoutubeSettingsBindable : ObservableObjectBase, IYouTubeSettings
 {
     private string _oldClientId;
     private string _oldClientSecret;

@@ -1,4 +1,4 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.CT.Common.Base;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;

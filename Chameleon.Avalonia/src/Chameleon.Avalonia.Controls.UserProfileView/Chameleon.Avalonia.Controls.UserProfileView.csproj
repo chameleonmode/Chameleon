@@ -8,13 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
-    <PackageReference Include="Avalonia"  />
+    <PackageReference Include="Avalonia" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Module\Chameleon.Avalonia.Prism.Module.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,16 +1,17 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿
+using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
+using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
-using Prism.Commands;
-using Prism.Services.Dialogs;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.OutReachLinkView.ViewModels;
 
-public class OutReachLinkViewModel
-    : DialogViewModelBase
+public partial class OutReachLinkViewModel
+    : DialogBase
     , IOutReachLinkViewModel
 {
     private readonly IEventAggregator _eventAggregator;
@@ -25,13 +26,9 @@ public class OutReachLinkViewModel
         _eventAggregator = eventAggregator;
         _userProfileService = userProfileService;
         _profileOutReachLinkService = profileOutReachLinkService;
-
-        SaveCommand = new DelegateCommand(Save);
-        EmailCommand = new DelegateCommand(Email);
-        DiscardCommand = new DelegateCommand(OnDiscard);
     }
 
-    public DelegateCommand DiscardCommand { get; }
+    [RelayCommand]
     private void OnDiscard()
     {
         Close();
@@ -39,12 +36,12 @@ public class OutReachLinkViewModel
 
     private void Close()
     {
-        _eventAggregator
-            .GetEvent<CloseDialogWindowEvent>()
-            .Publish((int)ButtonResult.Cancel);
+        //_eventAggregator
+        //    .GetEvent<CloseDialogWindowEvent>()
+        //    .Publish((int)ButtonResult.Cancel);
     }
 
-    public DelegateCommand EmailCommand { get; }
+    [RelayCommand]
     private void Email()
     {
         var outReachTemplate = new OutReachTemplate
@@ -60,7 +57,7 @@ public class OutReachLinkViewModel
         Close();
     }
 
-    public DelegateCommand SaveCommand { get; }
+    [RelayCommand]
     private void Save()
     {
         var outReachLink = new ProfileOutReachLink
@@ -225,5 +222,10 @@ public class OutReachLinkViewModel
     {
         get => _isEnable;
         set => SetProperty(ref _isEnable, value);
+    }
+
+    public override Task<IContentDialogResult> ShowAsync()
+    {
+        throw new NotImplementedException();
     }
 }

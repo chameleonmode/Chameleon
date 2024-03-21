@@ -1,15 +1,15 @@
 ﻿using Chameleon.Avalonia.Common.Util;
-using Chameleon.Avalonia.Prism.Module.Base;
+using Chameleon.CT.Common.Base;
 using Chameleon.Core.Util;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.UserSettings;
 using Chameleon.Prism.Events;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
-public class UserDefaultSettingViewModel : ViewModelBase
+public partial class UserDefaultSettingViewModel : SubPageViewModelBase
 {
     private readonly IEventAggregator _eventAggregator;
     private readonly IUserDefaultSetting _userDefaultSetting;
@@ -25,9 +25,7 @@ public class UserDefaultSettingViewModel : ViewModelBase
         _userDefaultSetting = userDefaultSetting;
         _userDefaultsSettingsService = userDefaultsSettingsService;
 
-        DeleteCommand = new DelegateCommand(DeleteDefaultSettings);
         _defaultUrl = _userDefaultSetting.DefaultUrl;
-        LostFocusCommand = new DelegateCommand(SaveUrlFromViewText);
     }
 
 
@@ -72,7 +70,7 @@ public class UserDefaultSettingViewModel : ViewModelBase
                     .Publish(new SelectedUserDefaultSettingEventArgs(_isChecked));
     }
 
-    public DelegateCommand LostFocusCommand { get; }
+    [RelayCommand]
     public void SaveUrlFromViewText()
     {
         if (string.IsNullOrWhiteSpace(DefaultUrl))
@@ -86,7 +84,7 @@ public class UserDefaultSettingViewModel : ViewModelBase
         _userDefaultsSettingsService.Save(_userDefaultSetting);
     }
 
-    public DelegateCommand DeleteCommand { get; }
+    [RelayCommand]
 
     public void DeleteDefaultSettings()
     {

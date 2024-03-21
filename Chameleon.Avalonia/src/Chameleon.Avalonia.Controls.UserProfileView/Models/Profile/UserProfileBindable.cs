@@ -2,13 +2,12 @@
 using Chameleon.Avalonia.Controls.UserProfileView.Models.WebBrowser;
 using Chameleon.Avalonia.Controls.UserProfileView.Models.WordPress;
 using Chameleon.Avalonia.Controls.UserProfileView.Models.Youtube;
-using Prism.Mvvm;
-using Tmds.DBus.SourceGenerator;
+using Chameleon.CT.Common.Base;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.Models.Profile;
 
 public class UserProfileBindable
-      : BindableBase
+      : ObservableObjectBase
 {
     public event EventHandler<bool> ChangedProperty;
 

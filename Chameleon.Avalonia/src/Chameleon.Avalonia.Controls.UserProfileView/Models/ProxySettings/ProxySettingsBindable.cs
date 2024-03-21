@@ -1,11 +1,12 @@
-﻿using Chameleon.Interfaces.UserProfiles;
-using Prism.Mvvm;
+﻿using Chameleon.CT.Common.Base;
+using Chameleon.Interfaces.UserProfiles;
+
 using System.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.Models.ProxySettings;
 
 public class ProxySettingsBindable
-       : BindableBase
+       : ObservableObjectBase
        , IProxySettings
        , IDataErrorInfo
 {

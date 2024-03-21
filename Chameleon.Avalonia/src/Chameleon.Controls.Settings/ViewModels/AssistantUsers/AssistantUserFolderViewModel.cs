@@ -1,17 +1,17 @@
 ﻿using Chameleon.Authorization;
-using Chameleon.Avalonia.Prism.Module.Base;
+using Chameleon.CT.Common.Base;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.Interfaces.App.ShareFolders;
 using Chameleon.Interfaces.App.Users.AssistantUser.Events;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Prism.Events;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
-public class AssistantUserFolderViewModel
-      : ViewModelBase
+public partial class AssistantUserFolderViewModel
+      : SubPageViewModelBase
 {
     private readonly IEventAggregator _eventAggregator;
     private readonly IShareFoldersService _shareFoldersService;
@@ -32,8 +32,6 @@ public class AssistantUserFolderViewModel
         ShareFolder = shareFolder;
 
         InitPermissions();
-
-        UnshareCommand = new DelegateCommand(UnshareFolder);
     }
 
     public IShareFolder ShareFolder { get; }
@@ -73,7 +71,7 @@ public class AssistantUserFolderViewModel
         PermissionViewModels
             .Single(a => a.PermissionName == PermissionNames.Pages_Curate);
 
-    public DelegateCommand UnshareCommand { get; }
+    [RelayCommand]
     private void UnshareFolder()
     {
         _eventAggregator

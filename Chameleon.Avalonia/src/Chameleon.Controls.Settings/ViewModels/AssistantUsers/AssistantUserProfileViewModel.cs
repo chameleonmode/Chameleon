@@ -1,5 +1,5 @@
 ﻿using Chameleon.Authorization;
-using Chameleon.Avalonia.Prism.Module.Base;
+using Chameleon.CT.Common.Base;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.Infrastructure.Users;
@@ -10,12 +10,12 @@ using Chameleon.Interfaces.Assistants;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
-public class AssistantUserProfileViewModel
-        : ViewModelBase
+public partial class AssistantUserProfileViewModel
+        : SubPageViewModelBase
 {
     private readonly IEventAggregator _eventAggregator;
     private readonly IUserAssistantService _userAssistantService;
@@ -41,8 +41,6 @@ public class AssistantUserProfileViewModel
 
         InitPermissions();
 
-        UnshareCommand = new DelegateCommand(UnshareProfile);
-
         _eventAggregator
             .GetEvent<UpdateStaleDataEvent>()
             .Subscribe(RefreshTitle);
@@ -55,7 +53,7 @@ public class AssistantUserProfileViewModel
     {
         var profile = _userProfileService.Get(AssistantProfile.ProfileId);
         AssistantProfile.ProfileName = profile.Title;
-        RaisePropertyChanged(nameof(Name));
+        OnPropertyChanged(nameof(Name));
     }
 
     public IAssistantProfile AssistantProfile { get; }
@@ -96,7 +94,7 @@ public class AssistantUserProfileViewModel
             .Single(a => a.PermissionName == PermissionNames.Pages_Curate);
 
 
-    public DelegateCommand UnshareCommand { get; }
+   [RelayCommand]
     private void UnshareProfile()
     {
         _eventAggregator
@@ -117,11 +115,11 @@ public class AssistantUserProfileViewModel
                 permission)
             );
 
-        RaisePropertyChanged(nameof(PermissionViewModels));
-        RaisePropertyChanged(nameof(Outreach));
-        RaisePropertyChanged(nameof(Prospector));
-        RaisePropertyChanged(nameof(YouTube));
-        RaisePropertyChanged(nameof(RSS));
-        RaisePropertyChanged(nameof(Curate));
+        OnPropertyChanged(nameof(PermissionViewModels));
+        OnPropertyChanged(nameof(Outreach));
+        OnPropertyChanged(nameof(Prospector));
+        OnPropertyChanged(nameof(YouTube));
+        OnPropertyChanged(nameof(RSS));
+        OnPropertyChanged(nameof(Curate));
     }
 }

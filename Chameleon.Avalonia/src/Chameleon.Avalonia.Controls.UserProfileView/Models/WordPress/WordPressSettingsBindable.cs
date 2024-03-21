@@ -1,9 +1,10 @@
-﻿using Chameleon.Interfaces.WordPress;
-using Prism.Mvvm;
+﻿using Chameleon.CT.Common.Base;
+using Chameleon.Interfaces.WordPress;
+
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.Models.WordPress;
 
-public class WordPressSettingsBindable : BindableBase, IWordPressSettings
+public class WordPressSettingsBindable : ObservableObjectBase, IWordPressSettings
 {
     private string _baseUrl;
     public string BaseUrl

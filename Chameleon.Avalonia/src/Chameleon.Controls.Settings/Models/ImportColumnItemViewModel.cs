@@ -1,9 +1,9 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.CT.Common.Base;
 
 namespace Chameleon.Controls.ImportExport.Models
 {
     public class ImportColumnItemViewModel : 
-        ViewModelBase
+        ObservableObjectBase
         , IImportColumnItemViewModel
     {
         public ImportColumnItemViewModel(string value)

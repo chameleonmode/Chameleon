@@ -1,7 +1,9 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿
 using Chameleon.Core.Util;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.Rss;
 using Chameleon.Interfaces.Common;
+using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.OutReach;
@@ -13,7 +15,7 @@ using Prism.Services.Dialogs;
 namespace Chameleon.Avalonia.Controls.RssFeed.ViewModels;
 
 public class RssFeedViewModel
-     : DialogViewModelBase
+     : DialogBase
     , IRssFeedViewModel
 {
     private readonly IEventAggregator _eventAggregator;
@@ -99,7 +101,7 @@ public class RssFeedViewModel
         set
         {
             SetProperty(ref _rssFeedsText, value);
-            RaisePropertyChanged(nameof(RSSFeedsText));
+            OnPropertyChanged(nameof(RSSFeedsText));
         }
     }
 
@@ -110,10 +112,15 @@ public class RssFeedViewModel
         set
         {
             SetProperty(ref _maxRssCount, value);
-            RaisePropertyChanged(nameof(IsRssCountUnlimited));
+            OnPropertyChanged(nameof(IsRssCountUnlimited));
         }
     }
     public bool IsRssCountUnlimited => MaxRssCount == int.MaxValue;
+
+    public override Task<IContentDialogResult> ShowAsync()
+    {
+        throw new NotImplementedException();
+    }
 
     #endregion
 }

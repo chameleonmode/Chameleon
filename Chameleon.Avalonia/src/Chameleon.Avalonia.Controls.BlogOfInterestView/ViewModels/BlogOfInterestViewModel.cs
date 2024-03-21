@@ -1,6 +1,8 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿
+using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.Prospector;
+using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Prospector;
 using Chameleon.Interfaces.UserProfiles;
@@ -11,7 +13,7 @@ using Prism.Services.Dialogs;
 namespace Chameleon.Avalonia.Controls.BlogOfInterestView.ViewModels;
 
 public class BlogOfInterestViewModel
-       : DialogViewModelBase
+       : DialogBase
        , IBlogOfInterestViewModel
 {
     private readonly IUserProfileProspectorBlogsOfInterestsService _prospectorBlogsOfInterestsService;
@@ -120,4 +122,9 @@ public class BlogOfInterestViewModel
         set => _profileId = value;
     }
     public int Id { get; set; }
+
+    public override Task<IContentDialogResult> ShowAsync()
+    {
+        throw new NotImplementedException();
+    }
 }

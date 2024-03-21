@@ -1,4 +1,4 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Controls.AssistantUsers.Interfaces;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
@@ -15,13 +15,12 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
-using Prism.Commands;
-using Prism.Services.Dialogs;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
-public class AssistantUserViewModel
-       : ViewModelBase
+public partial class AssistantUserViewModel
+       : SubPageViewModelBase
 {
     private const string _unshareProfileDialogTitle = "UNSHARE PROFILE";
     private const string _unshareFolderDialogTitle = "UNSHARE FOLDER";
@@ -65,12 +64,6 @@ public class AssistantUserViewModel
 
         UserAssistant = userAssistant;
 
-        OpenAssistantUserPopupCommand = new DelegateCommand(OpenPopup);
-        DeleteAssistantUserCommand = new DelegateCommand(DeleteAssistant);
-        AddMoreProfilesCommand = new DelegateCommand(AddMoreProfiles);
-        SendLicenceKeyCommand = new DelegateCommand(SendLicenceKey);
-        SetCanCreateProfilesCommand = new DelegateCommand(SetCanCreateProfiles);
-
         InitProfiles();
         InitFolders();
 
@@ -86,15 +79,6 @@ public class AssistantUserViewModel
             .GetEvent<UnshareFolderEvent>()
             .Subscribe(args => OnUnshareFolder(args));
     }
-
-    #region Commands
-    public DelegateCommand OpenAssistantUserPopupCommand { get; }
-    public DelegateCommand DeleteAssistantUserCommand { get; }
-    public DelegateCommand AddMoreProfilesCommand { get; }
-    public DelegateCommand SendLicenceKeyCommand { get; }
-    public DelegateCommand SetCanCreateProfilesCommand { get; }
-
-    #endregion
 
 
     #region Properties
@@ -182,29 +166,32 @@ public class AssistantUserViewModel
                 _toastNotificationService,
                 folder));
     }
-    private async Task<ButtonResult> InitUnsharePopupAndGetResult(string title, string text)
-    {
-        Action<IUnshareItemPopupViewModel> initialize = viewModel =>
-        {
-            viewModel.Text = text;
-        };
+    //TODO:
+    //private async Task<ButtonResult> InitUnsharePopupAndGetResult(string title, string text)
+    //{
+    //    Action<IUnshareItemPopupViewModel> initialize = viewModel =>
+    //    {
+    //        viewModel.Text = text;
+    //    };
 
-        return (ButtonResult)await _dialogWindowsService.ShowDialogWindow(_unshareProfilePopupView, title, initialize);
-    }
+    //    return (ButtonResult)await _dialogWindowsService.ShowDialogWindow(_unshareProfilePopupView, title, initialize);
+    //}
+    [RelayCommand]
     private void OpenPopup()
     {
         IsOpenPopup = !IsOpenPopup;
     }
+    [RelayCommand]
     private async void DeleteAssistant()
     {
         _deleteAssistantUserPopupView.UserName = Username;
 
-        var result = await _dialogWindowsService.ShowDialogWindow(_deleteAssistantUserPopupView, _deleteUserDialogTitle);
+        //var result = await _dialogWindowsService.ShowDialogWindow(_deleteAssistantUserPopupView, _deleteUserDialogTitle);
 
-        if (result != (int)ButtonResult.OK)
-        {
-            return;
-        }
+        //if (result != (int)ButtonResult.OK)
+        //{
+        //    return;
+        //}
 
         try
         {
@@ -215,10 +202,12 @@ public class AssistantUserViewModel
             _toastNotificationService.ShowError($"Failed to delete {UserAssistant.UserName}. Please try again.");
         }
     }
+    [RelayCommand]
     private void AddMoreProfiles()
     {
         _inviteUserOrAddProfilesPopupService.ShowPopup(false, UserAssistant.Id);
     }
+    [RelayCommand]
     private void SendLicenceKey()
     {
         var url = $"mailto:{UserAssistant.EmailAddress}?subject=Chameleon invitation&body=You’ve been invited to Chameleon. Your credentials:%0DEmail: {UserAssistant.EmailAddress}%0DKey: {UserAssistant.Password}%0D";
@@ -327,14 +316,14 @@ public class AssistantUserViewModel
             return;
         }
 
-        var result = await InitUnsharePopupAndGetResult(
-            _unshareProfileDialogTitle,
-            $"Are you sure you want to unshare {args.AssistantProfile.ProfileName}? This will not affect other profiles.");
+        //var result = await InitUnsharePopupAndGetResult(
+        //    _unshareProfileDialogTitle,
+        //    $"Are you sure you want to unshare {args.AssistantProfile.ProfileName}? This will not affect other profiles.");
 
-        if (result != ButtonResult.OK)
-        {
-            return;
-        }
+        //if (result != ButtonResult.OK)
+        //{
+        //    return;
+        //}
 
         try
         {
@@ -359,14 +348,14 @@ public class AssistantUserViewModel
             return;
         }
 
-        var result = await InitUnsharePopupAndGetResult(
-            _unshareFolderDialogTitle,
-            $"Are you sure you want to unshare {args.AssistantFolder.FolderName}? This will not affect other folders.");
+        //var result = await InitUnsharePopupAndGetResult(
+        //    _unshareFolderDialogTitle,
+        //    $"Are you sure you want to unshare {args.AssistantFolder.FolderName}? This will not affect other folders.");
 
-        if (result != ButtonResult.OK)
-        {
-            return;
-        }
+        //if (result != ButtonResult.OK)
+        //{
+        //    return;
+        //}
 
         try
         {
@@ -384,6 +373,7 @@ public class AssistantUserViewModel
             _toastNotificationService.ShowError($"Failed to unshare folder. Please try again.");
         }
     }
+    [RelayCommand]
     private void SetCanCreateProfiles()
     {
         try

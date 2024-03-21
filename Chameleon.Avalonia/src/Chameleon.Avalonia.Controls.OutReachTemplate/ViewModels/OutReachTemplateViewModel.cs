@@ -1,18 +1,18 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
-using Chameleon.Core.Collections;
+﻿using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.OutReach.Views;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
-using Prism.Commands;
+using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
 
 namespace Chameleon.Avalonia.Controls.OutReachTemplate.ViewModels;
 
-public class OutReachTemplateViewModel
-       : ViewModelBase
+public partial class OutReachTemplateViewModel
+       : SubPageViewModelBase
        , IOutReachTemplateViewModel
 {
     private const string NewTemplateName = "New Template";
@@ -30,14 +30,9 @@ public class OutReachTemplateViewModel
         _eventAggregator = eventAggregator;
         _outReachTemplateService = outReachTemplateService;
 
-        SendOutReachTemplateCommand = new DelegateCommand(OnSendOutReachTemplate);
-        SaveOutReachTemplateCommand = new DelegateCommand(OnSaveOutReachTemplate, CanSaveTemplate);
-        SaveNewOutReachTemplateCommand = new DelegateCommand(OnCreateOutReachTemplate/*, CanSaveTemplate*/);
-        OpenOutReachViewCommand = new DelegateCommand(OnOpenOutReachView);
-
-        _eventAggregator
-            .GetEvent<LoginSuccessEvent>()
-            .SubscribeOnce(OnInitializeViewModels);
+        //_eventAggregator
+        //    .GetEvent<LoginSuccessEvent>()
+        //    .SubscribeOnce(OnInitializeViewModelsAsync());
 
         _eventAggregator
             .GetEvent<UpdateOutReachTemplateEvent>()
@@ -57,13 +52,19 @@ public class OutReachTemplateViewModel
 
         InitItemModel(template);
     }
+    public override async Task InitAsync()
+    {
+        await base.InitAsync();
+
+        await OnInitializeViewModelsAsync();
+    }
 
     private void OnSave()
     {
         OnSaveOutReachTemplate();
     }
 
-    public DelegateCommand OpenOutReachViewCommand { get; }
+    [RelayCommand]
     private void OnOpenOutReachView()
     {
         foreach (var item in ViewModels)
@@ -77,9 +78,9 @@ public class OutReachTemplateViewModel
         Subject = null;
         Content = null;
 
-        RaisePropertyChanged(nameof(Subject));
-        RaisePropertyChanged(nameof(Content));
-        RaisePropertyChanged(nameof(HasSelectedEmailTemplate));
+        OnPropertyChanged(nameof(Subject));
+        OnPropertyChanged(nameof(Content));
+        OnPropertyChanged(nameof(HasSelectedEmailTemplate));
 
         _eventAggregator
             .GetEvent<OpenUserOutReachEvent>()
@@ -99,7 +100,7 @@ public class OutReachTemplateViewModel
             item.IsEdit = false;
             item.ItemName = item.OutReachTemplate.Name;
         }
-        RaisePropertyChanged(nameof(HasSelectedEmailTemplate));
+        OnPropertyChanged(nameof(HasSelectedEmailTemplate));
     }
 
     public bool HasSelectedEmailTemplate
@@ -112,7 +113,7 @@ public class OutReachTemplateViewModel
         Id = template.Id;
         Subject = template.Subject;
 
-        RaisePropertyChanged(nameof(HasSelectedEmailTemplate));
+        OnPropertyChanged(nameof(HasSelectedEmailTemplate));
     }
 
     private void InitItemModel(IOutReachTemplate template)
@@ -132,7 +133,7 @@ public class OutReachTemplateViewModel
         return !string.IsNullOrEmpty(Name?.Trim());
     }
 
-    public DelegateCommand SaveNewOutReachTemplateCommand { get; }
+    [RelayCommand]
     private void OnCreateOutReachTemplate()
     {
         var outReachTemplate = new Domain.Entities.OutReachTemplate
@@ -145,7 +146,7 @@ public class OutReachTemplateViewModel
 
         var template = _outReachTemplateService.Create(outReachTemplate);
         var model = ViewModels.FirstOrDefault(a => a.OutReachTemplate.Id == template.Id);
-        model.SelectCommand.Execute();
+        model.SelectCommand.Execute(null);
     }
 
     private string GetName()
@@ -162,7 +163,7 @@ public class OutReachTemplateViewModel
         }
     }
 
-    public DelegateCommand SendOutReachTemplateCommand { get; }
+    [RelayCommand]
     private void OnSendOutReachTemplate()
     {
         // TODO: move to separate service
@@ -178,11 +179,11 @@ public class OutReachTemplateViewModel
             Id = 0;
         }
 
-        RaisePropertyChanged(nameof(HasSelectedEmailTemplate));
+        OnPropertyChanged(nameof(HasSelectedEmailTemplate));
     }
 
-    public DelegateCommand SaveOutReachTemplateCommand { get; }
-    private void OnSaveOutReachTemplate()
+    [RelayCommand]  //TODO CanSaveTemplate
+    private async Task OnSaveOutReachTemplate()
     {
         var outReachTemplate = new Domain.Entities.OutReachTemplate
         {
@@ -202,20 +203,20 @@ public class OutReachTemplateViewModel
             Id = outReachTemplate.Id;
         }
 
-        RefreshViewModels();
+        await RefreshViewModels();
 
         var model = ViewModels.FirstOrDefault(a => a.OutReachTemplate.Id == Id);
-        model.SelectCommand.Execute();
+        model.SelectCommand.Execute(null);
 
-        RaisePropertyChanged(nameof(HasSelectedEmailTemplate));
+        OnPropertyChanged(nameof(HasSelectedEmailTemplate));
     }
 
-    private void RefreshViewModels()
+    private Task RefreshViewModels()
     {
         _viewModels?.Clear();
         _viewModels = null;
 
-        OnInitializeViewModels();
+        return OnInitializeViewModelsAsync();
     }
 
     private ObservableCollectionView<OutReachTemplateItemViewModel> _viewModels;
@@ -234,15 +235,15 @@ public class OutReachTemplateViewModel
         }
     }
 
-    private void OnInitializeViewModels()
+    private async Task OnInitializeViewModelsAsync()
     {
-        var outReachTemplates = _outReachTemplateService.GetAll();
+        var outReachTemplates = await Task.Run(()=>_outReachTemplateService.GetAll());
 
         _mapping = new ObservableCollection<IOutReachTemplate, OutReachTemplateItemViewModel>(
             outReachTemplates, template => new OutReachTemplateItemViewModel(_outReachTemplateService, _eventAggregator, template)
             );
 
-        RaisePropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(ViewModels));
     }
 
     private int _id;
@@ -269,8 +270,8 @@ public class OutReachTemplateViewModel
         {
             if (SetProperty(ref _name, value))
             {
-                SaveOutReachTemplateCommand.RaiseCanExecuteChanged();
-                SaveNewOutReachTemplateCommand.RaiseCanExecuteChanged();
+                //SaveOutReachTemplateCommand.RaiseCanExecuteChanged();
+                //CreateOutReachTemplateCommand.RaiseCanExecuteChanged();
             }
         }
     }
@@ -290,8 +291,8 @@ public class OutReachTemplateViewModel
         {
             if (SetProperty(ref _outReachTemplate, value))
             {
-                RaisePropertyChanged(nameof(ContactName));
-                RaisePropertyChanged(nameof(ContactEmail));
+                OnPropertyChanged(nameof(ContactName));
+                OnPropertyChanged(nameof(ContactEmail));
 
                 Name = value.Name;
                 Subject = value.Subject;

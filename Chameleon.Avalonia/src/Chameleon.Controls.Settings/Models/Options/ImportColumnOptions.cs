@@ -1,6 +1,7 @@
 ﻿using Chameleon.Interfaces.Country;
-using Prism.Ioc;
+using Chameleon.Interfaces.Ioc;
 using System.Collections.ObjectModel;
+using Chameleon.Core.Extensions;
 
 namespace Chameleon.Controls.ImportExport.Models
 {
@@ -9,8 +10,8 @@ namespace Chameleon.Controls.ImportExport.Models
         ObservableCollection<ImportColumnOption>
         , IImportColumnOptions
     {
-        private readonly IContainerProvider _containerProvider;
-        public ImportColumnOptions(IContainerProvider containerProvider)
+        private readonly IHaveContainerProvider _containerProvider;
+        public ImportColumnOptions(IHaveContainerProvider containerProvider)
         {
             _containerProvider = containerProvider;
             var countryRepository = _containerProvider.Resolve<ICountryRepository>();

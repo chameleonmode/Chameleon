@@ -1,11 +1,11 @@
-﻿
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using Chameleon.Core.Extensions;
+using Chameleon.CT.Common.Base;
 
-namespace Chameleon.Avalonia.Prism.Module.Collections;
+namespace Chameleon.CT.Common.Collections;
 
-public class AsyncCollectionViewModel<T> : ViewModelBase
-      where T : class
+public class AsyncCollectionViewModel<T> : ObservableObjectBase
+     where T : class
 {
     private readonly Func<IEnumerable<T>> _getItems;
     public AsyncCollectionViewModel(Func<IEnumerable<T>> getItems, bool isVisible = false)
@@ -26,7 +26,7 @@ public class AsyncCollectionViewModel<T> : ViewModelBase
             if (_selectedItem != value)
             {
                 _selectedItem = value;
-                RaisePropertyChanged(nameof(SelectedItem));
+                OnPropertyChanged(nameof(SelectedItem));
             }
         }
     }
@@ -40,7 +40,7 @@ public class AsyncCollectionViewModel<T> : ViewModelBase
             if (_isLoading != value)
             {
                 _isLoading = value;
-                RaisePropertyChanged(nameof(IsLoading));
+                OnPropertyChanged(nameof(IsLoading));
             }
         }
     }
@@ -71,34 +71,44 @@ public class AsyncCollectionViewModel<T> : ViewModelBase
         SelectedItem = null;
     }
 
-    public void Load()
+    public Task Load()
     {
         if (_items == null)
         {
-            AddItemsAsync();
+           return AddItemsAsync();
         }
+        return Task.CompletedTask;
     }
 
-    public void Reload()
+    public override Task InitAsync()
+    {
+        return Load();
+    }
+
+    public Task Reload()
     {
         Clear();
         _isBinded = false;
-        AddItemsAsync();
+       return AddItemsAsync();
     }
 
-    private void AddItemsAsync()
+    private async Task AddItemsAsync()
     {
         if (_items == null)
         {
-            _items = new ObservableCollection<T>();
+            _items = [];
         }
 
         IsLoading = true;
-        _items.AddRangeAsync(_getItems,DispatcherService).ContinueWith(t =>
-        {
-            EnsureBinded();
-            IsLoading = false;
-        });
+        var items = await Task.Run(_getItems);
+        Items.AddRange(items);
+        EnsureBinded();
+        IsLoading = false;
+        //_items.AddRangeAsync(_getItems, DispatcherService).ContinueWith(t =>
+        //{
+        //    EnsureBinded();
+        //    IsLoading = false;
+        //});
     }
 
     private bool _isVisible;
@@ -142,7 +152,7 @@ public class AsyncCollectionViewModel<T> : ViewModelBase
 
     private void RaiseItemsChanged()
     {
-        RaisePropertyChanged(nameof(Items));
+        OnPropertyChanged(nameof(Items));
     }
 
     public event EventHandler Binded;

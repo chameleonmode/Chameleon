@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Collections\" />
     <Folder Include="Dialogs\" />
     <Folder Include="Extensions\" />
   </ItemGroup>

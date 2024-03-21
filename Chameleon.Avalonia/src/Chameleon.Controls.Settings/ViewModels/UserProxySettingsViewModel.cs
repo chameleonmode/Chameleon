@@ -1,30 +1,25 @@
 ﻿using AutoMapper;
 using Chameleon.App.Shared.Proxies;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
-using Chameleon.Avalonia.Prism.Module.Base;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.Settings;
 using Chameleon.Interfaces.App.Synchronization.Events;
-using Chameleon.Interfaces.MessageBox;
 using Chameleon.Interfaces.Proxies;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
-using Prism.Commands;
-using Prism.Services.Dialogs;
-using System.Drawing;
 using Chameleon.Core.Extensions;
-using Chameleon.Avalonia.Prism.Module.Collections;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.Dialogs;
+using Chameleon.CT.Common.Collections;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
-public class UserProxySettingsViewModel
+public partial class UserProxySettingsViewModel
        : SubPageViewModelBase
        , IUserProxySettingsViewModel
 {
@@ -53,41 +48,6 @@ public class UserProxySettingsViewModel
         _proxyAccessViewModels = proxyAccessViewModels;
         _proxyAccessViewModels.AddItems(CountProxies);
         _userProfileFolderService = userProfileFolderService;
-
-        EventAggregator
-            .GetEvent<SavedUserProfileEvent>()
-            .Subscribe(args => OnUserProfileSaved());
-
-        EventAggregator
-          .GetEvent<UpdateStaleDataEvent>()
-          .Subscribe(() => OnUserProfileSaved());
-
-        EventAggregator
-            .GetEvent<SelectedChangeUserProfileEvent>()
-            .Subscribe(args => OnUserProfileSelected());
-
-        EventAggregator
-           .GetEvent<SelectedUserProxySettingEvent>()
-           .Subscribe(args => OnSelectedChanged(args));
-
-        EventAggregator
-            .GetEvent<UserProxySetFolderIdEvent>()
-            .Subscribe(args => FolderId = args.FolderId);
-
-        EventAggregator
-           .GetEvent<AfterCreateOrRemoveFolderEvent>()
-           .Subscribe(ChangeFoldersCollection);
-
-        EventAggregator
-            .GetEvent<RenameFolderEvent>()
-            .Subscribe(args => OnRenameFolder(args.FolderId, args.Title));
-
-        ApplyProxyCommand = new DelegateCommand(ApplyProxy);
-        FillProxiesCommand = new DelegateCommand(FillProxies);
-        UnselectItemsCommand = new DelegateCommand(UnselectItems);
-        ChangeProxiesCommand = new DelegateCommand(ChangeProxies);
-        HideCustomizeProxiesCommand = new DelegateCommand(HideCustomizeProxies);
-        InitializeCountriesAsync();
     }
     public override Task InitAsync()
     {
@@ -114,10 +74,10 @@ public class UserProxySettingsViewModel
 
     public AsyncCollectionViewModel<IProxyCountry> Countries { get; private set; }
 
-    private void InitializeCountriesAsync()
+    private Task InitializeCountriesAsync()
     {
         Countries = new AsyncCollectionViewModel<IProxyCountry>(GetCountries, true);
-        Countries.Load();
+        return Countries.Load();
     }
 
     private IList<IProxyCountry> GetCountries()
@@ -235,8 +195,7 @@ public class UserProxySettingsViewModel
         set => SetProperty(ref _applingProxy, value);
     }
 
-    public DelegateCommand ApplyProxyCommand { get; }
-
+    [RelayCommand]
     public void ApplyProxy()
     {
         var proxies = SetProxies();
@@ -361,7 +320,7 @@ public class UserProxySettingsViewModel
         }
     }
 
-    public DelegateCommand FillProxiesCommand { get; }
+    [RelayCommand]
     public void FillProxies()
     {
         var profiles = SelectedProfiles();
@@ -617,7 +576,7 @@ public class UserProxySettingsViewModel
         }
     }
 
-    public DelegateCommand UnselectItemsCommand { get; }
+    [RelayCommand]
     private void UnselectItems()
     {
         IsSelectedAll = false;
@@ -627,13 +586,13 @@ public class UserProxySettingsViewModel
         }
     }
 
-    public DelegateCommand ChangeProxiesCommand { get; }
+    [RelayCommand]
     private void ChangeProxies()
     {
         ShowCustomizeProxies = true;
     }
 
-    public DelegateCommand HideCustomizeProxiesCommand { get; }
+    [RelayCommand]
     private void HideCustomizeProxies()
     {
         ShowCustomizeProxies = false;

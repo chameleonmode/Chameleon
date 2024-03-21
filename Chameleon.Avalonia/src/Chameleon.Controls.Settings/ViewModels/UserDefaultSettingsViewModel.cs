@@ -1,4 +1,4 @@
-﻿using Chameleon.Avalonia.Prism.Module.Base;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Core.Collections.Views;
 using Chameleon.Core.Collections;
 using Chameleon.Interfaces.Auth;
@@ -6,8 +6,6 @@ using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.UserSettings;
-using Prism.Commands;
-using Prism.Services.Dialogs;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Prism.Events;
 using Chameleon.Interfaces.App.Settings;
@@ -15,12 +13,12 @@ using Chameleon.Interfaces.Dialogs.Views;
 using Chameleon.Interfaces.App.UserSettings;
 using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs;
-using Chameleon.CT.Common.Base;
 using Chameleon.Common.Icons;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
-public class UserDefaultSettingsViewModel
+public partial class UserDefaultSettingsViewModel
        : SubPageViewModelBase
        , IUserDefaultSettingsViewModel
 {
@@ -40,10 +38,6 @@ public class UserDefaultSettingsViewModel
            .GetEvent<SelectedUserDefaultSettingEvent>()
            .Subscribe(_ => OnSelectedChanged());
 
-        CreateCommand = new DelegateCommand(CreateNewDefaultSettings);
-        RemoveSelectedItemsCommand = new DelegateCommand(RemoveSelectedItems);
-        UnselectItemsCommand = new DelegateCommand(UnselectItems);
-        BulkAddPagesCommand = new DelegateCommand(BulkAddPages);
 
         Title = "Default Home Pages";
     }
@@ -55,7 +49,7 @@ public class UserDefaultSettingsViewModel
 
     private const string DialogTitle = "BULK ADD PAGES";
     private const char BulkAddSeparator = ',';
-    public DelegateCommand BulkAddPagesCommand { get; }
+    [RelayCommand]
     private async void BulkAddPages()
     {
         var result = await _bulkAddPagesPopupViewModel.ShowAsync();
@@ -87,7 +81,7 @@ public class UserDefaultSettingsViewModel
         }
     }
 
-    public DelegateCommand UnselectItemsCommand { get; }
+    [RelayCommand]
     private void UnselectItems()
     {
         foreach (var setting in _mapping)
@@ -96,7 +90,7 @@ public class UserDefaultSettingsViewModel
         }
     }
 
-    public DelegateCommand RemoveSelectedItemsCommand { get; }
+    [RelayCommand]
     private void RemoveSelectedItems()
     {
         if (_selectedDefaultSetting == null || _selectedDefaultSetting.Count == 0)
@@ -111,7 +105,7 @@ public class UserDefaultSettingsViewModel
         OnSelectedChanged();
     }
 
-    public DelegateCommand CreateCommand { get; }
+    [RelayCommand]
 
     private void CreateNewDefaultSettings()
     {
