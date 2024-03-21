@@ -5,10 +5,9 @@
 	<Design.PreviewWith>
 		<Border Padding="20" Width="780" Height="480">
 			<Grid ColumnDefinitions="*,Auto,0.01*">
-				<ctrls:ChameleonContentControl Title="S titi"
-											   >
-					<ctrls:ChameleonContentControl.Header>
-						<Grid HorizontalAlignment="Right">
+				<ctrls:ChameleonContentControl Title="S titi T">
+					<ctrls:ChameleonContentControl.TitleContent>
+						<Grid>
 							<ui:CommandBar DefaultLabelPosition="Right">
 								<ui:CommandBar.PrimaryCommands>
 									<ui:CommandBarButton IconSource="Save"
@@ -27,12 +26,17 @@
 									<ui:CommandBarToggleButton IconSource="Underline" Label="Underline" />
 								</ui:CommandBar.SecondaryCommands>
 							</ui:CommandBar>
-							<!--<Button Classes="accent"
+						</Grid>
+					</ctrls:ChameleonContentControl.TitleContent>
+					<ctrls:ChameleonContentControl.Header>
+						<Grid HorizontalAlignment="Right">
+
+							<Button Classes="accent"
 									Margin="4 0 0 0"
 									Width="175"
 									Content="Auto Update Proxies"
 									Command="{Binding FillProxiesCommand}"
-									IsEnabled="{Binding FillProxiesIsEnabled}"/>-->
+									IsEnabled="{Binding FillProxiesIsEnabled}"/>
 						</Grid>
 					</ctrls:ChameleonContentControl.Header>
 
@@ -309,15 +313,13 @@
 
 					<!-- Header -->
 					<Panel>
-						<!--<Button Theme="{StaticResource TransparentButton}"
-                                Margin="8"
-                                HorizontalAlignment="Right"
-                                Name="MoreButton">
-							<ui:SymbolIcon Symbol="More" FontSize="18" />
-						</Button>-->
 						<TextBlock Text="{TemplateBinding Title}"
 								   Padding="12 8"
 								   Theme="{StaticResource SubtitleTextBlockStyle}" />
+						
+						<ContentPresenter Name="TitlePresenter"
+								  Content="{TemplateBinding TitleContent}"
+								  HorizontalAlignment="Right" />
 					</Panel>
 
 					<!-- Content Area -->
@@ -331,6 +333,7 @@
                                 CornerRadius="{DynamicResource OverlayCornerRadius}">
 							<Grid RowDefinitions="Auto,Auto,Auto">
 								<ContentPresenter Name="HeaderPresenter"
+												  Padding="12 12 12 0"
 												  Content="{TemplateBinding Header}"
 												  ContentTemplate="{TemplateBinding HeaderTemplate}"
 												  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
@@ -407,15 +410,15 @@
 								</Grid>
 
 								<ContentPresenter Name="FooterPresenter"
-			Content="{TemplateBinding Footer}"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Bottom"
-			HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-			VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-			  Margin="12"
-			  CornerRadius="0 0 8 8"
-			Grid.ColumnSpan="2"
-			Grid.Row="2">
+												  Content="{TemplateBinding Footer}"
+												  HorizontalAlignment="Stretch"
+												  VerticalAlignment="Bottom"
+												  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+												  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+												  Margin="12"
+												  CornerRadius="0 0 8 8"
+												  Grid.ColumnSpan="2"
+												  Grid.Row="2">
 								</ContentPresenter>
 
 							</Grid>

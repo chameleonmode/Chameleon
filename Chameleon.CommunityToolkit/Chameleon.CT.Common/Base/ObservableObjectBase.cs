@@ -29,10 +29,10 @@ public abstract partial class ObservableObjectBase : ObservableObject,
         _cntentDialogService = ContainerServiceHelper.Resolve<IContentDialogService>();
         eventAggregator = ContainerServiceHelper.Resolve<IEventAggregator>() ?? new EventAggregator();
 
-        InitializeAsyncCommand = new AsyncRelayCommand(
-        async () =>
+        InitializeAsyncCommand = new AsyncRelayCommand<object>(
+        async (p) =>
         {
-            await IsBusyFor(InitAsync);
+            await IsBusyFor(()=>InitAsync(p));
             Loaded = true;
         },
         AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
@@ -42,9 +42,12 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     public IContentDialogService ContentDialogService => _cntentDialogService;
     public IEventAggregator EventAggregator => eventAggregator;
     public IAsyncRelayCommand InitializeAsyncCommand { get; }
-    
 
     public virtual Task InitAsync()
+    {
+        return Task.CompletedTask;
+    }
+    public virtual Task InitAsync(object? param = null)
     {
         return Task.CompletedTask;
     }

@@ -18,6 +18,8 @@ using System.Windows;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Common.Icons;
+using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.Services;
 //using Chameleon.Avalonia.Prism.Interfaces.MessageBox;
 //using MessageBoxOptions = Chameleon.MessageBox.Services.MessageBoxOptions;
 
@@ -25,10 +27,8 @@ namespace Chameleon.Application.Events
 {
     public class UserProfileEventHandler : IUserProfileEventHandler
     {
-        readonly IContentDialogService contentDialogService;
-        // private readonly IMessageBoxService _messageBoxService;
-        private readonly IMainWindow _mainWindow;
-        private readonly IUserProfileView _userProfileView;
+        //private readonly IMainWindow _mainWindow;
+        //private readonly IUserProfileView _userProfileView;
         private readonly IEventAggregator _eventAggregator;
         private readonly IUserProfileService _userProfileService;
         private readonly ISystemBrowserManager _systemBrowserManager;
@@ -36,33 +36,31 @@ namespace Chameleon.Application.Events
         private readonly IAuthSession _authSession;
        // private readonly IDialogWindowsService _dialogWindowsService;
         private readonly IErrorContentDialogView _userFriendlyExceptionView;
-
+        private readonly INavigationService _navigationSrvice;
         public UserProfileEventHandler(
-            IMainWindow mainWindow,
+            //IMainWindow mainWindow,
             IUserProfileService userProfileService,
-            IUserProfileView userProfileView,
+            //IUserProfileView userProfileView,
             IEventAggregator eventAggregator,
             ISystemBrowserManager systemBrowserManager,
-            //TODO: IMessageBoxService messageBoxService,
             IOutReachTemplateView outReachView,
             IAuthSession authSession,
-            IContentDialogService contentDialogService
+            INavigationService navigationService
             // IDialogWindowsService dialogWindowsService
             //TODO: IErrorContentDialogView userFriendlyExceptionView
             )
         {
             _outReachView = outReachView;
             //_messageBoxService = messageBoxService;
-            _mainWindow = mainWindow;
-            _userProfileView = userProfileView;
+            //_mainWindow = mainWindow;
+            //_userProfileView = userProfileView;
             _eventAggregator = eventAggregator;
             _userProfileService = userProfileService;
             _systemBrowserManager = systemBrowserManager;
             _authSession = authSession;
             //_dialogWindowsService = dialogWindowsService;
             //_userFriendlyExceptionView = userFriendlyExceptionView;
-
-            this.contentDialogService = contentDialogService;
+            _navigationSrvice = navigationService;
 
             _eventAggregator
                 .GetEvent<OpenUserProfileEvent>()
@@ -142,9 +140,9 @@ namespace Chameleon.Application.Events
 
         private void OpenOutReachTemplate(IOutReachTemplate template)
         {
-            _outReachView.SetOutReachTemplate(template, _userProfileView.UserProfile);
-            _mainWindow.ShowWaitIndicator();
-            _mainWindow.SetContent(_outReachView, "");
+            //_outReachView.SetOutReachTemplate(template, _userProfileView.UserProfile);
+            //_mainWindow.ShowWaitIndicator();
+            //_mainWindow.SetContent(_outReachView, "");
         }
 
         private void RemoveFromFolder(IUserProfile userProfile)
@@ -255,8 +253,9 @@ namespace Chameleon.Application.Events
 
         private void OpenUserDetails(IUserProfile profile, UserProfileViewTab tab, OutReachViewTab outReachTab = OutReachViewTab.Rss)
         {
-            _userProfileView.SetUserProfile(profile, tab, outReachTab);
-            _mainWindow.SetContent(_userProfileView, profile.Title);
+            //_userProfileView.SetUserProfile(profile, tab, outReachTab);
+            //_mainWindow.SetContent(_userProfileView, profile.Title);
+            _navigationSrvice.NavigateToType(typeof(IUserProfileView), profile);
         }
 
         private void OnOpenUserSystemBrowser(UserProfileSystemBrowserEventArgs args)
@@ -276,23 +275,11 @@ namespace Chameleon.Application.Events
                         UserProfile = profile
                     });
             }
-            catch (NotSupportedException ex)
+            catch (NotSupportedException)
             {
-                
-                contentDialogService.ShowContentDialogAsync(
+                MesageBoxHelper.ShowErrorAsync(
                     "Browser is not installed",
-                    "Please install browser first", 
-                    ContentDialogButtons.OK, 
-                    FontIcons.Filter("Error"));
-                //var messageBoxOptions = new MessageBoxOptions
-                //{
-                //    Title = ,
-                //    Text = ,
-                //    Buttons = MessageBoxButton.OK,
-                //    Icon = SystemIcons.Error
-                //};
-
-                //_messageBoxService.ShowDialog(messageBoxOptions);
+                    "Please install browser first");
             }
             catch (UserFriendlyException ex)
             {
@@ -302,12 +289,9 @@ namespace Chameleon.Application.Events
 
         private void ShowErrorDialog(string title, string text)
         {
-            //Action<IErrorContentDialogViewModel> initialize = viewModel =>
-            //{
-            //    viewModel.Text = text;
-            //};
-
-            //_dialogWindowsService.ShowDialogWindow(_userFriendlyExceptionView, title, initialize);
+            MesageBoxHelper.ShowErrorAsync(
+                title,
+                text);
         }
     }
 }

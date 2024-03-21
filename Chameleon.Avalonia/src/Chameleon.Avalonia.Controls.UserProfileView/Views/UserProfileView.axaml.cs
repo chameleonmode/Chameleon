@@ -1,13 +1,14 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Chameleon.Av.Fluent.Common.Pages;
 using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView;
 
-public partial class UserProfileView : UserControl, IUserProfileView
+public partial class UserProfileView : SubPageViewControl, IUserProfileView
 {
     public UserProfileView()
     {

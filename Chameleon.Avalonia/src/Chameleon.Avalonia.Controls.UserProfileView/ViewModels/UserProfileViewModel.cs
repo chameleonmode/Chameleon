@@ -9,14 +9,14 @@ using Chameleon.Interfaces.Common;
 using Chameleon.Interfaces.SidePanel;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 
-public class UserProfileViewModel
+public partial class UserProfileViewModel
        : SubPageViewModelBase
        , IUserProfileViewModel
 {
-    private readonly IEventAggregator _eventAggregator;
     private readonly IUserAssistantService _userAssistantService;
     private readonly IAuthSession _authSession;
     //TODO: private readonly IFeatureTourNavigator _featureTourNavigator;
@@ -27,65 +27,72 @@ public class UserProfileViewModel
     {
             UserProfileViewTab.Details,
             UserProfileViewTab.Browser,
-            UserProfileViewTab.ContentDiscoverey,
-            UserProfileViewTab.OutReach,
-            UserProfileViewTab.YoutubeUploader,
-            UserProfileViewTab.Publishub
+            //UserProfileViewTab.ContentDiscoverey,
+            //UserProfileViewTab.OutReach,
+            //UserProfileViewTab.YoutubeUploader,
+            //UserProfileViewTab.Publishub
         });
 
-    private const string _titlePage = "Profiles";
     public UserProfileViewModel(
-        IEventAggregator eventAggregator,
         IUserAssistantService userAssistantService,
         IAuthSession authSession,
         IUserProfileService userProfileService
         )
     {
-        _eventAggregator = eventAggregator;
         _userAssistantService = userAssistantService;
         _authSession = authSession;
         //_featureTourNavigator = FeatureTour.GetNavigator();
         _userProfileService = userProfileService;
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<LoginSuccessEvent>()
             .Subscribe(args => OnAuthentication(args.Session));
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<SavedUserProfileEvent>()
             .Subscribe(_ => UpdateBreadcrumbs());
 
         //_featureTourNavigator.ForStep(ElementID.OpenBrowserTab).AttachDoable(
         //           currentStep => Tab = UserProfileViewTab.Browser);
+    } 
+    public override Task InitAsync()
+    {
+        OnAuthentication(_authSession);
+        return base.InitAsync();
+    }
+    public override Task InitAsync(object? param)
+    {
+        UserProfile = param as IUserProfile;
+        return base.InitAsync(param);
     }
 
-  //private BreadcrumbsViewModel _breadcrumbsViewModel;
-  //public BreadcrumbsViewModel BreadcrumbsViewModel
-  //{
-  //    get
-  //    {
-  //        if (_breadcrumbsViewModel == null)
-  //        {
-  //            var root = new BreadcrumbViewModel
-  //            {
-  //                Title = _titlePage,
-  //                IsBold = true,
-  //                HasContinuation = true
-  //            };
-  //
-  //            var profileCrumb = new BreadcrumbViewModel()
-  //            {
-  //                Title = UserProfile?.Title
-  //            };
-  //
-  //            _breadcrumbsViewModel = new BreadcrumbsViewModel();
-  //            _breadcrumbsViewModel.Breadcrumbs.Add(root);
-  //            _breadcrumbsViewModel.Breadcrumbs.Add(profileCrumb);
-  //        }
-  //
-  //        return _breadcrumbsViewModel;
-  //    }
-  //}
+    //private BreadcrumbsViewModel _breadcrumbsViewModel;
+    //public BreadcrumbsViewModel BreadcrumbsViewModel
+    //{
+    //    get
+    //    {
+    //        if (_breadcrumbsViewModel == null)
+    //        {
+    //            var root = new BreadcrumbViewModel
+    //            {
+    //                Title = _titlePage,
+    //                IsBold = true,
+    //                HasContinuation = true
+    //            };
+
+    //            var profileCrumb = new BreadcrumbViewModel()
+    //            {
+    //                Title = UserProfile?.Title
+    //            };
+
+    //            _breadcrumbsViewModel = new BreadcrumbsViewModel();
+    //            _breadcrumbsViewModel.Breadcrumbs.Add(root);
+    //            _breadcrumbsViewModel.Breadcrumbs.Add(profileCrumb);
+    //        }
+
+    //        return _breadcrumbsViewModel;
+    //    }
+    //}
 
     private bool _isTabNavigationEnabled = true;
     public bool IsTabNavigationEnabled
@@ -108,15 +115,17 @@ public class UserProfileViewModel
             {
                 UpdateProfilePermissions(_userProfile.Id);
             }
-            else UpdateTabsVisibility();
+            else
+            {
+                UpdateTabsVisibility();
+            }
         }
     }
 
     private void UpdateBreadcrumbs()
     {
-        //TODO:
-       // var profileCrumb = BreadcrumbsViewModel.Breadcrumbs.LastOrDefault();
-       // profileCrumb.Title = UserProfile?.Title;
+        //var profileCrumb = BreadcrumbsViewModel.Breadcrumbs.LastOrDefault();
+        //profileCrumb.Title = UserProfile?.Title;
     }
 
     private UserProfileViewTab _tab;
@@ -129,7 +138,7 @@ public class UserProfileViewModel
             {
                 SelectedTabIndex = TabIndexes.IndexOf(value);
 
-                _eventAggregator
+                EventAggregator
                     .GetEvent<HideSidePanelEvent>()
                     .Publish();
 
@@ -138,6 +147,9 @@ public class UserProfileViewModel
                    // _featureTourNavigator.IfCurrentStepEquals(ElementID.OpenBrowserTab).GoNext();
                 }
             }
+
+            OnPropertyChanged(nameof(IsChameleonBrowserOpen));
+            OnPropertyChanged(nameof(IsProfileDetailsOpen));
         }
     }
 
@@ -189,15 +201,18 @@ public class UserProfileViewModel
         set => SetProperty(ref _isRssVisible, value);
     }
 
+    public bool IsProfileDetailsOpen => _tab == UserProfileViewTab.Details;
+    public bool IsChameleonBrowserOpen => _tab == UserProfileViewTab.Browser;
+
     private void OnAuthentication(IAuthSession authSession)
     {
         SetTabsVisibility(authSession.Limits);
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<RestrictContentEvent>()
             .Publish(new RestrictContentEventArgs(authSession.Limits, authSession.Permissions));
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<RestrictContentDiscoveryTabsEvent>()
             .Publish(new RestrictContentDiscoveryTabsEventArgs(IsProspectorVisible, IsRssVisible));
     }
@@ -241,8 +256,19 @@ public class UserProfileViewModel
         IsProspectorVisible = _authSession.Limits.ContentDiscoveryLimits.HasProspector
             && (grantedPermissions?.Contains(PermissionNames.Pages_Prospector) ?? true);
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<RestrictContentDiscoveryTabsEvent>()
             .Publish(new RestrictContentDiscoveryTabsEventArgs(IsProspectorVisible, IsRssVisible));
+    }
+
+    [RelayCommand]
+    private void OpenProfileDetails()
+    {
+        Tab = UserProfileViewTab.Details;
+    }
+    [RelayCommand]
+    private void OpenChameleonBrowser()
+    {
+        Tab = UserProfileViewTab.Browser;
     }
 }

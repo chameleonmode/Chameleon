@@ -1,6 +1,6 @@
 ﻿namespace Chameleon.Interfaces;
 
-public interface IPageViewModel
+public interface IPageViewModel : IInnerUserControl
 {
-    Task InvokeAsyncRelayCommand(object param = null);
+   
 }

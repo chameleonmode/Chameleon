@@ -24,7 +24,7 @@ public class ChameleonContentControl : HeaderedContentControl
     AvaloniaProperty.Register<ChameleonContentControl, object>(nameof(Footer));
 
     public static readonly StyledProperty<object> TitleContentProperty =
-AvaloniaProperty.Register<ChameleonContentControl, object>(nameof(TitleContent));
+        AvaloniaProperty.Register<ChameleonContentControl, object>(nameof(TitleContent));
 
     public string? Title
     {

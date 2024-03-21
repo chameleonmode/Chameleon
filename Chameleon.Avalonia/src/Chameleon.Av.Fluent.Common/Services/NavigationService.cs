@@ -5,6 +5,7 @@ using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Ioc;
+using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Settings;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Primitives;
@@ -14,36 +15,44 @@ using System.Configuration;
 
 namespace Chameleon.Av.Fluent.Common.Services;
 
-public class NavigationService
+public class NavigationService : INavigationService
 {
-    private NavigationService()
+    public NavigationService()
     {
-            
+       
     }
-    public static NavigationService Instance { get; } = new NavigationService();
+    public static NavigationService Instance { get; } = ContainerServiceHelper.Resolve<INavigationService>() as NavigationService;
 
-    public Control? PreviousPage { get; set; }
-    public NavigationFactory? NavFactory { get; } = new NavigationFactory();
+    public object? PreviousPage { get; set; }
+    public object? NavFactory { get; } = new NavigationFactory();
 
-    public void SetFrame(Frame f)
+    public void SetFrame(object f)
     {
-        _frame = f;
+        _frame = f as Frame;
     }
 
-    public void SetOverlayHost(Panel p)
+    public void SetOverlayHost(object p)
     {
-        _overlayHost = p;
+        _overlayHost = p as Panel;
     }
 
     public void Navigate(Type t)
     {
         _frame?.Navigate(t);
     }
+    public void NavigateToType(Type t, object? parameter = null)
+    {
+        NavigateToType(t, parameter, null);
+    }
     public void NavigateToType(Type t,object? parameter = null, NavigationTransitionInfo? transitionInfo = null)
     {
         _frame?.NavigateToType(t,  parameter, BuildOptions(transitionInfo));
     }
 
+    public void NavigateFromContext(object dataContext)
+    {
+        NavigateFromContext(dataContext, null);
+    }
     public void NavigateFromContext(object dataContext, NavigationTransitionInfo? transitionInfo = null)
     {
         _frame?.NavigateFromObject(dataContext,BuildOptions(transitionInfo));
@@ -52,7 +61,6 @@ public class NavigationService
     public void ClearOverlay()
     {
         _overlayHost?.Children.Clear();
-
     }
 
     FrameNavigationOptions BuildOptions(NavigationTransitionInfo? transitionInfo = null)
@@ -66,6 +74,26 @@ public class NavigationService
 
     private Frame? _frame;
     private Panel? _overlayHost;
+
+    public Task InitializeAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task NavigateToAsync(string route, IDictionary<string, object> routeParameters = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task NavigateToAsync(Type viewModel)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task PopAsync()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 public class NavigationFactory : INavigationPageFactory

@@ -1,13 +1,12 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Chameleon.Av.Fluent.Common.Pages;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.Settings;
 using System.Globalization;
 using System.Reflection;
 
-namespace Chameleon.Av.Fluent.Common.Controls;
+namespace Chameleon.Av.Fluent.Common.Pages;
 
 public class SubPageViewControl : ChameleonPageBase
 {
@@ -37,6 +36,6 @@ public class SubPageViewControl : ChameleonPageBase
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        
+
     }
 }

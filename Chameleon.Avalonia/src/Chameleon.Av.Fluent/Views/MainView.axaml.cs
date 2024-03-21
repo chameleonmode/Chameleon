@@ -19,6 +19,7 @@ using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dashboard;
+using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Startup;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
@@ -56,15 +57,14 @@ public partial class MainView : UserControl
 
 
 
-        FrameView.NavigationPageFactory = NavigationService.Instance.NavFactory;
-        NavigationService.Instance.SetFrame(FrameView);
+        //FrameView.NavigationPageFactory = NavigationService.Instance.NavFactory;
+        //NavigationService.Instance.SetFrame(FrameView);
 
         // On desktop, the window will call this during the splashscreen
         if (e.Root is AppWindow aw && aw.SplashScreen is MainAppSplashScreen mass)// && mass.SplashScreenContent is MainAppSplashContent mas)
         {
             mass.InitApp += async () =>
             {
-
                 var waited = 0;
                 while (!App.FrameworkInitComplete && waited++ < 5)
                     await Task.Delay(500);
@@ -116,6 +116,7 @@ public partial class MainView : UserControl
             }
 
             NavigationService.Instance.NavigateFromContext(nvi.Tag, info);
+            //(ContainerServiceHelper.Resolve<INavigationService>() as NavigationService).NavigateFromContext(nvi.Tag, info);
         }
     }
 
@@ -287,6 +288,9 @@ public partial class MainView : UserControl
 
     private void InitializeNavigationPages()
     {
+        FrameView.NavigationPageFactory = ContainerServiceHelper.Resolve<INavigationService>().NavFactory as NavigationFactory;
+        ContainerServiceHelper.Resolve<INavigationService>().SetFrame(FrameView);
+
         HomePageModel homePageModel = new()
         {
             NavHeader = "Dashboard", 

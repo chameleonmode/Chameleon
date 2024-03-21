@@ -15,6 +15,7 @@ using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Common.Icons;
 using CommunityToolkit.Mvvm.Input;
+using Chameleon.Infrastructure.UserSettings;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -30,7 +31,9 @@ public partial class UserDefaultSettingsViewModel
         IUserDefaultSettingsService userDefaultsSettingsService,
         IBulkAddPagesPopupViewModel bulkAddPagesPopupView
         )
-    {
+    {        
+        Title = "Default Home Pages";
+
         _userDefaultsSettingsService = userDefaultsSettingsService;
         _bulkAddPagesPopupViewModel = bulkAddPagesPopupView;
 
@@ -39,7 +42,6 @@ public partial class UserDefaultSettingsViewModel
            .Subscribe(_ => OnSelectedChanged());
 
 
-        Title = "Default Home Pages";
     }
     public override Task InitAsync()
     {
@@ -47,10 +49,10 @@ public partial class UserDefaultSettingsViewModel
         return base.InitAsync();
     }
 
-    private const string DialogTitle = "BULK ADD PAGES";
+    
     private const char BulkAddSeparator = ',';
     [RelayCommand]
-    private async void BulkAddPages()
+    private async Task BulkAddPages()
     {
         var result = await _bulkAddPagesPopupViewModel.ShowAsync();
         if (result == IContentDialogResult.Primary)
@@ -76,7 +78,7 @@ public partial class UserDefaultSettingsViewModel
     {
         foreach (var url in urls)
         {
-            CreateNewDefaultSettings();
+            Save();
             ViewModels.Last().DefaultUrl = string.IsNullOrWhiteSpace(url) ? null : url.Trim();
         }
     }
@@ -106,19 +108,26 @@ public partial class UserDefaultSettingsViewModel
     }
 
     [RelayCommand]
-
     private void CreateNewDefaultSettings()
     {
+        EventAggregator
+            .GetEvent<CreateUserDefaultSettingsEvent>()
+            .Publish();
+    }
+
+    [RelayCommand]
+    private void Save()
+    {
         var viewModels = ViewModels.Where(m => m.HasChanged);
-       
+
         foreach (var viewModel in viewModels)
         {
             viewModel.SaveUrlFromViewText();
         }
 
-        EventAggregator
-            .GetEvent<CreateUserDefaultSettingsEvent>()
-            .Publish();
+        //EventAggregator
+        //    .GetEvent<CreateUserDefaultSettingsEvent>()
+        //    .Publish();
     }
 
     private ObservableCollectionView<UserDefaultSettingViewModel> _viewModels;

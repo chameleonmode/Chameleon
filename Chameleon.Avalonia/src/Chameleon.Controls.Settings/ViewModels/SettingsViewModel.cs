@@ -18,7 +18,7 @@ using CommunityToolkit.Mvvm.Input;
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
 public partial class SettingsViewModel
-       : ObservableObjectBase
+       : PageViewModelBase
        , ISettingsViewModel
 {
     private readonly IApplicationUser _applicationUser;
@@ -45,6 +45,12 @@ public partial class SettingsViewModel
           .Subscribe(args => InitializeTabControl());
 
         Title = "Settings";
+    }
+
+    public override Task InitAsync()
+    {
+        InitializeTabControl();
+        return base.InitAsync();
     }
 
     [RelayCommand]
@@ -81,7 +87,7 @@ public partial class SettingsViewModel
                 break;
         }
 
-        NavigationService.Instance.NavigateToType(type,param);
+        NavigationService.NavigateToType(type,param);
     }
 
     private void InitializeTabControl()

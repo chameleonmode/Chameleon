@@ -46,6 +46,7 @@ using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Views;
 using System.ComponentModel;
 using Avalonia.Svg.Skia;
+using Chameleon.Interfaces.Services;
 
 namespace Chameleon.Av.Fluent;
      public class tempinits : IDialogWindowsService  , IPopupDialogService
@@ -150,6 +151,7 @@ public partial class App : PrismApplication
 
         var cr = Container.Resolve<IHaveContainerRegistry>();
         cr.RegisterSingleton<IHaveContainerProvider, HasContainerProviderService>(true);
+        cr.RegisterSingleton<INavigationService, NavigationService>();
         //Container.Resolve<IHaveContainerProvider>();
 
         cr.RegisterSingleton<Prism.Events.IEventAggregator, Prism.Events.EventAggregator>();

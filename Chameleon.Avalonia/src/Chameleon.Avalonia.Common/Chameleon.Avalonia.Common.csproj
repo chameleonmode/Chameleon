@@ -138,6 +138,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controls\" />
     <Folder Include="Converters\ValueConverters\Visibility\" />
   </ItemGroup>
 

@@ -8,7 +8,7 @@ using Chameleon.Interfaces.App.UserSettings.View;
 
 namespace Chameleon.Avalonia.Controls.Settings;
 
-public partial class PhoneVerificationView : SubPageViewControl,
+public partial class PhoneVerificationView : AutoViewModelLocatorControl,
     IPhoneVerificationView
 {
     public PhoneVerificationView()

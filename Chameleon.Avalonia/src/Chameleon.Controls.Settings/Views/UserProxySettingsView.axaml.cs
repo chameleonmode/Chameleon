@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
-using Chameleon.Av.Fluent.Common.Controls;
+using Chameleon.Av.Fluent.Common.Pages;
 using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Avalonia.Controls.Settings.ViewModels;
 using Chameleon.Common.Helpers;

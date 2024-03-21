@@ -7,7 +7,9 @@ using Avalonia.Media;
 using Avalonia.Rendering.Composition;
 using Avalonia.Styling;
 using Chameleon.Av.Fluent.Common.Services;
+using Chameleon.Common.Helpers;
 using Chameleon.Interfaces;
+using Chameleon.Interfaces.Services;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
@@ -193,14 +195,14 @@ public class ChameleonPageBase : UserControl
         //    // controls list pages
             var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
             svc.PrepareToAnimate("BackAnimation", (Control)_previewImageHost.Parent);
-            NavigationService.Instance.PreviousPage = this;
+        ContainerServiceHelper.Resolve<INavigationService>().PreviousPage = this;
         //}
     }
 
     private async void FrameNavigatedTo(object sender, NavigationEventArgs e)
     {
         if (DataContext is IPageViewModel pageViewModel)
-            await pageViewModel.InvokeAsyncRelayCommand();
+            await pageViewModel.InvokeAsyncRelayCommand(e.Parameter);
 
             var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
         var animation = svc.GetAnimation("ForwardAnimation");

@@ -20,8 +20,8 @@
 				Background="{DynamicResource LayerFillColorDefaultBrush}">
 			<Grid RowDefinitions="*,Auto">
 				<ctrls:ChameleonContentControl Title="Proxies list">
-					<ctrls:ChameleonContentControl.Header>
-						<Grid Margin="12">
+					<ctrls:ChameleonContentControl.TitleContent>
+						<Grid>
 							<ui:CommandBar DefaultLabelPosition="Right">
 								<ui:CommandBar.PrimaryCommands>
 									<ui:CommandBarElementContainer>
@@ -42,7 +42,7 @@
 								</ui:CommandBar.PrimaryCommands>
 							</ui:CommandBar>
 						</Grid>
-					</ctrls:ChameleonContentControl.Header>
+					</ctrls:ChameleonContentControl.TitleContent>
 					
 					<ctrls:ChameleonContentControl.Options>
 						<StackPanel Spacing="12"

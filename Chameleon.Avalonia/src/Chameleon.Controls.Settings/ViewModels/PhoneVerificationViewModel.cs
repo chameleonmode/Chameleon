@@ -1,7 +1,7 @@
 ﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.Settings;
 using Chameleon.Interfaces.Settings;
-using Chameleon.Prism.Events;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
@@ -13,6 +13,9 @@ public partial class PhoneVerificationViewModel
     private IUserSetting _userSetting;
     private readonly IUserSettingsService _userSettingsService;
 
+    [ObservableProperty]
+    private string? _apiKey;
+
     public PhoneVerificationViewModel(
         IUserSettingsService userSettingsService
         )
@@ -21,16 +24,17 @@ public partial class PhoneVerificationViewModel
 
         _userSettingsService = userSettingsService;
     }
+     
     public override Task InitAsync()
     {
-        if (!base.Loaded)
+        //if (!base.Loaded)
             InitializeApiKey();
         return base.InitAsync();
     }
     private void InitializeApiKey()
     {
         _userSetting = _userSettingsService.Get();
-        _apiKey = _userSetting.SmsPvaApiKey;
+        ApiKey = _userSetting.SmsPvaApiKey;
     }
 
     [RelayCommand]
@@ -39,18 +43,12 @@ public partial class PhoneVerificationViewModel
         _userSettingsService.Save(_userSetting);
         IsChangeApiKey = false;
     }
-
-    private string _apiKey;
-    public string ApiKey
+    partial void OnApiKeyChanged(string? value)
     {
-        get => _apiKey;
-        set
+        if (ApiKey != value)
         {
-            if (SetProperty(ref _apiKey, value))
-            {
-                IsChangeApiKey = true;
-                _userSetting.SmsPvaApiKey = _apiKey;
-            }
+            IsChangeApiKey=true;
+            _userSetting.SmsPvaApiKey = value;
         }
     }
 

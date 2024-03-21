@@ -85,7 +85,6 @@ public partial class UserDefaultSettingViewModel : SubPageViewModelBase
     }
 
     [RelayCommand]
-
     public void DeleteDefaultSettings()
     {
         _eventAggregator

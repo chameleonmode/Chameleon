@@ -284,8 +284,8 @@
 <!--Style="{StaticResource OutlinedButton}"-->
 					<Button Grid.Row="0"
                             HorizontalAlignment="Stretch"
-                            Command="{Binding OpenDetailsCommand}"
-                            
+                            Command="{Binding OpenUserProfileCommand}"
+                            CommandParameter=""
                             Padding="0"
                             BorderThickness="0"
                             Width="130">

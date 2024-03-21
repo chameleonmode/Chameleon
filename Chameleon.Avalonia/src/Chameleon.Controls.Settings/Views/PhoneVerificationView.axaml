@@ -5,49 +5,26 @@
 			 xmlns:commonCntrl="using:Chameleon.Avalonia.Controlls.Common"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Chameleon.Avalonia.Controls.Settings.PhoneVerificationView">
-	<DockPanel>
-		<Border BorderThickness="0"
-				BorderBrush="{StaticResource DividerLine}"
-				Background="{StaticResource BackGroundGreyColor}">
-			<Grid Margin="24 0 24  27">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-				</Grid.RowDefinitions>
-				<TextBlock Grid.Row="0"
-					   Margin="1 28 0 4"
-					   FontSize="16"
-					   FontWeight="Bold"
-					   Text="Phone verification API"/>
-				<TextBlock Grid.Row="1"
-					   Margin="1 0 0 25"
-					   Foreground="{StaticResource SecondaryAccentBrush}"
-					   FontSize="12"
-					   Text="Enter your phone API Key"/>
-				<Border Grid.Row="2"
-						BorderThickness="1"
-						BorderBrush="{StaticResource DividerLine}"
-						Background="White"
-						Padding="24 19 24 24">
-					<StackPanel HorizontalAlignment="Left">
-						<!--materialDesign:HintAssist.Hint="API key"-->
-						<!--Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"-->
-						<TextBox Width="425"
-								 Margin="0 0 0 24"
-								 Text="{Binding ApiKey}"
-								 BorderBrush="{StaticResource BorderOutlineButton}"/>
-						<Button HorizontalAlignment="Left"
-								Content="Save"
-								Command="{Binding SaveCommand}"
-								Height="46"
-								Width="143"
-								Background="{StaticResource ButtonDarkBrush}"
-								Foreground="White"
-								FontSize="14"/>
-					</StackPanel>
-				</Border>
-			</Grid>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<TextBlock Grid.Row="1"
+				   Margin="0 0 0 10"
+			   Text="Enter your phone API Key"/>
+		<Border Grid.Row="2">
+			<StackPanel Orientation="Horizontal">
+				<!--materialDesign:HintAssist.Hint="API key"-->
+				<!--Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"-->
+				<TextBox Width="425"
+						 Text="{Binding ApiKey}"/>
+				<Button HorizontalAlignment="Left"
+						Margin="10 0 0 0"
+						Content="Save"
+						Command="{Binding SaveCommand}" />
+			</StackPanel>
 		</Border>
-	</DockPanel>
+	</Grid>
 </UserControl>

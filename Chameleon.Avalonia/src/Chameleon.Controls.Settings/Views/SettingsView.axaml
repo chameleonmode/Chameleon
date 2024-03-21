@@ -5,7 +5,8 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.ViewModels"
              xmlns:contrls="using:Chameleon.Av.Fluent.Common.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="using:Chameleon.Avalonia.Controls.Settings"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
 			 x:DataType="vm:SettingsViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.Settings.SettingsView">	
@@ -24,7 +25,17 @@
 					 IsClickEnabled="True"
 					 ActionIconSource="{StaticResource GoIcon}"
 					 Command="{Binding CmdNavigateToChildCommand}"
-					 CommandParameter="DEFAULTS"/>
+					 CommandParameter="DEFAULTS">
+					
+				</ui:SettingsExpander>
+				<!--<ui:SettingsExpander Header="Default"
+					 IconSource="{StaticResource DefaultSettingsPageIcon}"
+					 Description="Default home pages"
+					 IsExpanded="True">
+					<ui:SettingsExpanderItem>
+						<local:UserDefaultSettingsView />
+					</ui:SettingsExpanderItem>
+					</ui:SettingsExpander>-->
 				<ui:SettingsExpander Header="PROXY"
 					 IconSource="{StaticResource Proxy}"
 					 Description="Proxy settings"
@@ -39,13 +50,21 @@
 					 ActionIconSource="{StaticResource GoIcon}"
 					 Command="{Binding CmdNavigateToChildCommand}"
 					 CommandParameter="PROXYCREDIT"/>
-				<ui:SettingsExpander Header="PHONE VERIFICATION"
+				<!--<ui:SettingsExpander Header="PHONE VERIFICATION"
 					 IconSource="{StaticResource CellPhone}"
 					 Description="Phone verification settings"
-					 IsClickEnabled="True"
 					 ActionIconSource="{StaticResource GoIcon}"
+					 IsClickEnabled="True"
 					 Command="{Binding CmdNavigateToChildCommand}"
-					 CommandParameter="PHONEVERIFICATION"/>
+					 CommandParameter="PHONEVERIFICATION"/>-->
+				<ui:SettingsExpander Header="PHONE VERIFICATION"
+					 Description="Phone verification settings"
+					 IconSource="{StaticResource CellPhone}"
+					 ActionIconSource="{StaticResource GoIcon}">
+					<ui:SettingsExpanderItem>
+						<local:PhoneVerificationView />
+					</ui:SettingsExpanderItem>
+				</ui:SettingsExpander>
 				<ui:SettingsExpander Header="USERS"
 					 IconSource="{StaticResource User}"
 					 Description="Users settings"

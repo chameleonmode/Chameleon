@@ -8,4 +8,13 @@ public interface INavigationService
     Task NavigateToAsync(Type viewModel);
 
     Task PopAsync();
+
+    object? NavFactory { get; }
+    object? PreviousPage { get; set; }
+    void SetFrame(object f); //TODO: change to actual
+    void SetOverlayHost(object p); //TODO: change to actual
+    void Navigate(Type t);
+    void NavigateToType(Type t, object? parameter = null);
+    void NavigateFromContext(object dataContext);
+    void ClearOverlay();
 }

@@ -44,7 +44,6 @@
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.OutReachTemplate\Chameleon.Avalonia.Controls.OutReachTemplate.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.RssFeed\Chameleon.Avalonia.Controls.RssFeed.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Controls.Sidebar\Chameleon.Avalonia.Controls.Sidebar.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UpgradePlan\Chameleon.Avalonia.Controls.UpgradePlan.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfilesView\Chameleon.Avalonia.Controls.UserProfilesView.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj" />

@@ -14,7 +14,7 @@ namespace Chameleon.Application.Events
         : IOpenBrowserEventHandler
     {
         private readonly IMainWindow _mainWindow;
-        private readonly IUserProfileView _userProfileView;
+        //TODO: private readonly IUserProfileView _userProfileView;
         private readonly IEventAggregator _eventAggregator;
         private readonly IOutReachRssView _outReachRssView;
         private readonly IDialogWindowsService _dialogWindowsService;
@@ -22,14 +22,14 @@ namespace Chameleon.Application.Events
 
         public OpenBrowserEventHandler(
             IMainWindow mainWindow,
-            IUserProfileView userProfileView,
+            //IUserProfileView userProfileView,
             IDialogWindowsService dialogWindowsService,
             IEventAggregator eventAggregator,
             IRssFeedView rssFeedView
             )
         {
             _mainWindow = mainWindow;
-            _userProfileView = userProfileView;
+            //_userProfileView = userProfileView;
             _eventAggregator = eventAggregator;
             _dialogWindowsService = dialogWindowsService;
             _rssFeedView = rssFeedView;
@@ -64,9 +64,9 @@ namespace Chameleon.Application.Events
 
         private void OnOpenUserBrowserNewTab(WebBrowserEventArgs args)
         {
-            _userProfileView.SetUserProfile(args.UserProfile, UserProfileViewTab.Browser);
-            _userProfileView.OpenWebBrowserNewTab(args.Url.ToString());
-            _mainWindow.SetContent(_userProfileView, args.UserProfile.Title);
+            //_userProfileView.SetUserProfile(args.UserProfile, UserProfileViewTab.Browser);
+            //_userProfileView.OpenWebBrowserNewTab(args.Url.ToString());
+            //_mainWindow.SetContent(_userProfileView, args.UserProfile.Title);
         }
 
         private void OnOpenUserBrowser(WebBrowserEventArgs args)
@@ -81,9 +81,9 @@ namespace Chameleon.Application.Events
 
         private void OnOpenUserBrowser(IUserProfile profile, Uri url)
         {
-            _userProfileView.SetUserProfile(profile, UserProfileViewTab.Browser);
-            //_userProfileView.WebBrowser.Load(url.ToString());
-            _mainWindow.SetContent(_userProfileView, profile.Title);
+            //_userProfileView.SetUserProfile(profile, UserProfileViewTab.Browser);
+            ////_userProfileView.WebBrowser.Load(url.ToString());
+            //_mainWindow.SetContent(_userProfileView, profile.Title);
         }
     }
 }

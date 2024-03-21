@@ -5,18 +5,18 @@ using Chameleon.Interfaces.WebBrowser;
 
 namespace Chameleon.Interfaces.UserProfiles
 {
-    public interface IUserProfileView 
+    public interface IUserProfileView
         : ISingletonDependency
         , IUserProfileGetter
         , IViewContentContext
     {
         UserProfileViewTab Tab { get; }
         IWebBrowserView WebBrowserView { get; }
-        //IWebBrowserInstance WebBrowser { get; }
+        //TODO: IWebBrowserInstance WebBrowser { get; }
         void OpenWebBrowserNewTab(string url);
 
         void SetUserProfile(
-            IUserProfile userProfile, 
+            IUserProfile userProfile,
             UserProfileViewTab tab,
             OutReachViewTab outReachTab = OutReachViewTab.Rss);
     }

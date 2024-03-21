@@ -18,11 +18,14 @@
 				<TextBox Grid.Column="1"
 						  Margin="{StaticResource ChameleonInnerControlMargin}"
 						 Text="{Binding DefaultUrl}"  />
-				<Button Grid.Column="2"
+				<Button Theme="{DynamicResource TransparentButton}" 
+						Grid.Column="2"
 						 Margin="{StaticResource ChameleonInnerControlMargin}"
 						Content="Delete"
 						 Classes="accent"
-						Command="{Binding DeleteCommand}"/>
+						Command="{Binding DeleteDefaultSettingsCommand}">
+					<ui:SymbolIcon Symbol="Delete" />
+				</Button>
 			</Grid>
 		</DataTemplate>
 	</UserControl.Resources>
@@ -30,20 +33,36 @@
 			Background="{DynamicResource LayerFillColorDefaultBrush}">
 		<StackPanel Spacing="8">
 			<ctrls:ChameleonContentControl Title="Saved Pages">
-				<Grid RowDefinitions="Auto,*">
-					<StackPanel Spacing="8"
-								HorizontalAlignment="Right"
-								Orientation="Horizontal"
-								Margin="0 12 12 12">
-						<Button Content="Add pages"
-								Command="{Binding BulkAddPagesCommand}"/>
-					</StackPanel>
+				<ctrls:ChameleonContentControl.TitleContent>
+					<ui:CommandBar DefaultLabelPosition="Right">
+						<ui:CommandBar.PrimaryCommands>
+							<ui:CommandBarButton IconSource="Save" 
+												 Label="Save"
+												 Command="{Binding SaveCommand}"/>
+							<ui:CommandBarButton IconSource="Add"
+												 Label="New"
+												 Command="{Binding CreateNewDefaultSettingsCommand}"/>
+							<ui:CommandBarButton IconSource="Page" 
+												 Label="Add pages"
+												 Command="{Binding BulkAddPagesCommand}"/>
+						</ui:CommandBar.PrimaryCommands>
+					</ui:CommandBar>
+				</ctrls:ChameleonContentControl.TitleContent>
+				<ctrls:ChameleonContentControl.Content>
+					<Grid RowDefinitions="Auto,*">
+						<StackPanel Spacing="8"
+									HorizontalAlignment="Right"
+									Orientation="Horizontal"
+									Margin="0 12 12 12">
 
-					<ListBox Grid.Row="1"
-							 ItemsSource="{Binding ViewModels}"
-							  ItemTemplate="{StaticResource SettingsListItemTemplate}">
-					</ListBox>
-				</Grid>
+						</StackPanel>
+
+						<ListBox Grid.Row="1"
+								 ItemsSource="{Binding ViewModels}"
+								 ItemTemplate="{StaticResource SettingsListItemTemplate}">
+						</ListBox>
+					</Grid>
+				</ctrls:ChameleonContentControl.Content>
 			</ctrls:ChameleonContentControl>
 
 			<!--IsVisible="{Binding HasSelectedItems}"-->
