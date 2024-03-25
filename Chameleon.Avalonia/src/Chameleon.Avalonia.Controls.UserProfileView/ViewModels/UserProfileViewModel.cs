@@ -44,9 +44,9 @@ public partial class UserProfileViewModel
         //_featureTourNavigator = FeatureTour.GetNavigator();
         _userProfileService = userProfileService;
 
-        EventAggregator
-            .GetEvent<LoginSuccessEvent>()
-            .Subscribe(args => OnAuthentication(args.Session));
+        //EventAggregator
+        //    .GetEvent<LoginSuccessEvent>()
+        //    .Subscribe(args => OnAuthentication(args.Session));
 
         EventAggregator
             .GetEvent<SavedUserProfileEvent>()
@@ -55,15 +55,24 @@ public partial class UserProfileViewModel
         //_featureTourNavigator.ForStep(ElementID.OpenBrowserTab).AttachDoable(
         //           currentStep => Tab = UserProfileViewTab.Browser);
     } 
-    public override Task InitAsync()
+    //public override Task InitAsync(object? param)
+    //{
+    //    OnAuthentication(_authSession);
+    //    return base.InitAsync(param);
+    //}
+    public override async Task InitAsync(object? param)
     {
-        OnAuthentication(_authSession);
-        return base.InitAsync();
+        await base.InitAsync(param);
+
+        if (!Loaded)
+            OnAuthentication(_authSession);
     }
-    public override Task InitAsync(object? param)
+
+    public override async Task OnNavigatedToAsync(object? param)
     {
+        await base.OnNavigatedToAsync(param);
+
         UserProfile = param as IUserProfile;
-        return base.InitAsync(param);
     }
 
     //private BreadcrumbsViewModel _breadcrumbsViewModel;

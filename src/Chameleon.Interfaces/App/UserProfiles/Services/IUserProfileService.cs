@@ -8,6 +8,7 @@ namespace Chameleon.Interfaces.UserProfiles
         : ISingletonDependency
     {
         IUserProfiles GetAll();
+        Task<IUserProfiles> GetAllAsync();
         List<IUserProfile> GetAllByUserId(int id);
         IUserProfile Get(int Id, bool ignoreCache = false);
         IUserProfile Create(int? folderId);

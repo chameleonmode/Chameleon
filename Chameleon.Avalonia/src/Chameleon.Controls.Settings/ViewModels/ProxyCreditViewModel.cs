@@ -38,9 +38,12 @@ public partial class ProxyCreditViewModel
         _toastNotificationService = toastNotificationService;
     }
 
-    public override async Task InitAsync()
+    public override async Task InitAsync(object? param)
     {       
-        await base.InitAsync();  
+        await base.InitAsync(param);
+
+        if (Loaded)
+            return;
 
         await InitializeBalanceAsync();
         await InitializeCountriesAsync();

@@ -1,4 +1,5 @@
-﻿using Chameleon.Domain.Entities;
+﻿using AutoMapper;
+using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.UserProfileFolders;
@@ -6,6 +7,7 @@ using Chameleon.Interfaces.UserProfiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Chameleon.Infrastructure.UserProfileFolders
 {
@@ -42,6 +44,14 @@ namespace Chameleon.Infrastructure.UserProfileFolders
         public IUserProfileFolders GetAll()
         {
             return Folders;
+        }
+        public async Task<IUserProfileFolders> GetAllAsync()
+        {
+            if (!_folders.IsValueCreated)
+            {
+                return await Task.Run(() => GetAll());
+            }
+            return GetAll();
         }
 
         public void Sync()

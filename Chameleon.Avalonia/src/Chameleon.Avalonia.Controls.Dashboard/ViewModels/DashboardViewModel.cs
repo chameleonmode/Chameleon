@@ -13,6 +13,7 @@ using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 
@@ -21,75 +22,152 @@ namespace Chameleon.Avalonia.Controls.Dashboard.ViewModels;
 public partial class DashboardViewModel
        : PageViewModelBase
        , IDashboardViewModel
-{
-    private readonly IAuthSession _authSession;
-    private readonly IEventAggregator _eventAggregator;
+{                
+    private const string _pageTitle = "Dashboard";
+
+    //private readonly IAuthSession _authSession;
+    //private readonly IEventAggregator EventAggregator;
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _applicationUser;
     private readonly IUserAssistantService _userAssistantService;
 
-    private const string _pageTitle = "Dashboard";
 
     private ObservableCollection<IUserProfile, UserProfileViewModel> _mapping;
     private ObservableCollection<IUserProfileFolder, FolderViewModel> _folderMapping;
 
+    [ObservableProperty]
+    private bool isSyncChangesBtnVisible;
+    //public bool IsSyncChangesBtnVisible => _applicationUser.IsAssistant || HasAssistants();
+    public DashboardViewModel(
+        IUserProfileService userProfileService,
+        IUserProfileFolderService userProfileFolderService,
+        IShareUserProfilePopupService shareUserProfilePopupService,
+        IApplicationUser applicationUser,
+        IUserAssistantService userAssistantService)
+    {
+        Title = _pageTitle;
 
-  public DashboardViewModel(
-      IAuthSession authSession,
-      IEventAggregator eventAggregator,
-      IUserProfileService userProfileService,
-      IUserProfileFolderService userProfileFolderService,
-      IShareUserProfilePopupService shareUserProfilePopupService,
-      IApplicationUser applicationUser,
-      IUserAssistantService userAssistantService
-      )
-  {
-      _authSession = authSession;
-      _eventAggregator = eventAggregator;
-      _userProfileService = userProfileService;
-      _userProfileFolderService = userProfileFolderService;
-      _shareUserProfilePopupService = shareUserProfilePopupService;
-      _applicationUser = applicationUser;
-      _userAssistantService = userAssistantService;
-  
-      _eventAggregator
-          .GetEvent<LoginSuccessEvent>()
-          .SubscribeOnce(OnAuthenticated);
-  
-      _eventAggregator
-         .GetEvent<DeleteUserProfileEvent>()
-         .Subscribe(OnUpdateViewModel);
-  
-      _eventAggregator
-          .GetEvent<FavoriteUserProfileEvent>()
-          .Subscribe(OnUpdateViewModel);
-  
-      _eventAggregator
-          .GetEvent<UnfavoriteUserProfileEvent>()
-          .Subscribe(OnUpdateViewModel);
-  
-      _eventAggregator
-          .GetEvent<UpdateFavoriteFolderEvent>()
-          .Subscribe(OnUpdateFavoriteFolders);
-  
-      _eventAggregator
-          .GetEvent<SavedUserProfileEvent>()
-          .Subscribe(OnUpdateViewModel);
-  
-      _eventAggregator
-          .GetEvent<SavedUserAssistantEvent>()
-          .Subscribe(args => SyncBtnVisibilityChange());
-  
-      _eventAggregator
-          .GetEvent<DeletedUserAssistantEvent>()
-          .Subscribe(args => SyncBtnVisibilityChange());
-  
-      _eventAggregator
-          .GetEvent<UpdateStaleDataEvent>()
-          .Subscribe(LoadAsync);
-  }
+        _userProfileService = userProfileService;
+        _userProfileFolderService = userProfileFolderService;
+        _shareUserProfilePopupService = shareUserProfilePopupService;
+        _applicationUser = applicationUser;
+        _userAssistantService = userAssistantService;
+
+        //EventAggregator
+        //    .GetEvent<LoginSuccessEvent>()
+        //    .SubscribeOnce(OnAuthenticated);
+
+        EventAggregator
+           .GetEvent<DeleteUserProfileEvent>()
+           .Subscribe(OnUpdateViewModel);
+
+        EventAggregator
+            .GetEvent<FavoriteUserProfileEvent>()
+            .Subscribe(OnUpdateViewModel);
+
+        EventAggregator
+            .GetEvent<UnfavoriteUserProfileEvent>()
+            .Subscribe(OnUpdateViewModel);
+
+        EventAggregator
+            .GetEvent<UpdateFavoriteFolderEvent>()
+            .Subscribe(OnUpdateFavoriteFolders);
+
+        EventAggregator
+            .GetEvent<SavedUserProfileEvent>()
+            .Subscribe(OnUpdateViewModel);
+
+        EventAggregator
+            .GetEvent<SavedUserAssistantEvent>()
+            .Subscribe(async(args) => await CheckHasAssistantsAsync());
+
+        EventAggregator
+            .GetEvent<DeletedUserAssistantEvent>()
+            .Subscribe(async (args) => await CheckHasAssistantsAsync());
+
+        EventAggregator
+            .GetEvent<UpdateStaleDataEvent>()
+            .Subscribe(LoadAsync);
+
+    }
+    public override async Task InitAsync(object? param)
+    {
+        if(Loaded)
+            return; 
+
+        await base.InitAsync(param);
+
+        IsWaiting = true;
+
+        await LoadUserProfileViewModels();
+        await LoadUserProfileFolderViewModels();
+        await CheckHasAssistantsAsync();
+
+        IsWaiting = false;
+    }
+    //public void OnAuthenticated()
+    //{
+    //    IsWaiting = true;
+
+    //    DispatcherService.InvokeOnUiThreadAsync(
+    //        () =>
+    //        {
+    //            LoadAsync();
+    //            SyncBtnVisibilityChange();
+    //        },
+    //        _ => IsWaiting = false
+    //        );
+    //}
+    private void LoadAsync()
+    {
+        //LoadUserProfileViewModels();
+        //LoadUserProfileFolderViewModels();
+    }
+
+    private async Task LoadUserProfileViewModels()
+    {
+        ViewModels?.Clear();
+
+        var userProfiles = await _userProfileService.GetAllAsync();
+
+        _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
+            userProfiles, profile => new UserProfileViewModel(
+                    _userProfileService,
+                    profile,
+                    EventAggregator,
+                    _shareUserProfilePopupService,
+                    _applicationUser,
+                    false
+                )
+            );
+
+        OnPropertyChanged(nameof(ViewModels));
+    }
+
+    private async Task LoadUserProfileFolderViewModels()
+    {
+        var ascending = FolderViewModels?.Ascending ?? true;
+        FolderViewModels?.Clear();
+
+        var folders = await _userProfileFolderService.GetAllAsync();
+
+        _folderMapping = new ObservableCollection<IUserProfileFolder, FolderViewModel>(
+            folders, folder => new FolderViewModel(folder, _userProfileService, _userProfileFolderService));
+
+        if (FolderViewModels != null)
+        {
+            FolderViewModels.Ascending = ascending;
+        }
+
+        OnPropertyChanged(nameof(FolderViewModels));
+    }
+
+    private async void OnUpdateFavoriteFolders()
+    {
+        await LoadUserProfileFolderViewModels();
+    }
 
     private void OnUpdateViewModel(UserProfileEventArgs args)
     {
@@ -101,20 +179,6 @@ public partial class DashboardViewModel
     {
         get => _isWaiting;
         set => SetProperty(ref _isWaiting, value);
-    }
-
-    public void OnAuthenticated()
-    {
-        IsWaiting = true;
-
-        DispatcherService.InvokeOnUiThreadAsync(
-            () =>
-            {
-                LoadAsync();
-                SyncBtnVisibilityChange();
-            },
-            _ => IsWaiting = false
-            );
     }
 
     private ObservableCollectionView<UserProfileViewModel> _viewModels;
@@ -266,71 +330,22 @@ public partial class DashboardViewModel
 
     public bool NoSearchResultsInFavorite => string.IsNullOrEmpty(SearchText);
 
-    private void LoadAsync()
-    {
-        LoadUserProfileViewModels();
-        LoadUserProfileFolderViewModels();
-    }
-
-    private void LoadUserProfileViewModels()
-    {
-        ViewModels?.Clear();
-
-        var userProfiles = _userProfileService.GetAll();
-
-        _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
-            userProfiles, profile => new UserProfileViewModel(
-                    _userProfileService,
-                    profile,
-                    _eventAggregator,
-                    _shareUserProfilePopupService,
-                    _applicationUser,
-                    false
-                )
-            );
-
-        OnPropertyChanged(nameof(ViewModels));
-    }
-
-    private void LoadUserProfileFolderViewModels()
-    {
-        var ascending = FolderViewModels?.Ascending ?? true;
-        FolderViewModels?.Clear();
-
-        var folders = _userProfileFolderService.GetAll();
-
-        _folderMapping = new ObservableCollection<IUserProfileFolder, FolderViewModel>(
-            folders, folder => new FolderViewModel(folder, _eventAggregator, _userProfileService, _userProfileFolderService));
-
-        if (FolderViewModels != null)
-        {
-            FolderViewModels.Ascending = ascending;
-        }
-
-        OnPropertyChanged(nameof(FolderViewModels));
-    }
-
-    private void OnUpdateFavoriteFolders()
-    {
-        LoadUserProfileFolderViewModels();
-    }
-
     [RelayCommand]
     private void SyncChanges()
     {
-        _eventAggregator
+        EventAggregator
             .GetEvent<SyncChangesEvent>()
             .Publish();
     }
 
-    private void SyncBtnVisibilityChange()
-    {
-        OnPropertyChanged(nameof(IsSyncChangesBtnVisible));
-    }
+    //private void SyncBtnVisibilityChange()
+    //{
+    //    OnPropertyChanged(nameof(IsSyncChangesBtnVisible));
+    //}
 
-    private bool HasAssistants()
+    private async Task CheckHasAssistantsAsync()
     {
-        return _applicationUser.IsAuthenticated && _userAssistantService.Get().Count > 0;
+        var assists = await _userAssistantService.GetAsync();
+        IsSyncChangesBtnVisible = _applicationUser.IsAuthenticated && assists?.Count > 0;
     }
-    public bool IsSyncChangesBtnVisible => _applicationUser.IsAssistant || HasAssistants();
 }

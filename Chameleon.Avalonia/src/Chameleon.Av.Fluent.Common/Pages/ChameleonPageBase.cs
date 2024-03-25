@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Rendering.Composition;
 using Avalonia.Styling;
+using Chameleon.Av.Fluent.Common.Controls;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces;
@@ -18,7 +19,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace Chameleon.Av.Fluent.Common.Pages;
 
-public class ChameleonPageBase : UserControl
+public class ChameleonPageBase : AutoViewModelLocatorControl
 {
     private CancellationTokenSource? _cts;
     private bool _isSmallWidth2;
@@ -119,19 +120,19 @@ public class ChameleonPageBase : UserControl
 
         bool isSmallWidth2 = sz < 580;
 
-        //PseudoClasses.Set(":smallWidth", sz < 710);
-        //PseudoClasses.Set(":smallWidth2", isSmallWidth2);
+        PseudoClasses.Set(":smallWidth", sz < 710);
+        PseudoClasses.Set(":smallWidth2", isSmallWidth2);
 
-        //if (isSmallWidth2 && !_isSmallWidth2)
-        //{
-        //    AnimateOptions(true);
-        //    _isSmallWidth2 = true;
-        //}
-        //else if (!isSmallWidth2 && _isSmallWidth2)
-        //{
-        //    AnimateOptions(false);
-        //    _isSmallWidth2 = false;
-        //}
+        if (isSmallWidth2 && !_isSmallWidth2)
+        {
+            AnimateOptions(true);
+            _isSmallWidth2 = true;
+        }
+        else if (!isSmallWidth2 && _isSmallWidth2)
+        {
+            AnimateOptions(false);
+            _isSmallWidth2 = false;
+        }
     }
     private async void AnimateOptions(bool toSmall)
     {
@@ -201,10 +202,10 @@ public class ChameleonPageBase : UserControl
 
     private async void FrameNavigatedTo(object sender, NavigationEventArgs e)
     {
-        if (DataContext is IPageViewModel pageViewModel)
-            await pageViewModel.InvokeAsyncRelayCommand(e.Parameter);
+        if (DataContext is ISubPageViewModel pageViewModel)
+            await pageViewModel.OnNavigatedToAsync(e.Parameter);
 
-            var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
+        var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
         var animation = svc.GetAnimation("ForwardAnimation");
 
         if (animation != null)
@@ -219,7 +220,7 @@ public class ChameleonPageBase : UserControl
             // PreviewImageHost is inside a Viewbox which can really mess with the Composition 
             // animation - use the viewbox directly for the animation to ensure it works correctly
             animation.TryStart((Control)_previewImageHost.Parent, coordinated);
-            
+
         }
     }
 }

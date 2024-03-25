@@ -52,9 +52,9 @@ public partial class OutReachTemplateViewModel
 
         InitItemModel(template);
     }
-    public override async Task InitAsync()
+    public override async Task InitAsync(object? param)
     {
-        await base.InitAsync();
+        await base.InitAsync(param);
 
         await OnInitializeViewModelsAsync();
     }

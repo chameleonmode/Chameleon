@@ -47,10 +47,11 @@ public partial class SettingsViewModel
         Title = "Settings";
     }
 
-    public override Task InitAsync()
+    public override async Task InitAsync(object? param)
     {
+        await base.InitAsync(param);
+
         InitializeTabControl();
-        return base.InitAsync();
     }
 
     [RelayCommand]

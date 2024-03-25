@@ -2,6 +2,7 @@
 using Chameleon.Interfaces.Assistants;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Chameleon.Infrastructure.Users
 {
@@ -26,6 +27,11 @@ namespace Chameleon.Infrastructure.Users
         public ICollection<IUserAssistant> Get()
         {
             return _userAssistantRepository.GetAll();
+        }
+
+        public Task<ICollection<IUserAssistant>> GetAsync()
+        {
+            return Task.Run( Get);
         }
 
         public void Save(IUserAssistant userAssistant)

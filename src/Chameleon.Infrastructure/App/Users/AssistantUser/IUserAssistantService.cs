@@ -2,6 +2,7 @@
 using Chameleon.Interfaces.Assistants;
 using Chameleon.Interfaces.Ioc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Chameleon.Infrastructure.Users
 {
@@ -9,6 +10,7 @@ namespace Chameleon.Infrastructure.Users
         : ISingletonDependency
     {
         ICollection<IUserAssistant> Get();
+        Task<ICollection<IUserAssistant>> GetAsync();
         void Save(IUserAssistant userAssistant);
         void DeleteAssistant(IUserAssistant userAssistant);
         IList<IAssistantProfile> GetAllAssistantProfilesById(long assistantId);

@@ -1,7 +1,7 @@
 ﻿namespace Chameleon.Interfaces;
 
-public interface ISubPageViewModel : IInnerUserControl
+public interface ISubPageViewModel : IHaveInitialize
 {
-    Task InitAsync();
-    Task InitAsync(object? param = null);
+    Task InitAsync(object? param);
+    Task OnNavigatedToAsync(object? param);
 }

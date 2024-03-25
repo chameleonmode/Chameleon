@@ -1,6 +1,6 @@
 ﻿namespace Chameleon.Interfaces;
 
-public interface IInnerUserControl
+public interface IHaveInitialize
 {
-    Task InvokeAsyncRelayCommand(object param = null);
+    Task InvokeInitializeAsyncCommand(object? param);
 }

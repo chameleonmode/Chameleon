@@ -80,7 +80,7 @@ public class AsyncCollectionViewModel<T> : ObservableObjectBase
         return Task.CompletedTask;
     }
 
-    public override Task InitAsync()
+    public override Task InitAsync(object? param)
     {
         return Load();
     }

@@ -29,8 +29,7 @@
 			</Grid>
 		</DataTemplate>
 	</UserControl.Resources>
-	<Border Padding="20"
-			Background="{DynamicResource LayerFillColorDefaultBrush}">
+	<Border Padding="20">
 		<StackPanel Spacing="8">
 			<ctrls:ChameleonContentControl Title="Saved Pages">
 				<ctrls:ChameleonContentControl.TitleContent>

@@ -49,11 +49,11 @@ public partial class UserProxySettingsViewModel
         _proxyAccessViewModels.AddItems(CountProxies);
         _userProfileFolderService = userProfileFolderService;
     }
-    public override Task InitAsync()
+    public override Task InitAsync(object? param)
     {
         if(!base.Loaded)
             Load();
-        return base.InitAsync();
+        return base.InitAsync(param);
     }
     private void OnRenameFolder(int folderId, string title)
     {

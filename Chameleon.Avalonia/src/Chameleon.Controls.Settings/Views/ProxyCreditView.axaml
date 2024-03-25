@@ -3,306 +3,243 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:commonCntrl="using:Chameleon.Avalonia.Controlls.Common"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
              x:Class="Chameleon.Avalonia.Controls.Settings.ProxyCreditView">
-	<DockPanel>
-		<Border BorderThickness="0"
-				BorderBrush="{StaticResource DividerLine}"
-				Background="{StaticResource BackGroundGreyColor}">
-			<Grid Margin="24 0 24  27">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="*"/>
-				</Grid.RowDefinitions>
-				<TextBlock Grid.Row="0"
-					   Margin="1 28 0 4"
-					   FontSize="16"
-					   FontWeight="Bold"
-					   Text="Residential Proxies"/>
-				<TextBlock Grid.Row="1"
-					   Margin="1 0 0 25"
-					   Foreground="{StaticResource SecondaryText}"
-					   FontSize="12"
-					   Text="Manage your proxy payment and top-ups here"/>
-				<Grid Grid.Row="2">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="400"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
-					<Border Grid.Column="0"
-							BorderThickness="1"
-							CornerRadius="2"
-							Background="White"
-							BorderBrush="{StaticResource InsertProfilesLine}"
-							Height="183">
-						<Grid Margin="24 0 0 0">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="*"/>
-							</Grid.RowDefinitions>
-							<TextBlock Grid.Row="0"
-									   Text="CURRENT BALANCE"
-									   Margin="0 17 0 14"
-									   FontSize="16"
-									   Foreground="{StaticResource SecondaryText}"/>
-							<StackPanel Grid.Row="1"
-										Orientation="Horizontal">
-								<TextBlock Text="{Binding Balance}"
-										   FontSize="16"
-										   FontWeight="Bold"/>
-								<TextBlock Text="available now"
-										   Margin="7 0 0 0"
-										   FontSize="14"
-										   FontWeight="Medium"
-										   VerticalAlignment="Bottom"/>
-							</StackPanel>
-							<!--Style="{StaticResource OutlinedButton}"-->
-							<Button Grid.Row="2"
-									Content="Refresh balance"
-									Width="143"
-									Height="46"
-									HorizontalAlignment="Left"
-									VerticalAlignment="Bottom"
-									Margin="0 0 0 18"
-                                
-									Foreground="{StaticResource MainBlack}"
-									Background="{StaticResource GradientButtonBackground}"
-									Command="{Binding RefreshCommand}"/>
-						</Grid>
-					</Border>
-					<Border Grid.Column="1"
-							CornerRadius="2"
-							Margin="20 0 0 0"
-							BorderThickness="1"
-							Background="White"
-							BorderBrush="{StaticResource InsertProfilesLine}"
-							Height="183">
-						<Grid Margin="25 17 25 18">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="*"/>
-								<RowDefinition Height="Auto"/>
-							</Grid.RowDefinitions>
-							<TextBlock Grid.Row="0"
-									   Text="PURCHASE CREDIT"
-									   Margin="0 0 0 8"
-									   FontSize="16"
-									   Foreground="{StaticResource SecondaryText}"/>
-							<ItemsControl Grid.Row="1"
-										  ItemsSource="{Binding CreditPlans}"
-										  Margin="0 0 0 12">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<StackPanel Orientation="Horizontal"/>
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<!--Style="{StaticResource RadioButtonBorder}"-->
-										<Border Margin="0 0 16 0"
-												Width="209"
-												Height="60"
-												Padding="15 0 22 0"
-                                            >
-											<RadioButton GroupName="PurchaseCredit"
+	<ScrollViewer Padding="{StaticResource ChameleonAppPageMargin}">
+		<StackPanel Spacing="8">
+			<ctrls:ChameleonContentControl Title="Residential Proxies">
+
+				<ctrls:ChameleonContentControl.Header>
+					<TextBlock Theme="{StaticResource CaptionTextBlockStyle}"
+							   Text="Manage your proxy payment and top-ups here"/>
+				</ctrls:ChameleonContentControl.Header>
+
+				<ctrls:ChameleonContentControl.Content>
+					<Grid Grid.Row="2">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="400"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Border Grid.Column="0"
+								BorderThickness="1"
+								CornerRadius="2"
+								BorderBrush="{StaticResource InsertProfilesLine}"
+								Height="183">
+							<Grid Margin="24 0 0 0">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="*"/>
+								</Grid.RowDefinitions>
+								<TextBlock Grid.Row="0"
+										   Text="CURRENT BALANCE"
+										   Margin="0 17 0 14"
+										   Theme="{StaticResource SubtitleTextBlockStyle}"/>
+								<StackPanel Grid.Row="1"
+											Orientation="Horizontal">
+									<TextBlock Text="{Binding Balance}"
+											   FontSize="16"
+											   FontWeight="Bold"/>
+									<TextBlock Text="available now"
+											   Margin="7 0 0 0"
+											   Theme="{StaticResource BodyStrongTextBlockStyle}" />
+								</StackPanel>
+								<!--Style="{StaticResource OutlinedButton}"-->
+								<Button Grid.Row="2"
+										Content="Refresh balance"
+										Width="143"
+										Height="46"
+										HorizontalAlignment="Left"
+										VerticalAlignment="Bottom"
+										Margin="0 0 0 18"
+										Command="{Binding RefreshCommand}"/>
+							</Grid>
+						</Border>
+						<Border Grid.Column="1"
+								CornerRadius="2"
+								Margin="20 0 0 0"
+								BorderThickness="1"
+								BorderBrush="{StaticResource InsertProfilesLine}"
+								Height="183">
+							<Grid Margin="25 17 25 18">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="*"/>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+								<TextBlock Grid.Row="0"
+										   Text="PURCHASE CREDIT"
+										   Margin="0 0 0 8"
+										   Theme="{StaticResource SubtitleTextBlockStyle}"/>
+								<ItemsControl Grid.Row="1"
+											  ItemsSource="{Binding CreditPlans}"
+											  Margin="0 0 0 12">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Orientation="Horizontal"/>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.Items>
+										<RadioButton GroupName="PurchaseCredit"
+													 VerticalContentAlignment="Center"
+													 IsChecked="{Binding IsChecked}">
+											<RadioButton.Content>
+												<TextBlock>
+													<Run Text="fgh " Theme="{StaticResource BodyTextBlockStyle}" />
+													<Run Text=" $"  Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+													<Run Text="33" Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+												</TextBlock>
+											</RadioButton.Content>
+										</RadioButton>
+									</ItemsControl.Items>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<!--Style="{StaticResource RadioButtonBorder}"-->
+											<RadioButton  Margin="0 0 16 0"
+														  GroupName="PurchaseCredit"
 														 VerticalContentAlignment="Center"
 														 IsChecked="{Binding IsChecked}">
 												<RadioButton.Content>
-													<Grid Width="148">
-														<Grid.ColumnDefinitions>
-															<ColumnDefinition/>
-															<ColumnDefinition/>
-														</Grid.ColumnDefinitions>
-														<TextBlock Grid.Column="0"
-																   Text="{Binding Size}"
-																   HorizontalAlignment="Left"
-																   FontSize="14"
-																   FontWeight="DemiBold"/>
-														<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-															<TextBlock Text="$"
-																	   HorizontalAlignment="Right"
-																	   FontSize="16"
-																	   FontWeight="Bold"/>
-															<TextBlock Text="{Binding Amount}"
-																	   HorizontalAlignment="Right"
-																	   FontSize="16"
-																	   FontWeight="Bold"/>
-														</StackPanel>
-													</Grid>
+													<TextBlock>
+														<Run Text="{Binding Size}"
+															 Theme="{StaticResource BodyTextBlockStyle}" />
+														<Run Text="$" 
+															 Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+														<Run Text="{Binding Amount}"
+															 Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+													</TextBlock>
 												</RadioButton.Content>
 											</RadioButton>
-										</Border>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-							<Button Grid.Row="2"
-									Width="135"
-									Height="46"
-									HorizontalAlignment="Left"
-									IsEnabled="{Binding HasSelectedCreditPlan}"
-									Command="{Binding PurchaseCreditCommand}">
-								<Button.Content>
-									<StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-										<!--<svgIcons:SvgIconView
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+								<Button Grid.Row="2"
+										Classes="accent"
+										Width="135"
+										Height="46"
+										HorizontalAlignment="Left"
+										IsEnabled="{Binding HasSelectedCreditPlan}"
+										Command="{Binding PurchaseCreditCommand}">
+									<Button.Content>
+										<StackPanel Orientation="Horizontal" 
+													VerticalAlignment="Center" 
+													HorizontalAlignment="Center">
+											<ctrls:SvgIconControl
                                               IconName="purchase"
                                               Width="14"
                                               Height="14"
-                                              Foreground="White"
-                                              Margin="0 0 8 0"/>-->
-										<TextBlock Text="Purchase"
-												   Foreground="White"
-												   FontSize="14"/>
-									</StackPanel>
-								</Button.Content>
+                                              Margin="0 0 8 0"/>
+											<TextBlock Text="Purchase"
+													   FontSize="14"/>
+										</StackPanel>
+									</Button.Content>
+								</Button>
+							</Grid>
+						</Border>
+					</Grid>
+				</ctrls:ChameleonContentControl.Content>
+			</ctrls:ChameleonContentControl>
+
+			<ctrls:ChameleonContentControl Title="Proxies">
+				<ctrls:ChameleonContentControl.Header>
+					<TextBlock Theme="{StaticResource CaptionTextBlockStyle}"
+							   Text="Manage your proxies here"/>
+				</ctrls:ChameleonContentControl.Header>
+
+				<ctrls:ChameleonContentControl.Content>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+						<!--Style="{StaticResource MaterialDesignOutlinedComboBox}"-->
+						<ComboBox Grid.Row="0"
+								  PlaceholderText="Proxy country"
+								  Width="425"
+								  ItemsSource="{Binding Countries.Items}"
+								  SelectedItem="{Binding Country}"
+								  HorizontalAlignment="Left"
+								  BorderBrush="{StaticResource BorderOutlineButton}">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<Label Content="{Binding Name}"/>
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+						<Grid Grid.Row="1"
+							  Margin="0 12 0 12"
+							  VerticalAlignment="Center"
+							  HorizontalAlignment="Stretch">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<StackPanel Grid.Column="0"
+										Orientation="Horizontal"
+										HorizontalAlignment="Left">
+								<TextBlock
+									Text="Show:"
+									VerticalAlignment="Center"/>
+								<!--materialDesign:TextFieldAssist.DecorationVisibility="Hidden"-->
+								<ComboBox Margin="8 0 0 0"
+									VerticalAlignment="Center"
+									ItemsSource="{Binding CountsProxies}"
+									SelectedItem="{Binding CountProxies}">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<Label Content="{Binding}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+							</StackPanel>
+							<Button Grid.Column="1"
+									 Command="{Binding CopyAllUrlsCommand}"
+									   Content="Copy all"
+									   VerticalAlignment="Center"
+									   HorizontalAlignment="Right"
+									Theme="{DynamicResource TransparentButton}">
 							</Button>
 						</Grid>
-					</Border>
-				</Grid>
-				<TextBlock Grid.Row="3"
-						   Text="Proxies"
-						   FontSize="16"
-						   FontWeight="Bold"
-						   Margin="0 36 0 0"/>
-				<TextBlock Grid.Row="4"
-					   Margin="0 2 0 16"
-					   Foreground="{StaticResource SecondaryText}"
-					   FontSize="12"
-					   Text="Manage your proxies here"/>
-				<ScrollViewer Grid.Row="5"
-							  VerticalScrollBarVisibility="Auto"
-							  HorizontalScrollBarVisibility="Hidden">
-					<Border BorderThickness="1"
-							CornerRadius="2"
-							Background="White"
-							BorderBrush="{StaticResource InsertProfilesLine}"
-							Padding="24 16 24 14">
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="*"/>
-							</Grid.RowDefinitions>
-							<!--materialDesign:HintAssist.Hint="Proxy country"-->
-							<!--Style="{StaticResource MaterialDesignOutlinedComboBox}"-->
-							<ComboBox Grid.Row="0"
-									  Width="425"
-									  ItemsSource="{Binding Countries.Items}"
-									  SelectedItem="{Binding Country}"
-									  HorizontalAlignment="Left"
-									  BorderBrush="{StaticResource BorderOutlineButton}"
-                                  >
-								<ComboBox.ItemTemplate>
-									<DataTemplate>
-										<Label Content="{Binding Name}"/>
-									</DataTemplate>
-								</ComboBox.ItemTemplate>
-							</ComboBox>
-							<Grid Grid.Row="1"
-								  Margin="0 12 0 0"
-								  Width="990"
-								  VerticalAlignment="Center"
-								  HorizontalAlignment="Left">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="Auto"/>
-								</Grid.ColumnDefinitions>
-								<StackPanel Grid.Column="0"
-											Orientation="Horizontal"
-											HorizontalAlignment="Left"
-											VerticalAlignment="Center">
-									<TextBlock FontSize="12"
-										Foreground="{StaticResource SecondaryText}"
-										Text="Show:"
-										VerticalAlignment="Center"/>
-									<!--materialDesign:TextFieldAssist.DecorationVisibility="Hidden"-->
-									<ComboBox
-										VerticalAlignment="Center"
-										ItemsSource="{Binding CountsProxies}"
-										SelectedItem="{Binding CountProxies}"
-										 BorderThickness="0">
-										<ComboBox.ItemTemplate>
-											<DataTemplate>
-												<Label Content="{Binding}"/>
-											</DataTemplate>
-										</ComboBox.ItemTemplate>
-									</ComboBox>
-								</StackPanel>
-								<TextBlock Grid.Column="1"
-										   Text="Copy all"
-										   VerticalAlignment="Center"
-										   HorizontalAlignment="Right"
-										   FontSize="14"
-										   FontWeight="DemiBold"
-										   Foreground="{StaticResource PrimaryHueMidBrush}"
-										   Cursor="Hand">
-									<!--<TextBlock.InputBindings>
-									<MouseBinding Command="{Binding CopyAllUrlsCommand}" Gesture="LeftClick"/>
-								</TextBlock.InputBindings>-->
-								</TextBlock>
-							</Grid>
-							<ItemsControl Grid.Row="2"
-										  Width="990"
-										  ItemsSource="{Binding Access}"
-										  HorizontalAlignment="Left">
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<Border BorderBrush="{StaticResource DividerLine}"
-												BorderThickness="1"
-												CornerRadius="3"
-												Margin="0 0 0 8">
-											<Grid >
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="*"/>
-													<ColumnDefinition Width="Auto"/>
-												</Grid.ColumnDefinitions>
-												<!--materialDesign:TextFieldAssist.DecorationVisibility="Hidden"-->
-												<TextBox
-													Grid.Column="0"
-													Height="31"
-													Text="{Binding Url}"
-													Margin="0"
-													Padding="5 7 0 0"
-													Background="White"
-													BorderThickness="0 0 1 0"
-													BorderBrush="{StaticResource DividerLine}"
-													IsHitTestVisible="False">
-												</TextBox>
-												<!--Style="{StaticResource OutlinedButton}"-->
-												<Button Grid.Column="1"
-														Background="{StaticResource BackGroundGreyColor}"
-														VerticalAlignment="Top"
-														Margin="0"
-														BorderThickness="0"
-														Width="47"
-														Height="38"
-														Command="{Binding CopyUrlCommand}">
-													<!--<svgIcons:SvgIconView
-				                                    Foreground="{StaticResource PrimaryHueMidBrush}"
+						<ItemsControl Grid.Row="2"
+									  ItemsSource="{Binding Access}"
+									  HorizontalAlignment="Stretch">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Border CornerRadius="3"
+											Margin="0 0 0 8">
+										<Grid >
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="*"/>
+												<ColumnDefinition Width="Auto"/>
+											</Grid.ColumnDefinitions>
+											<!--materialDesign:TextFieldAssist.DecorationVisibility="Hidden"-->
+											<TextBox
+												Grid.Column="0"
+												Text="{Binding Url}"
+												Margin="4 0 0 0"
+												BorderThickness="0 0 1 0"
+												IsHitTestVisible="False">
+											</TextBox>
+											<Button Grid.Column="1"
+													VerticalAlignment="Top"
+													Theme="{DynamicResource TransparentButton}"
+													Command="{Binding CopyUrlCommand}">
+												<ctrls:SvgIconControl
 				                                    IconName="copy"
 				                                    Width="17"
-				                                    Height="16"
-				                                    Margin="3 0 0 0"/>-->
-												</Button>
+				                                    Height="16"/>
+											</Button>
 
-											</Grid>
-										</Border>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-						</Grid>
-					</Border>
-				</ScrollViewer>
-				<!--<wait:WaitIndicatorView
-                DataContext="{Binding}"
-                IsIndicatorVisible="{Binding IsLoadingIndicatorVisible}"
-                Grid.ColumnSpan="3"
-                Grid.RowSpan="3" />-->
-			</Grid>
-		</Border>
-	</DockPanel>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</Grid>
+				</ctrls:ChameleonContentControl.Content>
+			</ctrls:ChameleonContentControl>
+		</StackPanel>
+	</ScrollViewer>
 </UserControl>

@@ -12,18 +12,15 @@ namespace Chameleon.Avalonia.Controls.Dashboard.ViewModels;
 public partial class FolderViewModel : SubPageViewModelBase
 {
     private readonly IUserProfileFolder _folder;
-    private readonly IEventAggregator _eventAggregator;
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfileFolderService _userProfileFolderService;
 
     public FolderViewModel(
         IUserProfileFolder folder,
-        IEventAggregator eventAggregator,
         IUserProfileService userProfileService,
         IUserProfileFolderService userProfileFolderService)
     {
         _folder = folder;
-        _eventAggregator = eventAggregator;
         _userProfileService = userProfileService;
         _userProfileFolderService = userProfileFolderService;
 
@@ -31,7 +28,7 @@ public partial class FolderViewModel : SubPageViewModelBase
         IsFavorite = _folder.IsFavorite;
         ProfilesCount = _folder.ProfilesCount;
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
             .Subscribe(args => OnChangeProfilesInFavoriteFolder(args.FolderId));
     }
@@ -51,11 +48,11 @@ public partial class FolderViewModel : SubPageViewModelBase
     [RelayCommand]
     private void OnViewGroup()
     {
-        _eventAggregator
+        EventAggregator
             .GetEvent<OpenUserProfilesViewEvent>()
             .Publish();
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<OpenUserProfileFolderEvent>()
             .Publish(new UserProfileFolderEventArgs(_folder));
     }
@@ -69,7 +66,7 @@ public partial class FolderViewModel : SubPageViewModelBase
         _folder.IsFavorite = IsFavorite;
         _userProfileFolderService.Save(_folder);
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<UpdateFavoriteFolderEvent>()
             .Publish();
     }
@@ -79,9 +76,9 @@ public partial class FolderViewModel : SubPageViewModelBase
     {
         get
         {
-            if (Id == 0)
+            if (_id == 0)
             {
-                Id = _folder.Id;
+                _id = _folder.Id;
             }
             return _id;
         }

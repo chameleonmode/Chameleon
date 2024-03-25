@@ -5,7 +5,8 @@
 	<Design.PreviewWith>
 		<Border Padding="20" Width="780" Height="480">
 			<Grid ColumnDefinitions="*,Auto,0.01*">
-				<ctrls:ChameleonContentControl Title="S titi T">
+				<ctrls:ChameleonContentControl Title="S titi T"
+											   TitleDescription="some kinda description">
 					<ctrls:ChameleonContentControl.TitleContent>
 						<Grid>
 							<ui:CommandBar DefaultLabelPosition="Right">
@@ -313,13 +314,18 @@
 
 					<!-- Header -->
 					<Panel>
+						<StackPanel>
 						<TextBlock Text="{TemplateBinding Title}"
 								   Padding="12 8"
 								   Theme="{StaticResource SubtitleTextBlockStyle}" />
+							<!--<TextBlock Text="{TemplateBinding TitleDescription}"
+							   Padding="12 0" />-->
+						</StackPanel>
 						
 						<ContentPresenter Name="TitlePresenter"
 								  Content="{TemplateBinding TitleContent}"
-								  HorizontalAlignment="Right" />
+								  HorizontalAlignment="Right" 
+										  VerticalAlignment="Bottom"/>
 					</Panel>
 
 					<!-- Content Area -->

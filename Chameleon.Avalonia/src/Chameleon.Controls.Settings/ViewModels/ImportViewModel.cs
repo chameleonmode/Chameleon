@@ -33,9 +33,9 @@ public partial class ImportViewModel : SubPageViewModelBase,
           
         Columns = (ImportColumnViewModels)importColumnViewModels;
     }
-    public override async Task InitAsync()
+    public override async Task InitAsync(object? param  )
     {
-        await base.InitAsync();
+        await base.InitAsync(param);
 
         Folders = await Task.Run(()=> _userProfileFolderService.GetAll());
         Folders.CollectionChanged += Folders_CollectionChanged;

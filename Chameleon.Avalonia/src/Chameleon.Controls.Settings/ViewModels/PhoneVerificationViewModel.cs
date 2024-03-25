@@ -25,11 +25,11 @@ public partial class PhoneVerificationViewModel
         _userSettingsService = userSettingsService;
     }
      
-    public override Task InitAsync()
+    public override Task InitAsync(object? param)
     {
         //if (!base.Loaded)
             InitializeApiKey();
-        return base.InitAsync();
+        return base.InitAsync(param);
     }
     private void InitializeApiKey()
     {

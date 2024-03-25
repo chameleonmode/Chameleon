@@ -146,7 +146,7 @@
 		</LinearGradientBrush>
 	</UserControl.Resources>
 
-	<ScrollViewer>
+	<ScrollViewer Padding="{StaticResource ChameleonAppPageMargin}"> 
 		<StackPanel Spacing="-5">
 			<avfCommon:PageHeaderControl TextType="Dashboard"
 										 Classes="smallest"/>

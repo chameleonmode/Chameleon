@@ -20,11 +20,11 @@ public class SubPageViewControl : ChameleonPageBase
         if (viewModelType != null)
         {
             var subPageViewModel = ContainerServiceHelper.Resolve(viewModelType);
-            if (!Design.IsDesignMode)
-            {
-                if (subPageViewModel is ISubPageViewModel sp)
-                    sp.InitAsync();
-            }
+            //if (!Design.IsDesignMode)
+            //{
+            //    if (subPageViewModel is ISubPageViewModel sp)
+            //        sp.InitAsync();
+            //}
             DataContext = subPageViewModel;
         }
         else

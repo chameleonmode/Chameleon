@@ -43,10 +43,11 @@ public partial class UserDefaultSettingsViewModel
 
 
     }
-    public override Task InitAsync()
+    public override async Task InitAsync(object? param)
     {
+        await base.InitAsync(param);
+
         OnAuthenticated();
-        return base.InitAsync();
     }
 
     

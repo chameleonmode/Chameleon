@@ -8,6 +8,7 @@ namespace Chameleon.Interfaces.UserProfileFolders
     {
         IUserProfileFolder Get(int folderId);
         IUserProfileFolders GetAll();
+        Task<IUserProfileFolders> GetAllAsync();
         IUserProfileFolder Create(string title = null);
         void Delete(IUserProfileFolder userProfile);
         void Save(IUserProfileFolder userProfile);

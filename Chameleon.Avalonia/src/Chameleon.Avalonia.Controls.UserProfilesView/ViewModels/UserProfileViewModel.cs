@@ -124,6 +124,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase
     [RelayCommand]
     private void OpenUserProfile()
     {
+        OpenMenu();
         _eventAggregator
             .GetEvent<OpenUserProfileEvent>()
             .Publish(new UserProfileEventArgs(_userProfile));

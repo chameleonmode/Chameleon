@@ -43,11 +43,7 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     public IEventAggregator EventAggregator => eventAggregator;
     public IAsyncRelayCommand InitializeAsyncCommand { get; }
 
-    public virtual Task InitAsync()
-    {
-        return Task.CompletedTask;
-    }
-    public virtual Task InitAsync(object? param = null)
+    public virtual Task InitAsync(object? param)
     {
         return Task.CompletedTask;
     }
@@ -68,7 +64,7 @@ public abstract partial class ObservableObjectBase : ObservableObject,
         }
     }
 
-    public Task InvokeAsyncRelayCommand(object p = null) 
+    public Task InvokeInitializeAsyncCommand(object p = null) 
     {
         return InitializeAsyncCommand.ExecuteAsync(p);
     }

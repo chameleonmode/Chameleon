@@ -63,7 +63,7 @@ public partial class AssistantUsersViewModel
 
 
     }
-    public override async Task InitAsync()
+    public override async Task InitAsync(object? param)
     {
         EventAggregator.SetEventSubscription<InviteUserAssistantEvent, InviteUserAssistantEventArgs>(OnCreate);
 

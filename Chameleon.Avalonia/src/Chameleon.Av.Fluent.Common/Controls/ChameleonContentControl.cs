@@ -14,6 +14,9 @@ public class ChameleonContentControl : HeaderedContentControl
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<ChameleonContentControl, string?>(nameof(Title));
 
+    public static readonly StyledProperty<string?> TitleDescriptionProperty =
+    AvaloniaProperty.Register<ChameleonContentControl, string?>(nameof(TitleDescription));
+
     public static readonly StyledProperty<Control> OptionsProperty =
         AvaloniaProperty.Register<ChameleonContentControl, Control>(nameof(Options));
 
@@ -30,6 +33,12 @@ public class ChameleonContentControl : HeaderedContentControl
     {
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
+    }
+
+    public string? TitleDescription
+    {
+        get => GetValue(TitleDescriptionProperty);
+        set => SetValue(TitleDescriptionProperty, value);
     }
 
     public Control Options

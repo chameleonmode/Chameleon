@@ -98,6 +98,15 @@ namespace Chameleon.Infrastructure.Profiles
             return Profiles;
         }
 
+        public async Task<IUserProfiles> GetAllAsync()
+        {
+            if (!_profiles.IsValueCreated)
+            {
+               return await Task.Run(() => GetAll());
+            }
+            return GetAll();
+        }
+
         public void Sync()
         {
             InitProfiles();
