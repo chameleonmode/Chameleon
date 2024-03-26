@@ -34,7 +34,6 @@ public class AutoViewModelLocatorControl : UserControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-
         if (DataContext is IHaveInitialize sp)
             sp.InvokeInitializeAsyncCommand(null);
     }

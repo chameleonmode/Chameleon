@@ -1,0 +1,1701 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
+             x:Class="Chameleon.Avalonia.Controls.UserProfileView.UserProfileIdentityView">
+	<UserControl.Resources>
+		<!-- old color -->
+		<!--<SolidColorBrush x:Key="PrimaryHueLightBrush"
+                                     Color="#67daff" />-->
+		<!--<SolidColorBrush x:Key="PrimaryHueMidBrush"
+                                     Color="#03A9F4" />-->
+		<SolidColorBrush x:Key="PrimaryHueMidForegroundBrush"
+						 Color="#FAFAFA" />
+
+		<!--<SolidColorBrush x:Key="PrimaryHueDarkBrush"
+                                     Color="#007ac1" />-->
+		<SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush"
+						 Color="#FAFAFA" />
+		<!--<SolidColorBrush x:Key="ChameleonBlue"
+                             Color="#03a9f4" />-->
+		<!--<SolidColorBrush x:Key="ChameleonGray"
+                             Color="#f5f5f5" />-->
+
+		<!-- new color -->
+		<SolidColorBrush x:Key="Orange"
+						 Color="#F25022" />
+
+		<SolidColorBrush x:Key="LightGrayBackground"
+						 Color="#F8F8F8" />
+
+		<SolidColorBrush x:Key="PrimaryHueLightBrush"
+						 Color="#6E3BD2" />
+		<SolidColorBrush x:Key="PrimaryHueMidBrush"
+						 Color="#5D25A6" />
+		<SolidColorBrush x:Key="PrimaryHueMidBrush40"
+						 Color="#665D25A6" />
+
+		<SolidColorBrush x:Key="PrimaryHueDarkBrush"
+						 Color="#6634C2" />
+
+		<SolidColorBrush x:Key="ButtonDarkBrush"
+						 Color="#673D9C" />
+
+		<SolidColorBrush x:Key="ChameleonGray"
+						 Color="#F6F6F9" />
+		<SolidColorBrush x:Key="SecondaryText"
+						 Color="#8094AE" />
+		<SolidColorBrush x:Key="BackGroundColor"
+						 Color="#106E3BD2" />
+		<SolidColorBrush x:Key="BackGroundGreyColor"
+						 Color="#FBFBFB" />
+
+		<SolidColorBrush x:Key="MainBlack"
+						 Color="#141315" />
+		<SolidColorBrush x:Key="MainGray"
+						 Color="#B5B5B5" />
+		<SolidColorBrush x:Key="MouseOverMainBlack"
+						 Color="#2A141315" />
+		<SolidColorBrush x:Key="DarkGray"
+						 Color="#404349" />
+		<SolidColorBrush x:Key="DarkGray02"
+						 Color="#05404349" />
+		<SolidColorBrush x:Key="DividerLine"
+						 Color="#D9E1F1" />
+		<SolidColorBrush x:Key="BackGroundDivider"
+						 Color="#80D9E1F1" />
+		<SolidColorBrush x:Key="InsertProfilesLine"
+						 Color="#C4D8F2" />
+		<SolidColorBrush x:Key="BorderOutlineButton"
+						 Color="#DADADA" />
+
+		<SolidColorBrush x:Key="BorderOutlineButton40"
+						 Color="#66DADADA" />
+
+		<SolidColorBrush x:Key="BorderOutline"
+						 Color="#E7E7E7" />
+
+		<SolidColorBrush x:Key="LightPurple"
+						 Color="#F2EFFC" />
+		<SolidColorBrush x:Key="LightPurple29"
+						 Color="#4AF2EFFC" />
+		<SolidColorBrush x:Key="VeryLightPurple"
+						 Color="#FBFAFE" />
+
+		<SolidColorBrush x:Key="FolderProfiles"
+						 Color="#425A70" />
+		<SolidColorBrush x:Key="FolderMenu"
+						 Color="#88858A" />
+
+		<SolidColorBrush x:Key="BackGroundSelectedProfilesBlock"
+						 Color="#373845" />
+		<SolidColorBrush x:Key="OrangeDeleteProfiles"
+						 Color="#FF592B" />
+		<SolidColorBrush x:Key="SecondaryTextPopup"
+						 Color="#7B7B7B" />
+		<SolidColorBrush x:Key="ScrollBackground"
+						 Color="#EDEEEE" />
+		<SolidColorBrush x:Key="ScrollForeground"
+						 Color="#A7ABB3" />
+
+		<SolidColorBrush x:Key="RedCloseButton"
+						 Color="#C42B1C" />
+		<SolidColorBrush x:Key="RedClickCloseButton"
+						 Color="#C94132" />
+		<SolidColorBrush x:Key="MainWindowBlackout26"
+						 Color="#42292929" />
+
+		<SolidColorBrush x:Key="White"
+						 Color="White" />
+
+		<SolidColorBrush x:Key="MainTabControlHeaderBackgrount"
+						 Color="#fbfcfe" />
+
+		<LinearGradientBrush x:Key="GradientButtonBackground"
+							 StartPoint="0,0"
+							 EndPoint="0,1">
+			<GradientStop Color="#FDFDFD"
+						  Offset="0" />
+			<GradientStop Color="#F2F2F2"
+						  Offset="1" />
+		</LinearGradientBrush>
+		
+		<ControlTheme TargetType="TextBlock"
+		   x:Key="HeaderTextBox">
+			<Setter Property="Margin" Value="5 15 5 0" />
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+			<Setter Property="Foreground" Value="{StaticResource SecondaryTextPopup}" />
+			<Setter Property="FontFamily" Value="Open Sans" />
+			<Setter Property="FontSize" Value="12" />
+			<Setter Property="FontWeight" Value="DemiBold" />
+		</ControlTheme>
+
+		<ControlTheme TargetType="{x:Type TextBox}" x:Key="PersonTextBox">
+				<Setter Property="HorizontalAlignment" Value="Stretch" />
+				<Setter Property="Foreground" Value="{StaticResource MainBlack}" />
+				<Setter Property="FontFamily" Value="Open Sans" />
+				<Setter Property="FontSize" Value="14" />
+				<Setter Property="FontWeight" Value="DemiBold" />
+				<Setter Property="Height" Value="60" />
+		</ControlTheme>
+
+		<ControlTheme TargetType="TextBox"
+            x:Key="OutlinedTextFieldTextBox"
+            BasedOn="{StaticResource PersonTextBox}">
+			<Setter Property="Margin" Value="31 0 31 0" />
+			<Setter Property="BorderBrush" Value="{StaticResource BorderOutlineButton}" />
+		</ControlTheme>
+		<SolidColorBrush x:Key="MaterialDesignCheckBoxOff" Color="#6634C2" />
+		<ControlTheme x:Key="CheckBoxBorders" TargetType="Border">
+				<ControlTheme TargetType="CheckBox">
+					<Setter Property="Margin" Value="15 0 0 0" />
+					<Setter Property="VerticalAlignment" Value="Center" />
+					<Setter Property="HorizontalAlignment" Value="Left" />
+					<Setter Property="VerticalContentAlignment" Value="Center" />
+
+				</ControlTheme>
+				<ControlTheme TargetType="Label">
+					<Setter Property="VerticalAlignment" Value="Center" />
+					<Setter Property="Margin" Value="21 0 0 0" />
+					<Setter Property="FontFamily" Value="Open Sans" />
+					<Setter Property="FontSize" Value="14" />
+					<Setter Property="FontWeight" Value="DemiBold" />
+					<Setter Property="Foreground" Value="{StaticResource MainBlack}" />
+				</ControlTheme>
+
+			<Setter Property="BorderBrush" Value="{StaticResource BorderOutlineButton}" />
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="CornerRadius" Value="4"/>
+			<Setter Property="Height" Value="60"/>
+		</ControlTheme>
+
+		<ControlTheme x:Key="CheckBoxBordersChecked" TargetType="Border" BasedOn="{StaticResource CheckBoxBorders}">
+			<Setter Property="BorderBrush" Value="{StaticResource PrimaryHueMidBrush40}" />
+			<Setter Property="Background" Value="{StaticResource LightPurple29}" />
+		</ControlTheme>
+	</UserControl.Resources>
+	<Grid Background="{StaticResource BackGroundGreyColor}">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+
+			<Grid Grid.Row="0" Margin="25 28 25 0">
+				<StackPanel HorizontalAlignment="Left">
+					<TextBlock Theme="{StaticResource HeaderTextBox}"
+                               Text="{Binding UserProfileModel.Title}"
+                               FontFamily="Open Sans"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0"
+                               Foreground="{StaticResource MainBlack}" />
+					<TextBlock Theme="{StaticResource HeaderTextBox}"
+                               Text="Customize profile-related data"
+                               FontFamily="Open Sans"
+                               FontSize="12"
+                               FontWeight="Normal"
+                               Margin="0 4 0 0"
+                               Foreground="{StaticResource SecondaryText}" />
+				</StackPanel>
+
+				<StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+					<Button Width="153"
+                            Height="40"
+                            Margin="0 0 24 0"
+                            Background="Transparent"
+                            Foreground="{StaticResource ButtonDarkBrush}"
+                            BorderThickness="0"
+                            Command="{Binding SyncChangesCommand}"
+                            IsVisible="{Binding IsSyncChangesBtnVisible}">
+						<StackPanel Orientation="Horizontal">
+							<avfCommon:SvgIconControl IconName="sync"
+                                                  Foreground="{StaticResource ButtonDarkBrush}"
+                                                  Width="14.25"
+                                                  Height="17.43"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0 0 10 0" />
+							<TextBlock VerticalAlignment="Center"
+                                       Margin="0"
+                                       Text="Sync changes"
+                                       FontWeight="DemiBold"
+                                       FontFamily="Open Sans"
+                                       FontSize="14" />
+						</StackPanel>
+					</Button>
+
+					<StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+						<Button Content="Discard"
+                                Command="{Binding DiscardCommand}"
+                                Height="40"
+                                Width="143"
+                                Theme="{StaticResource TransparentButton}"
+                                FontSize="14"
+                                Foreground="{StaticResource MainBlack}"
+                                Background="{StaticResource GradientButtonBackground}" />
+						<!--featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.SaveChangesBtn}"
+                                featureTouring:TourHelper.Placement="BottomRight"-->
+						<Button Margin="8 0 0 0"
+                                Content="Save changes"
+                                Command="{Binding SaveChangesCommand}"
+                                Height="40"
+                                Width="137"
+                                Background="{StaticResource ButtonDarkBrush}"
+                                Foreground="White"
+                                FontFamily="Open Sans"
+                                FontWeight="DemiBold"
+                                FontSize="14"
+                                
+                                x:Name="SaveChangesBtn">
+
+						</Button>
+					</StackPanel>
+				</StackPanel>
+			</Grid>
+
+			<TabControl Grid.Row="1"
+                        BorderThickness="0"
+                        Padding="0" Margin="24 22 24 16"
+                        SelectedIndex="{Binding SelectedTadIndex}">
+				<TabItem>
+					<TabItem.Header>
+						<StackPanel
+                            Cursor="Hand"
+                            Orientation="Horizontal">
+							<avfCommon:SvgIconControl
+                                IconName="profile-main"
+                                Margin="2 6 0 5"
+                                Height="13"
+                                Width="13"
+                                VerticalAlignment="Center" />
+							<TextBlock
+                                Margin="9 0 0 0"
+                                Text="Main"
+                                VerticalAlignment="Center"
+                                FontSize="16"/>
+						</StackPanel>
+					</TabItem.Header>
+					<TabItem.Content>
+						<Grid Margin="101 10 97 10">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
+
+							<Grid Margin="0 14 0 24">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+								<TextBlock Theme="{StaticResource HeaderTextBox}"
+                                           Grid.Row="1"
+                                           Grid.Column="0"
+                                           Text="PROFILE NAME"
+                                           Margin="44 0 0 0"/><!--materialDesign:HintAssist.Hint='"Profile" name'-->
+								<TextBox 
+                                         Grid.Row="2"
+                                         Grid.Column="0"
+                                         Grid.ColumnSpan="2"
+										 Text="{Binding UserProfileModel.Title}"
+                                         x:Name="tbProfileName">
+									<!--<TextBox.Text>
+										<Binding Path="DataContext.UserProfileModel.Title"
+                                                 RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"
+												  FallbackValue="title"
+												 TargetNullValue="null">
+											--><!--<Binding.ValidationRules>
+												<validationRules:NotEmptyValidationRule ValidatesOnTargetUpdated="False"/>
+											</Binding.ValidationRules>--><!--
+										</Binding>
+									</TextBox.Text>-->
+								</TextBox>
+							</Grid>
+<!--featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.ProxyConfigGrid}"
+							  featureTouring:TourHelper.Placement="LeftCenter"-->
+							<Grid Grid.Row="3"
+							  Grid.ColumnSpan="2"
+							  IsVisible="{Binding Path=DataContext.IsProxyConfigVisible,
+                                    RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+							  
+							  x:Name="ProxyConfigGrid">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+								<TextBlock Theme="{StaticResource HeaderTextBox}"
+                                           Grid.Row="0"
+                                           Grid.Column="0"
+                                           Grid.ColumnSpan="2"
+                                           Text="PROXY CONFIGURATION"
+                                           Margin="44 0 0 8" /><!--materialDesign:HintAssist.Hint="IP / Host Name"-->
+								<TextBox Grid.Row="1"
+                                         Grid.Column="0"
+                                         
+                                         Text="{Binding Path=DataContext.UserProfileModel.Proxy.Host,
+                                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                         Theme="{StaticResource OutlinedTextFieldTextBox}"
+                                         BorderBrush="{StaticResource BorderOutlineButton}" />
+						<!--materialDesign:HintAssist.Hint="Port"-->		<TextBox Grid.Row="1"
+                                         Grid.Column="1"
+                                         
+                                         Theme="{StaticResource OutlinedTextFieldTextBox}"
+                                         BorderBrush="{StaticResource BorderOutlineButton}">
+									<TextBox.Text>
+										<Binding Path="DataContext.UserProfileModel.Proxy.Port"
+                                                 RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}">
+											<!--<Binding.Converter>
+												<converter:IntegerConverter />
+											</Binding.Converter>-->
+											<Binding.ConverterParameter>
+												ZeroAsEmpty
+											</Binding.ConverterParameter>
+											<!--<Binding.ValidationRules>
+												<DataErrorValidationRule />
+											</Binding.ValidationRules>-->
+										</Binding>
+									</TextBox.Text>
+								</TextBox><!--materialDesign:HintAssist.Hint="Username"-->
+								<TextBox Grid.Row="2"
+                                         Grid.Column="0"
+                                         
+                                         Theme="{StaticResource OutlinedTextFieldTextBox}"
+                                         Text="{Binding Path=DataContext.UserProfileModel.Proxy.UserName,
+                                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                         Margin="31 20 31 0"
+                                         BorderBrush="{StaticResource BorderOutlineButton}" /><!--materialDesign:HintAssist.Hint="Password"-->
+								<TextBox Grid.Row="2"
+                                         Grid.Column="1"
+                                         
+                                         Theme="{StaticResource OutlinedTextFieldTextBox}"
+                                         Text="{Binding Path=DataContext.UserProfileModel.Proxy.Password,
+                                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                         Margin="31 20 31 0"
+                                         BorderBrush="{StaticResource BorderOutlineButton}" />
+							</Grid>
+
+							<TextBlock Theme="{StaticResource HeaderTextBox}"
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    Text="NOTES"
+                                    Margin="44 24 0 8"/>
+<!--materialDesign:HintAssist.Hint="Notes"--><!--SpellCheck.IsEnabled="True"-->
+							<TextBox
+                                    Grid.Row="6"
+                                    Grid.ColumnSpan="2"
+                                    
+                                    Text="{Binding Path=DataContext.UserProfileModel.Notes,
+                                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                    
+                                    TextWrapping="Wrap"
+                                    AcceptsReturn="True"
+                                    VerticalContentAlignment="Stretch"
+                                    Theme="{StaticResource OutlinedTextFieldTextBox}"
+                                    BorderBrush="{StaticResource BorderOutlineButton}"/>
+
+							<TextBlock Theme="{StaticResource HeaderTextBox}"
+                                    Grid.Row="7"
+                                    Grid.Column="0"
+                                    Text="CANVAS VALUE"
+                                    Margin="44 24 0 8" />
+<!--materialDesign:HintAssist.Hint="Canvas value"--><!--Converter={StaticResource decimalConverter}-->
+							<TextBox
+                                    Grid.Row="8"
+                                    Grid.Column="0"
+                                    
+                                    
+                                    Text="{
+                                        Binding Path=DataContext.UserProfileModel.WebBrowser.Canvas, 
+                                        RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, 
+                                        StringFormat=N2 
+                                        
+                                    }"
+                                    Theme="{StaticResource OutlinedTextFieldTextBox}"
+                                    BorderBrush="{StaticResource BorderOutlineButton}"/>
+
+							<TextBlock Theme="{StaticResource HeaderTextBox}"
+                                    Grid.Row="9"
+                                    Grid.Column="0"
+                                    Text="PROFILE ITEM"
+                                    Margin="44 24 0 8" />
+							<Border
+                                    Grid.Row="10"
+                                    Grid.Column="0"
+                                    Margin="31 0 31 0">
+								<!--<Border.Theme>
+									<ControlTheme TargetType="Border" BasedOn="{StaticResource CheckBoxBorders}">
+										--><!--<ControlTheme.Triggers>
+											<DataTrigger Binding="{ Binding IsChecked, ElementName=WebRTCCheckBox}" Value="True">
+												<Setter Property="BorderBrush" Value="{StaticResource PrimaryHueMidBrush40}" />
+												<Setter Property="Background" Value="{StaticResource LightPurple29}" />
+											</DataTrigger>
+										</Style.Triggers>--><!--
+									</ControlTheme>
+								</Border.Theme>-->
+								<CheckBox
+                                        IsChecked="{
+                                            Binding Path=!DataContext.UserProfileModel.WebBrowser.WebRTC,
+                                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                        Name="WebRTCCheckBox">
+									<Label  Content="WebRTC off" />
+								</CheckBox>
+							</Border>
+
+							<Border
+                                    Grid.Row="10"
+                                    Grid.Column="1"
+                                    Margin="31 0 31 0">
+								<!--<Border.Theme>
+									<ControlTheme TargetType="Border" BasedOn="{StaticResource CheckBoxBorders}">
+										--><!--<ControlTheme.Triggers>
+											<DataTrigger Binding="{ Binding IsChecked, ElementName=WebGLCheckBox}" Value="True">
+												<Setter Property="BorderBrush" Value="{StaticResource PrimaryHueMidBrush40}" />
+												<Setter Property="Background" Value="{StaticResource LightPurple29}" />
+											</DataTrigger>
+										</Style.Triggers>--><!--
+									</ControlTheme>
+								</Border.Theme>-->
+								<CheckBox
+                                        IsChecked="{
+                                            Binding Path=!DataContext.UserProfileModel.WebBrowser.WebGL, 
+                                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                        Name="WebGLCheckBox">
+									<Label Content="WebGL off" />
+								</CheckBox>
+							</Border>
+
+							<Border
+                                    Grid.Row="11"
+                                    Grid.Column="0"
+                                    Margin="31 20 31 0">
+								<!--<Border.Theme>
+									<ControlTheme TargetType="Border" BasedOn="{StaticResource CheckBoxBorders}">
+										--><!--<ControlTheme.Triggers>
+											<DataTrigger Binding="{ Binding IsChecked, ElementName=TrackingCheckBox}" Value="True">
+												<Setter Property="BorderBrush" Value="{StaticResource PrimaryHueMidBrush40}" />
+												<Setter Property="Background" Value="{StaticResource LightPurple29}" />
+											</DataTrigger>
+										</Style.Triggers>--><!--
+									</ControlTheme>
+								</Border.Theme>-->
+								<CheckBox
+                                        IsChecked="{
+                                            Binding Path=!DataContext.UserProfileModel.WebBrowser.Tracking, 
+                                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                        Name="TrackingCheckBox">
+									<Label Content="Do Not Track" />
+								</CheckBox>
+							</Border>
+
+							<Border
+                                    Grid.Row="11"
+                                    Grid.Column="1"
+                                    Margin="31 20 31 0">
+								<!--<Border.Theme>
+									<ControlTheme TargetType="Border" BasedOn="{StaticResource CheckBoxBorders}">
+										--><!--<ControlTheme.Triggers>
+											<DataTrigger Binding="{ Binding IsChecked, ElementName=FlashCheckBox}" Value="True">
+												<Setter Property="BorderBrush" Value="{StaticResource PrimaryHueMidBrush40}" />
+												<Setter Property="Background" Value="{StaticResource LightPurple29}" />
+											</DataTrigger>
+										</Style.Triggers>--><!--
+									</ControlTheme>
+								</Border.Theme>-->
+								<CheckBox
+                                        IsChecked="{
+                                            Binding Path=!DataContext.UserProfileModel.WebBrowser.Flash,
+                                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                        Name="FlashCheckBox">
+									<Label Content="Flash off"/>
+								</CheckBox>
+							</Border>
+
+							<TextBlock Theme="{StaticResource HeaderTextBox}"
+                                    Grid.Row="12"
+                                    Grid.Column="0"
+                                    Margin="44 40 0 8"
+                                    Text="USER AGENT"/>
+
+							<Border
+                                    Grid.Row="13"
+                                    Grid.ColumnSpan="2"
+                                    BorderBrush="{StaticResource BorderOutlineButton}"
+                                    Background="{StaticResource DarkGray02}"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Height="60"
+                                    Margin="31 0 31 0">
+								<StackPanel>
+									<TextBlock Theme="{StaticResource HeaderTextBox}"
+                                            Text="User Agent"
+                                            Margin="13 8 0 0"
+                                            FontFamily="Open Sans"
+                                            FontSize="12"
+                                            FontWeight="DemiBold"
+                                            Foreground="{StaticResource SecondaryTextPopup}"/>
+									<TextBlock Theme="{StaticResource HeaderTextBox}"
+                                               FontFamily="Open Sans"
+                                               FontSize="14"
+                                               Foreground="{StaticResource MainBlack}"
+                                               FontWeight="DemiBold"
+                                               Margin="13 8 0 0"
+                                               Text="Firefox/90.0 Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0">
+									</TextBlock>
+								</StackPanel>
+							</Border>
+						</Grid>
+					</TabItem.Content>
+				</TabItem>
+				<TabItem Theme="{StaticResource CustomTabItem}">
+					<TabItem.Header>
+						<StackPanel Cursor="Hand"
+                                    Orientation="Horizontal">
+							<avfCommon:SvgIconControl IconName="profile-persons"
+                                                  Margin="2 6 0 5"
+                                                  Height="13"
+                                                  Width="13"
+                                                  VerticalAlignment="Center" />
+							<TextBlock Margin="9 0 0 0"
+                                       Text="Persons"
+                                       VerticalAlignment="Center"
+                                       FontSize="16" />
+						</StackPanel>
+					</TabItem.Header>
+					<TabItem.Content>
+						<StackPanel>
+							<Grid IsVisible="{Binding Path=!DataContext.HasNoItems,
+                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+								<StackPanel Orientation="Vertical"
+                                            HorizontalAlignment="Center"
+                                            Margin="0 128 0 0">
+									<avfCommon:SvgIconControl IconName="no-peresons"
+                                                      Height="102.26"
+                                                      Width="97"
+                                                      Foreground="{StaticResource SecondaryText}" />
+									<TextBlock Margin="0 13.43 0 0"
+                                               Text="No persons added yet for this profile"
+                                               FontSize="18"
+                                               FontFamily="Open Sans"
+                                               FontWeight="DemiBold"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{StaticResource SecondaryText}" />
+								
+										<Button Theme="{DynamicResource TransparentButton}"
+												Command="{Binding Path=DataContext.AddPerson, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+											<StackPanel Orientation="Horizontal"
+		HorizontalAlignment="Center"
+		Margin="0 37.58 0 0"
+		Background="Transparent">
+												<avfCommon:SvgIconControl IconName="plus-in-circle"
+																  Height="15.83"
+																  Width="15.83"
+																  Foreground="{StaticResource PrimaryHueMidBrush}"
+																  Margin="0 -2 9.58 0"
+																  VerticalAlignment="Center" />
+												<TextBlock Text="Add person"
+														   FontWeight="DemiBold"
+														   FontSize="14"
+														   Foreground="{StaticResource PrimaryHueMidBrush}"
+														   VerticalAlignment="Center" />
+											</StackPanel>
+										</Button>
+
+								</StackPanel>
+							</Grid>
+							<Grid IsVisible="{Binding Path=DataContext.HasNoItems, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                  Width="912"
+                                  Background="{StaticResource White}"
+                                  HorizontalAlignment="Center"
+                                  Margin="0 23 0 0">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="*" />
+								</Grid.RowDefinitions>
+								<Grid VerticalAlignment="Center">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+									<TextBlock HorizontalAlignment="Left"
+                                               FontSize="14"
+                                               FontWeight="DemiBold"
+                                               Foreground="{StaticResource SecondaryText}">
+										<TextBlock.Text>
+											<MultiBinding StringFormat="{}Total {0} persons added">
+												<Binding Path="DataContext.Persons.Items.Count"
+                                                         RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
+											</MultiBinding>
+										</TextBlock.Text>
+									</TextBlock>
+									<Button Theme="{DynamicResource TransparentButton}"
+											Grid.Column="1"
+											 Command="{Binding Path=DataContext.AddPerson, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" >
+										<StackPanel Grid.Column="1"
+			Orientation="Horizontal"
+			HorizontalAlignment="Right"
+			Cursor="Hand"
+			Background="Transparent">
+											<avfCommon:SvgIconControl IconName="plus-in-circle"
+															  Height="15.83"
+															  Width="15.83"
+															  Foreground="{StaticResource PrimaryHueMidBrush}"
+															  Margin="0 -2 9.58 0"
+															  VerticalAlignment="Center" />
+											<TextBlock Text="Add person"
+													   FontWeight="DemiBold"
+													   FontSize="14"
+													   Foreground="{StaticResource PrimaryHueMidBrush}"
+													   VerticalAlignment="Center" />
+										</StackPanel>
+									</Button>
+
+								</Grid>
+								<Grid Grid.Row="1"
+                                      Margin="0 20 0 0">
+									<ItemsControl ItemsSource="{Binding Path=DataContext.Persons.Items, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Border BorderBrush="{StaticResource BorderOutline}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="4"
+                                                        Background="{StaticResource White}"
+                                                        Margin="0 0 0 16">
+													<Expander Theme="{StaticResource CustomExpanderStyle}"
+                                                              Foreground="{StaticResource MainBlack}"
+                                                              IsExpanded="{Binding IsOpenSearchParameters}">
+														<Expander.Header>
+															<StackPanel Orientation="Horizontal"
+                                                                        Cursor="Hand"
+                                                                        Background="Transparent">
+																<StackPanel VerticalAlignment="Center"
+                                                                            IsVisible="{Binding !IsOpenSearchParameters}">
+																	<avfCommon:SvgIconControl IconName="arrow-right"
+                                                                                          Width="13.33"
+                                                                                          Height="12"
+                                                                                          Margin="16 -1 0 0"
+                                                                                          Foreground="{StaticResource SecondaryText}" />
+																</StackPanel>
+																<StackPanel VerticalAlignment="Center"
+                                                                            IsVisible="{Binding IsOpenSearchParameters}">
+																	<avfCommon:SvgIconControl IconName="arrow-down"
+                                                                                          Width="13.33"
+                                                                                          Height="10"
+                                                                                          Margin="16 0 0 0"
+                                                                                          Foreground="{StaticResource SecondaryText}" />
+																</StackPanel>
+																<TextBlock Margin="12 20 0 20"
+                                                                           Text="{Binding Title}" />
+															</StackPanel>
+														</Expander.Header>
+														<Border BorderThickness="0 1 0 0"
+                                                                BorderBrush="{StaticResource BorderOutline}">
+															<Grid Margin="16">
+																<Grid.RowDefinitions>
+																	<RowDefinition Height="Auto" />
+																	<RowDefinition Height="Auto" />
+																	<RowDefinition Height="Auto" />
+																	<RowDefinition Height="Auto" />
+																	<RowDefinition Height="Auto" />
+																	<RowDefinition Height="Auto" />
+																</Grid.RowDefinitions><!--materialDesign:HintAssist.Hint='"Person" title'-->
+																<TextBox Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="0 0 0 24"
+                                                                         Text="{Binding Path=Title}" />
+																<Grid Grid.Row="1">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition />
+																		<ColumnDefinition />
+																		<ColumnDefinition />
+																		<ColumnDefinition />
+																	</Grid.ColumnDefinitions>
+																	<Grid Grid.Column="0"
+                                                                          Grid.ColumnSpan="2"
+                                                                          Margin="0 0 14 0">
+																		<Grid.ColumnDefinitions>
+																			<ColumnDefinition />
+																			<ColumnDefinition />
+																		</Grid.ColumnDefinitions><!--materialDesign:HintAssist.Hint="First name"-->
+																		<TextBox Theme="{StaticResource PersonTextBox}"
+                                                                                 BorderBrush="{StaticResource BorderOutline}"
+                                                                                 
+                                                                                 Margin="0 0 4 24"
+                                                                                 Text="{Binding FirstName}" />
+																		<!--materialDesign:HintAssist.Hint="Middle name"--><TextBox Grid.Column="1"
+                                                                                 Theme="{StaticResource PersonTextBox}"
+                                                                                 BorderBrush="{StaticResource BorderOutline}"
+                                                                                 
+                                                                                 Margin="4 0 0 24"
+                                                                                 Text="{Binding MiddleName}" />
+																	</Grid>
+																<!--materialDesign:HintAssist.Hint="Last name"-->	<TextBox Grid.Column="2"
+                                                                             Grid.ColumnSpan="2"
+                                                                             Theme="{StaticResource PersonTextBox}"
+                                                                             BorderBrush="{StaticResource BorderOutline}"
+                                                                             
+                                                                             Margin="14 0 0 24"
+                                                                             Text="{Binding LastName}" />
+																</Grid>
+																<Grid Grid.Row="2">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition />
+																		<ColumnDefinition />
+																	</Grid.ColumnDefinitions>
+																	<!--materialDesign:HintAssist.Hint="Job title"--><TextBox Grid.Column="0"
+                                                                             Theme="{StaticResource PersonTextBox}"
+                                                                             BorderBrush="{StaticResource BorderOutline}"
+                                                                             
+                                                                             Margin="0 0 14 24"
+                                                                             Text="{Binding JobTitle}" />
+																	<!--materialDesign:HintAssist.Hint="Phone Number"--><TextBox Grid.Column="1"
+                                                                             Theme="{StaticResource PersonTextBox}"
+                                                                             BorderBrush="{StaticResource BorderOutline}"
+                                                                             
+                                                                             Margin="14 0 0 24"
+                                                                             Text="{Binding PhoneNumber}" />
+																</Grid>
+																<Grid Grid.Row="3">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition />
+																		<ColumnDefinition />
+																	</Grid.ColumnDefinitions>
+																	<Grid Margin="0 0 14 24">
+																		<Grid.ColumnDefinitions>
+																			<ColumnDefinition />
+																			<ColumnDefinition />
+																		</Grid.ColumnDefinitions>
+																		<Border HorizontalAlignment="Stretch"
+                                                                                Padding="15 0 22 0"
+                                                                                Margin="0 0 4 0">
+																			<!--<Border.Theme>
+																				<ControlTheme TargetType="{x:Type Border}">
+																					<Setter Property="BorderBrush"
+                                                                                            Value="{StaticResource BorderOutline}" />
+																					<Setter Property="CornerRadius"
+                                                                                            Value="2" />
+																					<Setter Property="BorderThickness"
+                                                                                            Value="1" />
+																					--><!--<ControlTheme.Triggers>
+																						<DataTrigger Binding="{Binding IsChecked, ElementName=male}"
+                                                                                                     Value="True">
+																							<Setter Property="Background"
+                                                                                                    Value="{StaticResource LightPurple}" />
+																							<Setter Property="BorderBrush"
+                                                                                                    Value="{StaticResource PrimaryHueMidBrush}" />
+																						</DataTrigger>
+																					</Style.Triggers>--><!--
+																				</ControlTheme>
+																			</Border.Theme>-->
+																			<RadioButton x:Name="male"
+                                                                                         GroupName="rbgGender"
+                                                                                         VerticalContentAlignment="Center">
+																				<RadioButton.IsChecked>
+																					<Binding Path="Gender"
+                                                                                             ConverterParameter="Male">
+																						<!--<Binding.Converter>
+																							<converter:EnumBooleanConverter />
+																						</Binding.Converter>-->
+																					</Binding>
+																				</RadioButton.IsChecked>
+																				<RadioButton.Content>
+																					<TextBlock Text="Male"
+                                                                                               HorizontalAlignment="Left"
+                                                                                               FontSize="14"
+                                                                                               FontWeight="DemiBold" />
+																				</RadioButton.Content>
+																			</RadioButton>
+																		</Border>
+																		<Border Grid.Column="1"
+                                                                                Padding="15 0 22 0"
+                                                                                Margin="4 0 0 0">
+																			<!--<Border.Theme>
+																				<ControlTheme TargetType="{x:Type Border}">
+																					<Setter Property="BorderBrush"
+                                                                                            Value="{StaticResource BorderOutline}" />
+																					<Setter Property="CornerRadius"
+                                                                                            Value="2" />
+																					<Setter Property="BorderThickness"
+                                                                                            Value="1" />
+																					--><!--<ControlTheme.Triggers>
+																						<DataTrigger Binding="{Binding IsChecked, ElementName=gender}"
+                                                                                                     Value="True">
+																							<Setter Property="Background"
+                                                                                                    Value="{StaticResource LightPurple}" />
+																							<Setter Property="BorderBrush"
+                                                                                                    Value="{StaticResource PrimaryHueMidBrush}" />
+																						</DataTrigger>
+																					</Style.Triggers>--><!--
+																				</ControlTheme>
+																			</Border.Theme>-->
+																			<RadioButton x:Name="gender"
+                                                                                         GroupName="rbgGender"
+                                                                                         VerticalContentAlignment="Center">
+																				<RadioButton.IsChecked>
+																					<Binding Path="Gender"
+                                                                                           
+                                                                                             ConverterParameter="Female">
+																						<!--<Binding.Converter>
+																							<converter:EnumBooleanConverter />
+																						</Binding.Converter>-->
+																					</Binding>
+																				</RadioButton.IsChecked>
+																				<RadioButton.Content>
+																					<TextBlock Text="Female"
+                                                                                               HorizontalAlignment="Left"
+                                                                                               FontSize="14"
+                                                                                               FontWeight="DemiBold" />
+																				</RadioButton.Content>
+																			</RadioButton>
+																		</Border>
+																	</Grid>
+															<!--materialDesign:HintAssist.Hint="Birthdate"-->		<DatePicker Grid.Column="1"
+                                                                                SelectedDate="{Binding BirthDate}"
+                                                                                
+                                                                                Theme="{StaticResource MaterialDesignOutlinedDatePicker}"
+                                                                                BorderBrush="{StaticResource BorderOutline}"
+                                                                                FontSize="14"
+                                                                                FontFamily="Open Sans"
+                                                                                FontWeight="DemiBold"
+                                                                                Foreground="{StaticResource MainBlack}"
+                                                                                Margin="14 0 0 24" />
+																</Grid>
+																<Grid Grid.Row="4">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition />
+																		<ColumnDefinition />
+																	</Grid.ColumnDefinitions>
+																<!--materialDesign:HintAssist.Hint="Birth Place"-->	<TextBox Grid.Column="0"
+                                                                             Theme="{StaticResource PersonTextBox}"
+                                                                             BorderBrush="{StaticResource BorderOutline}"
+                                                                             
+                                                                             Margin="0 0 14 24"
+                                                                             Text="{Binding BirthPlace}" />
+															<!--materialDesign:HintAssist.Hint="Note"-->		<TextBox Grid.Column="1"
+                                                                             Theme="{StaticResource PersonTextBox}"
+                                                                             BorderBrush="{StaticResource BorderOutline}"
+                                                                             
+                                                                             Margin="14 0 0 24"
+                                                                             Text="{Binding Notes}" />
+																</Grid>
+																<Grid Grid.Row="5"
+                                                                      VerticalAlignment="Center">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition />
+																		<ColumnDefinition />
+																	</Grid.ColumnDefinitions>
+																	<Button Grid.Column="0"
+																			Theme="{DynamicResource TransparentButton}"
+																			Command="{Binding Path=DataContext.DeletePerson, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                                                                       CommandParameter="{Binding}">
+																		<StackPanel Grid.Column="0"
+			Orientation="Horizontal"
+			VerticalAlignment="Center"
+			Cursor="Hand"
+			Background="Transparent"
+			HorizontalAlignment="Left">
+																		
+																			<avfCommon:SvgIconControl IconName="delete"
+																								  Width="13.34"
+																								  Height="14"
+																								  Foreground="{StaticResource OrangeDeleteProfiles}"
+																								  Margin="0 0 8 0" />
+																			<TextBlock Text="Delete"
+																					   FontSize="14"
+																					   Foreground="{StaticResource OrangeDeleteProfiles}" />
+																		</StackPanel>
+																	</Button>
+
+																</Grid>
+															</Grid>
+														</Border>
+													</Expander>
+												</Border>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+								</Grid>
+							</Grid>
+						</StackPanel>
+					</TabItem.Content>
+				</TabItem>
+				<TabItem Theme="{StaticResource CustomTabItem}">
+					<TabItem.Header>
+						<StackPanel
+                            Cursor="Hand"
+                            Orientation="Horizontal">
+							<avfCommon:SvgIconControl
+                                IconName="profile-businesses"
+                                Margin="2 6 0 5"
+                                Height="13"
+                                Width="13"
+                                VerticalAlignment="Center" />
+							<TextBlock
+                                Margin="9 0 0 0"
+                                Text="Businesses"
+                                VerticalAlignment="Center"
+                                FontSize="16"/>
+						</StackPanel>
+					</TabItem.Header>
+					<TabItem.Content>
+						<StackPanel>
+							<Grid IsVisible="{Binding Path=!DataContext.HasNoBusinessItems,
+                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+								<StackPanel Orientation="Vertical"
+                                        HorizontalAlignment="Center"
+                                        Margin="0 128 0 0">
+									<avfCommon:SvgIconControl
+                                        IconName="no-business"
+                                        Height="102.26"
+                                        Width="97"
+                                        Foreground="{StaticResource SecondaryText}"/>
+									<TextBlock Margin="0 13.43 0 0"
+                                           Text="No businnesses added yet for this profile"
+                                           FontSize="18"
+                                           FontFamily="Open Sans"
+                                           FontWeight="DemiBold"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{StaticResource SecondaryText}"/>
+
+									<Button Grid.Column="0"
+											Theme="{DynamicResource TransparentButton}"
+											Command="{Binding Path=DataContext.AddBusiness, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+										<StackPanel Orientation="Horizontal"
+		HorizontalAlignment="Center"
+		Margin="0 37.58 0 0"
+		Cursor="Hand"
+		Background="Transparent">
+											<avfCommon:SvgIconControl
+											IconName="plus-in-circle"
+												Height="15.83"
+												Width="15.83"
+												Foreground="{StaticResource PrimaryHueMidBrush}"
+												Margin="0 -2 9.58 0"
+												VerticalAlignment="Center"/>
+											<TextBlock Text="Add business"
+												   FontWeight="DemiBold"
+												   FontSize="14"
+												   Foreground="{StaticResource PrimaryHueMidBrush}"
+												   VerticalAlignment="Center"/>
+										</StackPanel>
+									</Button>
+
+								</StackPanel>
+							</Grid>
+							<Grid IsVisible="{Binding Path=DataContext.HasNoBusinessItems,
+                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                  Width="912"
+                                  Background="{StaticResource White}"
+                                  HorizontalAlignment="Center"
+                                  Margin="0 23 0 0">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="*"/>
+								</Grid.RowDefinitions>
+								<Grid VerticalAlignment="Center">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<TextBlock HorizontalAlignment="Left"
+                                               FontSize="14"
+                                               FontWeight="DemiBold"
+                                               Foreground="{StaticResource SecondaryText}">
+										<TextBlock.Text>
+											<MultiBinding StringFormat="{}Total {0} businesses added">
+												<Binding Path="DataContext.Businesses.Items.Count" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
+											</MultiBinding>
+										</TextBlock.Text>
+									</TextBlock>
+									<Button Grid.Column="1"
+									Theme="{DynamicResource TransparentButton}"
+											Command="{Binding Path=DataContext.AddBusiness, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+										<StackPanel Grid.Column="1"
+			Orientation="Horizontal"
+			HorizontalAlignment="Right"
+			Cursor="Hand"
+			Background="Transparent">
+											<avfCommon:SvgIconControl
+											IconName="plus-in-circle"
+												Height="15.83"
+												Width="15.83"
+												Foreground="{StaticResource PrimaryHueMidBrush}"
+												Margin="0 -2 9.58 0"
+												VerticalAlignment="Center"/>
+											<TextBlock Text="Add business"
+												   FontWeight="DemiBold"
+												   FontSize="14"
+												   Foreground="{StaticResource PrimaryHueMidBrush}"
+												   VerticalAlignment="Center"/>
+										</StackPanel>
+									</Button>
+
+								</Grid>
+								<Grid Grid.Row="1" Margin="0 20 0 0">
+									<ItemsControl ItemsSource="{Binding Path=DataContext.Businesses.Items, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Border BorderBrush="{StaticResource BorderOutline}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="4"
+                                                        Background="{StaticResource White}"
+                                                        Margin="0 0 0 16">
+													<Expander Theme="{StaticResource CustomExpanderStyle}"
+                                                          Foreground="{StaticResource MainBlack}"
+                                                          IsExpanded="{Binding IsOpenSearchParameters}">
+														<Expander.Header>
+															<StackPanel Orientation="Horizontal"
+                                                                        Cursor="Hand"
+                                                                        Background="Transparent">
+																<StackPanel VerticalAlignment="Center"
+                                                                            IsVisible="{Binding !IsOpenSearchParameters}">
+																	<avfCommon:SvgIconControl
+                                                                        IconName="arrow-right"
+                                                                        Width="13.33"
+                                                                        Height="12"
+                                                                        Margin="16 -1 0 0"
+                                                                        Foreground="{StaticResource SecondaryText}"/>
+																</StackPanel>
+																<StackPanel VerticalAlignment="Center"
+                                                                            IsVisible="{Binding IsOpenSearchParameters}">
+																	<avfCommon:SvgIconControl
+                                                                        IconName="arrow-down"
+                                                                        Width="13.33"
+                                                                        Height="10"
+                                                                        Margin="16 0 0 0"
+                                                                        Foreground="{StaticResource SecondaryText}"/>
+																</StackPanel>
+																<TextBlock Margin="12 20 0 20" Text="{Binding Title}"/>
+															</StackPanel>
+														</Expander.Header>
+														<Border BorderThickness="0 1 0 0"
+                                                                BorderBrush="{StaticResource BorderOutline}">
+															<Grid Margin="16">
+																<Grid.RowDefinitions>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																</Grid.RowDefinitions>
+																<Grid.ColumnDefinitions>
+																	<ColumnDefinition/>
+																	<ColumnDefinition/>
+																</Grid.ColumnDefinitions>
+														<!--materialDesign:HintAssist.Hint='"Business" title'-->		<TextBox Grid.Column="0" Grid.ColumnSpan="2"
+                                                                         Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="0 0 0 24"
+                                                                         Text="{Binding Path=Title}"/>
+															<!--materialDesign:HintAssist.Hint="Company name"-->	<TextBox Grid.Row="1" Grid.Column="0"
+                                                                         Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="0 0 14 24"
+                                                                         Text="{Binding CompanyName}"/>
+														<!--materialDesign:HintAssist.Hint="Department"-->		<TextBox Grid.Row="1" Grid.Column="1"
+                                                                         Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="14 0 0 24"
+                                                                         Text="{Binding Department}"/>
+														<!--materialDesign:HintAssist.Hint="Phone Number"-->		<TextBox Grid.Row="2" Grid.Column="0"
+                                                                         Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="0 0 14 24"
+                                                                         Text="{Binding PhoneNumber}"/>
+														<!--materialDesign:HintAssist.Hint="Web Site"-->		<TextBox Grid.Row="2" Grid.Column="1"
+                                                                         Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="14 0 0 24"
+                                                                         Text="{Binding WebSite}"/>
+														<!--materialDesign:HintAssist.Hint="Note"-->		<TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                                                                         Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="0 0 0 24"
+                                                                         Text="{Binding Path=Notes}"/>
+																<Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition/>
+																		<ColumnDefinition/>
+																	</Grid.ColumnDefinitions>
+																	<Button Theme="{DynamicResource TransparentButton}"
+																			Command="{Binding Path=DataContext.DeleteBusiness, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+																										   CommandParameter="{Binding}">
+																		<StackPanel Grid.Column="0"
+			Orientation="Horizontal"
+			VerticalAlignment="Center"
+			Cursor="Hand"
+			Background="Transparent"
+			HorizontalAlignment="Left">
+																			<avfCommon:SvgIconControl IconName="delete"
+																								  Width="13.34"
+																								  Height="14"
+																								  Foreground="{StaticResource OrangeDeleteProfiles}"
+																								  Margin="0 0 8 0" />
+																			<TextBlock Text="Delete"
+																					   FontSize="14"
+																					   Foreground="{StaticResource OrangeDeleteProfiles}" />
+																		</StackPanel>
+																	</Button>
+
+																</Grid>
+															</Grid>
+														</Border>
+													</Expander>
+												</Border>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+								</Grid>
+							</Grid>
+						</StackPanel>
+					</TabItem.Content>
+				</TabItem>
+				<TabItem Theme="{StaticResource CustomTabItem}">
+					<TabItem.Header>
+						<StackPanel
+                            Cursor="Hand"
+                            Orientation="Horizontal">
+							<avfCommon:SvgIconControl
+                                IconName="profile-addresses"
+                                Margin="2 6 0 5"
+                                Height="13"
+                                Width="13"
+                                VerticalAlignment="Center" />
+							<TextBlock
+                                Margin="9 0 0 0"
+                                Text="Addresses"
+                                VerticalAlignment="Center"
+                                FontSize="16"/>
+						</StackPanel>
+					</TabItem.Header>
+					<TabItem.Content>
+						<StackPanel>
+							<Grid IsVisible="{Binding Path=!DataContext.HasNoAddressesItems,
+                                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+								<StackPanel Orientation="Vertical"
+                                        HorizontalAlignment="Center"
+                                        Margin="0 128 0 0">
+									<avfCommon:SvgIconControl
+                                        IconName="no-address"
+                                        Height="102.26"
+                                        Width="97"
+                                        Foreground="{StaticResource SecondaryText}"/>
+									<TextBlock Margin="0 13.43 0 0"
+                                           Text="No addresses added yet for this profile"
+                                           FontSize="18"
+                                           FontFamily="Open Sans"
+                                           FontWeight="DemiBold"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{StaticResource SecondaryText}"/>
+									<Button Theme="{DynamicResource TransparentButton}"
+											 Command="{Binding Path=DataContext.AddAddress, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+										<StackPanel Orientation="Horizontal"
+		HorizontalAlignment="Center"
+		Margin="0 37.58 0 0"
+		Cursor="Hand"
+		Background="Transparent">
+											<avfCommon:SvgIconControl
+											IconName="plus-in-circle"
+												Height="15.83"
+												Width="15.83"
+												Foreground="{StaticResource PrimaryHueMidBrush}"
+												Margin="0 -2 9.58 0"
+												VerticalAlignment="Center"/>
+											<TextBlock Text="Add address"
+												   FontWeight="DemiBold"
+												   FontSize="14"
+												   Foreground="{StaticResource PrimaryHueMidBrush}"
+												   VerticalAlignment="Center"/>
+										</StackPanel>
+									</Button>
+
+								</StackPanel>
+							</Grid>
+							<Grid IsVisible="{Binding Path=DataContext.HasNoAddressesItems, 
+                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                  Width="912"
+                                  Background="{StaticResource White}"
+                                  HorizontalAlignment="Center"
+                                  Margin="0 23 0 0">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="*"/>
+								</Grid.RowDefinitions>
+								<Grid VerticalAlignment="Center">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<TextBlock HorizontalAlignment="Left"
+                                               FontSize="14"
+                                               FontWeight="DemiBold"
+                                               Foreground="{StaticResource SecondaryText}">
+										<TextBlock.Text>
+											<MultiBinding StringFormat="{}Total {0} address added">
+												<Binding Path="DataContext.Addresses.Items.Count" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+											</MultiBinding>
+										</TextBlock.Text>
+									</TextBlock>
+									<Button Theme="{DynamicResource TransparentButton}"
+											Grid.Column="1"
+											 Command="{Binding Path=DataContext.AddAddress, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+										<StackPanel Grid.Column="1"
+			Orientation="Horizontal"
+			HorizontalAlignment="Right"
+			Cursor="Hand"
+			Background="Transparent">
+											<avfCommon:SvgIconControl
+											IconName="plus-in-circle"
+												Height="15.83"
+												Width="15.83"
+												Foreground="{StaticResource PrimaryHueMidBrush}"
+												Margin="0 -2 9.58 0"
+												VerticalAlignment="Center"/>
+											<TextBlock Text="Add address"
+												   FontWeight="DemiBold"
+												   FontSize="14"
+												   Foreground="{StaticResource PrimaryHueMidBrush}"
+												   VerticalAlignment="Center"/>
+										</StackPanel>
+									</Button>
+
+								</Grid>
+								<Grid Grid.Row="1" Margin="0 20 0 0">
+									<ItemsControl ItemsSource="{Binding Path=DataContext.Addresses.Items, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Border BorderBrush="{StaticResource BorderOutline}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="4"
+                                                        Background="{StaticResource White}"
+                                                        Margin="0 0 0 16">
+													<Expander Theme="{StaticResource CustomExpanderStyle}"
+                                                          Foreground="{StaticResource MainBlack}"
+                                                          IsExpanded="{Binding IsOpenSearchParameters}">
+														<Expander.Header>
+															<StackPanel Orientation="Horizontal"
+                                                                        Cursor="Hand"
+                                                                        Background="Transparent">
+																<StackPanel VerticalAlignment="Center"
+                                                                            IsVisible="{Binding !IsOpenSearchParameters}">
+																	<avfCommon:SvgIconControl
+                                                                        IconName="arrow-right"
+                                                                        Width="13.33"
+                                                                        Height="12"
+                                                                        Margin="16 -1 0 0"
+                                                                        Foreground="{StaticResource SecondaryText}"/>
+																</StackPanel>
+																<StackPanel VerticalAlignment="Center"
+                                                                            IsVisible="{Binding IsOpenSearchParameters}">
+																	<avfCommon:SvgIconControl
+                                                                        IconName="arrow-down"
+                                                                        Width="13.33"
+                                                                        Height="10"
+                                                                        Margin="16 0 0 0"
+                                                                        Foreground="{StaticResource SecondaryText}"/>
+																</StackPanel>
+																<TextBlock Margin="12 20 0 20" Text="{Binding Title}"/>
+															</StackPanel>
+														</Expander.Header>
+														<Border BorderThickness="0 1 0 0"
+                                                                BorderBrush="{StaticResource BorderOutline}">
+															<Grid Margin="16">
+																<Grid.RowDefinitions>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																</Grid.RowDefinitions>
+																<Grid.ColumnDefinitions>
+																	<ColumnDefinition/>
+																	<ColumnDefinition/>
+																</Grid.ColumnDefinitions>
+																<!--materialDesign:HintAssist.Hint='"Address" title'--><TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                                                             Theme="{StaticResource PersonTextBox}"
+                                                                             BorderBrush="{StaticResource BorderOutline}"
+                                                                             
+                                                                             Margin="0 0 0 24"
+                                                                             Text="{Binding Path=Title}"/>
+														<!--materialDesign:HintAssist.Hint="Address Line 1"-->		<TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                                             Theme="{StaticResource PersonTextBox}"
+                                                                             BorderBrush="{StaticResource BorderOutline}"
+                                                                             
+                                                                             Margin="0 0 0 24"
+                                                                             Text="{Binding Path=AddressLine1}"/>
+														      <!--materialDesign:HintAssist.Hint="Address Line 2"-->		<TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                                                             Theme="{StaticResource PersonTextBox}"
+                                                                             BorderBrush="{StaticResource BorderOutline}"
+                                                                       
+                                                                             Margin="0 0 0 24"
+                                                                             Text="{Binding Path=AddressLine2}"/>
+																<!--materialDesign:HintAssist.Hint="City"--><TextBox Grid.Row="3" Grid.Column="0"
+                                                                             Theme="{StaticResource PersonTextBox}"
+                                                                             BorderBrush="{StaticResource BorderOutline}"
+                                                                             
+                                                                             Margin="0 0 14 24"
+                                                                             Text="{Binding Path=City}"/>
+																<Grid Grid.Row="3" Grid.Column="1" Margin="14 0 0 24">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition/>
+																		<ColumnDefinition/>
+																	</Grid.ColumnDefinitions>
+																	<!--materialDesign:HintAssist.Hint="State"--><TextBox Grid.Column="0"
+                                                                             Theme="{StaticResource PersonTextBox}"
+                                                                             BorderBrush="{StaticResource BorderOutline}"
+                                                                             
+                                                                             Margin="0 0 4 0"
+                                                                             Text="{Binding Path=State}"/>
+																<!--materialDesign:HintAssist.Hint="Z"-->	<TextBox Grid.Column="1"
+                                                                             Theme="{StaticResource PersonTextBox}"
+                                                                             BorderBrush="{StaticResource BorderOutline}"
+                                                                             
+                                                                             Margin="4 0 0 0"
+                                                                             Text="{Binding Path=Zip}"/>
+																</Grid>
+																<!--materialDesign:HintAssist.Hint="County"--><ComboBox Grid.Row="4" Grid.Column="0"
+                                                                          Margin="0 0 14 24"
+                                                                          Height="60"
+                                                                          VerticalAlignment="Center"
+                                                                          Padding="15 15 15 6"
+                                                                          ItemsSource="{Binding Path=DataContext.Countries.Items, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                                          HorizontalAlignment="Stretch"
+                                                                          Theme="{StaticResource MaterialDesignOutlinedComboBox}"
+                                                                          BorderBrush="{StaticResource BorderOutlineButton}"
+                                                                          >
+																	<ComboBox.SelectedItem>
+																		<MultiBinding Converter="{StaticResource coutryIdToCountry}">
+																			<Binding Path="CountryId"/>
+																			<Binding Path="DataContext.Countries.Items" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" Mode="OneWay"/>
+																		</MultiBinding>
+																	</ComboBox.SelectedItem>
+																	<ComboBox.ItemTemplate>
+																		<DataTemplate>
+																			<Label Content="{Binding Name}"/>
+																		</DataTemplate>
+																	</ComboBox.ItemTemplate>
+																</ComboBox>
+															<!--materialDesign:HintAssist.Hint="Note"-->	<TextBox Grid.Row="4" Grid.Column="1"
+                                                                         Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="14 0 0 24"
+                                                                         Text="{Binding Path=Notes}">
+
+																</TextBox>
+																<Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition/>
+																		<ColumnDefinition/>
+																	</Grid.ColumnDefinitions>
+																	<Button Theme="{DynamicResource TransparentButton}"
+																			Command="{Binding Path=DataContext.DeleteAddress, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+																										   CommandParameter="{Binding}">
+																		<StackPanel Grid.Column="0"
+			Orientation="Horizontal"
+			VerticalAlignment="Center"
+			Cursor="Hand"
+			Background="Transparent"
+			HorizontalAlignment="Left">
+																			<avfCommon:SvgIconControl IconName="delete"
+																								  Width="13.34"
+																								  Height="14"
+																								  Foreground="{StaticResource OrangeDeleteProfiles}"
+																								  Margin="0 0 8 0" />
+																			<TextBlock Text="Delete"
+																					   FontSize="14"
+																					   Foreground="{StaticResource OrangeDeleteProfiles}" />
+																		</StackPanel>
+																	</Button>
+
+																</Grid>
+															</Grid>
+														</Border>
+													</Expander>
+												</Border>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+								</Grid>
+							</Grid>
+						</StackPanel>
+					</TabItem.Content>
+				</TabItem>
+				<TabItem Theme="{StaticResource CustomTabItem}">
+					<TabItem.Header>
+						<StackPanel
+                            Cursor="Hand"
+                            Orientation="Horizontal">
+							<avfCommon:SvgIconControl
+                                IconName="profile-logins"
+                                Margin="2 6 0 5"
+                                Height="13"
+                                Width="13"
+                                VerticalAlignment="Center" />
+							<TextBlock
+                                Margin="9 0 0 0"
+                                Text="Logins"
+                                VerticalAlignment="Center"
+                                FontSize="16"/>
+						</StackPanel>
+					</TabItem.Header>
+					<TabItem.Content>
+						<StackPanel>
+							<Grid IsVisible="{Binding Path=!DataContext.HasNoLoginsItems,
+                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+								<StackPanel Orientation="Vertical"
+                                        HorizontalAlignment="Center"
+                                        Margin="0 128 0 0">
+									<avfCommon:SvgIconControl
+                                    IconName="no-logins"
+                                    Height="102.26"
+                                    Width="97"
+                                    Foreground="{StaticResource SecondaryText}"/>
+									<TextBlock Margin="0 13.43 0 0"
+                                           Text="No logins added yet for this profile"
+                                           FontSize="18"
+                                           FontFamily="Open Sans"
+                                           FontWeight="DemiBold"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{StaticResource SecondaryText}"/>
+									<Button Theme="{DynamicResource TransparentButton}"
+																		 Command="{Binding Path=DataContext.AddLogin, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+										<StackPanel Orientation="Horizontal"
+		HorizontalAlignment="Center"
+		Margin="0 37.58 0 0"
+		Cursor="Hand"
+		Background="Transparent">
+											<avfCommon:SvgIconControl
+											IconName="plus-in-circle"
+												Height="15.83"
+												Width="15.83"
+												Foreground="{StaticResource PrimaryHueMidBrush}"
+												Margin="0 -2 9.58 0"
+												VerticalAlignment="Center"/>
+											<TextBlock Text="Add login"
+												   FontWeight="DemiBold"
+												   FontSize="14"
+												   Foreground="{StaticResource PrimaryHueMidBrush}"
+												   VerticalAlignment="Center"/>
+										</StackPanel>
+									</Button>
+
+								</StackPanel>
+							</Grid>
+							<Grid IsVisible="{Binding Path=DataContext.HasNoLoginsItems,
+                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                  Width="912"
+                                  Background="{StaticResource White}"
+                                  HorizontalAlignment="Center"
+                                  Margin="0 23 0 0">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="*"/>
+								</Grid.RowDefinitions>
+								<Grid VerticalAlignment="Center">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<TextBlock HorizontalAlignment="Left"
+                                               FontSize="14"
+                                               FontWeight="DemiBold"
+                                               Foreground="{StaticResource SecondaryText}">
+										<TextBlock.Text>
+											<MultiBinding StringFormat="{}Total {0} login added">
+												<Binding Path="DataContext.Logins.Items.Count" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
+											</MultiBinding>
+										</TextBlock.Text>
+									</TextBlock>
+									<Button Theme="{DynamicResource TransparentButton}"
+											 Command="{Binding Path=DataContext.AddLogin, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+											 Grid.Column="1">
+										<StackPanel Grid.Column="1"
+			Orientation="Horizontal"
+			HorizontalAlignment="Right"
+			Cursor="Hand"
+			Background="Transparent">
+											<avfCommon:SvgIconControl
+											IconName="plus-in-circle"
+												Height="15.83"
+												Width="15.83"
+												Foreground="{StaticResource PrimaryHueMidBrush}"
+												Margin="0 -2 9.58 0"
+												VerticalAlignment="Center"/>
+											<TextBlock Text="Add login"
+												   FontWeight="DemiBold"
+												   FontSize="14"
+												   Foreground="{StaticResource PrimaryHueMidBrush}"
+												   VerticalAlignment="Center"/>
+										</StackPanel>
+									</Button>
+
+								</Grid>
+								<Grid Grid.Row="1" Margin="0 20 0 0">
+									<ItemsControl ItemsSource="{Binding Path=DataContext.Logins.Items,
+                                        RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Border BorderBrush="{StaticResource BorderOutline}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="4"
+                                                        Background="{StaticResource White}"
+                                                        Margin="0 0 0 16">
+													<Expander Theme="{StaticResource CustomExpanderStyle}"
+                                                          Foreground="{StaticResource MainBlack}"
+                                                          IsExpanded="{Binding IsOpenSearchParameters}">
+														<Expander.Header>
+															<StackPanel Orientation="Horizontal"
+                                                                        Cursor="Hand"
+                                                                        Background="Transparent">
+																<StackPanel VerticalAlignment="Center"
+                                                                            IsVisible="{Binding !IsOpenSearchParameters}">
+																	<avfCommon:SvgIconControl
+                                                                        IconName="arrow-right"
+                                                                        Width="13.33"
+                                                                        Height="12"
+                                                                        Margin="16 -1 0 0"
+                                                                        Foreground="{StaticResource SecondaryText}"/>
+																</StackPanel>
+																<StackPanel VerticalAlignment="Center"
+                                                                            IsVisible="{Binding IsOpenSearchParameters}">
+																	<avfCommon:SvgIconControl
+                                                                        IconName="arrow-down"
+                                                                        Width="13.33"
+                                                                        Height="10"
+                                                                        Margin="16 0 0 0"
+                                                                        Foreground="{StaticResource SecondaryText}"/>
+																</StackPanel>
+																<TextBlock Margin="12 20 0 20" Text="{Binding Title}"/>
+															</StackPanel>
+														</Expander.Header>
+														<Border BorderThickness="0 1 0 0"
+                                                                BorderBrush="{StaticResource BorderOutline}">
+															<Grid Margin="16">
+																<Grid.RowDefinitions>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																</Grid.RowDefinitions>
+															<!--materialDesign:HintAssist.Hint='"Login" title'-->	<TextBox Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="0 0 0 24"
+                                                                         Text="{Binding Path=Title}"/>
+															<!--materialDesign:HintAssist.Hint="Website"-->	<TextBox Grid.Row="1" Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="0 0 0 24"
+                                                                         Text="{Binding Path=WebSite}"/>
+															<!--materialDesign:HintAssist.Hint="Email"-->	<TextBox Grid.Row="2" Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="0 0 0 24"
+                                                                         Text="{Binding Path=Email}"/>
+																<Grid Grid.Row="3" Margin="0 0 0 24">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition/>
+																		<ColumnDefinition/>
+																	</Grid.ColumnDefinitions>
+																	<!--materialDesign:HintAssist.Hint="User Name"--><TextBox Grid.Column="0" Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="0 0 14 0"
+                                                                         Text="{Binding Path=UserName}"/>
+																<!--materialDesign:HintAssist.Hint="Password"-->	<TextBox Grid.Column="1" Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="14 0 0 0"
+                                                                         Text="{Binding Path=Password}"/>
+																</Grid>
+															<!--materialDesign:HintAssist.Hint="Note"-->	<TextBox Grid.Row="4" Theme="{StaticResource PersonTextBox}"
+                                                                         BorderBrush="{StaticResource BorderOutline}"
+                                                                         
+                                                                         Margin="0 0 0 24"
+                                                                         Text="{Binding Path=Notes}"/>
+																<Grid Grid.Row="5" VerticalAlignment="Center">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition/>
+																		<ColumnDefinition/>
+																	</Grid.ColumnDefinitions>
+																	<Button Theme="{DynamicResource TransparentButton}"
+																			Command="{Binding Path=DataContext.DeleteLogin, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                                                                       CommandParameter="{Binding}">
+																		<StackPanel Grid.Column="0"
+			Orientation="Horizontal"
+			VerticalAlignment="Center"
+			Cursor="Hand"
+			Background="Transparent"
+			HorizontalAlignment="Left">
+																			<avfCommon:SvgIconControl IconName="delete"
+																								  Width="13.34"
+																								  Height="14"
+																								  Foreground="{StaticResource OrangeDeleteProfiles}"
+																								  Margin="0 0 8 0" />
+																			<TextBlock Text="Delete"
+																					   FontSize="14"
+																					   Foreground="{StaticResource OrangeDeleteProfiles}" />
+																		</StackPanel>
+																	</Button>
+
+																</Grid>
+															</Grid>
+														</Border>
+													</Expander>
+												</Border>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+								</Grid>
+							</Grid>
+						</StackPanel>
+					</TabItem.Content>
+				</TabItem>
+			</TabControl>
+
+			<!--<wait:WaitIndicatorView Grid.Row="0" Grid.RowSpan="2"
+                IsIndicatorVisible="{Binding IsSaving}"/>-->
+		</Grid>
+	</Grid>
+</UserControl>

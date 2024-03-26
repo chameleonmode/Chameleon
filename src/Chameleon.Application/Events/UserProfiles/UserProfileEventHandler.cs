@@ -255,7 +255,7 @@ namespace Chameleon.Application.Events
         {
             //_userProfileView.SetUserProfile(profile, tab, outReachTab);
             //_mainWindow.SetContent(_userProfileView, profile.Title);
-            _navigationSrvice.NavigateToType(typeof(IUserProfileView), profile);
+            _navigationSrvice.NavigateToType(typeof(IUserProfileIdentityView), profile);
         }
 
         private void OnOpenUserSystemBrowser(UserProfileSystemBrowserEventArgs args)
