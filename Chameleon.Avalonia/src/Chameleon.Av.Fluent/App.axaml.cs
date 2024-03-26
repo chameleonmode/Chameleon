@@ -47,6 +47,12 @@ using Chameleon.Interfaces.Views;
 using System.ComponentModel;
 using Avalonia.Svg.Skia;
 using Chameleon.Interfaces.Services;
+using FluentAvalonia.UI.Windowing;
+using Chameleon.Interfaces.UserProfiles;
+using Chameleon.Avalonia.Controls.UserProfilesView;
+using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
+using Chameleon.Interfaces.App.UserProfiles;
+using Chameleon.Interfaces.UserProfileFolders;
 
 namespace Chameleon.Av.Fluent;
      public class tempinits : IDialogWindowsService  , IPopupDialogService
@@ -93,7 +99,19 @@ namespace Chameleon.Av.Fluent;
 }
 public partial class App : PrismApplication
 {
-    public static bool FrameworkInitComplete = false;
+    public static Action<MainWindow> OnFramworkInitComplete;
+
+    private MainWindow _mainWindow;
+    public MainWindow MainAppWindow
+    {
+        get
+        {
+            if (_mainWindow == null)
+                _mainWindow = Container.Resolve<MainWindow>();
+            return _mainWindow;
+        }
+    }
+    //public static bool FrameworkInitComplete = false;
 
     public override void Initialize()
     {
@@ -200,6 +218,12 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IDashboardViewModel, DashboardViewModel>();
         containerRegistry.RegisterSingleton<IDashboardView, DashboardView>();
 
+        containerRegistry.RegisterSingleton<IProjectsViewModel, ProjectsViewModel>();
+        containerRegistry.RegisterSingleton<IProjectsView, ProjectsView>();
+        containerRegistry.RegisterSingleton<IUserProfileFoldersViewModel, UserProfileFoldersViewModel>();
+        containerRegistry.RegisterSingleton<IUserProfileFoldersView, UserProfileFoldersView>();
+        containerRegistry.RegisterSingleton<IUserProfilesViewModel, UserProfilesViewModel>();
+        containerRegistry.RegisterSingleton<IUserProfilesView, UserProfilesView>();
         //containerRegistry.RegisterSingleton<ISettingsViewModel, SettingsViewModel>();
         //containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
         //containerRegistry.RegisterSingleton<IUserProxySettingsViewModel, UserProxySettingsViewModel>();
@@ -272,11 +296,12 @@ public partial class App : PrismApplication
 
         base.OnFrameworkInitializationCompleted();
 
-        FrameworkInitComplete = true;
+        OnFramworkInitComplete?.Invoke(MainAppWindow);
+        //MainAppWindow.MainView.OnFrameworkInit(MainAppWindow);
     }
 
     protected override AvaloniaObject CreateShell()
     {
-        return Container.Resolve<MainWindow>();
+        return MainAppWindow;
     }
 }

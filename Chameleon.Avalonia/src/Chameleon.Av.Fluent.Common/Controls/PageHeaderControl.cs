@@ -10,6 +10,7 @@ namespace Chameleon.Av.Fluent.Common.Controls;
 public enum PageHeaderTextType
 {
     Dashboard,
+    Profiles,
     Main,
     CoreControls,
     FAControls,

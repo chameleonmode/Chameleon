@@ -1,0 +1,103 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:local="using:Chameleon.Avalonia.Controls.UserProfilesView"
+			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+             mc:Ignorable="d" d:DesignWidth="890" d:DesignHeight="850"
+             x:Class="Chameleon.Avalonia.Controls.UserProfilesView.ProjectsView">
+	<ScrollViewer>
+		<StackPanel Spacing="-5">
+			<avfCommon:PageHeaderControl TextType="Profiles"
+										 Classes="smallest"/>
+
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="auto" />
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="auto"/>
+				</Grid.ColumnDefinitions>
+				<Border Grid.Row="0"
+						Grid.ColumnSpan="2"
+						BorderBrush="{StaticResource ChameleonGray}"
+						BorderThickness="1">
+					<Grid>
+						<!--<breadcrumbsView:BreadcrumbsView
+							DataContext="{Binding ElementName=profilesView, Path=DataContext.BreadcrumbsViewModel}"
+							VerticalAlignment="Center"
+							Margin="23 0 0 0"/>-->
+						<StackPanel Orientation="Horizontal"
+									HorizontalAlignment="Right">
+							<Button Width="153"
+									Height="40"
+									Margin="0 0 24 0"
+									Background="Transparent"
+									Foreground="{StaticResource ButtonDarkBrush}"
+									BorderThickness="0"
+									Command="{Binding SyncChangesCommand}"
+									IsVisible="{Binding IsSyncChangesBtnVisible}">
+								<StackPanel Orientation="Horizontal">
+								<!--Foreground="{StaticResource ButtonDarkBrush}"-->	
+									<avfCommon:SvgIconControl IconName="sync"
+														  
+														  Width="14.25"
+														  Height="17.43"
+														  VerticalAlignment="Center"
+														  Margin="0 0 10 0" />
+									<TextBlock VerticalAlignment="Center"
+											   Margin="0"
+											   Text="Sync changes"
+											   FontWeight="DemiBold"
+											   FontFamily="Open Sans"
+											   FontSize="14" />
+								</StackPanel>
+							</Button><!--featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.CreateProfileBtn}"
+									featureTouring:TourHelper.Placement="BottomRight"-->
+						<!--materialDesign:ButtonAssist.CornerRadius="0"-->	<Button Margin="0 9 15 11"
+									Width="137"
+									Height="40"
+									Padding="0"
+									Background="{StaticResource ButtonDarkBrush}"
+									
+									Command="{Binding CreateProfileCommand}"
+									IsVisible="{Binding IsCreateProfileBtnVisible}"
+									
+									x:Name="CreateProfileBtn">
+								<StackPanel Orientation="Horizontal">
+									<avfCommon:SvgIconControl  IconName="plus"
+														  Foreground="White"
+														  Width="14"
+														  Height="14"
+														  VerticalAlignment="Center"
+														  Margin="18 13 0 13" />
+
+									<TextBlock VerticalAlignment="Center"
+											   Margin="8 12 18 11"
+											   Text="New profile"
+											   FontWeight="DemiBold"
+											   FontFamily="Open Sans"
+											   FontSize="14" />
+								</StackPanel>
+							</Button>
+						</StackPanel>
+					</Grid>
+				</Border>
+				<local:UserProfilesView
+					Grid.Column="0"
+					Grid.Row="1"
+					x:Name="profilesView">
+				</local:UserProfilesView>
+
+				<local:UserProfileFoldersView
+					Grid.Column="1"
+					Grid.Row="1"
+					x:Name="foldersView"
+					BorderThickness="1 0 0 0">
+				</local:UserProfileFoldersView>
+			</Grid>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

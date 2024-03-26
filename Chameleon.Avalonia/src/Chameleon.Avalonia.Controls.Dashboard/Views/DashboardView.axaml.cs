@@ -15,15 +15,5 @@ public partial class DashboardView : ChameleonNavigationPage
     public DashboardView()
     {
         InitializeComponent();
-        DataContext = ContainerServiceHelper.Resolve<IDashboardViewModel>();
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-
-        // Initialize the WindowNotificationManager with the "TopLevel". Previously (v0.10), MainWindow
-        var notifyService = ContainerServiceHelper.Resolve<IToastNotificationService>();
-        notifyService.SetHostWindow(TopLevel.GetTopLevel(this));
     }
 }

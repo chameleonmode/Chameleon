@@ -146,7 +146,7 @@
 		</LinearGradientBrush>
 	</UserControl.Resources>
 
-	<ScrollViewer Padding="{StaticResource ChameleonAppPageMargin}"> 
+	<ScrollViewer> 
 		<StackPanel Spacing="-5">
 			<avfCommon:PageHeaderControl TextType="Dashboard"
 										 Classes="smallest"/>
@@ -305,42 +305,17 @@
 								
 								IsVisible="{Binding !HasNoItems}"
 								VerticalAlignment="Top"><!--Style="{StaticResource ItemsControlVirtualizedStyle}"--><!--Background="White"-->
-							<Border.Resources>
-								<!--Virtualised ItemsControl-->
-								<ControlTheme x:Key="ItemsControlVirtualizedStyle"
-									   TargetType="ItemsControl">
-									<Setter Property="ItemsPanel">
-										<Setter.Value>
-											<ItemsPanelTemplate>
-												<VirtualizingStackPanel />
-											</ItemsPanelTemplate>
-										</Setter.Value>
-									</Setter>
-									<Setter Property="Template">
-										<Setter.Value>
-											<ControlTemplate TargetType="ItemsControl">
-												<Border BorderThickness="{TemplateBinding BorderThickness}"
-														Padding="{TemplateBinding Padding}"
-														BorderBrush="{TemplateBinding BorderBrush}"
-														Background="{TemplateBinding Background}">
-													<ScrollViewer Padding="{TemplateBinding Padding}"
-																  Focusable="False"
-																  VerticalScrollBarVisibility="Auto">
-
-														<ItemsPresenter  />
-													</ScrollViewer>
-												</Border>
-											</ControlTemplate>
-										</Setter.Value>
-									</Setter>
-								</ControlTheme>
-							</Border.Resources>
-							<ItemsControl x:Name="itemsList"
-										  ItemsSource="{Binding ViewModels}"
-										  ItemTemplate="{StaticResource DashbordProfilesListViewTemplate}"
-										  VerticalAlignment="Top"
-										  Theme="{StaticResource ItemsControlVirtualizedStyle}"
-										   />
+							<ItemsControl ItemsSource="{Binding ViewModels}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+												BorderThickness="0 1 0 0"
+												Height="56">
+											<userProfiles:UserProfileView HorizontalAlignment="Stretch" />
+										</Border>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
 						</Border>
 					</Grid>
 

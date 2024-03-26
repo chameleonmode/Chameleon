@@ -136,7 +136,6 @@ public partial class DashboardViewModel
             userProfiles, profile => new UserProfileViewModel(
                     _userProfileService,
                     profile,
-                    EventAggregator,
                     _shareUserProfilePopupService,
                     _applicationUser,
                     false

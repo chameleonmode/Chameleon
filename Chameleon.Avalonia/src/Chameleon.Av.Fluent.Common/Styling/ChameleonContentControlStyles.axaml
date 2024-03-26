@@ -3,15 +3,17 @@
 		xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
 		xmlns:ui="using:FluentAvalonia.UI.Controls">
 	<Design.PreviewWith>
-		<Border Padding="20" Width="780" Height="480">
+		<Border Padding="20" Width="780" Height="480"
+				Background="{DynamicResource LayerFillColorDefaultBrush}">
 			<Grid ColumnDefinitions="*,Auto,0.01*">
-				<ctrls:ChameleonContentControl Title="S titi T"
-											   TitleDescription="some kinda description">
+				<ctrls:ChameleonContentControl Title="Some Title"
+											   TitleDescription="some kinda description over here">
 					<ctrls:ChameleonContentControl.TitleContent>
 						<Grid>
 							<ui:CommandBar DefaultLabelPosition="Right">
 								<ui:CommandBar.PrimaryCommands>
 									<ui:CommandBarButton IconSource="Save"
+														 
 														 Label="Save" />
 									<ui:CommandBarSeparator />
 									<ui:CommandBarButton IconSource="Refresh"
@@ -314,13 +316,9 @@
 
 					<!-- Header -->
 					<Panel>
-						<StackPanel>
 						<TextBlock Text="{TemplateBinding Title}"
-								   Padding="12 8"
+								   Padding="12"
 								   Theme="{StaticResource SubtitleTextBlockStyle}" />
-							<!--<TextBlock Text="{TemplateBinding TitleDescription}"
-							   Padding="12 0" />-->
-						</StackPanel>
 						
 						<ContentPresenter Name="TitlePresenter"
 								  Content="{TemplateBinding TitleContent}"
@@ -332,18 +330,26 @@
 					<ThemeVariantScope Name="ThemeScopeProvider"
 									   Grid.Row="1">
 						<ui:FABorder Name="ControlPreviewAreaHost"
+									 Margin="6 0"
                                 BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
                                 BorderThickness="1"
                                 Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
                                 TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                 CornerRadius="{DynamicResource OverlayCornerRadius}">
 							<Grid RowDefinitions="Auto,Auto,Auto">
+								<Grid RowDefinitions="Auto,*"
+									  Margin="12 6 12 0">
+								<TextBlock Text="{TemplateBinding TitleDescription}"
+										   Theme="{StaticResource CaptionTextBlockStyle}"
+										   IsVisible="{TemplateBinding TitleDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
 								<ContentPresenter Name="HeaderPresenter"
-												  Padding="12 12 12 0"
+												  Grid.Row="1"
 												  Content="{TemplateBinding Header}"
 												  ContentTemplate="{TemplateBinding HeaderTemplate}"
 												  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
 												  VerticalContentAlignment="Center" />
+								</Grid>
+							
 								
 								<Grid Grid.Row="1" 
 									  ColumnDefinitions="*,Auto"
@@ -371,6 +377,7 @@
 										</ContentPresenter.Transitions>
 									</ContentPresenter>
 
+									<!-- Options Area -->
 									<ui:FABorder Name="OptionsHost"
 											Margin="12"
 											Padding="8"
@@ -415,6 +422,7 @@
 
 								</Grid>
 
+								<!-- Footer Area -->
 								<ContentPresenter Name="FooterPresenter"
 												  Content="{TemplateBinding Footer}"
 												  HorizontalAlignment="Stretch"

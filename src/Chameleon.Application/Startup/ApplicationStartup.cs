@@ -1,6 +1,7 @@
 ﻿using Chameleon.Application.Events;
 using Chameleon.Common.Regions;
 using Chameleon.Domain.Entities;
+using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Dialogs;
@@ -28,6 +29,7 @@ namespace Chameleon.Application.Startup
             // injected just to create all event handlers to start them up
             ISettingsViewModel ___,
             IDashboardViewModel __,
+            IProjectsViewModel ____,
              ISystemBrowserManager systemBrowserManager 
             ,IEnumerable<IApplicationEventHandlers> _
             )

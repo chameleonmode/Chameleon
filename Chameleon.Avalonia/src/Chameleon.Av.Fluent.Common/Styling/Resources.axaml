@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ui="using:FluentAvalonia.UI.Controls" >
 	<Design.PreviewWith>
-		<ui:IconSourceElement IconSource="{StaticResource logo_symbol}"
+		<ui:IconSourceElement IconSource="{StaticResource ContactIconFilled}"
 						  Width="50" Height="50"/>
 	</Design.PreviewWith>
     <!-- Override this so content doesn't appear in title bar area -->
@@ -11,13 +11,17 @@
 	<Thickness x:Key="ChameleonControlMargin">8</Thickness>
 	<Thickness x:Key="ChameleonInnerControlMargin">4</Thickness>
 
-	<!--Icons-->
+	<!--Icons-->	
+	<ui:SymbolIconSource Symbol="Home" x:Key="HomeIcon" />
+	<ui:SymbolIconSource Symbol="HomeFilled" x:Key="HomeIconFilled" />
+	<ui:SymbolIconSource Symbol="ContactInfo" x:Key="ContactIcon" />
+	<ui:SymbolIconSource Symbol="ContactInfoFilled" x:Key="ContactIconFilled" />
+	
 	<ui:SymbolIconSource x:Key="ClosePane" Symbol="ClosePane" />
 	<ui:BitmapIconSource x:Key="logosymbolIcon" UriSource="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico" />
 	<ui:ImageIconSource x:Key="logo_big" Source="avares://Chameleon.Avalonia.Common/Assets/logo-big.png" />
 	<ui:ImageIconSource x:Key="logo_symbol" Source="avares://Chameleon.Avalonia.Common/Assets/logo-symbol.png" />
-	<ui:SymbolIconSource Symbol="Home" x:Key="HomeIcon" />
-	<ui:SymbolIconSource Symbol="HomeFilled" x:Key="HomeIconFilled" />
+
 	<ui:SymbolIconSource Symbol="StarFilled" x:Key="StarFilledIcon" />
 	<ui:SymbolIconSource Symbol="Settings" x:Key="SettingsIcon" />
 	<ui:SymbolIconSource Symbol="SettingsFilled" x:Key="SettingsIconFilled" />

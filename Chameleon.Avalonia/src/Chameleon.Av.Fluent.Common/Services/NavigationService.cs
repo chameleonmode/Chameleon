@@ -3,10 +3,12 @@ using Chameleon.Av.Fluent.Common.Models;
 using Chameleon.Av.Fluent.Common.Pages;
 using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Settings;
+using Chameleon.Interfaces.UserProfiles;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Primitives;
 using FluentAvalonia.UI.Media.Animation;
@@ -110,14 +112,17 @@ public class NavigationFactory : INavigationPageFactory
 
     public Control? GetPageFromObject(object target)
     {
-        if (target is HomePageModel)
+        if (target is MainPageModelBase t)
         {
-            var c = ContainerServiceHelper.Resolve<IDashboardView>() as Control;
-            return c;
-        }
-        else if (target is SettingsPageModel)
-        {
-            var c = ContainerServiceHelper.Resolve<ISettingsView>() as Control;
+            Control? c = null;
+
+            if (t.NavHeader == "Dashboard")
+                c = ContainerServiceHelper.Resolve<IDashboardView>() as Control;
+            else if (t.NavHeader == "Profiles")
+                c = ContainerServiceHelper.Resolve<IProjectsView>() as Control;
+            else if (t.NavHeader == "Settings")
+                c = ContainerServiceHelper.Resolve<ISettingsView>() as Control;
+
             return c;
         }
         else if (target is string nameOf)

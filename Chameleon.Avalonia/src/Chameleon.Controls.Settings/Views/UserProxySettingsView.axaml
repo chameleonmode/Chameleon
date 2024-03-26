@@ -17,7 +17,7 @@
 		<!--<converter:MultiStringJoinConverter x:Key="MultiStringJoin"/>-->
 	</UserControl.Resources>
 		<Border Padding="20"
-				Background="{DynamicResource LayerFillColorDefaultBrush}">
+				>
 			<Grid RowDefinitions="*,Auto">
 				<ctrls:ChameleonContentControl Title="Proxies list">
 					<ctrls:ChameleonContentControl.TitleContent>

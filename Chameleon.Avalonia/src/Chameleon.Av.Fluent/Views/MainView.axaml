@@ -55,6 +55,7 @@
 		</ui:NavigationView>
 
 		<local:MainAppSplashContent Grid.RowSpan="2"
+									Name="SplashScreen"
 									Background="{StaticResource CoreSplashScreenBackground}"
 									IsVisible="{Binding IsSplashVisible}"/>
 		<!--<Grid x:DataType="vm:AuthTaskDialogViewModel"

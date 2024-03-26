@@ -1,10 +1,13 @@
 ﻿using Chameleon.Avalonia.Controls.Paginator.ViewModels;
+using Chameleon.Common.Helpers;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
+using Chameleon.Core.Extensions;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
+using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Services;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
@@ -19,20 +22,14 @@ using System.Drawing;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
-//TODO: ???
-public interface IUserProfilesViewModel
-{
-    Func<IUserProfile, bool> Filter { get; set; }
-    void Refresh();
-}
+
 
 public partial class UserProfilesViewModel
     : SubPageViewModelBase
     , IUserProfilesViewModel
 {
-    private readonly IEventAggregator _eventAggregator;
     private readonly IUserProfileService _userProfileService;
-    private readonly IUserProfilesPopupService _userProfilesPopupService;
+    //TODO: private readonly IUserProfilesPopupService _userProfilesPopupService;
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _currentUser;
@@ -42,68 +39,75 @@ public partial class UserProfilesViewModel
     private const string TitlePage = "Profiles";
 
     public UserProfilesViewModel(
-        IEventAggregator eventAggregator,
         IUserProfileService userProfileService,
-        IUserProfilesPopupService userProfilesPopupService,
+        //IUserProfilesPopupService userProfilesPopupService,
         IUserProfileFolderService userProfileFolderService,
         IShareUserProfilePopupService shareUserProfilePopupService,
         IApplicationUser currentUser)
     {
-        _eventAggregator = eventAggregator;
         _userProfileService = userProfileService;
-        _userProfilesPopupService = userProfilesPopupService;
+        //_userProfilesPopupService = userProfilesPopupService;
         _userProfileFolderService = userProfileFolderService;
         _shareUserProfilePopupService = shareUserProfilePopupService;
         _currentUser = currentUser;
 
-        _eventAggregator
-            .GetEvent<LoginSuccessEvent>()
-            .SubscribeOnce(OnAuthenticated);
+        //EventAggregator
+        //    .GetEvent<LoginSuccessEvent>()
+        //    .SubscribeOnce(OnAuthenticated);
 
-        _eventAggregator
+        EventAggregator
            .GetEvent<DeleteUserProfileEvent>()
            .Subscribe(OnDeleteUserProfileEvent);
 
-        _eventAggregator
+        EventAggregator
            .GetEvent<DeleteUserProfileFolderEvent>()
            .Subscribe(OnHandleUserEvent);
 
-        _eventAggregator
+        EventAggregator
            .GetEvent<CreateUserProfileEvent>()
            .Subscribe(OnHandleUserEvent);
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<OpenUserProfileFolderEvent>()
             .Subscribe(args => OnOpenFolder(args.UserProfileFolder));
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<CreateNewUserProfileEvent>()
             .Subscribe(CreateNewProfile);
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<SelectedChangeUserProfileEvent>()
             .Subscribe(_ => OnSelectedChanged());
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<AddUserProfileToFolderEvent>()
             .Subscribe(OnHandleUserEvent);
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
             .Subscribe(args => UpdateProfilesInFolder());
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<SavedUserProfileFolderEvent>()
             .Subscribe(OnSaveFolder);
 
-        _eventAggregator
+        EventAggregator
            .GetEvent<UpdateStaleDataEvent>()
            .Subscribe(LoadAsync);
+    }
+    public override async Task InitAsync(object? param)
+    {
+        await base.InitAsync(param);
+
+        if (!Loaded)
+        {
+            OnAuthenticated();
+        }
     }
 
     private void UpdateProfilesInFolder()
     {
-        DispatcherService.InvokeOnUiThread(() =>
+        this.InvokeOnUiThread(() =>
         {
             OnViewModelChange(this, EventArgs.Empty);
             SetViewModelsFilter();
@@ -112,19 +116,33 @@ public partial class UserProfilesViewModel
         });
     }
 
-    [RelayCommand]
-    private void OnSetFavorite()
+    private string _searchText = string.Empty;
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            if (SetProperty(ref _searchText, value))
+            {
+                //TODO:?_debounceTimer.Debounce(2000, ApplySearchFilter);
+                ApplySearchFilter();
+            }
+        }
+    }
+
+    private void SetFavorite()
     {
         Folder.IsFavorite = !Folder.IsFavorite;
         OnPropertyChanged(nameof(Folder));
+        UpdateFolder();
 
         _userProfileFolderService.Save(_folder);
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<UpdateFavoriteFolderEvent>()
             .Publish();
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
             .Publish(new ChangeProfilesInFavoriteFolderEventArgs(Folder.Id));
     }
@@ -151,7 +169,8 @@ public partial class UserProfilesViewModel
     }
 
     public bool HasProfileWithoutFolder => _mapping != null && _mapping.Any(profile => !profile.UserProfile.FolderId.HasValue);
-    public bool IsAddProfilesToFolderCommandEnabled => HasProfileWithoutFolder && !_currentUser.IsAssistant;
+    public IApplicationUser CurrentUser => _currentUser;
+    public bool IsAddProfilesToFolderCommandEnabled => HasProfileWithoutFolder && !CurrentUser.IsAssistant;
     public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(Folder);
 
     private PaginatorViewModel _paginatorViewModel;
@@ -173,36 +192,36 @@ public partial class UserProfilesViewModel
 
         if (HasFolder)
         {
-          // var lastCrumbs = BreadcrumbsViewModel.Breadcrumbs.Last();
-          // lastCrumbs.Title = Folder.Title;
+            //var lastCrumbs = BreadcrumbsViewModel.Breadcrumbs.Last();
+            //lastCrumbs.Title = Folder.Title;
         }
     }
 
-   //private BreadcrumbsViewModel _breadcrumbsViewModel;
-   //public BreadcrumbsViewModel BreadcrumbsViewModel
-   //{
-   //    get
-   //    {
-   //        if (_breadcrumbsViewModel == null)
-   //        {
-   //            _breadcrumbsViewModel = new BreadcrumbsViewModel();
-   //
-   //            var root = new BreadcrumbViewModel
-   //            {
-   //                Title = TitlePage
-   //            };
-   //
-   //            _breadcrumbsViewModel.Breadcrumbs.Add(root);
-   //        }
-   //
-   //        return _breadcrumbsViewModel;
-   //    }
-   //
-   //    set
-   //    {
-   //        SetProperty(ref _breadcrumbsViewModel, value);
-   //    }
-   //}
+    //private BreadcrumbsViewModel _breadcrumbsViewModel;
+    //public BreadcrumbsViewModel BreadcrumbsViewModel
+    //{
+    //    get
+    //    {
+    //        if (_breadcrumbsViewModel == null)
+    //        {
+    //            _breadcrumbsViewModel = new BreadcrumbsViewModel();
+
+    //            var root = new BreadcrumbViewModel
+    //            {
+    //                Title = TitlePage
+    //            };
+
+    //            _breadcrumbsViewModel.Breadcrumbs.Add(root);
+    //        }
+
+    //        return _breadcrumbsViewModel;
+    //    }
+
+    //    set
+    //    {
+    //        SetProperty(ref _breadcrumbsViewModel, value);
+    //    }
+    //}
 
     private void OnChangePage(object sender, EventArgs args)
     {
@@ -222,14 +241,17 @@ public partial class UserProfilesViewModel
     {
         Folder = userProfileFolder;
 
-        UnselectProfiles();
+        Unselect();
         OnPropertyChanged(nameof(HasNoItems));
     }
 
-    private IUserProfileFolder _folder;
-    public IUserProfileFolder Folder
+    private IUserProfileFolder? _folder;
+    public IUserProfileFolder? Folder
     {
-        get => _folder;
+        get
+        {
+            return _folder;
+        }
         set
         {
             if (SetProperty(ref _folder, value))
@@ -240,40 +262,44 @@ public partial class UserProfilesViewModel
 
             OnPropertyChanged(nameof(ShowFavoriteIcon));
             OnPropertyChanged(nameof(IsSharedFolder));
+            OnPropertyChanged(nameof(SelectedFolderTitle));
         }
     }
+    public string SelectedFolderTitle => Folder?.Title ?? "All profiles";
 
     private void UpdateBreadcrumbsViewModel()
     {
-       //var root = BreadcrumbsViewModel.Root;
-       //
-       //if (root == null)
-       //{
-       //    return;
-       //}
-       //
-       //root.HasContinuation = HasFolder;
-       //root.IsBold = HasFolder;
-       //
-       //var breadcrumbs = BreadcrumbsViewModel.Breadcrumbs;
-       //
-       //if (breadcrumbs.Count > 1)
-       //{
-       //    breadcrumbs.Remove(breadcrumbs[1]);
-       //}
-       //
-       //if (HasFolder)
-       //{
-       //    var folderBreadcrumb = new BreadcrumbViewModel()
-       //    {
-       //        Title = Folder.Title
-       //    };
-       //
-       //    breadcrumbs.Add(folderBreadcrumb);
-       //}
+        //var root = BreadcrumbsViewModel.Root;
+
+        //if (root == null)
+        //{
+        //    return;
+        //}
+
+        //root.HasContinuation = HasFolder;
+        //root.IsBold = HasFolder;
+
+        //var breadcrumbs = BreadcrumbsViewModel.Breadcrumbs;
+
+        //if (breadcrumbs.Count > 1)
+        //{
+        //    breadcrumbs.Remove(breadcrumbs[1]);
+        //}
+
+        //if (HasFolder)
+        //{
+        //    var folderBreadcrumb = new BreadcrumbViewModel()
+        //    {
+        //        Title = Folder.Title
+        //    };
+
+        //    breadcrumbs.Add(folderBreadcrumb);
+        //}
     }
     private void UpdateFolder()
     {
+        SearchText = string.Empty;
+
         int folderId = Folder.Id;
 
         if (folderId == default(int))
@@ -324,7 +350,7 @@ public partial class UserProfilesViewModel
         }
     }
 
-    public bool HasSelectedProfiles => SelectedCount > 0;
+    public bool HasSelectedProfiles => ViewModels != null && ViewModels.Count(v => v.IsSelected) > 0;
 
     private IEnumerable<UserProfileViewModel> _selectedProfiles;
     private void OnSelectedChanged()
@@ -344,7 +370,39 @@ public partial class UserProfilesViewModel
     }
 
     [RelayCommand]
-    private void UnselectProfiles()
+    private void SelectAll()
+    {
+        if (_mapping == null)
+        {
+            return;
+        }
+
+        foreach (var profile in _mapping)
+        {
+            profile.IsSelected = true;
+        }
+
+        SelectedCount = _mapping.Count;
+    }
+
+    [RelayCommand]
+    private void SelectAllProfilesFromFolder()
+    {
+        if (_mapping == null)
+        {
+            return;
+        }
+
+        var profiles = _mapping
+            .Where(p => p.UserProfile.FolderId == Folder.Id)
+            .ToList();
+
+        profiles.ForEach(p => p.IsSelected = true);
+        SelectedCount = profiles.Count;
+    }
+
+    [RelayCommand]
+    private void Unselect()
     {
         if (_selectedProfiles == null)
         {
@@ -358,15 +416,13 @@ public partial class UserProfilesViewModel
     }
 
     [RelayCommand]
-    private void DeletedProfilesAsync()
+    private async Task Delete()
     {
-        ContentDialogService.ShowContentDialogAsync(
-            content: $"Are you sure you want to delete {SelectedCount} profiles?",
-            title: "Delete User Profile",
-            action: () =>
-            {
-                DispatcherService.InvokeOnUiThread(DeleteProfiles);
-            });
+        if (await MesageBoxHelper.ShowAsync("Delete User Profiles", 
+            $"Are you sure you want to delete {SelectedCount} profiles?",
+            ContentDialogButtons.YesNo, 
+            "DeleteLines"))
+            this.InvokeOnUiThread(DeleteProfiles);
     }
 
     private void DeleteProfiles()
@@ -377,10 +433,10 @@ public partial class UserProfilesViewModel
         {
             var userProfile = profile.UserProfile;
 
-            _eventAggregator.GetEvent<RemoveWebBrowserViewEvent>()
+            EventAggregator.GetEvent<RemoveWebBrowserViewEvent>()
                 .Publish(new UserProfileEventArgs(userProfile));
 
-            _eventAggregator
+            EventAggregator
                 .GetEvent<DeleteUserProfileEvent>()
                 .Publish(new UserProfileEventArgs(userProfile));
 
@@ -415,7 +471,7 @@ public partial class UserProfilesViewModel
     [RelayCommand]
     private void AddProfilesToFolder()
     {
-        _userProfilesPopupService.ShowPopup(_folder);
+        //_userProfilesPopupService.ShowPopup(_folder);
 
         OnPropertyChanged(nameof(HasProfileWithoutFolder));
         OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
@@ -423,11 +479,21 @@ public partial class UserProfilesViewModel
         ChangeProfilesInFavoriteFolder();
     }
 
+    [RelayCommand]
+    private void MoveProfilesToFolder()
+    {
+        var selectedUserProfiles = _selectedProfiles
+            .Select(p => p.UserProfile)
+            .ToList();
+
+       //TODO: _moveUserProfilesPopupService.ShowPopup(selectedUserProfiles);
+    }
+
     private void ChangeProfilesInFavoriteFolder()
     {
         var folderId = Folder.Id;
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
             .Publish(new ChangeProfilesInFavoriteFolderEventArgs(folderId));
     }
@@ -444,7 +510,7 @@ public partial class UserProfilesViewModel
 
         var folderId = HasFolder ? (int?)Folder.Id : null;
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<CreateUserProfileEvent>()
             .Publish(new CreateUserProfileEventArgs(folderId));
 
@@ -469,6 +535,7 @@ public partial class UserProfilesViewModel
                 InitPaginator();
                 SetViewModelsFilter();
                 OnPropertyChanged(nameof(HasNoItems));
+                OnPropertyChanged(nameof(HasSelectedProfiles));
             }
 
             return _viewModels;
@@ -480,6 +547,62 @@ public partial class UserProfilesViewModel
         ViewModels.Offset = PaginatorViewModel.Skip;
         ViewModels.Limit = PaginatorViewModel.OnPageItems;
         TotalCount = PaginatorViewModel.TotalCount;
+    }
+
+    [RelayCommand]
+    private void OpenFirefox()
+    {
+        OpenSystemBrowser(SystemBrowserType.Firefox);
+    }
+
+    [RelayCommand]
+    private void OpenChrome()
+    {
+        OpenSystemBrowser(SystemBrowserType.Chrome);
+    }
+
+    [RelayCommand]
+    private void OpenBrave()
+    {
+        OpenSystemBrowser(SystemBrowserType.Brave);
+    }
+
+    [RelayCommand]
+    private void OpenChameleonBrowser()
+    {
+        var profiles = GetSelectedProfiles();
+
+        profiles.ForEach(profile =>
+        {
+            EventAggregator
+                .GetEvent<OpenUserBrowserEvent>()
+                .Publish(new UserProfileEventArgs(profile.UserProfile));
+        });
+
+        //TODO: ? EventAggregator
+        //    .GetEvent<OpenMainWindowByIndexEvent>()
+        //    .Publish(new OpenMainWindowByIndexEventArgs(2));
+
+    }
+
+    private void OpenSystemBrowser(SystemBrowserType browserType)
+    {
+        var profiles = GetSelectedProfiles();
+
+        profiles.ForEach(selectedProfile =>
+        {
+            var profile = selectedProfile.UserProfile;
+            var args = new UserProfileSystemBrowserEventArgs(profile, browserType);
+
+            EventAggregator
+                .GetEvent<OpenUserSystemBrowserEvent>()
+                .Publish(args);
+        });
+    }
+
+    private List<UserProfileViewModel> GetSelectedProfiles()
+    {
+        return _selectedProfiles.ToList();
     }
 
     private Func<IUserProfile, bool> _filter;
@@ -541,11 +664,16 @@ public partial class UserProfilesViewModel
     {
         IsWaiting = true;
 
-        DispatcherService.InvokeOnUiThreadAsync(
-            () => LoadAsync(),
-            _ => IsWaiting = false
-            );
+        //DispatcherService.InvokeOnUiThreadAsync(
+        //    () => LoadAsync(),
+        //    _ => IsWaiting = false
+        //    );
+
+        LoadAsync();
+
+        IsWaiting = false;
     }
+
     private void LoadAsync()
     {
         ViewModels?.Clear();
@@ -554,14 +682,53 @@ public partial class UserProfilesViewModel
         var userProfiles = _userProfileService.GetAll();
 
         _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
-            userProfiles, profile => new UserProfileViewModel
-            (_userProfileService, profile, _eventAggregator, _shareUserProfilePopupService,_currentUser));
+        userProfiles, profile => new UserProfileViewModel
+            (_userProfileService, profile, _shareUserProfilePopupService, _currentUser));
 
         _mapping.CollectionChanged += OnViewModelChange;
 
+        ApplySearchFilter();
+
         OnPropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(IsProfilesExist));
+        OnPropertyChanged(nameof(HasSelectedProfiles));
         OnPropertyChanged(nameof(HasProfileWithoutFolder));
         OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
+    }
+
+    private void ApplySearchFilter()
+    {
+        var searchText = SearchText?.ToLower();
+        var hasSearchText = !string.IsNullOrWhiteSpace(SearchText);
+        var isInCurrentFolder = Folder?.CreatorUserId != null;
+
+        Filter = profile => FilterByFolder(profile, hasSearchText, isInCurrentFolder, searchText);
+
+        OnPropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(IsProfilesExist));
+    }
+
+    private bool FilterByFolder(IUserProfile profile, bool hasSearchText, bool isInCurrentFolder, string searchText)
+    {
+        if (!hasSearchText && isInCurrentFolder)
+        {
+            return profile.FolderId == Folder.Id;
+        }
+        if (hasSearchText && isInCurrentFolder)
+        {
+            return profile.FolderId == Folder.Id && FilterByUserProfile(profile, searchText);
+        }
+        if (hasSearchText)
+        {
+            return FilterByUserProfile(profile, searchText);
+        }
+
+        return true;
+    }
+
+    private bool FilterByUserProfile(IUserProfile profile, string searchText)
+    {
+        return profile.Title.ToLower().Contains(searchText);
     }
 
     public void Refresh()
@@ -570,4 +737,9 @@ public partial class UserProfilesViewModel
         Folder = new UserProfileFolder { Title = "All profiles" };
         OnPropertyChanged(nameof(Folder));
     }
+
+    public bool IsProfilesExist => ViewModels != null &&
+                                   ViewModels.Count > 0 ||
+                                   Folder?.ProfilesCount == 0 &&
+                                   Folder?.Id != 0;
 }

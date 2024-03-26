@@ -8,12 +8,8 @@
              x:Class="Chameleon.Avalonia.Controls.Settings.ProxyCreditView">
 	<ScrollViewer Padding="{StaticResource ChameleonAppPageMargin}">
 		<StackPanel Spacing="8">
-			<ctrls:ChameleonContentControl Title="Residential Proxies">
-
-				<ctrls:ChameleonContentControl.Header>
-					<TextBlock Theme="{StaticResource CaptionTextBlockStyle}"
-							   Text="Manage your proxy payment and top-ups here"/>
-				</ctrls:ChameleonContentControl.Header>
+			<ctrls:ChameleonContentControl Title="Residential Proxies"
+										   TitleDescription="Manage your proxy payment and top-ups here">
 
 				<ctrls:ChameleonContentControl.Content>
 					<Grid Grid.Row="2">

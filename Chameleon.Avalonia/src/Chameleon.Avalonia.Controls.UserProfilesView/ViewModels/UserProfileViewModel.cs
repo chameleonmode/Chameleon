@@ -19,7 +19,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase
 {
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfile _userProfile;
-    private readonly IEventAggregator _eventAggregator;
     //private readonly IPrismMessageBoxService _messageBoxService;
     //private readonly IViewProfileWindowService _viewProfileWindowService;
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
@@ -28,7 +27,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase
     public UserProfileViewModel(
         IUserProfileService userProfileService,
         IUserProfile userProfile,
-        IEventAggregator eventAggregator,
         IShareUserProfilePopupService shareUserProfilePopupService,
         IApplicationUser applicationUser,
         bool isShowCheckboxColumn = true
@@ -36,7 +34,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase
     {
         _userProfileService = userProfileService;
         _userProfile = userProfile;
-        _eventAggregator = eventAggregator;
         _shareUserProfilePopupService = shareUserProfilePopupService;
         _applicationUser = applicationUser;   
 
@@ -45,7 +42,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase
         IsShowCheckboxColumn = isShowCheckboxColumn && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
         IsEnabledCheckboxColumn = !_userProfileService.IsSharedProfile(_userProfile);
 
-        _eventAggregator
+        EventAggregator
              .GetEvent<SavedUserProfileEvent>()
              .Subscribe(args => OnUserProfileSaved(args.UserProfile));
     }
@@ -64,7 +61,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase
     [RelayCommand]
     private void OnOpenOutReachLink()
     {
-        _eventAggregator
+        EventAggregator
             .GetEvent<OutReachLinksOpenEvent>()
             .Publish(new OutReachEventArgs(_userProfile));
     }
@@ -72,7 +69,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase
     [RelayCommand]
     private void OnOpenOutRssReach()
     {
-        _eventAggregator
+        EventAggregator
             .GetEvent<OutReachOpenEvent>()
             .Publish(new OutReachEventArgs(_userProfile));
     }
@@ -85,26 +82,33 @@ public partial class UserProfileViewModel : SubPageViewModelBase
         }
         //TODO: ?? RaiseAllPropertiesChanged();
     }
-
     [RelayCommand]
+    private void Favorite()
+    {
+        if (IsFavorite)
+            FavoriteUserProfile();
+        else
+            UnfavoriteUserProfile();
+    }
+
+   
     private void FavoriteUserProfile()
     {
-        _eventAggregator
+        EventAggregator
             .GetEvent<FavoriteUserProfileEvent>()
             .Publish(new UserProfileEventArgs(_userProfile));
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<UpdateFavoriteFolderEvent>()
             .Publish();
     }
-    [RelayCommand]
     private void UnfavoriteUserProfile()
     {
-        _eventAggregator
+        EventAggregator
             .GetEvent<UnfavoriteUserProfileEvent>()
             .Publish(new UserProfileEventArgs(_userProfile));
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<UpdateFavoriteFolderEvent>()
             .Publish();
     }
@@ -116,7 +120,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase
             title: "Delete User Profile",
             action: () =>
             {
-                _eventAggregator
+                EventAggregator
                 .GetEvent<DeleteUserProfileEvent>()
                 .Publish(new UserProfileEventArgs(_userProfile));
             });
@@ -125,25 +129,25 @@ public partial class UserProfileViewModel : SubPageViewModelBase
     private void OpenUserProfile()
     {
         OpenMenu();
-        _eventAggregator
+        EventAggregator
             .GetEvent<OpenUserProfileEvent>()
             .Publish(new UserProfileEventArgs(_userProfile));
     }
     [RelayCommand]
     private void OpenUserBrowser()
     {
-        _eventAggregator
+        EventAggregator
             .GetEvent<OpenUserBrowserEvent>()
             .Publish(new UserProfileEventArgs(_userProfile));
     }
     [RelayCommand]
     private void OpenUserRss()
     {
-        _eventAggregator
+        EventAggregator
            .GetEvent<OpenUserContentDiscovereyEvent>()
            .Publish(new OpenUserContentDiscovereyEventArgs(UserProfile));
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<OpenContentDiscovereyTabEvent>()
             .Publish(new OpenContentDiscovereyTabEventArgs(ContentDiscovereyTabs.RSS));
     }
@@ -168,7 +172,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase
         var args = new UserProfileSystemBrowserEventArgs(
             _userProfile, browserType);
 
-        _eventAggregator
+        EventAggregator
             .GetEvent<OpenUserSystemBrowserEvent>()
             .Publish(args);
     }
@@ -200,7 +204,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase
         {
             if (SetProperty(ref _isSelected, value))
             {
-                _eventAggregator
+                EventAggregator
                     .GetEvent<SelectedChangeUserProfileEvent>()
                     .Publish(new SelectedUserProfileEventArgs(_userProfile, _isSelected));
             }
