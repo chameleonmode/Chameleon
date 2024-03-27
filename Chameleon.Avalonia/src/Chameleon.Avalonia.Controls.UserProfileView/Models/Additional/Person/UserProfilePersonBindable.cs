@@ -1,13 +1,13 @@
 ﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.UserProfiles.Additional;
-
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.ComponentModel;
 
 namespace Chameleon.Controls.UserProfileView.Models.Additional
 {
-    public class UserProfilePersonBindable 
-        : ObservableObjectBase
+    public partial class UserProfilePersonBindable 
+        : ObservableObject
         , IUserProfilePerson
     {
         public UserProfilePersonBindable()
@@ -95,12 +95,16 @@ namespace Chameleon.Controls.UserProfileView.Models.Additional
             set => SetProperty(ref _email,value); 
         }
 
-        private DateTime _birthDate = DateTime.Now.AddYears(-20);
+        //private DateTime _birthDate = DateTime.Now.AddYears(-20);
         public DateTime BirthDate 
         { 
-            get => _birthDate; 
-            set => SetProperty(ref _birthDate,value); 
+            get => BirthDateOffset.DateTime;
+            set
+            {
+                BirthDateOffset = new DateTimeOffset(value);
+            }
         }
+
 
         private string _birthPlace = string.Empty;
         public string BirthPlace
@@ -108,6 +112,8 @@ namespace Chameleon.Controls.UserProfileView.Models.Additional
             get => _birthPlace;
             set => SetProperty(ref _birthPlace, value);
         }
+        [ObservableProperty]
+        private DateTimeOffset _birthDateOffset = new DateTimeOffset(DateTime.Now.AddYears(-20));
 
         private string _notes = string.Empty;
         public string Notes 

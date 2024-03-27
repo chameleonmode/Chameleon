@@ -1,0 +1,60 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"					
+					xmlns:local="using:Chameleon.Av.Fluent.Common.Controls"
+                    xmlns:ui="using:FluentAvalonia.UI.Controls"
+                    xmlns:core="using:FluentAvalonia.Core"
+                    xmlns:sty="using:FluentAvalonia.Styling">
+	<Design.PreviewWith>
+		<!---->
+		<ThemeVariantScope>
+			<Grid>
+				<local:HeaderdInputFieldsControl  Title="PROFILE NAME"
+												  Text="">
+					<local:HeaderdInputFieldsControl.TextBoxes>
+						<TextBox Text="Some cool name"/>
+						<TextBox Text="Some name too"/>
+						<TextBox Text="cool name toottt"/>
+					</local:HeaderdInputFieldsControl.TextBoxes>
+				</local:HeaderdInputFieldsControl>
+			</Grid>
+		</ThemeVariantScope>
+	</Design.PreviewWith>
+
+	<ControlTheme TargetType="local:HeaderdInputFieldsControl"
+				x:Key="{x:Type local:HeaderdInputFieldsControl}">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid RowDefinitions="Auto,Auto,*" >
+					<Grid.Styles>
+						<Style Selector="TextBox">
+							<Setter Property="Margin" Value="0 0 6 6"/>
+						</Style>
+					</Grid.Styles>
+					<TextBlock  Margin="0 0 0 6"
+							   Text="{TemplateBinding Title}" />
+
+					<TextBox Text="{TemplateBinding Text, Mode=TwoWay}"
+							 IsVisible="{Binding $self.Text, Converter={x:Static ObjectConverters.IsNotNull}}"
+							 Grid.Row="1"/>
+					
+					<ItemsControl Name="TextBoxesHost"
+								  HorizontalAlignment="Stretch"
+								  Grid.Row="2"
+								  ItemsSource="{TemplateBinding TextBoxes}"
+								  KeyboardNavigation.TabNavigation="Continue">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<!--<uip:TaskDialogButtonsPanel Spacing="8"  />-->
+								<!--<WrapPanel />-->
+								<UniformGrid Rows="1" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+					</ItemsControl>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+
+
+	</ControlTheme>
+
+</ResourceDictionary>

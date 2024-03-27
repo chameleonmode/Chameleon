@@ -17,6 +17,11 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.Specialized;
 using Chameleon.Core.Extensions;
 using Chameleon.Authorization;
+using Chameleon.Interfaces.Dashboard;
+using Chameleon.Domain.Entities;
+using Chameleon.Common.Helpers;
+using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 
@@ -53,11 +58,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
         InitializeViewModels();
 
-
-
-
         Addresses.Binded += Addresses_Binded;
-
 
         EventAggregator
              .GetEvent<SavedUserProfileEvent>()
@@ -99,14 +100,23 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         if (!Loaded)
             OnAuthenticated();
 
-       // OnPropertyChanged(nameof(UserProfileModel));
+        if(Design.IsDesignMode)
+            UserProfile = ContainerServiceHelper.Resolve<IDashboardViewModel>()?.SelectedProfile;
+
+        // OnPropertyChanged(nameof(UserProfileModel));
     }
     public override async Task OnNavigatedToAsync(object? param)
     {
         await base.OnNavigatedToAsync(param);
 
-        UserProfile = param as IUserProfile;
+        if (param is null)
+            UserProfile = ContainerServiceHelper.Resolve<IDashboardViewModel>()?.SelectedProfile;
+        else
+            UserProfile = param as IUserProfile;
+
+        Title = UserProfileModel.Title;
     }
+
     public bool HasNoItems => Persons?.Items?.Count > 0;
     public bool HasNoBusinessItems => Businesses?.Items?.Count > 0;
     public bool HasNoAddressesItems => Addresses?.Items?.Count > 0;
@@ -244,7 +254,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             }
         }
     }
-
     private void UserProfileModel_ChangedProperty(object sender, bool value)
     {
         _isChangedProperty = value;
@@ -265,20 +274,20 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
 
         IsSaving = true;
-        UserProfileModel.YoutubeSettings.IsChanged = false;
-        IUserProfile userProfile = null;
+        //UserProfileModel.YoutubeSettings.IsChanged = false;
+        UserProfile userProfile = null;
 
         DispatcherService.InvokeOnUiThreadAsync(() =>
         {
             SaveCollections();
 
-            if (_isChangedProperty)
-            {
+            //if (_isChangedProperty)
+            //{
                 //TODO: check valid for saving only valid data (postoped / agreed)
-                bool isValid = UserProfileModel.Proxy.IsModelValid();
-                userProfile = _mapper.Map<IUserProfile>(UserProfileModel);
+                //bool isValid = UserProfileModel.Proxy.IsModelValid();
+                userProfile = _mapper.Map<UserProfile>(UserProfileModel);
                 _userProfileService.Save(userProfile);
-            }
+            //}
         }, _ =>
         {
             if (_isChangedProperty)

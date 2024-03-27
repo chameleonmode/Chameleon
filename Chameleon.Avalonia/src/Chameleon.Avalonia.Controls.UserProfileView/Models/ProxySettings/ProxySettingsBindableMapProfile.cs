@@ -11,7 +11,7 @@ public class ProxySettingsBindableMapProfile : AutoMapper.Profile
 
     private void ProxySettingsDtoMap()
     {
-        var map = CreateMap<ProxySettingsBindable, IProxySettings>();
+        var map = CreateMap<ProxySettingsBindable, Chameleon.Domain.Entities.ProxySettings>();
 
         map.ReverseMap();
     }

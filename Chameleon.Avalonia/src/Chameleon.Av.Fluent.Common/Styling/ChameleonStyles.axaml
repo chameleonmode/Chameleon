@@ -31,6 +31,7 @@
 				<ResourceInclude Source="/Styling/ControlThemes.axaml" />
 				<ResourceInclude Source="/Styling/ResourceDictionaryContentDialog.axaml" />
 				<ResourceInclude Source="/Styling/SvgIconsResourceDictionary.axaml" />
+				<ResourceInclude Source="/Styling/HeaderdInputFieldsResourceDictionary.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 

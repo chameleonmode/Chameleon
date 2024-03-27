@@ -199,6 +199,11 @@ public partial class DashboardViewModel
                 _viewModels.Filter = profile => FilterProfiles(profile.UserProfile);
 
                 OnPropertyChanged(nameof(HasNoItems));
+
+                if(_viewModels.Count > 0)
+                {
+                    SelectedProfile = _viewModels[0].UserProfile;
+                }
             }
 
             return _viewModels;
@@ -347,4 +352,6 @@ public partial class DashboardViewModel
         var assists = await _userAssistantService.GetAsync();
         IsSyncChangesBtnVisible = _applicationUser.IsAuthenticated && assists?.Count > 0;
     }
+
+    public IUserProfile SelectedProfile { get; set; }
 }

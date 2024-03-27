@@ -1,12 +1,12 @@
 ﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.UserProfiles;
-
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.Models.ProxySettings;
 
 public class ProxySettingsBindable
-       : ObservableObjectBase
+       : ObservableObject
        , IProxySettings
        , IDataErrorInfo
 {

@@ -1,11 +1,12 @@
 ﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.UserProfiles.Additional;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.ComponentModel;
 
 namespace Chameleon.Controls.UserProfileView.Models.Additional
 {
     public class UserProfileLoginBindable 
-        : ObservableObjectBase
+        : ObservableObject
         , IUserProfileLogin
     {
         public UserProfileLoginBindable()

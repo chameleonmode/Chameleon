@@ -1,8 +1,10 @@
-﻿using Chameleon.Auth.Services;
+﻿using Avalonia.Controls;
+using Chameleon.Auth.Services;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Diagnostics;
 
 namespace Chameleon.Av.Fluent.ViewModels;
 
@@ -33,7 +35,10 @@ public partial class MainViewViewModel:ObservableObjectBase
 
     private async void LoginFailEventMethod()
     {
-        IsSplashVisible = true;
-        await _authService.ShowLoginDialogAsync();
+        if (!Design.IsDesignMode)
+        {
+            IsSplashVisible = true;
+            await _authService.ShowLoginDialogAsync();
+        }
     }
 }

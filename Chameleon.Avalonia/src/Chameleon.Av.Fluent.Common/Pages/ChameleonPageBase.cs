@@ -10,6 +10,7 @@ using Chameleon.Av.Fluent.Common.Controls;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces;
+using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Services;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
@@ -203,7 +204,10 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
     private async void FrameNavigatedTo(object sender, NavigationEventArgs e)
     {
         if (DataContext is ISubPageViewModel pageViewModel)
+        {
             await pageViewModel.OnNavigatedToAsync(e.Parameter);
+            ControlName = pageViewModel.Title;
+        }
 
         var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
         var animation = svc.GetAnimation("ForwardAnimation");

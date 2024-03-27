@@ -3,11 +3,15 @@ using Chameleon.Avalonia.Controls.UserProfileView.Models.WebBrowser;
 using Chameleon.Avalonia.Controls.UserProfileView.Models.WordPress;
 using Chameleon.Avalonia.Controls.UserProfileView.Models.Youtube;
 using Chameleon.CT.Common.Base;
+using Chameleon.Domain.Entities;
+using Chameleon.Interfaces.UserProfiles;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.Models.Profile;
 
-public class UserProfileBindable
-      : ObservableObjectBase
+//[INotifyPropertyChanged]
+public partial class UserProfileBindable : ObservableObject
+
 {
     public event EventHandler<bool> ChangedProperty;
 
@@ -99,12 +103,13 @@ public class UserProfileBindable
         set => SetProperty(ref _isFavourite, value);
     }
 
+    [ObservableProperty]
     private string _title;
-    public new string Title
-    {
-        get => _title;
-        set => SetProperty(ref _title, value);
-    }
+    //public new string Title
+    //{
+    //    get => _title;
+    //    set => SetProperty(ref _title, value);
+    //}
 
     private int? _folderId;
     public int? FolderId
