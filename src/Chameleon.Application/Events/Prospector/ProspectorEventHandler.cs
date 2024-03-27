@@ -10,24 +10,18 @@ namespace Chameleon.Application.Events
 {
     public class ProspectorEventHandler : IProspectorEventHandler
     {
-        private readonly IDialogWindowsService _dialogWindowsService;
-        private readonly IBlogOfInterestView _blogOfInterestView;
-        private readonly IPopupDialogService _dialogManager;
+        //private readonly IDialogWindowsService _dialogWindowsService;
+        //private readonly IBlogOfInterestView _blogOfInterestView;
+        //private readonly IPopupDialogService _dialogManager;
         private readonly IEventAggregator _eventAggregator;
         private readonly IUserProfileProspectorBlogsOfInterestsService _prospectorBlogsOfInterestsService;
 
         public ProspectorEventHandler(
-            IPopupDialogService dialogManager,
             IEventAggregator eventAggregator,
-            IUserProfileProspectorBlogsOfInterestsService prospectorBlogsOfInterestsService,
-            IDialogWindowsService dialogWindowsService, 
-            IBlogOfInterestView blogOfInterestView)
+            IUserProfileProspectorBlogsOfInterestsService prospectorBlogsOfInterestsService)
         {
-            _dialogManager = dialogManager;
             _eventAggregator = eventAggregator;
             _prospectorBlogsOfInterestsService = prospectorBlogsOfInterestsService;
-            _dialogWindowsService = dialogWindowsService;
-            _blogOfInterestView = blogOfInterestView;
 
             _eventAggregator
                 .GetEvent<BlogOfInterestOpenEvent>()
@@ -47,16 +41,16 @@ namespace Chameleon.Application.Events
             , IUserProfile userProfile
             , string title)
         {
-            Action<IUserProfileProspectorBlogsOfInterest> initialize = viewModel =>
-            {
-                viewModel.Name = blogsOfInterest.Name;
-                viewModel.Id = blogsOfInterest.Id;
-                viewModel.ProfileId = userProfile.Id;
-                viewModel.Value = blogsOfInterest.Value;
-                viewModel.Type = blogsOfInterest.Type;
-            };
+            //Action<IUserProfileProspectorBlogsOfInterest> initialize = viewModel =>
+            //{
+            //    viewModel.Name = blogsOfInterest.Name;
+            //    viewModel.Id = blogsOfInterest.Id;
+            //    viewModel.ProfileId = userProfile.Id;
+            //    viewModel.Value = blogsOfInterest.Value;
+            //    viewModel.Type = blogsOfInterest.Type;
+            //};
 
-            _dialogWindowsService.ShowDialogWindow(_blogOfInterestView, title, initialize);
+            //_dialogWindowsService.ShowDialogWindow(_blogOfInterestView, title, initialize);
         }
     }
 }

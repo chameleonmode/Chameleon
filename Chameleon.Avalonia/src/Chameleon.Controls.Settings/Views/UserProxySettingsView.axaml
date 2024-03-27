@@ -7,7 +7,6 @@
 			 xmlns:interfaces="using:Chameleon.Interfaces.Proxies"
 			 xmlns:paginator="using:Chameleon.Avalonia.Controls.Paginator"
 			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
-			 xmlns:commonCntrl="using:Chameleon.Avalonia.Controlls.Common"
 			 xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="800"
 			 x:DataType="vm:UserProxySettingsViewModel"

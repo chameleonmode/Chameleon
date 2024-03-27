@@ -37,13 +37,8 @@
     <ProjectReference Include="..\Chameleon.Av.Fluent.Dialogs\Chameleon.Av.Fluent.Dialogs.csproj" />
     <ProjectReference Include="..\Chameleon.Av.Fluent\Chameleon.Av.Fluent.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Controlls.Common\Chameleon.Avalonia.Controlls.Common.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Controls.BlogOfInterestView\Chameleon.Avalonia.Controls.BlogOfInterestView.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Dashboard\Chameleon.Avalonia.Controls.Dashboard.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Controls.OutReachLinkView\Chameleon.Avalonia.Controls.OutReachLinkView.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Controls.OutReachTemplate\Chameleon.Avalonia.Controls.OutReachTemplate.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Controls.RssFeed\Chameleon.Avalonia.Controls.RssFeed.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UpgradePlan\Chameleon.Avalonia.Controls.UpgradePlan.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfilesView\Chameleon.Avalonia.Controls.UserProfilesView.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj" />

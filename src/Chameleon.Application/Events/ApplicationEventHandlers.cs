@@ -8,13 +8,13 @@ namespace Chameleon.Application.Events
         public ApplicationEventHandlers(
             // injected just to create all event handlers to start them up
             IEntityEventHandler entityEventHandler,
-            IOutReachEventHandler outReachEventHandler,
+            //IOutReachEventHandler outReachEventHandler,
             IBookmarkEventHandler bookmarkEventHandler,
             IUserProfileEventHandler userProfileEventHandler,
             IUserSettingsEventHandler userSettingsEvantHandler,
             IOpenBrowserEventHandler userProfileRssEventHandler,
             IUserProfileFolderEventHandler userProfileFolderEventHandler,
-            IProspectorEventHandler prospectorEventHandler,
+            //IProspectorEventHandler prospectorEventHandler,
             ICookiesExcludedDomainEventHandler cookiesExcludedDomainEventHandler,
             //ITourHandler tourHandler,
             ISyncChangesEventHandler syncChangesEventHandler

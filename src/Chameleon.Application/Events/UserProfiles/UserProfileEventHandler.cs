@@ -32,7 +32,7 @@ namespace Chameleon.Application.Events
         private readonly IEventAggregator _eventAggregator;
         private readonly IUserProfileService _userProfileService;
         private readonly ISystemBrowserManager _systemBrowserManager;
-        private readonly IOutReachTemplateView _outReachView;
+        //private readonly IOutReachTemplateView _outReachView;
         private readonly IAuthSession _authSession;
        // private readonly IDialogWindowsService _dialogWindowsService;
         private readonly IErrorContentDialogView _userFriendlyExceptionView;
@@ -43,14 +43,14 @@ namespace Chameleon.Application.Events
             //IUserProfileView userProfileView,
             IEventAggregator eventAggregator,
             ISystemBrowserManager systemBrowserManager,
-            IOutReachTemplateView outReachView,
+            //IOutReachTemplateView outReachView,
             IAuthSession authSession,
             INavigationService navigationService
             // IDialogWindowsService dialogWindowsService
             //TODO: IErrorContentDialogView userFriendlyExceptionView
             )
         {
-            _outReachView = outReachView;
+            //_outReachView = outReachView;
             //_messageBoxService = messageBoxService;
             //_mainWindow = mainWindow;
             //_userProfileView = userProfileView;

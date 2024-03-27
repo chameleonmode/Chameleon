@@ -5,7 +5,6 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.ViewModels"
 			 xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:commonCntrl="using:Chameleon.Avalonia.Controlls.Common"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:UserDefaultSettingsViewModel"
              x:Class="Chameleon.Avalonia.Controls.Settings.UserDefaultSettingsView">

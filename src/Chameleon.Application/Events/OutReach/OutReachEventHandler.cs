@@ -18,7 +18,7 @@ namespace Chameleon.Application.Events
         private readonly IProfileOutReachLinkService _profileOutReachLinkService;
         private readonly IUserProfileOutReachRssesService _userProfileOutReachRssesService;
         private readonly IDialogWindowsService _dialogWindowsService;
-        private readonly IOutReachLinkView _outReachLinkView;
+        //private readonly IOutReachLinkView _outReachLinkView;
 
         public OutReachEventHandler(
             IMapper mapper,
@@ -26,8 +26,7 @@ namespace Chameleon.Application.Events
             IEventAggregator eventAggregator,
             IProfileOutReachLinkService profileOutReachLinkService,
             IUserProfileOutReachRssesService userProfileOutReachRssesService,
-            IDialogWindowsService dialogWindowsService, 
-            IOutReachLinkView outReachLinkView)
+            IDialogWindowsService dialogWindowsService)
         {
             _mapper = mapper;
             _dialogManager = dialogManager;
@@ -35,7 +34,7 @@ namespace Chameleon.Application.Events
             _profileOutReachLinkService = profileOutReachLinkService;
             _userProfileOutReachRssesService = userProfileOutReachRssesService;
             _dialogWindowsService = dialogWindowsService;
-            _outReachLinkView = outReachLinkView;
+           
 
             _eventAggregator
                 .GetEvent<OutReachRssOpenEvent>()
@@ -85,7 +84,7 @@ namespace Chameleon.Application.Events
 
             var title = !edit ? "SAVE TO OUTREACH" : "EDIT LINK";
 
-            _dialogWindowsService.ShowDialogWindow(_outReachLinkView, title, initialize);
+            //_dialogWindowsService.ShowDialogWindow(_outReachLinkView, title, initialize);
         }
 
         private void DeleteOutReachRss(IUserProfileOutReachRss userProfileOutReachRss)
