@@ -14,6 +14,7 @@
 					  x:Key="PagenerListBoxItem"
 				  BasedOn="{StaticResource {x:Type ListBoxItem}}">
 			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="MaxWidth" Value="1" />
 			<Setter Property="FontFamily" Value="Open Sans" />
 			<Setter Property="FontSize" Value="12" />
 			<Setter Property="FontWeight" Value="Normal" />
@@ -26,6 +27,7 @@
 		<Grid x:Name="ParentGrid"
 			  ColumnDefinitions="Auto,*">
 			<StackPanel
+				VerticalAlignment="Center"
                 x:Name="SpTotalInfo"
                 Orientation="Horizontal"
                 HorizontalAlignment="Left"
@@ -73,15 +75,11 @@
 						<ListBoxItem>
 							<Border>
 							<TextBlock
-								VerticalAlignment="Center"
-								HorizontalAlignment="Center"
 								Text="1"/>
 							</Border>
 						</ListBoxItem>
 						<ListBoxItem>
 							<TextBlock
-								VerticalAlignment="Center"
-								HorizontalAlignment="Center"
 								Text="2"/>
 						</ListBoxItem>
 					</ListBox.Items>-->

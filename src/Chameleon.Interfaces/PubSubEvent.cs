@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Reflection;
 using System.Resources;
+using System.Threading;
 
 namespace Chameleon.Prism.Events;
 public static class PubSubEventExtensions
@@ -51,6 +52,23 @@ public static class PubSubEventExtensions
     {
         return self.SubscribeOnce(_ => action(),
             keepSubscriberReferenceAlive);
+    }
+
+    public static IDisposable SubscribeOnce(this PubSubEvent self,
+        Action action,
+        ThreadOption thread = ThreadOption.PublisherThread,
+        bool keepSubscriberReferenceAlive = true)
+    {
+        var subscription = new PubSubSubscription();
+        var subscriptionToken = self.Subscribe(() => {
+            if (subscription.HasToken)
+            {
+                subscription.Dispose();
+                action();
+            }
+        }, thread, keepSubscriberReferenceAlive);
+        subscription.Token = subscriptionToken;
+        return subscription;
     }
 
 

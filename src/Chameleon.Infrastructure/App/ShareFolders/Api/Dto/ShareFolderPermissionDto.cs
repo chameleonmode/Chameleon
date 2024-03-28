@@ -1,6 +1,8 @@
-﻿namespace Chameleon.Infrastructure.App.ShareFolders.Api.Dto
+﻿using Chameleon.Interfaces.App.ShareFolders;
+
+namespace Chameleon.Infrastructure.App.ShareFolders.Api.Dto
 {
-    public class ShareFolderPermissionDto
+    public class ShareFolderPermissionDto  : IShareFolderPermission
     {
         public int PermissionId { get; set; }
         public string PermissionName { get; set; }

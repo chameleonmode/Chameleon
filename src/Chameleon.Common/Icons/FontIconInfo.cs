@@ -22,7 +22,7 @@ public static class FontIcons
 {
     public static IFontIconInfo? Filter(string name)
     {
-        return FontIconsInfos.SingleOrDefault(i => i.Name == name); 
+        return FontIconsInfos.FirstOrDefault(i => i.Name == name); 
     }
 
     public static List<FontIconInfo> FontIconsInfos =

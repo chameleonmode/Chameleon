@@ -1,11 +1,15 @@
 ﻿using Chameleon.Common.Exceptions;
+using Chameleon.Common.Helpers;
 using Chameleon.Core.Extensions;
+using Chameleon.Core.Settings;
+using Chameleon.Core.Util;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.ShareFolders;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.Repository;
+using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UpgradePlan;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.UserProfiles.Additional;
@@ -28,7 +32,7 @@ namespace Chameleon.Infrastructure.Profiles
         private readonly IUserProfileOutReachRssRepository _outReachRssRepository;
         private readonly IAuthSession _authSession;
         private readonly IDialogWindowsService _dialogWindowsService;
-        private readonly IUpgradePlanPopupView _upgradePlanPopupView;
+        //private readonly IUpgradePlanPopupView _upgradePlanPopupView;
         private readonly IApplicationUser _applicationUser;
         private readonly IShareFoldersService _shareFoldersService;
 
@@ -45,7 +49,7 @@ namespace Chameleon.Infrastructure.Profiles
             IUserProfileOutReachRssRepository outReachRssRepository,
             IAuthSession authSession,
             //TODO: IDialogWindowsService dialogWindowsService,
-            IUpgradePlanPopupView upgradePlanPopupView,
+            //IUpgradePlanPopupView upgradePlanPopupView,
             IApplicationUser applicationUser,
             IShareFoldersService shareFoldersService
             )
@@ -59,7 +63,7 @@ namespace Chameleon.Infrastructure.Profiles
             _outReachRssRepository = outReachRssRepository;
             _authSession = authSession;
             //_dialogWindowsService = dialogWindowsService;
-            _upgradePlanPopupView = upgradePlanPopupView;
+            //_upgradePlanPopupView = upgradePlanPopupView;
             _applicationUser = applicationUser;
             _shareFoldersService = shareFoldersService;
 
@@ -179,14 +183,14 @@ namespace Chameleon.Infrastructure.Profiles
             _userProfileRepository.Insert(profile);
             InitializeWebBrowserUserAgent(profile);
 
-            this.InvokeOnUiThread(() => Profiles.Add(profile));
+            Profiles.Add(profile);
             return profile;
         }
 
         public void Delete(IUserProfile userProfile)
         {
             _userProfileRepository.Delete(userProfile);
-            this.InvokeOnUiThread(() => Profiles.Remove(userProfile));
+            Profiles.Remove(userProfile);
         }
 
         public void Save(IUserProfile userProfile)
@@ -207,14 +211,18 @@ namespace Chameleon.Infrastructure.Profiles
             }
         }
 
-        public void ShowOutOfLimitPopup()
+        public async void ShowOutOfLimitPopup()
         {
-            Action<IUpgradePlanViewModel> initialize = viewModel =>
-            {
-                viewModel.LimitExceededText = "You have reached the maximum number of profiles.";
-            };
+            //Action<IUpgradePlanViewModel> initialize = viewModel =>
+            //{
+            //    viewModel.LimitExceededText = "You have reached the maximum number of profiles.";
+            //};
 
-            _dialogWindowsService.ShowDialogWindow(_upgradePlanPopupView, "PROFILES LIMIT REACHED", initialize);
+
+            //_dialogWindowsService.ShowDialogWindow(_upgradePlanPopupView, "PROFILES LIMIT REACHED", initialize);
+
+            if (await MesageBoxHelper.ShowAsync("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
+                ProcessesUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
         }
 
         public void Import(IUserProfile userProfile)

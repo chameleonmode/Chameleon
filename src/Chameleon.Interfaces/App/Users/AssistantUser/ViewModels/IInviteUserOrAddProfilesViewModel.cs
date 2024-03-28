@@ -1,9 +1,12 @@
-﻿using Chameleon.Interfaces.Ioc;
+﻿using Chameleon.Interfaces;
+using Chameleon.Interfaces.Dialogs.ViewModels;
+using Chameleon.Interfaces.Ioc;
 
 namespace Chameleon.Controls.AssistantUsers.Interfaces
 {
     public interface IInviteUserOrAddProfilesViewModel 
-        : ITransientDependency
+        : IContentDialogViewModel,
+        ITransientDependency
     {
         bool ShowInviteinfo { get; set; }
 

@@ -27,9 +27,11 @@ namespace Chameleon.Application.Startup
              IEventAggregator eventAggregator,
              IAuthService authService,
             // injected just to create all event handlers to start them up
-            ISettingsViewModel ___,
-            IDashboardViewModel __,
-            IProjectsViewModel ____,
+            //ISettingsViewModel ___,
+            //IDashboardViewModel __,
+            //IProjectsViewModel ____,
+            //IUserProfilesViewModel _____,
+            //IUserProfileIdentityViewModel ______,
              ISystemBrowserManager systemBrowserManager 
             ,IEnumerable<IApplicationEventHandlers> _
             )

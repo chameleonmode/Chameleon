@@ -47,7 +47,8 @@ public partial class UserDefaultSettingsViewModel
     {
         await base.InitAsync(param);
 
-        OnAuthenticated();
+        if (!Loaded)
+            OnAuthenticated();
     }
 
     

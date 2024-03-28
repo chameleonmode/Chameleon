@@ -51,7 +51,8 @@ public partial class SettingsViewModel
     {
         await base.InitAsync(param);
 
-        InitializeTabControl();
+        if (!Loaded)
+            InitializeTabControl();
     }
 
     [RelayCommand]

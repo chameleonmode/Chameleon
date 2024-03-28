@@ -345,11 +345,11 @@
                                   Height="23" />
 		</Button>
 
-		<ToggleButton Grid.Column="12"
+		<Button Grid.Column="12"
                 HorizontalAlignment="Right"
-                IsChecked="{Binding IsFavorite}"
+                
                 ToolTip.Tip="Add to Favorites"
-                Command="{Binding FavouriteCommand}"
+                Command="{Binding FavoriteCommand}"
                 Width="34"
                 Height="34"><!--Style="{StaticResource SvgButton}"-->
 			<Grid>
@@ -362,7 +362,7 @@
 					  Width="12"
 					  Height="12" />
 			</Grid>
-		</ToggleButton>
+		</Button>
 
 		<!--<Button Grid.Column="12"
                 HorizontalAlignment="Right"

@@ -16,6 +16,8 @@ using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
+using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.Views;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
@@ -28,10 +30,10 @@ public partial class AssistantUserViewModel
 
     private readonly IUserAssistantService _userAssistantService;
     private readonly IEventAggregator _eventAggregator;
-    private readonly IUnshareItemPopupView _unshareProfilePopupView;
-    private readonly IDialogWindowsService _dialogWindowsService;
-    private readonly IInviteUserOrAddProfilesPopupService _inviteUserOrAddProfilesPopupService;
-    private readonly IDeleteAssistantUserPopupView _deleteAssistantUserPopupView;
+    //private readonly IUnshareItemPopupView _unshareProfilePopupView;
+    //private readonly IDialogWindowsService _dialogWindowsService;
+    //private readonly IInviteUserOrAddProfilesPopupService _inviteUserOrAddProfilesPopupService;
+    //private readonly IDeleteAssistantUserPopupView _deleteAssistantUserPopupView;
     private readonly IShareFoldersService _shareFoldersService;
     private readonly IToastNotificationService _toastNotificationService;
     private readonly IUserProfileService _userProfileService;
@@ -182,30 +184,30 @@ public partial class AssistantUserViewModel
         IsOpenPopup = !IsOpenPopup;
     }
     [RelayCommand]
-    private async void DeleteAssistant()
+    private async Task DeleteAssistant()
     {
-        _deleteAssistantUserPopupView.UserName = Username;
-
-        //var result = await _dialogWindowsService.ShowDialogWindow(_deleteAssistantUserPopupView, _deleteUserDialogTitle);
-
-        //if (result != (int)ButtonResult.OK)
-        //{
-        //    return;
-        //}
-
-        try
-        {
-            _userAssistantService.DeleteAssistant(UserAssistant);
-        }
-        catch
-        {
-            _toastNotificationService.ShowError($"Failed to delete {UserAssistant.UserName}. Please try again.");
-        }
+        if (await MesageBoxHelper.ShowAsync(_deleteUserDialogTitle, $"Are you sure you want to delete {Username}", fontIconInfo: "Delete"))
+            try
+            {
+                _userAssistantService.DeleteAssistant(UserAssistant);
+            }
+            catch
+            {
+                _toastNotificationService.ShowError($"Failed to delete {UserAssistant.UserName}. Please try again.");
+            }
     }
+
     [RelayCommand]
     private void AddMoreProfiles()
     {
-        _inviteUserOrAddProfilesPopupService.ShowPopup(false, UserAssistant.Id);
+        ContentDialogService.ShowAsync<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
+            viewModel =>
+            {
+                viewModel.Title = "ADD PROFILES";
+                viewModel.TitleText = "Add access to specific Profiles or whole Folders for this user";
+                viewModel.ShowInviteinfo = false;
+                viewModel.AssistantId = UserAssistant.Id;
+            });
     }
     [RelayCommand]
     private void SendLicenceKey()
@@ -316,30 +318,22 @@ public partial class AssistantUserViewModel
             return;
         }
 
-        //var result = await InitUnsharePopupAndGetResult(
-        //    _unshareProfileDialogTitle,
-        //    $"Are you sure you want to unshare {args.AssistantProfile.ProfileName}? This will not affect other profiles.");
+        if (await MesageBoxHelper.ShowAsync(_unshareProfileDialogTitle, $"Are you sure you want to unshare {args.AssistantProfile.ProfileName}? This will not affect other profiles."))
+            try
+            {
+                _userAssistantService.DeleteAssistantProfile(args.AssistantProfile);
 
-        //if (result != ButtonResult.OK)
-        //{
-        //    return;
-        //}
+                var viewModelToDelete = ProfileViewModels
+                    .Single(v => v.AssistantProfile.ProfileId == args.AssistantProfile.ProfileId);
 
-        try
-        {
-            _userAssistantService.DeleteAssistantProfile(args.AssistantProfile);
+                ProfileViewModels.Remove(viewModelToDelete);
 
-            var viewModelToDelete = ProfileViewModels
-                .Single(v => v.AssistantProfile.ProfileId == args.AssistantProfile.ProfileId);
-
-            ProfileViewModels.Remove(viewModelToDelete);
-
-            _toastNotificationService.ShowSuccess($"{args.AssistantProfile.ProfileName} was unshared successfully");
-        }
-        catch
-        {
-            _toastNotificationService.ShowError($"Failed to unshare profile. Please try again.");
-        }
+                _toastNotificationService.ShowSuccess($"{args.AssistantProfile.ProfileName} was unshared successfully");
+            }
+            catch
+            {
+                _toastNotificationService.ShowError($"Failed to unshare profile. Please try again.");
+            }
     }
     private async void OnUnshareFolder(UnshareFolderEventArgs args)
     {
@@ -348,31 +342,24 @@ public partial class AssistantUserViewModel
             return;
         }
 
-        //var result = await InitUnsharePopupAndGetResult(
-        //    _unshareFolderDialogTitle,
-        //    $"Are you sure you want to unshare {args.AssistantFolder.FolderName}? This will not affect other folders.");
+        if (await MesageBoxHelper.ShowAsync(_unshareFolderDialogTitle, $"Are you sure you want to unshare {args.AssistantFolder.FolderName}? This will not affect other folders."))
+            try
+            {
+                _shareFoldersService.Delete(args.AssistantFolder.Id);
 
-        //if (result != ButtonResult.OK)
-        //{
-        //    return;
-        //}
+                var viewModelToDelete = FolderViewModels
+                       .Single(v => v.ShareFolder.FolderId == args.AssistantFolder.FolderId);
 
-        try
-        {
-            _shareFoldersService.Delete(args.AssistantFolder.Id);
+                FolderViewModels.Remove(viewModelToDelete);
 
-            var viewModelToDelete = FolderViewModels
-                   .Single(v => v.ShareFolder.FolderId == args.AssistantFolder.FolderId);
-
-            FolderViewModels.Remove(viewModelToDelete);
-
-            _toastNotificationService.ShowSuccess($"{args.AssistantFolder.FolderName} was unshared successfully");
-        }
-        catch
-        {
-            _toastNotificationService.ShowError($"Failed to unshare folder. Please try again.");
-        }
+                _toastNotificationService.ShowSuccess($"{args.AssistantFolder.FolderName} was unshared successfully");
+            }
+            catch
+            {
+                _toastNotificationService.ShowError($"Failed to unshare folder. Please try again.");
+            }
     }
+
     [RelayCommand]
     private void SetCanCreateProfiles()
     {

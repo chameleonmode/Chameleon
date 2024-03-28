@@ -17,6 +17,9 @@ using Chameleon.Interfaces.UpgradePlan;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
+using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.MessageBox;
+using Chameleon.Core.Settings;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -26,11 +29,11 @@ public partial class AssistantUsersViewModel
 {
     private readonly IUserAssistantService _userAssistantService;
     //private readonly IUnshareItemPopupView _unshareProfilePopupView;
-    private readonly IDialogWindowsService _dialogWindowsService;
+    //private readonly IDialogWindowsService _dialogWindowsService;
     //private readonly IInviteUserOrAddProfilesPopupService _inviteUserOrAddProfilesPopupService;
     // private readonly IDeleteAssistantUserPopupView _deleteAssistantUserPopupView;
     private readonly IAuthSession _authSession;
-    private readonly IUpgradePlanPopupView _upgradePlanPopupView;
+    //private readonly IUpgradePlanPopupView _upgradePlanPopupView;
     private readonly IShareFoldersService _shareFoldersService;
     private readonly IToastNotificationService _toastNotificationService;
     private readonly IUserProfileService _userProfileService;
@@ -44,7 +47,7 @@ public partial class AssistantUsersViewModel
         // IInviteUserOrAddProfilesPopupService inviteUserOrAddProfilesPopupService,
         //IDeleteAssistantUserPopupView deleteAssistantUserPopupView,
         IAuthSession authSession,
-        IUpgradePlanPopupView upgradePlanPopupView,
+        //IUpgradePlanPopupView upgradePlanPopupView,
         IShareFoldersService shareFoldersService,
         IToastNotificationService toastNotificationService,
         IUserProfileService userProfileService
@@ -56,15 +59,20 @@ public partial class AssistantUsersViewModel
         // _inviteUserOrAddProfilesPopupService = inviteUserOrAddProfilesPopupService;
         // _deleteAssistantUserPopupView = deleteAssistantUserPopupView;
         _authSession = authSession;
-        _upgradePlanPopupView = upgradePlanPopupView;
+        //_upgradePlanPopupView = upgradePlanPopupView;
         _shareFoldersService = shareFoldersService;
         _toastNotificationService = toastNotificationService;
         _userProfileService = userProfileService;
 
-
+        Title = "User Management";
     }
     public override async Task InitAsync(object? param)
     {
+        await base.InitAsync(param);
+
+        if (Loaded)
+            return;
+
         EventAggregator.SetEventSubscription<InviteUserAssistantEvent, InviteUserAssistantEventArgs>(OnCreate);
 
         EventAggregator.SetEventSubscription<SavedUserAssistantEvent, SavedUserAssistantEventArgs>(OnUserAssistantSaved);
@@ -76,6 +84,8 @@ public partial class AssistantUsersViewModel
             .Subscribe(OnUserAssistantDeleted);
        
         await InitUserAssistantsAsync();
+
+       // OnPropertyChanged(string.Empty);
     }
 
     private int _totalCount;
@@ -124,7 +134,13 @@ public partial class AssistantUsersViewModel
         }
         else
         {
-            //_inviteUserOrAddProfilesPopupService.ShowPopup(true);
+            ContentDialogService.ShowAsync<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
+                viewModel =>
+                {
+                    viewModel.Title = "INVITE USER";
+                    viewModel.TitleText = "Invite new user and customise their access";
+                    viewModel.ShowInviteinfo = true;
+                });
         }
     }
 
@@ -157,15 +173,10 @@ public partial class AssistantUsersViewModel
         ViewModels.Limit = PaginatorViewModel.OnPageItems;
         TotalCount = PaginatorViewModel.TotalCount;
     }
-    private void ShowOutOfLimitPopup()
+    private async void ShowOutOfLimitPopup()
     {
-        Action<IUpgradePlanViewModel> initialize = viewModel =>
-        {
-            viewModel.LimitExceededText = "You have reached the maximum number of users.";
-        };
-
-        _dialogWindowsService.ShowDialogWindow
-            (_upgradePlanPopupView, "USERS LIMIT REACHED", initialize);
+        if(await MesageBoxHelper.ShowAsync("USERS LIMIT REACHED", "You have reached the maximum number of users."))
+            ProcessesUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
     }
     private void SendLicenceKey(string emailAddress, string password)
     {
@@ -196,10 +207,6 @@ public partial class AssistantUsersViewModel
             userAssistant,
             _userAssistantService,
             EventAggregator,
-            // _unshareProfilePopupView,
-            //_dialogWindowsService,
-            // _inviteUserOrAddProfilesPopupService,
-            // _deleteAssistantUserPopupView,
             _shareFoldersService,
             _toastNotificationService,
             _userProfileService);

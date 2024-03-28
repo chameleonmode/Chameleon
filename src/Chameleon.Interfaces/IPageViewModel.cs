@@ -2,5 +2,5 @@
 
 public interface IPageViewModel : IHaveInitialize
 {
-   
+    string Title { get; set; }
 }

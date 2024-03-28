@@ -2,9 +2,123 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Chameleon.Avalonia.Controls.Settings.AssistantUsersView">
-	<DockPanel>
-		<!--<commonCntrl:NavigateBackControl DockPanel.Dock="Top" />-->
-	</DockPanel>
+			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:paginator="using:Chameleon.Avalonia.Controls.Paginator"
+			 xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
+             x:Class="Chameleon.Avalonia.Controls.Settings.AssistantUsersView"
+			 x:DataType="vm:AssistantUsersViewModel"
+			 x:CompileBindings="False">
+	<UserControl.Resources>
+		<!--BorderBrush="{StaticResource DividerLine}"
+                    Background="{StaticResource LightPurple}"-->
+		<DataTemplate x:Key="SelectedItemTemplate"
+					  x:DataType="vm:AssistantViewModelBase">
+			<Grid Width="128">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="{Binding Name, FallbackValue=name}"
+						   HorizontalAlignment="Left"
+						   Theme="{StaticResource BodyStrongTextBlockStyle}" />
+
+				<Button Grid.Column="1"
+						Command="{Binding UnshareCommand}"
+						Theme="{DynamicResource TransparentButton}">
+					<avfCommon:SvgIconControl IconName="x" />
+				</Button>
+			</Grid>
+		</DataTemplate>
+
+		<ItemsPanelTemplate x:Key="StackPanelTemplate">
+			<StackPanel Spacing="6" />
+		</ItemsPanelTemplate>
+	</UserControl.Resources>
+	<Border Padding="20">
+		<avfCommon:ChameleonContentControl Title="Current Users">
+			<avfCommon:ChameleonContentControl.TitleContent>
+				<ui:CommandBar DefaultLabelPosition="Right">
+					<ui:CommandBar.PrimaryCommands>
+						<ui:CommandBarButton IconSource="Add"
+											 Label="Invite User"
+											 Command="{Binding CreateNewUserAssistantCommand}"/>
+					</ui:CommandBar.PrimaryCommands>
+				</ui:CommandBar>
+			</avfCommon:ChameleonContentControl.TitleContent>
+
+			<avfCommon:ChameleonContentControl.Content>
+				<!--BorderBrush="{StaticResource InsertProfilesLine}"-->
+				<ItemsControl ItemsSource="{Binding ViewModels}">
+					<!--<ItemsControl.Items>
+
+					</ItemsControl.Items>-->
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal"
+										Spacing="6">
+								<TextBlock Text="{Binding Username,FallbackValue=username}"
+										   Theme="{StaticResource BodyStrongTextBlockStyle}"
+										   Padding="{DynamicResource CheckBoxPadding}"/>
+
+								<TextBlock Text="{Binding Email,FallbackValue=email@email.com}"
+										   Theme="{StaticResource BodyStrongTextBlockStyle}"
+										   Padding="{DynamicResource CheckBoxPadding}" />
+
+								<CheckBox Content="Can Create Profiles"
+										  VerticalAlignment="Top"
+										  IsChecked="{Binding CanCreateProfiles}"
+										  Command="{Binding SetCanCreateProfilesCommand}"/>
+
+								<ItemsControl ItemsSource="{Binding FolderViewModels}"
+											  Padding="{DynamicResource CheckBoxPadding}"
+											  ItemTemplate="{StaticResource SelectedItemTemplate}"
+											  ItemsPanel="{StaticResource StackPanelTemplate}">
+								</ItemsControl>
+
+								<ItemsControl ItemsSource="{Binding ProfileViewModels}"
+										  Padding="{DynamicResource CheckBoxPadding}"
+										  ItemTemplate="{StaticResource SelectedItemTemplate}"
+										  ItemsPanel="{StaticResource StackPanelTemplate}">
+								</ItemsControl>
+
+
+								<Grid>
+									<Button ToolTip.Tip="Details"
+											Command="{Binding OpenPopupCommand}"
+											Theme="{DynamicResource TransparentButton}">
+
+										<avfCommon:SvgIconControl IconName="three-dots" />
+										<Button.Flyout>
+											<ui:FAMenuFlyout Placement="Bottom">
+												<ui:MenuFlyoutItem Text="Add more profiles"
+																   IconSource="Add"
+																   Command="{Binding AddMoreProfilesCommand}"/>
+												<ui:MenuFlyoutItem Text="Send licence key"
+																   IconSource="Send"
+																   Command="{Binding SendLicenceKeyCommand}" />
+												<ui:MenuFlyoutItem Text="Delete user"
+																   IconSource="Delete"
+																   Command="{Binding DeleteAssistantCommand}" />
+											</ui:FAMenuFlyout>
+										</Button.Flyout>
+									</Button>
+								</Grid>
+							</StackPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</avfCommon:ChameleonContentControl.Content>
+
+			<avfCommon:ChameleonContentControl.Footer>
+				<!--BorderBrush="{StaticResource InsertProfilesLine}"-->
+				<Border Grid.Row="1"
+						BorderThickness="1 0 1 1"
+						CornerRadius="0 0 2 2">
+					<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
+				</Border>
+			</avfCommon:ChameleonContentControl.Footer>
+		</avfCommon:ChameleonContentControl>
+	</Border>
 </UserControl>

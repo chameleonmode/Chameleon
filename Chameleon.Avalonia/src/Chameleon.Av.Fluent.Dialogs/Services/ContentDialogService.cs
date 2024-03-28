@@ -1,4 +1,7 @@
-﻿using Chameleon.Interfaces.Dialogs.ViewModels;
+﻿using Avalonia.Controls;
+using Chameleon.Interfaces;
+using Chameleon.Interfaces.Dialogs;
+using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
 using FluentAvalonia.UI.Controls;
 
@@ -6,6 +9,49 @@ namespace Chameleon.Av.Fluent.Dialogs.Services;
 
 public class ContentDialogService : IContentDialogService
 {
+    public Task<IContentDialogResult> ShowAsync<TView, TViewModel>(Action<TViewModel> initialize) where TViewModel : class
+    {
+        if (ContainerServiceHelper.Resolve<TView>() is Control view)
+        {
+            var viewModel = view.DataContext as TViewModel;
+
+            initialize?.Invoke(viewModel);
+
+            string? title = null;
+            if (viewModel is IPageViewModel pvm)
+                title = pvm.Title;
+
+                return CreateDialog(
+                    new DefaultContentDialogView(ContentDialogButtons.OKCancel, view, title), 
+                    viewModel is IContentDialogViewModel cdvm ? cdvm.OnDialogClosing : null);
+            
+
+        }
+        
+        throw new ArgumentNullException("view");
+    }
+
+    async Task<IContentDialogResult> CreateDialog(IContentDialogAware contentDialog, Action<IContentDialogResult> OnClosing = null)
+    {
+        var dialog = new ContentDialog()
+        {
+            Title = contentDialog.Title,
+            Content = contentDialog.DialogContent,
+            PrimaryButtonText = contentDialog.PrimaryButtonText,
+            SecondaryButtonText = contentDialog.SecondaryButtonText,
+            CloseButtonText = contentDialog.CloseButtonText,
+            DefaultButton = ContentDialogButton.Primary,
+        };
+        if(OnClosing != null)
+        {
+            dialog.Closing += (s, e) =>
+            {
+                OnClosing?.Invoke((IContentDialogResult)e.Result);
+            };
+        }
+        var res = await dialog.ShowAsync();
+        return (IContentDialogResult)res;
+    }
     public async Task<IContentDialogResult> ShowContentDialogAsync(Type contentDialog)
     {
         var c = ContainerServiceHelper.Current.ContainerProvider?.Resolve<IContentDialogView>(contentDialog);
@@ -22,24 +68,16 @@ public class ContentDialogService : IContentDialogService
         var res = await dialog.ShowAsync();
         return (IContentDialogResult)res;
     }
+    
+    public async Task<IContentDialogResult> ShowContentDialogAsync(object content, Action<IContentDialogResult> OnClosing, string title = "False", ContentDialogButtons btns = ContentDialogButtons.OKCancel)
+    {
+        return await CreateDialog(new DefaultContentDialogView(btns, content, title), OnClosing);
+    }
 
     public async Task<IContentDialogResult> ShowContentDialogAsync(IContentDialogAware contentDialog)
     {
-        var dialog = new ContentDialog()
-        {
-            Title = contentDialog.Title,
-            Content = contentDialog.DialogContent,
-            PrimaryButtonText = contentDialog.PrimaryButtonText,
-            SecondaryButtonText = contentDialog.SecondaryButtonText,
-            CloseButtonText = contentDialog.CloseButtonText,
-            DefaultButton = ContentDialogButton.Primary,
-        };
-
-        var res = await dialog.ShowAsync();
-        return (IContentDialogResult)res;
+        return await CreateDialog(contentDialog);
     }
-
-
 
     public async Task<IContentDialogResult> ShowContentDialogAsync(ContentDialogButtons btns, object content,
         object? title = null,
@@ -94,4 +132,6 @@ public class ContentDialogService : IContentDialogService
         var res = await dialog.ShowAsync();
         return (IContentDialogResult)res;
     }
+
+   
 }

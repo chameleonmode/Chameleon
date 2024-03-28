@@ -52,6 +52,8 @@ public partial class ProxyCreditViewModel
         EventAggregator
             .GetEvent<SelectedCreditPlanEvent>()
             .Subscribe(args => OnSelectedCreditPlan(args));
+
+        OnPropertyChanged(string.Empty);
     }
 
     private const string ClipboardText = "Copied to clipboard";

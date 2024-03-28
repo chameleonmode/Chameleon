@@ -19,7 +19,6 @@
 						<Border Grid.Column="0"
 								BorderThickness="1"
 								CornerRadius="2"
-								BorderBrush="{StaticResource InsertProfilesLine}"
 								Height="183">
 							<Grid Margin="24 0 0 0">
 								<Grid.RowDefinitions>
@@ -55,7 +54,6 @@
 								CornerRadius="2"
 								Margin="20 0 0 0"
 								BorderThickness="1"
-								BorderBrush="{StaticResource InsertProfilesLine}"
 								Height="183">
 							<Grid Margin="25 17 25 18">
 								<Grid.RowDefinitions>
@@ -75,7 +73,7 @@
 											<StackPanel Orientation="Horizontal"/>
 										</ItemsPanelTemplate>
 									</ItemsControl.ItemsPanel>
-									<ItemsControl.Items>
+									<!--<ItemsControl.Items>
 										<RadioButton GroupName="PurchaseCredit"
 													 VerticalContentAlignment="Center"
 													 IsChecked="{Binding IsChecked}">
@@ -87,7 +85,7 @@
 												</TextBlock>
 											</RadioButton.Content>
 										</RadioButton>
-									</ItemsControl.Items>
+									</ItemsControl.Items>-->
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
 											<!--Style="{StaticResource RadioButtonBorder}"-->
@@ -96,13 +94,10 @@
 														 VerticalContentAlignment="Center"
 														 IsChecked="{Binding IsChecked}">
 												<RadioButton.Content>
-													<TextBlock>
-														<Run Text="{Binding Size}"
-															 Theme="{StaticResource BodyTextBlockStyle}" />
-														<Run Text="$" 
-															 Theme="{StaticResource BodyStrongTextBlockStyle}"/>
-														<Run Text="{Binding Amount}"
-															 Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+													<TextBlock Theme="{DynamicResource BodyStrongTextBlockStyle}">
+														<Run Text="{Binding Size}"   />
+														<Run Text="$" />        
+														<Run Text="{Binding Amount}" />
 													</TextBlock>
 												</RadioButton.Content>
 											</RadioButton>

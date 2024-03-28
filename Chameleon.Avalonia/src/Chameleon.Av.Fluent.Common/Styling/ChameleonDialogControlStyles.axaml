@@ -97,7 +97,7 @@
 							   Text="{TemplateBinding TextLabel}"
 							   Margin="{StaticResource ContentDialogTitleFieldMargin}" />
 					<TextBox Name="TextPresenter"
-							 Text="{TemplateBinding Text}"
+							 Text="{TemplateBinding Text, Mode=TwoWay}"
 							 Margin="{StaticResource ContentDialogTextboxFieldMargin}" />
 				</StackPanel>
 			</ControlTemplate>

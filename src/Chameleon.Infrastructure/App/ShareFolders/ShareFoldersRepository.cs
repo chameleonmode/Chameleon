@@ -61,8 +61,22 @@ namespace Chameleon.Infrastructure.App.ShareFolders
             };
 
             var dtos =  _shareFoldersApi.Share(createDto);
-            var entities = _mapper.Map<IList<IShareFolder>>(dtos);
-
+            var entities = new List<IShareFolder>();
+            foreach ( var d in dtos )
+            {
+                var sf = new ShareFolder()
+                {
+                    FolderId = d.FolderId,
+                    FolderName = d.FolderName,
+                    Id = d.Id,
+                    UserId = d.UserId
+                };
+                foreach (var p in d.FolderPermissions)
+                {
+                      sf.FolderPermissions.Add(p);
+                }
+                entities.Add(sf);
+            }
             return entities;
         }
         public string[] GetAllProfilePermissionNames(long userId, int profileId, int? folderId)

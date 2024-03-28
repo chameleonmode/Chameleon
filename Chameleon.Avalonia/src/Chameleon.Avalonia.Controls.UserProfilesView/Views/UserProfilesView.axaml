@@ -44,7 +44,7 @@
 							Width="34" 
 							Height="34"
 				Command="{Binding SetFavoriteCommand}"
-				IsVisible="{Binding !ShowFavoriteIcon}">
+				IsVisible="{Binding ShowFavoriteIcon}">
 						<Grid>
 							<StackPanel IsVisible="{Binding !Folder.IsFavorite}">
 								<avfCommon:SvgIconControl  IconName="not-favorites" Width="15" Height="15"/>

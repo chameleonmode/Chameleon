@@ -92,6 +92,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
         //_featureTourNavigator.ForStep(ElementID.SaveChangesBtn).AttachDoable(
         //           currentStep => OnSaveProfile());
+
     }
     public override async Task InitAsync(object? param)
     {
@@ -100,9 +101,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         if (!Loaded)
             OnAuthenticated();
 
-        if(Design.IsDesignMode)
-            UserProfile = ContainerServiceHelper.Resolve<IDashboardViewModel>()?.SelectedProfile;
-
+       // UserProfile = ContainerServiceHelper.Resolve<IDashboardViewModel>()?.SelectedProfile;
         // OnPropertyChanged(nameof(UserProfileModel));
     }
     public override async Task OnNavigatedToAsync(object? param)
@@ -111,10 +110,11 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
         if (param is null)
             UserProfile = ContainerServiceHelper.Resolve<IDashboardViewModel>()?.SelectedProfile;
-        else
-            UserProfile = param as IUserProfile;
+        else if (param is IUserProfile up)
+            UserProfile = up;
 
         Title = UserProfileModel.Title;
+
     }
 
     public bool HasNoItems => Persons?.Items?.Count > 0;
@@ -627,6 +627,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     public void OnAuthenticated()
     {
         SyncBtnVisibilityChange();
+
     }
 
     #endregion

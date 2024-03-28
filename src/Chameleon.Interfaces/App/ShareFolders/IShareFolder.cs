@@ -9,6 +9,6 @@ namespace Chameleon.Interfaces.App.ShareFolders
         long UserId { get; set; }
         int FolderId { get; set; }
         string FolderName { get; set; }
-        IList<IShareFolderPermission> FolderPermissions { get; set; }
+        List<IShareFolderPermission> FolderPermissions { get; set; }
     }
 }

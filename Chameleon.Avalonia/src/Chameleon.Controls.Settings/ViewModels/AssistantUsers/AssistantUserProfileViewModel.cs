@@ -15,7 +15,7 @@ using CommunityToolkit.Mvvm.Input;
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
 public partial class AssistantUserProfileViewModel
-        : SubPageViewModelBase
+        : AssistantViewModelBase
 {
     private readonly IEventAggregator _eventAggregator;
     private readonly IUserAssistantService _userAssistantService;
@@ -57,7 +57,7 @@ public partial class AssistantUserProfileViewModel
     }
 
     public IAssistantProfile AssistantProfile { get; }
-    public string Name => AssistantProfile.ProfileName;
+    public override string Name => AssistantProfile.ProfileName;
 
     private ObservableCollectionView<AssistantProfilePermissionViewModel> _permissionViewModels;
     public ObservableCollectionView<AssistantProfilePermissionViewModel> PermissionViewModels
@@ -94,14 +94,13 @@ public partial class AssistantUserProfileViewModel
             .Single(a => a.PermissionName == PermissionNames.Pages_Curate);
 
 
-   [RelayCommand]
-    private void UnshareProfile()
+    public override void Unshare()
     {
         _eventAggregator
             .GetEvent<UnshareProfileEvent>()
             .Publish(new UnshareProfileEventArgs(AssistantProfile));
 
-       //TODO: RaiseAllPropertiesChanged();
+       base.Unshare();
     }
 
     private void InitPermissions()

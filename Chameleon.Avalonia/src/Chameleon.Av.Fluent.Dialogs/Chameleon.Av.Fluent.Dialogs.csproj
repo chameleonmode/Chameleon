@@ -12,6 +12,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj" />
 	  <ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
+	  <ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
 	  <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
 	  <ProjectReference Include="..\..\..\src\Modules\Chameleon.Modules.Auth\Chameleon.Modules.Auth.csproj" />
 	  <ProjectReference Include="..\Chameleon.Av.Fluent.Common\Chameleon.Av.Fluent.Common.csproj" />

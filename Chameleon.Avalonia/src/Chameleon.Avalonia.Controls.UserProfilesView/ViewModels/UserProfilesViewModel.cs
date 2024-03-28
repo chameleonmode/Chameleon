@@ -2,7 +2,6 @@
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
-using Chameleon.Core.Extensions;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.Synchronization.Events;
@@ -11,14 +10,11 @@ using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Services;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.MessageBox;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
-using System.Drawing;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
@@ -107,7 +103,7 @@ public partial class UserProfilesViewModel
 
     private void UpdateProfilesInFolder()
     {
-        this.InvokeOnUiThread(() =>
+        DispatcherService.InvokeOnUiThread(() =>
         {
             OnViewModelChange(this, EventArgs.Empty);
             SetViewModelsFilter();
@@ -422,7 +418,7 @@ public partial class UserProfilesViewModel
             $"Are you sure you want to delete {SelectedCount} profiles?",
             ContentDialogButtons.YesNo, 
             "DeleteLines"))
-            this.InvokeOnUiThread(DeleteProfiles);
+            DispatcherService.InvokeOnUiThread(DeleteProfiles);
     }
 
     private void DeleteProfiles()

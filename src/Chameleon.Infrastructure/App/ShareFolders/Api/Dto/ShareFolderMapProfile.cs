@@ -32,8 +32,8 @@ namespace Chameleon.Infrastructure.App.ShareFolders.Api.Dto
                 .ForMember(model => model.Id, options => options.MapFrom(dto => dto.Id))
                 .ForMember(model => model.UserId, options => options.MapFrom(dto => dto.UserId))
                 .ForMember(model => model.FolderId, options => options.MapFrom(dto => dto.FolderId))
-                .ForMember(model => model.FolderName, options => options.MapFrom(dto => dto.FolderName))
-                .ForMember(model => model.FolderPermissions, options => options.MapFrom(dto => dto.FolderPermissions));
+                .ForMember(model => model.FolderName, options => options.MapFrom(dto => dto.FolderName));
+                //TODO: .ForMember(model => model.FolderPermissions, options => options.MapFrom(dto => dto.FolderPermissions));
 
             map.ForAllOtherMembers(options => options.Ignore());
 

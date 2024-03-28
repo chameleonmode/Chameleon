@@ -39,7 +39,7 @@ public partial class UserProxySettingViewModel
         }
     }
 
-    public string UserProfileTitle => _userProfile.Title;
+    public string UserProfileTitle => _userProfile.Title ?? "<Title>";
 
     private bool _isSelected;
     public bool IsSelected

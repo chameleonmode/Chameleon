@@ -6,7 +6,7 @@ namespace Chameleon.Interfaces.UserProfiles
     {
         string Notes { get; set; }
         bool IsFavourite { get; set; }
-        string Title { get; set; }
+        string? Title { get; set; }
         int? FolderId { get; set; }
         long? CreatorUserId { get; set; }
         double? LimitCache { get; set; }

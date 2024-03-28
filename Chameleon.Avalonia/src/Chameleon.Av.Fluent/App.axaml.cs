@@ -53,6 +53,9 @@ using Chameleon.Avalonia.Controls.UserProfilesView;
 using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.UserProfileFolders;
+using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
+using Chameleon.Avalonia.Controls.UserProfileView.Services;
+using Chameleon.Avalonia.Controls.UserProfileView;
 
 namespace Chameleon.Av.Fluent;
      public class tempinits : IDialogWindowsService  , IPopupDialogService
@@ -176,15 +179,10 @@ public partial class App : PrismApplication
         cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
         cr.RegisterSingleton<IDialogWindowsService, tempinits>();
 
-
-        //AddInfrastructure
-        //containerRegistry.RegisterSingleton<IHaveContainerRegistry, HasContainerRegistryService>();
-        //containerRegistry.RegisterSingleton<IHaveContainerProvider, HasContainerProviderService>();
-
-        //containerRegistry.RegisterSingleton<IIocManager, IocManager>();
+        containerRegistry.RegisterSingleton<IIocManager, IocManager>();
 
         Container
-            .AddInfrastructure(containerRegistry);
+            .AddInfrastructure();
         //.AddApplication()
         //.AddModules()
         //.AddUi()
@@ -223,7 +221,11 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IUserProfileFoldersViewModel, UserProfileFoldersViewModel>();
         containerRegistry.RegisterSingleton<IUserProfileFoldersView, UserProfileFoldersView>();
         containerRegistry.RegisterSingleton<IUserProfilesViewModel, UserProfilesViewModel>();
-        containerRegistry.RegisterSingleton<IUserProfilesView, UserProfilesView>();
+        containerRegistry.RegisterSingleton<IUserProfilesView, UserProfilesView>();                         
+        containerRegistry.RegisterSingleton<IUserProfileAdditionalDataService, UserProfileAdditionalDataService>();
+        Container.RegisterMapperFrom(typeof(UserProfileIdentityViewModel).Assembly);
+        containerRegistry.RegisterSingleton<IUserProfileIdentityViewModel, UserProfileIdentityViewModel>(); 
+        containerRegistry.Register<IUserProfileIdentityView, UserProfileIdentityView>();
         //containerRegistry.RegisterSingleton<ISettingsViewModel, SettingsViewModel>();
         //containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
         //containerRegistry.RegisterSingleton<IUserProxySettingsViewModel, UserProxySettingsViewModel>();

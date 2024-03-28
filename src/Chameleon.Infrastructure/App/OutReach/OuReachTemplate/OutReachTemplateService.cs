@@ -69,7 +69,7 @@ namespace Chameleon.Infrastructure.OutReach
             }
 
             _repository.Delete(outReachTemplate.Id);
-            this.InvokeOnUiThread(() => OutReachTemplates.Remove(outReachTemplate));
+            OutReachTemplates.Remove(outReachTemplate);
         }
     }
 }

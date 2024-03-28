@@ -1,8 +1,7 @@
 ﻿namespace Chameleon.Interfaces;
 
-public interface ISubPageViewModel : IHaveInitialize
+public interface ISubPageViewModel : IPageViewModel
 {
-    string Title { get; set; }
     Task InitAsync(object? param);
     Task OnNavigatedToAsync(object? param);
 }

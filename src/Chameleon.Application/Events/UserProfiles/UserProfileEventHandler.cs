@@ -30,6 +30,7 @@ namespace Chameleon.Application.Events
         //private readonly IMainWindow _mainWindow;
         //private readonly IUserProfileView _userProfileView;
         private readonly IEventAggregator _eventAggregator;
+        //private readonly IDispatcherService _dispatcherService;
         private readonly IUserProfileService _userProfileService;
         private readonly ISystemBrowserManager _systemBrowserManager;
         //private readonly IOutReachTemplateView _outReachView;

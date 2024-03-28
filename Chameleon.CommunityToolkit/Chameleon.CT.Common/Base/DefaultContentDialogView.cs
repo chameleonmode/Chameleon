@@ -40,10 +40,7 @@ namespace Chameleon.CT.Common.Base;
     public static string GetSecondaryButtonText(ContentDialogButtons btns) => btns switch
     {
         ContentDialogButtons.YesNoCancel => "No",
-        ContentDialogButtons.OK or
-        ContentDialogButtons.OKCancel or
-        ContentDialogButtons.YesNo or
-         _ => "No"
+         _ => null
     };
 
     public static string GetCloseButtonText(ContentDialogButtons btns) => btns switch

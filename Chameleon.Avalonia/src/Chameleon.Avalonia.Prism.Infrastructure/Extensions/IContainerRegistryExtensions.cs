@@ -11,15 +11,12 @@ namespace Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 public static class IContainerRegistryExtensions
 {
     public static IContainerProvider AddInfrastructure(
-        this IContainerProvider self,
-        IContainerRegistry containerRegistry
+        this IContainerProvider self
         )
     {
         var executingAssembly = Assembly.GetExecutingAssembly();
         var executingAssemblyBase = AssemblyResolver.GetAssembly();
-
-        containerRegistry.RegisterSingleton<IIocManager, IocManager>();
-                                                           
+  
         self.RegisterTypesFrom(executingAssemblyBase);
         self.RegisterTypesFrom(executingAssembly);
 

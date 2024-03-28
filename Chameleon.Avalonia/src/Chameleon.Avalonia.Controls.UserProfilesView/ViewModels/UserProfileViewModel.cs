@@ -80,12 +80,13 @@ public partial class UserProfileViewModel : SubPageViewModelBase
         {
             return;
         }
+        OnPropertyChanged(string.Empty);
         //TODO: ?? RaiseAllPropertiesChanged();
     }
     [RelayCommand]
     private void Favorite()
     {
-        if (IsFavorite)
+        if (!IsFavorite)
             FavoriteUserProfile();
         else
             UnfavoriteUserProfile();

@@ -353,5 +353,5 @@ public partial class DashboardViewModel
         IsSyncChangesBtnVisible = _applicationUser.IsAuthenticated && assists?.Count > 0;
     }
 
-    public IUserProfile SelectedProfile { get; set; }
+    public IUserProfile SelectedProfile { get { return ViewModels[0].UserProfile; } set { } }
 }

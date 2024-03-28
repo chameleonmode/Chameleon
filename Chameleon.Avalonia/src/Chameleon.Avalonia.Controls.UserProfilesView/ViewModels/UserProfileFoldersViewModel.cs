@@ -53,7 +53,8 @@ public partial class UserProfileFoldersViewModel
         await base.InitAsync(param);
         IsWaiting = true;
 
-        LoadAsync();
+        if(!Loaded)
+            LoadAsync();
 
         IsWaiting = false;
     }

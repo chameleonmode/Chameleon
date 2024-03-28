@@ -11,7 +11,7 @@ using CommunityToolkit.Mvvm.Input;
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
 public partial class AssistantUserFolderViewModel
-      : SubPageViewModelBase
+      : AssistantViewModelBase
 {
     private readonly IEventAggregator _eventAggregator;
     private readonly IShareFoldersService _shareFoldersService;
@@ -35,7 +35,7 @@ public partial class AssistantUserFolderViewModel
     }
 
     public IShareFolder ShareFolder { get; }
-    public string Name => ShareFolder.FolderName;
+    public override string Name => ShareFolder.FolderName;
 
     private ObservableCollectionView<AssistantFolderPermissionViewModel> _permissionViewModels;
     public ObservableCollectionView<AssistantFolderPermissionViewModel> PermissionViewModels
@@ -71,12 +71,13 @@ public partial class AssistantUserFolderViewModel
         PermissionViewModels
             .Single(a => a.PermissionName == PermissionNames.Pages_Curate);
 
-    [RelayCommand]
-    private void UnshareFolder()
+    public override void Unshare()
     {
         _eventAggregator
             .GetEvent<UnshareFolderEvent>()
             .Publish(new UnshareFolderEventArgs(ShareFolder));
+
+        base.Unshare();
     }
 
     private void InitPermissions()

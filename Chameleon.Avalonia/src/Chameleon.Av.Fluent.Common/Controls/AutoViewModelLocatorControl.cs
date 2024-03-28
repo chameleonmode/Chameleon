@@ -35,6 +35,6 @@ public class AutoViewModelLocatorControl : UserControl
     {
         base.OnLoaded(e);
         if (DataContext is IHaveInitialize sp)
-            sp.InvokeInitializeAsyncCommand(null);
+            sp.InvokeInitializeAsyncCommand(e);
     }
 }
