@@ -95,10 +95,10 @@ namespace Chameleon.SystemBrowser.Firefox
             var proxy = UserProfile.Proxy;
             if (proxy.CanUse)
             {
-                _dynamicProxyServer = DynamicProxyServerFactory.Create(proxy);
+                //_dynamicProxyServer = DynamicProxyServerFactory.Create(proxy);
 
-                var host = _dynamicProxyServer.Host;
-                var port = _dynamicProxyServer.Port;
+                var host = UserProfile.Proxy.Host; //_dynamicProxyServer.Host;
+                var port = UserProfile.Proxy.Port; //_dynamicProxyServer.Port;
 
                 fileTextLines.Add("user_pref(\"network.proxy.type\", 1); ");
                 fileTextLines.Add("user_pref(\"network.proxy.share_proxy_settings\", true);");
@@ -121,13 +121,13 @@ namespace Chameleon.SystemBrowser.Firefox
                 fileTextLines.Add("user_pref(\"network.proxy.backup.socks\", \"" + host + "\");");
                 fileTextLines.Add("user_pref(\"network.proxy.backup.socks_port\", " + port + ");");
 
-                if (!_dynamicProxyServer.IsCertificateTrusted())
-                {
-                    //https://www.techwalla.com/articles/how-to-disable-invalid-ssl-in-firefox
-                    // In case when windows popup/messagebox for trust proxy certificate was aborted by user by mistake
-                    // we anyway will allow to use browser and proxy by ignoring certificates
-                    fileTextLines.Add("user_pref(\"browser.ssl_override_behavior\", 1);");
-                }
+                //if (!_dynamicProxyServer.IsCertificateTrusted())
+                //{
+                //    //https://www.techwalla.com/articles/how-to-disable-invalid-ssl-in-firefox
+                //    // In case when windows popup/messagebox for trust proxy certificate was aborted by user by mistake
+                //    // we anyway will allow to use browser and proxy by ignoring certificates
+                //    fileTextLines.Add("user_pref(\"browser.ssl_override_behavior\", 1);");
+                //}
 
                 //pref("app.update.staging.enabled", true);
                 //pref("app.update.service.enabled", true);

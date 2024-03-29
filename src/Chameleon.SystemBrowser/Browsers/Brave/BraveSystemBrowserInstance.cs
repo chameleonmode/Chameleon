@@ -67,15 +67,16 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
             var proxy = UserProfile.Proxy;
             if (proxy.CanUse)
             {
-                _dynamicProxyServer = DynamicProxyServerFactory.Create(proxy);
-                if (!_dynamicProxyServer.IsCertificateTrusted())
-                {
-                    // In case when windows popup/messagebox for trust proxy certificate was aborted by user by mistake
-                    // we anyway will allow to use browser and proxy by ignoring certificates
-                    arguments.Append("--ignore-certificate-errors ");
-                }
+                //_dynamicProxyServer = DynamicProxyServerFactory.Create(proxy);
+                //if (!_dynamicProxyServer.IsCertificateTrusted())
+                //{
+                //    // In case when windows popup/messagebox for trust proxy certificate was aborted by user by mistake
+                //    // we anyway will allow to use browser and proxy by ignoring certificates
+                //    arguments.Append("--ignore-certificate-errors ");
+                //}
 
-                arguments.Append($"--proxy-server={_dynamicProxyServer.Server} ");
+                //arguments.Append($"--proxy-server={_dynamicProxyServer.Server} ");
+                arguments.Append($"--proxy-server={UserProfile.Proxy.Host}:{UserProfile.Proxy.Port} ");
             }
             arguments.Append($"--remote-debugging-port={NextFreePort(1000)} ");
             return arguments.ToString();

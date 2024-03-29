@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.Models.ProxySettings;
 
-public class ProxySettingsBindable
+public partial class ProxySettingsBindable
        : ObservableObject
        , IProxySettings
        , IDataErrorInfo
@@ -26,11 +26,21 @@ public class ProxySettingsBindable
 
     public string HostForRequest { get => HostConverter.GetHostForRequest(Host); }
 
+    [ObservableProperty]
+    private string? _portString;
+    partial void OnPortStringChanged(string? oldValue, string? newValue)
+    {
+              if(int.TryParse(newValue, out var port)) {if(Port!=port) Port = port; }
+    }
     private int _port;
     public int Port
     {
         get => _port;
-        set => SetProperty(ref _port, value);
+        set
+        {
+            if (SetProperty(ref _port, value))
+                PortString = "" + value;
+        }
     }
 
     private string _userName;

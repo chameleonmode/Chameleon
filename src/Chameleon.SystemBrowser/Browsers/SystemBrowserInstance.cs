@@ -133,7 +133,7 @@ namespace Chameleon.SystemBrowser.Common
         }
         protected virtual void Cleanup()
         {
-            _dynamicProxyServer?.Stop();
+            //_dynamicProxyServer?.Stop();
         }
 
         private void PublishOpendedEvent(Process process)

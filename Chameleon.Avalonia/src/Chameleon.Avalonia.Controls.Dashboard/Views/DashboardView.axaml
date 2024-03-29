@@ -178,8 +178,8 @@
 								Background="Transparent"
 								Foreground="{StaticResource ButtonDarkBrush}"
 								BorderThickness="0"
-								Command="{Binding SyncChangesCommand}"
 								HorizontalAlignment="Right"
+								Command="{Binding SyncChangesCommand}"
 								IsVisible="{Binding IsSyncChangesBtnVisible}">
 							<StackPanel Orientation="Horizontal">
 								<avfCommon:SvgIconControl IconName="sync"

@@ -220,9 +220,9 @@ public partial class DashboardViewModel
         return string.IsNullOrEmpty(_searchText) ? folder.IsFavorite : SearchResult(folder.Title, _searchText);
     }
 
-    private bool SearchResult(string title, string searchText)
+    private bool SearchResult(string? title, string searchText)
     {
-        return title.Contains(searchText, StringComparison.InvariantCultureIgnoreCase);
+        return title?.Contains(searchText, StringComparison.InvariantCultureIgnoreCase) ?? false;
     }
 
     private ObservableCollectionView<FolderViewModel> _folderViewModels;

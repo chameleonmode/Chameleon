@@ -3,126 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:avCommon="using:Chameleon.Avalonia.Common"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d" 
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfileView">
-	<UserControl.Resources>
-		<!-- old color -->
-		<!--<SolidColorBrush x:Key="PrimaryHueLightBrush"
-                                     Color="#67daff" />-->
-		<!--<SolidColorBrush x:Key="PrimaryHueMidBrush"
-                                     Color="#03A9F4" />-->
-		<SolidColorBrush x:Key="PrimaryHueMidForegroundBrush"
-						 Color="#FAFAFA" />
 
-		<!--<SolidColorBrush x:Key="PrimaryHueDarkBrush"
-                                     Color="#007ac1" />-->
-		<SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush"
-						 Color="#FAFAFA" />
-		<!--<SolidColorBrush x:Key="ChameleonBlue"
-                             Color="#03a9f4" />-->
-		<!--<SolidColorBrush x:Key="ChameleonGray"
-                             Color="#f5f5f5" />-->
-
-		<!-- new color -->
-		<SolidColorBrush x:Key="Orange"
-						 Color="#F25022" />
-
-		<SolidColorBrush x:Key="LightGrayBackground"
-						 Color="#F8F8F8" />
-
-		<SolidColorBrush x:Key="PrimaryHueLightBrush"
-						 Color="#6E3BD2" />
-		<SolidColorBrush x:Key="PrimaryHueMidBrush"
-						 Color="#5D25A6" />
-		<SolidColorBrush x:Key="PrimaryHueMidBrush40"
-						 Color="#665D25A6" />
-
-		<SolidColorBrush x:Key="PrimaryHueDarkBrush"
-						 Color="#6634C2" />
-
-		<SolidColorBrush x:Key="ButtonDarkBrush"
-						 Color="#673D9C" />
-
-		<SolidColorBrush x:Key="ChameleonGray"
-						 Color="#F6F6F9" />
-		<SolidColorBrush x:Key="SecondaryText"
-						 Color="#8094AE" />
-		<SolidColorBrush x:Key="BackGroundColor"
-						 Color="#106E3BD2" />
-		<SolidColorBrush x:Key="BackGroundGreyColor"
-						 Color="#FBFBFB" />
-
-		<SolidColorBrush x:Key="MainBlack"
-						 Color="#141315" />
-		<SolidColorBrush x:Key="MainGray"
-						 Color="#B5B5B5" />
-		<SolidColorBrush x:Key="MouseOverMainBlack"
-						 Color="#2A141315" />
-		<SolidColorBrush x:Key="DarkGray"
-						 Color="#404349" />
-		<SolidColorBrush x:Key="DarkGray02"
-						 Color="#05404349" />
-		<SolidColorBrush x:Key="DividerLine"
-						 Color="#D9E1F1" />
-		<SolidColorBrush x:Key="BackGroundDivider"
-						 Color="#80D9E1F1" />
-		<SolidColorBrush x:Key="InsertProfilesLine"
-						 Color="#C4D8F2" />
-		<SolidColorBrush x:Key="BorderOutlineButton"
-						 Color="#DADADA" />
-
-		<SolidColorBrush x:Key="BorderOutlineButton40"
-						 Color="#66DADADA" />
-
-		<SolidColorBrush x:Key="BorderOutline"
-						 Color="#E7E7E7" />
-
-		<SolidColorBrush x:Key="LightPurple"
-						 Color="#F2EFFC" />
-		<SolidColorBrush x:Key="LightPurple29"
-						 Color="#4AF2EFFC" />
-		<SolidColorBrush x:Key="VeryLightPurple"
-						 Color="#FBFAFE" />
-
-		<SolidColorBrush x:Key="FolderProfiles"
-						 Color="#425A70" />
-		<SolidColorBrush x:Key="FolderMenu"
-						 Color="#88858A" />
-
-		<SolidColorBrush x:Key="BackGroundSelectedProfilesBlock"
-						 Color="#373845" />
-		<SolidColorBrush x:Key="OrangeDeleteProfiles"
-						 Color="#FF592B" />
-		<SolidColorBrush x:Key="SecondaryTextPopup"
-						 Color="#7B7B7B" />
-		<SolidColorBrush x:Key="ScrollBackground"
-						 Color="#EDEEEE" />
-		<SolidColorBrush x:Key="ScrollForeground"
-						 Color="#A7ABB3" />
-
-		<SolidColorBrush x:Key="RedCloseButton"
-						 Color="#C42B1C" />
-		<SolidColorBrush x:Key="RedClickCloseButton"
-						 Color="#C94132" />
-		<SolidColorBrush x:Key="MainWindowBlackout26"
-						 Color="#42292929" />
-
-		<SolidColorBrush x:Key="White"
-						 Color="White" />
-
-		<SolidColorBrush x:Key="MainTabControlHeaderBackgrount"
-						 Color="#fbfcfe" />
-
-		<LinearGradientBrush x:Key="GradientButtonBackground"
-							 StartPoint="0,0"
-							 EndPoint="0,1">
-			<GradientStop Color="#FDFDFD"
-						  Offset="0" />
-			<GradientStop Color="#F2F2F2"
-						  Offset="1" />
-		</LinearGradientBrush>
-	</UserControl.Resources>
 	<Grid HorizontalAlignment="Stretch">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
@@ -161,13 +46,13 @@
               Width="28"
               Height="28"
               VerticalAlignment="Center">
-			<Ellipse Fill="{StaticResource LightPurple}"
-                     Stroke="{StaticResource PrimaryHueMidBrush}">
+			<Ellipse Fill="{StaticResource AccentFillColorDefaultBrush}"
+                     Stroke="{StaticResource FocusStrokeColorOuterBrush}">
 			</Ellipse>
 			<TextBlock Text="{Binding Code}"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
-                       Foreground="{StaticResource PrimaryHueMidBrush}"
+                       Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
                        FontSize="11"
                        FontWeight="Bold"
                        FontFamily="Open Sans" />
@@ -178,12 +63,13 @@
                   Margin="0 0 1 0"
                   VerticalAlignment="Bottom" HorizontalAlignment="Right">
 
-				<Ellipse Fill="{StaticResource PrimaryHueMidBrush}"/>
+				<Ellipse Fill="{StaticResource AccentFillColorTertiaryBrush}"/>
+				
 				<!--<materialDesign:PackIcon Kind="ShareVariant"
                                          Width="8" Height="8"
                                          Margin="0 0 1 0"
                                          VerticalAlignment="Center" HorizontalAlignment="Center"
-                                         Foreground="{StaticResource LightPurple}" />-->
+                                         Foreground="{StaticResource AccentFillColorDefaultBrush}" />-->
 			</Grid>
 		</Grid>
 
@@ -242,10 +128,11 @@
                 IsVisible="{Binding HasMultiOptions}"
                 Margin="0 0 13 0"
                 Height="27"
-                BorderBrush="{StaticResource BorderOutlineButton}"
+                BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
                 BorderThickness="1 0 0 0" />
 
 		<Button Grid.Column="7"
+				Theme="{StaticResource TransparentButton}"
                 Margin="0 0 8 0"
                 Height="32"
                 Width="134"
@@ -253,9 +140,10 @@
                 ToolTip.Tip="Open Chameleon Browser"
                 Command="{Binding OpenBrowserCommand}"
                 Content="Chameleon browser"
-                 /><!--Style="{StaticResource OutlinedButton}"-->
+                 />
 
 		<Button Grid.Column="8"
+				Theme="{StaticResource TransparentButton}"
                 Margin="0 0 8 0"
                 Height="32"
                 Width="88"
@@ -263,83 +151,28 @@
                 IsVisible="{Binding HasMultiOptions}"
                 Command="{Binding ShowViewProfileCommand}"
                 Content="Copy-paste"
-                 /><!--Style="{StaticResource OutlinedButton}"-->
-
-		<Popup x:Name="menuPopup"
-               Placement="Pointer"
-               MaxWidth="250"
-               Width="130"
-               IsOpen="{Binding IsOpenMenuPopup}">
-			<Border Width="130"
-                    BorderBrush="{StaticResource MaterialDesignDivider}"
-                    BorderThickness="1">
-				<Grid Background="White">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-<!--Style="{StaticResource OutlinedButton}"-->
-					<Button Grid.Row="0"
-                            HorizontalAlignment="Stretch"
-                            Command="{Binding OpenUserProfileCommand}"
-                            CommandParameter=""
-                            Padding="0"
-                            BorderThickness="0"
-                            Width="130">
-						<Grid Width="130">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="4*" />
-							</Grid.ColumnDefinitions>
-							<avfCommon:SvgIconControl IconName="details" 
-													  Grid.Column="0"
-													  Width="15"
-													  Height="15"
-													  Margin="6"
-													  Foreground="{StaticResource SecondaryText}" />
-							<TextBlock Text="View profile"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Left"
-                                       Grid.Column="1" />
-						</Grid>
-					</Button><!--Style="{StaticResource OutlinedButton}"-->
-					<Button Grid.Row="1"
-                            HorizontalAlignment="Stretch"
-                            Command="{Binding DeleteCommand}"
-                            
-                            BorderThickness="0"
-                            Padding="0"
-                            Width="130"
-                            IsVisible="{Binding IsDeleteProfileBtnVisible}">
-						<Grid Width="130">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="4*" />
-							</Grid.ColumnDefinitions>
-							<avfCommon:SvgIconControl IconName="delete"
-													  Grid.Column="0"
-													  Width="15"
-													  Height="15"
-													  Margin="6"
-													  Foreground="{StaticResource SecondaryText}" />
-							<TextBlock Text="Delete profile"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Left"
-                                       Grid.Column="1" />
-						</Grid>
-					</Button>
-				</Grid>
-			</Border>
-		</Popup>
+                 />
 
 		<Button Grid.Column="11"
+				Theme="{StaticResource TransparentButton}"
                 HorizontalAlignment="Right"
                 Height="32"
                 Width="33"
                 Margin="0 0 7 0"
                 ToolTip.Tip="Details"
                 Command="{Binding OpenMenuCommand}"
-                ><!--Style="{StaticResource OutlinedButton}"-->
+                >
+			<Button.Flyout>
+				<ui:FAMenuFlyout Placement="Bottom">
+					<ui:MenuFlyoutItem Text="View profile"
+									   IconSource="Contact"
+									   Command="{Binding OpenUserProfileCommand}"/>
+					<ui:MenuFlyoutItem Text="Delete"
+									   IconSource="Delete"
+									   IsVisible="{Binding IsDeleteProfileBtnVisible}"
+									   Command="{Binding DeleteUserProfile}" />
+				</ui:FAMenuFlyout>
+			</Button.Flyout>
 			<avfCommon:SvgIconControl IconName="three-dots"
                                   Width="23"
                                   Height="23" />
@@ -347,7 +180,7 @@
 
 		<Button Grid.Column="12"
                 HorizontalAlignment="Right"
-                
+			Theme="{StaticResource TransparentButton}"
                 ToolTip.Tip="Add to Favorites"
                 Command="{Binding FavoriteCommand}"
                 Width="34"

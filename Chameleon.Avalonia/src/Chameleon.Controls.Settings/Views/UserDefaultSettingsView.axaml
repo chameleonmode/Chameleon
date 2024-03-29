@@ -42,8 +42,7 @@
 						</StackPanel>
 
 						<ListBox Grid.Row="1"
-								 ItemsSource="{Binding ViewModels}"
-								 ItemTemplate="{StaticResource SettingsListItemTemplate}">
+								 ItemsSource="{Binding ViewModels}">
 							<ListBox.ItemTemplate>
 								<DataTemplate>
 									<Grid Margin="{StaticResource ChameleonInnerControlMargin}"

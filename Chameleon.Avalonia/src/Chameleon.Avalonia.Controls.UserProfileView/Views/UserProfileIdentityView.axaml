@@ -19,18 +19,31 @@
 					<!--<TextBlock Text="{Binding UserProfileModel.Title}" />
 					<TextBlock Text="Customize profile-related data" />-->
 
-				<StackPanel Orientation="Horizontal">
-					<Button Command="{Binding SyncChangesCommand}" IsVisible="{Binding IsSyncChangesBtnVisible}">
-						<StackPanel>
-							<avfCommon:SvgIconControl IconName="sync" />
+					<Button Margin="0 0 0 12"
+						Background="Transparent"
+								Foreground="{StaticResource ButtonDarkBrush}"
+								BorderThickness="0"
+								HorizontalAlignment="Right"
+							Command="{Binding SyncChangesCommand}" 
+							IsVisible="{Binding IsSyncChangesBtnVisible}">
+						<StackPanel Orientation="Horizontal">
+							<avfCommon:SvgIconControl IconName="sync" 
+													  Margin="0 0 12 0" />
 							<TextBlock Text="Sync changes" />
 						</StackPanel>
 					</Button>
 
+				<StackPanel Orientation="Horizontal"
+							HorizontalAlignment="Right">
 					<StackPanel Orientation="Horizontal">
-						<Button Content="Discard" Command="{Binding DiscardCommand}" />
+						<Button Content="Save changes" 
+								Command="{Binding SaveChangesCommand}"
+								Margin="0 0 12 0"/>
+						<Button Content="Discard changes" 
+								Classes="accent"
+								Command="{Binding DiscardCommand}" />
 						<!-- featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.SaveChangesBtn}" featureTouring:TourHelper.Placement="BottomRight" -->
-						<Button Content="Save changes" Command="{Binding SaveChangesCommand}" />
+			
 					</StackPanel>
 				</StackPanel>
 				</StackPanel>
@@ -62,7 +75,7 @@
 								<avfCommon:HeaderdInputFieldsControl Title="PROXY CONFIGURATION">
 									<avfCommon:HeaderdInputFieldsControl.TextBoxes>
 										<TextBox Text="{Binding Path=UserProfileModel.Proxy.Host}" />
-										<TextBox Text="{Binding Path=UserProfileModel.Proxy.Port}"  />
+										<TextBox Text="{Binding Path=UserProfileModel.Proxy.PortString}"  />
 										<TextBox Text="{Binding Path=UserProfileModel.Proxy.UserName}" />
 										<TextBox Text="{Binding Path=UserProfileModel.Proxy.Password}"  />
 									</avfCommon:HeaderdInputFieldsControl.TextBoxes>
