@@ -10,13 +10,13 @@
 	<UserControl.Resources>
 		<converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
 		<!--BorderBrush="{StaticResource InsertProfilesLine}"-->
-		<DataTemplate x:Key="DashbordProfilesListViewTemplate">
+		<!--<DataTemplate x:Key="DashbordProfilesListViewTemplate">
 			<Border x:Name="Border"
                     BorderThickness="0 1 0 0"
                     Height="56"
-                    BorderBrush="{StaticResource InsertProfilesLine}">
+                    BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}">
 				<userProfiles:UserProfileView />
-			</Border>
+			</Border>-->
 
 			<!--<DataTemplate.Triggers>
 				<DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}"
@@ -27,7 +27,8 @@
 				</DataTrigger>
 
 			</DataTemplate.Triggers>-->
-		</DataTemplate>
+		<!--</DataTemplate>-->
+
 
 		<!-- old color -->
 		<!--<SolidColorBrush x:Key="PrimaryHueLightBrush"
@@ -159,45 +160,13 @@
 
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
-					<!--<ColumnDefinition Width="404" />-->
 				</Grid.ColumnDefinitions>
-<!--BorderBrush="{StaticResource DividerLine}"
-						BorderThickness="1"
-						Height="60"-->
-				<Border Grid.Row="0"
-						Grid.Column="0"
-						Grid.ColumnSpan="2"
-						>
-					<Grid>
+
 						<!--<breadcrumbsView:BreadcrumbsView DataContext="{Binding BreadcrumbsViewModel}"
 														 VerticalAlignment="Center"
 														 Margin="23 0 0 0" />-->
-						<Button Width="153"
-								Height="40"
-								Margin="0 0 24 0"
-								Background="Transparent"
-								Foreground="{StaticResource ButtonDarkBrush}"
-								BorderThickness="0"
-								HorizontalAlignment="Right"
-								Command="{Binding SyncChangesCommand}"
-								IsVisible="{Binding IsSyncChangesBtnVisible}">
-							<StackPanel Orientation="Horizontal">
-								<avfCommon:SvgIconControl IconName="sync"
-													  Foreground="{StaticResource ButtonDarkBrush}"
-													  Width="14.25"
-													  Height="17.43"
-													  VerticalAlignment="Center"
-													  Margin="0 0 10 0" />
-								<TextBlock VerticalAlignment="Center"
-										   Margin="0"
-										   Text="Sync changes"
-										   FontWeight="DemiBold"
-										   FontFamily="Open Sans"
-										   FontSize="14" />
-							</StackPanel>
-						</Button>
-					</Grid>
-				</Border>
+				<Button Theme="{StaticResource SyncChangesButton}" />
+
 
 				<!--# 271-->
 				<!--<Border Grid.Row="1"
@@ -207,9 +176,8 @@
                 BorderThickness="1 0 0 0">
             <taskForseView:TaskForceView />
         </Border>-->
-<!--Background="{StaticResource BackGroundGreyColor}"-->
-				<Grid Grid.Row="1"
-					  >
+				
+				<Grid Grid.Row="1">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="*" />
@@ -219,23 +187,14 @@
 					<StackPanel Grid.Row="0"
 								Grid.Column="0"
 								Margin="0 16 24 0">
-						<!--materialDesign:TextFieldAssist.HasClearButton="True"
-								 materialDesign:HintAssist.Hint="Search"
-								 materialDesign:HintAssist.IsFloating="False"
-								 materialDesign:TextFieldAssist.DecorationIsVisible="Collapsed"
-								 materialDesign:TextFieldAssist.HasLeadingIcon="True"
-								 materialDesign:TextFieldAssist.LeadingIcon="Search"
-								 materialDesign:TextFieldAssist.LeadingIconSize="15"
-								 materialDesign:TextFieldAssist.TextFieldCornerRadius="4"-->
 						<TextBox Margin="0 0 0 12"
 								 Background="White"
 								 BorderThickness="1"
 								 Width="300"
 								 Padding="10 5 10 5"
-								 
 								 Text="{Binding SearchText, Mode=OneWayToSource}"
 								 BorderBrush="{StaticResource BorderOutlineButton}" />
-
+						
 						<TextBlock Margin="24 0 0 0"
 								   Theme="{StaticResource SubtitleTextBlockStyle}"
 								   Text="Favorite profiles"
@@ -251,45 +210,28 @@
 							<StackPanel Orientation="Horizontal"
 										HorizontalAlignment="Left"
 										VerticalAlignment="Center"
-										Margin="24 0 0 16"><!--Style="{StaticResource ProfileCountSubtext}"-->
+										Margin="24 0 0 16">
 								<TextBlock Text="You have " />
-<!--Style="{StaticResource ProfileCount}"-->
 								<TextBlock Text="{Binding ViewModels.Count}" />
-<!--Style="{StaticResource ProfileCountSubtext}"-->
 								<TextBlock Text=" favorite profiles"
 										   IsVisible="{Binding NoSearchResultsInFavorite}" />
-<!--Style="{StaticResource ProfileCountSubtext}"-->
 								<TextBlock Text=" profiles"
 										   IsVisible="{Binding NoSearchResultsInFavorite}" />
 							</StackPanel>
 
 							<StackPanel HorizontalAlignment="Right"
-										Orientation="Horizontal"><!--Style="{StaticResource ProfileCountSubtext}"-->
+										Orientation="Horizontal">
 								<TextBlock VerticalAlignment="Center"
 										   Text="Sort by:"
 										   FontWeight="DemiBold"
 										   Margin="0 0 0 16" />
-<!--materialDesign:HintAssist.Foreground="Transparent"--><!--Height="14"--><!--Padding="0"--><!--Foreground="{StaticResource SecondaryText}"
-										  BorderThickness="0"
-										  FontFamily="Open Sans"
-										  FontStyle="Normal"
-										  FontSize="12"--><!--VerticalAlignment="Bottom"-->
 								<ComboBox ItemsSource="{Binding Sorts}"
 										  Margin="6 0 0 16"
-										  
 										  SelectedItem="{Binding SortSelected}"
-										  
-										  
 										  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 									<ComboBox.ItemTemplate>
-										<DataTemplate><!--Foreground="{StaticResource MainBlack}"--><!--FontFamily="Open Sans"
-												   FontWeight="DemiBold"
-												   FontSize="12"
-												   Padding="0"--><!--Margin="0"-->
-											<Label 
-												   Content="{Binding Converter={StaticResource ListSortDirectionToName}}"
-												   
-												    />
+										<DataTemplate>
+											<TextBlock Text="{Binding Converter={StaticResource ListSortDirectionToName}}" />
 										</DataTemplate>
 									</ComboBox.ItemTemplate>
 								</ComboBox>
@@ -299,24 +241,16 @@
 
 					<Grid Grid.Row="1"
 						  Grid.Column="0"
-						  Margin="24 0 24 24"><!--BorderThickness="1"-->
-						<Border CornerRadius="4"
-								BorderBrush="{StaticResource InsertProfilesLine}"
-								
-								IsVisible="{Binding !HasNoItems}"
-								VerticalAlignment="Top"><!--Style="{StaticResource ItemsControlVirtualizedStyle}"--><!--Background="White"-->
-							<ItemsControl ItemsSource="{Binding ViewModels}">
+						  Margin="24 0 24 24">
+							<ItemsControl 	IsVisible="{Binding !HasNoItems}"
+											ItemsSource="{Binding ViewModels}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-												BorderThickness="0 1 0 0"
-												Height="56">
+								
 											<userProfiles:UserProfileView HorizontalAlignment="Stretch" />
-										</Border>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
-						</Border>
 					</Grid>
 
 					<Grid Grid.Row="2"
@@ -357,8 +291,7 @@
 											DataContext="{Binding}"
 											IsIndicatorVisible="{Binding IsWaiting}" />-->
 				</Grid><!--Background="{StaticResource BackGroundGreyColor}"-->
-				<Grid Grid.Row="2"
-					  >
+				<Grid Grid.Row="2">
 					<Grid Margin="24 0 24 0">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -375,25 +308,21 @@
 								   IsVisible="{Binding NoSearchResultsInFavorite}" />
 						<TextBlock Text="Folders"
 								   Theme="{StaticResource SubtitleTextBlockStyle}"
-								   IsVisible="{Binding !NoSearchResultsInFavorite}" /><!--Foreground="{StaticResource SecondaryText}"-->
+								   IsVisible="{Binding !NoSearchResultsInFavorite}" />
 						<TextBlock Grid.Row="1"
 								   VerticalAlignment="Center"
 								   IsVisible="{Binding HasNoFolderItems}"
-								   Margin="0 8 0 8"
-								   ><!--Style="{StaticResource ProfileCountSubtext}"-->
+								   Margin="0 8 0 8">
 							<TextBlock 
 									   VerticalAlignment="Bottom"
 									   Text="You have" />
-<!--Style="{StaticResource ProfileCount}"-->
 							<TextBlock 
 									   VerticalAlignment="Bottom"
 									   Text="{Binding FoldersCount}" />
-<!--Style="{StaticResource ProfileCountSubtext}"-->
 							<TextBlock  
 										VerticalAlignment="Bottom"
 										Text="favorite folders"
 										IsVisible="{Binding NoSearchResultsInFavorite}" />
-<!--Style="{StaticResource ProfileCountSubtext}"-->
 							<TextBlock  
 										VerticalAlignment="Bottom"
 										Text="folders"
@@ -403,37 +332,19 @@
 									Grid.Column="1"
 									HorizontalAlignment="Right"
 									Orientation="Horizontal"
-									IsVisible="{Binding HasNoFolderItems}"><!--Style="{StaticResource ProfileCountSubtext}"-->
+									IsVisible="{Binding !HasNoFolderItems}">
 							<TextBlock 
 									   VerticalAlignment="Center"
 									   Text="Sort by:"
 									   FontWeight="DemiBold"
 									   Margin="0 0 0 16" />
-							<!--materialDesign:HintAssist.Foreground="Transparent"--><!--Foreground="{StaticResource SecondaryText}"
-									  BorderThickness="0"
-									  FontFamily="Open Sans"
-									  FontStyle="Normal"
-									  FontSize="12"--><!--Height="14"
-									  Cursor="Hand"
-									  VerticalAlignment="Bottom"--><!--Padding="0"-->
 							<ComboBox ItemsSource="{Binding Sorts}"
-									  
 									  Margin="6 0 0 16"
-									  
 									  SelectedItem="{Binding FolderSortSelected}"
-									  
-									  
 									  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 								<ComboBox.ItemTemplate>
-									<DataTemplate><!--Foreground="{StaticResource MainBlack}"
-											   FontFamily="Open Sans"
-											   FontWeight="DemiBold"
-											   FontSize="12"
-											   Padding="0"
-											   Cursor="Hand"--><!--Margin="0"-->
-										<Label 
-											   Content="{Binding Converter={StaticResource ListSortDirectionToName}}"
-											    />
+									<DataTemplate>
+										<TextBlock Text="{Binding Converter={StaticResource ListSortDirectionToName}}" />
 									</DataTemplate>
 								</ComboBox.ItemTemplate>
 							</ComboBox>
@@ -445,35 +356,20 @@
 									  IsVisible="{Binding !HasNoFolderItems}">
 							<ItemsControl ItemsSource="{Binding FolderViewModels}"
 										  Margin="-8 0 -8 0">
-								<ItemsControl.Resources>
-									<ControlTheme TargetType="{x:Type Border}"
-												  x:Key="MainBorderStyle">
-										<Setter Property="CornerRadius"
-												Value="4" />
-										<Setter Property="BorderThickness"
-												Value="1" />
-										<Setter Property="Background"
-												Value="{StaticResource White}" />
-										<Setter Property="BorderBrush"
-												Value="{StaticResource DividerLine}" />
-									</ControlTheme>
-								</ItemsControl.Resources>
-								<!--<ItemsControl.ItemsPanel>
+								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
-										<UniformGrid IsItemsHost="True"
-													 Columns="2"
+										<UniformGrid  Columns="2"
 													 Margin="0"
 													 VerticalAlignment="Top" />
 									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>-->
+								</ItemsControl.ItemsPanel>
 								<ItemsControl.ItemTemplate>
-									<DataTemplate><!--Style="{StaticResource MainBorderStyle}"-->
-
+									<DataTemplate>
 										<Border Theme="{StaticResource MainBorderStyle}"
 												MinWidth="300"
 												HorizontalAlignment="Stretch"
-												Height="73"
-												Margin="8">
+												Height="53"
+												Margin="6">
 											<Grid>
 												<Grid.ColumnDefinitions>
 													<ColumnDefinition Width="Auto" />
@@ -486,40 +382,31 @@
 														Width="27"
 														Margin="20 0 24 0">
 													<Path Data="M3.15 1.83333C2.79196 1.83333 2.44858 1.9782 2.19541 2.23606C1.94223 2.49392 1.8 2.84366 1.8 3.20833V6.41667H25.2V5.04167C25.2 4.67699 25.0578 4.32726 24.8046 4.06939C24.5514 3.81153 24.208 3.66667 23.85 3.66667H11.4812C10.8593 3.66665 10.2512 3.47912 9.73377 3.12771C9.73375 3.1277 9.73372 3.12768 9.7337 3.12767L8.1677 2.06433C7.94594 1.91372 7.68536 1.83335 7.41881 1.83333C7.4188 1.83333 7.41882 1.83333 7.41881 1.83333H3.15ZM25.2 8.25H1.8V18.7917C1.8 19.1563 1.94223 19.5061 2.19541 19.7639C2.44858 20.0218 2.79196 20.1667 3.15 20.1667H23.85C24.208 20.1667 24.5514 20.0218 24.8046 19.7639C25.0578 19.5061 25.2 19.1563 25.2 18.7917V8.25ZM0 18.7917C0 19.6426 0.331874 20.4586 0.922614 21.0603C1.51335 21.662 2.31457 22 3.15 22H23.85C24.6854 22 25.4866 21.662 26.0774 21.0603C26.6681 20.4586 27 19.6426 27 18.7917V5.04167C27 4.19076 26.6681 3.37471 26.0774 2.77303C25.4866 2.17135 24.6854 1.83333 23.85 1.83333H11.4812C11.4812 1.83333 11.4812 1.83333 11.4812 1.83333C11.2147 1.83332 10.9541 1.75294 10.7323 1.60233L9.1663 0.539C9.16628 0.538985 9.16625 0.538969 9.16623 0.538954C8.64878 0.187546 8.04077 1.62274e-05 7.41884 0H3.15C2.31457 0 1.51335 0.33802 0.922614 0.939699C0.331874 1.54138 0 2.35743 0 3.20833V18.7917Z"
-														  Fill="#8094AE" />
+														  Fill="{StaticResource AccentFillColorDefaultBrush}" />
 												</Canvas>
 												<StackPanel Grid.Column="1"
 															VerticalAlignment="Center">
 													<TextBlock Text="{Binding Title}"
-															   FontFamily="Open Sans"
-															   FontWeight="Bold"
-															   FontSize="14"
-															   Foreground="{StaticResource MainBlack}" />
+															   Theme="{StaticResource BodyStrongTextBlockStyle}"/>
 													<StackPanel Orientation="Horizontal"
 																Margin="0 6 0 0">
 														<TextBlock Text="{Binding ProfilesCount}"
-																   FontSize="14"
-																   FontWeight="Normal"
-																   FontFamily="Open Sans"
-																   Foreground="{StaticResource SecondaryText}" />
+																   Theme="{StaticResource CaptionTextBlockStyle}"/>
 														<TextBlock Text=" profiles"
-																   FontSize="14"
-																   FontWeight="Normal"
-																   FontFamily="Open Sans"
-																   Foreground="{StaticResource SecondaryText}" />
+																   Theme="{StaticResource CaptionTextBlockStyle}" />
 													</StackPanel>
 												</StackPanel><!--Style="{StaticResource OutlinedButton}"-->
 												<Button Grid.Column="2"
 														Content="View"
 														Width="80"
 														Height="32"
-														Theme="{StaticResource TransparentButton}"
-														Command="{Binding ViewGroupCommand}" /><!--Style="{StaticResource SvgButton}"-->
+														Classes="accent"
+														Command="{Binding ViewGroupCommand}" />
 												<Button Grid.Column="3"
-														
 														Width="34"
 														Height="34"
 														Margin="5 0"
+														Theme="{StaticResource TransparentButton}"
 														Command="{Binding SetFavoriteFolderCommand}">
 													<Grid>
 														<StackPanel IsVisible="{Binding IsFavorite}">
@@ -574,421 +461,6 @@
 				</Grid>
 			</Grid>
 			
-			<!--<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="280*" />
-					<RowDefinition Height="220*" />
-				</Grid.RowDefinitions>
-
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="404" />
-				</Grid.ColumnDefinitions>
-				--><!--BorderBrush="{StaticResource DividerLine}"--><!--
-				<Border Grid.Row="0"
-						Grid.Column="0"
-						Grid.ColumnSpan="2"
-						BorderThickness="1"
-						Height="60"
-						IsVisible="{Binding IsSyncChangesBtnVisible}">
-					<Grid>
-						--><!--Foreground="{StaticResource ButtonDarkBrush}"--><!--
-						<Button Width="153"
-								Height="40"
-								Margin="0 0 24 0"
-								Background="Transparent"
-								BorderThickness="0"
-								Command="{Binding SyncChangesCommand}"
-								HorizontalAlignment="Right">
-							<StackPanel Orientation="Horizontal">
-								--><!--<avfCommon:SvgIconControl IconName="sync"
-                                              Foreground="{StaticResource ButtonDarkBrush}"
-                                              Width="14.25"
-                                              Height="17.43"
-                                              VerticalAlignment="Center"
-                                              Margin="0 0 10 0" />--><!--
-								<TextBlock VerticalAlignment="Center"
-										   Margin="0"
-										   Text="Sync changes"
-										   FontWeight="DemiBold"
-										   FontFamily="Open Sans"
-										   FontSize="14" />
-							</StackPanel>
-						</Button>
-					</Grid>
-				</Border>
-				--><!--BorderBrush="{StaticResource DividerLine}"--><!--
-				<Border Grid.Row="1"
-						Grid.RowSpan="2"
-						Grid.Column="1"
-                
-						BorderThickness="1 0 0 0">
-					--><!--<taskForseView:TaskForceView />--><!--
-				</Border>
-				--><!--Background="{StaticResource BackGroundGreyColor}"--><!--
-				<Grid Grid.Row="1">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-
-					<StackPanel Grid.Row="0"
-								Grid.Column="0"
-								Margin="0 16 24 0">
-						<TextBlock Margin="24 0 0 0"
-								   Text="Favorite profiles"
-								   Theme="{StaticResource SubtitleTextBlockStyle}"
-								   IsVisible="{Binding NoSearchResultsInFavorite}" />
-
-						<TextBlock Margin="24 0 0 0"
-								   FontFamily="Open Sans"
-								   FontSize="16"
-								   FontWeight="Bold"
-								   VerticalAlignment="Center"
-								   Text="Profiles"
-								   IsVisible="{Binding !NoSearchResultsInFavorite}"/>
-
-						<Grid Margin="0 8 0 0"
-							  IsVisible="{Binding !HasNoItems}">
-							<StackPanel Orientation="Horizontal"
-										HorizontalAlignment="Left"
-										Margin="24 0 0 16">
-								<TextBlock VerticalAlignment="Center">
-									<Run Text="You have " />
-									<Run Text="{Binding ViewModels.Count}" />
-								</TextBlock>
-								<TextBlock Text=" favorite profiles"
-										   VerticalAlignment="Center"
-										   IsVisible="{Binding NoSearchResultsInFavorite}" />
-
-								<TextBlock Text=" profiles"
-										   VerticalAlignment="Center"
-										   IsVisible="{Binding !NoSearchResultsInFavorite}" />
-								
-								<TextBlock Text="Sort by:"
-										   Margin="20 0 10 0"
-										   VerticalAlignment="Center"
-										   FontWeight="DemiBold" />
-								<ComboBox VerticalAlignment="Center" 
-										  ItemsSource="{Binding Sorts}"
-										  SelectedItem="{Binding SortSelected}"
-										  ScrollViewer.HorizontalScrollBarIsVisible="Disabled">
-									<ComboBox.ItemTemplate>
-										<DataTemplate>
-											<Label Margin="0"
-												   Content="{Binding Converter={StaticResource ListSortDirectionToNameConverter}}"                                          
-												   FontFamily="Open Sans"
-												   FontWeight="DemiBold"
-												   FontSize="12"
-												   Padding="0" />
-										</DataTemplate>
-									</ComboBox.ItemTemplate>
-								</ComboBox>
-							</StackPanel>
-						</Grid>
-					</StackPanel>
-					
-					<Grid Grid.Row="1"
-						  Grid.Column="0"
-						  Margin="24 0 24 24">
-						<Border CornerRadius="4"
-								BorderThickness="1"
-								IsVisible="{Binding !HasNoItems}"
-								VerticalAlignment="Top">
-							<ItemsControl x:Name="itemsList"
-										  ItemsSource="{Binding ViewModels}"
-										  ItemTemplate="{StaticResource DashbordProfilesListViewTemplate}"
-										  VerticalAlignment="Top"
-										  Background="White" />
-						</Border>
-					</Grid>
-
-					<Grid Grid.Row="2"
-						  Grid.Column="0"
-						  IsVisible="{Binding HasNoItems}"
-						  Height="280">
-						<StackPanel HorizontalAlignment="Center"
-									VerticalAlignment="Center">
-
-							<StackPanel IsVisible="{Binding NoSearchResultsInFavorite}">
-								--><!--<svgIcons:SvgView IconName="not-profiles"
-                                          Height="102"
-                                          Width="97"
-                                          Foreground="{StaticResource SecondaryText}" />--><!--
-								--><!--Foreground="{StaticResource SecondaryText}"--><!--
-								<TextBlock Margin="0 25 0 0"
-										   Text="No favorite profiles selected yet"
-										   FontSize="18"
-										   FontFamily="Open Sans"
-										   FontWeight="DemiBold"
-										   HorizontalAlignment="Center"
-                                    />
-							</StackPanel>
-							--><!--Foreground="{StaticResource SecondaryText}"--><!--
-							<TextBlock Margin="0 25 0 0"
-									   Text="Profiles not found"
-									   FontSize="18"
-									   FontFamily="Open Sans"
-									   FontWeight="DemiBold"
-									   HorizontalAlignment="Center"
-                               
-									   IsVisible="{Binding !NoSearchResultsInFavorite}" />
-						</StackPanel>
-					</Grid>
-
-					--><!--<wait:WaitIndicatorView Grid.Row="2"
-                                    Grid.RowSpan="2"
-                                    DataContext="{Binding}"
-                                    IsIndicatorVisible="{Binding IsWaiting}" />--><!--
-				</Grid>
-				--><!--Background="{StaticResource BackGroundGreyColor}"--><!--
-				<Grid Grid.Row="2"
-              >
-					<Grid Margin="24 0 24 0">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="*" />
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
-						--><!--Foreground="{StaticResource MainBlack}"--><!--
-						<TextBlock Text="Favorite folders"
-								   FontFamily="Open Sans"
-								   FontWeight="Bold"
-								   FontSize="16"
-                           
-								   IsVisible="{Binding NoSearchResultsInFavorite}" />
-						--><!--Foreground="{StaticResource MainBlack}"--><!--
-						<TextBlock Text="Folders"
-								   FontFamily="Open Sans"
-								   FontWeight="Bold"
-								   FontSize="16"
-                           
-								   IsVisible="{Binding !NoSearchResultsInFavorite}" />
-						<StackPanel Grid.Row="1"
-								   IsVisible="{Binding !HasNoFolderItems}"
-
-								   Margin="0 8 0 8">
-							<TextBlock Classes="ProfileCountSubtext"
-									   VerticalAlignment="Bottom"
-									   Text="You have" />
-
-							<TextBlock Classes="ProfileCount"
-									   VerticalAlignment="Bottom"
-									   Text="{Binding FoldersCount}" />
-
-							<TextBlock  Classes="ProfileCountSubtext"
-										VerticalAlignment="Bottom"
-										Text="favorite folders"
-										IsVisible="{Binding NoSearchResultsInFavorite}" />
-
-							<TextBlock  Classes="ProfileCountSubtext"
-										VerticalAlignment="Bottom"
-										Text="folders"
-										IsVisible="{Binding !NoSearchResultsInFavorite}" />
-						</StackPanel>
-						<StackPanel Grid.Row="1"
-									Grid.Column="1"
-									HorizontalAlignment="Right"
-									Orientation="Horizontal"
-									IsVisible="{Binding !HasNoFolderItems}">
-							<TextBlock Classes="ProfileCountSubtext"
-									   VerticalAlignment="Bottom"
-									   Text="Sort by:"
-									   FontWeight="DemiBold"
-									   Margin="0 0 0 16" />
-							--><!--materialDesign:HintAssist.Foreground="Transparent"--><!--
-							--><!--Foreground="{StaticResource SecondaryText}"--><!--
-							<ComboBox ItemsSource="{Binding Sorts}"
-									  Padding="0"
-									  Margin="6 0 0 16"
-									  Height="14"
-									  Cursor="Hand"
-									  VerticalAlignment="Bottom"
-									  SelectedItem="{Binding FolderSortSelected}"
-                              
-									  BorderThickness="0"
-									  FontFamily="Open Sans"
-									  FontStyle="Normal"
-									  FontSize="12"
-                              
-									  ScrollViewer.HorizontalScrollBarIsVisible="Disabled">
-								<ComboBox.ItemTemplate>
-									<DataTemplate>
-										--><!--Foreground="{StaticResource MainBlack}"--><!--
-										<Label Margin="0"
-											   Content="{Binding Converter={StaticResource ListSortDirectionToNameConverter}}"
-                                       
-											   FontFamily="Open Sans"
-											   FontWeight="DemiBold"
-											   FontSize="12"
-											   Padding="0"
-											   Cursor="Hand" />
-									</DataTemplate>
-								</ComboBox.ItemTemplate>
-							</ComboBox>
-						</StackPanel>
-						<ScrollViewer Grid.Row="2"
-									  Grid.Column="0"
-									  Grid.ColumnSpan="2"
-									  VerticalScrollBarIsVisible="Auto"
-									  IsVisible="{Binding !HasNoFolderItems}">
-							<ItemsControl ItemsSource="{Binding FolderViewModels}"
-										  Margin="-8 0 -8 0">
-								--><!--<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<UniformGrid IsItemsHost="True"
-                                             Columns="2"
-                                             Margin="0"
-                                             VerticalAlignment="Top" />
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>--><!--
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<Border Classes="MainBorderStyle"
-												MinWidth="300"
-												HorizontalAlignment="Stretch"
-												Height="73"
-												Margin="8">
-											<Grid>
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="Auto" />
-													<ColumnDefinition Width="*" />
-													<ColumnDefinition Width="Auto" />
-													<ColumnDefinition Width="Auto" />
-												</Grid.ColumnDefinitions>
-												<Canvas Grid.Column="0"
-														Height="22"
-														Width="27"
-														Margin="20 0 24 0">
-													<Path Data="M3.15 1.83333C2.79196 1.83333 2.44858 1.9782 2.19541 2.23606C1.94223 2.49392 1.8 2.84366 1.8 3.20833V6.41667H25.2V5.04167C25.2 4.67699 25.0578 4.32726 24.8046 4.06939C24.5514 3.81153 24.208 3.66667 23.85 3.66667H11.4812C10.8593 3.66665 10.2512 3.47912 9.73377 3.12771C9.73375 3.1277 9.73372 3.12768 9.7337 3.12767L8.1677 2.06433C7.94594 1.91372 7.68536 1.83335 7.41881 1.83333C7.4188 1.83333 7.41882 1.83333 7.41881 1.83333H3.15ZM25.2 8.25H1.8V18.7917C1.8 19.1563 1.94223 19.5061 2.19541 19.7639C2.44858 20.0218 2.79196 20.1667 3.15 20.1667H23.85C24.208 20.1667 24.5514 20.0218 24.8046 19.7639C25.0578 19.5061 25.2 19.1563 25.2 18.7917V8.25ZM0 18.7917C0 19.6426 0.331874 20.4586 0.922614 21.0603C1.51335 21.662 2.31457 22 3.15 22H23.85C24.6854 22 25.4866 21.662 26.0774 21.0603C26.6681 20.4586 27 19.6426 27 18.7917V5.04167C27 4.19076 26.6681 3.37471 26.0774 2.77303C25.4866 2.17135 24.6854 1.83333 23.85 1.83333H11.4812C11.4812 1.83333 11.4812 1.83333 11.4812 1.83333C11.2147 1.83332 10.9541 1.75294 10.7323 1.60233L9.1663 0.539C9.16628 0.538985 9.16625 0.538969 9.16623 0.538954C8.64878 0.187546 8.04077 1.62274e-05 7.41884 0H3.15C2.31457 0 1.51335 0.33802 0.922614 0.939699C0.331874 1.54138 0 2.35743 0 3.20833V18.7917Z"
-														  Fill="#8094AE" />
-												</Canvas>
-												<StackPanel Grid.Column="1"
-															VerticalAlignment="Center">
-													--><!--Foreground="{StaticResource MainBlack}"--><!--
-													<TextBlock Text="{Binding Title}"
-															   FontFamily="Open Sans"
-															   FontWeight="Bold"
-															   FontSize="14"
-                                                        />
-													<StackPanel Orientation="Horizontal"
-																Margin="0 6 0 0">
-														--><!--Foreground="{StaticResource SecondaryText}"--><!--
-														<TextBlock Text="{Binding ProfilesCount}"
-																   FontSize="14"
-																   FontWeight="Normal"
-																   FontFamily="Open Sans"
-                                                            />
-														--><!--Foreground="{StaticResource SecondaryText}"--><!--
-														<TextBlock Text=" profiles"
-																   FontSize="14"
-																   FontWeight="Normal"
-																   FontFamily="Open Sans"
-                                                            />
-													</StackPanel>
-												</StackPanel>
-												--><!--Style="{StaticResource OutlinedButton}"--><!--
-												<Button Grid.Column="2"
-														Content="View group"
-														Width="80"
-														Height="32"
-														Command="{Binding ViewGroupCommand}" />
-												--><!--Style="{StaticResource SvgButton}"--><!--
-												<Button Grid.Column="3"
-														Width="34"
-														Height="34"
-														Margin="5 0"
-														Command="{Binding SetFavoriteFolderCommand}">
-													<Grid>
-														<StackPanel IsVisible="{Binding !IsFavorite}">
-															--><!--<svgIcons:SvgView  IconName="not-favorites"
-                                                                       Width="15"
-                                                                       Height="15" />--><!--
-														</StackPanel>
-														<StackPanel IsVisible="{Binding IsFavorite}">
-															--><!--<avfCommon:SvgIconControl IconName="in-favorites"
-                                                                          Width="14"
-                                                                          Height="14" />--><!--
-														</StackPanel>
-													</Grid>
-												</Button>
-											</Grid>
-										</Border>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-						</ScrollViewer>
-					</Grid>
-				</Grid>
-				<Grid Grid.Row="2"
-					  IsVisible="{Binding HasNoFolderItems}">
-					<StackPanel Orientation="Vertical"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center">
-						<StackPanel IsVisible="{Binding NoSearchResultsInFavorite}">
-							--><!--<svgIcons:SvgView  IconName="not-profiles"
-                                       Height="102"
-                                       Width="97"
-                                       Foreground="{StaticResource SecondaryText}" />--><!--
-							--><!--Foreground="{StaticResource SecondaryText}"--><!--
-							<TextBlock Margin="0 25 0 0"
-									   Text="No favorite folders selected yet"
-									   FontSize="18"
-									   FontFamily="Open Sans"
-									   FontWeight="DemiBold"
-									   HorizontalAlignment="Center"
-                            />
-						</StackPanel>
-						--><!--Foreground="{StaticResource SecondaryText}"--><!--
-						<TextBlock Margin="0 25 0 0"
-								   Text="Folders not found"
-								   FontSize="18"
-								   FontFamily="Open Sans"
-								   FontWeight="DemiBold"
-								   HorizontalAlignment="Center"
-                           
-								   IsVisible="{Binding !NoSearchResultsInFavorite}" />
-					</StackPanel>
-				</Grid>
-			</Grid>-->
-			
-			<!--<ItemsControl ItemsSource="{Binding Pages}"
-                          Name="TileItemsControl"
-                          ClipToBounds="False"
-                          Margin="{StaticResource SampleAppPageMargin}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-				<ItemsControl.ItemTemplate>
-					<DataTemplate DataType="vm:HomeNavPageViewModel">
-						<Button Theme="{StaticResource NavButtonStyle}">
-							<Grid RowDefinitions="3*,*">
-								<Border CornerRadius="4 4 0 0"
-                                        VerticalAlignment="Stretch"
-                                        HorizontalAlignment="Stretch"
-                                        RenderOptions.BitmapInterpolationMode="HighQuality">
-									<Border.Background>
-										<ImageBrush Source="{Binding ImageUri, Converter={StaticResource StringBmpConv}}"
-                                                    Stretch="Fill" />
-									</Border.Background>
-								</Border>
-								<TextBlock Text="{Binding Title}"
-                                           FontWeight="SemiBold"
-                                           Margin="12"
-                                           Grid.Row="1" />
-							</Grid>
-						</Button>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>-->
 		</StackPanel>
 	</ScrollViewer>
 </UserControl>

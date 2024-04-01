@@ -55,6 +55,16 @@ public partial class UserProxySettingsViewModel
         if (!Loaded)
             Load();
     }
+    public override async Task OnNavigatedToAsync(object? param)
+    {
+        await base.OnNavigatedToAsync(param);
+        if (param is int folderId)
+        {
+            while(!Loaded)
+                await Task.Delay(100);
+            FolderId = folderId;
+        }
+    }
     private void OnRenameFolder(int folderId, string title)
     {
         var item = FolderViewModels.First(a => a.Id == folderId);

@@ -26,6 +26,7 @@
 	<Styles.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="/Styling/ChameleonButtonStyles.axaml" />
 				<ResourceInclude Source="/Styling/ChameleonContentControlStyles.axaml" />
 				<ResourceInclude Source="/Styling/ChameleonDialogControlStyles.axaml" />
 				<ResourceInclude Source="/Styling/ControlThemes.axaml" />

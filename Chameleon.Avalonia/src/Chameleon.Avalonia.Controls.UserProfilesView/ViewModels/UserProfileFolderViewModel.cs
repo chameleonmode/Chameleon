@@ -1,9 +1,11 @@
 ﻿using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
+using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.UserProfileFolders;
+using Chameleon.Interfaces.UserSettings;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
@@ -92,46 +94,10 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         set => SetProperty(ref _isOpenMenuPopup, value);
     }
 
-    private string _title;
-    public new string Title
-    {
-        get => _title;
-        set
-        {
-            IsRenamed = false;
-
-            if (!SetProperty(ref _title, value))
-            {
-                return;
-            }
-
-            if (string.IsNullOrEmpty(value))
-            {
-                return;
-            }
-
-            var orignalTitle = _folder.Title;
-            try
-            {
-                _folder.Title = _title;
-                _userProfileFolderService.Save(_folder);
-
-                EventAggregator
-                    .GetEvent<RenameFolderEvent>()
-                    .Publish(new RenameFolderEventArgs(_folder.Id, _folder.Title));
-            }
-            catch
-            {
-                _folder.Title = orignalTitle;
-            }
-
-            Title = string.Empty;
-        }
-    }
-
    [RelayCommand]
     private void StartRename()
     {
+        Title = _folder.Title;
         IsOpenMenuPopup = false;
         IsRenamed = true;
     }
@@ -139,15 +105,43 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     [RelayCommand]
     private void ChangeProxies()
     {
-        EventAggregator
-            .GetEvent<OpenChangeProxiesEvent>()
-            .Publish(new OpenChangeProxiesEventArgs(_folder.Id));
+        //EventAggregator
+        //    .GetEvent<OpenChangeProxiesEvent>()
+        //    .Publish(new OpenChangeProxiesEventArgs(_folder.Id));
+
+        NavigationService.NavigateToType(typeof(IUserProxySettingsView), _folder.Id);
     }
 
     [RelayCommand]
     private void SaveRename()
     {
+        if (string.IsNullOrEmpty(Title))
+        {
+            return;
+        }
+
+        var orignalTitle = _folder.Title;
+        try
+        {
+            _folder.Title = Title;
+            _userProfileFolderService.Save(_folder);
+
+            EventAggregator
+                .GetEvent<RenameFolderEvent>()
+                .Publish(new RenameFolderEventArgs(_folder.Id, _folder.Title));
+        }
+        catch
+        {
+            _folder.Title = orignalTitle;
+        }
+
+        Title = _folder.Title;
+
         IsRenamed = false;
+
+        EventAggregator
+           .GetEvent<SyncChangesEvent>()
+           .Publish();
     }
 
     private bool _isSelected;

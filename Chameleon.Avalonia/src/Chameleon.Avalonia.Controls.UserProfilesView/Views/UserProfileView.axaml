@@ -7,7 +7,10 @@
 			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d" 
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfileView">
-
+	<Border Theme="{StaticResource MainBorderStyle}"
+											Height="56"
+											Padding="6"
+											Margin="6 0 6 6">
 	<Grid HorizontalAlignment="Stretch">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
@@ -25,21 +28,10 @@
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
-<!--Background="{StaticResource PrimaryHueDarkBrush}"
-                  BorderBrush="{StaticResource PrimaryHueDarkBrush}"-->
 		<CheckBox Grid.Column="0"
                   IsChecked="{Binding IsSelected}"
                   IsVisible="{Binding IsShowCheckboxColumn}"
-                  IsEnabled="{Binding IsEnabledCheckboxColumn}"
-                  >
-			<CheckBox.Resources>
-				<!--Unchecked state-->
-				<SolidColorBrush x:Key="MaterialDesignCheckBoxOff"
-                                 Color="#6634C2" />
-				<!--Checked state-->
-				<SolidColorBrush x:Key="PrimaryHueMidBrush"
-                                 Color="#7753A6" />
-			</CheckBox.Resources>
+                  IsEnabled="{Binding IsEnabledCheckboxColumn}">
 		</CheckBox>
 		
 		<Grid Grid.Column="1"
@@ -196,18 +188,6 @@
 					  Height="12" />
 			</Grid>
 		</Button>
-
-		<!--<Button Grid.Column="12"
-                HorizontalAlignment="Right"
-                IsVisible="{Binding IsFavorite}"
-                
-                ToolTip.Tip="Remove from Favorites"
-                Command="{Binding UnfavoriteCommand}"
-                Width="34"
-                Height="34">
-			<avfCommon:SvgIconControl IconName="in-favorites"
-                                  Width="12"
-                                  Height="12" />
-		</Button>-->
 	</Grid>
+	</Border>
 </UserControl>

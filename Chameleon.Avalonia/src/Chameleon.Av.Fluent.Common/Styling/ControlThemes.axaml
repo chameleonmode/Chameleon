@@ -143,4 +143,16 @@
 		</Style>
 	</ControlTheme>
 
+
+	<ControlTheme TargetType="{x:Type Border}"
+	  x:Key="MainBorderStyle">
+		<Setter Property="CornerRadius"
+				Value="{DynamicResource ControlCornerRadius}" />
+		<Setter Property="BorderThickness"
+				Value="1" />
+		<Setter Property="Background"
+				Value="{StaticResource CardBackgroundFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush"
+				Value="{StaticResource ControlElevationBorderBrush}" />
+	</ControlTheme>
 </ResourceDictionary>

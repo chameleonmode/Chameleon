@@ -31,32 +31,11 @@
 							Margin="23 0 0 0"/>-->
 						<StackPanel Orientation="Horizontal"
 									HorizontalAlignment="Right">
-							<Button Width="153"
-									Height="40"
-									Margin="0 0 24 0"
-									Background="Transparent"
-									Foreground="{StaticResource ButtonDarkBrush}"
-									BorderThickness="0"
-									Command="{Binding SyncChangesCommand}"
-									IsVisible="{Binding IsSyncChangesBtnVisible}">
-								<StackPanel Orientation="Horizontal">
-								<!--Foreground="{StaticResource ButtonDarkBrush}"-->	
-									<avfCommon:SvgIconControl IconName="sync"
-														  
-														  Width="14.25"
-														  Height="17.43"
-														  VerticalAlignment="Center"
-														  Margin="0 0 10 0" />
-									<TextBlock VerticalAlignment="Center"
-											   Margin="0"
-											   Text="Sync changes"
-											   FontWeight="DemiBold"
-											   FontFamily="Open Sans"
-											   FontSize="14" />
-								</StackPanel>
-							</Button><!--featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.CreateProfileBtn}"
+							<Button Theme="{StaticResource SyncChangesButton}" />
+							<!--featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.CreateProfileBtn}"
 									featureTouring:TourHelper.Placement="BottomRight"-->
-						<!--materialDesign:ButtonAssist.CornerRadius="0"-->	<Button Margin="0 9 15 11"
+						<!--materialDesign:ButtonAssist.CornerRadius="0"-->	
+							<Button Margin="0 9 15 11"
 									Width="137"
 									Height="40"
 									Padding="0"

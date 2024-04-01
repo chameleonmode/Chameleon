@@ -14,24 +14,11 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
-			<Grid Grid.Row="0">
 				<StackPanel>
 					<!--<TextBlock Text="{Binding UserProfileModel.Title}" />
 					<TextBlock Text="Customize profile-related data" />-->
 
-					<Button Margin="0 0 0 12"
-						Background="Transparent"
-								Foreground="{StaticResource ButtonDarkBrush}"
-								BorderThickness="0"
-								HorizontalAlignment="Right"
-							Command="{Binding SyncChangesCommand}" 
-							IsVisible="{Binding IsSyncChangesBtnVisible}">
-						<StackPanel Orientation="Horizontal">
-							<avfCommon:SvgIconControl IconName="sync" 
-													  Margin="0 0 12 0" />
-							<TextBlock Text="Sync changes" />
-						</StackPanel>
-					</Button>
+					<Button Theme="{StaticResource SyncChangesButton}" Margin="6 -5 6 6" />
 
 				<StackPanel Orientation="Horizontal"
 							HorizontalAlignment="Right">
@@ -47,7 +34,6 @@
 					</StackPanel>
 				</StackPanel>
 				</StackPanel>
-			</Grid>
 <!--{Binding SelectedTadIndex}-->
 			<TabControl Grid.Row="1"
                         BorderThickness="0"

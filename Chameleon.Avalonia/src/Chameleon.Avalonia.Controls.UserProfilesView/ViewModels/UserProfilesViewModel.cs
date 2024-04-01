@@ -698,7 +698,7 @@ public partial class UserProfilesViewModel
 
         _mapping.CollectionChanged += OnViewModelChange;
 
-        ApplySearchFilter();
+        //ApplySearchFilter();
 
         OnPropertyChanged(nameof(ViewModels));
         OnPropertyChanged(nameof(IsProfilesExist));

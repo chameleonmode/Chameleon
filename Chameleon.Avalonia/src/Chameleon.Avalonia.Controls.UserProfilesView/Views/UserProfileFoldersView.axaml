@@ -19,7 +19,7 @@
                     Height="40"
                     HorizontalContentAlignment="Stretch"
                     Command="{Binding OpenCommand}">
-					<Grid>
+					<Grid IsVisible="{Binding !IsRenamed}">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="*" />
@@ -46,6 +46,7 @@
 						</Grid>
 
 			<!--Foreground="{StaticResource MainBlack}"-->			<TextBlock
+				
                             Text="{Binding UserProfileFolder.Title}"
                             Grid.Column="1"
                             VerticalAlignment="Center"
@@ -108,9 +109,6 @@
                             Margin="9 0 0 0"
                             
                             VerticalAlignment="Center">
-							<!--<TextBox.InputBindings>
-								<KeyBinding Key="Return" Command="{Binding SaveRenameCommand}" />
-							</TextBox.InputBindings>-->
 						</TextBox>
 						</Grid>
 						<Button Content="Save"

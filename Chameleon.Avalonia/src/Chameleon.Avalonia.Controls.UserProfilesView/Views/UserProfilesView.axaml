@@ -99,7 +99,8 @@
 		</avfCommon:ChameleonContentControl.TitleContent>
 		
 		<avfCommon:ChameleonContentControl.Header>
-			<Grid Margin="0 8 0 0" IsVisible="{Binding !HasNoItems}">
+			<Grid Margin="0 8 0 0"
+				  IsVisible="{Binding !HasNoItems}">
 				<StackPanel Orientation="Horizontal">
 
 					<!--Style="{StaticResource ProfileButton}"-->
@@ -236,11 +237,7 @@
 								<ItemsControl ItemsSource="{Binding ViewModels}">
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
-											<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-													BorderThickness="0 1 0 0"
-													Height="56">
 												<userProfiles:UserProfileView HorizontalAlignment="Stretch" />
-											</Border>
 										</DataTemplate>
 									</ItemsControl.ItemTemplate>
 								</ItemsControl>
@@ -269,6 +266,80 @@
 				</Border>
 			</Grid>
 
+			<Grid Grid.Row="1" IsVisible="False">
+				<Grid.IsVisible>
+					<MultiBinding Converter="{x:Static BoolConverters.Or}">
+						<Binding Path="HasNoItems" />
+						<Binding Path="!IsProfilesExist"/>
+					</MultiBinding>
+				</Grid.IsVisible>
+				<StackPanel
+					Orientation="Vertical"
+					HorizontalAlignment="Center"
+					Margin="0 140 0 0">
+
+					<!--Foreground="{StaticResource SecondaryText}"-->
+					<avfCommon:SvgIconControl
+						IconName="not-profiles"
+						Height="102"
+						Width="97"
+							/>
+
+					<!--Foreground="{StaticResource SecondaryText}"-->
+					<TextBlock
+						Margin="0 35 0 0"
+						Text="No Profiles yet created"
+						FontSize="18"
+						FontFamily="Open Sans"
+						FontWeight="DemiBold"
+						HorizontalAlignment="Center"
+							
+						IsVisible="{Binding !HasFolder}"/>
+
+					<!--Foreground="{StaticResource SecondaryText}"-->
+					<TextBlock
+						Margin="0 25 0 0"
+						Text="No Profiles yet in this folder"
+						FontSize="18"
+						FontFamily="Open Sans"
+						FontWeight="DemiBold"
+						HorizontalAlignment="Center"
+							>
+						<TextBlock.IsVisible>
+							<MultiBinding>
+								<Binding Path="HasNoItems" />
+								<Binding Path="IsProfilesExist"/>
+							</MultiBinding>
+						</TextBlock.IsVisible>
+					</TextBlock>
+					<!--Style="{StaticResource ProfileAddButton}"-->
+					<Button Theme="{DynamicResource TransparentButton}"
+							HorizontalAlignment="Center"
+							Command="{Binding AddProfilesToFolderCommand}"
+							IsEnabled="{Binding IsAddProfilesToFolderCommandEnabled}"
+							IsVisible="{Binding HasFolder}">
+						<StackPanel Orientation="Horizontal">
+							<avfCommon:SvgIconControl
+								IconName="plus-in-circle"
+								Margin="8 0 0 0"
+								Width="16"
+								Height="16"/>
+							<TextBlock
+								Text="Add profile"
+								Margin="10 0 6.5 0"
+								VerticalAlignment="Center"/>
+						</StackPanel>
+					</Button>
+				</StackPanel>
+			</Grid>
+
+			<!--<wait:WaitIndicatorView
+					Grid.Row="1"
+					DataContext="{Binding}"
+					IsIndicatorVisible="{Binding IsWaiting}"/>-->
+		</Grid>
+
+		<avfCommon:ChameleonContentControl.Footer>
 			<!--Background="{StaticResource BackGroundSelectedProfilesBlock}"-->
 			<Border
 				Background="{StaticResource AccentFillColorDefaultBrush}"
@@ -400,78 +471,7 @@
 				</StackPanel>
 			</Border>
 
-			<Grid Grid.Row="1" IsVisible="False">
-				<Grid.IsVisible>
-					<MultiBinding Converter="{x:Static BoolConverters.Or}">
-						<Binding Path="HasNoItems" />
-						<Binding Path="!IsProfilesExist"/>
-					</MultiBinding>
-				</Grid.IsVisible>
-				<StackPanel
-					Orientation="Vertical"
-					HorizontalAlignment="Center"
-					Margin="0 140 0 0">
-
-					<!--Foreground="{StaticResource SecondaryText}"-->
-					<avfCommon:SvgIconControl
-						IconName="not-profiles"
-						Height="102"
-						Width="97"
-							/>
-
-					<!--Foreground="{StaticResource SecondaryText}"-->
-					<TextBlock
-						Margin="0 35 0 0"
-						Text="No Profiles yet created"
-						FontSize="18"
-						FontFamily="Open Sans"
-						FontWeight="DemiBold"
-						HorizontalAlignment="Center"
-							
-						IsVisible="{Binding !HasFolder}"/>
-
-					<!--Foreground="{StaticResource SecondaryText}"-->
-					<TextBlock
-						Margin="0 25 0 0"
-						Text="No Profiles yet in this folder"
-						FontSize="18"
-						FontFamily="Open Sans"
-						FontWeight="DemiBold"
-						HorizontalAlignment="Center"
-							>
-						<TextBlock.IsVisible>
-							<MultiBinding>
-								<Binding Path="HasNoItems" />
-								<Binding Path="IsProfilesExist"/>
-							</MultiBinding>
-						</TextBlock.IsVisible>
-					</TextBlock>
-					<!--Style="{StaticResource ProfileAddButton}"-->
-					<Button Theme="{DynamicResource TransparentButton}"
-							HorizontalAlignment="Center"
-							Command="{Binding AddProfilesToFolderCommand}"
-							IsEnabled="{Binding IsAddProfilesToFolderCommandEnabled}"
-							IsVisible="{Binding HasFolder}">
-						<StackPanel Orientation="Horizontal">
-							<avfCommon:SvgIconControl
-								IconName="plus-in-circle"
-								Margin="8 0 0 0"
-								Width="16"
-								Height="16"/>
-							<TextBlock
-								Text="Add profile"
-								Margin="10 0 6.5 0"
-								VerticalAlignment="Center"/>
-						</StackPanel>
-					</Button>
-				</StackPanel>
-			</Grid>
-
-			<!--<wait:WaitIndicatorView
-					Grid.Row="1"
-					DataContext="{Binding}"
-					IsIndicatorVisible="{Binding IsWaiting}"/>-->
-		</Grid>
+		</avfCommon:ChameleonContentControl.Footer>
 	</avfCommon:ChameleonContentControl>
 	</StackPanel>		
 </UserControl>
