@@ -1,5 +1,7 @@
-﻿using Chameleon.Avalonia.Controls.Paginator.ViewModels;
+﻿using Avalonia.Controls;
+using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Common.Helpers;
+using Chameleon.Controls.AssistantUsers.Interfaces;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.CT.Common.Base;
@@ -126,6 +128,7 @@ public partial class UserProfilesViewModel
         }
     }
 
+    [RelayCommand]
     private void SetFavorite()
     {
         Folder.IsFavorite = !Folder.IsFavorite;
@@ -465,9 +468,16 @@ public partial class UserProfilesViewModel
     }
 
     [RelayCommand]
-    private void AddProfilesToFolder()
+    private async Task AddProfilesToFolder()
     {
         //_userProfilesPopupService.ShowPopup(_folder);
+
+       await ContentDialogService.ShowAsync<IAddUserProfilesPopupView, IAddUserProfilesPopupViewModel>(
+           viewModel =>
+           {
+               viewModel.Title = "ADD PROFILES";
+               viewModel.Folder = _folder;
+           });
 
         OnPropertyChanged(nameof(HasProfileWithoutFolder));
         OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));

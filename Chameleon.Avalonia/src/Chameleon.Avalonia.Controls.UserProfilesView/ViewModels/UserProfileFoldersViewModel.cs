@@ -47,7 +47,6 @@ public partial class UserProfileFoldersViewModel
            .GetEvent<UpdateStaleDataEvent>()
            .Subscribe(LoadAsync);
     }
-
     public override async Task InitAsync(object? param)
     {
         await base.InitAsync(param);

@@ -68,4 +68,10 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     {
         return InitializeAsyncCommand.ExecuteAsync(p);
     }
+
+    public virtual Task OnNavigatedToAsync(object? param)
+    {
+        // await InvokeInitializeAsyncCommand(param);
+        return Task.CompletedTask;
+    }
 }

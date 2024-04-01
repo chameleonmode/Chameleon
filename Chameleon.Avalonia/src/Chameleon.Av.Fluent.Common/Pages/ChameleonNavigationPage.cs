@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Chameleon.Av.Fluent.Common.Controls;
+using Chameleon.Interfaces;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
@@ -22,8 +23,12 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
         AddHandler(Frame.NavigatedToEvent, OnNavigatedTo, RoutingStrategies.Direct);
     }
 
-    private void OnNavigatedTo(object sender, NavigationEventArgs e)
+    private async void OnNavigatedTo(object sender, NavigationEventArgs e)
     {
+        if (DataContext is IPageViewModel pageViewModel)
+        {
+            await pageViewModel.OnNavigatedToAsync(e.Parameter);
+        }
         if (_animationPage == null)
             return;
 

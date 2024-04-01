@@ -1,4 +1,5 @@
-﻿using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
+﻿using AutoMapper;
+using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.Core.Util;
@@ -7,6 +8,8 @@ using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.Assistants.Events;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
+using Chameleon.Interfaces.App.UserProfiles;
+using Chameleon.Interfaces.App.UserProfiles.Events;
 using Chameleon.Interfaces.App.UserProfiles.Services;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dashboard;
@@ -58,6 +61,10 @@ public partial class DashboardViewModel
         //EventAggregator
         //    .GetEvent<LoginSuccessEvent>()
         //    .SubscribeOnce(OnAuthenticated);
+
+        //EventAggregator
+        //       .GetEvent<OpenUserProfilesViewEvent>()
+        //       .Subscribe(() => NavigateToProfiles);
 
         EventAggregator
            .GetEvent<DeleteUserProfileEvent>()
@@ -153,7 +160,7 @@ public partial class DashboardViewModel
         var folders = await _userProfileFolderService.GetAllAsync();
 
         _folderMapping = new ObservableCollection<IUserProfileFolder, FolderViewModel>(
-            folders, folder => new FolderViewModel(folder, _userProfileService, _userProfileFolderService));
+            folders, folder => new FolderViewModel(folder, _userProfileService, _userProfileFolderService, NavigationService));
 
         if (FolderViewModels != null)
         {
@@ -167,6 +174,7 @@ public partial class DashboardViewModel
     {
         await LoadUserProfileFolderViewModels();
     }
+
 
     private void OnUpdateViewModel(UserProfileEventArgs args)
     {

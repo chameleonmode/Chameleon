@@ -1,6 +1,9 @@
-﻿using Chameleon.CT.Common.Base;
+﻿using Chameleon.Av.Fluent.Common.Services;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
+using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Events;
+using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
@@ -14,15 +17,17 @@ public partial class FolderViewModel : SubPageViewModelBase
     private readonly IUserProfileFolder _folder;
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfileFolderService _userProfileFolderService;
-
+    private readonly INavigationService _navigationService;
     public FolderViewModel(
         IUserProfileFolder folder,
         IUserProfileService userProfileService,
-        IUserProfileFolderService userProfileFolderService)
+        IUserProfileFolderService userProfileFolderService,
+        INavigationService nav)
     {
         _folder = folder;
         _userProfileService = userProfileService;
         _userProfileFolderService = userProfileFolderService;
+        _navigationService = nav;
 
         Title = _folder.Title;
         IsFavorite = _folder.IsFavorite;
@@ -46,19 +51,20 @@ public partial class FolderViewModel : SubPageViewModelBase
     }
 
     [RelayCommand]
-    private void OnViewGroup()
+    private void ViewGroup()
     {
-        EventAggregator
-            .GetEvent<OpenUserProfilesViewEvent>()
-            .Publish();
+        _navigationService.NavigateToType(typeof(IProjectsView), _folder);
+        //EventAggregator
+        //    .GetEvent<OpenUserProfilesViewEvent>()
+        //    .Publish();
 
-        EventAggregator
-            .GetEvent<OpenUserProfileFolderEvent>()
-            .Publish(new UserProfileFolderEventArgs(_folder));
+        //EventAggregator
+        //    .GetEvent<OpenUserProfileFolderEvent>()
+        //    .Publish(new UserProfileFolderEventArgs(_folder));
     }
 
     [RelayCommand]
-    private void OnSetFavoriteFolder()
+    private void SetFavoriteFolder()
     {
         IsFavorite = !IsFavorite;
         OnPropertyChanged(nameof(IsFavorite));

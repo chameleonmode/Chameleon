@@ -172,7 +172,7 @@
 
 						<!--Style="{StaticResource ProfileButton}"-->
 						<Button
-									
+							Theme="{DynamicResource TransparentButton}"		
 							Margin="4 0 0 0"
 							Command="{Binding SelectAllProfilesFromFolderCommand}"
 							IsVisible="{Binding HasFolder}">
@@ -479,7 +479,8 @@
 						</TextBlock.IsVisible>
 					</TextBlock>
 					<!--Style="{StaticResource ProfileAddButton}"-->
-					<Button
+					<Button Theme="{DynamicResource TransparentButton}"
+							HorizontalAlignment="Center"
 							Command="{Binding AddProfilesToFolderCommand}"
 							IsEnabled="{Binding IsAddProfilesToFolderCommandEnabled}"
 							IsVisible="{Binding HasFolder}">

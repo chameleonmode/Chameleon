@@ -203,6 +203,7 @@ public partial class App : PrismApplication
         Container.RegisterTypesFrom(Chameleon.Av.Fluent.Dialogs.AssemblyResolver.GetAssembly());
         //cr.RegisterSingleton<IContentDialogService, ContentDialogService>();
         cr.Register<ILoginContentDialogContent, LoginContentDialogContent>();
+        cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();
         //cr.RegisterSingleton<IDefaultContentDialogTitle, DefaultContentDialogTitle>();
         //cr.RegisterSingleton<IAuthTaskDialogViewModel, AuthTaskDialogViewModel>();
         //cr.RegisterSingleton<IBulkAddPagesPopupView, BulkAddPagesPopupView>();

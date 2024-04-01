@@ -7,6 +7,7 @@ using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Common;
+using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
@@ -24,7 +25,6 @@ public partial class ProjectsViewModel : PageViewModelBase,
     //TODO: private readonly IFeatureTourNavigator _featureTourNavigator;
     private readonly IAuthSession _authSession;
 
-    public event Action OnFinishedLoadingProjects;
 
     private string name = "Profiles";
     public string Name
@@ -98,8 +98,7 @@ public partial class ProjectsViewModel : PageViewModelBase,
 
         EventAggregator
              .GetEvent<RestrictContentEvent>()
-             .Subscribe(args => IsCreateProfileBtnVisible = args.Permissions.Contains(PermissionNames.Pages_CreateProfiles)
-                                                            && (!_applicationUser.IsAssistant || _authSession.CanCreateProfiles));
+             .Subscribe(args => IsCreateProfileBtnVisible = args.Permissions.Contains(PermissionNames.Pages_CreateProfiles)                                                            && (!_applicationUser.IsAssistant || _authSession.CanCreateProfiles));
 
         EventAggregator
             .GetEvent<LoginSuccessEvent>()
@@ -117,6 +116,25 @@ public partial class ProjectsViewModel : PageViewModelBase,
 
         //_featureTourNavigator.ForStep(ElementID.CreateProfileBtn).AttachDoable(
         //            currentStep => OnCreateProfile());
+    }
+
+    public override async Task OnNavigatedToAsync(object? param)
+    {
+        await base.OnNavigatedToAsync(param);
+
+        if (param is IUserProfileFolder folder)
+        {
+            //TODO: wtf
+            await Task.Delay(500);
+            EventAggregator
+                .GetEvent<OpenUserProfileFolderEvent>()
+                .Publish(new UserProfileFolderEventArgs(folder));
+        }
+    }
+
+    public override Task InitAsync(object? param)
+    {
+        return base.InitAsync(param);
     }
 
     [RelayCommand]

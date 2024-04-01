@@ -4,7 +4,7 @@ using Chameleon.Interfaces.UserProfileFolders;
 namespace Chameleon.Interfaces.UserProfiles
 {
     public interface IAddUserProfilesPopupViewModel
-        : ITransientDependency
+        : ITransientDependency , IContentDialogViewModel
     {
         IUserProfileFolder Folder { get; set; }
     }

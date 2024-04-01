@@ -1,0 +1,149 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Chameleon.Avalonia.Controls.UserProfilesView.AddUserProfilesPopupView">
+	<UserControl.Resources>
+		<DataTemplate x:Key="ProfilesListViewTemplate">
+			<Border x:Name="Border"
+				BorderThickness="1"
+				Height="56">
+				<Grid HorizontalAlignment="Stretch">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<Ellipse Grid.Column="0"
+							 Margin="16 0 0 0"
+							 Fill="{StaticResource AccentFillColorDefaultBrush}"
+							 Stroke="{StaticResource FocusStrokeColorOuterBrush}"
+							 Width="28"
+							 Height="28"
+							 VerticalAlignment="Center">
+					</Ellipse>
+					<!--Foreground="{StaticResource PrimaryHueMidBrush}"-->
+					<TextBlock Grid.Column="0"
+							   Margin="16 0 0 0"
+							   Text="{Binding Code}"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+							   FontSize="11"
+							   FontWeight="Bold"
+							   FontFamily="Open Sans" />
+					<!--Foreground="{StaticResource MainBlack}"-->
+					<TextBlock Grid.Column="1"
+							   Margin="8 0 0 0"
+							   Text="{Binding Title}"
+							   VerticalAlignment="Center"
+							   FontFamily="Open Sans"
+                               
+							   FontSize="14"
+							   FontWeight="Normal">
+					</TextBlock>
+					<!--Background="{StaticResource PrimaryHueDarkBrush}"
+                              BorderBrush="{StaticResource PrimaryHueDarkBrush}"-->
+					<CheckBox Grid.Column="2"
+							  Margin="12 0 12 0"
+							  IsChecked="{Binding IsSelected}">
+					</CheckBox>
+				</Grid>
+			</Border>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ProfilesSelectedTemplate">
+			<!--BorderBrush="{StaticResource DividerLine}"
+                    Background="{StaticResource LightPurple}"-->
+			<Border x:Name="Border"
+                    BorderThickness="1"
+                    Height="28"
+					Background="{StaticResource AccentFillColorDefaultBrush}"
+                    BorderBrush="{StaticResource DividerLine}"
+                    CornerRadius="4"
+                    Margin="8 0 0 6">
+				<Grid HorizontalAlignment="Stretch">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<TextBlock Grid.Column="0"
+                               Margin="12 4 0 4"
+                               Text="{Binding Title}"
+                               VerticalAlignment="Center"
+                               FontFamily="Open Sans"
+                               
+                               FontSize="12"
+                               FontWeight="DemiBold">
+					</TextBlock>
+
+					<Button Grid.Column="1"
+                            Command="{Binding UnselectCommand}"
+                            Theme="{DynamicResource TransparentButton}"
+                         
+                            Margin="12 0 10 0"
+                            BorderThickness="0">
+						<avfCommon:SvgIconControl IconName="x"
+                                              Height="10"
+                                              Width="10" />
+					</Button>
+				</Grid>
+			</Border>
+		</DataTemplate>
+	</UserControl.Resources>
+	<dialogs:ChameleonDialogControl>
+		<dialogs:ChameleonDialogControl.Header>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Select profiles you want to add to " />
+				<TextBlock Text="{Binding Folder.Title}" FontWeight="Bold"/>
+				<TextBlock Text=" folder:"/>
+			</StackPanel>
+		</dialogs:ChameleonDialogControl.Header>
+		<dialogs:ChameleonDialogControl.Content>
+			<StackPanel Margin="10">
+				<Border CornerRadius="2"
+						BorderThickness="1"
+						BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}">
+						<StackPanel Grid.Column="0"
+								VerticalAlignment="Center"
+								Margin="0 8 0 0">
+							<ItemsControl
+									ItemsSource="{Binding SelectedViewModels}"
+									ItemTemplate="{StaticResource ProfilesSelectedTemplate}"
+									VerticalAlignment="Top"
+									Margin="1 2 0 0"
+									ScrollViewer.VerticalScrollBarVisibility="Visible">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<WrapPanel Orientation="Horizontal"/>
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+							</ItemsControl>
+						</StackPanel>
+				</Border>
+				<Expander Grid.Row="1"
+						  Header="Profiles">
+					<Border CornerRadius="0 0 4 4"
+							BorderThickness="1"
+							BorderBrush="{StaticResource BorderOutlineButton}"
+							Margin="32 2 25 0">
+						<ScrollViewer
+							VerticalScrollBarVisibility="Auto"
+							MaxHeight="220"
+							Padding="0">
+							<ItemsControl
+								ItemsSource="{Binding ViewModels}"
+								ItemTemplate="{StaticResource ProfilesListViewTemplate}"
+								VerticalAlignment="Top"
+								Padding="0"/>
+						</ScrollViewer>
+					</Border>
+				</Expander>
+			</StackPanel>
+		</dialogs:ChameleonDialogControl.Content>
+	</dialogs:ChameleonDialogControl>
+</UserControl>

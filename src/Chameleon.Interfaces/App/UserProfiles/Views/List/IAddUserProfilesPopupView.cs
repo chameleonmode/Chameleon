@@ -8,6 +8,6 @@ namespace Chameleon.Interfaces.UserProfiles
         : IViewControl
         , ITransientDependency
     {
-        IUserProfileFolder Folder { get; set; }
+        //IUserProfileFolder Folder { get; set; }
     }
 }

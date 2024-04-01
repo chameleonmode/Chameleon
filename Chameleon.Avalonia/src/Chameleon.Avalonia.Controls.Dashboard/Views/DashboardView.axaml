@@ -510,10 +510,10 @@
 													</StackPanel>
 												</StackPanel><!--Style="{StaticResource OutlinedButton}"-->
 												<Button Grid.Column="2"
-														Content="View group"
+														Content="View"
 														Width="80"
 														Height="32"
-														
+														Theme="{StaticResource TransparentButton}"
 														Command="{Binding ViewGroupCommand}" /><!--Style="{StaticResource SvgButton}"-->
 												<Button Grid.Column="3"
 														

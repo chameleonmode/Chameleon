@@ -36,6 +36,10 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         EventAggregator
             .GetEvent<OpenUserProfileFolderEvent>()
             .Subscribe(SetSelected);
+
+        EventAggregator
+            .GetEvent<UpdateUserProfileFolderEvent>()
+            .Subscribe(SetSelected);
     }
 
     public IUserProfileFolder UserProfileFolder => _folder;
