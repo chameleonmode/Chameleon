@@ -143,7 +143,6 @@ public partial class DashboardViewModel
             userProfiles, profile => new UserProfileViewModel(
                     _userProfileService,
                     profile,
-                    _shareUserProfilePopupService,
                     _applicationUser,
                     false
                 )

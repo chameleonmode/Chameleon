@@ -129,7 +129,7 @@
 						  Header="Profiles">
 					<Border CornerRadius="0 0 4 4"
 							BorderThickness="1"
-							BorderBrush="{StaticResource BorderOutlineButton}"
+							BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
 							Margin="32 2 25 0">
 						<ScrollViewer
 							VerticalScrollBarVisibility="Auto"

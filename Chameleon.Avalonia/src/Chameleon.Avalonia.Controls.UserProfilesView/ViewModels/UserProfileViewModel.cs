@@ -21,20 +21,18 @@ public partial class UserProfileViewModel : SubPageViewModelBase
     private readonly IUserProfile _userProfile;
     //private readonly IPrismMessageBoxService _messageBoxService;
     //private readonly IViewProfileWindowService _viewProfileWindowService;
-    private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
+    //private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _applicationUser;
 
     public UserProfileViewModel(
         IUserProfileService userProfileService,
         IUserProfile userProfile,
-        IShareUserProfilePopupService shareUserProfilePopupService,
         IApplicationUser applicationUser,
         bool isShowCheckboxColumn = true
         )
     {
         _userProfileService = userProfileService;
         _userProfile = userProfile;
-        _shareUserProfilePopupService = shareUserProfilePopupService;
         _applicationUser = applicationUser;   
 
         Title = _userProfile.Title;
@@ -181,11 +179,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase
     private void OpenMenu()
     {
         IsOpenMenuPopup = !IsOpenMenuPopup;
-    }
-    [RelayCommand]
-    private void OpenSharingOptions()
-    {
-        _shareUserProfilePopupService.ShowPopup(_userProfile);
     }
 
 

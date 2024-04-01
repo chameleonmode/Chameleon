@@ -56,6 +56,7 @@ using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 using Chameleon.Avalonia.Controls.UserProfileView.Services;
 using Chameleon.Avalonia.Controls.UserProfileView;
+using Chameleon.Interfaces.App.UserProfiles.Views.List;
 
 namespace Chameleon.Av.Fluent;
      public class tempinits : IDialogWindowsService  , IPopupDialogService
@@ -203,7 +204,8 @@ public partial class App : PrismApplication
         Container.RegisterTypesFrom(Chameleon.Av.Fluent.Dialogs.AssemblyResolver.GetAssembly());
         //cr.RegisterSingleton<IContentDialogService, ContentDialogService>();
         cr.Register<ILoginContentDialogContent, LoginContentDialogContent>();
-        cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();
+        cr.Register<IMoveUserProfilesPopupView, MoveUserProfilesPopupView>();
+        cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();     //
         //cr.RegisterSingleton<IDefaultContentDialogTitle, DefaultContentDialogTitle>();
         //cr.RegisterSingleton<IAuthTaskDialogViewModel, AuthTaskDialogViewModel>();
         //cr.RegisterSingleton<IBulkAddPagesPopupView, BulkAddPagesPopupView>();

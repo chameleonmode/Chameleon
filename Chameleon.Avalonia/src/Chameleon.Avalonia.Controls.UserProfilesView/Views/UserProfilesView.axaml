@@ -271,6 +271,7 @@
 
 			<!--Background="{StaticResource BackGroundSelectedProfilesBlock}"-->
 			<Border
+				Background="{StaticResource AccentFillColorDefaultBrush}"
 				Grid.Row="2"
 				VerticalAlignment="Bottom"
 				HorizontalAlignment="Center"
@@ -297,84 +298,60 @@
 					<!--Style="{StaticResource OutlinedButton}"-->
 					<!---->
 					<Button
+						Theme="{StaticResource TransparentButton}"
 						 HorizontalAlignment="Right"
 						 Margin="20 0 0 0"
 						 Padding="6"
 						 Height="36"
 						 ToolTip.Tip="Open In Installed Chrome Browser"
-						 BorderThickness="0"
-							 
-						 Background="Transparent"
-						 Foreground="White"
 						 Command="{Binding OpenChromeCommand}">
 						<avfCommon:SvgIconControl
-							IconName="chrome"
-							Width="24"
-							Height="24" />
+							IconName="chrome" />
 					</Button>
-					<!--Style="{StaticResource OutlinedButton}"-->
 					<!---->
 					<Button
+						Theme="{StaticResource TransparentButton}"
 						 HorizontalAlignment="Right"
 						 Margin="3 0 0 0"
 						 Padding="6"
 						 Height="36"
 						 ToolTip.Tip="Open In Installed Firefox Browser"
-						 BorderThickness="0"
-							 
-						 Background="Transparent"
-						 Foreground="White"
 						 Command="{Binding OpenFirefoxCommand}">
 						<avfCommon:SvgIconControl
-							IconName="firefox"
-							Width="24"
-							Height="24" />
+							IconName="firefox" />
 					</Button>
-					<!--Style="{StaticResource OutlinedButton}"-->
 					<!---->
 					<Button
+						Theme="{StaticResource TransparentButton}"
 						HorizontalAlignment="Right"
 						Margin="3 0 0 0"
 						Padding="6"
 						Height="36"
 						ToolTip.Tip="Open In Installed Brave Browser"
-						BorderThickness="0"
-							
-						Background="Transparent"
-						Foreground="White"
 						Command="{Binding OpenBraveCommand}">
 						<avfCommon:SvgIconControl
-						  IconName="brave2"
-						  Width="24"
-						  Height="24" />
+						  IconName="brave2" />
 					</Button>
-					<!--Style="{StaticResource OutlinedButton}"-->
 					<!---->
 					<Button
+						Theme="{StaticResource TransparentButton}"
 						HorizontalAlignment="Right"
 						Margin="3 0 0 0"
 						Padding="6"
 						Height="36"
 						ToolTip.Tip="Open In Chameleon Browser"
-						BorderThickness="0"
-							
-						Background="Transparent"
 						Command="{Binding OpenChameleonBrowserCommand}">
 						<avfCommon:SvgIconControl
 							IconName="chameleon-logo"
 							Width="24"
 							Height="24" />
 					</Button>
-					<!--Style="{StaticResource OutlinedButton}"-->
 					<Button
+						Theme="{StaticResource TransparentButton}"
 						Margin="10 0 0 0"
 						Padding="6"
 						Height="36"
-							
-						BorderThickness="0"
-						Foreground="White"
-						Command="{Binding MoveProfilesToFolderCommand}"
-						FontSize="14">
+						Command="{Binding MoveProfilesToFolderCommand}">
 						<StackPanel
 							Orientation="Horizontal"
 							VerticalAlignment="Center">
@@ -387,17 +364,13 @@
 								Margin="10 0 0 0" />
 						</StackPanel>
 					</Button>
-					<!--Foreground="{StaticResource OrangeDeleteProfiles}"-->
-					<!--Style="{StaticResource OutlinedButton}"-->
 					<Button
+						Theme="{StaticResource TransparentButton}"
+							Foreground="{StaticResource SystemFillColorCriticalBrush}"
 						Margin="10 0 0 0"
 						Padding="6"
 						Height="36"
-							
-						BorderThickness="0"
-							
-						Command="{Binding DeleteCommand}"
-						FontSize="14">
+						Command="{Binding DeleteCommand}">
 						<StackPanel
 							Orientation="Horizontal"
 							VerticalAlignment="Center">
@@ -413,21 +386,16 @@
 
 					<Border
 						BorderThickness="1 0 0 0"
-						BorderBrush="White"
 						Opacity="0.45"
 						Height="26"
 						VerticalAlignment="Center"
 						Margin="6 0 0 0"/>
-					<!--Style="{StaticResource OutlinedButton}"-->
 					<Button
+						Theme="{StaticResource TransparentButton}"
 						Margin="16 0 24 0"
 						Padding="6"
 						Height="36"
 						Content="Unselect"
-							
-						Foreground="White"
-						BorderThickness="0"
-						FontSize="14"
 						Command="{Binding UnselectCommand}"/>
 				</StackPanel>
 			</Border>

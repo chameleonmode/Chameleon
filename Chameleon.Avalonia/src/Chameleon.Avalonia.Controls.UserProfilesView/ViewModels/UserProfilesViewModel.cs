@@ -10,6 +10,7 @@ using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Services;
+using Chameleon.Interfaces.App.UserProfiles.Views.List;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
@@ -29,7 +30,6 @@ public partial class UserProfilesViewModel
     private readonly IUserProfileService _userProfileService;
     //TODO: private readonly IUserProfilesPopupService _userProfilesPopupService;
     private readonly IUserProfileFolderService _userProfileFolderService;
-    private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _currentUser;
 
     private ObservableCollection<IUserProfile, UserProfileViewModel> _mapping;
@@ -40,13 +40,11 @@ public partial class UserProfilesViewModel
         IUserProfileService userProfileService,
         //IUserProfilesPopupService userProfilesPopupService,
         IUserProfileFolderService userProfileFolderService,
-        IShareUserProfilePopupService shareUserProfilePopupService,
         IApplicationUser currentUser)
     {
         _userProfileService = userProfileService;
         //_userProfilesPopupService = userProfilesPopupService;
         _userProfileFolderService = userProfileFolderService;
-        _shareUserProfilePopupService = shareUserProfilePopupService;
         _currentUser = currentUser;
 
         //EventAggregator
@@ -492,7 +490,14 @@ public partial class UserProfilesViewModel
             .Select(p => p.UserProfile)
             .ToList();
 
-       //TODO: _moveUserProfilesPopupService.ShowPopup(selectedUserProfiles);
+        //TODO: _moveUserProfilesPopupService.ShowPopup(selectedUserProfiles);
+
+        ContentDialogService.ShowAsync<IMoveUserProfilesPopupView, IMoveUserProfilesPopupViewModel>(
+            viewModel =>
+            {
+                viewModel.Title = "ADD TO FOLDER";
+                viewModel.Profiles = selectedUserProfiles;
+            });
     }
 
     private void ChangeProfilesInFavoriteFolder()
@@ -689,7 +694,7 @@ public partial class UserProfilesViewModel
 
         _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
         userProfiles, profile => new UserProfileViewModel
-            (_userProfileService, profile, _shareUserProfilePopupService, _currentUser));
+            (_userProfileService, profile, _currentUser));
 
         _mapping.CollectionChanged += OnViewModelChange;
 
