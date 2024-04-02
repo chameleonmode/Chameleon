@@ -7,12 +7,12 @@
              xmlns:userProfiles="using:Chameleon.Avalonia.Controls.UserProfilesView"
 			 xmlns:pagnator="using:Chameleon.Avalonia.Controls.Paginator"
 			 xmlns:converter="using:Chameleon.Common.ValueConverters"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfilesView">
 	<UserControl.Resources>
 		<converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
 	</UserControl.Resources>
-	<StackPanel Spacing="8" Background="{DynamicResource LayerFillColorDefaultBrush}">
+	<StackPanel Spacing="6">
 		<StackPanel Grid.Row="0"
 			Margin="0 15 24 0">
 			<TextBox Margin="0 0 0 0"
@@ -26,34 +26,23 @@
 		<avfCommon:ChameleonContentControl.TitleContent>
 			<Grid>
 				<StackPanel Orientation="Horizontal" Margin="24 0 0 6">
-					<!--<Grid Width="20" Height="16">
-						<avfCommon:SvgIconControl IconName="folder"
+					<Grid Width="20" Height="16">
+						<ui:SymbolIcon Symbol="Share"
+									   IsVisible="{Binding IsSharedFolder}" />
+						<!--<avfCommon:SvgIconControl IconName="folder"
 												  Foreground="{StaticResource FolderProfiles}"/>
-						<Grid IsVisible="{Binding IsSharedFolder}"
+						<Grid IsVisible="{Binding !IsSharedFolder}"
 									  Width="10" Height="10"
 									  Margin="0 0 -2 -3"
 									  VerticalAlignment="Bottom" HorizontalAlignment="Right">
 
 							<Ellipse Fill="{StaticResource FolderProfiles}"/>
 							<ui:SymbolIcon Symbol="Share" />
-						</Grid>
-					</Grid>-->
+						</Grid>-->
+					</Grid>
 					<Button Margin="0 0 12 0"
-							ToolTip.Tip="Add to Favorites"
-							Background="Transparent"
-							Width="34" 
-							Height="34"
-				Command="{Binding SetFavoriteCommand}"
-				IsVisible="{Binding ShowFavoriteIcon}">
-						<Grid>
-							<StackPanel IsVisible="{Binding !Folder.IsFavorite}">
-								<avfCommon:SvgIconControl  IconName="not-favorites" Width="15" Height="15"/>
-							</StackPanel>
-							<StackPanel IsVisible="{Binding Folder.IsFavorite}">
-								<avfCommon:SvgIconControl IconName="in-favorites" Width="14" Height="14"/>
-							</StackPanel>
-						</Grid>
-					</Button>
+							Command="{Binding SetFavoriteCommand}"
+							Theme="{StaticResource FavoriteButton}"/>
 
 				</StackPanel>
 				<!--<ui:CommandBar DefaultLabelPosition="Right">
@@ -66,36 +55,6 @@
 					</ui:CommandBar.PrimaryCommands>
 				</ui:CommandBar>-->
 			</Grid>
-			<!--<StackPanel Orientation="Horizontal" Margin="24 0 0 16">
-				<Grid Width="20" Height="16">
-					<avfCommon:SvgIconControl IconName="folder"
-											  Foreground="{StaticResource FolderProfiles}"/>
-					<Grid IsVisible="{Binding IsSharedFolder}"
-								  Width="10" Height="10"
-								  Margin="0 0 -2 -3"
-								  VerticalAlignment="Bottom" HorizontalAlignment="Right">
-
-						<Ellipse Fill="{StaticResource FolderProfiles}"/>
-						<ui:SymbolIcon Symbol="Share" />
-					</Grid>
-				</Grid>
-				<Button Margin="0 -2 0 0"
-						ToolTip.Tip="Add to Favorites"
-						Background="Transparent"
-						Width="34" Height="34"
-			Command="{Binding SetFavoriteCommand}"
-			IsVisible="{Binding !ShowFavoriteIcon}">
-					<Grid>
-						<StackPanel IsVisible="{Binding !Folder.IsFavorite}">
-							<avfCommon:SvgIconControl  IconName="not-favorites" Width="15" Height="15"/>
-						</StackPanel>
-						<StackPanel IsVisible="{Binding Folder.IsFavorite}">
-							<avfCommon:SvgIconControl IconName="in-favorites" Width="14" Height="14"/>
-						</StackPanel>
-					</Grid>
-				</Button>
-
-			</StackPanel>-->
 		</avfCommon:ChameleonContentControl.TitleContent>
 		
 		<avfCommon:ChameleonContentControl.Header>
@@ -154,7 +113,7 @@
 
 						</Button>
 						<Button
-								Theme="{DynamicResource TransparentButton}"
+							Theme="{DynamicResource TransparentButton}"
 							IsEnabled="{Binding HasSelectedProfiles}"
 							Margin="4 0 0 0"
 							Command="{Binding RemoveProfilesFromFolderCommand}">
@@ -224,17 +183,16 @@
 		</avfCommon:ChameleonContentControl.Header>
 
 		<avfCommon:ChameleonContentControl.Options>
-			
 		</avfCommon:ChameleonContentControl.Options>
+		
 		<Grid>
-						<StackPanel>
-				<StackPanel.IsVisible>
-					<MultiBinding Converter="{x:Static BoolConverters.And}">
-						<Binding Path="!HasNoItems"/>
-						<Binding Path="IsProfilesExist"/>
-					</MultiBinding>
-				</StackPanel.IsVisible>
 								<ItemsControl ItemsSource="{Binding ViewModels}">
+									<ItemsControl.IsVisible>
+										<MultiBinding Converter="{x:Static BoolConverters.And}">
+											<Binding Path="!HasNoItems"/>
+											<Binding Path="IsProfilesExist"/>
+										</MultiBinding>
+									</ItemsControl.IsVisible>
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
 												<userProfiles:UserProfileView HorizontalAlignment="Stretch" />
@@ -243,9 +201,6 @@
 								</ItemsControl>
 							<!--ItemTemplate="{StaticResource ProfilesListViewTemplate}"-->
 
-							<pagnator:PaginatorView
-								DataContext="{Binding PaginatorViewModel}" />
-						</StackPanel>
 
 			<Grid>
 				<Border
@@ -266,7 +221,7 @@
 				</Border>
 			</Grid>
 
-			<Grid Grid.Row="1" IsVisible="False">
+			<Grid Grid.Row="1" IsVisible="True">
 				<Grid.IsVisible>
 					<MultiBinding Converter="{x:Static BoolConverters.Or}">
 						<Binding Path="HasNoItems" />
@@ -340,16 +295,20 @@
 		</Grid>
 
 		<avfCommon:ChameleonContentControl.Footer>
-			<!--Background="{StaticResource BackGroundSelectedProfilesBlock}"-->
-			<Border
+			<StackPanel>
+
+				<pagnator:PaginatorView
+					DataContext="{Binding PaginatorViewModel}" />
+				
+							<Border
 				Background="{StaticResource AccentFillColorDefaultBrush}"
 				Grid.Row="2"
 				VerticalAlignment="Bottom"
 				HorizontalAlignment="Center"
 				Height="50"
 				CornerRadius="4"
-				Margin="0 0 0 63"
-				IsVisible="{Binding HasSelectedProfiles}">
+				Margin="0 0 0 3"
+				IsVisible="{Binding !HasSelectedProfiles}">
 				<StackPanel
 					HorizontalAlignment="Left"
 					Orientation="Horizontal">
@@ -360,63 +319,30 @@
 							/>
 					<!--Style="{StaticResource GreyText}"-->
 					<TextBlock
-						Text=" selected:"
+						Text=" selected"
 						VerticalAlignment="Center"
 							/>
-					<!--Style="{StaticResource GreyText}"-->
-
 					<!--Select multiple profiles and run browser (Chameleon, Brave, Firefox or Chrome)-->
-					<!--Style="{StaticResource OutlinedButton}"-->
-					<!---->
-					<Button
-						Theme="{StaticResource TransparentButton}"
-						 HorizontalAlignment="Right"
-						 Margin="20 0 0 0"
-						 Padding="6"
-						 Height="36"
-						 ToolTip.Tip="Open In Installed Chrome Browser"
-						 Command="{Binding OpenChromeCommand}">
-						<avfCommon:SvgIconControl
-							IconName="chrome" />
-					</Button>
-					<!---->
-					<Button
-						Theme="{StaticResource TransparentButton}"
-						 HorizontalAlignment="Right"
-						 Margin="3 0 0 0"
-						 Padding="6"
-						 Height="36"
-						 ToolTip.Tip="Open In Installed Firefox Browser"
-						 Command="{Binding OpenFirefoxCommand}">
-						<avfCommon:SvgIconControl
-							IconName="firefox" />
-					</Button>
-					<!---->
-					<Button
-						Theme="{StaticResource TransparentButton}"
-						HorizontalAlignment="Right"
-						Margin="3 0 0 0"
-						Padding="6"
-						Height="36"
-						ToolTip.Tip="Open In Installed Brave Browser"
-						Command="{Binding OpenBraveCommand}">
-						<avfCommon:SvgIconControl
-						  IconName="brave2" />
-					</Button>
-					<!---->
-					<Button
-						Theme="{StaticResource TransparentButton}"
-						HorizontalAlignment="Right"
-						Margin="3 0 0 0"
-						Padding="6"
-						Height="36"
-						ToolTip.Tip="Open In Chameleon Browser"
-						Command="{Binding OpenChameleonBrowserCommand}">
-						<avfCommon:SvgIconControl
-							IconName="chameleon-logo"
-							Width="24"
-							Height="24" />
-					</Button>
+					<Button Content="chrome"
+							Margin="20 0 0 0"
+							ToolTip.Tip="Open In System Chrome"
+							Theme="{StaticResource SvgIconButton}"
+							Command="{Binding OpenChromeCommand}"/>
+					<Button Content="firefox"
+							 Margin="3 0 0 0"
+							ToolTip.Tip="Open In System Firefox"
+							Theme="{StaticResource SvgIconButton}"
+							Command="{Binding OpenFirefoxCommand}"/>
+					<Button Content="brave"
+							 Margin="3 0 0 0"
+							ToolTip.Tip="Open In System Brave"
+							Theme="{StaticResource SvgIconButton}"
+							Command="{Binding OpenBraveCommand}"/>
+					<Button Content="chameleon-logo"
+							 Margin="3 0 0 0"
+							ToolTip.Tip="Open In Chameleon Browser"
+							Theme="{StaticResource SvgIconButton}"
+							Command="{Binding OpenChameleonBrowserCommand}"/>
 					<Button
 						Theme="{StaticResource TransparentButton}"
 						Margin="10 0 0 0"
@@ -424,8 +350,7 @@
 						Height="36"
 						Command="{Binding MoveProfilesToFolderCommand}">
 						<StackPanel
-							Orientation="Horizontal"
-							VerticalAlignment="Center">
+							Orientation="Horizontal">
 							<avfCommon:SvgIconControl
 								IconName="up-folder"
 								Width="14"
@@ -443,8 +368,7 @@
 						Height="36"
 						Command="{Binding DeleteCommand}">
 						<StackPanel
-							Orientation="Horizontal"
-							VerticalAlignment="Center">
+							Orientation="Horizontal">
 							<avfCommon:SvgIconControl
 								IconName="delete"
 								Width="14"
@@ -470,6 +394,8 @@
 						Command="{Binding UnselectCommand}"/>
 				</StackPanel>
 			</Border>
+
+			</StackPanel>
 
 		</avfCommon:ChameleonContentControl.Footer>
 	</avfCommon:ChameleonContentControl>

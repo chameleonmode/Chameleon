@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"					
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:svg="using:Avalonia.Controls.Skia"				
 					xmlns:ui="using:FluentAvalonia.UI.Controls"
 					xmlns:local="using:Chameleon.Av.Fluent.Common.Controls">
 	<Design.PreviewWith>
@@ -16,6 +17,8 @@
 				<Button Content="TransparentButton" Theme="{DynamicResource TransparentButton}" />
 
 				<Button Content="SyncChangesButton" Theme="{StaticResource SyncChangesButton}" />
+				<Button Content="three-dots" Theme="{StaticResource SvgIconButton}" />
+				<Button Content="three-dots" Theme="{StaticResource FavoriteButton}" />
 			</StackPanel>
 		</Border>
 	</Design.PreviewWith>
@@ -73,6 +76,75 @@
 		</Style>
 		<Style Selector="^:disabled /template/ TextBlock#SyncText">
 			<Setter Property="Foreground" Value="{DynamicResource TextFillColorDisabledBrush}" />
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="SvgIconButton" TargetType="Button">
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="CornerRadius" Value="180" />
+		<Setter Property="Width" Value="34" />
+		<Setter Property="Height" Value="34" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ui:FABorder Name="Root"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}">
+					<local:SvgIconControl IconName="{TemplateBinding Content}"
+										  Width="20"
+										  Height="20"/>
+				</ui:FABorder>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^:pointerover /template/ ui|FABorder#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ ui|FABorder#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector="^:disabled /template/ ui|FABorder#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="FavoriteButton" TargetType="Button">
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="CornerRadius" Value="180" />
+		<Setter Property="Width" Value="34" />
+		<Setter Property="Height" Value="34" />
+		<Setter Property="ToolTip.Tip" Value="Toggle Favorite" />
+		<Setter Property="Command" Value="{Binding FavoriteCommand}" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ui:FABorder Name="Root"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}">
+					<Grid>
+						<local:SvgIconControl IconName="not-favorites"
+											  IsVisible="{Binding !IsFavorite}"
+											  Width="15"
+											  Height="15" />
+						<local:SvgIconControl IconName="in-favorites"
+											  IsVisible="{Binding IsFavorite}"
+											  Width="12"
+											  Height="12" />
+					</Grid>
+				</ui:FABorder>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^:pointerover /template/ ui|FABorder#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ ui|FABorder#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector="^:disabled /template/ ui|FABorder#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
 		</Style>
 	</ControlTheme>
 </ResourceDictionary>

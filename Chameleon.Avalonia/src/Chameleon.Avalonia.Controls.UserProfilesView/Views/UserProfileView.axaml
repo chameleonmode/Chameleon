@@ -11,183 +11,107 @@
 											Height="56"
 											Padding="6"
 											Margin="6 0 6 6">
-	<Grid HorizontalAlignment="Stretch">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-		</Grid.ColumnDefinitions>
-		<CheckBox Grid.Column="0"
-                  IsChecked="{Binding IsSelected}"
-                  IsVisible="{Binding IsShowCheckboxColumn}"
-                  IsEnabled="{Binding IsEnabledCheckboxColumn}">
-		</CheckBox>
-		
-		<Grid Grid.Column="1"
-              Width="28"
-              Height="28"
-              VerticalAlignment="Center">
-			<Ellipse Fill="{StaticResource AccentFillColorDefaultBrush}"
-                     Stroke="{StaticResource FocusStrokeColorOuterBrush}">
-			</Ellipse>
-			<TextBlock Text="{Binding Code}"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
-                       Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
-                       FontSize="11"
-                       FontWeight="Bold"
-                       FontFamily="Open Sans" />
+		<Grid ColumnDefinitions="Auto,*,Auto">
+			<StackPanel Orientation="Horizontal"
+						Spacing="6">
+				<CheckBox Margin="6 0 -12 0" IsChecked="{Binding IsSelected}"
+						  IsVisible="{Binding IsShowCheckboxColumn}"
+						  IsEnabled="{Binding IsEnabledCheckboxColumn}">
+				</CheckBox>
 
-			<Grid IsVisible="{Binding IsSharedProfile}"
-                  Width="10" 
-				  Height="10"
-                  Margin="0 0 1 0"
-                  VerticalAlignment="Bottom" HorizontalAlignment="Right">
+				<Grid Width="28"
+					  Height="28"
+					  VerticalAlignment="Center">
+					<Ellipse Fill="{StaticResource AccentFillColorDefaultBrush}"
+							 Stroke="{StaticResource FocusStrokeColorOuterBrush}">
+					</Ellipse>
+					<TextBlock Text="{Binding Code}"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+							   FontSize="11"
+							   FontWeight="Bold"
+							   FontFamily="Open Sans" />
 
-				<Ellipse Fill="{StaticResource AccentFillColorTertiaryBrush}"/>
-				
-				<!--<materialDesign:PackIcon Kind="ShareVariant"
+					<Grid IsVisible="{Binding IsSharedProfile}"
+						  Width="10"
+						  Height="10"
+						  Margin="0 0 1 0"
+						  VerticalAlignment="Bottom" HorizontalAlignment="Right">
+
+						<Ellipse Fill="{StaticResource AccentFillColorTertiaryBrush}"/>
+
+						<!--<materialDesign:PackIcon Kind="ShareVariant"
                                          Width="8" Height="8"
                                          Margin="0 0 1 0"
                                          VerticalAlignment="Center" HorizontalAlignment="Center"
                                          Foreground="{StaticResource AccentFillColorDefaultBrush}" />-->
-			</Grid>
+					</Grid>
+				</Grid>
+			</StackPanel>
+
+			<TextBlock Grid.Column="1" 
+					   Margin="6 0 0 0"
+					   HorizontalAlignment="Left"
+					   Text="{Binding Title, FallbackValue=Cannot find name}"
+					   VerticalAlignment="Center"
+					   ToolTip.Tip="{Binding SubTitle}"
+					   Theme="{StaticResource BodyStrongTextBlockStyle}">
+			</TextBlock>
+
+			<StackPanel Grid.Column="2"
+						Spacing="6"
+						Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal"
+							IsVisible="{Binding HasMultiOptions}"
+							Spacing="6">
+					<Button Content="chrome"
+							ToolTip.Tip="Open In System Chrome"
+							Theme="{StaticResource SvgIconButton}"
+							Command="{Binding OpenChromeCommand}"/>
+					<Button Content="firefox"
+							ToolTip.Tip="Open In System Firefox"
+							Theme="{StaticResource SvgIconButton}"
+							Command="{Binding OpenFirefoxCommand}"/>
+					<Button Content="brave"
+							ToolTip.Tip="Open In System Brave"
+							Theme="{StaticResource SvgIconButton}"
+							Command="{Binding OpenBraveCommand}"/>
+					<Button Content="chameleon-logo"
+							ToolTip.Tip="Open In Chameleon Browser"
+							Theme="{StaticResource SvgIconButton}"
+							Command="{Binding OpenBrowserCommand}"/>
+
+					<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+							BorderThickness="1 0 0 0" />
+
+					<Button ToolTip.Tip="Open copy-paste window"
+							Command="{Binding ShowViewProfileCommand}">
+						<ui:SymbolIcon Symbol="ClipboardCode" FontSize="20" />
+					</Button>
+				</StackPanel>
+
+				<Button Content="three-dots"
+						Background="{StaticResource ControlFillColorDefaultBrush}"
+						Theme="{StaticResource SvgIconButton}"
+						ToolTip.Tip="Details"
+						Command="{Binding OpenMenuCommand}">
+					<Button.Flyout>
+						<ui:FAMenuFlyout Placement="Bottom">
+							<ui:MenuFlyoutItem Text="View profile"
+											   IconSource="Contact"
+											   Command="{Binding OpenUserProfileCommand}"/>
+							<ui:MenuFlyoutItem Text="Delete"
+											   IconSource="Delete"
+											   IsVisible="{Binding IsDeleteProfileBtnVisible}"
+											   Command="{Binding DeleteUserProfile}" />
+						</ui:FAMenuFlyout>
+					</Button.Flyout>
+				</Button>
+
+
+				<Button Theme="{StaticResource FavoriteButton}"/>
+			</StackPanel>
 		</Grid>
-
-		<TextBlock Grid.Column="2"
-				   HorizontalAlignment="Left"
-				   Margin="4 0 0 0"
-                   Text="{Binding Title, FallbackValue=Cannot find name}"
-                   VerticalAlignment="Center"
-                   TextTrimming="CharacterEllipsis"
-				   ToolTip.Tip="{Binding SubTitle}">
-		</TextBlock>
-		
-		<Button Grid.Column="3"
-                HorizontalAlignment="Right"
-                Margin="6 0 3 0"
-                Height="27"
-                Width="27"
-                IsVisible="{Binding HasMultiOptions}"
-				ToolTip.Tip="Open In Installed Chrome Browser"
-                Command="{Binding OpenChromeCommand}">
-			<!--Style="{StaticResource SvgButton}"-->
-			<avfCommon:SvgIconControl IconName="chrome"
-                                  Width="20"
-                                  Height="20" />
-		</Button>
-
-		<Button Grid.Column="4"
-                HorizontalAlignment="Right"
-                Margin="0 0 2 0"
-                Height="27"
-                Width="27"
-                IsVisible="{Binding HasMultiOptions}"
-                
-                ToolTip.Tip="Open In Installed Firefox Browser"
-                Command="{Binding OpenFirefoxCommand}"><!--Style="{StaticResource SvgButton}"-->
-			<avfCommon:SvgIconControl IconName="firefox"
-                                  Width="20"
-                                  Height="20" />
-		</Button>
-
-		<Button Grid.Column="5"
-                HorizontalAlignment="Right"
-                Margin="0 0 3.5 0"
-                Height="27"
-                Width="27"
-                IsVisible="{Binding HasMultiOptions}"
-                
-                ToolTip.Tip="Open In Installed Brave Browser"
-                Command="{Binding OpenBraveCommand}"><!--Style="{StaticResource SvgButton}"-->
-			<avfCommon:SvgIconControl IconName="brave"
-                                  Width="20"
-                                  Height="20" />
-		</Button>
-
-		<Border Grid.Column="6"
-                IsVisible="{Binding HasMultiOptions}"
-                Margin="0 0 13 0"
-                Height="27"
-                BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-                BorderThickness="1 0 0 0" />
-
-		<Button Grid.Column="7"
-				Theme="{StaticResource TransparentButton}"
-                Margin="0 0 8 0"
-                Height="32"
-                Width="134"
-                IsVisible="{Binding HasMultiOptions}"
-                ToolTip.Tip="Open Chameleon Browser"
-                Command="{Binding OpenBrowserCommand}"
-                Content="Chameleon browser"
-                 />
-
-		<Button Grid.Column="8"
-				Theme="{StaticResource TransparentButton}"
-                Margin="0 0 8 0"
-                Height="32"
-                Width="88"
-                ToolTip.Tip="Open copy-paste window"
-                IsVisible="{Binding HasMultiOptions}"
-                Command="{Binding ShowViewProfileCommand}"
-                Content="Copy-paste"
-                 />
-
-		<Button Grid.Column="11"
-				Theme="{StaticResource TransparentButton}"
-                HorizontalAlignment="Right"
-                Height="32"
-                Width="33"
-                Margin="0 0 7 0"
-                ToolTip.Tip="Details"
-                Command="{Binding OpenMenuCommand}"
-                >
-			<Button.Flyout>
-				<ui:FAMenuFlyout Placement="Bottom">
-					<ui:MenuFlyoutItem Text="View profile"
-									   IconSource="Contact"
-									   Command="{Binding OpenUserProfileCommand}"/>
-					<ui:MenuFlyoutItem Text="Delete"
-									   IconSource="Delete"
-									   IsVisible="{Binding IsDeleteProfileBtnVisible}"
-									   Command="{Binding DeleteUserProfile}" />
-				</ui:FAMenuFlyout>
-			</Button.Flyout>
-			<avfCommon:SvgIconControl IconName="three-dots"
-                                  Width="23"
-                                  Height="23" />
-		</Button>
-
-		<Button Grid.Column="12"
-                HorizontalAlignment="Right"
-			Theme="{StaticResource TransparentButton}"
-                ToolTip.Tip="Add to Favorites"
-                Command="{Binding FavoriteCommand}"
-                Width="34"
-                Height="34"><!--Style="{StaticResource SvgButton}"-->
-			<Grid>
-			<avfCommon:SvgIconControl IconName="not-favorites"
-									   IsVisible="{Binding !IsFavorite}"
-                              Width="15"
-                              Height="15" />
-			<avfCommon:SvgIconControl IconName="in-favorites"
-									   IsVisible="{Binding IsFavorite}"
-					  Width="12"
-					  Height="12" />
-			</Grid>
-		</Button>
-	</Grid>
 	</Border>
 </UserControl>

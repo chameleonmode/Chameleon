@@ -403,24 +403,9 @@
 														Classes="accent"
 														Command="{Binding ViewGroupCommand}" />
 												<Button Grid.Column="3"
-														Width="34"
-														Height="34"
-														Margin="5 0"
-														Theme="{StaticResource TransparentButton}"
-														Command="{Binding SetFavoriteFolderCommand}">
-													<Grid>
-														<StackPanel IsVisible="{Binding IsFavorite}">
-															<avfCommon:SvgIconControl  IconName="not-favorites"
-																			   Width="15"
-																			   Height="15" />
-														</StackPanel>
-														<StackPanel IsVisible="{Binding IsFavorite}">
-															<avfCommon:SvgIconControl IconName="in-favorites"
-																				  Width="14"
-																				  Height="14" />
-														</StackPanel>
-													</Grid>
-												</Button>
+														Margin="5 0"	
+														Command="{Binding SetFavoriteFolderCommand}"
+														Theme="{StaticResource FavoriteButton}"/>
 											</Grid>
 										</Border>
 									</DataTemplate>

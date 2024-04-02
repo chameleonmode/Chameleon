@@ -67,7 +67,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
     }
     #endregion
 
-    protected ThemeVariantScope? ThemeScopeProvider { get; private set; }
+    //protected ThemeVariantScope? ThemeScopeProvider { get; private set; }
 
     #region overrides
     protected override Type StyleKeyOverride => typeof(ChameleonPageBase);
@@ -89,7 +89,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
     {
         base.OnApplyTemplate(e);
 
-        ThemeScopeProvider = e.NameScope.Find<ThemeVariantScope>("ThemeScopeProvider");
+        //ThemeScopeProvider = e.NameScope.Find<ThemeVariantScope>("ThemeScopeProvider");
 
         _previewImageHost = e.NameScope.Find<IconSourceElement>("PreviewImageElement");
         _detailsHost = e.NameScope.Find<StackPanel>("DetailsTextHost");
