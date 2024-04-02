@@ -78,27 +78,14 @@ public partial class ProjectsViewModel : PageViewModelBase,
         IApplicationUser applicationUser,
         IAuthSession authSession)
     {
-        //ThisMainWindowModel = new MainWindowModel(Name, "profiles", projectsView);
-        //ThisMainWindowModel.ActionOptions.Add(new ActionOption(this)
-        //{
-        //    Content = "Add Selected To Favorites",
-        //    Icon = "StarCircle",
-        //    CommandParamater = "StarCircle"
-        //});
-        //ThisMainWindowModel.ActionOptions.Add(new ActionOption(this)
-        //{
-        //    Content = "Remove Selected From Favorites",
-        //    Icon = "StarCircleOutline",
-        //    CommandParamater = "StarCircleOutline"
-        //});
-
         _userAssistantService = userAssistantService;
         _applicationUser = applicationUser;
         _authSession = authSession;
 
         EventAggregator
              .GetEvent<RestrictContentEvent>()
-             .Subscribe(args => IsCreateProfileBtnVisible = args.Permissions.Contains(PermissionNames.Pages_CreateProfiles)                                                            && (!_applicationUser.IsAssistant || _authSession.CanCreateProfiles));
+             .Subscribe(args => IsCreateProfileBtnVisible = args.Permissions.Contains(PermissionNames.Pages_CreateProfiles)                                                           
+             && (!_applicationUser.IsAssistant || _authSession.CanCreateProfiles));
 
         EventAggregator
             .GetEvent<LoginSuccessEvent>()

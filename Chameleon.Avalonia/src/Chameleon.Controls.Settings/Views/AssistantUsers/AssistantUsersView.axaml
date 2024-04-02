@@ -39,7 +39,8 @@
 	<Border Padding="20">
 		<avfCommon:ChameleonContentControl Title="Current Users">
 			<avfCommon:ChameleonContentControl.TitleContent>
-				<ui:CommandBar DefaultLabelPosition="Right">
+				<ui:CommandBar HorizontalAlignment="Right"
+							   DefaultLabelPosition="Right">
 					<ui:CommandBar.PrimaryCommands>
 						<ui:CommandBarButton IconSource="Add"
 											 Label="Invite User"

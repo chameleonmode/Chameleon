@@ -315,16 +315,18 @@
 				<Grid RowDefinitions="Auto,*">
 
 					<!-- Header -->
-					<Panel>
+					<Grid ColumnDefinitions="Auto,*">
+						
 						<TextBlock Text="{TemplateBinding Title}"
 								   Padding="12"
 								   Theme="{StaticResource SubtitleTextBlockStyle}" />
 
-						<ContentPresenter Name="TitlePresenter"
+						<ContentPresenter Grid.Column="1" 
+										  Name="TitlePresenter"
 								  Content="{TemplateBinding TitleContent}"
-								  HorizontalAlignment="Right"
+								  HorizontalAlignment="Stretch"
 										  VerticalAlignment="Bottom"/>
-					</Panel>
+					</Grid>
 
 					<!-- Content Area -->
 					<ui:FABorder Name="ControlPreviewAreaHost"
@@ -367,13 +369,13 @@
 													  VerticalAlignment="Stretch"
 													  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 													  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-													  Margin="12 12 0 12"
+													  Padding="12"
 													  Grid.ColumnSpan="1"
-													  Grid.Row="1"
-													  Padding="12">
+													  Grid.Row="1">
 										<ContentPresenter.Transitions>
 											<Transitions>
-												<ThicknessTransition Duration="00:00:00.167" Property="Padding" />
+												<ThicknessTransition Duration="00:00:00.167"
+																	 Property="Padding" />
 											</Transitions>
 										</ContentPresenter.Transitions>
 									</ContentPresenter>
@@ -381,7 +383,6 @@
 									<!-- Options Area -->
 									<ui:FABorder Name="OptionsHost"
 											Margin="12"
-											Padding="8"
 											CornerRadius="{DynamicResource OverlayCornerRadius}"
 											Grid.Column="1"
 											Grid.Row="1"
@@ -392,7 +393,8 @@
 											IsVisible="False">
 										<ui:FABorder.Transitions>
 											<Transitions>
-												<DoubleTransition Property="Opacity" Duration="00:00:00.167" />
+												<DoubleTransition Property="Opacity" 
+																  Duration="00:00:00.167" />
 											</Transitions>
 										</ui:FABorder.Transitions>
 										<StackPanel>

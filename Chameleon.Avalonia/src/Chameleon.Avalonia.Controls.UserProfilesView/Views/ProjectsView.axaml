@@ -13,12 +13,12 @@
 
 			<Grid>
 				<Grid.RowDefinitions>
-					<RowDefinition Height="auto" />
+					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
-					<ColumnDefinition Width="auto"/>
+					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 				<Border Grid.Row="0"
 						Grid.ColumnSpan="2"
@@ -41,8 +41,8 @@
 									Padding="0"
 									Background="{StaticResource ButtonDarkBrush}"
 									
-									Command="{Binding CreateProfileCommand}"
 									IsVisible="{Binding IsCreateProfileBtnVisible}"
+									Command="{Binding CreateProfileCommand}"
 									
 									x:Name="CreateProfileBtn">
 								<StackPanel Orientation="Horizontal">
