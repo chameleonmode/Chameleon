@@ -1,5 +1,7 @@
-﻿using Chameleon.CT.Common.Base;
+﻿using Chameleon.Avalonia.Common.Services;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.Dialogs;
+using Chameleon.Interfaces.Services;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
@@ -22,14 +24,13 @@ public partial class ProxyAccessViewModel
     }
 
    [RelayCommand]
-    private void CopyUrl()
+    private async Task CopyUrl()
     {
         if (_url == null)
         {
             return;
         }
-
-        //TODO: Clipboard.SetText(_url);
+        await IClipboardService.Instance.SetTextAsync( _url );
         _toastNotificationService.ShowSuccess("Copied to clipboard");
     }
 }

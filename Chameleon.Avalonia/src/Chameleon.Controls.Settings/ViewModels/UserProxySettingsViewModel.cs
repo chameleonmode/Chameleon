@@ -81,7 +81,10 @@ public partial class UserProxySettingsViewModel
     {
         await base.InitAsync(param);
         if (!Loaded)
+        {
             Load();
+            await InitializeCountriesAsync();
+        }
 
         OnPropertyChanged(string.Empty);
     }
@@ -452,7 +455,7 @@ public partial class UserProxySettingsViewModel
                 _mapping.CollectionChanged += OnViewModelChange;
                 InitPaginator();
 
-                SelectedFolder = _folderViewModels.Items.First();
+                //SelectedFolder = _folderViewModels.Items.First();
             }
             return _viewModels;
         }
@@ -625,6 +628,16 @@ public partial class UserProxySettingsViewModel
         foreach (var model in ViewModels.Items)
         {
             model.IsSelected = false;
+        }
+    }
+
+    [RelayCommand]
+    private void SelectAll()
+    {
+        IsSelectedAll = true;
+        foreach (var model in ViewModels.Items)
+        {
+            model.IsSelected = true;
         }
     }
 

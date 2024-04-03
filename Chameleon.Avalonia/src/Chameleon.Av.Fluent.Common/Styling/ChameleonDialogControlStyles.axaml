@@ -60,7 +60,7 @@
 								BorderThickness="0"
 								TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 								CornerRadius="{DynamicResource ControlCornerRadius}">
-							<ContentPresenter Name="ExamplePresenter"
+							<ContentPresenter Name="ContentsPresenter"
 											  Content="{TemplateBinding Content}"
 											  ContentTemplate="{TemplateBinding ContentTemplate}"
 											  HorizontalAlignment="Stretch"

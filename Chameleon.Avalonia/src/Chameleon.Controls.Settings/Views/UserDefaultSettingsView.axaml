@@ -13,7 +13,6 @@
 
 	</UserControl.Resources>
 	<Border Padding="20">
-		<Panel>
 			<ctrls:ChameleonContentControl Title="Saved Pages">
 				<ctrls:ChameleonContentControl.TitleContent>
 					<ui:CommandBar DefaultLabelPosition="Right"
@@ -32,6 +31,7 @@
 					</ui:CommandBar>
 				</ctrls:ChameleonContentControl.TitleContent>
 				<ctrls:ChameleonContentControl.Content>
+					<Grid RowDefinitions="*,Auto">
 					<ListBox ItemsSource="{Binding ViewModels}">
 						<ListBox.ItemTemplate>
 							<DataTemplate>
@@ -54,22 +54,21 @@
 							</DataTemplate>
 						</ListBox.ItemTemplate>
 					</ListBox>
+						<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
+							<HeaderedContentControl.Header>
+								<Button Theme="{StaticResource SvgIconTextButton}"
+										Content="delete"
+										Tag="Delete"
+										Margin="3 0 0 0"
+										Command="{Binding RemoveSelectedItemsCommand}" />
+							</HeaderedContentControl.Header>
+						</HeaderedContentControl>
+					</Grid>
 				</ctrls:ChameleonContentControl.Content>
 
 				<ctrls:ChameleonContentControl.Footer>
 
 				</ctrls:ChameleonContentControl.Footer>
 			</ctrls:ChameleonContentControl>
-
-			<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
-				<HeaderedContentControl.Header>
-					<Button Theme="{StaticResource SvgIconTextButton}"
-							Content="delete"
-							Tag="Delete"
-							Margin="3 0 0 0"
-							Command="{Binding RemoveSelectedItemsCommand}" />
-				</HeaderedContentControl.Header>
-			</HeaderedContentControl>
-		</Panel>
 	</Border>
 </UserControl>

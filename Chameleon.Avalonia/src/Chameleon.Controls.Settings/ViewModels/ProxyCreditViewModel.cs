@@ -1,4 +1,5 @@
 ﻿using Chameleon.App.Shared.Proxies;
+using Chameleon.Avalonia.Common.Services;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.CreditPlan;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
 using Chameleon.Core.Collections.Views;
@@ -8,8 +9,10 @@ using Chameleon.Interfaces.App.Settings;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Proxies;
 using Chameleon.Interfaces.ProxyCredit;
+using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfiles;
 using CommunityToolkit.Mvvm.Input;
+using ExCSS;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -58,10 +61,10 @@ public partial class ProxyCreditViewModel
 
     private const string ClipboardText = "Copied to clipboard";
    [RelayCommand]
-    public void CopyAllUrls()
+    public async Task CopyAllUrls()
     {
         var list = Access.Select(a => a.Url);
-        //TODO: Clipboard.SetText(string.Join("\n", list));
+        await IClipboardService.Instance.SetTextAsync(string.Join("\n", list));
         _toastNotificationService.ShowSuccess(ClipboardText);
     }
 

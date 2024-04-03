@@ -48,6 +48,10 @@ public partial class UserProxySettingViewModel
         set
         {
             SetProperty(ref _isSelected, value);
+
+            if(!_openChangeProxies && value)
+                ClickIconChangeProxies();
+
             ChangeSelected();
         }
     }

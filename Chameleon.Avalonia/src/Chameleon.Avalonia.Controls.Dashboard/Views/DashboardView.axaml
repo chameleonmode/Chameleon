@@ -82,8 +82,7 @@
 										    ItemsSource="{Binding Sorts}"
 										    SelectedItem="{Binding SortSelected}"
 										   Width="150" 
-										   IsEditable="False" >
-							</ui:FAComboBox>
+										   IsEditable="False"/>
 							<!--<StackPanel 
 										   HorizontalAlignment="Right"
 										Orientation="Horizontal">

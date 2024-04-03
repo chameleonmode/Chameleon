@@ -131,11 +131,8 @@
 				</ctrls:ChameleonContentControl.Content>
 			</ctrls:ChameleonContentControl>
 
-			<ctrls:ChameleonContentControl Title="Proxies">
-				<ctrls:ChameleonContentControl.Header>
-					<TextBlock Theme="{StaticResource CaptionTextBlockStyle}"
-							   Text="Manage your proxies here"/>
-				</ctrls:ChameleonContentControl.Header>
+			<ctrls:ChameleonContentControl Title="Proxies"
+										   TitleDescription="Manage your proxies here">
 
 				<ctrls:ChameleonContentControl.Content>
 					<Grid>

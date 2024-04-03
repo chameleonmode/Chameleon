@@ -100,7 +100,7 @@
                                               Padding="0 4"
                                               Margin="0 -15 0 3"
                                               DockPanel.Dock="Bottom"
-                                              IsVisible="False">
+                                              IsVisible="True">
 								<ContentPresenter.Styles>
 									<Style Selector="TextBlock">
 										<Setter Property="TextWrapping" Value="Wrap" />

@@ -12,7 +12,6 @@
 	<UserControl.Resources>
 		<converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
 	</UserControl.Resources>
-	<Panel>
 		<avfCommon:ChameleonContentControl Title="{Binding SelectedFolderTitle}"
 										TitleDescription="{Binding TotalCount,
 											StringFormat='You have {0} profiles.'}">
@@ -42,8 +41,7 @@
 		</avfCommon:ChameleonContentControl.TitleContent>
 
 		<avfCommon:ChameleonContentControl.Header>
-			<Grid Margin="0 8 0 0"
-				  IsVisible="{Binding !HasNoItems}">
+			<Grid IsVisible="{Binding !HasNoItems}">
 				<StackPanel Orientation="Horizontal">
 					<Button Content="select-all"
 							Tag="Select all"
@@ -71,25 +69,13 @@
 					</StackPanel>
 				</StackPanel>
 
-				<StackPanel HorizontalAlignment="Right"
-							Orientation="Horizontal"
-							IsVisible="{Binding IsProfilesExist}">
-					<TextBlock Text="Sort by:"
-							   VerticalAlignment="Bottom"
-							   FontWeight="DemiBold"
-							   Margin="0 0 6 10"/>
-					<ComboBox ItemsSource="{Binding Sorts}"
-							  VerticalAlignment="Bottom"
-							  SelectedItem="{Binding SortSelected}"
-							  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-						<ComboBox.ItemTemplate>
-							<DataTemplate>
-								<TextBlock
-									Text="{Binding Converter={StaticResource ListSortDirectionToName}}" />
-							</DataTemplate>
-						</ComboBox.ItemTemplate>
-					</ComboBox>
-				</StackPanel>
+				<ui:FAComboBox Width="150"
+							   IsEditable="False"
+							   HorizontalAlignment="Right"
+							   Header="Sort by:"
+							   ItemsSource="{Binding Sorts}"
+							   SelectedItem="{Binding SortSelected}"
+							   IsVisible="{Binding IsProfilesExist}" />
 			</Grid>
 		</avfCommon:ChameleonContentControl.Header>
 
@@ -97,7 +83,7 @@
 		</avfCommon:ChameleonContentControl.Options>
 
 		<avfCommon:ChameleonContentControl.Content>
-			<Grid>
+			<Grid RowDefinitions="*,Auto">
 				<ListBox
 					ItemsSource="{Binding ViewModels}"
 					Theme="{StaticResource ListBoxNoScroller}"
@@ -190,6 +176,54 @@
 					Grid.Row="1"
 					DataContext="{Binding}"
 					IsIndicatorVisible="{Binding IsWaiting}"/>-->
+
+
+				<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}"
+										Grid.Row="1">
+					<HeaderedContentControl.Header>
+						<StackPanel Orientation="Horizontal">
+							<Button
+								Content="chrome"
+								ToolTip.Tip="Open In System Chrome"
+								Theme="{StaticResource SvgIconButton}"
+								Command="{Binding OpenChromeCommand}"/>
+							<Button
+								Content="firefox"
+								Margin="3 0 0 0"
+								ToolTip.Tip="Open In System Firefox"
+								Theme="{StaticResource SvgIconButton}"
+								Command="{Binding OpenFirefoxCommand}"/>
+							<Button
+								Content="brave"
+								Margin="3 0 0 0"
+								ToolTip.Tip="Open In System Brave"
+								Theme="{StaticResource SvgIconButton}"
+								Command="{Binding OpenBraveCommand}"/>
+							<Button
+								Content="chameleon-logo"
+								Margin="3 0 0 0"
+								ToolTip.Tip="Open In Chameleon Browser"
+								Theme="{StaticResource SvgIconButton}"
+								Command="{Binding OpenChameleonBrowserCommand}"/>
+
+							<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+									Margin="18 6"
+									BorderThickness="1 0 0 0" />
+
+							<Button
+								Theme="{StaticResource SvgIconTextButton}"
+								Content="up-folder"
+								Tag="Move"
+								Command="{Binding MoveProfilesToFolderCommand}" />
+							<Button
+								Theme="{StaticResource SvgIconTextButton}"
+								Content="delete"
+								Tag="Delete"
+								Margin="3 0 0 0"
+								Command="{Binding DeleteCommand}" />
+						</StackPanel>
+					</HeaderedContentControl.Header>
+				</HeaderedContentControl>
 			</Grid>
 		</avfCommon:ChameleonContentControl.Content>
 
@@ -271,51 +305,4 @@
 			</StackPanel>-->
 		</avfCommon:ChameleonContentControl.Footer>
 	</avfCommon:ChameleonContentControl>
-
-		<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
-			<HeaderedContentControl.Header>
-				<StackPanel Orientation="Horizontal">
-					<Button
-						Content="chrome"
-						ToolTip.Tip="Open In System Chrome"
-						Theme="{StaticResource SvgIconButton}"
-						Command="{Binding OpenChromeCommand}"/>
-					<Button
-						Content="firefox"
-						Margin="3 0 0 0"
-						ToolTip.Tip="Open In System Firefox"
-						Theme="{StaticResource SvgIconButton}"
-						Command="{Binding OpenFirefoxCommand}"/>
-					<Button
-						Content="brave"
-						Margin="3 0 0 0"
-						ToolTip.Tip="Open In System Brave"
-						Theme="{StaticResource SvgIconButton}"
-						Command="{Binding OpenBraveCommand}"/>
-					<Button
-						Content="chameleon-logo"
-						Margin="3 0 0 0"
-						ToolTip.Tip="Open In Chameleon Browser"
-						Theme="{StaticResource SvgIconButton}"
-						Command="{Binding OpenChameleonBrowserCommand}"/>
-
-					<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-							Margin="18 6"
-							BorderThickness="1 0 0 0" />
-
-					<Button
-						Theme="{StaticResource SvgIconTextButton}"
-						Content="up-folder"
-						Tag="Move"
-						Command="{Binding MoveProfilesToFolderCommand}" />
-					<Button
-						Theme="{StaticResource SvgIconTextButton}"
-						Content="delete"
-						Tag="Delete"
-						Margin="3 0 0 0"
-						Command="{Binding DeleteCommand}" />
-				</StackPanel>
-			</HeaderedContentControl.Header>
-		</HeaderedContentControl>
-	</Panel>
 </UserControl>

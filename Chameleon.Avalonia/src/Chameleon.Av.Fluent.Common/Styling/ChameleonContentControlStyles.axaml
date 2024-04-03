@@ -42,15 +42,43 @@
 							</ui:CommandBar>
 						</Grid>
 					</ctrls:ChameleonContentControl.TitleContent>
+					
 					<ctrls:ChameleonContentControl.Header>
-						<Grid HorizontalAlignment="Right">
+						<Grid IsVisible="{Binding !HasNoItems}">
+							<StackPanel Orientation="Horizontal">
+								<Button Content="select-all"
+										Tag="Select all"
+										Theme="{StaticResource SvgIconTextButton}"
+										Command="{Binding SelectAllCommand}" />
+								<StackPanel
+									Orientation="Horizontal"
+									Margin="2 0 0 0">
+									<StackPanel.IsVisible>
+										<MultiBinding  Converter="{x:Static BoolConverters.Or}">
+											<Binding Path="HasFolder"/>
+											<Binding Path="IsProfilesExist"/>
+										</MultiBinding>
+									</StackPanel.IsVisible>
+									<Button Content="plus-in-circle"
+											Tag="Add profile"
+											Theme="{StaticResource SvgIconTextButton}"
+											Command="{Binding AddProfilesToFolderCommand}"
+											IsEnabled="{Binding IsAddProfilesToFolderCommandEnabled}" />
+									<Button Content="minus-in-circle"
+											Tag="Remove profile"
+											Theme="{StaticResource SvgIconTextButton}"
+											Margin="4 0 0 0"
+											Command="{Binding RemoveProfilesFromFolderCommand}" />
+								</StackPanel>
+							</StackPanel>
 
-							<Button Classes="accent"
-									Margin="4 0 0 0"
-									Width="175"
-									Content="Auto Update Proxies"
-									Command="{Binding FillProxiesCommand}"
-									IsEnabled="{Binding FillProxiesIsEnabled}"/>
+							<ui:FAComboBox Width="150"
+										   IsEditable="False"
+										   HorizontalAlignment="Right"
+										   Header="Sort by:"
+										   ItemsSource="{Binding Sorts}"
+										   SelectedItem="{Binding SortSelected}"
+										   IsVisible="{Binding IsProfilesExist}" />
 						</Grid>
 					</ctrls:ChameleonContentControl.Header>
 
@@ -352,12 +380,13 @@
 						<Grid RowDefinitions="Auto,*">
 							<Grid RowDefinitions="Auto,*">
 								<Grid RowDefinitions="Auto,*"
-									  Margin="12 0 12 0">
+									  Margin="12 0 12 12">
 									<TextBlock Text="{TemplateBinding TitleDescription}"
 											   Padding="6 14 6 0"
 											   Theme="{StaticResource CaptionTextBlockStyle}"
 											   IsVisible="{TemplateBinding TitleDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
 									<ContentPresenter Name="HeaderPresenter"
+													  Padding="0 12 6 0"
 													  Grid.Row="1"
 													  Content="{TemplateBinding Header}"
 													  ContentTemplate="{TemplateBinding HeaderTemplate}"
@@ -374,7 +403,7 @@
 											   IsVisible="False"
 											   MinHeight="32" />
 
-									<ContentPresenter Name="ExamplePresenter"
+									<ContentPresenter Name="ContentsPresenter"
 													  Content="{TemplateBinding Content}"
 													  ContentTemplate="{TemplateBinding ContentTemplate}"
 													  HorizontalAlignment="Stretch"
@@ -553,7 +582,7 @@
 		</Style>
 
 		<Style Selector="^:mediumWidth">
-			<Style Selector="^ /template/ ContentPresenter#ExamplePresenter">
+			<Style Selector="^ /template/ ContentPresenter#ContentsPresenter">
 				<Setter Property="Grid.ColumnSpan" Value="2" />
 				<Setter Property="Padding" Value="12 24 12 12" />
 			</Style>

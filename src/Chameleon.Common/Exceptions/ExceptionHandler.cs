@@ -6,6 +6,7 @@ using Chameleon.Interfaces.Logger;
 using Chameleon.Interfaces.Services;
 using Chameleon.Prism.Events;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
 using System.Text;
@@ -268,7 +269,8 @@ namespace Chameleon.Common.Exceptions
 
             return (e, args) =>
             {
-                //Clipboard.SetText(message);
+
+                 IClipboardService.Instance.SetTextAsync(message);
             };
         }
 
