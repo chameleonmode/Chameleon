@@ -12,7 +12,8 @@
 	<UserControl.Resources>
 		<converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
 	</UserControl.Resources>
-	<avfCommon:ChameleonContentControl Title="{Binding SelectedFolderTitle}"
+	<Panel>
+		<avfCommon:ChameleonContentControl Title="{Binding SelectedFolderTitle}"
 										TitleDescription="{Binding TotalCount,
 											StringFormat='You have {0} profiles.'}">
 		<avfCommon:ChameleonContentControl.TitleContent>
@@ -193,19 +194,18 @@
 		</avfCommon:ChameleonContentControl.Content>
 
 		<avfCommon:ChameleonContentControl.Footer>
-			<StackPanel>
+			<!--<StackPanel>
 				<pagnator:PaginatorView
 					DataContext="{Binding PaginatorViewModel}" />
-				<!--Select multiple profiles and run browser (Chameleon, Brave, Firefox or Chrome)-->
+				--><!--Select multiple profiles and run browser (Chameleon, Brave, Firefox or Chrome)--><!--
 				<Border
 					Background="{StaticResource AccentFillColorDefaultBrush}"
 					HorizontalAlignment="Center"
 					Height="50"
 					CornerRadius="{StaticResource ControlCornerRadius}"
 					Margin="0 0 0 3"
-					IsVisible="{Binding HasSelectedProfiles}">
+					IsVisible="{Binding !HasSelectedProfiles}">
 					<StackPanel Margin="24 0"
-						HorizontalAlignment="Left"
 						Orientation="Horizontal">
 						<TextBlock
 							Text="{Binding SelectedCount}"
@@ -263,12 +263,59 @@
 								BorderThickness="1 0 0 0" />
 
 						<Button
-							Theme="{StaticResource TransparentButton}"
+							Classes="accent"
 							Content="Unselect"
 							Command="{Binding UnselectCommand}"/>
 					</StackPanel>
 				</Border>
-			</StackPanel>
+			</StackPanel>-->
 		</avfCommon:ChameleonContentControl.Footer>
 	</avfCommon:ChameleonContentControl>
+
+		<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
+			<HeaderedContentControl.Header>
+				<StackPanel Orientation="Horizontal">
+					<Button
+						Content="chrome"
+						ToolTip.Tip="Open In System Chrome"
+						Theme="{StaticResource SvgIconButton}"
+						Command="{Binding OpenChromeCommand}"/>
+					<Button
+						Content="firefox"
+						Margin="3 0 0 0"
+						ToolTip.Tip="Open In System Firefox"
+						Theme="{StaticResource SvgIconButton}"
+						Command="{Binding OpenFirefoxCommand}"/>
+					<Button
+						Content="brave"
+						Margin="3 0 0 0"
+						ToolTip.Tip="Open In System Brave"
+						Theme="{StaticResource SvgIconButton}"
+						Command="{Binding OpenBraveCommand}"/>
+					<Button
+						Content="chameleon-logo"
+						Margin="3 0 0 0"
+						ToolTip.Tip="Open In Chameleon Browser"
+						Theme="{StaticResource SvgIconButton}"
+						Command="{Binding OpenChameleonBrowserCommand}"/>
+
+					<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+							Margin="18 6"
+							BorderThickness="1 0 0 0" />
+
+					<Button
+						Theme="{StaticResource SvgIconTextButton}"
+						Content="up-folder"
+						Tag="Move"
+						Command="{Binding MoveProfilesToFolderCommand}" />
+					<Button
+						Theme="{StaticResource SvgIconTextButton}"
+						Content="delete"
+						Tag="Delete"
+						Margin="3 0 0 0"
+						Command="{Binding DeleteCommand}" />
+				</StackPanel>
+			</HeaderedContentControl.Header>
+		</HeaderedContentControl>
+	</Panel>
 </UserControl>

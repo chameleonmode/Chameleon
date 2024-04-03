@@ -10,87 +10,66 @@
 			 x:DataType="vm:UserDefaultSettingsViewModel"
              x:Class="Chameleon.Avalonia.Controls.Settings.UserDefaultSettingsView">
 	<UserControl.Resources>
-		<!--<DataTemplate x:Key="SettingsListItemTemplate">
 
-		</DataTemplate>-->
 	</UserControl.Resources>
 	<Border Padding="20">
-		<StackPanel Spacing="8">
+		<Panel>
 			<ctrls:ChameleonContentControl Title="Saved Pages">
 				<ctrls:ChameleonContentControl.TitleContent>
-					<ui:CommandBar DefaultLabelPosition="Right">
+					<ui:CommandBar DefaultLabelPosition="Right"
+								   HorizontalAlignment="Right">
 						<ui:CommandBar.PrimaryCommands>
-							<ui:CommandBarButton IconSource="Save" 
+							<ui:CommandBarButton IconSource="Save"
 												 Label="Save"
 												 Command="{Binding SaveCommand}"/>
 							<ui:CommandBarButton IconSource="Add"
 												 Label="New"
 												 Command="{Binding CreateNewDefaultSettingsCommand}"/>
-							<ui:CommandBarButton IconSource="Page" 
+							<ui:CommandBarButton IconSource="Page"
 												 Label="Add pages"
 												 Command="{Binding BulkAddPagesCommand}"/>
 						</ui:CommandBar.PrimaryCommands>
 					</ui:CommandBar>
 				</ctrls:ChameleonContentControl.TitleContent>
 				<ctrls:ChameleonContentControl.Content>
-					<Grid RowDefinitions="Auto,*">
-						<StackPanel Spacing="8"
-									HorizontalAlignment="Right"
-									Orientation="Horizontal"
-									Margin="0 12 12 12">
-
-						</StackPanel>
-
-						<ListBox Grid.Row="1"
-								 ItemsSource="{Binding ViewModels}">
-							<ListBox.ItemTemplate>
-								<DataTemplate>
-									<Grid Margin="{StaticResource ChameleonInnerControlMargin}"
-										  ColumnDefinitions="Auto,*,Auto">
-										<CheckBox Grid.Column="0"
-												  IsChecked="{Binding IsChecked}"/>
-										<TextBox Grid.Column="1"
-												  Margin="{StaticResource ChameleonInnerControlMargin}"
-												 Text="{Binding DefaultUrl}"  />
-										<Button Theme="{DynamicResource TransparentButton}"
-												Grid.Column="2"
-												 Margin="{StaticResource ChameleonInnerControlMargin}"
-												Content="Delete"
-												 Classes="accent"
-												Command="{Binding DeleteDefaultSettingsCommand}">
-											<ui:SymbolIcon Symbol="Delete" />
-										</Button>
-									</Grid>
-								</DataTemplate>
-							</ListBox.ItemTemplate>
-						</ListBox>
-					</Grid>
+					<ListBox ItemsSource="{Binding ViewModels}">
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<Grid Margin="{StaticResource ChameleonInnerControlMargin}"
+									  ColumnDefinitions="Auto,*,Auto">
+									<CheckBox Grid.Column="0"
+											  IsChecked="{Binding IsChecked}"/>
+									<TextBox Grid.Column="1"
+											  Margin="{StaticResource ChameleonInnerControlMargin}"
+											 Text="{Binding DefaultUrl}"  />
+									<Button Theme="{DynamicResource TransparentButton}"
+											Grid.Column="2"
+											 Margin="{StaticResource ChameleonInnerControlMargin}"
+											Content="Delete"
+											 Classes="accent"
+											Command="{Binding DeleteDefaultSettingsCommand}">
+										<ui:SymbolIcon Symbol="Delete" />
+									</Button>
+								</Grid>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
 				</ctrls:ChameleonContentControl.Content>
+
+				<ctrls:ChameleonContentControl.Footer>
+
+				</ctrls:ChameleonContentControl.Footer>
 			</ctrls:ChameleonContentControl>
 
-			<!--IsVisible="{Binding HasSelectedItems}"-->
-			<Border Grid.Row="1"
-					IsVisible="{Binding HasSelectedItems}"
-					Background="{StaticResource AccentFillColorDefaultBrush}"
-					Padding="{StaticResource ChameleonControlMargin}"
-				VerticalAlignment="Bottom">
-				<StackPanel Orientation="Horizontal"
-							HorizontalAlignment="Center"
-							Spacing="16">
-					<StackPanel Orientation="Horizontal"
-								VerticalAlignment="Center">
-						<TextBlock Text="{Binding SelectedCount}"/>
-						<TextBlock Text=" Selected"/>
-					</StackPanel>
-					<Button Content="Unselect"
-							Grid.Column="1"
-							 Classes="accent"
-							Command="{Binding UnselectItemsCommand}" />
-					<Button Content="Delete pages"
-							 Grid.Column="2"
-							 Command="{Binding RemoveSelectedItemsCommand}"/>
-				</StackPanel>
-			</Border>
-		</StackPanel>
+			<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
+				<HeaderedContentControl.Header>
+					<Button Theme="{StaticResource SvgIconTextButton}"
+							Content="delete"
+							Tag="Delete"
+							Margin="3 0 0 0"
+							Command="{Binding RemoveSelectedItemsCommand}" />
+				</HeaderedContentControl.Header>
+			</HeaderedContentControl>
+		</Panel>
 	</Border>
 </UserControl>

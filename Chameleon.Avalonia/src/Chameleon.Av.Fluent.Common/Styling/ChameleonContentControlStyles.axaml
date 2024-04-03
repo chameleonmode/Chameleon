@@ -3,6 +3,17 @@
 		xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
 		xmlns:ui="using:FluentAvalonia.UI.Controls">
 	<Design.PreviewWith>
+		<StackPanel>
+			<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
+				<HeaderedContentControl.Header>
+					<Button Theme="{StaticResource SvgIconTextButton}"
+							Content="delete"
+							Tag="Delete"
+							Margin="3 0 0 0"
+							Command="{Binding RemoveSelectedItemsCommand}" />
+				</HeaderedContentControl.Header>
+			</HeaderedContentControl>
+			
 		<Border Padding="20" Width="780" Height="480"
 				Background="{DynamicResource LayerFillColorDefaultBrush}">
 			<Grid ColumnDefinitions="*,Auto,0.01*">
@@ -303,6 +314,7 @@
 				<!--<GridSplitter Grid.Column="1" />-->
 			</Grid>
 		</Border>
+		</StackPanel>
 	</Design.PreviewWith>
 
 
@@ -383,6 +395,7 @@
 									<!-- Options Area -->
 									<ui:FABorder Name="OptionsHost"
 											Margin="12"
+												 Padding="12"
 											CornerRadius="{DynamicResource OverlayCornerRadius}"
 											Grid.Column="1"
 											Grid.Row="1"
@@ -591,5 +604,52 @@
 			<Setter Property="Symbol" Value="ChevronUp" />
 		</Style>
 
+	</ControlTheme>
+
+	<ControlTheme x:Key="HasSelectedItemsBorder"
+		  TargetType="HeaderedContentControl">
+		<Setter Property="VerticalAlignment" Value="Bottom" />
+		<Setter Property="Margin" Value="12" />
+		<Setter Property="MinWidth" Value="420" />
+		<Setter Property="TextElement.Foreground" Value="{StaticResource TextOnAccentFillColorPrimaryBrush}" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border
+					Background="{StaticResource AccentFillColorDefaultBrush}"
+					HorizontalAlignment="Center"
+					Height="50"
+					CornerRadius="{StaticResource ControlCornerRadius}"
+					Margin="0 0 0 3"
+					IsVisible="{Binding HasSelectedItems}">
+					<Grid Margin="24 0"
+						 ColumnDefinitions="*,Auto">
+						<TextBlock 
+								   VerticalAlignment="Center">
+							<Run Text="{Binding SelectedCount}" />
+							<Run Text=" Selected" />
+						</TextBlock>
+
+						<StackPanel Orientation="Horizontal"
+									Grid.Column="1">
+							<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+									Margin="18 6"
+									BorderThickness="1 0 0 0" />
+
+							<ContentPresenter Content="{TemplateBinding Header}" />
+
+							<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+									Margin="18 6"
+									BorderThickness="1 0 0 0" />
+
+							<Button Theme="{StaticResource TransparentButton}"
+									TextElement.Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+									Classes="accent"
+									Content="Unselect"
+									Command="{Binding UnselectItemsCommand}" />
+						</StackPanel>
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
 	</ControlTheme>
 </ResourceDictionary>

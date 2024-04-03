@@ -12,7 +12,8 @@
 										 TextType="Profiles"
 										 Classes="smallest"/>
 
-			<Grid Grid.Row="1">
+			<Grid Grid.Row="1"
+				  Margin="{StaticResource ChameleonAppPageMargin}">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*"/>

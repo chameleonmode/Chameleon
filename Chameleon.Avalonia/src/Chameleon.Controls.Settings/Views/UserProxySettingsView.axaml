@@ -15,8 +15,9 @@
 		<conv:MultiStringJoinConverter x:Key="MultiStringJoin" />
 		<!--<converter:MultiStringJoinConverter x:Key="MultiStringJoin"/>-->
 	</UserControl.Resources>
-		<Border Padding="20"
-				>
+		<Border Padding="20">
+			<Panel>
+				
 			<Grid RowDefinitions="*,Auto">
 				<ctrls:ChameleonContentControl Title="Proxies list">
 					<ctrls:ChameleonContentControl.TitleContent>
@@ -147,11 +148,11 @@
 									<paginator:PaginatorView Grid.Row="1"
 															 DataContext="{Binding PaginatorViewModel}" />
 							<!--{Binding HasSelectedItems}-->
-							<Border Grid.Row="0"
+							<!--<Border Grid.Row="1"
 									Grid.Column="0"
 									Grid.ColumnSpan="2"
 									Grid.RowSpan="2"
-									IsVisible="{Binding HasSelectedItems}"
+									IsVisible="{Binding !HasSelectedItems}"
 									Background="{StaticResource AccentFillColorDefaultBrush}"
 									Padding="{StaticResource ChameleonControlMargin}"
 									VerticalAlignment="Bottom">
@@ -173,7 +174,7 @@
 											 Grid.Column="2"
 											 Command="{Binding ChangeProxiesCommand}"/>
 								</StackPanel>
-							</Border>
+							</Border>-->
 						</Grid>
 					</ctrls:ChameleonContentControl.Content>
 
@@ -275,5 +276,16 @@
 					</ctrls:ChameleonContentControl.Footer>
 				</ctrls:ChameleonContentControl>
 			</Grid>
+
+				<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
+					<HeaderedContentControl.Header>
+						<Button Theme="{StaticResource TransparentButton}"
+								TextElement.Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+								Content="Change proxies"
+								Grid.Column="2"
+								Command="{Binding ChangeProxiesCommand}"/>
+					</HeaderedContentControl.Header>
+				</HeaderedContentControl>
+			</Panel>
 		</Border>
 </UserControl>

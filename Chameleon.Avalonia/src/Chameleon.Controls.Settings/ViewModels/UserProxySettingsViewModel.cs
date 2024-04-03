@@ -48,12 +48,42 @@ public partial class UserProxySettingsViewModel
         _proxyAccessViewModels = proxyAccessViewModels;
         _proxyAccessViewModels.AddItems(CountProxies);
         _userProfileFolderService = userProfileFolderService;
+
+        EventAggregator
+            .GetEvent<SavedUserProfileEvent>()
+            .Subscribe(args => OnUserProfileSaved());
+
+        EventAggregator
+          .GetEvent<UpdateStaleDataEvent>()
+          .Subscribe(() => OnUserProfileSaved());
+
+        EventAggregator
+            .GetEvent<SelectedChangeUserProfileEvent>()
+            .Subscribe(args => OnUserProfileSelected());
+
+        EventAggregator
+           .GetEvent<SelectedUserProxySettingEvent>()
+           .Subscribe(args => OnSelectedChanged(args));
+
+        EventAggregator
+            .GetEvent<UserProxySetFolderIdEvent>()
+            .Subscribe(args => FolderId = args.FolderId);
+
+        EventAggregator
+           .GetEvent<AfterCreateOrRemoveFolderEvent>()
+           .Subscribe(ChangeFoldersCollection);
+
+        EventAggregator
+            .GetEvent<RenameFolderEvent>()
+            .Subscribe(args => OnRenameFolder(args.FolderId, args.Title));
     }
     public override async Task InitAsync(object? param)
     {
         await base.InitAsync(param);
         if (!Loaded)
             Load();
+
+        OnPropertyChanged(string.Empty);
     }
     public override async Task OnNavigatedToAsync(object? param)
     {
@@ -421,6 +451,8 @@ public partial class UserProxySettingsViewModel
                 _mapping.CollectionChanged -= OnViewModelChange;
                 _mapping.CollectionChanged += OnViewModelChange;
                 InitPaginator();
+
+                SelectedFolder = _folderViewModels.Items.First();
             }
             return _viewModels;
         }

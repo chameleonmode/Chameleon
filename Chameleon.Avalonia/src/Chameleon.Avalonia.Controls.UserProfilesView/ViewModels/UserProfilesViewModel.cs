@@ -149,7 +149,7 @@ public partial class UserProfilesViewModel
     private void OnHandleUserEvent()
     {
         OnPropertyChanged(nameof(HasNoItems));
-        OnPropertyChanged(nameof(HasSelectedProfiles));
+        OnPropertyChanged(nameof(HasSelectedItems));
         OnPropertyChanged(nameof(HasProfileWithoutFolder));
         OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
     }
@@ -238,7 +238,7 @@ public partial class UserProfilesViewModel
     {
         Folder = userProfileFolder;
 
-        Unselect();
+        UnselectItems();
         OnPropertyChanged(nameof(HasNoItems));
     }
 
@@ -342,12 +342,12 @@ public partial class UserProfilesViewModel
         {
             if (SetProperty(ref _selectedCount, value))
             {
-                OnPropertyChanged(nameof(HasSelectedProfiles));
+                OnPropertyChanged(nameof(HasSelectedItems));
             }
         }
     }
 
-    public bool HasSelectedProfiles => ViewModels != null && ViewModels.Count(v => v.IsSelected) > 0;
+    public bool HasSelectedItems => ViewModels != null && ViewModels.Count(v => v.IsSelected) > 0;
 
     private IEnumerable<UserProfileViewModel> _selectedProfiles;
     private void OnSelectedChanged()
@@ -399,7 +399,7 @@ public partial class UserProfilesViewModel
     }
 
     [RelayCommand]
-    private void Unselect()
+    private void UnselectItems()
     {
         if (_selectedProfiles == null)
         {
@@ -546,7 +546,7 @@ public partial class UserProfilesViewModel
                 InitPaginator();
                 SetViewModelsFilter();
                 OnPropertyChanged(nameof(HasNoItems));
-                OnPropertyChanged(nameof(HasSelectedProfiles));
+                OnPropertyChanged(nameof(HasSelectedItems));
             }
 
             return _viewModels;
@@ -702,7 +702,7 @@ public partial class UserProfilesViewModel
 
         OnPropertyChanged(nameof(ViewModels));
         OnPropertyChanged(nameof(IsProfilesExist));
-        OnPropertyChanged(nameof(HasSelectedProfiles));
+        OnPropertyChanged(nameof(HasSelectedItems));
         OnPropertyChanged(nameof(HasProfileWithoutFolder));
         OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
     }
