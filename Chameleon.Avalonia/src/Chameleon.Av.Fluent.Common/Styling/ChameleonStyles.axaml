@@ -33,6 +33,7 @@
 				<ResourceInclude Source="/Styling/ResourceDictionaryContentDialog.axaml" />
 				<ResourceInclude Source="/Styling/SvgIconsResourceDictionary.axaml" />
 				<ResourceInclude Source="/Styling/HeaderdInputFieldsResourceDictionary.axaml" />
+				<ResourceInclude Source="/Styling/ChameleonListBoxStyles.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 

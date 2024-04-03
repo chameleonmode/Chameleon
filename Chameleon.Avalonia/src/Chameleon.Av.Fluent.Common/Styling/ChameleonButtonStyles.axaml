@@ -89,7 +89,6 @@
 		<Setter Property="Width" Value="34" />
 		<Setter Property="Height" Value="34" />
 		<Setter Property="ToolTip.Tip" Value="Toggle Favorite" />
-		<Setter Property="Command" Value="{Binding FavoriteCommand}" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<ui:FABorder Name="Root"

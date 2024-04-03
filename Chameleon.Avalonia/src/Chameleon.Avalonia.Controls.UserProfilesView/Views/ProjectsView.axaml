@@ -4,21 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:local="using:Chameleon.Avalonia.Controls.UserProfilesView"
 			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
-             mc:Ignorable="d" d:DesignWidth="890" d:DesignHeight="850"
+             mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="850"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.ProjectsView">
 	<ScrollViewer>
 		<StackPanel Spacing="-5">
-			<avfCommon:PageHeaderControl TextType="Profiles"
+			<avfCommon:PageHeaderControl Grid.Row="0"
+										 TextType="Profiles"
 										 Classes="smallest"/>
 
-			<Grid>
+			<Grid Grid.Row="1">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
-					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition  Width="3*" />
+					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
 				<Border Grid.Row="0"
 						Grid.ColumnSpan="2"

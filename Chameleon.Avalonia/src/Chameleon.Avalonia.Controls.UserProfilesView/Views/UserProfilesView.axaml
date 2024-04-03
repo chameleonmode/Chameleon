@@ -97,7 +97,28 @@
 
 		<avfCommon:ChameleonContentControl.Content>
 			<Grid>
-				<ItemsControl ItemsSource="{Binding ViewModels}">
+				<ListBox
+					ItemsSource="{Binding ViewModels}"
+					Theme="{StaticResource ListBoxNoScroller}"
+					ItemContainerTheme="{StaticResource GridViewItem}">
+					<ListBox.IsVisible>
+						<MultiBinding Converter="{x:Static BoolConverters.And}">
+							<Binding Path="!HasNoItems"/>
+							<Binding Path="IsProfilesExist"/>
+						</MultiBinding>
+					</ListBox.IsVisible>
+					<ListBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel />
+						</ItemsPanelTemplate>
+					</ListBox.ItemsPanel>
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<userProfiles:UserProfileView HorizontalAlignment="Stretch" />
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+					</ListBox>
+				<!--<ItemsControl ItemsSource="{Binding ViewModels}">
 					<ItemsControl.IsVisible>
 						<MultiBinding Converter="{x:Static BoolConverters.And}">
 							<Binding Path="!HasNoItems"/>
@@ -109,7 +130,7 @@
 							<userProfiles:UserProfileView HorizontalAlignment="Stretch" />
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
-				</ItemsControl>
+				</ItemsControl>-->
 				<Grid>
 					<Grid.IsVisible>
 						<MultiBinding Converter="{x:Static BoolConverters.Or}">

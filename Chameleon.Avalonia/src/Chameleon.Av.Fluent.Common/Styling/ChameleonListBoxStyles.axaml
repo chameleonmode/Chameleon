@@ -1,0 +1,140 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:ui="using:FluentAvalonia.UI.Controls">
+	<Design.PreviewWith>
+		<Border Padding="50" 
+				Width="444"
+				Height="444">
+			<StackPanel Spacing="5">
+				<ListBox
+					Theme="{StaticResource ListBoxNoScroller}"
+					ItemContainerTheme="{StaticResource GridViewItem}">
+					<ListBox.Items>
+						<ListBoxItem>
+							<Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+									CornerRadius="{StaticResource ControlCornerRadius}"
+									BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+									BorderThickness="1"
+									Padding="6"
+									Width="280"
+									Height="120">
+								<Grid ColumnDefinitions="Auto,*,Auto"
+									  RowDefinitions="*,Auto">
+									<Viewbox Width="60"
+											 Height="60"
+											 Margin="12 8"
+											 VerticalAlignment="Center"
+											 Name="IconHost">
+								<ui:SymbolIcon Symbol="Account"
+											    />
+									</Viewbox>
+
+									<StackPanel Grid.Column="1"
+												Margin="12 0"
+												Spacing="4"
+												VerticalAlignment="Center">
+										<StackPanel Grid.Column="1"
+													VerticalAlignment="Center">
+											<TextBlock Text="Title"
+													   Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+												<TextBlock Text=" profiles and descriptions.....gjhhhhhhhhhhhh"
+														   Theme="{StaticResource CaptionTextBlockStyle}" />
+										</StackPanel>
+									</StackPanel>
+
+									<Button Grid.Column="2"
+											VerticalAlignment="Top"
+											Margin="5"
+											Command="{Binding SetFavoriteFolderCommand}"
+											Theme="{StaticResource FavoriteButton}"/>
+
+									<StackPanel
+										Margin="12 0"
+										Orientation="Horizontal"
+										Grid.Row="1"
+										Grid.ColumnSpan="3"
+										HorizontalAlignment="Right">
+										<Button
+											Content="View"
+											Theme="{StaticResource TransparentButton}"
+											Command="{Binding ViewGroupCommand}" />
+									</StackPanel>
+								</Grid>
+							</Border>
+
+						</ListBoxItem>
+					</ListBox.Items>
+					<ListBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel />
+						</ItemsPanelTemplate>
+					</ListBox.ItemsPanel>
+					<ListBox.ItemTemplate>
+						<DataTemplate></DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+	<ControlTheme
+	TargetType="ListBoxItem"
+	  x:Key="GridViewItem"
+	  BasedOn="{StaticResource {x:Type ListBoxItem}}">
+		<Setter Property="Padding" Value="0" />
+		<Style Selector="^:selected">
+			<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Background" Value="{DynamicResource ListViewItemBackground}" />
+			</Style>
+			<Style Selector="^ /template/ ContentPresenter">
+				<Setter Property="Foreground" Value="{DynamicResource ListViewItemForeground}" />
+			</Style>
+			<Style Selector="^ /template/ Rectangle#SelectionIndicator">
+				<Setter Property="IsVisible" Value="False" />
+			</Style>
+			<Style Selector="^:not(:focus) /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Background" Value="{DynamicResource ListViewItemBackground}" />
+			</Style>
+			<Style Selector="^:not(:focus) /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Foreground" Value="{DynamicResource ListViewItemForeground}" />
+			</Style>
+
+
+			<Style Selector="^:pointerover">
+				<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+					<Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundPointerOver}" />
+				</Style>
+				<Style Selector="^ /template/ ContentPresenter">
+					<Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundPointerOver}" />
+				</Style>
+			</Style>
+
+			<Style Selector="^:pressed">
+				<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+					<Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundPressed}" />
+				</Style>
+				<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+					<Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundPressed}" />
+				</Style>
+			</Style>
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme
+		TargetType="ListBox"
+				  x:Key="ListBoxNoScroller"
+				  BasedOn="{StaticResource {x:Type ListBox}}">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="border"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}">
+					<ItemsPresenter Name="PART_ItemsPresenter"
+									ItemsPanel="{TemplateBinding ItemsPanel}"
+									Margin="{TemplateBinding Padding}"/>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+</ResourceDictionary>
