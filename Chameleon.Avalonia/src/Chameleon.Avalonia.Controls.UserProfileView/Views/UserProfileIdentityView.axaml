@@ -43,12 +43,13 @@
 				<TabItem>
 					<TabItem.Header>
 						<Panel Width="144"
-							   Height="18">
+							   Height="36">
 							<StackPanel
 								Orientation="Horizontal"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center">
 								<avfCommon:SvgIconControl
+									Height="18"
 									IconName="profile-main" />
 								<TextBlock
 									Text="Main"
@@ -137,27 +138,12 @@
                                                FontWeight="DemiBold"
                                                HorizontalAlignment="Center"
                                                Foreground="{StaticResource SecondaryText}" />
-								
-										<Button Theme="{DynamicResource TransparentButton}"
-												Command="{Binding Path=AddPersonCommand}">
-											<StackPanel Orientation="Horizontal"
-														HorizontalAlignment="Center"
-														Margin="0 37.58 0 0"
-														Background="Transparent">
-												<avfCommon:SvgIconControl IconName="plus-in-circle"
-																  Height="15.83"
-																  Width="15.83"
-																  Foreground="{StaticResource PrimaryHueMidBrush}"
-																  Margin="0 -2 9.58 0"
-																  VerticalAlignment="Center" />
-												<TextBlock Text="Add person"
-														   FontWeight="DemiBold"
-														   FontSize="14"
-														   Foreground="{StaticResource PrimaryHueMidBrush}"
-														   VerticalAlignment="Center" />
-											</StackPanel>
-										</Button>
-
+									<Button Content="plus-in-circle"
+										    Tag="Add person"
+										    Command="{Binding Path=AddPersonCommand}"
+										    Margin="6"
+										    HorizontalAlignment="Center"
+										    Theme="{StaticResource SvgIconTextButton}" />
 								</StackPanel>
 							</Grid>
 							<Grid IsVisible="{Binding Path=HasNoItems}">
@@ -288,12 +274,13 @@
 				<TabItem>
 					<TabItem.Header>
 						<Panel Width="144"
-							   Height="18">
+							   Height="36">
 							<StackPanel
 								Orientation="Horizontal"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center">
 								<avfCommon:SvgIconControl
+									Height="18"
 									IconName="profile-businesses" />
 								<TextBlock
 									Text="Businesses"
@@ -321,30 +308,12 @@
                                            FontWeight="DemiBold"
                                            HorizontalAlignment="Center"
                                            Foreground="{StaticResource SecondaryText}"/>
-
-									<Button Grid.Column="0"
-											Theme="{DynamicResource TransparentButton}"
-											Command="{Binding Path=AddBusinessCommand}">
-										<StackPanel Orientation="Horizontal"
-		HorizontalAlignment="Center"
-		Margin="0 37.58 0 0"
-		Cursor="Hand"
-		Background="Transparent">
-											<avfCommon:SvgIconControl
-											IconName="plus-in-circle"
-												Height="15.83"
-												Width="15.83"
-												Foreground="{StaticResource PrimaryHueMidBrush}"
-												Margin="0 -2 9.58 0"
-												VerticalAlignment="Center"/>
-											<TextBlock Text="Add business"
-												   FontWeight="DemiBold"
-												   FontSize="14"
-												   Foreground="{StaticResource PrimaryHueMidBrush}"
-												   VerticalAlignment="Center"/>
-										</StackPanel>
-									</Button>
-
+									<Button Content="plus-in-circle"
+											Tag="Add business"
+											Command="{Binding Path=AddBusinessCommand}"
+											Margin="6"
+											HorizontalAlignment="Center"
+											Theme="{StaticResource SvgIconTextButton}" />
 								</StackPanel>
 							</Grid>
 							<Grid IsVisible="{Binding Path=HasNoBusinessItems}">
@@ -434,12 +403,13 @@
 				<TabItem>
 					<TabItem.Header>
 						<Panel Width="144"
-							   Height="18">
+							   Height="36">
 							<StackPanel
 								Orientation="Horizontal"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center">
 								<avfCommon:SvgIconControl
+									Height="18"
 									IconName="profile-addresses" />
 								<TextBlock
 									Text="Addresses"
@@ -467,28 +437,12 @@
                                            FontWeight="DemiBold"
                                            HorizontalAlignment="Center"
                                            Foreground="{StaticResource SecondaryText}"/>
-									<Button Theme="{DynamicResource TransparentButton}"
-											 Command="{Binding Path=AddAddressCommand}">
-										<StackPanel Orientation="Horizontal"
-		HorizontalAlignment="Center"
-		Margin="0 37.58 0 0"
-		Cursor="Hand"
-		Background="Transparent">
-											<avfCommon:SvgIconControl
-											IconName="plus-in-circle"
-												Height="15.83"
-												Width="15.83"
-												Foreground="{StaticResource PrimaryHueMidBrush}"
-												Margin="0 -2 9.58 0"
-												VerticalAlignment="Center"/>
-											<TextBlock Text="Add address"
-												   FontWeight="DemiBold"
-												   FontSize="14"
-												   Foreground="{StaticResource PrimaryHueMidBrush}"
-												   VerticalAlignment="Center"/>
-										</StackPanel>
-									</Button>
-
+									<Button Content="plus-in-circle"
+											Tag="Add address"
+											Command="{Binding Path=AddAddressCommand}"
+											Margin="6"
+											HorizontalAlignment="Center"
+											Theme="{StaticResource SvgIconTextButton}" />
 								</StackPanel>
 							</Grid>
 							<Grid IsVisible="{Binding Path=HasNoAddressesItems}">
@@ -609,12 +563,13 @@
 				<TabItem>
 					<TabItem.Header>
 						<Panel Width="144"
-							   Height="18">
+							   Height="36">
 							<StackPanel
 								Orientation="Horizontal"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center">
 								<avfCommon:SvgIconControl
+									Height="18"
 									IconName="profile-logins" />
 								<TextBlock
 									Text="Logins"
@@ -642,28 +597,12 @@
                                            FontWeight="DemiBold"
                                            HorizontalAlignment="Center"
                                            Foreground="{StaticResource SecondaryText}"/>
-									<Button Theme="{DynamicResource TransparentButton}"
-																		 Command="{Binding Path=AddLoginCommand}">
-										<StackPanel Orientation="Horizontal"
-		HorizontalAlignment="Center"
-		Margin="0 37.58 0 0"
-		Cursor="Hand"
-		Background="Transparent">
-											<avfCommon:SvgIconControl
-											IconName="plus-in-circle"
-												Height="15.83"
-												Width="15.83"
-												Foreground="{StaticResource PrimaryHueMidBrush}"
-												Margin="0 -2 9.58 0"
-												VerticalAlignment="Center"/>
-											<TextBlock Text="Add login"
-												   FontWeight="DemiBold"
-												   FontSize="14"
-												   Foreground="{StaticResource PrimaryHueMidBrush}"
-												   VerticalAlignment="Center"/>
-										</StackPanel>
-									</Button>
-
+									<Button Content="plus-in-circle"
+											Tag="Add login"
+											Command="{Binding Path=AddLoginCommand}"
+											Margin="6"
+											HorizontalAlignment="Center"
+											Theme="{StaticResource SvgIconTextButton}" />
 								</StackPanel>
 							</Grid>
 							<Grid IsVisible="{Binding Path=HasNoLoginsItems}">

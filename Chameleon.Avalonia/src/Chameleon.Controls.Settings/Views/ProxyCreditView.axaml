@@ -147,11 +147,10 @@
 								  Width="425"
 								  ItemsSource="{Binding Countries.Items}"
 								  SelectedItem="{Binding Country}"
-								  HorizontalAlignment="Left"
-								  BorderBrush="{StaticResource BorderOutlineButton}">
+								  HorizontalAlignment="Left">
 							<ComboBox.ItemTemplate>
 								<DataTemplate>
-									<Label Content="{Binding Name}"/>
+									<TextBlock Text="{Binding Name}"/>
 								</DataTemplate>
 							</ComboBox.ItemTemplate>
 						</ComboBox>

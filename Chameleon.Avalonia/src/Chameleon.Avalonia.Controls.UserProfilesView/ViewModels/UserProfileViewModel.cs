@@ -1,12 +1,16 @@
-﻿using Chameleon.Authorization;
+﻿using Avalonia.Controls;
+using Chameleon.Authorization;
+using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.ContentDiscoverey;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
+using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Services;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.MessageBox;
 using Chameleon.Interfaces.OutReach;
+using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
@@ -45,9 +49,15 @@ public partial class UserProfileViewModel : SubPageViewModelBase
              .Subscribe(args => OnUserProfileSaved(args.UserProfile));
     }
     [RelayCommand]
-    private void OnShowViewProfileSidePanel()
+    private void ShowViewProfile()
     {
         //_viewProfileWindowService.OpenWindow(UserProfile);
+
+
+        ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<IUserProfileSidePanelView, IUserProfileSidePanelViewModel>(vm =>
+        {
+            vm.UserProfile = UserProfile;
+        });
     }
 
     [RelayCommand]

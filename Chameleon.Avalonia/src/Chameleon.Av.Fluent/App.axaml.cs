@@ -205,7 +205,9 @@ public partial class App : PrismApplication
         //cr.RegisterSingleton<IContentDialogService, ContentDialogService>();
         cr.Register<ILoginContentDialogContent, LoginContentDialogContent>();
         cr.Register<IMoveUserProfilesPopupView, MoveUserProfilesPopupView>();
-        cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();     //
+        cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();     //      
+        cr.Register<IUserProfileSidePanelView, UserProfileSidePanelView>();
+        cr.Register<IUserProfileSidePanelViewModel, UserProfileSidePanelViewModel>();
         //cr.RegisterSingleton<IDefaultContentDialogTitle, DefaultContentDialogTitle>();
         //cr.RegisterSingleton<IAuthTaskDialogViewModel, AuthTaskDialogViewModel>();
         //cr.RegisterSingleton<IBulkAddPagesPopupView, BulkAddPagesPopupView>();

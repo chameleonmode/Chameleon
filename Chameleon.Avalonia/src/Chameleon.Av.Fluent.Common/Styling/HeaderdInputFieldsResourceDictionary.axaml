@@ -8,12 +8,18 @@
 		<!---->
 		<ThemeVariantScope>
 			<Grid>
-				<local:HeaderdInputFieldsControl  Title="PROFILE NAME">
+				<local:HeaderdInputFieldsControl  Title="PROFILE NAME"
+												  Tag="copy">
 					<local:HeaderdInputFieldsControl.TextBoxes>
 						<TextBox Text="Some cool name"/>
 						<TextBox Text="Some name too"/>
 						<TextBox Text="cool name toottt"/>
 					</local:HeaderdInputFieldsControl.TextBoxes>
+					<local:HeaderdInputFieldsControl.Buttons>
+						<Button Grid.Column="1"
+								Theme="{StaticResource SvgIconButton}"
+								Content="chrome" />
+					</local:HeaderdInputFieldsControl.Buttons>
 				</local:HeaderdInputFieldsControl>
 			</Grid>
 		</ThemeVariantScope>
@@ -32,9 +38,31 @@
 					<TextBlock  Margin="0 0 0 6"
 							   Text="{TemplateBinding Title}" />
 
-					<TextBox Text="{TemplateBinding Text, Mode=TwoWay}"
-							 IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNull}}"
-							 Grid.Row="1"/>
+					<Grid Grid.Row="1"
+						  IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNull}}"
+						  ColumnDefinitions="*,Auto,Auto">
+						
+					<TextBox Text="{TemplateBinding Text, Mode=TwoWay}" />
+
+						<Button Grid.Column="1"
+								Theme="{StaticResource SvgIconButton}"
+								Command="{TemplateBinding Command}"
+								IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNotNull}}"
+								Content="{TemplateBinding Tag}" />
+
+						<ItemsControl Grid.Column="2"
+									  ItemsSource="{TemplateBinding Buttons}"
+									  KeyboardNavigation.TabNavigation="Continue">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<!--<uip:TaskDialogButtonsPanel Spacing="8"  />-->
+									<!--<WrapPanel />-->
+									<UniformGrid Rows="1" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+						</ItemsControl>
+					</Grid>
+
 					
 					<ItemsControl Name="TextBoxesHost"
 								  HorizontalAlignment="Stretch"

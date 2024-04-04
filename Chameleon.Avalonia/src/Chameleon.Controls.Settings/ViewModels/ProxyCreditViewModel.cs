@@ -64,7 +64,7 @@ public partial class ProxyCreditViewModel
     public async Task CopyAllUrls()
     {
         var list = Access.Select(a => a.Url);
-        await IClipboardService.Instance.SetTextAsync(string.Join("\n", list));
+        await ClipboardService.Instance.SetTextAsync(string.Join("\n", list));
         _toastNotificationService.ShowSuccess(ClipboardText);
     }
 

@@ -1,0 +1,332 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Chameleon.Avalonia.Controls.UserProfileView.UserProfileSidePanelView">
+	<Panel>
+		<TabControl>
+			<TabItem>
+				<TabItem.Header>
+					<Panel Width="144"
+						   Height="36">
+						<StackPanel
+							Orientation="Horizontal"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center">
+							<afv:SvgIconControl
+								Height="18"
+								IconName="profile-logins" />
+							<TextBlock
+								Text="Logins"
+								VerticalAlignment="Center"
+								Theme="{StaticResource SubtitleTextBlockStyle}"
+								Margin="6 0 0 0"/>
+						</StackPanel>
+					</Panel>
+				</TabItem.Header>
+				<TabItem.Content>
+					<StackPanel Spacing="6"
+								Margin="12">
+							<ComboBox 
+							    HorizontalAlignment="Stretch"
+                                SelectedItem="{Binding Path=SelectedLogin, Mode=TwoWay}"
+                                ItemsSource="{Binding Path=ProfileLogins}">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Title}"/>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+
+						<afv:HeaderdInputFieldsControl
+							Title="Website"
+							Text="{Binding Path=SelectedLogin.WebSite}">
+							<afv:HeaderdInputFieldsControl.Buttons>
+								<Button Theme="{StaticResource SvgIconButton}"
+										Content="copy"
+										Command="{Binding CopyCommand}"
+										CommandParameter="{Binding Path=SelectedLogin.WebSite}"  />
+							</afv:HeaderdInputFieldsControl.Buttons>
+						</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="Email"
+									Text="{Binding Path=SelectedLogin.Email}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedLogin.Email}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="User Name"
+									Text="{Binding Path=SelectedLogin.UserName}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedLogin.UserName}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="Password"
+									Text="{Binding Path=SelectedLogin.Password}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedLogin.Password}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="Notes"
+									Text="{Binding Path=SelectedLogin.Notes}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedLogin.Notes}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+					</StackPanel>
+				</TabItem.Content>
+			</TabItem>
+			<TabItem>
+				<TabItem.Header>
+					<Panel Width="108"
+						   Height="18">
+						<StackPanel
+							Orientation="Horizontal"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center">
+							<afv:SvgIconControl
+								IconName="profile-persons" />
+							<TextBlock
+								Text="Persons"
+								VerticalAlignment="Center"
+								Theme="{StaticResource SubtitleTextBlockStyle}"
+								Margin="6 0 0 0"/>
+						</StackPanel>
+					</Panel>
+				</TabItem.Header>
+				<TabItem.Content>
+					<StackPanel Spacing="6"
+								Margin="12">
+						<ComboBox
+							HorizontalAlignment="Stretch"
+                                SelectedItem="{Binding Path=SelectedPerson, Mode=TwoWay}"
+								ItemsSource="{Binding Path=ProfilePersons}">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Title}"/>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+
+
+							<afv:HeaderdInputFieldsControl
+									Title="FirstName"
+									Text="{Binding Path=SelectedPerson.FirstName}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedPerson.FirstName}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="LastName"
+									Text="{Binding Path=SelectedPerson.LastName}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedPerson.LastName}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="PersonMiddleName"
+									Text="{Binding Path=SelectedPerson.PersonMiddleName}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedPerson.PersonMiddleName}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="JobTitle"
+									Text="{Binding Path=SelectedPerson.JobTitle}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedPerson.JobTitle}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="PhoneNumber"
+									Text="{Binding Path=SelectedPerson.PhoneNumber}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedPerson.PhoneNumber}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="Email"
+									Text="{Binding Path=SelectedPerson.Email}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedPerson.Email}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="Birth Date"
+									Text="{Binding Path=SelectedPerson.BirthDate, StringFormat=yyyy/MM/dd}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedPerson.BirthDate, StringFormat=yyyy/MM/dd}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="Gender"
+									Text="{Binding Path=SelectedPerson.Gender}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedPerson.Notes}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="Notes"
+									Text="{Binding Path=SelectedPerson.Notes}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedPerson.Notes}"  />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+					</StackPanel>
+				</TabItem.Content>
+			</TabItem>
+			<TabItem>
+				<TabItem.Header>
+					<Panel Width="144"
+						   Height="36">
+						<StackPanel
+							Orientation="Horizontal"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center">
+							<afv:SvgIconControl
+								Height="18"
+								IconName="profile-addresses" />
+							<TextBlock
+								Text="Addresses"
+								VerticalAlignment="Center"
+								Theme="{StaticResource SubtitleTextBlockStyle}"
+								Margin="6 0 0 0"/>
+						</StackPanel>
+					</Panel>
+				</TabItem.Header>
+				<TabItem.Content>
+					<StackPanel Spacing="6"
+								Margin="12">
+						<ComboBox 
+							HorizontalAlignment="Stretch"
+                            SelectedItem="{Binding Path=SelectedAddress, Mode=TwoWay}"
+							ItemsSource="{Binding Path=ProfileAddresses}">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Title}"/>
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+							</ComboBox>
+
+
+							<afv:HeaderdInputFieldsControl
+									Title="AddressLine1"
+									Text="{Binding Path=SelectedAddress.AddressLine1}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+												CommandParameter="{Binding Path=SelectedAddress.AddressLine1}" />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="AddressLine2"
+									Text="{Binding Path=SelectedAddress.AddressLine2}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+												CommandParameter="{Binding Path=SelectedAddress.AddressLine2}" />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="CountryName"
+									Text="{Binding Path=CountryName}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+												CommandParameter="{Binding Path=CountryName}" />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="City"
+									Text="{Binding Path=SelectedAddress.City}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+											    Command="{Binding CopyCommand}"
+											    CommandParameter="{Binding Path=SelectedAddress.City}" />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="State"
+									Text="{Binding Path=SelectedAddress.State}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+												CommandParameter="{Binding Path=SelectedAddress.State}" />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="Zip"
+									Text="{Binding Path=SelectedAddress.Zip}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+										Command="{Binding CopyCommand}"
+										CommandParameter="{Binding Path=SelectedAddress.Zip}" />
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+								<afv:HeaderdInputFieldsControl
+									Title="Notes"
+									Text="{Binding Path=SelectedAddress.Notes}">
+									<afv:HeaderdInputFieldsControl.Buttons>
+										<Button Theme="{StaticResource SvgIconButton}"
+												Content="copy"
+												Command="{Binding CopyCommand}"
+												CommandParameter="{Binding Path=SelectedAddress.Notes}"/>
+									</afv:HeaderdInputFieldsControl.Buttons>
+								</afv:HeaderdInputFieldsControl>
+					</StackPanel>
+				</TabItem.Content>
+			</TabItem>
+		</TabControl>
+	</Panel>
+</UserControl>

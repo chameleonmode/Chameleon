@@ -30,7 +30,7 @@ public partial class ProxyAccessViewModel
         {
             return;
         }
-        await IClipboardService.Instance.SetTextAsync( _url );
+        await ClipboardService.Instance.SetTextAsync( _url );
         _toastNotificationService.ShowSuccess("Copied to clipboard");
     }
 }
