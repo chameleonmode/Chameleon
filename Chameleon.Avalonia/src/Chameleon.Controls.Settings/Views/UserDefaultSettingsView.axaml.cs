@@ -19,8 +19,8 @@ public partial class UserDefaultSettingsView : SubPageViewControl
     public UserDefaultSettingsView()
     {
         InitializeComponent();
-        ControlName = "Default Home Pages";
-        Description = "Customize proxy addresses for your profiles";
+        ControlName = "Default Settings";
+        Description = "Customize the default settings for your profiles";
         PreviewImage = ApplicationHelper.TryGetResource<IconSource>("DefaultSettingsPageIcon");
     }
 }

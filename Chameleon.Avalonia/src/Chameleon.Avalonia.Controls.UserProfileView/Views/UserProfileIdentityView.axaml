@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="2020"
+             mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="800"
              x:Class="Chameleon.Avalonia.Controls.UserProfileView.UserProfileIdentityView">
 	<UserControl.Resources>
 
@@ -36,29 +36,35 @@
 				</StackPanel>
 <!--{Binding SelectedTadIndex}-->
 			<TabControl Grid.Row="1"
+						HorizontalAlignment="Center"
+						Padding="108 18"
                         BorderThickness="0"
                         SelectedIndex="{Binding SelectedTadIndex}">
 				<TabItem>
 					<TabItem.Header>
-						<StackPanel
-                            Cursor="Hand"
-                            Orientation="Horizontal">
-							<avfCommon:SvgIconControl
-                                IconName="profile-main"
-                                VerticalAlignment="Center" />
-							<TextBlock
-                                Margin="9 0 0 0"
-                                Text="Main"
-                                VerticalAlignment="Center"
-                                FontSize="16"/>
-						</StackPanel>
+						<Panel Width="144"
+							   Height="18">
+							<StackPanel
+								Orientation="Horizontal"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center">
+								<avfCommon:SvgIconControl
+									IconName="profile-main" />
+								<TextBlock
+									Text="Main"
+									VerticalAlignment="Center"
+									Theme="{StaticResource SubtitleTextBlockStyle}"
+									Margin="6 0 0 0"/>
+							</StackPanel>
+						</Panel>
 					</TabItem.Header>
 					<TabItem.Content>
-							<StackPanel Spacing="6">
+							<StackPanel Spacing="18">
 								<avfCommon:HeaderdInputFieldsControl Title="PROFILE NAME"
 																	 Text="{Binding UserProfileModel.Title, FallbackValue=NAME}" />
 
-								<avfCommon:HeaderdInputFieldsControl Title="PROXY CONFIGURATION">
+								<avfCommon:HeaderdInputFieldsControl Title="PROXY CONFIGURATION"
+																	 Header="False">
 									<avfCommon:HeaderdInputFieldsControl.TextBoxes>
 										<TextBox Text="{Binding Path=UserProfileModel.Proxy.Host}" />
 										<TextBox Text="{Binding Path=UserProfileModel.Proxy.PortString}"  />
@@ -98,18 +104,21 @@
 				</TabItem>
 				<TabItem>
 					<TabItem.Header>
-						<StackPanel Cursor="Hand"
-                                    Orientation="Horizontal">
-							<avfCommon:SvgIconControl IconName="profile-persons"
-                                                  Margin="2 6 0 5"
-                                                  Height="13"
-                                                  Width="13"
-                                                  VerticalAlignment="Center" />
-							<TextBlock Margin="9 0 0 0"
-                                       Text="Persons"
-                                       VerticalAlignment="Center"
-                                       FontSize="16" />
-						</StackPanel>
+						<Panel Width="108"
+							   Height="18">
+							<StackPanel
+								Orientation="Horizontal"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center">
+								<avfCommon:SvgIconControl
+									IconName="profile-persons" />
+								<TextBlock
+									Text="Persons"
+									VerticalAlignment="Center"
+									Theme="{StaticResource SubtitleTextBlockStyle}"
+									Margin="6 0 0 0"/>
+							</StackPanel>
+						</Panel>
 					</TabItem.Header>
 					<TabItem.Content>
 						<StackPanel>
@@ -210,7 +219,8 @@
 															<avfCommon:HeaderdInputFieldsControl Title="Title"
 																								 Text="{Binding Title, FallbackValue=Title}" />
 
-															<avfCommon:HeaderdInputFieldsControl Title="Name first, middle, last">
+															<avfCommon:HeaderdInputFieldsControl Title="Name first, middle, last"
+																								 Header="False">
 																<avfCommon:HeaderdInputFieldsControl.TextBoxes>
 																	<TextBox  Text="{Binding FirstName,FallbackValue=first}" />
 																	<TextBox  Text="{Binding MiddleName,FallbackValue=middle}"  />
@@ -277,16 +287,21 @@
 				</TabItem>
 				<TabItem>
 					<TabItem.Header>
-						<StackPanel
-                            Cursor="Hand"
-                            Orientation="Horizontal">
-							<avfCommon:SvgIconControl
-                                IconName="profile-businesses" />
-							<TextBlock
-                                Margin="9 0 0 0"
-                                Text="Businesses"
-                                FontSize="16"/>
-						</StackPanel>
+						<Panel Width="144"
+							   Height="18">
+							<StackPanel
+								Orientation="Horizontal"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center">
+								<avfCommon:SvgIconControl
+									IconName="profile-businesses" />
+								<TextBlock
+									Text="Businesses"
+									VerticalAlignment="Center"
+									Theme="{StaticResource SubtitleTextBlockStyle}"
+									Margin="6 0 0 0"/>
+							</StackPanel>
+						</Panel>
 					</TabItem.Header>
 					<TabItem.Content>
 						<StackPanel>
@@ -418,21 +433,21 @@
 				</TabItem>
 				<TabItem>
 					<TabItem.Header>
-						<StackPanel
-                            Cursor="Hand"
-                            Orientation="Horizontal">
-							<avfCommon:SvgIconControl
-                                IconName="profile-addresses"
-                                Margin="2 6 0 5"
-                                Height="13"
-                                Width="13"
-                                VerticalAlignment="Center" />
-							<TextBlock
-                                Margin="9 0 0 0"
-                                Text="Addresses"
-                                VerticalAlignment="Center"
-                                FontSize="16"/>
-						</StackPanel>
+						<Panel Width="144"
+							   Height="18">
+							<StackPanel
+								Orientation="Horizontal"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center">
+								<avfCommon:SvgIconControl
+									IconName="profile-addresses" />
+								<TextBlock
+									Text="Addresses"
+									VerticalAlignment="Center"
+									Theme="{StaticResource SubtitleTextBlockStyle}"
+									Margin="6 0 0 0"/>
+							</StackPanel>
+						</Panel>
 					</TabItem.Header>
 					<TabItem.Content>
 						<StackPanel>
@@ -593,19 +608,21 @@
 				</TabItem>
 				<TabItem>
 					<TabItem.Header>
-						<StackPanel
-                            Cursor="Hand"
-                            Orientation="Horizontal">
-							<avfCommon:SvgIconControl
-                                IconName="profile-logins"
-                                Margin="2 6 0 5"
-                                VerticalAlignment="Center" />
-							<TextBlock
-                                Margin="9 0 0 0"
-                                Text="Logins"
-                                VerticalAlignment="Center"
-                                FontSize="16"/>
-						</StackPanel>
+						<Panel Width="144"
+							   Height="18">
+							<StackPanel
+								Orientation="Horizontal"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center">
+								<avfCommon:SvgIconControl
+									IconName="profile-logins" />
+								<TextBlock
+									Text="Logins"
+									VerticalAlignment="Center"
+									Theme="{StaticResource SubtitleTextBlockStyle}"
+									Margin="6 0 0 0"/>
+							</StackPanel>
+						</Panel>
 					</TabItem.Header>
 					<TabItem.Content>
 						<StackPanel>

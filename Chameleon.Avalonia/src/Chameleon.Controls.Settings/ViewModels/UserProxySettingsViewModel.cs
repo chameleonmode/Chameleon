@@ -635,10 +635,10 @@ public partial class UserProxySettingsViewModel
     private void SelectAll()
     {
         IsSelectedAll = true;
-        foreach (var model in ViewModels.Items)
-        {
-            model.IsSelected = true;
-        }
+        //foreach (var model in ViewModels.Items)
+        //{
+        //    model.IsSelected = true;
+        //}
     }
 
     [RelayCommand]

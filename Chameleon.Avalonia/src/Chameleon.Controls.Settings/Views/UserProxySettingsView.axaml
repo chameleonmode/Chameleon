@@ -17,7 +17,8 @@
 	</UserControl.Resources>
 		<Border Padding="20">
 			<Grid RowDefinitions="*,Auto">
-				<avfCommon:ChameleonContentControl Title="Proxies list">
+				<avfCommon:ChameleonContentControl Title="Proxies list"
+												   TitleDescription="Select proxies to edit them">
 					<avfCommon:ChameleonContentControl.TitleContent>
 						<Grid HorizontalAlignment="Right">
 							<ui:CommandBar DefaultLabelPosition="Right">
@@ -46,13 +47,26 @@
 					</avfCommon:ChameleonContentControl.TitleContent>
 
 					<avfCommon:ChameleonContentControl.Header>
-						<Grid>
+						<StackPanel>
 								<Button Content="select-all"
 										HorizontalAlignment="Left"
+										VerticalAlignment="Center"
 										Tag="Select all"
 										Theme="{StaticResource SvgIconTextButton}"
 										Command="{Binding SelectAllCommand}" />
-						</Grid>
+							
+
+							<HeaderedContentControl Grid.Row="1"
+													Theme="{StaticResource HasSelectedItemsBorder}">
+								<HeaderedContentControl.Header>
+									<Button Theme="{StaticResource TransparentButton}"
+											TextElement.Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+											Content="Change proxies"
+											Grid.Column="2"
+											Command="{Binding ChangeProxiesCommand}"/>
+								</HeaderedContentControl.Header>
+							</HeaderedContentControl>
+						</StackPanel>
 					</avfCommon:ChameleonContentControl.Header>
 					
 					<avfCommon:ChameleonContentControl.Options>
@@ -70,7 +84,9 @@
 					</avfCommon:ChameleonContentControl.Options>
 					
 					<avfCommon:ChameleonContentControl.Content>
-						<Grid RowDefinitions="*,Auto">
+						<StackPanel>
+							<paginator:PaginatorView Grid.Row="1"
+													 DataContext="{Binding PaginatorViewModel}" />
 								<ListBox 
 									Theme="{StaticResource ListBoxNoScroller}"
 									ItemContainerTheme="{StaticResource GridViewItem}"
@@ -95,9 +111,10 @@
 															Background="{StaticResource AccentFillColorDefaultBrush}"
 															BorderBrush="{StaticResource ControlStrokeColorOnAccentDefaultBrush}"
 															CornerRadius="180"
-															Width="28"
-															Height="28">
+															Width="30"
+															Height="30">
 														<TextBlock Text="{Binding Code}"
+																   Margin="0 -1 0 0"
 																   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
 																   VerticalAlignment="Center"
 																   HorizontalAlignment="Center"  />
@@ -105,7 +122,8 @@
 
 													<Grid Grid.Column="2"
 														  Margin="12 0">
-														<avfCommon:HeaderdInputFieldsControl Title="{Binding Title}">
+														<avfCommon:HeaderdInputFieldsControl Title="{Binding Title}"
+																							 Header="False">
 															<avfCommon:HeaderdInputFieldsControl.TextBoxes>
 																<TextBox Text="{Binding Path=UserProfileModel.Proxy.Host}"
 																		 IsReadOnly="True" />
@@ -130,20 +148,8 @@
 										</DataTemplate>
 									</ListBox.ItemTemplate>
 								</ListBox>
-							
-							<paginator:PaginatorView Grid.Row="1"
-													 DataContext="{Binding PaginatorViewModel}" />
-							<HeaderedContentControl Grid.Row="1"
-													Theme="{StaticResource HasSelectedItemsBorder}">
-								<HeaderedContentControl.Header>
-									<Button Theme="{StaticResource TransparentButton}"
-											TextElement.Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
-											Content="Change proxies"
-											Grid.Column="2"
-											Command="{Binding ChangeProxiesCommand}"/>
-								</HeaderedContentControl.Header>
-							</HeaderedContentControl>
-						</Grid>
+
+						</StackPanel>
 					</avfCommon:ChameleonContentControl.Content>
 
 					<avfCommon:ChameleonContentControl.Footer>
@@ -214,7 +220,8 @@
 											<ItemsControl.ItemTemplate>
 												<DataTemplate>
 													<avfCommon:HeaderdInputFieldsControl Title="{Binding Title}"
-																						 IsVisible="{Binding IsSelected}">
+																						 IsVisible="{Binding IsSelected}"
+																						 Header="False">
 														<avfCommon:HeaderdInputFieldsControl.TextBoxes>
 															<TextBox Text="{Binding Path=UserProfileModel.Proxy.Host}" />
 															<TextBox Text="{Binding Path=UserProfileModel.Proxy.PortString}"/>

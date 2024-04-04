@@ -11,26 +11,21 @@
 			CornerRadius="{StaticResource ControlCornerRadius}"
 			BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
 			BorderThickness="1"
-			Padding="6"
-			Width="280"
-			Height="120">
-		<Grid ColumnDefinitions="Auto,Auto,*,Auto"
-			  RowDefinitions="*,Auto">
+			Padding="6">
+		<Grid ColumnDefinitions="Auto,Auto,*,Auto">
+			<StackPanel Grid.Column="0"
+						Orientation="Horizontal">
+				
 			<CheckBox Margin="6 0 -12 0"
-					  VerticalAlignment="Top"
 					  IsChecked="{Binding IsSelected}"
 						  IsVisible="{Binding IsShowCheckboxColumn}"
 						  IsEnabled="{Binding IsEnabledCheckboxColumn}">
 			</CheckBox>
-			<StackPanel Orientation="Horizontal"
-						Grid.Column="1"
-						Spacing="6">
 
 
-				<Viewbox Width="60"
-						Height="60"
+				<Viewbox Width="30"
+						Height="30"
 						Margin="12 8"
-						VerticalAlignment="Center"
 						Name="IconHost">
 					<Grid Width="30"
 						  Height="30"
@@ -41,6 +36,7 @@
 								BorderThickness="1">
 
 							<TextBlock Text="{Binding Code,FallbackValue=E}"
+									   Margin="0 -1 0 0"
 									   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
 									   VerticalAlignment="Center"
 									   HorizontalAlignment="Center"
@@ -61,7 +57,7 @@
 				</Viewbox>
 			</StackPanel>
 
-			<TextBlock Grid.Column="2"
+			<TextBlock Grid.Column="1"
 					   Margin="6 0 0 0"
 					   HorizontalAlignment="Left"
 					   Text="{Binding Title, FallbackValue=Cannot find name}"
@@ -70,15 +66,11 @@
 					   Theme="{StaticResource BodyStrongTextBlockStyle}">
 			</TextBlock>
 
-			<Button Grid.Column="3"
-					VerticalAlignment="Top"
-					Theme="{StaticResource FavoriteButton}"
-					Command="{Binding FavoriteCommand}"/>
 
-			<UniformGrid Grid.ColumnSpan="4"
-						 Rows="1"
-						Grid.Row="1"
-						HorizontalAlignment="Center">
+
+			<UniformGrid Grid.Column="3"
+						 HorizontalAlignment="Right"
+						 Rows="1">
 				<Button Content="chrome"
 						ToolTip.Tip="Open In System Chrome"
 						Theme="{StaticResource SvgIconButton}"
@@ -121,7 +113,9 @@
 					</Button.Flyout>
 				</Button>
 
-
+				<Button Grid.Column="3"
+						Theme="{StaticResource FavoriteButton}"
+						Command="{Binding FavoriteCommand}"/>
 			</UniformGrid>
 		</Grid>
 	</Border>

@@ -19,7 +19,7 @@
 						   Theme="{StaticResource TitleLargeTextBlockStyle}"/>-->
 			<StackPanel Spacing="15"
                         Margin="30 0 30 30">
-				<ui:SettingsExpander Header="Default"
+				<ui:SettingsExpander Header="DEFAULT"
 					 IconSource="{StaticResource DefaultSettingsPageIcon}"
 					 Description="Default home pages"
 					 IsClickEnabled="True"

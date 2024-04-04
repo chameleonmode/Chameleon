@@ -8,8 +8,7 @@
 		<!---->
 		<ThemeVariantScope>
 			<Grid>
-				<local:HeaderdInputFieldsControl  Title="PROFILE NAME"
-												  Text="">
+				<local:HeaderdInputFieldsControl  Title="PROFILE NAME">
 					<local:HeaderdInputFieldsControl.TextBoxes>
 						<TextBox Text="Some cool name"/>
 						<TextBox Text="Some name too"/>
@@ -34,7 +33,7 @@
 							   Text="{TemplateBinding Title}" />
 
 					<TextBox Text="{TemplateBinding Text, Mode=TwoWay}"
-							 IsVisible="{Binding $self.Text, Converter={x:Static ObjectConverters.IsNotNull}}"
+							 IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNull}}"
 							 Grid.Row="1"/>
 					
 					<ItemsControl Name="TextBoxesHost"

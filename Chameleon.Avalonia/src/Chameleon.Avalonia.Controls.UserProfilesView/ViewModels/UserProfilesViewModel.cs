@@ -99,6 +99,8 @@ public partial class UserProfilesViewModel
         {
             OnAuthenticated();
         }
+
+        OnHandleUserEvent();
     }
 
     private void UpdateProfilesInFolder()
@@ -374,12 +376,12 @@ public partial class UserProfilesViewModel
             return;
         }
 
-        foreach (var profile in _mapping)
+        foreach (var profile in ViewModels)
         {
             profile.IsSelected = true;
         }
 
-        SelectedCount = _mapping.Count;
+        SelectedCount = ViewModels.Count;
     }
 
     [RelayCommand]
@@ -445,7 +447,7 @@ public partial class UserProfilesViewModel
     [RelayCommand]
     private void RemoveProfilesFromFolder()
     {
-        if (!_selectedProfiles.Any())
+        if (_selectedProfiles== null || !_selectedProfiles.Any())
         {
             return;
         }

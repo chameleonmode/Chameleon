@@ -6,7 +6,7 @@
 			 xmlns:converter="using:Chameleon.Common.ValueConverters"
              xmlns:userProfiles="using:Chameleon.Avalonia.Controls.UserProfilesView"
 			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1101"
+             mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="1101"
              x:Class="Chameleon.Avalonia.Controls.Dashboard.DashboardView">
 	<UserControl.Resources>
 		<converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
@@ -83,24 +83,6 @@
 										    SelectedItem="{Binding SortSelected}"
 										   Width="150" 
 										   IsEditable="False"/>
-							<!--<StackPanel 
-										   HorizontalAlignment="Right"
-										Orientation="Horizontal">
-								<TextBlock VerticalAlignment="Center"
-										   Text="Sort by:"
-										   FontWeight="DemiBold"
-										   Margin="0 0 0 16" />
-								<ComboBox ItemsSource="{Binding Sorts}"
-										  Margin="6 0 0 16"
-										  SelectedItem="{Binding SortSelected}"
-										  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-									<ComboBox.ItemTemplate>
-										<DataTemplate>
-											<TextBlock Text="{Binding Converter={StaticResource ListSortDirectionToName}}" />
-										</DataTemplate>
-									</ComboBox.ItemTemplate>
-								</ComboBox>
-							</StackPanel>-->
 						</Grid>
 					</StackPanel>
 					<ListBox 	
@@ -113,7 +95,7 @@
 						ItemContainerTheme="{StaticResource GridViewItem}">
 					<ListBox.ItemsPanel>
 						<ItemsPanelTemplate>
-							<WrapPanel />
+							<UniformGrid Columns="1"/>
 						</ItemsPanelTemplate>
 					</ListBox.ItemsPanel>
 					<ListBox.ItemTemplate>
@@ -122,18 +104,6 @@
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>
-						<!--<ItemsControl
-	Grid.Row="1"
-	Grid.Column="0"
-	Margin="24 0 24 24"
-	IsVisible="{Binding !HasNoItems}"
-	ItemsSource="{Binding ViewModels}">
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<userProfiles:UserProfileView HorizontalAlignment="Stretch" />
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>-->
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="0"
@@ -197,23 +167,6 @@
 										   Width="150"
 										   IsEditable="False" >
 							</ui:FAComboBox>
-							<!--<StackPanel HorizontalAlignment="Right"
-										Orientation="Horizontal">
-								<TextBlock VerticalAlignment="Center"
-										   Text="Sort by:"
-										   FontWeight="DemiBold"
-										   Margin="0 0 0 16" />
-								<ComboBox ItemsSource="{Binding Sorts}"
-										  Margin="6 0 0 16"
-										  SelectedItem="{Binding FolderSortSelected}"
-										  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-									<ComboBox.ItemTemplate>
-										<DataTemplate>
-											<TextBlock Text="{Binding Converter={StaticResource ListSortDirectionToName}}" />
-										</DataTemplate>
-									</ComboBox.ItemTemplate>
-								</ComboBox>
-							</StackPanel>-->
 						</Grid>
 					</StackPanel>
 
@@ -228,7 +181,7 @@
 						IsVisible="{Binding !HasNoFolderItems}">
 						<ListBox.ItemsPanel>
 							<ItemsPanelTemplate>
-								<WrapPanel />
+								<UniformGrid Columns="2"/>
 							</ItemsPanelTemplate>
 						</ListBox.ItemsPanel>
 						<ListBox.ItemTemplate>
@@ -237,13 +190,10 @@
 										CornerRadius="{StaticResource ControlCornerRadius}"
 										BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
 										BorderThickness="1"
-										Padding="6"
-										Width="280"
-										Height="120">
-									<Grid ColumnDefinitions="Auto,*,Auto"
-										  RowDefinitions="*,Auto">
-										<Viewbox Width="60"
-												 Height="60"
+										Padding="6">
+									<Grid ColumnDefinitions="Auto,Auto,*,Auto">
+										<Viewbox Width="30"
+												 Height="30"
 												 Margin="12 8"
 												 VerticalAlignment="Center"
 												 Name="IconHost">
@@ -254,8 +204,7 @@
 
 										<StackPanel Grid.Column="1"
 													Margin="12 0"
-													Spacing="4"
-													VerticalAlignment="Center">
+													Spacing="4">
 											<TextBlock Text="{Binding Title}"
 													   Theme="{StaticResource BodyStrongTextBlockStyle}"/>
 											<TextBlock Theme="{StaticResource CaptionTextBlockStyle}">
@@ -264,13 +213,9 @@
 											</TextBlock>
 										</StackPanel>
 
-										<Button Grid.Column="2"
-												VerticalAlignment="Top"
-												Margin="5"
-												Command="{Binding SetFavoriteFolderCommand}"
-												Theme="{StaticResource FavoriteButton}"/>
 
-										<StackPanel
+
+										<StackPanel Grid.Column="3"
 											Margin="12 0"
 											Orientation="Horizontal"
 											Grid.Row="1"
@@ -280,6 +225,11 @@
 												Content="View"
 												Theme="{StaticResource TransparentButton}"
 												Command="{Binding ViewGroupCommand}" />
+											<Button Grid.Column="2"
+		VerticalAlignment="Top"
+		Margin="5"
+		Command="{Binding SetFavoriteFolderCommand}"
+		Theme="{StaticResource FavoriteButton}"/>
 										</StackPanel>
 									</Grid>
 								</Border>
