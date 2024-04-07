@@ -35,8 +35,9 @@
 									Command="{Binding CreateProfileCommand}"
 									IsVisible="{Binding IsCreateProfileBtnVisible}">
 								<StackPanel Orientation="Horizontal" Spacing="8">
-									<ui:SymbolIcon Symbol="Add" FontSize="18" />
-									<TextBlock Text="New Profile" />
+									<ui:SymbolIcon Symbol="Add"  />
+									<TextBlock Text="New Profile"
+											   VerticalAlignment="Center"/>
 								</StackPanel>
 							</Button>
 							<!--featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.CreateProfileBtn}"
