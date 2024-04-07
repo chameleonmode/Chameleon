@@ -104,7 +104,7 @@
 				</TabItem>
 				<TabItem>
 					<TabItem.Header>
-						<Panel Width="108"
+						<Panel Width="144"
 							   Height="18">
 							<StackPanel
 								Orientation="Horizontal"

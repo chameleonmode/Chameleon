@@ -67,6 +67,8 @@ namespace Chameleon.SystemBrowser.Chrome
 
         public virtual string GetLoadExtensionsArgument(string extensionsFolderPath, IUserProfile userProfile)
         {
+            if (OperatingSystem.IsMacOS())
+                return "";
             var directories = Directory
                 .GetDirectories(extensionsFolderPath)
                 //.Where(directory => !directory.EndsWith("UserAgentSelector", StringComparison.OrdinalIgnoreCase))
@@ -79,12 +81,12 @@ namespace Chameleon.SystemBrowser.Chrome
             directories.RemoveAll(d => chameleonExtensionDirectoryPaths.Contains(d));
 
             // create a copy of extension folder with proper settings
-           //foreach (var extDirPath in chameleonExtensionDirectoryPaths)
-           //{
-           //    var extensionDirectory =
-           //        Create(userProfile.Id, new WebBrowserExtensionManifestFile(Path.GetFileName(extDirPath)));
-           //    directories.Add(extensionDirectory.FullName);
-           //}
+            //foreach (var extDirPath in chameleonExtensionDirectoryPaths)
+            //{
+            //    var extensionDirectory =
+            //        Create(userProfile.Id, new WebBrowserExtensionManifestFile(Path.GetFileName(extDirPath)));
+            //    directories.Add(extensionDirectory.FullName);
+            //}
 
             return directories
                 .AddQuotesToEachElement()
