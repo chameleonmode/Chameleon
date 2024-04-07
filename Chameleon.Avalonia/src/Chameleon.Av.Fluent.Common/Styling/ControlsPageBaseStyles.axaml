@@ -339,13 +339,13 @@
                                                               Easing="0,0 0,1" />
 										</Transitions>
 									</Border.Transitions>
-									<Viewbox Margin="12 0 12 12" 
+									<Viewbox Margin="12 0 12 6" 
 											 ClipToBounds="False">
 										<ui:IconSourceElement Name="PreviewImageElement"
 															  IconSource="{TemplateBinding PreviewImage}" />
 									</Viewbox>
 								</Border>
-								<StackPanel Margin="60 0 0 12"
+								<StackPanel Margin="60 0 0 6"
                                             VerticalAlignment="Center"
                                             Name="DetailsTextHost">
 									<TextBlock Text="{TemplateBinding ControlName}"
