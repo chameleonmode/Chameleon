@@ -78,9 +78,10 @@
 							</TextBlock>
 
 							<ui:FAComboBox Header="Sort by:" 
+										   Margin="6"
 										   HorizontalAlignment="Right"
-										    ItemsSource="{Binding Sorts}"
-										    SelectedItem="{Binding SortSelected}"
+										   ItemsSource="{Binding Sorts}"
+										   SelectedItem="{Binding SortSelected}"
 										   Width="150" 
 										   IsEditable="False"/>
 						</Grid>
@@ -161,9 +162,10 @@
 
 
 							<ui:FAComboBox Header="Sort by:"
+										   Margin="6"
 										   HorizontalAlignment="Right"
-										    ItemsSource="{Binding Sorts}"
-										    SelectedItem="{Binding FolderSortSelected}"
+										   ItemsSource="{Binding Sorts}"
+										   SelectedItem="{Binding FolderSortSelected}"
 										   Width="150"
 										   IsEditable="False" >
 							</ui:FAComboBox>
@@ -174,6 +176,7 @@
 
 
 					<ListBox
+						Margin="24 0 24 24"
 						ItemsSource="{Binding FolderViewModels}"
 						Theme="{StaticResource ListBoxNoScroller}"
 						ItemContainerTheme="{StaticResource GridViewItem}"
@@ -203,7 +206,7 @@
 										</Viewbox>
 
 										<StackPanel Grid.Column="1"
-													Margin="12 0"
+													Margin="12 6"
 													Spacing="4">
 											<TextBlock Text="{Binding Title}"
 													   Theme="{StaticResource BodyStrongTextBlockStyle}"/>

@@ -107,7 +107,7 @@
 													   IsEnabled="{Binding IsContextMenuItemEnabled}"/>
 									<ui:MenuFlyoutItem Text="Delete"
 													   IconSource="Delete"
-													   Command="{Binding DeleteUserProfile}"
+													   Command="{Binding DeleteCommand}"
 													   IsEnabled="{Binding IsContextMenuItemEnabled}" />
 								</ui:FAMenuFlyout>
 							</Button.Flyout>

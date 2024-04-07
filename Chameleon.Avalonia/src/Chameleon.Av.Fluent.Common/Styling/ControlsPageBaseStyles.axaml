@@ -4,7 +4,7 @@
 		xmlns:pg="using:Chameleon.Av.Fluent.Common.Pages"
 		xmlns:ui="using:FluentAvalonia.UI.Controls">
   <Design.PreviewWith>
-    <Border Background="{DynamicResource LayerFillColorDefaultBrush}">
+    <Border Width="700" Background="{DynamicResource LayerFillColorDefaultBrush}">
 		<pg:ChameleonPageBase PreviewImage="{StaticResource DashboardPageIcon}" 
 							  ControlName="Dashboard"
 							  Description="Your favorited profiles and folders">
@@ -350,7 +350,6 @@
                                             Name="DetailsTextHost">
 									<TextBlock Text="{TemplateBinding ControlName}"
                                                Theme="{StaticResource TitleTextBlockStyle}"
-                                               FontSize="28"
                                                Name="ControlNameTextBlock">
 										<TextBlock.Transitions>
 											<Transitions>
