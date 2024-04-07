@@ -125,6 +125,29 @@
 	  <None Remove="Assets\Svgs\x.svg" />
 	  <None Remove="Assets\Svgs\youtube.svg" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Assets\Fonts\Nunito\Nunito-Italic-VariableFont_wght.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\Nunito-VariableFont_wght.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\OFL.txt" />
+	  <Content Include="Assets\Fonts\Nunito\README.txt" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-Black.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-BlackItalic.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-Bold.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-BoldItalic.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-ExtraBold.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-ExtraBoldItalic.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-ExtraLight.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-ExtraLightItalic.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-Italic.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-Light.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-LightItalic.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-Medium.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-MediumItalic.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-Regular.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-SemiBold.ttf" />
+	  <Content Include="Assets\Fonts\Nunito\static\Nunito-SemiBoldItalic.ttf" />
+	</ItemGroup>
 	
   <ItemGroup>
     <PackageReference Include="Avalonia" />
