@@ -16,6 +16,7 @@ using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.CT.Common.Collections;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.Generic;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -240,9 +241,9 @@ public partial class UserProxySettingsViewModel
 
     [RelayCommand]
     public void ApplyProxy()
-    {
-        var proxies = SetProxies();
+    {                                            
         var models = SelectedProfiles();
+        var proxies = SetProxies(models);
 
         var proxyCount = proxies.Count;
         var modelCount = models.Count;
@@ -251,13 +252,17 @@ public partial class UserProxySettingsViewModel
             return;
         }
 
-        if (proxyCount == 1)
-        {
-            ApplyProxy(proxies[0], models);
-            return;
-        }
+        //if (proxyCount == 1)
+        //{
+        //    ApplyProxy(proxies[0], models);
+        //    return;
+        //}
 
         ApplyProxy(proxies, models);
+
+        EventAggregator
+           .GetEvent<SyncChangesEvent>()
+           .Publish();
     }
 
     private void ApplyProxy(List<IProxySettings> proxies, List<UserProxySettingViewModel> models)
@@ -277,29 +282,45 @@ public partial class UserProxySettingsViewModel
     private void ApplyProxy(IProxySettings proxySettings, UserProxySettingViewModel model)
     {
         model.SetProfile(proxySettings);
-        _userProfileService.Save(model._userProfile);
+        _userProfileService.Save(model.UserProfile);
+        //EventAggregator
+        //    .GetEvent<OpenUserProfileEvent>()
+        //    .Publish(new UserProfileEventArgs(model._userProfile));
+
     }
 
     private void ApplyProxy(IProxySettings proxySettings, List<UserProxySettingViewModel> models)
     {
         foreach (var model in models)
         {
-            model.SetProfile(proxySettings);
-            _userProfileService.Save(model._userProfile);
+            ApplyProxy(proxySettings, model);
         }
     }
 
-    private List<IProxySettings> SetProxies()
+    private List<IProxySettings> SetProxies(List<UserProxySettingViewModel>? models = null)
     {
         if (string.IsNullOrWhiteSpace(_applingProxy))
         {
-            return new List<IProxySettings>();
+            List<IProxySettings> returned = [];
+            if (models != null)
+            {
+                foreach (var model in models)
+                {
+                    if(model.UserProfile.Proxy.Host != model.UserProfileModel.Proxy.Host ||
+                        model.UserProfile.Proxy.Port != model.UserProfileModel.Proxy.Port ||
+                        model.UserProfile.Proxy.UserName != model.UserProfileModel.Proxy.UserName ||
+                        model.UserProfile.Proxy.Password != model.UserProfileModel.Proxy.Password)
+                    returned.Add(model.UserProfileModel.Proxy);
+                }
+            }
+
+            return returned;
         }
 
         var applingProxyList = _applingProxy.Split(new[]
         {
                 Environment.NewLine
-            },
+        },
         StringSplitOptions.RemoveEmptyEntries);
 
         var proxies = ParseProxiesSettings(applingProxyList);

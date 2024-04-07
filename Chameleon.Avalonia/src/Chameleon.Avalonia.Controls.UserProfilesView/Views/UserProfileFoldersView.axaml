@@ -116,7 +116,8 @@
 			</Grid>
 		</DataTemplate>
 	</UserControl.Resources>
-	<avfCommon:ChameleonContentControl Title="Folders">
+	<avfCommon:ChameleonContentControl Title="Folders"
+									   TitleDescription="Select a folder to view profiles">
 		<avfCommon:ChameleonContentControl.TitleContent>
 			<Grid HorizontalAlignment="Right">
 				<Button

@@ -20,7 +20,7 @@ public partial class UserDefaultSettingsView : SubPageViewControl
     {
         InitializeComponent();
         ControlName = "Default Settings";
-        Description = "Customize the default settings for your profiles";
+        Description = "Customize the default homepage settings for your profiles";
         PreviewImage = ApplicationHelper.TryGetResource<IconSource>("DefaultSettingsPageIcon");
     }
 }

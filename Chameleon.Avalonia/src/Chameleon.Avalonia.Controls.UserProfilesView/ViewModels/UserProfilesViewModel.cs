@@ -156,8 +156,12 @@ public partial class UserProfilesViewModel
         OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
     }
 
-    private void OnDeleteUserProfileEvent(object obj)
+    private void OnDeleteUserProfileEvent(UserProfileEventArgs obj)
     {
+        var profile = _mapping.FirstOrDefault(profile => profile.UserProfile.Id == obj.UserProfile.Id);
+        if (profile != null)
+            profile.IsSelected = false;
+
         OnSelectedChanged();
         OnHandleUserEvent();
     }
@@ -442,6 +446,8 @@ public partial class UserProfilesViewModel
             OnViewModelChange(this, EventArgs.Empty);
             ChangeProfilesInFavoriteFolder();
         }
+
+        OnSelectedChanged();
     }
 
     [RelayCommand]

@@ -108,7 +108,7 @@
 							<ui:MenuFlyoutItem Text="Delete"
 											   IconSource="Delete"
 											   IsVisible="{Binding IsDeleteProfileBtnVisible}"
-											   Command="{Binding DeleteUserProfile}" />
+											   Command="{Binding DeleteUserProfileCommand}" />
 						</ui:FAMenuFlyout>
 					</Button.Flyout>
 				</Button>

@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:local="using:Chameleon.Avalonia.Controls.UserProfilesView"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="850"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.ProjectsView">
@@ -22,50 +23,25 @@
 					<ColumnDefinition  Width="3*" />
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
-				<Border Grid.Row="0"
-						Grid.ColumnSpan="2"
-						BorderBrush="{StaticResource ChameleonGray}"
-						BorderThickness="1">
-					<Grid>
 						<!--<breadcrumbsView:BreadcrumbsView
 							DataContext="{Binding ElementName=profilesView, Path=DataContext.BreadcrumbsViewModel}"
 							VerticalAlignment="Center"
 							Margin="23 0 0 0"/>-->
-						<StackPanel Orientation="Horizontal"
-									HorizontalAlignment="Right">
+						<StackPanel Grid.ColumnSpan="2">
 							<Button Theme="{StaticResource SyncChangesButton}" />
-							<!--featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.CreateProfileBtn}"
-									featureTouring:TourHelper.Placement="BottomRight"-->
-						<!--materialDesign:ButtonAssist.CornerRadius="0"-->	
-							<Button Margin="0 9 15 11"
-									Width="137"
-									Height="40"
-									Padding="0"
-									Background="{StaticResource ButtonDarkBrush}"
-									
-									IsVisible="{Binding IsCreateProfileBtnVisible}"
+							<Button HorizontalAlignment="Right"
+									Margin="0 0"
+									Classes="accent"
 									Command="{Binding CreateProfileCommand}"
-									
-									x:Name="CreateProfileBtn">
-								<StackPanel Orientation="Horizontal">
-									<avfCommon:SvgIconControl  IconName="plus"
-														  Foreground="White"
-														  Width="14"
-														  Height="14"
-														  VerticalAlignment="Center"
-														  Margin="18 13 0 13" />
-
-									<TextBlock VerticalAlignment="Center"
-											   Margin="8 12 18 11"
-											   Text="New profile"
-											   FontWeight="DemiBold"
-											   FontFamily="Open Sans"
-											   FontSize="14" />
+									IsVisible="{Binding IsCreateProfileBtnVisible}">
+								<StackPanel Orientation="Horizontal" Spacing="8">
+									<ui:SymbolIcon Symbol="Add" FontSize="18" />
+									<TextBlock Text="New Profile" />
 								</StackPanel>
 							</Button>
+							<!--featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.CreateProfileBtn}"
+									featureTouring:TourHelper.Placement="BottomRight"-->
 						</StackPanel>
-					</Grid>
-				</Border>
 				<local:UserProfilesView
 					Grid.Column="0"
 					Grid.Row="1"

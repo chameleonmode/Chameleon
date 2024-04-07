@@ -15,13 +15,7 @@ public partial class UserProfileIdentityView : SubPageViewControl, IUserProfileI
     public UserProfileIdentityView()
     {
         InitializeComponent();
-        //ControlName = (DataContext as UserProfileIdentityViewModel)?.UserProfileModel.Title ?? "UserProfileModel.Title";
-        Description = "Customize profile-related data";
+        Description = "Customize profile related data";
         PreviewImage = ApplicationHelper.TryGetResource<IconSource>("ProfilePageIcon");
     }
-
-    //public IUserProfile UserProfile { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    //IUserProfile IUserProfileSetter.UserProfile { set => throw new NotImplementedException(); }
-
-    //IUserProfile IUserProfileGetter.UserProfile => throw new NotImplementedException();
 }

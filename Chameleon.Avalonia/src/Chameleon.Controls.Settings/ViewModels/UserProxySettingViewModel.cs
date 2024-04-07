@@ -13,7 +13,7 @@ public partial class UserProxySettingViewModel
     public static string InProject => "Profile";
 
     private readonly IMapper _mapper;
-    public readonly IUserProfile _userProfile;
+    private readonly IUserProfile _userProfile;
     private readonly IEventAggregator _eventAggregator;
 
     public UserProxySettingViewModel(
@@ -28,6 +28,7 @@ public partial class UserProxySettingViewModel
 
         UserProfileModel = _mapper.Map<UserProfileBindable>(_userProfile);
     }
+    public IUserProfile UserProfile => _userProfile;
 
     private UserProfileBindable _userProfileModel;
     public UserProfileBindable UserProfileModel

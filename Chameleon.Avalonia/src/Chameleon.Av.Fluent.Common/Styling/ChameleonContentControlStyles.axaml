@@ -379,20 +379,22 @@
 							CornerRadius="{DynamicResource OverlayCornerRadius}">
 						<Grid RowDefinitions="Auto,*">
 							<Grid RowDefinitions="Auto,*">
-								<Grid RowDefinitions="Auto,*"
-									  Margin="12 0 12 12">
+								<StackPanel>
 									<TextBlock Text="{TemplateBinding TitleDescription}"
 											   Padding="6 14 6 0"
+											   Margin="12 0 12 6"
 											   Theme="{StaticResource CaptionTextBlockStyle}"
 											   IsVisible="{TemplateBinding TitleDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
 									<ContentPresenter Name="HeaderPresenter"
 													  Padding="0 12 6 0"
+													  Margin="12 0 12 12"
 													  Grid.Row="1"
 													  Content="{TemplateBinding Header}"
 													  ContentTemplate="{TemplateBinding HeaderTemplate}"
 													  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-													  VerticalContentAlignment="Center" />
-								</Grid>
+													  VerticalContentAlignment="Center"
+													  IsVisible="{TemplateBinding Header, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+								</StackPanel>
 
 
 								<Grid Grid.Row="1"
@@ -410,7 +412,7 @@
 													  VerticalAlignment="Stretch"
 													  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 													  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-													  Padding="12"
+													  Padding="12 0 12 12"
 													  Grid.ColumnSpan="1"
 													  Grid.Row="1">
 										<ContentPresenter.Transitions>
@@ -423,7 +425,7 @@
 
 									<!-- Options Area -->
 									<ui:FABorder Name="OptionsHost"
-											Margin="12"
+											Margin="12 0 12 12"
 												 Padding="12"
 											CornerRadius="{DynamicResource OverlayCornerRadius}"
 											Grid.Column="1"

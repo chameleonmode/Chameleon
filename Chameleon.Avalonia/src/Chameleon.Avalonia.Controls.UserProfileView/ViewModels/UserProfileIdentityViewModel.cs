@@ -271,7 +271,9 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     [RelayCommand]
     private void SaveChanges()
     {
-
+        if (string.IsNullOrEmpty(UserProfileModel.Title) || 
+            string.IsNullOrWhiteSpace(UserProfileModel.Title))
+            return;
 
         IsSaving = true;
         //UserProfileModel.YoutubeSettings.IsChanged = false;

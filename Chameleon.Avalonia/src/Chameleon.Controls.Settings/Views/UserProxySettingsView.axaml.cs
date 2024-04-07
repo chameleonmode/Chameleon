@@ -20,24 +20,7 @@ public partial class UserProxySettingsView : SubPageViewControl, IUserProxySetti
     {
         InitializeComponent();
         ControlName = "Proxy Settings";
-        Description = "Customize your default homepages here";
+        Description = "Customize multiple profiles proxy settings";
         PreviewImage = ApplicationHelper.TryGetResource<IconSource>("Proxy");
-        //if (DataContext is UserProxySettingsViewModel vm)
-        //{
-        //    vm.PropertyChanged += (o, e) =>
-        //    {
-        //        if (e.PropertyName == nameof(vm.ViewModels))
-        //        {
-        //            vm.DispatcherService.InvokeOnUiThread(() => 
-        //            {
-        //                // Note: Attached properties not propagating correctly, workaround
-        //                ProxiesDataGrid.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-
-        //                this.InvalidateArrange();
-        //                ProxiesDataGrid.InvalidateArrange();
-        //            });
-        //        }
-        //    };
-        //}
     }
 }

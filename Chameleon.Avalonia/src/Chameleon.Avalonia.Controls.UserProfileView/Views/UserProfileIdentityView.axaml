@@ -22,12 +22,11 @@
 
 				<StackPanel Orientation="Horizontal"
 							HorizontalAlignment="Right">
-					<StackPanel Orientation="Horizontal">
+					<StackPanel Orientation="Horizontal" Spacing="12">
 						<Button Content="Save changes" 
-								Command="{Binding SaveChangesCommand}"
-								Margin="0 0 12 0"/>
-						<Button Content="Discard changes" 
 								Classes="accent"
+								Command="{Binding SaveChangesCommand}"/>
+						<Button Content="Discard changes" 
 								Command="{Binding DiscardCommand}" />
 						<!-- featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.SaveChangesBtn}" featureTouring:TourHelper.Placement="BottomRight" -->
 			
@@ -60,47 +59,47 @@
 						</Panel>
 					</TabItem.Header>
 					<TabItem.Content>
-							<StackPanel Spacing="18">
-								<avfCommon:HeaderdInputFieldsControl Title="PROFILE NAME"
-																	 Text="{Binding UserProfileModel.Title, FallbackValue=NAME}" />
+						<StackPanel Spacing="18">
+							<avfCommon:HeaderdInputFieldsControl Title="PROFILE NAME"
+																 Text="{Binding UserProfileModel.Title, FallbackValue=NAME}" />
 
-								<avfCommon:HeaderdInputFieldsControl Title="PROXY CONFIGURATION"
-																	 Header="False">
-									<avfCommon:HeaderdInputFieldsControl.TextBoxes>
-										<TextBox Text="{Binding Path=UserProfileModel.Proxy.Host}" />
-										<TextBox Text="{Binding Path=UserProfileModel.Proxy.PortString}"  />
-										<TextBox Text="{Binding Path=UserProfileModel.Proxy.UserName}" />
-										<TextBox Text="{Binding Path=UserProfileModel.Proxy.Password}"  />
-									</avfCommon:HeaderdInputFieldsControl.TextBoxes>
-								</avfCommon:HeaderdInputFieldsControl>
+							<avfCommon:HeaderdInputFieldsControl Title="PROXY CONFIGURATION"
+																 Header="False">
+								<avfCommon:HeaderdInputFieldsControl.TextBoxes>
+									<TextBox Text="{Binding Path=UserProfileModel.Proxy.Host}" />
+									<TextBox Text="{Binding Path=UserProfileModel.Proxy.PortString}"  />
+									<TextBox Text="{Binding Path=UserProfileModel.Proxy.UserName}" />
+									<TextBox Text="{Binding Path=UserProfileModel.Proxy.Password}"  />
+								</avfCommon:HeaderdInputFieldsControl.TextBoxes>
+							</avfCommon:HeaderdInputFieldsControl>
 
-								<avfCommon:HeaderdInputFieldsControl Title="NOTES"
-																	 Text="{Binding UserProfileModel.Notes, FallbackValue=Notes}" />
+							<avfCommon:HeaderdInputFieldsControl Title="NOTES"
+																 Text="{Binding UserProfileModel.Notes, FallbackValue=Notes}" />
 
-								<avfCommon:HeaderdInputFieldsControl Title="CANVAS VALUE"
-													 Text="{Binding UserProfileModel.WebBrowser.Canvas, FallbackValue=Canvas}" />
+							<avfCommon:HeaderdInputFieldsControl Title="CANVAS VALUE"
+												 Text="{Binding UserProfileModel.WebBrowser.Canvas, FallbackValue=Canvas}" />
 
-							
+
 							<TextBlock Text="PROFILE ITEM" />
-								<UniformGrid>
-								<CheckBox Content="Web RTC off" 
+							<UniformGrid>
+								<CheckBox Content="Web RTC off"
 										  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.WebRTC}" />
-								<CheckBox Content="Web GL off" 
+								<CheckBox Content="Web GL off"
 										  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.WebGL}" />
 								<CheckBox Content="Do Not Track"
 										  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.Tracking}" />
 								<CheckBox Content="Flash"
 										  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.Flash}" />
-								</UniformGrid>
+							</UniformGrid>
 
-								<TextBlock Text="USER AGENT" />
-								<Border>
-									<StackPanel>
-										<TextBlock Text="User Agent"  />
-										<TextBlock Text="Firefox/90.0 Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"/>
-									</StackPanel>
-								</Border>
-							</StackPanel>
+							<TextBlock Text="USER AGENT" />
+							<Border>
+								<StackPanel>
+									<TextBlock Text="User Agent"  />
+									<TextBlock Text="Firefox/90.0 Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"/>
+								</StackPanel>
+							</Border>
+						</StackPanel>
 					</TabItem.Content>
 				</TabItem>
 				<TabItem>
@@ -122,7 +121,7 @@
 						</Panel>
 					</TabItem.Header>
 					<TabItem.Content>
-						<StackPanel>
+						<Panel>
 							<Grid IsVisible="{Binding Path=!HasNoItems}">
 								<StackPanel Orientation="Vertical"
                                             HorizontalAlignment="Center"
@@ -268,7 +267,7 @@
 									</ItemsControl>
 								</Grid>
 							</Grid>
-						</StackPanel>
+						</Panel>
 					</TabItem.Content>
 				</TabItem>
 				<TabItem>
@@ -291,7 +290,7 @@
 						</Panel>
 					</TabItem.Header>
 					<TabItem.Content>
-						<StackPanel>
+						<Panel>
 							<Grid IsVisible="{Binding Path=!HasNoBusinessItems}">
 								<StackPanel Orientation="Vertical"
                                         HorizontalAlignment="Center"
@@ -397,7 +396,7 @@
 									</ItemsControl>
 								</Grid>
 							</Grid>
-						</StackPanel>
+						</Panel>
 					</TabItem.Content>
 				</TabItem>
 				<TabItem>
@@ -420,7 +419,7 @@
 						</Panel>
 					</TabItem.Header>
 					<TabItem.Content>
-						<StackPanel>
+						<Panel>
 							<Grid IsVisible="{Binding Path=!HasNoAddressesItems}">
 								<StackPanel Orientation="Vertical"
                                         HorizontalAlignment="Center"
@@ -455,10 +454,7 @@
 										<ColumnDefinition/>
 										<ColumnDefinition/>
 									</Grid.ColumnDefinitions>
-									<TextBlock HorizontalAlignment="Left"
-                                               FontSize="14"
-                                               FontWeight="DemiBold"
-                                               Foreground="{StaticResource SecondaryText}">
+									<TextBlock HorizontalAlignment="Left">
 										<TextBlock.Text>
 											<MultiBinding StringFormat="{}Total {0} address added">
 												<Binding Path="DataContext.Addresses.Items.Count" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
@@ -557,7 +553,7 @@
 									</ItemsControl>
 								</Grid>
 							</Grid>
-						</StackPanel>
+						</Panel>
 					</TabItem.Content>
 				</TabItem>
 				<TabItem>
@@ -580,7 +576,7 @@
 						</Panel>
 					</TabItem.Header>
 					<TabItem.Content>
-						<StackPanel>
+						<Panel>
 							<Grid IsVisible="{Binding Path=!HasNoLoginsItems}">
 								<StackPanel Orientation="Vertical"
                                         HorizontalAlignment="Center"
@@ -689,7 +685,7 @@
 									</ItemsControl>
 								</Grid>
 							</Grid>
-						</StackPanel>
+						</Panel>
 					</TabItem.Content>
 				</TabItem>
 			</TabControl>

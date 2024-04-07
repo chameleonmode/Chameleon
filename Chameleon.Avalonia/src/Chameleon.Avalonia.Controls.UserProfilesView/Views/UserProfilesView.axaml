@@ -132,7 +132,7 @@
 
 		<avfCommon:ChameleonContentControl.Content>
 			<Grid RowDefinitions="*,Auto">
-				<ListBox
+				<ListBox VerticalAlignment="Top"
 					ItemsSource="{Binding ViewModels}"
 					Theme="{StaticResource ListBoxNoScroller}"
 					ItemContainerTheme="{StaticResource GridViewItem}">

@@ -67,7 +67,7 @@ public partial class ProjectsViewModel : PageViewModelBase,
 
    // public string Directory { get { return FileStorageUtil.GetBaseProjectsDir(); } }
 
-    private bool _isCreateProfileBtnVisible;
+    private bool _isCreateProfileBtnVisible = true;
     public bool IsCreateProfileBtnVisible
     {
         get => _isCreateProfileBtnVisible;
