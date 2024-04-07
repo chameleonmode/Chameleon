@@ -39,11 +39,13 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
             return;
 
         var item = this.GetVisualDescendants()
-                    .Where(x => x is SettingsExpander && (x as ICommandSource).CommandParameter == _animationPage)
-                    .FirstOrDefault()
+                    .Where(x => x is SettingsExpander && (x as ICommandSource).CommandParameter == _animationPage)?
+                    .FirstOrDefault()?
                     .GetVisualDescendants()
-                    .Where(x => x is Viewbox && x.Name == "IconHost")
+                    .Where(x => x is Viewbox && x.Name == "IconHost")?
                     .FirstOrDefault();
+        if (item == null) return;
+
         var presenter = item;// GetAnimationSource();
 
         // In WinUI, ConnectedAnimation is somehow exempt from all clipping behaviors
@@ -81,13 +83,16 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
             //}
 
             var item = this.GetVisualDescendants()
-                        .Where(x => (x as ICommandSource)?.CommandParameter == _animationPage)
-                        .FirstOrDefault()
+                        .Where(x => (x as ICommandSource)?.CommandParameter == _animationPage)?
+                        .FirstOrDefault()?
                         .GetVisualDescendants()
-                        .Where(x => x is Viewbox && x.Name == "IconHost")
+                        .Where(x => x is Viewbox && x.Name == "IconHost")?
                         .FirstOrDefault();
-            var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-            svc.PrepareToAnimate("ForwardAnimation", item);
+            if (item != null)
+            {
+                var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
+                svc.PrepareToAnimate("ForwardAnimation", item);
+            }
         }
     }
 }

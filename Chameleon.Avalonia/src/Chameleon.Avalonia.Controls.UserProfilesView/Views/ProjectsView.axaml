@@ -27,9 +27,9 @@
 							DataContext="{Binding ElementName=profilesView, Path=DataContext.BreadcrumbsViewModel}"
 							VerticalAlignment="Center"
 							Margin="23 0 0 0"/>-->
-						<StackPanel Grid.ColumnSpan="2">
+						<Panel Grid.ColumnSpan="2">
 							<Button Theme="{StaticResource SyncChangesButton}" />
-							<Button HorizontalAlignment="Right"
+							<Button HorizontalAlignment="Left"
 									Margin="0 0"
 									Classes="accent"
 									Command="{Binding CreateProfileCommand}"
@@ -42,7 +42,7 @@
 							</Button>
 							<!--featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.CreateProfileBtn}"
 									featureTouring:TourHelper.Placement="BottomRight"-->
-						</StackPanel>
+						</Panel>
 				<local:UserProfilesView
 					Grid.Column="0"
 					Grid.Row="1"

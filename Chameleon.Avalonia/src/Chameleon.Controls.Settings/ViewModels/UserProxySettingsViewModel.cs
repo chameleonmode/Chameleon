@@ -434,8 +434,8 @@ public partial class UserProxySettingsViewModel
     {
         var result = await ContentDialogService.ShowContentDialogAsync( 
             ContentDialogButtons.OKCancel, 
-            "You have no proxy to set. Purchase them on Proxy Credit tab", 
-            "You have no proxy to set");
+            "You have no proxy to set. Purchase them on Proxy Credit tab",
+            "No Proxy Credit");
         if(result == IContentDialogResult.Primary)
         {
             var args = new ChangeSelectedTabIndexEventArgs() { SelectedIndex = 2 };

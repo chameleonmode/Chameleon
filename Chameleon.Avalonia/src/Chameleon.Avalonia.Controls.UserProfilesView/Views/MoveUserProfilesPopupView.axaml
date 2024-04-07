@@ -28,17 +28,8 @@
 			</Border>
 		</DataTemplate>
 	</UserControl.Resources>
-	<dialogs:ChameleonDialogControl>
-		<dialogs:ChameleonDialogControl.Header>
-			<StackPanel Orientation="Horizontal">
-				<TextBlock>
-					<Run Text="Select a folder to move the "/>
-					<Run Text="{Binding Profiles.Count}"
-                         FontWeight="Bold"/>
-					<Run Text=" selected profiles:"/>
-				</TextBlock>
-			</StackPanel>
-		</dialogs:ChameleonDialogControl.Header>
+	<dialogs:ChameleonDialogControl TitleDescription="{Binding Profiles.Count,
+											StringFormat='Select a folder to move the {0} selected profiles:'}">
 		<dialogs:ChameleonDialogControl.Content>
 			<StackPanel Margin="10" 
 						Spacing="6">

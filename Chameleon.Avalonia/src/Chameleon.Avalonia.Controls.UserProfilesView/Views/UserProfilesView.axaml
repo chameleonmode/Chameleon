@@ -48,6 +48,10 @@
 							Tag="Select all"
 							Theme="{StaticResource SvgIconTextButton}"
 							Command="{Binding SelectAllCommand}" />
+					<Button Content="select-all"
+							Tag="Select all in folder"
+							Theme="{StaticResource SvgIconTextButton}"
+							Command="{Binding SelectAllProfilesFromFolderCommand}" />
 					<StackPanel
 						Orientation="Horizontal"
 						Margin="2 0 0 0">
@@ -60,13 +64,7 @@
 						<Button Content="plus-in-circle"
 								Tag="Add profile"
 								Theme="{StaticResource SvgIconTextButton}"
-								Command="{Binding AddProfilesToFolderCommand}"
-								IsEnabled="{Binding IsAddProfilesToFolderCommandEnabled}" />
-						<Button Content="minus-in-circle"
-								Tag="Remove profile"
-								Theme="{StaticResource SvgIconTextButton}"
-								Margin="4 0 0 0"
-								Command="{Binding RemoveProfilesFromFolderCommand}" />
+								Command="{Binding AddProfilesToFolderCommand}" />
 					</StackPanel>
 				</StackPanel>
 
@@ -102,11 +100,15 @@
 									Margin="18 6"
 									BorderThickness="1 0 0 0" />
 
-							<Button
-								Theme="{StaticResource SvgIconTextButton}"
-								Content="up-folder"
+							<Button Content="up-folder"
 								Tag="Move"
-								Command="{Binding MoveProfilesToFolderCommand}" />
+								Command="{Binding MoveProfilesToFolderCommand}"
+								Theme="{StaticResource SvgIconTextButton}" />
+							<Button Content="minus-in-circle"
+									Tag="Remove profile"
+									Command="{Binding RemoveProfilesFromFolderCommand}" 
+									Theme="{StaticResource SvgIconTextButton}"
+									Margin="4 0 0 0"/>
 							<Button
 								Theme="{StaticResource SvgIconTextButton}"
 								Content="delete"
@@ -202,8 +204,7 @@
 							HorizontalAlignment="Center"
 							Content="plus-in-circle"
 							Tag="Add profile"
-							Command="{Binding AddProfilesToFolderCommand}"
-							IsEnabled="{Binding IsAddProfilesToFolderCommandEnabled}" />
+							Command="{Binding AddProfilesToFolderCommand}" />
 					</StackPanel>
 				</Grid>
 

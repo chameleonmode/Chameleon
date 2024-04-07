@@ -43,7 +43,7 @@
 							   Text="{Binding Code}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"
-   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+							   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
 							   FontSize="11"
 							   FontWeight="Bold"
 							   FontFamily="Open Sans" />
@@ -61,16 +61,7 @@
                               BorderBrush="{StaticResource PrimaryHueDarkBrush}"-->
 					<CheckBox Grid.Column="2"
 							  Margin="12 0 12 0"
-							  IsChecked="{Binding IsSelected}"
-                              >
-						<CheckBox.Resources>
-							<!--Unchecked state-->
-							<SolidColorBrush x:Key="MaterialDesignCheckBoxOff"
-											 Color="#6634C2" />
-							<!--Checked state-->
-							<SolidColorBrush x:Key="PrimaryHueMidBrush"
-											 Color="#7753A6" />
-						</CheckBox.Resources>
+							  IsChecked="{Binding IsSelected}">
 					</CheckBox>
 				</Grid>
 			</Border>
@@ -141,12 +132,12 @@
 			</WrapPanel>
 		</DataTemplate>
 	</UserControl.Resources>
-	<dialogs:ChameleonDialogControl>
-		<dialogs:ChameleonDialogControl.Header>
+	<dialogs:ChameleonDialogControl TitleDescription="{Binding TitleText, FallbackValue=titletext}">
+		<!--<dialogs:ChameleonDialogControl.Header>
 			<StackPanel>
 				<TextBlock Text="{Binding TitleText, FallbackValue=titletext}" />
 			</StackPanel>
-		</dialogs:ChameleonDialogControl.Header>
+		</dialogs:ChameleonDialogControl.Header>-->
 		<dialogs:ChameleonDialogControl.DialogInputs>
 			<dialogs:DialogInputHost TextLabel="User name:"
 									 Text="{Binding AssistantName}"

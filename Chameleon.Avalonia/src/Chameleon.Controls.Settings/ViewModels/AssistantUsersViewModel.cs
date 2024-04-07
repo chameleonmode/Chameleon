@@ -137,7 +137,7 @@ public partial class AssistantUsersViewModel
             ContentDialogService.ShowAsync<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
                 viewModel =>
                 {
-                    viewModel.Title = "INVITE USER";
+                    viewModel.Title = "Invite User";
                     viewModel.TitleText = "Invite new user and customise their access";
                     viewModel.ShowInviteinfo = true;
                 });

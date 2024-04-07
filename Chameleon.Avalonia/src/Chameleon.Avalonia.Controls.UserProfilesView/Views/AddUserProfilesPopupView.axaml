@@ -72,6 +72,7 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 					<TextBlock Grid.Column="0"
+							   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
                                Margin="12 4 0 4"
                                Text="{Binding Title}"
                                VerticalAlignment="Center"
@@ -85,7 +86,7 @@
                             Command="{Binding UnselectCommand}"
                             Theme="{DynamicResource TransparentButton}"
                          
-                            Margin="12 0 10 0"
+                            Margin="12 0 0 0"
                             BorderThickness="0">
 						<avfCommon:SvgIconControl IconName="x"
                                               Height="10"
@@ -95,18 +96,12 @@
 			</Border>
 		</DataTemplate>
 	</UserControl.Resources>
-	<dialogs:ChameleonDialogControl>
-		<dialogs:ChameleonDialogControl.Header>
-			<StackPanel Orientation="Horizontal">
-				<TextBlock Text="Select profiles you want to add to " />
-				<TextBlock Text="{Binding Folder.Title}" FontWeight="Bold"/>
-				<TextBlock Text=" folder:"/>
-			</StackPanel>
-		</dialogs:ChameleonDialogControl.Header>
+	<dialogs:ChameleonDialogControl TitleDescription="{Binding Folder.Title,
+											StringFormat='Select profiles you want to add to {0} folder:'}">
 		<dialogs:ChameleonDialogControl.Content>
 			<StackPanel Margin="10">
 				<Border CornerRadius="2"
-						BorderThickness="1"
+						BorderThickness="0"
 						BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}">
 						<StackPanel Grid.Column="0"
 								VerticalAlignment="Center"
@@ -128,9 +123,9 @@
 				<Expander Grid.Row="1"
 						  Header="Profiles">
 					<Border CornerRadius="0 0 4 4"
-							BorderThickness="1"
+							BorderThickness="0"
 							BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-							Margin="32 2 25 0">
+							Margin="12 2 12 0">
 						<ScrollViewer
 							VerticalScrollBarVisibility="Auto"
 							MaxHeight="220"

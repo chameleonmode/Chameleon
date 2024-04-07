@@ -12,6 +12,10 @@
 							<TextBlock Text="Sample Header" />
 						</StackPanel>
 					</dilgs:ChameleonDialogControl.Header>
+					<dilgs:ChameleonDialogControl.TitleDescription>
+						Sample Header descriptionadfvadfvdwfv adfg adfgdaf g 
+						sdfg sdfg sdfg adfg dsfg a dfg adfg adfa dfgs dfgsdfvefd sd
+					</dilgs:ChameleonDialogControl.TitleDescription>
 					<dilgs:ChameleonDialogControl.DialogInputs>
 						<dilgs:DialogInputHost TextLabel="Email:" Text="email@email.com" />
 
@@ -43,7 +47,11 @@
 										  FontWeight="SemiBold"
 										  HorizontalContentAlignment="Center"
 										  VerticalContentAlignment="Center" />
+						
 
+						<TextBlock Text="{TemplateBinding TitleDescription}"
+								   TextWrapping="Wrap"
+								   Margin="12 6 12 12"/>
 						<!--Input Options-->
 						<ItemsControl Name="DialogsHost">
 							<ItemsControl.ItemsPanel>

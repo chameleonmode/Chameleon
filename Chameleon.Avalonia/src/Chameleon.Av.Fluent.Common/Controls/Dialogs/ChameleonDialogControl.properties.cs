@@ -28,6 +28,14 @@ public partial class ChameleonDialogControl : HeaderedContentControl
         set => SetAndRaise(CommandsProperty, ref _dialogInputs, value);
     }
 
+    public static readonly StyledProperty<string?> TitleDescriptionProperty =
+    AvaloniaProperty.Register<ChameleonDialogControl, string?>(nameof(TitleDescription));
+    public string? TitleDescription
+    {
+        get => GetValue(TitleDescriptionProperty);
+        set => SetValue(TitleDescriptionProperty, value);
+    }
+
     private const string s_tpCommandsHost = "DialogsHost";   
     private IList<DialogInputHost> _dialogInputs;
 }

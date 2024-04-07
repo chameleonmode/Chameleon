@@ -2,6 +2,7 @@
 using Chameleon.Authorization;
 using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
+using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.ContentDiscoverey;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles;
@@ -89,7 +90,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase
             return;
         }
         OnPropertyChanged(string.Empty);
-        //TODO: ?? RaiseAllPropertiesChanged();
     }
     [RelayCommand]
     private void Favorite()
@@ -122,17 +122,15 @@ public partial class UserProfileViewModel : SubPageViewModelBase
             .Publish();
     }
     [RelayCommand]
-    private void DeleteUserProfile()
+    private async Task DeleteUserProfile()
     {
-        ContentDialogService.ShowContentDialogAsync(
-            content: "Are you sure you want to delete this profile?",
-            title: "Delete User Profile",
-            action: () =>
-            {
-                EventAggregator
-                .GetEvent<DeleteUserProfileEvent>()
-                .Publish(new UserProfileEventArgs(_userProfile));
-            });
+        if (await MesageBoxHelper.ShowAsync("Delete User Profile",
+          $"Are you sure you want to delete {_userProfile.Title}?",
+          ContentDialogButtons.YesNo,
+          "DeleteLines"))
+            EventAggregator
+             .GetEvent<DeleteUserProfileEvent>()
+             .Publish(new UserProfileEventArgs(_userProfile));
     }
     [RelayCommand]
     private void OpenUserProfile()

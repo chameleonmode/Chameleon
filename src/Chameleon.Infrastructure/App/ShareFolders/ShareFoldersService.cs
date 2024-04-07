@@ -31,7 +31,14 @@ namespace Chameleon.Infrastructure.App.ShareFolders
 
         public IList<IShareFolder> GetAll(long userId)
         {
-            return _shareFoldersRepository.GetAll(true, new ShareFolderGetAllRequestDto() { UserId = userId });
+            try
+            {
+                return _shareFoldersRepository.GetAll(true, new ShareFolderGetAllRequestDto() { UserId = userId });
+            }
+            catch
+            {
+                return new List<IShareFolder>();
+            }
         }
 
         public IList<IShareFolder> Share(long userId, IList<int> folderIds, IList<int> permissionIds)

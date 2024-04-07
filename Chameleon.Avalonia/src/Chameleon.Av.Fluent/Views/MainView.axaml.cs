@@ -138,11 +138,11 @@ public partial class MainView : UserControl
         {
             mainPage = "Dashboard";
         }
-        else if (dc.GetType() == typeof(UserProfilesViewModel))
+        else if (dc.GetType() == typeof(UserProfilesViewModel) || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.UserProfileView"))
         {
             mainPage = "Profiles";
         }
-        else if (dc.GetType() == typeof(SettingsViewModel))
+        else if (dc.GetType() == typeof(SettingsViewModel) || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.Settings"))
         {
             mainPage = "Settings";
         }
@@ -165,9 +165,13 @@ public partial class MainView : UserControl
     {
         foreach (NavigationViewItem nvi in source)
         {
-            if (nvi.Tag is MainPageModelBase t && t.NavHeader == mainPage)
+            var set = false;
+            if (nvi.Tag is MainPageModelBase t && t.NavHeader == mainPage) 
+            {
+                set = true;
                 NavView.SelectedItem = nvi;
-            SetNVIIcon(nvi, NavView.SelectedItem == nvi);
+            }
+            SetNVIIcon(nvi, set);
         }
     }
 

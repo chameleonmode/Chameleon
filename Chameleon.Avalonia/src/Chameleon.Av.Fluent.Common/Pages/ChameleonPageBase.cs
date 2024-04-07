@@ -184,6 +184,9 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
 
     private void FrameNavigatingFrom(object sender, NavigatingCancelEventArgs e)
     {
+        if(_previewImageHost == null)
+            return;
+
         //If TargetType is not set, we know we're currently on a CoreControls page since those
         // are grouped pages - whereas, FA controls only display one control per page and
         // set all the extra properties

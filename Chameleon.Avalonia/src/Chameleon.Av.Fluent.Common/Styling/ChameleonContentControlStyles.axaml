@@ -14,7 +14,7 @@
 				</HeaderedContentControl.Header>
 			</HeaderedContentControl>
 			
-		<Border Padding="20" Width="780" Height="480"
+		<Border Padding="20" Width="710" Height="480"
 				Background="{DynamicResource LayerFillColorDefaultBrush}">
 			<Grid ColumnDefinitions="*,Auto,0.01*">
 				<ctrls:ChameleonContentControl Title="Some Title"
@@ -382,11 +382,11 @@
 								<StackPanel>
 									<TextBlock Text="{TemplateBinding TitleDescription}"
 											   Padding="6 14 6 0"
-											   Margin="12 0 12 6"
+											   Margin="12 0 12 12"
 											   Theme="{StaticResource CaptionTextBlockStyle}"
 											   IsVisible="{TemplateBinding TitleDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
 									<ContentPresenter Name="HeaderPresenter"
-													  Padding="0 12 6 0"
+													  Padding="0 0 6 0"
 													  Margin="12 0 12 12"
 													  Grid.Row="1"
 													  Content="{TemplateBinding Header}"
@@ -403,7 +403,7 @@
 									<Rectangle Name="TopRowPlaceholder"
 											   IsHitTestVisible="False"
 											   IsVisible="False"
-											   MinHeight="32" />
+											   MinHeight="36" />
 
 									<ContentPresenter Name="ContentsPresenter"
 													  Content="{TemplateBinding Content}"
@@ -424,9 +424,10 @@
 									</ContentPresenter>
 
 									<!-- Options Area -->
-									<ui:FABorder Name="OptionsHost"
-											Margin="12 0 12 12"
-												 Padding="12"
+									<ui:FABorder 
+										Name="OptionsHost"
+										Margin="12 0 12 12"
+										Padding="12"
 											CornerRadius="{DynamicResource OverlayCornerRadius}"
 											Grid.Column="1"
 											Grid.Row="1"
@@ -448,7 +449,7 @@
 														   HorizontalAlignment="Left"
 														   VerticalAlignment="Center"
 														   FontWeight="SemiBold"
-														   Margin="0 3 0 12" />
+														   Margin="0 3 0 0" />
 
 												<Button Name="ShowHideOptionsButton"
 														Theme="{StaticResource TransparentButton}"
@@ -460,6 +461,7 @@
 												</Button>
 											</DockPanel>
 											<ContentPresenter Name="OptionPresenter"
+															   Margin="0 12 0 0"
 															  Content="{TemplateBinding Options}"
 															  HorizontalContentAlignment="Stretch"
 															  VerticalContentAlignment="Stretch"
@@ -558,26 +560,6 @@
 		<Style Selector="^ /template/ ui|FABorder#ControlPreviewAreaHost">
 			<Setter Property="CornerRadius" Value="{Binding Source={StaticResource OverlayCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}" />
 		</Style>
-
-		<!--<Style Selector="^:codepreview">
-			<Style Selector="^ /template/ Expander#SourcePreviewArea">
-				<Setter Property="IsVisible" Value="True" />
-			</Style>
-			<Style Selector="^ /template/ ui|FABorder#ControlPreviewAreaHost">
-				<Setter Property="CornerRadius" Value="4 4 0 0" />
-				<Setter Property="BorderThickness" Value="1 1 1 0" />
-			</Style>
-
-			<Style Selector="^:xamlsource /template/ local|SampleCodePresenter#XamlPresenter">
-				<Setter Property="IsVisible" Value="True" />
-			</Style>
-			<Style Selector="^:csharpsource /template/ local|SampleCodePresenter#CSharpPresenter">
-				<Setter Property="IsVisible" Value="True" />
-			</Style>
-			<Style Selector="^:usagenotes /template/ local|SampleCodePresenter#NotesPresenter">
-				<Setter Property="IsVisible" Value="True" />
-			</Style>
-		</Style>-->
 
 		<Style Selector="^:options /template/ ui|FABorder#OptionsHost">
 			<Setter Property="IsVisible" Value="True" />

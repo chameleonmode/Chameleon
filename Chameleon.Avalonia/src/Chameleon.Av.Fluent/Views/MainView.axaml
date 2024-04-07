@@ -80,10 +80,10 @@
 			<ui:Frame Name="FrameView" />
 		</ui:NavigationView>
 
-		<!--<local:MainAppSplashContent Grid.RowSpan="2"
+		<local:MainAppSplashContent Grid.RowSpan="2"
 									Name="SplashScreen"
 									Background="{StaticResource CoreSplashScreenBackground}"
-									IsVisible="{Binding IsSplashVisible}"/>-->
+									IsVisible="{Binding IsSplashVisible}"/>
 	</Grid>
 	
 </UserControl>

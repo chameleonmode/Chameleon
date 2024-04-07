@@ -111,6 +111,7 @@ public partial class UserProfilesViewModel
             SetViewModelsFilter();
             OnPropertyChanged(nameof(ViewModels));
             OnPropertyChanged(nameof(HasNoItems));
+            OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
         });
     }
 
@@ -173,7 +174,7 @@ public partial class UserProfilesViewModel
 
     public bool HasProfileWithoutFolder => _mapping != null && _mapping.Any(profile => !profile.UserProfile.FolderId.HasValue);
     public IApplicationUser CurrentUser => _currentUser;
-    public bool IsAddProfilesToFolderCommandEnabled => HasProfileWithoutFolder && !CurrentUser.IsAssistant;
+    public bool IsAddProfilesToFolderCommandEnabled => HasProfileWithoutFolder && !CurrentUser.IsAssistant && Folder?.Id != 0;
     public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(Folder);
 
     private PaginatorViewModel _paginatorViewModel;
@@ -199,32 +200,6 @@ public partial class UserProfilesViewModel
             //lastCrumbs.Title = Folder.Title;
         }
     }
-
-    //private BreadcrumbsViewModel _breadcrumbsViewModel;
-    //public BreadcrumbsViewModel BreadcrumbsViewModel
-    //{
-    //    get
-    //    {
-    //        if (_breadcrumbsViewModel == null)
-    //        {
-    //            _breadcrumbsViewModel = new BreadcrumbsViewModel();
-
-    //            var root = new BreadcrumbViewModel
-    //            {
-    //                Title = TitlePage
-    //            };
-
-    //            _breadcrumbsViewModel.Breadcrumbs.Add(root);
-    //        }
-
-    //        return _breadcrumbsViewModel;
-    //    }
-
-    //    set
-    //    {
-    //        SetProperty(ref _breadcrumbsViewModel, value);
-    //    }
-    //}
 
     private void OnChangePage(object sender, EventArgs args)
     {
@@ -397,7 +372,7 @@ public partial class UserProfilesViewModel
         }
 
         var profiles = _mapping
-            .Where(p => p.UserProfile.FolderId == Folder.Id)
+            .Where(p => p.UserProfile.FolderId == Folder.Id || Folder.Id == 0)
             .ToList();
 
         profiles.ForEach(p => p.IsSelected = true);
@@ -476,12 +451,15 @@ public partial class UserProfilesViewModel
     [RelayCommand]
     private async Task AddProfilesToFolder()
     {
+        if (_folder.Id == 0)
+            return;
+
         //_userProfilesPopupService.ShowPopup(_folder);
 
        await ContentDialogService.ShowAsync<IAddUserProfilesPopupView, IAddUserProfilesPopupViewModel>(
            viewModel =>
            {
-               viewModel.Title = "ADD PROFILES";
+               viewModel.Title = "Add Profiles";
                viewModel.Folder = _folder;
            });
 
@@ -498,12 +476,10 @@ public partial class UserProfilesViewModel
             .Select(p => p.UserProfile)
             .ToList();
 
-        //TODO: _moveUserProfilesPopupService.ShowPopup(selectedUserProfiles);
-
         ContentDialogService.ShowAsync<IMoveUserProfilesPopupView, IMoveUserProfilesPopupViewModel>(
             viewModel =>
             {
-                viewModel.Title = "ADD TO FOLDER";
+                viewModel.Title = "Add To Folder";
                 viewModel.Profiles = selectedUserProfiles;
             });
     }

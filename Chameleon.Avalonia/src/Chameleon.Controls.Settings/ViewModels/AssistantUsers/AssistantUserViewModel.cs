@@ -24,9 +24,9 @@ namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 public partial class AssistantUserViewModel
        : SubPageViewModelBase
 {
-    private const string _unshareProfileDialogTitle = "UNSHARE PROFILE";
-    private const string _unshareFolderDialogTitle = "UNSHARE FOLDER";
-    private const string _deleteUserDialogTitle = "DELETE USER";
+    private const string _unshareProfileDialogTitle = "Unshare Profile";
+    private const string _unshareFolderDialogTitle = "Unshare Folder";
+    private const string _deleteUserDialogTitle = "Delete User";
 
     private readonly IUserAssistantService _userAssistantService;
     private readonly IEventAggregator _eventAggregator;
@@ -183,6 +183,7 @@ public partial class AssistantUserViewModel
     {
         IsOpenPopup = !IsOpenPopup;
     }
+  
     [RelayCommand]
     private async Task DeleteAssistant()
     {
@@ -203,7 +204,7 @@ public partial class AssistantUserViewModel
         ContentDialogService.ShowAsync<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
             viewModel =>
             {
-                viewModel.Title = "ADD PROFILES";
+                viewModel.Title = "Add Profiles";
                 viewModel.TitleText = "Add access to specific Profiles or whole Folders for this user";
                 viewModel.ShowInviteinfo = false;
                 viewModel.AssistantId = UserAssistant.Id;

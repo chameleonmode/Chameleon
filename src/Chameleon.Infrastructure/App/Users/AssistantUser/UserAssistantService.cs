@@ -58,7 +58,14 @@ namespace Chameleon.Infrastructure.Users
 
         public IList<IAssistantProfile> GetAllAssistantProfilesById(long userAssistantId)
         {
-            return _assistantProfileRepository.GetAllAssistantProfilesById(userAssistantId);
+            try
+            {
+                return _assistantProfileRepository.GetAllAssistantProfilesById(userAssistantId);
+            }
+            catch
+            {
+                return new List<IAssistantProfile>();
+            }
         }
 
         public void DeleteAssistantProfile(IAssistantProfile assistantProfile)

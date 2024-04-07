@@ -17,8 +17,6 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     private readonly IUserProfileFolder _folder;
     private readonly IUserProfileFolderService _userProfileFolderService;
 
-    private const string _dialogTitle = "DELETE FOLDER";
-
     public UserProfileFolderViewModel(
         IApplicationUser currentUser,
         IAuthSession authSession,
@@ -72,7 +70,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     {
         IsOpenMenuPopup = false;
 
-        if (await MesageBoxHelper.ShowAsync(_dialogTitle,
+        if (await MesageBoxHelper.ShowAsync("Delete Folder",
             $"Are you sure you want to delete {UserProfileFolder.Title} folder? This will not affect individual profiles within the folder.",
             ContentDialogButtons.YesNo,
             "DeleteLines"))
