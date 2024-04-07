@@ -28,6 +28,7 @@
 				<Image.IsVisible>
 					<OnPlatform Default="False">
 						<On Options="Windows" Content="True" />
+						<On Options="macOS" Content="True" />
 					</OnPlatform>
 				</Image.IsVisible>
 			</Image>
@@ -40,6 +41,7 @@
 				<TextBlock.IsVisible>   
 					<OnPlatform Default="False">
 						<On Options="Windows" Content="True" />
+						<On Options="macOS" Content="True" />
 					</OnPlatform>
 				</TextBlock.IsVisible>
 			</TextBlock>
