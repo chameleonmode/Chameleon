@@ -8,7 +8,7 @@
 				<ResourceInclude Source="avares://Chameleon.Av.Fluent.Common/Styling/Resources.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
-		<FontFamily x:Key="$Default">avares://Chameleon.Avalonia.Common/Assets/Fonts/Nunito#Nunito</FontFamily>
+		<FontFamily x:Key="ContentControlThemeFontFamily">avares://Chameleon.Avalonia.Common/Assets/Fonts/Nunito#Nunito</FontFamily>
 	</Application.Resources>
 
 	<Application.Styles>
