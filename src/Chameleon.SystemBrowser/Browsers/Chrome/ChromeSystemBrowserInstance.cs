@@ -55,14 +55,14 @@ namespace Chameleon.SystemBrowser.Chrome
             //var userDataFolder = _browserProfileFolderPath;
             arguments.Append($"--user-data-dir=\"{_browserProfileFolderPath}\" ");
 
-            //var extensionDirectories = GetLoadExtensionsArgument();
+            var extensionDirectories = GetLoadExtensionsArgument();
             //foreach (var ext in extensionDirectories.Split(','))
             //{
             //    arguments.Append($"--load-extension={ext} ");
             //}
             //arguments.Append(@$"--load-extension='C:\Users\elimd\AppData\Local\Google\Chrome\User Data\Default\Extensions\bkmmlbllpjdpgcgdohbaghfaecnddhni\0.2.2_0' ");
             //arguments.Append(@$"--disable-extensions-except='C:\Users\elimd\AppData\Local\Google\Chrome\User Data\Default\Extensions\bkmmlbllpjdpgcgdohbaghfaecnddhni\0.2.2_0' ");
-            //arguments.Append($"--load-extension={extensionDirectories}");
+            arguments.Append($"--load-extension={extensionDirectories}");
 
             var webBrowser = UserProfile.WebBrowser;
             if (!webBrowser.WebRTC)
@@ -102,7 +102,7 @@ namespace Chameleon.SystemBrowser.Chrome
             //    //arguments.Append($"--proxy-server={_dynamicProxyServer.Server} ");
             //    arguments.Append($"--proxy-server={UserProfile.Proxy.Host}:{UserProfile.Proxy.Port} ");
             //}
-            arguments.Append($"--remote-debugging-port={NextFreePort(1000)} ");
+            //arguments.Append($"--remote-debugging-port={NextFreePort(1000)} ");
             return arguments.ToString();
         }
 

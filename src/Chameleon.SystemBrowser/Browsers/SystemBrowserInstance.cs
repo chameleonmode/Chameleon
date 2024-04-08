@@ -115,21 +115,19 @@ namespace Chameleon.SystemBrowser.Common
             }
             else
             {
-                string? host = null, username = null, password = null;
-                if (UserProfile.Proxy.CanUse)
+                try
                 {
-                    host = $"{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}";
-                    username = UserProfile.Proxy.UserName;
-                    password = UserProfile.Proxy.Password;
+                    await Play.Instance.LaunchPersistentContextAsync(
+                         _browserProfileFolderPath,
+                         _browserExeFilePath,
+                         UserProfile,
+                         Options.Url?.AbsoluteUri,
+                         GetLoadExtensionsArgument());
                 }
+                catch
+                {
 
-                await Play.Instance.LaunchPersistentContextAsync(
-                     _browserProfileFolderPath,
-                     _browserExeFilePath,
-                     Options.Url?.AbsoluteUri,
-                     GetCommandLineArguments(),
-                      GetLoadExtensionsArgument(),
-                     host, username, password);
+                }
             }
         }
 
