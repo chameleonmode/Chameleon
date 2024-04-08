@@ -1,10 +1,17 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Chameleon.Av.Fluent.Common.Controls;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces;
+using Chameleon.Interfaces.App.UserProfiles;
+using Chameleon.Interfaces.Dashboard;
+using Chameleon.Interfaces.UserProfileFolders;
+using Chameleon.Interfaces.UserProfiles;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
@@ -13,8 +20,6 @@ namespace Chameleon.Av.Fluent.Common.Pages;
 
 public class ChameleonNavigationPage : AutoViewModelLocatorControl
 {
-    private object? _animationPage;
-
     public ChameleonNavigationPage()
     {
         // Use the frame events here to ensure ConnectedAnimations still work with
@@ -29,7 +34,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
         {
             await pageViewModel.OnNavigatedToAsync(e.Parameter);
         }
-        if (_animationPage == null)
+        if (_animationPage == null || _animationPageParent == null)
             return;
 
         var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
@@ -38,15 +43,9 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
         if (anim == null)
             return;
 
-        var item = this.GetVisualDescendants()
-                    .Where(x => x is SettingsExpander && (x as ICommandSource).CommandParameter == _animationPage)?
-                    .FirstOrDefault()?
-                    .GetVisualDescendants()
-                    .Where(x => x is Viewbox && x.Name == "IconHost")?
-                    .FirstOrDefault();
-        if (item == null) return;
+        GetNavAnimationVisuals(_navParam);
 
-        var presenter = item;// GetAnimationSource();
+        if (_animationPage == null) return;
 
         // In WinUI, ConnectedAnimation is somehow exempt from all clipping behaviors
         // Here, we are not, so disable ClipToBounds on all elements in the SettingsExpander
@@ -54,45 +53,71 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
         // NOTE: The ScrollViewer is not changed here as that's important for scrolling - thus
         // the animation will be cut off, but the back animation is pretty fast and mostly is
         // only visible closer to the element so we're ok, I think
-        var x = presenter.GetVisualParent();
-        while (!(x is ScrollContentPresenter) && x != null)
+        var x = _animationPage.GetVisualParent();
+        while (x is not ScrollContentPresenter && x != null)
         {
             x.ClipToBounds = false;
             x = x.GetVisualParent();
         }
 
         anim.Configuration = new DirectConnectedAnimationConfiguration();
-        anim.TryStart(presenter);
+        anim.TryStart(_animationPage);
     }
 
     private void OnNavigatingFrom(object sender, NavigatingCancelEventArgs e)
     {
-        if (e.Parameter is string command)
+        _animationPage = _animationPageParent = null;
+
+        _navParam = e.Parameter;
+
+        GetNavAnimationVisuals(_navParam);
+
+        if (_animationPage is not null)
         {
-            _animationPage = command;
-            if (_animationPage == null)
-                return;
+            var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
+            svc.PrepareToAnimate("ForwardAnimation", _animationPage);
 
-            //// We're not navigating to a control page, don't set up the animation & clear
-            //// the previous animation source
-            //if (!e.SourcePageType.Name.Equals(nameof(SubPageViewControl)))
-            //{
-            //    _animationPage = null;
-            //    _animationPage = null;
-            //    return;
-            //}
+        }
+    }
 
-            var item = this.GetVisualDescendants()
-                        .Where(x => (x as ICommandSource)?.CommandParameter == _animationPage)?
-                        .FirstOrDefault()?
-                        .GetVisualDescendants()
-                        .Where(x => x is Viewbox && x.Name == "IconHost")?
-                        .FirstOrDefault();
-            if (item != null)
+    private void GetNavAnimationVisuals(object navParam)
+    {
+        if (navParam is null) return;
+        else if (navParam is not null and string command)
+        {
+            _animationPageParent = this.GetVisualDescendants()?.Where(x => (x as ICommandSource)?.CommandParameter is string cmd && cmd == command)?.FirstOrDefault();
+            _animationPage = _animationPageParent?.GetVisualDescendants()?.Where(x => x is Viewbox && x.Name == "IconHost")?.FirstOrDefault();
+        }
+        else
+        {
+            if (navParam is IUserProfile iprofile)
             {
-                var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-                svc.PrepareToAnimate("ForwardAnimation", item);
+                _animationPageParent = this.GetVisualDescendants()?
+                    .Where(x => x is ListBox && x.Name == "lbProfiles")?
+                    .FirstOrDefault();
+                if (this is IDashboardView)
+                    _animationPage = _animationPageParent?.GetVisualDescendants()?
+                        .Where(x => x is Viewbox b && b.Tag == iprofile)?
+                        .FirstOrDefault();
+                else
+                    _animationPage = _animationPageParent?.GetVisualDescendants()?
+                        .Where(x => x is ListBoxItem b && b.DataContext is IUserProfileViewModelBase dc && dc.UserProfile == iprofile)?
+                        .FirstOrDefault();
+            }
+            else if (navParam is IUserProfileFolder)
+            {
+                _animationPageParent = this.GetVisualDescendants()
+                    .Where(x => x is IUserProfileFoldersView)?
+                    .FirstOrDefault();
+                _animationPage = _animationPageParent?.GetVisualDescendants()?
+                     .Where(x => x is Viewbox && x.Name == "IconHost" && (x as Control).Tag == navParam)?
+                     .FirstOrDefault();
             }
         }
     }
+
+    private Visual? _animationPageParent;
+    private Visual? _animationPage;
+    private object? _navParam;
+
 }

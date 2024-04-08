@@ -15,19 +15,19 @@ using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Drawing;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
-public partial class UserProfileViewModel : SubPageViewModelBase
+public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileViewModelBase
 {
     private readonly IUserProfileService _userProfileService;
-    private readonly IUserProfile _userProfile;
-    //private readonly IPrismMessageBoxService _messageBoxService;
-    //private readonly IViewProfileWindowService _viewProfileWindowService;
-    //private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _applicationUser;
+           
+    [ObservableProperty]
+    private  IUserProfile _userProfile;
 
     public UserProfileViewModel(
         IUserProfileService userProfileService,
@@ -48,13 +48,12 @@ public partial class UserProfileViewModel : SubPageViewModelBase
         EventAggregator
              .GetEvent<SavedUserProfileEvent>()
              .Subscribe(args => OnUserProfileSaved(args.UserProfile));
+
+        OnPropertyChanged(nameof(UserProfile));
     }
     [RelayCommand]
     private void ShowViewProfile()
     {
-        //_viewProfileWindowService.OpenWindow(UserProfile);
-
-
         ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<IUserProfileSidePanelView, IUserProfileSidePanelViewModel>(vm =>
         {
             vm.UserProfile = UserProfile;
@@ -189,8 +188,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase
         IsOpenMenuPopup = !IsOpenMenuPopup;
     }
 
-
-    public IUserProfile UserProfile => _userProfile;
 
     public bool IsFavorite => _userProfile?.IsFavourite ?? false;
     public bool IsSharedProfile => _userProfileService.IsSharedProfile(UserProfile);

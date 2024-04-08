@@ -20,6 +20,7 @@
 			<StackPanel Spacing="15"
                         Margin="30 0 30 30">
 				<ui:SettingsExpander Header="DEFAULT"
+									 Name="Default"
 					 IconSource="{StaticResource DefaultSettingsPageIcon}"
 					 Description="Default home pages"
 					 IsClickEnabled="True"
@@ -36,14 +37,17 @@
 						<local:UserDefaultSettingsView />
 					</ui:SettingsExpanderItem>
 					</ui:SettingsExpander>-->
-				<ui:SettingsExpander Header="PROXY"
-					 IconSource="{StaticResource Proxy}"
-					 Description="Proxy settings"
-					 IsClickEnabled="True"
-					 ActionIconSource="{StaticResource GoIcon}"
-					 Command="{Binding CmdNavigateToChildCommand}"
-					 CommandParameter="PROXY"/>
+				<ui:SettingsExpander 
+					Header="PROXY"
+					Name="PROXY"
+					IconSource="{StaticResource Proxy}"
+					Description="Proxy settings"
+					IsClickEnabled="True"
+					ActionIconSource="{StaticResource GoIcon}"
+					Command="{Binding CmdNavigateToChildCommand}"
+					CommandParameter="PROXY"/>
 				<ui:SettingsExpander Header="PROXY CREDIT"
+									 Name="PROXYCREDIT"
 					 IconSource="{StaticResource ProxyCred}"
 					 Description="Proxy credit settings"
 					 IsClickEnabled="True"
@@ -66,6 +70,7 @@
 					</ui:SettingsExpanderItem>
 				</ui:SettingsExpander>
 				<ui:SettingsExpander Header="USERS"
+									 Name="USERS"
 					 IconSource="{StaticResource User}"
 					 Description="Users settings"
 					 IsClickEnabled="True"
@@ -73,6 +78,7 @@
 					 Command="{Binding CmdNavigateToChildCommand}"
 					 CommandParameter="USERS"/>
 				<ui:SettingsExpander Header="IMPORT PROFILES"
+									 Name="IMPORTPROFILES"
 					 IconSource="{StaticResource Import}"
 					 Description="Import profiles from file"
 					 IsClickEnabled="True"

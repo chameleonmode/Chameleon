@@ -30,7 +30,8 @@
 										 Height="20"
 										 Margin="12 8"
 										 VerticalAlignment="Center"
-										 Name="IconHost">
+										 Name="IconHost"
+										 Tag="{Binding UserProfileFolder}">
 									<Grid
 										  VerticalAlignment="Center">
 
@@ -98,6 +99,7 @@
 							<Button.Flyout>
 								<ui:FAMenuFlyout Placement="Bottom">
 									<ui:MenuFlyoutItem Text="Change Proxies"
+													   Tag="{Binding UserProfileFolder}"
 													   IconSource="Wifi4"
 													   Command="{Binding ChangeProxiesCommand}"
 													   IsEnabled="{Binding IsContextMenuItemEnabled}"/>
@@ -128,7 +130,7 @@
 						IsEnabled="{Binding IsCreateBtnEnabled}"/>
 			</Grid>
 		</avfCommon:ChameleonContentControl.TitleContent>
-		<Grid>
+		<Grid VerticalAlignment="Top">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />

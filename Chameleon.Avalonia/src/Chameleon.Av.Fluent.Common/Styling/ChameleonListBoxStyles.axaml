@@ -11,11 +11,7 @@
 					ItemContainerTheme="{StaticResource GridViewItem}">
 					<ListBox.Items>
 						<ListBoxItem>
-							<Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-									CornerRadius="{StaticResource ControlCornerRadius}"
-									BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-									BorderThickness="1"
-									Padding="6">
+							<Border >
 								<Grid ColumnDefinitions="Auto,*,Auto">
 									<Viewbox Width="30"
 											 Height="30"
@@ -57,11 +53,7 @@
 
 						</ListBoxItem>
 						<ListBoxItem>
-							<Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-									CornerRadius="{StaticResource ControlCornerRadius}"
-									BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-									BorderThickness="1"
-									Padding="6">
+							<Border>
 								<Grid ColumnDefinitions="Auto,*,Auto">
 									<Viewbox Width="30"
 											 Height="30"
@@ -167,6 +159,20 @@
 	  x:Key="GridViewItem"
 	  BasedOn="{StaticResource {x:Type ListBoxItem}}">
 		<Setter Property="Padding" Value="0" />
+		<Setter Property="Margin" Value="0 0 0 6" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="{StaticResource ControlCornerRadius}"
+						BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+						BorderThickness="1">
+					<ContentPresenter Name="PART_ContentPresenter"
+									  Padding="6"
+									   ContentTemplate="{TemplateBinding ContentTemplate}"
+									  Content="{TemplateBinding Content}"/>
+				</Border>
+			</ControlTemplate>
+		</Setter>
 		<Style Selector="^:selected">
 			<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
 				<Setter Property="Background" Value="{DynamicResource ListViewItemBackground}" />

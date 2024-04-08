@@ -7,11 +7,7 @@
 			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfileView">
-	<Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-			CornerRadius="{StaticResource ControlCornerRadius}"
-			BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-			BorderThickness="1"
-			Padding="6">
+	<Border>
 		<Grid ColumnDefinitions="Auto,Auto,*,Auto">
 			<StackPanel Grid.Column="0"
 						Orientation="Horizontal">
@@ -26,7 +22,8 @@
 				<Viewbox Width="30"
 						Height="30"
 						Margin="12 8"
-						Name="IconHost">
+						Name="IconHost"
+						 Tag="{Binding UserProfile}">
 					<Grid Width="30"
 						  Height="30"
 						  VerticalAlignment="Center">
@@ -93,6 +90,7 @@
 							IsVisible="{Binding HasMultiOptions}"-->
 
 				<Button ToolTip.Tip="Open copy-paste window"
+						Theme="{StaticResource TransparentButton}"
 						Command="{Binding ShowViewProfileCommand}">
 					<ui:SymbolIcon Symbol="ClipboardCode" FontSize="20" />
 				</Button>

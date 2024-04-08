@@ -92,11 +92,11 @@ public partial class UserProxySettingsViewModel
     public override async Task OnNavigatedToAsync(object? param)
     {
         await base.OnNavigatedToAsync(param);
-        if (param is int folderId)
+        if (param is IUserProfileFolder folderId)
         {
             while(!Loaded)
                 await Task.Delay(100);
-            FolderId = folderId;
+            FolderId = folderId.Id;
         }
     }
     private void OnRenameFolder(int folderId, string title)
@@ -260,9 +260,9 @@ public partial class UserProxySettingsViewModel
 
         ApplyProxy(proxies, models);
 
-        EventAggregator
-           .GetEvent<SyncChangesEvent>()
-           .Publish();
+        //EventAggregator
+        //   .GetEvent<SyncChangesEvent>()
+        //   .Publish();
     }
 
     private void ApplyProxy(List<IProxySettings> proxies, List<UserProxySettingViewModel> models)
@@ -301,20 +301,21 @@ public partial class UserProxySettingsViewModel
     {
         if (string.IsNullOrWhiteSpace(_applingProxy))
         {
-            List<IProxySettings> returned = [];
+            //List<IProxySettings> returned = [];
             if (models != null)
             {
                 foreach (var model in models)
                 {
-                    if(model.UserProfile.Proxy.Host != model.UserProfileModel.Proxy.Host ||
+                    if (model.UserProfile.Proxy.Host != model.UserProfileModel.Proxy.Host ||
                         model.UserProfile.Proxy.Port != model.UserProfileModel.Proxy.Port ||
                         model.UserProfile.Proxy.UserName != model.UserProfileModel.Proxy.UserName ||
                         model.UserProfile.Proxy.Password != model.UserProfileModel.Proxy.Password)
-                    returned.Add(model.UserProfileModel.Proxy);
+                        ApplyProxy(model.UserProfileModel.Proxy, model);
+                    //returned.Add(model.UserProfileModel.Proxy);
                 }
             }
 
-            return returned;
+            return [];
         }
 
         var applingProxyList = _applingProxy.Split(new[]

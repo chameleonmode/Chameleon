@@ -98,12 +98,7 @@
 									</ListBox.ItemsPanel>
 									<ListBox.ItemTemplate>
 										<DataTemplate>
-											<Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-													CornerRadius="{StaticResource ControlCornerRadius}"
-													BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-													BorderThickness="1"
-													Padding="6">
-												<Grid ColumnDefinitions="Auto,Auto,*,Auto">
+											<Grid ColumnDefinitions="Auto,Auto,*,Auto">
 													<CheckBox IsChecked="{Binding IsSelected}"
 															  Margin="6 0 0 0" />
 													
@@ -144,7 +139,6 @@
 														<ui:SymbolIcon Symbol="Add" />
 													</Button>
 												</Grid>
-											</Border>
 										</DataTemplate>
 									</ListBox.ItemTemplate>
 								</ListBox>

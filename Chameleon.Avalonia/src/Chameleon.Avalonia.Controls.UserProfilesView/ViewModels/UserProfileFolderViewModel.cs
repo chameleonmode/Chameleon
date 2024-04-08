@@ -107,7 +107,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         //    .GetEvent<OpenChangeProxiesEvent>()
         //    .Publish(new OpenChangeProxiesEventArgs(_folder.Id));
 
-        NavigationService.NavigateToType(typeof(IUserProxySettingsView), _folder.Id);
+        NavigationService.NavigateToType(typeof(IUserProxySettingsView), UserProfileFolder);
     }
 
     [RelayCommand]

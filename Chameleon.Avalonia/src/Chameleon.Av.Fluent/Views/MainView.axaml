@@ -76,7 +76,8 @@
                            Grid.RowSpan="2"
                            Name="NavView"
                            IsSettingsVisible="False"
-                           IsBackEnabled="{Binding #FrameView.CanGoBack}">
+                           IsBackEnabled="{Binding #FrameView.CanGoBack}"
+						   Classes="SampleAppNav">
 			<ui:Frame Name="FrameView" />
 		</ui:NavigationView>
 

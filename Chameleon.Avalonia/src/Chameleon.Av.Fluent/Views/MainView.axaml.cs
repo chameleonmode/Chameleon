@@ -130,7 +130,7 @@ public partial class MainView : UserControl
     private void OnFrameViewNavigated(object sender, NavigationEventArgs e)
     {
         var page = e.Content as Control;
-        var dc = page.DataContext;
+        object? dc = page.DataContext;
 
         string mainPage = null;
 
@@ -138,7 +138,7 @@ public partial class MainView : UserControl
         {
             mainPage = "Dashboard";
         }
-        else if (dc.GetType() == typeof(UserProfilesViewModel) || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.UserProfileView"))
+        else if (dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.UserProfilesView") || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.UserProfileView"))
         {
             mainPage = "Profiles";
         }
@@ -166,7 +166,7 @@ public partial class MainView : UserControl
         foreach (NavigationViewItem nvi in source)
         {
             var set = false;
-            if (nvi.Tag is MainPageModelBase t && t.NavHeader == mainPage) 
+            if (nvi.Content is string t && t == mainPage) 
             {
                 set = true;
                 NavView.SelectedItem = nvi;
@@ -280,7 +280,7 @@ public partial class MainView : UserControl
                 NavHeader = "Dashboard",
                 IconKey = "HomeIcon",
             },
-            new UserProfilesPageModel()
+            new ()
             {
                 NavHeader = "Profiles",
                 IconKey = "ContactIcon",
@@ -317,7 +317,7 @@ public partial class MainView : UserControl
 
             if (_isDesktop || OperatingSystem.IsBrowser())
             {                    
-                NavView.Classes.Add("SampleAppNav");
+                //NavView.Classes.Add("SampleAppNav");
             }
             else
             {

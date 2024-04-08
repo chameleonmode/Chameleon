@@ -50,7 +50,9 @@
 
 					<avfCommon:ChameleonContentControl.Content>
 						<Panel>
-							<ListBox
+							<ListBox Name="lbProfiles"
+									 
+			
 								IsVisible="{Binding !HasNoItems}"
 								ItemsSource="{Binding ViewModels}"
 								Theme="{StaticResource ListBoxNoScroller}"
@@ -119,12 +121,7 @@
 								</ListBox.ItemsPanel>
 								<ListBox.ItemTemplate>
 									<DataTemplate>
-										<Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-												CornerRadius="{StaticResource ControlCornerRadius}"
-												BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-												BorderThickness="1"
-												Padding="6">
-											<Grid ColumnDefinitions="Auto,Auto,*,Auto">
+										<Grid ColumnDefinitions="Auto,Auto,*,Auto">
 												<Viewbox Width="30"
 														 Height="30"
 														 Margin="12 8"
@@ -165,7 +162,6 @@
 															Theme="{StaticResource FavoriteButton}"/>
 												</StackPanel>
 											</Grid>
-										</Border>
 									</DataTemplate>
 								</ListBox.ItemTemplate>
 							</ListBox>

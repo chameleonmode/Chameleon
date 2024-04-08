@@ -133,35 +133,37 @@
 		</avfCommon:ChameleonContentControl.Options>
 
 		<avfCommon:ChameleonContentControl.Content>
-			<Grid RowDefinitions="*,Auto">
-				<ListBox VerticalAlignment="Top"
-					ItemsSource="{Binding ViewModels}"
-					Theme="{StaticResource ListBoxNoScroller}"
-					ItemContainerTheme="{StaticResource GridViewItem}">
-					<ListBox.IsVisible>
+			<Panel>
+				<Panel VerticalAlignment="Top">
+					<Panel.IsVisible>
 						<MultiBinding Converter="{x:Static BoolConverters.And}">
 							<Binding Path="!HasNoItems"/>
 							<Binding Path="IsProfilesExist"/>
 						</MultiBinding>
-					</ListBox.IsVisible>
-					<ListBox.ItemsPanel>
-						<ItemsPanelTemplate>
-							<UniformGrid Columns="1"/>
-						</ItemsPanelTemplate>
-					</ListBox.ItemsPanel>
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<userProfiles:UserProfileView HorizontalAlignment="Stretch" />
-						</DataTemplate>
-					</ListBox.ItemTemplate>
+					</Panel.IsVisible>
+					<ListBox Name="lbProfiles"
+							 ItemsSource="{Binding ViewModels}"
+							 Theme="{StaticResource ListBoxNoScroller}"
+							 ItemContainerTheme="{StaticResource GridViewItem}">
+						<ListBox.ItemsPanel>
+							<ItemsPanelTemplate>
+								<UniformGrid Columns="1"/>
+							</ItemsPanelTemplate>
+						</ListBox.ItemsPanel>
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<userProfiles:UserProfileView HorizontalAlignment="Stretch" />
+							</DataTemplate>
+						</ListBox.ItemTemplate>
 					</ListBox>
-				<Grid>
-					<Grid.IsVisible>
+				</Panel>
+				<Panel>
+					<Panel.IsVisible>
 						<MultiBinding Converter="{x:Static BoolConverters.Or}">
 							<Binding Path="HasNoItems" />
 							<Binding Path="!IsProfilesExist"/>
 						</MultiBinding>
-					</Grid.IsVisible>
+					</Panel.IsVisible>
 					<Border
 						HorizontalAlignment="Center"
 						VerticalAlignment="Center">
@@ -206,13 +208,13 @@
 							Tag="Add profile"
 							Command="{Binding AddProfilesToFolderCommand}" />
 					</StackPanel>
-				</Grid>
+				</Panel>
 
 				<!--<wait:WaitIndicatorView
 					Grid.Row="1"
 					DataContext="{Binding}"
 					IsIndicatorVisible="{Binding IsWaiting}"/>-->
-			</Grid>
+			</Panel>
 		</avfCommon:ChameleonContentControl.Content>
 
 		<avfCommon:ChameleonContentControl.Footer>
