@@ -18,7 +18,7 @@
 		<Grid Name="TitleBarHost"
               ColumnDefinitions="Auto,Auto,*,Auto"
               Background="Transparent">
-			<Image Margin="12 12"
+			<Image Margin="12 6"
                    IsHitTestVisible="False"
                    Source="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico"
                    DockPanel.Dock="Left"

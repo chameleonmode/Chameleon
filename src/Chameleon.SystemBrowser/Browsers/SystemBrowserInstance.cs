@@ -89,7 +89,7 @@ namespace Chameleon.SystemBrowser.Common
                 );
         }
 
-        protected virtual void StartProcess()
+        protected virtual async void StartProcess()
         {
             if (BrowserType == SystemBrowserType.Firefox)
             {
@@ -109,29 +109,27 @@ namespace Chameleon.SystemBrowser.Common
 
                 process.Start();
 
-                Task.Run(() =>
-                {
-                    process.WaitForExit();
-                });
+                new Thread(process.WaitForExit).Start();
 
                 PublishOpendedEvent(process);
             }
             else
             {
-                string? host = null,username = null,password = null;
+                string? host = null, username = null, password = null;
                 if (UserProfile.Proxy.CanUse)
                 {
                     host = $"{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}";
                     username = UserProfile.Proxy.UserName;
                     password = UserProfile.Proxy.Password;
                 }
-                Play.Instance.SystemBrowserPresistLaunchWithCmdArgs(
-                    _browserProfileFolderPath, 
-                    _browserExeFilePath, 
-                    Options.Url?.AbsoluteUri,   
-                    GetCommandLineArguments(), 
-                     GetLoadExtensionsArgument(),
-                    host, username, password);
+
+                await Play.Instance.LaunchPersistentContextAsync(
+                     _browserProfileFolderPath,
+                     _browserExeFilePath,
+                     Options.Url?.AbsoluteUri,
+                     GetCommandLineArguments(),
+                      GetLoadExtensionsArgument(),
+                     host, username, password);
             }
         }
 
