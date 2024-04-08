@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net;
 using System.Threading.Tasks;
+using Chameleon.SystemBrowser.Automation;
 
 namespace Chameleon.SystemBrowser.Common
 {
@@ -90,28 +91,48 @@ namespace Chameleon.SystemBrowser.Common
 
         protected virtual void StartProcess()
         {
-            var process = new Process
+            if (BrowserType == SystemBrowserType.Firefox)
             {
-                StartInfo = new ProcessStartInfo
+                var process = new Process
                 {
-                    FileName = _browserExeFilePath,
-                    Arguments = GetCommandLineArguments(),
-                    UseShellExecute = true,
-                    ErrorDialog = true
-                },
-                EnableRaisingEvents = true
-            };
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = _browserExeFilePath,
+                        Arguments = GetCommandLineArguments(),
+                        UseShellExecute = true,
+                        ErrorDialog = true
+                    },
+                    EnableRaisingEvents = true
+                };
 
-            process.Exited += new EventHandler(Process_Exited);
+                process.Exited += new EventHandler(Process_Exited);
 
-            process.Start();
+                process.Start();
 
-            Task.Run(() =>
+                Task.Run(() =>
+                {
+                    process.WaitForExit();
+                });
+
+                PublishOpendedEvent(process);
+            }
+            else
             {
-                process.WaitForExit();
-            });
-
-            PublishOpendedEvent(process);
+                string? host = null,username = null,password = null;
+                if (UserProfile.Proxy.CanUse)
+                {
+                    host = $"{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}";
+                    username = UserProfile.Proxy.UserName;
+                    password = UserProfile.Proxy.Password;
+                }
+                Play.Instance.SystemBrowserPresistLaunchWithCmdArgs(
+                    _browserProfileFolderPath, 
+                    _browserExeFilePath, 
+                    Options.Url?.AbsoluteUri,   
+                    GetCommandLineArguments(), 
+                     GetLoadExtensionsArgument(),
+                    host, username, password);
+            }
         }
 
         private void Process_Exited(object sender, EventArgs e)
@@ -171,6 +192,10 @@ namespace Chameleon.SystemBrowser.Common
         }
 
         protected virtual string GetCommandLineArguments()
+        {
+            return string.Empty;
+        }
+        public virtual string GetLoadExtensionsArgument()
         {
             return string.Empty;
         }

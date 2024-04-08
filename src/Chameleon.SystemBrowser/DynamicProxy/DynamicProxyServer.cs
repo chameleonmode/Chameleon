@@ -1,6 +1,4 @@
-﻿using Fluxzy;
-using Fluxzy.Certificates;
-using System;
+﻿using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -14,7 +12,7 @@ namespace Chameleon.SystemBrowser.Proxy
             _externalProxy = externalProxy;
         }
 
-        private Fluxzy.Proxy _proxyServer;
+        //private Fluxzy.Proxy _proxyServer;
         //private ExplicitProxyEndPoint _explicitProxyEndPoint;
         public int Port => 0;// _explicitProxyEndPoint?.Port ?? 0;
         public string Host => "127.0.0.1";
@@ -24,7 +22,7 @@ namespace Chameleon.SystemBrowser.Proxy
         {
             Stop();
 
-            await using var fProxy = new Fluxzy.Proxy(FluxzySetting.CreateDefault());
+            //await using var fProxy = new Fluxzy.Proxy(FluxzySetting.CreateDefault());
             //_proxyServer = new ProxyServer();
             //_proxyServer.ConnectTimeOutSeconds = 180;
             //_proxyServer.ConnectionTimeOutSeconds = 180;

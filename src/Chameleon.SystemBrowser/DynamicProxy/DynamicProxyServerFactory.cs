@@ -1,6 +1,4 @@
 ﻿using Chameleon.Interfaces.UserProfiles;
-using Fluxzy;
-using Fluxzy.Core;
 using System.Net;
 
 

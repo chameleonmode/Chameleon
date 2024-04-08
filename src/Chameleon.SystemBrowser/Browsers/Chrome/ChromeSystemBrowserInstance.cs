@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Chameleon.SystemBrowser.Chrome
 {
@@ -39,10 +40,10 @@ namespace Chameleon.SystemBrowser.Chrome
             arguments.Append("--new-window ");
 
             var urlToOpen = Options.Url;
-            if (Options.SignIn)
-            {
-                urlToOpen = _chromeExtension.GetUrlToOpen(urlToOpen);
-            }
+            //if (Options.SignIn)
+            //{
+            //    urlToOpen = _chromeExtension.GetUrlToOpen(urlToOpen);
+            //}
 
             if (urlToOpen != null)
             {
@@ -51,11 +52,17 @@ namespace Chameleon.SystemBrowser.Chrome
 
             arguments.Append("--no-default-browser-check ");
 
-            var userDataFolder = _browserProfileFolderPath;
-            arguments.Append($"--user-data-dir=\"{userDataFolder}\" ");
-            
-            var extensionDirectories = GetLoadExtensionsArgument();
-            arguments.Append($"--load-extension={extensionDirectories} ");
+            //var userDataFolder = _browserProfileFolderPath;
+            arguments.Append($"--user-data-dir=\"{_browserProfileFolderPath}\" ");
+
+            //var extensionDirectories = GetLoadExtensionsArgument();
+            //foreach (var ext in extensionDirectories.Split(','))
+            //{
+            //    arguments.Append($"--load-extension={ext} ");
+            //}
+            //arguments.Append(@$"--load-extension='C:\Users\elimd\AppData\Local\Google\Chrome\User Data\Default\Extensions\bkmmlbllpjdpgcgdohbaghfaecnddhni\0.2.2_0' ");
+            //arguments.Append(@$"--disable-extensions-except='C:\Users\elimd\AppData\Local\Google\Chrome\User Data\Default\Extensions\bkmmlbllpjdpgcgdohbaghfaecnddhni\0.2.2_0' ");
+            //arguments.Append($"--load-extension={extensionDirectories}");
 
             var webBrowser = UserProfile.WebBrowser;
             if (!webBrowser.WebRTC)
@@ -81,25 +88,25 @@ namespace Chameleon.SystemBrowser.Chrome
                 arguments.Append("--disable-hyperlink-auditing ");
             }
 
-            var proxy = UserProfile.Proxy;
-            if (proxy.CanUse)
-            {
-                //_dynamicProxyServer = DynamicProxyServerFactory.Create(proxy);
-                //if (!_dynamicProxyServer.IsCertificateTrusted())
-                //{
-                //    // In case when windows popup/messagebox for trust proxy certificate was aborted by user by mistake
-                //    // we anyway will allow to use browser and proxy by ignoring certificates
-                //    arguments.Append("--ignore-certificate-errors ");
-                //}
+            //var proxy = UserProfile.Proxy;
+            //if (proxy.CanUse)
+            //{
+            //    //_dynamicProxyServer = DynamicProxyServerFactory.Create(proxy);
+            //    //if (!_dynamicProxyServer.IsCertificateTrusted())
+            //    //{
+            //    //    // In case when windows popup/messagebox for trust proxy certificate was aborted by user by mistake
+            //    //    // we anyway will allow to use browser and proxy by ignoring certificates
+            //    //    arguments.Append("--ignore-certificate-errors ");
+            //    //}
 
-                //arguments.Append($"--proxy-server={_dynamicProxyServer.Server} ");
-                arguments.Append($"--proxy-server={UserProfile.Proxy.Host}:{UserProfile.Proxy.Port} ");
-            }
+            //    //arguments.Append($"--proxy-server={_dynamicProxyServer.Server} ");
+            //    arguments.Append($"--proxy-server={UserProfile.Proxy.Host}:{UserProfile.Proxy.Port} ");
+            //}
             arguments.Append($"--remote-debugging-port={NextFreePort(1000)} ");
             return arguments.ToString();
         }
 
-        private string GetLoadExtensionsArgument()
+        public override string GetLoadExtensionsArgument()
         {
             return _chromeExtension.GetLoadExtensionsArgument(
                 _browserExtensionsFolderPath, UserProfile

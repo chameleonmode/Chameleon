@@ -89,7 +89,7 @@ namespace Chameleon.SystemBrowser.Chrome
             //}
 
             return directories
-                .AddQuotesToEachElement()
+                //.AddQuotesToEachElement()
                 .ToCommaSeparatedString();
         }
     }

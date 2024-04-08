@@ -24,7 +24,7 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
             ) : base(eventAggregator, options, applicationEnvironment.ApplicationDataFolderPath, browserExeFilePath)
         {
             _setPreferencesService = setPreferencesService;
-            _chromeExtension = new ChameleonBraveExtension(applicationEnvironment);
+             _chromeExtension = new ChameleonBraveExtension(applicationEnvironment);
         }
 
         protected override SystemBrowserType BrowserType => SystemBrowserType.Brave;
@@ -33,22 +33,22 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
         {
             var arguments = new StringBuilder(1024);
             arguments.Append("--new-window ");
-
             var urlToOpen = Options.Url;
-            if (Options.SignIn)
-            {
-                urlToOpen = _chromeExtension.GetUrlToOpen(urlToOpen);
-            }
+            //if (Options.SignIn)
+            //{
+            //    urlToOpen = _chromeExtension.GetUrlToOpen(urlToOpen);
+            //}
 
             if (urlToOpen != null)
             {
                 arguments.Append($"\"{urlToOpen.AbsoluteUri}\" ");
             }
 
-            arguments.Append($"--user-data-dir=\"{_browserProfileFolderPath}\" ");
-            
+            //arguments.Append($"--user-data-dir=\"{_browserProfileFolderPath}\" ");
+
             var extensionDirectories = GetLoadExtensionsArgument();
             arguments.Append($"--load-extension={extensionDirectories} ");
+            arguments.Append($"--disable-extensions-except={extensionDirectories} ");
 
             var webBrowser = UserProfile.WebBrowser;
             if (!webBrowser.WebRTC)
@@ -64,20 +64,20 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
             }
 
 
-            var proxy = UserProfile.Proxy;
-            if (proxy.CanUse)
-            {
-                //_dynamicProxyServer = DynamicProxyServerFactory.Create(proxy);
-                //if (!_dynamicProxyServer.IsCertificateTrusted())
-                //{
-                //    // In case when windows popup/messagebox for trust proxy certificate was aborted by user by mistake
-                //    // we anyway will allow to use browser and proxy by ignoring certificates
-                //    arguments.Append("--ignore-certificate-errors ");
-                //}
+            //var proxy = UserProfile.Proxy;
+            //if (proxy.CanUse)
+            //{
+            //    //_dynamicProxyServer = DynamicProxyServerFactory.Create(proxy);
+            //    //if (!_dynamicProxyServer.IsCertificateTrusted())
+            //    //{
+            //    //    // In case when windows popup/messagebox for trust proxy certificate was aborted by user by mistake
+            //    //    // we anyway will allow to use browser and proxy by ignoring certificates
+            //    //    arguments.Append("--ignore-certificate-errors ");
+            //    //}
 
-                //arguments.Append($"--proxy-server={_dynamicProxyServer.Server} ");
-                arguments.Append($"--proxy-server={UserProfile.Proxy.Host}:{UserProfile.Proxy.Port} ");
-            }
+            //    //arguments.Append($"--proxy-server={_dynamicProxyServer.Server} ");
+            //    arguments.Append($"--proxy-server={UserProfile.Proxy.Host}:{UserProfile.Proxy.Port} ");
+            //}
             arguments.Append($"--remote-debugging-port={NextFreePort(1000)} ");
             return arguments.ToString();
         }

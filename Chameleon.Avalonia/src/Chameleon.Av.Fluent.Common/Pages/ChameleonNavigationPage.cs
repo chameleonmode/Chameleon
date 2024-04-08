@@ -66,8 +66,6 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
 
     private void OnNavigatingFrom(object sender, NavigatingCancelEventArgs e)
     {
-        _animationPage = _animationPageParent = null;
-
         _navParam = e.Parameter;
 
         GetNavAnimationVisuals(_navParam);
@@ -82,6 +80,8 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
 
     private void GetNavAnimationVisuals(object navParam)
     {
+        _animationPage = _animationPageParent = null;
+
         if (navParam is null) return;
         else if (navParam is not null and string command)
         {
