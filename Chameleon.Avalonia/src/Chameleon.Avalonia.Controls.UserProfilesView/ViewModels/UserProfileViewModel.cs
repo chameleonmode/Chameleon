@@ -3,6 +3,7 @@ using Chameleon.Authorization;
 using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
+using Chameleon.Infrastructure.UserSettings;
 using Chameleon.Interfaces.App.ContentDiscoverey;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles;
@@ -12,6 +13,7 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.MessageBox;
 using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.Services;
+using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
@@ -129,7 +131,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
           "DeleteLines"))
             EventAggregator
              .GetEvent<DeleteUserProfileEvent>()
-             .Publish(new UserProfileEventArgs(_userProfile));
+             .Publish(new UserProfileEventArgs(UserProfile));
     }
     [RelayCommand]
     private void OpenUserProfile()
@@ -137,14 +139,14 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
         OpenMenu();
         EventAggregator
             .GetEvent<OpenUserProfileEvent>()
-            .Publish(new UserProfileEventArgs(_userProfile));
+            .Publish(new UserProfileEventArgs(UserProfile));
     }
     [RelayCommand]
     private void OpenUserBrowser()
     {
         EventAggregator
             .GetEvent<OpenUserBrowserEvent>()
-            .Publish(new UserProfileEventArgs(_userProfile));
+            .Publish(new UserProfileEventArgs(UserProfile));
     }
     [RelayCommand]
     private void OpenUserRss()
@@ -158,38 +160,45 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
             .Publish(new OpenContentDiscovereyTabEventArgs(ContentDiscovereyTabs.RSS));
     }
     [RelayCommand]
-    private void OpenFirefox()
+    private async Task OpenFirefox()
     {
-        OpenSystemBrowser(SystemBrowserType.Firefox);
+        await OpenSystemBrowser(SystemBrowserType.Firefox);
     }
     [RelayCommand]
-    private void OpenChrome()
+    private async Task OpenChrome()
     {
-        OpenSystemBrowser(SystemBrowserType.Chrome);
+        await OpenSystemBrowser(SystemBrowserType.Chrome);
     }
     [RelayCommand]
-    private void OpenBrave()
+    private async Task OpenBrave()
     {
-        OpenSystemBrowser(SystemBrowserType.Brave);
+        await OpenSystemBrowser(SystemBrowserType.Brave);
     }
     [RelayCommand]
-    private void OpenSystemBrowser(SystemBrowserType browserType)
-    {
-        var args = new UserProfileSystemBrowserEventArgs(
-            _userProfile, browserType);
+    public async Task OpenSystemBrowser(SystemBrowserType browserType)
+    {          
+        string? uri = null;
+        //TODO
+        //IUserDefaultSettingsService userDefaultsSettingsService = ContainerServiceHelper.Resolve<IUserDefaultSettingsService>();
+        //var defaults = await Task.Run(()=>userDefaultsSettingsService.GetAll());
+        //if (defaults.Any())
+        //    uri = defaults[new Random().Next(defaults.Count)].DefaultUrl;
+
+      var args = new UserProfileSystemBrowserEventArgs(
+            UserProfile, browserType, uri);
 
         EventAggregator
             .GetEvent<OpenUserSystemBrowserEvent>()
             .Publish(args);
     }
+
     [RelayCommand]
     private void OpenMenu()
     {
         IsOpenMenuPopup = !IsOpenMenuPopup;
     }
 
-
-    public bool IsFavorite => _userProfile?.IsFavourite ?? false;
+    public bool IsFavorite => UserProfile?.IsFavourite ?? false;
     public bool IsSharedProfile => _userProfileService.IsSharedProfile(UserProfile);
 
     public string SubTitle => "Profiles";

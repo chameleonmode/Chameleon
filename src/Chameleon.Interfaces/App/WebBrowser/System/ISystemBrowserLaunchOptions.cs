@@ -5,7 +5,7 @@ namespace Chameleon.Interfaces.WebBrowser
 {
     public interface ISystemBrowserLaunchOptions
     {
-        Uri Url { get; }
+        string Url { get; }
         bool SignIn { get; }
         IUserProfile UserProfile { get; }
     }

@@ -584,14 +584,15 @@ public partial class UserProfilesViewModel
     {
         var profiles = GetSelectedProfiles();
 
-        profiles.ForEach(selectedProfile =>
+        profiles.ForEach(async(selectedProfile) =>
         {
-            var profile = selectedProfile.UserProfile;
-            var args = new UserProfileSystemBrowserEventArgs(profile, browserType);
+            await selectedProfile.OpenSystemBrowser(browserType);
+            //var profile = selectedProfile.UserProfile;
+            //var args = new UserProfileSystemBrowserEventArgs(profile, browserType);
 
-            EventAggregator
-                .GetEvent<OpenUserSystemBrowserEvent>()
-                .Publish(args);
+            //EventAggregator
+            //    .GetEvent<OpenUserSystemBrowserEvent>()
+            //    .Publish(args);
         });
     }
 

@@ -12,7 +12,7 @@ namespace Chameleon.Interfaces.UserProfiles
         public UserProfileSystemBrowserEventArgs(
             IUserProfile userProfile,
             SystemBrowserType browserType,
-            Uri url = null,
+            string? url = null,
             bool signin = false
             ) : base(userProfile, url)
         {

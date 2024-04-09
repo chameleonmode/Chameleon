@@ -121,7 +121,7 @@ namespace Chameleon.SystemBrowser.Common
                          _browserProfileFolderPath,
                          _browserExeFilePath,
                          UserProfile,
-                         Options.Url?.AbsoluteUri,
+                         Options.Url,
                          GetLoadExtensionsArgument());
                 }
                 catch

@@ -41,14 +41,14 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
 
             if (urlToOpen != null)
             {
-                arguments.Append($"\"{urlToOpen.AbsoluteUri}\" ");
+                arguments.Append($"\"{urlToOpen}\" ");
             }
 
             //arguments.Append($"--user-data-dir=\"{_browserProfileFolderPath}\" ");
 
             var extensionDirectories = GetLoadExtensionsArgument();
             arguments.Append($"--load-extension={extensionDirectories} ");
-            arguments.Append($"--disable-extensions-except={extensionDirectories} ");
+            //arguments.Append($"--disable-extensions-except={extensionDirectories} ");
 
             var webBrowser = UserProfile.WebBrowser;
             if (!webBrowser.WebRTC)
@@ -88,7 +88,7 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
             EnsureExtensionsFolderExistsAsCopyFrom(SystemBrowserType.Chrome);
         }
 
-        private string GetLoadExtensionsArgument()
+        public override string GetLoadExtensionsArgument()
         {
             return _chromeExtension.GetLoadExtensionsArgument(
                 _browserExtensionsFolderPath, UserProfile

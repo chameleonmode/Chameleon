@@ -14,7 +14,7 @@ namespace Chameleon.Interfaces.UserProfiles
             IUserProfile userProfile,
             SystemBrowserType browserType,
             Process process,
-            Uri url = null,
+            string? url = null,
             bool signin = false
             ) : base(userProfile, browserType, url, signin)
         {
