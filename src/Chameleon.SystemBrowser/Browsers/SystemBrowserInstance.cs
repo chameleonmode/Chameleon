@@ -124,7 +124,7 @@ namespace Chameleon.SystemBrowser.Common
                          Options.Url,
                          GetLoadExtensionsArgument());
                 }
-                catch
+                catch(Exception ex) 
                 {
 
                 }
