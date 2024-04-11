@@ -29,8 +29,8 @@
 
 		<avfCommon:ChameleonContentControl.Header>
 			<StackPanel IsVisible="{Binding !HasNoItems}">
-				<StackPanel Orientation="Horizontal"
-							VerticalAlignment="Center">
+				<Panel VerticalAlignment="Center">
+					<StackPanel Orientation="Horizontal">
 					<Button Content="select-all"
 							Tag="Select all"
 							Theme="{StaticResource SvgIconTextButton}"
@@ -53,7 +53,13 @@
 								Theme="{StaticResource SvgIconTextButton}"
 								Command="{Binding AddProfilesToFolderCommand}" />
 					</StackPanel>
-				</StackPanel>
+					</StackPanel>
+
+					<TextBox HorizontalAlignment="Right"
+						 Margin="0 0 -6 6"
+						 Width="300"
+						 Text="{Binding SearchText}" />
+				</Panel>
 
 
 				<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">

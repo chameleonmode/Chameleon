@@ -19,6 +19,8 @@
 	  <None Remove="Assets\Images\FAHeader_CoreControls_Dark.png" />
 	  <None Remove="Assets\Images\FAHeader_NewControls.png" />
 	  <None Remove="Assets\Images\FAHeader_NewControls_Dark.png" />
+	  <None Remove="Assets\Images\logo-long.png" />
+	  <None Remove="Assets\Images\logo-merge.png" />
 	  <None Remove="Assets\Svgs\add.svg" />
 	  <None Remove="Assets\Svgs\advanced-settings.svg" />
 	  <None Remove="Assets\Svgs\arrow-down.svg" />

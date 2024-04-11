@@ -10,6 +10,7 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Services;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
 
 namespace Chameleon.Av.Fluent.ViewModels;
@@ -70,6 +71,13 @@ public partial class MainViewViewModel:ObservableObjectBase, IMainViewViewModel
         //var pvm2 = ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>();
         if (newValue != null) 
             ContainerServiceHelper.Resolve<INavigationService>().NavigateToType(typeof(IProjectsView), newValue.ViewModel);
+    }
+
+    [RelayCommand]
+    private void ClearSearch()
+    {
+        SelectedSearchTerm = null;
+        ContainerServiceHelper.Resolve<IUserProfilesViewModel>().OnFilterTo();
     }
 }
 

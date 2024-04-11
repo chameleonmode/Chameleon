@@ -216,10 +216,10 @@ public class Play
             {
                 args.Add($"--proxy-server={profile.Proxy.Host}:{profile.Proxy.Port}");
                 if(Directory.Exists(proxyextdir))
-                    exts = string.IsNullOrEmpty(exts) ? proxyextdir : $"\"{exts},{proxyextdir}\"";
+                    exts = string.IsNullOrEmpty(exts) ? proxyextdir : $"{exts},{proxyextdir}";
             }
             if (!string.IsNullOrEmpty(exts))
-                args.Add($"--load-extension={exts}");
+                args.Add($"--load-extension=\"{exts}\"");
 
             if (!profile.WebBrowser.WebRTC)
             {

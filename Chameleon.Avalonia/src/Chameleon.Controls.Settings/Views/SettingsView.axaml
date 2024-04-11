@@ -13,7 +13,8 @@
 		<ScrollViewer>
 			<StackPanel Spacing="-5">
 				<contrls:PageHeaderControl TextType="Settings"
-										   Classes="smallest"/>
+										   Classes="smallest"
+										   />
 				<!--<TextBlock Text="Settings"
                         Margin="30 -30 0 0"
 						   Theme="{StaticResource TitleLargeTextBlockStyle}"/>-->
@@ -77,14 +78,14 @@
 					 ActionIconSource="{StaticResource GoIcon}"
 					 Command="{Binding CmdNavigateToChildCommand}"
 					 CommandParameter="USERS"/>
-				<ui:SettingsExpander Header="IMPORT PROFILES"
+				<!--<ui:SettingsExpander Header="IMPORT PROFILES"
 									 Name="IMPORTPROFILES"
 					 IconSource="{StaticResource Import}"
 					 Description="Import profiles from file"
 					 IsClickEnabled="True"
 					 ActionIconSource="{StaticResource GoIcon}"
 					 Command="{Binding CmdNavigateToChildCommand}"
-					 CommandParameter="IMPORTPROFILES"/>
+					 CommandParameter="IMPORTPROFILES"/>-->
 			</StackPanel>
 			</StackPanel>
 		</ScrollViewer>

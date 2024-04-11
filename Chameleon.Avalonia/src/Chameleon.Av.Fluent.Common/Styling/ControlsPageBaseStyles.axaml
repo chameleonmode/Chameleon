@@ -311,10 +311,10 @@
 					<Panel Name="HeaderRegion"
                            DockPanel.Dock="Top"
                            ClipToBounds="False">
-						<Border Background="{DynamicResource PageHeaderBackgroundBrush}"
+						<!--<Border Background="{DynamicResource PageHeaderBackgroundBrush}"
                                 OpacityMask="{DynamicResource HeaderOpacityMaskBrush}"
                                 Height="80"
-                                VerticalAlignment="Top"/>
+                                VerticalAlignment="Top"/>-->
 						<Grid ColumnDefinitions="*,Auto"
                               RowDefinitions="*,Auto"
                               Margin="0 0 0 0"

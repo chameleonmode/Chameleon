@@ -129,7 +129,8 @@ public partial class ProjectsViewModel : PageViewModelBase,
         }
         else if(param is IUserProfile up)
         {
-            ContainerServiceHelper.Resolve<IUserProfilesViewModel>().OnNavigatingTo(up);
+          
+            ContainerServiceHelper.Resolve<IUserProfilesViewModel>().OnFilterTo(up);
         }
     }
 

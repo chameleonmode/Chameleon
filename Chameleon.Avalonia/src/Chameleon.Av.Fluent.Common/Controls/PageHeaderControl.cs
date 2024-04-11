@@ -4,6 +4,7 @@ using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia;
 using Avalonia.Media.Imaging;
+using FluentAvalonia.UI.Controls;
 
 namespace Chameleon.Av.Fluent.Common.Controls;
 
@@ -50,6 +51,7 @@ public class PageHeaderControl : TemplatedControl
         base.OnApplyTemplate(e);
 
         _text1 = e.NameScope.Get<Image>("TitleTextImageHost");
+        _fontIcon = e.NameScope.Get<FontIcon>("TitleTextFontHost");
         UpdateTitleText();
     }
 
@@ -66,8 +68,10 @@ public class PageHeaderControl : TemplatedControl
         //{
         //    _text1.Width = double.NaN;
         //}
-        _text1.Width = 180;
         //PseudoClasses.Set(":small", wid < 450);
+        //
+
+        //_text1.Width = 180;
     }
 
     private void UpdateTitleText()
@@ -77,24 +81,25 @@ public class PageHeaderControl : TemplatedControl
 
         var theme = ActualThemeVariant;
 
-        const string asset = "avares://Chameleon.Avalonia.Common/Assets/Images/";
+        //const string asset = "avares://Chameleon.Avalonia.Common/Assets/Images/";
 
-        var header = TextType switch
+        _fontIcon.Glyph = TextType switch
         {
-            PageHeaderTextType.CoreControls => "FAHeader_CoreControls",
-            PageHeaderTextType.FAControls => "FAHeader_NewControls",
-            _ => "FAHeader2"
+            PageHeaderTextType.Dashboard => "Dashboard",
+            PageHeaderTextType.Profiles => "Profiles & Folders",
+            PageHeaderTextType.Settings => "Settings",
+            _ => "Chameleon"
         };
 
-        if (theme == ThemeVariant.Light)
-        {
-            header += "_Dark";
-        }
+        //if (theme == ThemeVariant.Light)
+        //{
+        //    _fontIcon.Fo
+        //}
 
-        header += ".png";
+        //header += ".png";
 
         //using var s = AssetLoader.Open(new Uri($"{asset}{header}"));
-        using var s = AssetLoader.Open(new Uri($"avares://Chameleon.Avalonia.Common/Assets/logo-big.png"));
+        using var s = AssetLoader.Open(new Uri($"avares://Chameleon.Avalonia.Common/Assets/Images/logo-merge.png"));
         _text1.Source = new Bitmap(s);
     }
 
@@ -105,5 +110,6 @@ public class PageHeaderControl : TemplatedControl
 
     private Uri _titleTextImage;
     private Image _text1;
+    private FontIcon _fontIcon;
     private PageHeaderTextType _textType;
 }

@@ -28,7 +28,12 @@
 			</LinearGradientBrush>
 
 			<ImageBrush x:Key="PageHeaderBackgroundBrush"
-               Source="avares://Chameleon.Avalonia.Common/Assets/Images/FAHeaderBackground_Dark.png"
+				Source="avares://Chameleon.Avalonia.Common/Assets/Images/FAHeaderBackground_Dark.png"
+				AlignmentY="Center"
+				Stretch="UniformToFill">
+			</ImageBrush>
+			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
+               Source="avares://Chameleon.Avalonia.Common/Assets/Images/logo-long.png"
                AlignmentY="Center"
                Stretch="UniformToFill">
 				<!--<RenderOptions.BitmapInterpolationMode>
@@ -52,7 +57,12 @@
 			</LinearGradientBrush>
 
 			<ImageBrush x:Key="PageHeaderBackgroundBrush"
-               Source="avares://Chameleon.Avalonia.Common/Assets/Images/FAHeaderBackground.png"
+				Source="avares://Chameleon.Avalonia.Common/Assets/Images/FAHeaderBackground.png"
+				AlignmentY="Center"
+				Stretch="UniformToFill">
+			</ImageBrush>
+			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
+               Source="avares://Chameleon.Avalonia.Common/Assets/Images/logo-long.png"
                AlignmentY="Center"
                Stretch="UniformToFill">
 				<!--<RenderOptions.BitmapInterpolationMode>
@@ -71,7 +81,13 @@
 			</LinearGradientBrush>
 
 			<ImageBrush x:Key="PageHeaderBackgroundBrush"
-               Source="avares://Chameleon.Avalonia.Common/Assets/Images/FAHeaderBackground.png"
+				Source="avares://Chameleon.Avalonia.Common/Assets/Images/FAHeaderBackground_Dark.png"
+				AlignmentY="Center"
+				Stretch="UniformToFill">
+			</ImageBrush>
+
+			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
+               Source="avares://Chameleon.Avalonia.Common/Assets/Images/logo-long.png"
                AlignmentY="Center"
                Stretch="UniformToFill">
 				<!--<RenderOptions.BitmapInterpolationMode>
@@ -88,20 +104,24 @@
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Panel>
-					<Border CornerRadius="8 0 0 0"
+					<!--<Border ClipToBounds="True"
+						Background="{DynamicResource PageHeaderBackgroundBrush}"
+						RenderOptions.BitmapInterpolationMode="HighQuality"
+						OpacityMask="{DynamicResource HeaderOpacityMaskBrush}" />-->
+					<!--<Border CornerRadius="8 0 0 0"
                             ClipToBounds="True"
-                            Background="{DynamicResource PageHeaderBackgroundBrush}"
+                            Background="{DynamicResource PageHeaderBackgroundBrushBG}"
                             RenderOptions.BitmapInterpolationMode="HighQuality"
-                            OpacityMask="{DynamicResource HeaderOpacityMaskBrush}" />
+                            OpacityMask="{DynamicResource HeaderOpacityMaskBrush}" />-->
 
 					<Panel>
 						<Image Name="TitleTextImageHost"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
                                MaxWidth="400"
-                               Margin="30 50 0 0"
+                               Margin="30 0 0 0"
                                MinWidth="150"
-                               IsVisible="True"
+                               IsVisible="False"
                                RenderOptions.BitmapInterpolationMode="HighQuality">
 							<Image.Transitions>
 								<Transitions>
@@ -111,6 +131,17 @@
 								</Transitions>
 							</Image.Transitions>
 						</Image>
+
+						<ui:FontIcon Name="TitleTextFontHost"
+									 Glyph="Dashboard"
+									 FontSize="36" 
+									 FontWeight="SemiBold"
+									 VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               MaxWidth="400"
+                               Margin="18 12 0 12"
+                               MinWidth="150"
+									  />
 					</Panel>
 				</Panel>
 			</ControlTemplate>
@@ -124,21 +155,21 @@
 			</Transitions>
 		</Setter>
 		<Style Selector="^.smallest">
-			<Setter Property="Height" Value="100" />
+			<Setter Property="Height" Value="69" />
 			<Style Selector="^ /template/ Image#TitleTextImageHost">
-				<Setter Property="Margin" Value="30 25 0 0" />
+				<Setter Property="Margin" Value="12 12 0 16" />
 			</Style>
 		</Style>
 		<Style Selector="^.smaller">
 			<Setter Property="Height" Value="150" />
 			<Style Selector="^ /template/ Image#TitleTextImageHost">
-				<Setter Property="Margin" Value="30 25 0 0" />
+				<Setter Property="Margin" Value="12 12 0 16" />
 			</Style>
 		</Style>
 		<Style Selector="^.small">
 			<Setter Property="Height" Value="200" />
 			<Style Selector="^ /template/ Image#TitleTextImageHost">
-				<Setter Property="Margin" Value="30 25 0 0" />
+				<Setter Property="Margin" Value="12 12 0 16" />
 			</Style>
 		</Style>
 	</ControlTheme>

@@ -13,13 +13,13 @@
 	</UserControl.Resources>
 
 	<ScrollViewer> 
-		<StackPanel Spacing="-5">
+		<StackPanel Spacing="-56">
 			<avfCommon:PageHeaderControl TextType="Dashboard"
 										 Classes="smallest"/>
 			
 			<Grid Margin="{StaticResource ChameleonAppPageMargin}">
 				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
+					<RowDefinition Height="48" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="280*" />
 					<RowDefinition Height="220*" />

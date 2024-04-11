@@ -4,6 +4,12 @@
         xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives">
   <Design.PreviewWith>
 	  <StackPanel>
+
+		  <AutoCompleteBox Name="SearchBox"
+				   MaxWidth="500"
+				   Watermark="Search"
+				   Classes="SampleApp">
+		  </AutoCompleteBox>
 		  
 	  <Border Background="LightBlue"
 		BorderBrush="Black"
@@ -249,7 +255,7 @@
 		<Setter Property="Foreground" Value="{DynamicResource AccentFillColorDefaultBrush}" />
 	</Style>
 
-	<!-- AutoCompleteBox Search box in MainView -->
+	<!-- AutoCompleteBox Search box in MainView $parent[TextBox].Clear-->
 	<Style Selector="AutoCompleteBox.SampleApp /template/ TextBox#PART_TextBox">
 		<Setter Property="InnerRightContent">
 			<Template>
@@ -257,7 +263,7 @@
 					<Button Content="&#xE8BB;"
                                FontFamily="{StaticResource SymbolThemeFontFamily}"
                                Theme="{StaticResource TransparentButton}"
-                               Command="{Binding $parent[TextBox].Clear}"
+                               Command="{Binding ClearSearchCommand}"
                                IsVisible="{Binding Text, RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
 					<Button Content="&#xE721;"
                                FontFamily="{StaticResource SymbolThemeFontFamily}"

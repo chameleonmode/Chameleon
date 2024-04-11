@@ -183,6 +183,18 @@ public partial class UserProfileFoldersViewModel
                 .GetEvent<OpenUserProfileFolderEvent>()
                 .Publish(new UserProfileFolderEventArgs(p));
         }
+        else
+        {
+            _allProfiles.Open();
+        }
         //SearchText = p.Title;
+    }
+
+    public async void SetSelectedById(int id)
+    {
+        while (!Loaded)
+            await Task.Delay(250);
+
+        OnNavigatingTo(_mapping.FirstOrDefault(m => m.UserProfileFolder.Id == id)?.UserProfileFolder);
     }
 }

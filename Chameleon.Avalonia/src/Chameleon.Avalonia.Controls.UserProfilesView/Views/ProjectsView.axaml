@@ -8,7 +8,7 @@
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="850"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.ProjectsView">
 	<ScrollViewer>
-		<StackPanel Spacing="-5">
+		<StackPanel Spacing="-18">
 			<avfCommon:PageHeaderControl Grid.Row="0"
 										 TextType="Profiles"
 										 Classes="smallest"/>
@@ -30,7 +30,7 @@
 						<Panel Grid.ColumnSpan="2">
 							<Button Theme="{StaticResource SyncChangesButton}" />
 							<Button HorizontalAlignment="Left"
-									Margin="0 0"
+									Margin="6 0"
 									Classes="accent"
 									Command="{Binding CreateProfileCommand}"
 									IsVisible="{Binding IsCreateProfileBtnVisible}">

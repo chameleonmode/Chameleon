@@ -721,18 +721,26 @@ public partial class UserProfilesViewModel
                                    Folder?.ProfilesCount == 0 &&
                                    Folder?.Id != 0;
 
-    public async void OnNavigatingTo(IUserProfile p = null)
+    public async void OnFilterTo(IUserProfile p = null)
     {
-        while(!Loaded)
+        while (!Loaded)
             await Task.Delay(250);
 
-        if(p != null)
+        if (p != null)
         {
             Filter = profile => p.Id == profile.Id;
-
-            OnPropertyChanged(nameof(ViewModels));
-            OnPropertyChanged(nameof(IsProfilesExist));
+            if (p.FolderId is int fid)
+                ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().SetSelectedById(fid);
+            else
+                ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
         }
-          //SearchText = p.Title;
+        else
+        {
+            Filter = null;
+            ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
+        }
+
+        OnPropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(IsProfilesExist));
     }
 }
