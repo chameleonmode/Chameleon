@@ -200,7 +200,7 @@ public class Play
             var port = SystemBrowserInstance.NextFreePort(1000);
             List<string> args =
                 [
-                    $"--user-data-dir={userDataDirDefault}",
+                    $"--user-data-dir=\"{userDataDirDefault}\"",
                     "--restore-last-session",
                     "--profile-directory=Default",
                     "--ash-no-nudges",
@@ -261,8 +261,8 @@ public class Play
             };
             process.Start();  
             //await Task.Delay(1000);
-            while(process.MainWindowHandle == IntPtr.Zero) 
-                await Task.Delay(500);
+            //while(process.MainWindowHandle == IntPtr.Zero) 
+                //await Task.Delay(500);
 
             //BrowserTypeLaunchPersistentContextOptions options = new()
             //{
@@ -441,8 +441,9 @@ public class Play
         }
         finally
         {
-            Interlocked.Decrement(ref _isBusy);
         }
+        
+        Interlocked.Decrement(ref _isBusy);
     }
 
     private long _isBusy;

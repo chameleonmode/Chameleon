@@ -67,8 +67,8 @@ namespace Chameleon.SystemBrowser.Chrome
 
         public virtual string GetLoadExtensionsArgument(string extensionsFolderPath, IUserProfile userProfile)
         {
-            if (OperatingSystem.IsMacOS())
-                return "";
+            //if (OperatingSystem.IsMacOS())
+              //  return "";
             var directories = Directory
                 .GetDirectories(extensionsFolderPath)
                 //.Where(directory => !directory.EndsWith("UserAgentSelector", StringComparison.OrdinalIgnoreCase))
