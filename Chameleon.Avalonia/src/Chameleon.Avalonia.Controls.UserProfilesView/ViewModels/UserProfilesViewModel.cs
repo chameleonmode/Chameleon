@@ -728,11 +728,12 @@ public partial class UserProfilesViewModel
 
         if (p != null)
         {
-            Filter = profile => p.Id == profile.Id;
-            if (p.FolderId is int fid)
+            if (p.FolderId is int fid && fid != 0)
                 ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().SetSelectedById(fid);
             else
-                ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
+                ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null); 
+            
+            Filter = profile => p.Id == profile.Id;
         }
         else
         {
