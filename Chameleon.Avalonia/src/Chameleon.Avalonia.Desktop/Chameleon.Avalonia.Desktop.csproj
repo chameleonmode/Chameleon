@@ -8,6 +8,7 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
 	  <ApplicationIcon>logosymbol.ico</ApplicationIcon>
+	  <UseAppHost>true</UseAppHost>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="logosymbol.ico" />
@@ -26,6 +27,7 @@
 	  <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
 	  <PackageReference Include="Avalonia.Svg" />
 	  <PackageReference Include="Avalonia.Svg.Skia" />
+	  <PackageReference Include="Dotnet.Bundle" />
   </ItemGroup>
 	
   <ItemGroup>
