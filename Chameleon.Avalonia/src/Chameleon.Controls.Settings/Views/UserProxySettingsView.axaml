@@ -76,7 +76,8 @@
 
 								<Button VerticalAlignment="Bottom"
 										Margin="4 0 0 0"
-										Theme="{StaticResource TransparentButton}">
+										Theme="{StaticResource TransparentButton}"
+										Command="{Binding FillProxiesCommand}">
 									<ui:SymbolIcon Symbol="Refresh" FontSize="22" />
 								</Button>
 							</StackPanel>
