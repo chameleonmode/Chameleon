@@ -15,7 +15,7 @@ public class AutoViewModelLocatorControl : UserControl
         var vm = $"{viewType.Namespace}.ViewModels.{viewType.Name}Model, {viewAssemblyName}";
         var viewModelType = Type.GetType(vm);
 
-        if (viewModelType != null)
+        if (viewModelType != null && (DataContext == null || DataContext.GetType() != viewModelType))
         {
             var subPageViewModel = ContainerServiceHelper.Resolve(viewModelType);
             //if (!Design.IsDesignMode)

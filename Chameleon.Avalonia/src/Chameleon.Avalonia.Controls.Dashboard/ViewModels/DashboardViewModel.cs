@@ -5,6 +5,7 @@ using Chameleon.Core.Collections.Views;
 using Chameleon.Core.Util;
 using Chameleon.CT.Common.Base;
 using Chameleon.Infrastructure.Users;
+using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.Assistants.Events;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
@@ -18,6 +19,7 @@ using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.Dashboard.ViewModels;
@@ -101,18 +103,21 @@ public partial class DashboardViewModel
     }
     public override async Task InitAsync(object? param)
     {
-        if(Loaded)
-            return; 
+        if (!Loaded)
+        {
 
-        await base.InitAsync(param);
+            await base.InitAsync(param);
 
-        IsWaiting = true;
+            IsWaiting = true;
 
-        await LoadUserProfileViewModels();
-        await LoadUserProfileFolderViewModels();
-        await CheckHasAssistantsAsync();
+            await LoadUserProfileViewModels();
+            await LoadUserProfileFolderViewModels();
+            await CheckHasAssistantsAsync();
 
-        IsWaiting = false;
+            IsWaiting = false;
+        }
+
+        BuildSearchTerms();
     }
     //public void OnAuthenticated()
     //{
@@ -361,4 +366,29 @@ public partial class DashboardViewModel
     }
 
     public IUserProfile SelectedProfile { get { return ViewModels[0].UserProfile; } set { } }
+
+    public void BuildSearchTerms()
+    {
+        List<MainAppSearchItem> items = [];
+
+        foreach (var item in _mapping)
+            items.Add(new() 
+            {
+                Header = item.Title,
+                Namespace = "Profile",
+                ViewModel = item.UserProfile,
+                PageType = this.GetType()
+            });
+
+        foreach (var item in _folderMapping)
+            items.Add(new()
+            {
+                Header = item.Title,
+                Namespace = "Profiles "+item.ProfilesCount,
+                ViewModel = item.Folder,
+                PageType = this.GetType()
+            });
+
+        MVVM.BuildSearchTerms(items);
+    }
 }

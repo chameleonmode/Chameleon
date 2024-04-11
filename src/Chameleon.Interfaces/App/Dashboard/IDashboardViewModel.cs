@@ -6,5 +6,6 @@ namespace Chameleon.Interfaces.Dashboard
     public interface IDashboardViewModel : ISingletonDependency
     {
         IUserProfile SelectedProfile { get; set; }
+        void BuildSearchTerms();
     }
 }

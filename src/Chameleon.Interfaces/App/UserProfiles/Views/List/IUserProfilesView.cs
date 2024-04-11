@@ -4,9 +4,7 @@ using System;
 namespace Chameleon.Interfaces.UserProfiles
 {
     public interface IUserProfilesView 
-        : ITransientDependency
+        : ISingletonDependency
     {
-        Func<IUserProfile, bool> Filter { get; set; }
-        void Refresh();
     }
 }

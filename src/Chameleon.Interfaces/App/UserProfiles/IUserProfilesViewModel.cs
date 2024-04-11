@@ -8,4 +8,5 @@ public interface IUserProfilesViewModel :ISingletonDependency
 {
     Func<IUserProfile, bool> Filter { get; set; }
     void Refresh();
+    void OnNavigatingTo(IUserProfile p = null);
 }

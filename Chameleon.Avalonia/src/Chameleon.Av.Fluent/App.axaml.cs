@@ -57,6 +57,7 @@ using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 using Chameleon.Avalonia.Controls.UserProfileView.Services;
 using Chameleon.Avalonia.Controls.UserProfileView;
 using Chameleon.Interfaces.App.UserProfiles.Views.List;
+using Chameleon.Interfaces;
 
 namespace Chameleon.Av.Fluent;
      public class tempinits : IDialogWindowsService  , IPopupDialogService
@@ -216,21 +217,21 @@ public partial class App : PrismApplication
         // Views - Viewmodels                                                     
         containerRegistry.RegisterSingleton<IMainWindow, MainWindow>();
 
-        containerRegistry.RegisterSingleton<MainViewViewModel>();
+        containerRegistry.RegisterSingleton<IMainViewViewModel, MainViewViewModel>();
 
         containerRegistry.RegisterSingleton<IDashboardViewModel, DashboardViewModel>();
         containerRegistry.RegisterSingleton<IDashboardView, DashboardView>();
 
-        containerRegistry.RegisterSingleton<IProjectsViewModel, ProjectsViewModel>();
-        containerRegistry.RegisterSingleton<IProjectsView, ProjectsView>();
-        containerRegistry.RegisterSingleton<IUserProfileFoldersViewModel, UserProfileFoldersViewModel>();
-        containerRegistry.RegisterSingleton<IUserProfileFoldersView, UserProfileFoldersView>();
-        containerRegistry.RegisterSingleton<IUserProfilesViewModel, UserProfilesViewModel>();
-        containerRegistry.RegisterSingleton<IUserProfilesView, UserProfilesView>();                         
-        containerRegistry.RegisterSingleton<IUserProfileAdditionalDataService, UserProfileAdditionalDataService>();
+        cr.RegisterSingleton<IProjectsViewModel, ProjectsViewModel>();   
+        cr.RegisterSingleton<IProjectsView, ProjectsView>();
+        cr.RegisterSingleton<IUserProfilesView, UserProfilesView>();                         
+        cr.RegisterSingleton<IUserProfileAdditionalDataService, UserProfileAdditionalDataService>();
         Container.RegisterMapperFrom(typeof(UserProfileIdentityViewModel).Assembly);
-        containerRegistry.RegisterSingleton<IUserProfileIdentityViewModel, UserProfileIdentityViewModel>(); 
-        containerRegistry.Register<IUserProfileIdentityView, UserProfileIdentityView>();
+        cr.RegisterSingleton<IUserProfileIdentityViewModel, UserProfileIdentityViewModel>(); 
+        cr.Register<IUserProfileIdentityView, UserProfileIdentityView>();   
+        cr.RegisterSingleton<IUserProfileFoldersView, UserProfileFoldersView>();    
+        cr.RegisterSingleton<IUserProfileFoldersViewModel, UserProfileFoldersViewModel>();
+        cr.RegisterSingleton<IUserProfilesViewModel, UserProfilesViewModel>();
         //containerRegistry.RegisterSingleton<ISettingsViewModel, SettingsViewModel>();
         //containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
         //containerRegistry.RegisterSingleton<IUserProxySettingsViewModel, UserProxySettingsViewModel>();

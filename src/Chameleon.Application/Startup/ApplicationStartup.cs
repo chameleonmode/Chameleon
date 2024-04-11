@@ -8,6 +8,8 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.Startup;
+using Chameleon.Interfaces.UserProfileFolders;
+using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.Views;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Interfaces.Windows;
@@ -29,9 +31,10 @@ namespace Chameleon.Application.Startup
             // injected just to create all event handlers to start them up
             //ISettingsViewModel ___,
             //IDashboardViewModel __,
-            //IProjectsViewModel ____,
+           // IProjectsView ____,
             //IUserProfilesViewModel _____,
-            //IUserProfileIdentityViewModel ______,
+            //IUserProfileFoldersViewModel ______,
+             //IUserProfileIdentityViewModel ______,
              ISystemBrowserManager systemBrowserManager 
             ,IEnumerable<IApplicationEventHandlers> _
             )

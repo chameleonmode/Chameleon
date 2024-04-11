@@ -24,9 +24,28 @@
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="Auto" />
 									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
 								</Grid.ColumnDefinitions>
 
-								<Viewbox Width="20"
+
+								<!--<Button IsVisible="{Binding IsFavoriteButtonVisible}"
+		Theme="{StaticResource TransparentButton}"
+		Margin="0 0 0 0"
+		Command="{Binding SetFavoriteCommand}">
+									<Panel Background="Transparent">
+										<avf:SvgIconControl IconName="not-favorites"
+															  IsVisible="{Binding !IsFavorite}"
+															  Width="15"
+															  Height="15" />
+										<avf:SvgIconControl IconName="in-favorites"
+															  IsVisible="{Binding IsFavorite}"
+															  Width="12"
+															  Height="12" />
+									</Panel>
+								</Button>-->
+																	
+								<Viewbox 
+										 Width="20"
 										 Height="20"
 										 Margin="12 8"
 										 VerticalAlignment="Center"
@@ -73,7 +92,7 @@
 			<Grid>
 				<ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}" />
 					<Grid>
-						<Grid 
+						<Grid Grid.ColumnSpan="2"
 							ColumnDefinitions="*, Auto" 
 							   Grid.Column="1"
 							   IsVisible="{Binding IsRenamed}">
@@ -87,11 +106,12 @@
 									Grid.Column="1"
 									Command="{Binding SaveRenameCommand}"/>
 						</Grid>
-						
-						<Button 
+
+						<StackPanel Orientation="Horizontal"
 							IsVisible="{Binding !IsRenamed}"
-								Grid.Column="2"
-								HorizontalAlignment="Right"
+								HorizontalAlignment="Right">
+						<Button 
+								Grid.Column="1"
 								Content="three-dots"
 								ToolTip.Tip="Details"
 								Command="{Binding OpenMenuCommand}"
@@ -114,6 +134,11 @@
 								</ui:FAMenuFlyout>
 							</Button.Flyout>
 						</Button>
+							<Button Grid.Column="2"
+										IsVisible="True"
+										Command="{Binding SetFavoriteCommand}"
+										Theme="{StaticResource FavoriteButton}"/>
+						</StackPanel>
 					</Grid>
 			</Grid>
 		</DataTemplate>

@@ -20,30 +20,9 @@
 				<avfCommon:ChameleonContentControl Title="Proxies list"
 												   TitleDescription="Select proxies to edit them">
 					<avfCommon:ChameleonContentControl.TitleContent>
-						<Grid HorizontalAlignment="Right">
-							<ui:CommandBar DefaultLabelPosition="Right">
-								<ui:CommandBar.PrimaryCommands>
-									<ui:CommandBarElementContainer>
-										<ui:FAComboBox PlaceholderText="Proxy Country:"
-													   ItemsSource="{Binding Countries.Items}"
-													SelectedItem="{Binding Country}"
-													 IsEditable="False"
-													 IsTextSearchEnabled="True"
-														VerticalAlignment="Center">
-											<ui:FAComboBox.ItemTemplate>
-												<DataTemplate>
-													<Label Content="{Binding Name}"/>
-												</DataTemplate>
-											</ui:FAComboBox.ItemTemplate>
-										</ui:FAComboBox>
-									</ui:CommandBarElementContainer>
-									<ui:CommandBarButton IconSource="Refresh"
-														 Label="Auto Update Proxies"
-														 Command="{Binding FillProxiesCommand}"
-														 IsEnabled="{Binding FillProxiesIsEnabled}"/>
-								</ui:CommandBar.PrimaryCommands>
-							</ui:CommandBar>
-						</Grid>
+						<paginator:PaginatorView Grid.Row="1"
+						 DataContext="{Binding PaginatorViewModel}" />
+						<!---->
 					</avfCommon:ChameleonContentControl.TitleContent>
 
 					<avfCommon:ChameleonContentControl.Header>
@@ -56,8 +35,7 @@
 										Command="{Binding SelectAllCommand}" />
 							
 
-							<HeaderedContentControl Grid.Row="1"
-													Theme="{StaticResource HasSelectedItemsBorder}">
+							<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
 								<HeaderedContentControl.Header>
 									<Button Theme="{StaticResource TransparentButton}"
 											TextElement.Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
@@ -70,23 +48,73 @@
 					</avfCommon:ChameleonContentControl.Header>
 					
 					<avfCommon:ChameleonContentControl.Options>
-						<StackPanel Spacing="12">
+						<StackPanel Spacing="18">
 							<ui:FAComboBox PlaceholderText="Selected Folder"
-										   Width="180"
 										   Header="Folder:"
+										   Width="200"
 										   IsEditable="False"
 										   IsTextSearchEnabled="True"
-										   HorizontalAlignment="Stretch"
+										   HorizontalAlignment="Left"
 										   SelectedItem="{Binding SelectedFolder}"
 										   ItemsSource="{Binding FolderViewModels.Items}"
 										   DisplayMemberBinding="{Binding Title, x:DataType=vm:ProfileFolderViewModel}" />
+
+							<StackPanel Orientation="Horizontal">
+								<ui:FAComboBox Header="Auto Update Proxies:"
+											   PlaceholderText="Proxy Country:"
+											   Width="150"
+											   IsEditable="False"
+											   IsTextSearchEnabled="True"
+											   ItemsSource="{Binding Countries.Items}"
+											   SelectedItem="{Binding Country}">
+									<ui:FAComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ui:FAComboBox.ItemTemplate>
+								</ui:FAComboBox>
+
+								<Button VerticalAlignment="Bottom"
+										Margin="4 0 0 0"
+										Theme="{StaticResource TransparentButton}">
+									<ui:SymbolIcon Symbol="Refresh" FontSize="22" />
+								</Button>
+							</StackPanel>
+
+
+							<!--<ui:CommandBar HorizontalAlignment="Right" 
+										   DefaultLabelPosition="Right">
+								<ui:CommandBar.PrimaryCommands>
+									<ui:CommandBarElementContainer>
+										<ui:FAComboBox PlaceholderText="Proxy Country:"
+													   Header="Proxy Country:"
+													   ItemsSource="{Binding Countries.Items}"
+													SelectedItem="{Binding Country}"
+													 IsEditable="False"
+													 IsTextSearchEnabled="True"
+														VerticalAlignment="Center">
+											<ui:FAComboBox.ItemTemplate>
+												<DataTemplate>
+													<Label Content="{Binding Name}"/>
+												</DataTemplate>
+											</ui:FAComboBox.ItemTemplate>
+										</ui:FAComboBox>
+									</ui:CommandBarElementContainer>
+								</ui:CommandBar.PrimaryCommands>
+								<ui:CommandBar.SecondaryCommands>
+									<ui:CommandBarButton IconSource="Refresh"
+														 Label="Auto Update Proxies"
+														 Command="{Binding FillProxiesCommand}"
+														 IsEnabled="{Binding FillProxiesIsEnabled}"/>
+								</ui:CommandBar.SecondaryCommands>
+							</ui:CommandBar>-->
 						</StackPanel>
 					</avfCommon:ChameleonContentControl.Options>
 					
 					<avfCommon:ChameleonContentControl.Content>
-						<StackPanel>
-							<paginator:PaginatorView Grid.Row="1"
-													 DataContext="{Binding PaginatorViewModel}" />
+						<!--<StackPanel>-->
+							<!--<paginator:PaginatorView Grid.Row="1"
+													 DataContext="{Binding PaginatorViewModel}" />-->
 								<ListBox 
 									Theme="{StaticResource ListBoxNoScroller}"
 									ItemContainerTheme="{StaticResource GridViewItem}"
@@ -143,7 +171,7 @@
 									</ListBox.ItemTemplate>
 								</ListBox>
 
-						</StackPanel>
+						<!--</StackPanel>-->
 					</avfCommon:ChameleonContentControl.Content>
 
 					<avfCommon:ChameleonContentControl.Footer>

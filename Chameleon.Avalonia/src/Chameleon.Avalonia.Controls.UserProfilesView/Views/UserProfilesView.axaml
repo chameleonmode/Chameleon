@@ -17,26 +17,13 @@
 											StringFormat='You have {0} profiles.'}">
 		<avfCommon:ChameleonContentControl.TitleContent>
 			<Grid ColumnDefinitions="*,Auto">
-				<TextBox HorizontalAlignment="Center"
+				<pagnator:PaginatorView
+	DataContext="{Binding PaginatorViewModel}" />
+				<!--<TextBox HorizontalAlignment="Center"
 						 Margin="0 0 0 12"
 						 Width="300"
-						 Text="{Binding SearchText}" />
-				<StackPanel
-					Grid.Column="1"
-					Orientation="Horizontal">
-					<Grid
-						Width="20"
-						Height="16">
-						<ui:SymbolIcon
-							Symbol="Share"
-							IsVisible="{Binding IsSharedFolder}" />
-					</Grid>
-					<Button
-						Margin="0 0 12 0"
-						Command="{Binding SetFavoriteCommand}"
-						Theme="{StaticResource FavoriteButton}"/>
+						 Text="{Binding SearchText}" />-->
 
-				</StackPanel>
 			</Grid>
 		</avfCommon:ChameleonContentControl.TitleContent>
 
@@ -142,6 +129,9 @@
 							<Binding Path="IsProfilesExist"/>
 						</MultiBinding>
 					</Panel.IsVisible>
+					<!--<StackPanel>-->
+						<!--<pagnator:PaginatorView
+							DataContext="{Binding PaginatorViewModel}" />-->
 					<ListBox Name="lbProfiles"
 							 ItemsSource="{Binding ViewModels}"
 							 Theme="{StaticResource ListBoxNoScroller}"
@@ -157,6 +147,7 @@
 							</DataTemplate>
 						</ListBox.ItemTemplate>
 					</ListBox>
+					<!--</StackPanel>-->
 				</Panel>
 				<Panel>
 					<Panel.IsVisible>
@@ -218,84 +209,9 @@
 			</Panel>
 		</avfCommon:ChameleonContentControl.Content>
 
-		<avfCommon:ChameleonContentControl.Footer>
+		<!--<avfCommon:ChameleonContentControl.Footer>
 			<pagnator:PaginatorView
 				DataContext="{Binding PaginatorViewModel}" />
-			<!--<StackPanel>
-				<pagnator:PaginatorView
-					DataContext="{Binding PaginatorViewModel}" />
-				Select multiple profiles and run browser (Chameleon, Brave, Firefox or Chrome)
-				<Border
-					Background="{StaticResource AccentFillColorDefaultBrush}"
-					HorizontalAlignment="Center"
-					Height="50"
-					CornerRadius="{StaticResource ControlCornerRadius}"
-					Margin="0 0 0 3"
-					IsVisible="{Binding !HasSelectedProfiles}">
-					<StackPanel Margin="24 0"
-						Orientation="Horizontal">
-						<TextBlock
-							Text="{Binding SelectedCount}"
-							VerticalAlignment="Center" />
-						<TextBlock
-							Text=" selected"
-							VerticalAlignment="Center" />
-
-						<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-								Margin="18 6"
-								BorderThickness="1 0 0 0" />
-
-						<Button
-							Content="chrome"
-							ToolTip.Tip="Open In System Chrome"
-							Theme="{StaticResource SvgIconButton}"
-							Command="{Binding OpenChromeCommand}"/>
-						<Button
-							Content="firefox"
-							Margin="3 0 0 0"
-							ToolTip.Tip="Open In System Firefox"
-							Theme="{StaticResource SvgIconButton}"
-							Command="{Binding OpenFirefoxCommand}"/>
-						<Button
-							Content="brave"
-							Margin="3 0 0 0"
-							ToolTip.Tip="Open In System Brave"
-							Theme="{StaticResource SvgIconButton}"
-							Command="{Binding OpenBraveCommand}"/>
-						<Button
-							Content="chameleon-logo"
-							Margin="3 0 0 0"
-							ToolTip.Tip="Open In Chameleon Browser"
-							Theme="{StaticResource SvgIconButton}"
-							Command="{Binding OpenChameleonBrowserCommand}"/>
-
-						<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-								Margin="18 6"
-								BorderThickness="1 0 0 0" />
-
-						<Button
-							Theme="{StaticResource SvgIconTextButton}"
-							Content="up-folder"
-							Tag="Move"
-							Command="{Binding MoveProfilesToFolderCommand}" />
-						<Button
-							Theme="{StaticResource SvgIconTextButton}"
-							Content="delete"
-							Tag="Delete"
-							Margin="3 0 0 0"
-							Command="{Binding DeleteCommand}" />
-
-						<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-								Margin="18 6"
-								BorderThickness="1 0 0 0" />
-
-						<Button
-							Classes="accent"
-							Content="Unselect"
-							Command="{Binding UnselectCommand}"/>
-					</StackPanel>
-				</Border>
-			</StackPanel>-->
-		</avfCommon:ChameleonContentControl.Footer>
+		</avfCommon:ChameleonContentControl.Footer>-->
 	</avfCommon:ChameleonContentControl>
 </UserControl>

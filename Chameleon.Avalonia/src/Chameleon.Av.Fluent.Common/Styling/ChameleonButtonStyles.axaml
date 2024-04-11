@@ -96,7 +96,7 @@
                              BorderBrush="{TemplateBinding BorderBrush}"
                              BorderThickness="{TemplateBinding BorderThickness}"
                              CornerRadius="{TemplateBinding CornerRadius}">
-					<Grid>
+					<Panel Background="Transparent">
 						<local:SvgIconControl IconName="not-favorites"
 											  IsVisible="{Binding !IsFavorite}"
 											  Width="15"
@@ -105,7 +105,7 @@
 											  IsVisible="{Binding IsFavorite}"
 											  Width="12"
 											  Height="12" />
-					</Grid>
+					</Panel>
 				</ui:FABorder>
 			</ControlTemplate>
 		</Setter>

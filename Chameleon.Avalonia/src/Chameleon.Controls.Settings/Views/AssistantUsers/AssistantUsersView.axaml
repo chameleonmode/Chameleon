@@ -37,8 +37,13 @@
 		</ItemsPanelTemplate>
 	</UserControl.Resources>
 	<Border Padding="20">
-		<avfCommon:ChameleonContentControl Title="Current Users">
+		<avfCommon:ChameleonContentControl Title="Current Users"
+										   TitleDescription="Manage your taskforce users control">
+
 			<avfCommon:ChameleonContentControl.TitleContent>
+				<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
+			</avfCommon:ChameleonContentControl.TitleContent>
+			<avfCommon:ChameleonContentControl.Options>
 				<ui:CommandBar HorizontalAlignment="Right"
 							   DefaultLabelPosition="Right">
 					<ui:CommandBar.PrimaryCommands>
@@ -47,7 +52,7 @@
 											 Command="{Binding CreateNewUserAssistantCommand}"/>
 					</ui:CommandBar.PrimaryCommands>
 				</ui:CommandBar>
-			</avfCommon:ChameleonContentControl.TitleContent>
+			</avfCommon:ChameleonContentControl.Options>
 
 			<avfCommon:ChameleonContentControl.Content>
 				<!--BorderBrush="{StaticResource InsertProfilesLine}"-->
@@ -112,14 +117,13 @@
 				</ItemsControl>
 			</avfCommon:ChameleonContentControl.Content>
 
-			<avfCommon:ChameleonContentControl.Footer>
-				<!--BorderBrush="{StaticResource InsertProfilesLine}"-->
+			<!--<avfCommon:ChameleonContentControl.Footer>
 				<Border Grid.Row="1"
 						BorderThickness="1 0 1 1"
 						CornerRadius="0 0 2 2">
 					<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
 				</Border>
-			</avfCommon:ChameleonContentControl.Footer>
+			</avfCommon:ChameleonContentControl.Footer>-->
 		</avfCommon:ChameleonContentControl>
 	</Border>
 </UserControl>

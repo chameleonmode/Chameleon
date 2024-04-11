@@ -121,7 +121,8 @@ public partial class PaginatorViewModel
 
     private void UpdateStatus()
     {
-       //TODO:?? RaiseAllPropertiesChanged();
+        OnPropertyChanged(nameof(PrevButtonIsEnabled));
+        OnPropertyChanged(nameof(NextButtonIsEnabled));
     }
 
 

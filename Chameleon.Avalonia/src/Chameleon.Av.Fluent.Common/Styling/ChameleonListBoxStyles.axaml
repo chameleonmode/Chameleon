@@ -159,10 +159,11 @@
 	  x:Key="GridViewItem"
 	  BasedOn="{StaticResource {x:Type ListBoxItem}}">
 		<Setter Property="Padding" Value="0" />
-		<Setter Property="Margin" Value="0 0 0 6" />
+		<Setter Property="Margin" Value="6 0 0 6" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+				<Border Name="border"
+						Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
 						CornerRadius="{StaticResource ControlCornerRadius}"
 						BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
 						BorderThickness="1">
@@ -208,6 +209,15 @@
 					<Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundPressed}" />
 				</Style>
 			</Style>
+		</Style>
+		<Style Selector="^:pointerover">
+			<Style Selector="^ /template/ Border#border">
+				<Setter Property="BorderBrush" Value="{DynamicResource TextControlElevationBorderBrush}" />
+				<!--<Setter Property="Background" Value="{DynamicResource LayerFillColorDefaultBrush}" />-->
+			</Style>
+			<!--<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Background" Value="{DynamicResource LayerFillColorDefaultBrush}" />
+			</Style>-->
 		</Style>
 	</ControlTheme>
 

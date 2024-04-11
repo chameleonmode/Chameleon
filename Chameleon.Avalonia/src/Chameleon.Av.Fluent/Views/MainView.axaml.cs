@@ -18,6 +18,7 @@ using Chameleon.Avalonia.Controls.Settings.ViewModels;
 using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Common.Helpers;
+using Chameleon.Interfaces;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Dialogs;
@@ -85,9 +86,9 @@ public partial class MainView : UserControl
 
         if (ContainerServiceHelper.Current.ContainerProvider is not null)
         {
-            DataContext = ContainerServiceHelper.Resolve<MainViewViewModel>();
+            DataContext = ContainerServiceHelper.Resolve<IMainViewViewModel>() as MainViewViewModel;
 
-            await ContainerServiceHelper.Current.ContainerProvider.Resolve<IApplicationStartup>().RunAsync();
+            await ContainerServiceHelper.Resolve<IApplicationStartup>().RunAsync();
         }
 
         InitializeNavigationPages();

@@ -7,6 +7,7 @@
 			 xmlns:regions="using:Chameleon.Common.Regions"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
 			 xmlns:vm="using:Chameleon.Av.Fluent.ViewModels"
+			 xmlns:i="using:Chameleon.Interfaces"
 			 xmlns:local="using:Chameleon.Av.Fluent.Views"
              mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
 			 x:CompileBindings="True"
@@ -46,15 +47,16 @@
 				</TextBlock.IsVisible>
 			</TextBlock>
 
-			<!--<Border Grid.Column="2" Padding="6">
+			<Border Grid.Column="2" Padding="6">
 				<AutoCompleteBox Name="SearchBox"
                                  MaxWidth="500"
                                  Watermark="Search"
                                  Classes="SampleApp"
-                                 ValueMemberBinding="{Binding Header, DataType=vm:MainAppSearchItem}"
+                                 ValueMemberBinding="{Binding Header, DataType=i:MainAppSearchItem}"
+								 SelectedItem="{Binding SelectedSearchTerm}"
                                  ItemsSource="{Binding SearchTerms}">
 					<AutoCompleteBox.ItemTemplate>
-						<DataTemplate x:DataType="vm:MainAppSearchItem">
+						<DataTemplate x:DataType="i:MainAppSearchItem">
 							<Panel>
 								<StackPanel HorizontalAlignment="Left"
                                             VerticalAlignment="Center">
@@ -68,7 +70,7 @@
 						</DataTemplate>
 					</AutoCompleteBox.ItemTemplate>
 				</AutoCompleteBox>
-			</Border>-->
+			</Border>
 		</Grid>
 
 		<ui:NavigationView AlwaysShowHeader="False"

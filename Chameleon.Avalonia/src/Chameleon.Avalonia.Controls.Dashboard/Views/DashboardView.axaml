@@ -29,11 +29,11 @@
 														 Margin="23 0 0 0" />-->
 				<Button Theme="{StaticResource SyncChangesButton}" />
 
-				<TextBox Grid.Row="1"
+				<!--<TextBox Grid.Row="1"
 						 HorizontalAlignment="Center"
 								 Margin="0 0 0 12"
 								 Width="300"
-								 Text="{Binding SearchText}" />
+								 Text="{Binding SearchText}" />-->
 				
 				<avfCommon:ChameleonContentControl Grid.Row="2"
 												   Title="Favorite Profiles"

@@ -1,11 +1,15 @@
-﻿using Chameleon.Common.Helpers;
+﻿using Avalonia.Controls;
+using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
+using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.Synchronization.Events;
+using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserSettings;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
@@ -13,19 +17,19 @@ namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 public partial class UserProfileFolderViewModel : SubPageViewModelBase
 {
     private readonly IApplicationUser _currentUser;
-    private readonly IAuthSession _authSession;
     private readonly IUserProfileFolder _folder;
     private readonly IUserProfileFolderService _userProfileFolderService;
 
+    [ObservableProperty]
+    private bool _isFavoriteButtonVisible = true;
+
     public UserProfileFolderViewModel(
         IApplicationUser currentUser,
-        IAuthSession authSession,
         IUserProfileFolder folder,
         IUserProfileFolderService userProfileFolderService
         )
     {
         _currentUser = currentUser;
-        _authSession = authSession;
         _folder = folder;
         _userProfileFolderService = userProfileFolderService;
 
@@ -40,6 +44,8 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         EventAggregator
             .GetEvent<UpdateUserProfileFolderEvent>()
             .Subscribe(SetSelected);
+
+        IsFavorite = folder.IsFavorite;
     }
 
     public IUserProfileFolder UserProfileFolder => _folder;
@@ -50,6 +56,25 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         EventAggregator
             .GetEvent<OpenUserProfileFolderEvent>()
             .Publish(new UserProfileFolderEventArgs(_folder));
+    }
+
+    [RelayCommand]
+    private void SetFavorite()
+    {
+        IsFavorite = !IsFavorite;
+
+        UserProfileFolder.IsFavorite = IsFavorite;
+
+        _userProfileFolderService.Save(_folder);
+
+        EventAggregator
+            .GetEvent<UpdateFavoriteFolderEvent>()
+            .Publish();
+        EventAggregator
+            .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
+            .Publish(new ChangeProfilesInFavoriteFolderEventArgs(UserProfileFolder.Id)); 
+        
+        OnPropertyChanged(nameof(UserProfileFolder));
     }
 
     private void SetSelected(UserProfileFolderEventArgs args)

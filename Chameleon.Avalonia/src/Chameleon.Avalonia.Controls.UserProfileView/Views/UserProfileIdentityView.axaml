@@ -115,30 +115,11 @@
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<Grid IsVisible="{Binding Path=!HasNoItems}">
-							<StackPanel Orientation="Vertical"
-										HorizontalAlignment="Center"
-										Margin="0 128 0 0">
-								<avfCommon:SvgIconControl IconName="no-peresons"
-												  Height="102.26"
-												  Width="97"
-												  Foreground="{StaticResource SecondaryText}" />
-								<TextBlock Margin="0 13.43 0 0"
-										   Text="No persons added yet for this profile"
-										   FontSize="18"
-										   FontFamily="Open Sans"
-										   FontWeight="DemiBold"
-										   HorizontalAlignment="Center"
-										   Foreground="{StaticResource SecondaryText}" />
-								<Button Content="plus-in-circle"
-										Tag="Add person"
-										Command="{Binding Path=AddPersonCommand}"
-										Margin="6"
-										HorizontalAlignment="Center"
-										Theme="{StaticResource SvgIconTextButton}" />
-							</StackPanel>
-						</Grid>
-						<Grid IsVisible="{Binding Path=HasNoItems}">
+						<avfCommon:SvgIconControl IconName="no-peresons"
+												  Width="210" 
+												  Margin="0 0 0 126"
+												  IsVisible="{Binding Path=!HasNoItems}"/>
+						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="*" />
@@ -150,7 +131,8 @@
 								</Grid.ColumnDefinitions>
 								<TextBlock Text="{Binding Persons.Items.Count,
 											   StringFormat='You have {0} persons added.'}"
-										   VerticalAlignment="Center"/>
+										   VerticalAlignment="Center"
+										   Theme="{StaticResource SubtitleTextBlockStyle}" />
 								<Button Content="plus-in-circle"
 										Tag="Add Person"
 										Command="{Binding Path=AddPersonCommand}"
@@ -163,73 +145,68 @@
 										  ItemsSource="{Binding Path=Persons.Items}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Border Margin="0 0 0 16">
-											<Expander IsExpanded="{Binding IsOpenSearchParameters, FallbackValue=True}">
-												<Expander.Header>
-													<TextBlock Text="{Binding Title}" />
-												</Expander.Header>
-												<StackPanel Spacing="18">
-													<avfCommon:HeaderdInputFieldsControl Title="Title"
-																						 Text="{Binding Title, FallbackValue=Title}" />
+										<Expander IsExpanded="{Binding IsOpenSearchParameters, FallbackValue=True}"
+												  Header="{Binding Title}"
+												  Margin="0 0 0 6">
+											<StackPanel Spacing="18">
+												<avfCommon:HeaderdInputFieldsControl Title="Title"
+																					 Text="{Binding Title, FallbackValue=Title}" />
 
-													<avfCommon:HeaderdInputFieldsControl Title="Name first, middle, last"
-																						 Header="False">
-														<avfCommon:HeaderdInputFieldsControl.TextBoxes>
-															<TextBox  Text="{Binding FirstName,FallbackValue=first}" />
-															<TextBox  Text="{Binding MiddleName,FallbackValue=middle}"  />
-															<TextBox Text="{Binding LastName,FallbackValue=last}" />
-														</avfCommon:HeaderdInputFieldsControl.TextBoxes>
-													</avfCommon:HeaderdInputFieldsControl>
+												<avfCommon:HeaderdInputFieldsControl Title="Name first, middle, last"
+																					 Header="False">
+													<avfCommon:HeaderdInputFieldsControl.TextBoxes>
+														<TextBox  Text="{Binding FirstName,FallbackValue=first}" />
+														<TextBox  Text="{Binding MiddleName,FallbackValue=middle}"  />
+														<TextBox Text="{Binding LastName,FallbackValue=last}" />
+													</avfCommon:HeaderdInputFieldsControl.TextBoxes>
+												</avfCommon:HeaderdInputFieldsControl>
 
-													<avfCommon:HeaderdInputFieldsControl Title="Job Title"
-																						 Text="{Binding JobTitle, FallbackValue=JobTitle}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Job Title"
+																					 Text="{Binding JobTitle, FallbackValue=JobTitle}" />
 
-													<avfCommon:HeaderdInputFieldsControl Title="Phone Number"
-																						 Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Phone Number"
+																					 Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
 
-													<UniformGrid Rows="1">
-														<Border HorizontalAlignment="Stretch" Padding="15 0 22 0">
-															<RadioButton GroupName="rbgGender">
-																<RadioButton.IsChecked>
-																	<Binding Path="Gender" />
-																</RadioButton.IsChecked>
-																<RadioButton.Content>
-																	<TextBlock Text="Male"  />
-																</RadioButton.Content>
-															</RadioButton>
-														</Border>
-														<Border Grid.Column="1" Padding="15 0 22 0">
-															<RadioButton GroupName="rbgGender">
-																<RadioButton.IsChecked>
-																	<Binding Path="Gender" />
-																</RadioButton.IsChecked>
-																<RadioButton.Content>
-																	<TextBlock Text="Female"  />
-																</RadioButton.Content>
-															</RadioButton>
-														</Border>
-													</UniformGrid>
+												<UniformGrid Rows="1">
+													<Border HorizontalAlignment="Stretch" Padding="15 0 22 0">
+														<RadioButton GroupName="rbgGender">
+															<RadioButton.IsChecked>
+																<Binding Path="Gender" />
+															</RadioButton.IsChecked>
+															<RadioButton.Content>
+																<TextBlock Text="Male"  />
+															</RadioButton.Content>
+														</RadioButton>
+													</Border>
+													<Border Grid.Column="1" Padding="15 0 22 0">
+														<RadioButton GroupName="rbgGender">
+															<RadioButton.IsChecked>
+																<Binding Path="Gender" />
+															</RadioButton.IsChecked>
+															<RadioButton.Content>
+																<TextBlock Text="Female"  />
+															</RadioButton.Content>
+														</RadioButton>
+													</Border>
+												</UniformGrid>
 
-													<DatePicker SelectedDate="{Binding BirthDateOffset, FallbackValue=1/2/23}"
-																Margin="0"/>
+												<DatePicker SelectedDate="{Binding BirthDateOffset, FallbackValue=1/2/23}"
+															Margin="0"/>
 
-													<avfCommon:HeaderdInputFieldsControl Title="BirthPlace"
-																						 Text="{Binding BirthPlace, FallbackValue=BirthPlace}" />
+												<avfCommon:HeaderdInputFieldsControl Title="BirthPlace"
+																					 Text="{Binding BirthPlace, FallbackValue=BirthPlace}" />
 
-													<avfCommon:HeaderdInputFieldsControl Title="Notes"
-																						 Text="{Binding Notes, FallbackValue=Notes}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Notes"
+																					 Text="{Binding Notes, FallbackValue=Notes}" />
 
-													<Button Margin="6 16 0 0"
-															Command="{Binding Path=DeletePersonCommand}"
-															CommandParameter="{Binding}">
-														<StackPanel Orientation="Horizontal">
-															<avfCommon:SvgIconControl IconName="delete" />
-															<TextBlock Text="Delete"  />
-														</StackPanel>
-													</Button>
-												</StackPanel>
-											</Expander>
-										</Border>
+												<Button Content="delete"
+														Tag="Delete"
+														Command="{Binding Path=$parent[ItemsControl].DataContext.DeletePersonCommand}"
+														CommandParameter="{Binding}"
+														HorizontalAlignment="Right"
+														Theme="{StaticResource SvgIconTextButton}" />
+											</StackPanel>
+										</Expander>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
@@ -258,31 +235,11 @@
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<Grid IsVisible="{Binding Path=!HasNoBusinessItems}">
-							<StackPanel Orientation="Vertical"
-									HorizontalAlignment="Center"
-									Margin="0 128 0 0">
-								<avfCommon:SvgIconControl
-									IconName="no-business"
-									Height="102.26"
-									Width="97"
-									Foreground="{StaticResource SecondaryText}"/>
-								<TextBlock Margin="0 13.43 0 0"
-									   Text="No businnesses added yet for this profile"
-									   FontSize="18"
-									   FontFamily="Open Sans"
-									   FontWeight="DemiBold"
-									   HorizontalAlignment="Center"
-									   Foreground="{StaticResource SecondaryText}"/>
-								<Button Content="plus-in-circle"
-										Tag="Add business"
-										Command="{Binding Path=AddBusinessCommand}"
-										Margin="6"
-										HorizontalAlignment="Center"
-										Theme="{StaticResource SvgIconTextButton}" />
-							</StackPanel>
-						</Grid>
-						<Grid IsVisible="{Binding Path=HasNoBusinessItems}">
+						<avfCommon:SvgIconControl IconName="no-business"
+						  Width="210"
+						  Margin="0 0 0 126"
+						  IsVisible="{Binding Path=!HasNoBusinessItems}"/>
+						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="*"/>
@@ -294,7 +251,8 @@
 								</Grid.ColumnDefinitions>
 								<TextBlock Text="{Binding Businesses.Items.Count,
 											   StringFormat='You have {0} businesses added.'}"
-										   VerticalAlignment="Center"/>
+										   VerticalAlignment="Center"
+										   Theme="{StaticResource SubtitleTextBlockStyle}"/>
 								<Button Content="plus-in-circle"
 										Tag="Add Business"
 										Command="{Binding Path=AddBusinessCommand}"
@@ -307,47 +265,36 @@
 										  ItemsSource="{Binding Path=Businesses.Items}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Border Margin="0 0 0 16">
-											<Expander IsExpanded="{Binding IsOpenSearchParameters, FallbackValue=True}">
-												<Expander.Header>
-													<TextBlock Text="{Binding Title}"/>
-												</Expander.Header>
-												<Border BorderThickness="0 1 0 0">
-													<StackPanel Spacing="18">
-														<avfCommon:HeaderdInputFieldsControl Title="Title"
-																							 Text="{Binding Title, FallbackValue=Title}" />
+										<Expander IsExpanded="{Binding IsOpenSearchParameters, FallbackValue=True}"
+												  Header="{Binding Title}"
+												  Margin="0 0 0 6">
+											<StackPanel Spacing="18">
+												<avfCommon:HeaderdInputFieldsControl Title="Title"
+																					 Text="{Binding Title, FallbackValue=Title}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="Company Name"
-																				 Text="{Binding CompanyName, FallbackValue=CompanyName}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Company Name"
+																		 Text="{Binding CompanyName, FallbackValue=CompanyName}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="Department"
-																				 Text="{Binding Department, FallbackValue=Department}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Department"
+																		 Text="{Binding Department, FallbackValue=Department}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="Phone Number"
-																				 Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Phone Number"
+																		 Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="Web Site"
-																				 Text="{Binding WebSite, FallbackValue=WebSite}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Web Site"
+																		 Text="{Binding WebSite, FallbackValue=WebSite}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="Notes"
-																				 Text="{Binding Notes, FallbackValue=Notes}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Notes"
+																		 Text="{Binding Notes, FallbackValue=Notes}" />
 
-														<Button Theme="{DynamicResource TransparentButton}"
-																Command="{Binding Path=DeleteBusinessCommand}"
-																CommandParameter="{Binding}"
-																Margin="0 16 6 0"
-																HorizontalAlignment="Right">
-															<StackPanel Orientation="Horizontal">
-																<avfCommon:SvgIconControl IconName="delete"
-																						  Foreground="{StaticResource OrangeDeleteProfiles}" />
-																<TextBlock Text="Delete"
-																		   Foreground="{StaticResource OrangeDeleteProfiles}" />
-															</StackPanel>
-														</Button>
-													</StackPanel>
-												</Border>
-											</Expander>
-										</Border>
+												<Button Content="delete"
+														Tag="Delete"
+														Command="{Binding Path=$parent[ItemsControl].DataContext.DeleteBusinessCommand}"
+														CommandParameter="{Binding}"
+														HorizontalAlignment="Right"
+														Theme="{StaticResource SvgIconTextButton}" />
+											</StackPanel>
+										</Expander>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
@@ -376,31 +323,11 @@
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<Grid IsVisible="{Binding Path=!HasNoAddressesItems}">
-							<StackPanel Orientation="Vertical"
-									HorizontalAlignment="Center"
-									Margin="0 128 0 0">
-								<avfCommon:SvgIconControl
-									IconName="no-address"
-									Height="102.26"
-									Width="97"
-									Foreground="{StaticResource SecondaryText}"/>
-								<TextBlock Margin="0 13.43 0 0"
-									   Text="No addresses added yet for this profile"
-									   FontSize="18"
-									   FontFamily="Open Sans"
-									   FontWeight="DemiBold"
-									   HorizontalAlignment="Center"
-									   Foreground="{StaticResource SecondaryText}"/>
-								<Button Content="plus-in-circle"
-										Tag="Add address"
-										Command="{Binding Path=AddAddressCommand}"
-										Margin="6"
-										HorizontalAlignment="Center"
-										Theme="{StaticResource SvgIconTextButton}" />
-							</StackPanel>
-						</Grid>
-						<Grid IsVisible="{Binding Path=HasNoAddressesItems}">
+						<avfCommon:SvgIconControl IconName="no-address"
+						  Width="210"
+						  Margin="0 0 0 126"
+						  IsVisible="{Binding Path=!HasNoAddressesItems}"/>
+						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="*"/>
@@ -412,7 +339,8 @@
 								</Grid.ColumnDefinitions>
 								<TextBlock Text="{Binding Addresses.Items.Count,
 											   StringFormat='You have {0} addresses added.'}"
-										   VerticalAlignment="Center"/>
+										   VerticalAlignment="Center"
+										   Theme="{StaticResource SubtitleTextBlockStyle}"/>
 								<Button Content="plus-in-circle"
 										Tag="Add Address"
 										Command="{Binding Path=AddAddressCommand}"
@@ -425,67 +353,56 @@
 										  ItemsSource="{Binding Path=Addresses.Items}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Border Margin="0 0 0 16">
-											<Expander IsExpanded="{Binding IsOpenSearchParameters, FallbackValue=True}">
-												<Expander.Header>
-													<TextBlock Text="{Binding Title}"/>
-												</Expander.Header>
-												<Border BorderThickness="0 1 0 0">
-													<StackPanel Spacing="18">
-														<avfCommon:HeaderdInputFieldsControl Title="Title"
-																							 Text="{Binding Title, FallbackValue=Title}" />
+										<Expander IsExpanded="{Binding IsOpenSearchParameters, FallbackValue=True}"
+												  Header="{Binding Title}"
+												  Margin="0 0 0 6">
+											<StackPanel Spacing="18">
+												<avfCommon:HeaderdInputFieldsControl Title="Title"
+																					 Text="{Binding Title, FallbackValue=Title}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="AddressLine1"
-																							 Text="{Binding AddressLine1, FallbackValue=AddressLine1}" />
+												<avfCommon:HeaderdInputFieldsControl Title="AddressLine1"
+																					 Text="{Binding AddressLine1, FallbackValue=AddressLine1}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="AddressLine2"
-																							 Text="{Binding AddressLine2, FallbackValue=AddressLine2}" />
+												<avfCommon:HeaderdInputFieldsControl Title="AddressLine2"
+																					 Text="{Binding AddressLine2, FallbackValue=AddressLine2}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="City"
-																							 Text="{Binding City, FallbackValue=City}" />
+												<avfCommon:HeaderdInputFieldsControl Title="City"
+																					 Text="{Binding City, FallbackValue=City}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="State"
-																							 Text="{Binding State, FallbackValue=State}" />
+												<avfCommon:HeaderdInputFieldsControl Title="State"
+																					 Text="{Binding State, FallbackValue=State}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="Zip"
-																							 Text="{Binding Zip, FallbackValue=Zip}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Zip"
+																					 Text="{Binding Zip, FallbackValue=Zip}" />
 
-														<ComboBox ItemsSource="{Binding Path=Countries.Items}"
-																  PlaceholderText="Country"
-																  Margin="0 0 6 0"
-																  HorizontalAlignment="Stretch">
-															<ComboBox.SelectedItem>
-																<MultiBinding>
-																	<Binding Path="CountryId"/>
-																	<Binding Path="DataContext.Countries.Items" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" Mode="OneWay"/>
-																</MultiBinding>
-															</ComboBox.SelectedItem>
-															<ComboBox.ItemTemplate>
-																<DataTemplate>
-																	<Label Content="{Binding Name}"/>
-																</DataTemplate>
-															</ComboBox.ItemTemplate>
-														</ComboBox>
+												<ComboBox ItemsSource="{Binding Path=Countries.Items}"
+														  PlaceholderText="Country"
+														  Margin="0 0 6 0"
+														  HorizontalAlignment="Stretch">
+													<ComboBox.SelectedItem>
+														<MultiBinding>
+															<Binding Path="CountryId"/>
+															<Binding Path="DataContext.Countries.Items" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" Mode="OneWay"/>
+														</MultiBinding>
+													</ComboBox.SelectedItem>
+													<ComboBox.ItemTemplate>
+														<DataTemplate>
+															<Label Content="{Binding Name}"/>
+														</DataTemplate>
+													</ComboBox.ItemTemplate>
+												</ComboBox>
 
-														<avfCommon:HeaderdInputFieldsControl Title="Notes"
-																							 Text="{Binding Notes, FallbackValue=Notes}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Notes"
+																					 Text="{Binding Notes, FallbackValue=Notes}" />
 
-														<Button Theme="{DynamicResource TransparentButton}"
-																Command="{Binding Path=DeleteAddress}"
-																CommandParameter="{Binding}"
-																HorizontalAlignment="Right">
-															<StackPanel Orientation="Horizontal">
-																<avfCommon:SvgIconControl IconName="delete"
-																					  Foreground="{StaticResource OrangeDeleteProfiles}"
-																					  Margin="0 0 8 0" />
-																<TextBlock Text="Delete"
-																		   Foreground="{StaticResource OrangeDeleteProfiles}" />
-															</StackPanel>
-														</Button>
-													</StackPanel>
-												</Border>
-											</Expander>
-										</Border>
+												<Button Content="delete"
+														Tag="Delete"
+														Command="{Binding Path=$parent[ItemsControl].DataContext.DeleteAddressCommand}"
+														CommandParameter="{Binding}"
+														HorizontalAlignment="Right"
+														Theme="{StaticResource SvgIconTextButton}" />
+											</StackPanel>
+										</Expander>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
@@ -514,31 +431,11 @@
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<Grid IsVisible="{Binding Path=!HasNoLoginsItems}">
-							<StackPanel Orientation="Vertical"
-									HorizontalAlignment="Center"
-									Margin="0 128 0 0">
-								<avfCommon:SvgIconControl
-								IconName="no-logins"
-								Height="102.26"
-								Width="97"
-								Foreground="{StaticResource SecondaryText}"/>
-								<TextBlock Margin="0 13.43 0 0"
-									   Text="No logins added yet for this profile"
-									   FontSize="18"
-									   FontFamily="Open Sans"
-									   FontWeight="DemiBold"
-									   HorizontalAlignment="Center"
-									   Foreground="{StaticResource SecondaryText}"/>
-								<Button Content="plus-in-circle"
-										Tag="Add login"
-										Command="{Binding Path=AddLoginCommand}"
-										Margin="6"
-										HorizontalAlignment="Center"
-										Theme="{StaticResource SvgIconTextButton}" />
-							</StackPanel>
-						</Grid>
-						<Grid IsVisible="{Binding Path=HasNoLoginsItems}">
+						<avfCommon:SvgIconControl IconName="no-logins"
+						  Width="210"
+						  Margin="0 0 0 126"
+						  IsVisible="{Binding Path=!HasNoLoginsItems}"/>
+						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="*"/>
@@ -550,7 +447,8 @@
 								</Grid.ColumnDefinitions>
 								<TextBlock Text="{Binding Logins.Items.Count,
 											   StringFormat='You have {0} logins added.'}"
-										   VerticalAlignment="Center"/>
+										   VerticalAlignment="Center"
+										   Theme="{StaticResource SubtitleTextBlockStyle}"/>
 								<Button Content="plus-in-circle"
 										Tag="Add Login"
 										Command="{Binding Path=AddLoginCommand}"
@@ -563,46 +461,35 @@
 										  ItemsSource="{Binding Path=Logins.Items}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Border Margin="0 0 0 16">
-											<Expander IsExpanded="{Binding IsOpenSearchParameters,FallbackValue=True}">
-												<Expander.Header>
-													<TextBlock Text="{Binding Title}"/>
-												</Expander.Header>
-												<Border BorderThickness="0 1 0 0">
-													<StackPanel Spacing="18">
-														<avfCommon:HeaderdInputFieldsControl Title="Title"
-																							 Text="{Binding Title, FallbackValue=Title}" />
+										<Expander IsExpanded="{Binding IsOpenSearchParameters, FallbackValue=True}"
+												  Header="{Binding Title}"
+												  Margin="0 0 0 6">
+											<StackPanel Spacing="18">
+												<avfCommon:HeaderdInputFieldsControl Title="Title"
+																					 Text="{Binding Title, FallbackValue=Title}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="WebSite"
-																							 Text="{Binding WebSite, FallbackValue=WebSite}" />
+												<avfCommon:HeaderdInputFieldsControl Title="WebSite"
+																					 Text="{Binding WebSite, FallbackValue=WebSite}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="Email"
-																							 Text="{Binding Email, FallbackValue=Email}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Email"
+																					 Text="{Binding Email, FallbackValue=Email}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="UserName"
-																							 Text="{Binding UserName, FallbackValue=UserName}" />
+												<avfCommon:HeaderdInputFieldsControl Title="UserName"
+																					 Text="{Binding UserName, FallbackValue=UserName}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="Password"
-																							 Text="{Binding Password, FallbackValue=Password}" />
+												<avfCommon:HeaderdInputFieldsControl Title="Password"
+																					 Text="{Binding Password, FallbackValue=Password}" />
 
-														<avfCommon:HeaderdInputFieldsControl Title="Notes"
-																							 Text="{Binding Notes, FallbackValue=Notes}" />
-
-														<Button Theme="{DynamicResource TransparentButton}"
-																Command="{Binding Path=DeleteLogin}"
-																CommandParameter="{Binding}"
-																HorizontalAlignment="Right">
-															<StackPanel Orientation="Horizontal">
-																<avfCommon:SvgIconControl IconName="delete"
-																					  Foreground="{StaticResource OrangeDeleteProfiles}" />
-																<TextBlock Text="Delete"
-																		   Foreground="{StaticResource OrangeDeleteProfiles}" />
-															</StackPanel>
-														</Button>
-													</StackPanel>
-												</Border>
-											</Expander>
-										</Border>
+												<avfCommon:HeaderdInputFieldsControl Title="Notes"
+																					 Text="{Binding Notes, FallbackValue=Notes}" />
+												<Button Content="delete"
+														Tag="Delete"
+														Command="{Binding Path=$parent[ItemsControl].DataContext.DeleteLoginCommand}"
+														CommandParameter="{Binding}"
+														HorizontalAlignment="Right"
+														Theme="{StaticResource SvgIconTextButton}" />
+											</StackPanel>
+										</Expander>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>

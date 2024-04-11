@@ -8,7 +8,7 @@ namespace Chameleon.CT.Common.Base;
 
 public abstract partial class ObservableObjectBase : ObservableObject,
     IPageViewModel
-{              
+{
     private readonly IDispatcherService _dispatcherService;
     private readonly IEventAggregator eventAggregator;
     private readonly IContentDialogService _cntentDialogService;
@@ -28,6 +28,7 @@ public abstract partial class ObservableObjectBase : ObservableObject,
         _dispatcherService = ContainerServiceHelper.Resolve<IDispatcherService>();// ?? new DispatcherService();
         _cntentDialogService = ContainerServiceHelper.Resolve<IContentDialogService>();
         eventAggregator = ContainerServiceHelper.Resolve<IEventAggregator>() ?? new EventAggregator();
+      
 
         InitializeAsyncCommand = new AsyncRelayCommand<object>(
         async (p) =>

@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Chameleon.Authorization;
+using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
 using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.Assistants.Events;
@@ -7,6 +8,7 @@ using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Common;
+using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
@@ -24,6 +26,8 @@ public partial class ProjectsViewModel : PageViewModelBase,
     private readonly IApplicationUser _applicationUser;
     //TODO: private readonly IFeatureTourNavigator _featureTourNavigator;
     private readonly IAuthSession _authSession;
+    private readonly IUserProfileFoldersViewModel folders;
+    private readonly IUserProfilesViewModel profiles;
 
 
     private string name = "Profiles";
@@ -76,11 +80,15 @@ public partial class ProjectsViewModel : PageViewModelBase,
 
     public ProjectsViewModel(IUserAssistantService userAssistantService,
         IApplicationUser applicationUser,
-        IAuthSession authSession)
+        IAuthSession authSession,
+        IUserProfileFoldersViewModel folders,
+        IUserProfilesViewModel profiles)
     {
         _userAssistantService = userAssistantService;
         _applicationUser = applicationUser;
         _authSession = authSession;
+        this.folders = folders;
+        this.profiles = profiles;
 
         EventAggregator
              .GetEvent<RestrictContentEvent>()
@@ -111,11 +119,17 @@ public partial class ProjectsViewModel : PageViewModelBase,
 
         if (param is IUserProfileFolder folder)
         {
-            //TODO: wtf
-            await Task.Delay(500);
-            EventAggregator
-                .GetEvent<OpenUserProfileFolderEvent>()
-                .Publish(new UserProfileFolderEventArgs(folder));
+            ////TODO: wtf
+            //await Task.Delay(500);
+            //EventAggregator
+            //    .GetEvent<OpenUserProfileFolderEvent>()
+            //    .Publish(new UserProfileFolderEventArgs(folder));
+
+            ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(folder);
+        }
+        else if(param is IUserProfile up)
+        {
+            ContainerServiceHelper.Resolve<IUserProfilesViewModel>().OnNavigatingTo(up);
         }
     }
 

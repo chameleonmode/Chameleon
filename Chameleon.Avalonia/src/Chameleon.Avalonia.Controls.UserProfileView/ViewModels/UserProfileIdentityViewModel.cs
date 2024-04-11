@@ -417,7 +417,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     }
 
     [RelayCommand]
-    private void OnDeletePerson(UserProfilePersonBindable person)
+    private void DeletePerson(UserProfilePersonBindable person)
     {
         if (person.Id > 0)
         {
@@ -463,7 +463,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     }
 
     [RelayCommand]
-    private void OnDeleteBusiness(UserProfileBusinessBindable business)
+    private void DeleteBusiness(UserProfileBusinessBindable business)
     {
         if (business.Id > 0)
         {

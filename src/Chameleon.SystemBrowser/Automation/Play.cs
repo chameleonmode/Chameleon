@@ -133,8 +133,16 @@ public class Play
         Interlocked.Increment(ref _isBusy);
         try
         {
-    //from：https://github.com/henices/Chrome-proxy-helper
-    var manifest_json = """
+            var proxyextdir = Path.Combine(userDataDirDefault, "proxyext");
+
+            if (profile.Proxy != null && 
+                profile.Proxy.CanUse && 
+                !string.IsNullOrEmpty(profile.Proxy.Host) &&
+                !string.IsNullOrEmpty(profile.Proxy.UserName) && 
+                !string.IsNullOrEmpty(profile.Proxy.Password)) 
+            {
+                //from：https://github.com/henices/Chrome-proxy-helper
+                var manifest_json = """
     {
         "version": "1.0.0",
         "manifest_version": 2,
@@ -155,11 +163,11 @@ public class Play
     }
     """;
 
-            var background_js = """
+                var background_js = """
                     function callbackFn(details) {
                     return { authCredentials: {username: 
-                 """+$"\"{profile.Proxy.UserName}\","+" password: "+$"\"{profile.Proxy.Password}\""+
-                """
+                 """ + $"\"{profile.Proxy.UserName}\"," + " password: " + $"\"{profile.Proxy.Password}\"" +
+                    """
         } };
             };
         
@@ -176,12 +184,13 @@ public class Play
             console.log("details: ", details.details)
         });
         """;
-            var proxyextdir = Path.Combine(userDataDirDefault,"proxyext");
-            if(!Directory.Exists(proxyextdir))
-                Directory.CreateDirectory(proxyextdir);
+             
+                if (!Directory.Exists(proxyextdir))
+                    Directory.CreateDirectory(proxyextdir);
 
-            await File.WriteAllTextAsync(Path.Combine(proxyextdir, "manifest.json"), manifest_json);
-            await File.WriteAllTextAsync(Path.Combine(proxyextdir, "background.js"), background_js);
+                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "manifest.json"), manifest_json);
+                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "background.js"), background_js);
+            }
 
             //return plugin_file
             //IBrowser? browserContext = null;
@@ -206,7 +215,8 @@ public class Play
             if (profile.Proxy.CanUse && !string.IsNullOrEmpty(profile.Proxy.Host))
             {
                 args.Add($"--proxy-server={profile.Proxy.Host}:{profile.Proxy.Port}");
-                exts = string.IsNullOrEmpty(exts) ? proxyextdir : $"{exts},{proxyextdir}";
+                if(Directory.Exists(proxyextdir))
+                    exts = string.IsNullOrEmpty(exts) ? proxyextdir : $"\"{exts},{proxyextdir}\"";
             }
             if (!string.IsNullOrEmpty(exts))
                 args.Add($"--load-extension={exts}");

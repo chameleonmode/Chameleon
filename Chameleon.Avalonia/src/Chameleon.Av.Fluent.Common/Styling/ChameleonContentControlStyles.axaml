@@ -14,8 +14,7 @@
 				</HeaderedContentControl.Header>
 			</HeaderedContentControl>
 			
-		<Border Padding="20" Width="710" Height="480"
-				Background="{DynamicResource LayerFillColorDefaultBrush}">
+		<Border Padding="20" Width="710" Height="480">
 			<Grid ColumnDefinitions="*,Auto,0.01*">
 				<ctrls:ChameleonContentControl Title="Some Title"
 											   TitleDescription="some kinda description over here">
@@ -621,8 +620,9 @@
 
 	<ControlTheme x:Key="HasSelectedItemsBorder"
 		  TargetType="HeaderedContentControl">
+		<Setter Property="IsVisible" Value="{Binding HasSelectedItems}" />
 		<Setter Property="VerticalAlignment" Value="Bottom" />
-		<Setter Property="Margin" Value="12" />
+		<Setter Property="Margin" Value="0" />
 		<Setter Property="MinWidth" Value="420" />
 		<Setter Property="TextElement.Foreground" Value="{StaticResource TextOnAccentFillColorPrimaryBrush}" />
 		<Setter Property="Template">
@@ -632,8 +632,7 @@
 					HorizontalAlignment="Center"
 					Height="50"
 					CornerRadius="{StaticResource ControlCornerRadius}"
-					Margin="0 0 0 3"
-					IsVisible="{Binding HasSelectedItems}">
+					Margin="0 0 0 3">
 					<Grid Margin="24 0"
 						 ColumnDefinitions="*,Auto">
 						<TextBlock 

@@ -1,24 +1,30 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Chameleon.Av.Fluent.Common.Controls;
 using Chameleon.Av.Fluent.Common.Pages;
+using Chameleon.Common.Helpers;
+using Chameleon.Interfaces;
+using Chameleon.Interfaces.App.UserProfiles;
+using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView;
 
-public partial class UserProfilesView : AutoViewModelLocatorControl
+public partial class UserProfilesView : UserControl
         , IUserProfilesView
 {
     public UserProfilesView()
     {
         InitializeComponent();
+        DataContext = ContainerServiceHelper.Resolve<IUserProfilesViewModel>();
     }
 
-    public Func<IUserProfile, bool> Filter { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-    public void Refresh()
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        base.OnLoaded(e);
+        if (DataContext is IHaveInitialize sp)
+            sp.InvokeInitializeAsyncCommand(e);
     }
 }

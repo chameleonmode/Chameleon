@@ -1,6 +1,8 @@
-﻿using Chameleon.CT.Common.Base;
+﻿using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.UserProfiles.Additional;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.ComponentModel;
 
@@ -146,6 +148,6 @@ namespace Chameleon.Controls.UserProfileView.Models.Additional
         {
             get => _isOpenSearchParameters;
             set => SetProperty(ref _isOpenSearchParameters, value);
-        }        
+        }
     }
 }

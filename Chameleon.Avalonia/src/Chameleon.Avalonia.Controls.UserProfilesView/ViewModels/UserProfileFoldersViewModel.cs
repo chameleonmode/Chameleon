@@ -9,6 +9,10 @@ using Chameleon.Prism.Events;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.UserProfiles;
 using CommunityToolkit.Mvvm.Input;
+using Chameleon.Interfaces.UserProfiles;
+using Avalonia.Controls;
+using Chameleon.Interfaces.App.UserProfileFolders.Events;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
@@ -81,12 +85,12 @@ public partial class UserProfileFoldersViewModel
         {
             if (_allProfiles == null)
             {
-                var folder = new UserProfileFolder { Title = "All profiles" };
-                _allProfiles = new UserProfileFolderViewModel( _currentUser,
-                    _authSession,
+                var folder = new UserProfileFolder { Title = "All profiles"};
+                _allProfiles = new UserProfileFolderViewModel(_currentUser,
                     folder,
                     _userProfileFolderService
-                    );
+                    )
+                { IsFavoriteButtonVisible = false };
 
                 _allProfiles.Open();
             }
@@ -124,7 +128,6 @@ public partial class UserProfileFoldersViewModel
 
         _mapping = new ObservableCollection<IUserProfileFolder, UserProfileFolderViewModel>(
             folders, folder => new UserProfileFolderViewModel(_currentUser,
-                _authSession,
                 folder,
                 _userProfileFolderService
                 )
@@ -166,5 +169,20 @@ public partial class UserProfileFoldersViewModel
     public void Refresh()
     {
         _viewModels.Refresh();
+    }
+
+
+    public async void OnNavigatingTo(IUserProfileFolder p = null)
+    {
+        while (!Loaded)
+            await Task.Delay(250);
+
+        if (p != null)
+        {
+            EventAggregator
+                .GetEvent<OpenUserProfileFolderEvent>()
+                .Publish(new UserProfileFolderEventArgs(p));
+        }
+        //SearchText = p.Title;
     }
 }

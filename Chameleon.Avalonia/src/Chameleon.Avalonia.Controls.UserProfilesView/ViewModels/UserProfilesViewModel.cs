@@ -129,24 +129,6 @@ public partial class UserProfilesViewModel
         }
     }
 
-    [RelayCommand]
-    private void SetFavorite()
-    {
-        Folder.IsFavorite = !Folder.IsFavorite;
-        OnPropertyChanged(nameof(Folder));
-        UpdateFolder();
-
-        _userProfileFolderService.Save(_folder);
-
-        EventAggregator
-            .GetEvent<UpdateFavoriteFolderEvent>()
-            .Publish();
-
-        EventAggregator
-            .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-            .Publish(new ChangeProfilesInFavoriteFolderEventArgs(Folder.Id));
-    }
-
     public bool ShowFavoriteIcon => Folder?.Id > 0;
 
     private void OnHandleUserEvent()
@@ -738,4 +720,19 @@ public partial class UserProfilesViewModel
                                    ViewModels.Count > 0 ||
                                    Folder?.ProfilesCount == 0 &&
                                    Folder?.Id != 0;
+
+    public async void OnNavigatingTo(IUserProfile p = null)
+    {
+        while(!Loaded)
+            await Task.Delay(250);
+
+        if(p != null)
+        {
+            Filter = profile => p.Id == profile.Id;
+
+            OnPropertyChanged(nameof(ViewModels));
+            OnPropertyChanged(nameof(IsProfilesExist));
+        }
+          //SearchText = p.Title;
+    }
 }
