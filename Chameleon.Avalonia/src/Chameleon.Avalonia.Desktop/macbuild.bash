@@ -3,6 +3,8 @@ APP_NAME="Chameleon.app"
 PUBLISH_OUTPUT_DIRECTORY="/Users/dev/Chameleon/Chameleon/Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/obj/output/."
 PUBLISH_EXTENSTIONS="/Users/dev/Chameleon/Chameleon/Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/BrowserExtensions/."
 # PUBLISH_OUTPUT_DIRECTORY should point to the output directory of your dotnet publish command.
+#dotnet publish -r osx-x64 --configuration Release -p:UseAppHost=true --output /Users/dev/Chameleon/Chameleon/Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/obj/output --self-contained true
+
 # One example is /path/to/your/csproj/bin/Release/netcoreapp3.1/osx-x64/publish/.
 # If you want to change output directories, add `--output /my/directory/path` to your `dotnet publish` command.
 INFO_PLIST="Info.plist"
