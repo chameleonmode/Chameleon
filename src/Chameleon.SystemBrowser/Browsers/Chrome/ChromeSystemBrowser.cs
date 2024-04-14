@@ -38,8 +38,7 @@ namespace Chameleon.SystemBrowser.Chrome
 
         private string GetBrowserExePath()
         {
-            return OperatingSystem.IsMacOS() ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" :
-                _systemBrowserInfoManager
+            return _systemBrowserInfoManager
                 .FindByName("chrome")
                 .Path;
         }

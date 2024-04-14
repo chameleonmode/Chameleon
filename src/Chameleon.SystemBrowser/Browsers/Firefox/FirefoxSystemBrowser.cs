@@ -34,8 +34,7 @@ namespace Chameleon.SystemBrowser.Firefox
 
         private string GetBrowserExePath()
         {
-            return OperatingSystem.IsMacOS() ? "/Applications/firefox.app/Contents/MacOS/firefox" : 
-                _systemBrowserInfoManager
+            return _systemBrowserInfoManager
                 .FindByName("firefox")
                 .Path;
         }

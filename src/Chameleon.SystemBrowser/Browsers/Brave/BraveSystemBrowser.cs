@@ -38,8 +38,7 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
 
         private string GetBrowserExePath()
         {
-            return OperatingSystem.IsMacOS() ? "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser" :
-                _systemBrowserInfoManager
+            return _systemBrowserInfoManager
                 .FindByName("brave")
                 .Path;
         }

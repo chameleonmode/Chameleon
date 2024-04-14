@@ -107,10 +107,27 @@ namespace Chameleon.SystemBrowser
 
         public ISystemBrowserInfo FindByName(string browserName)
         {
-            var browserInfo = GetAll()
+            ISystemBrowserInfo? inf = null;
+            if (OperatingSystem.IsMacOS())
+            {
+                var chromePath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+                var bravePath = "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser";
+                var firefoxPath = "/Applications/firefox.app/Contents/MacOS/firefox";
+
+                inf = browserName switch
+                {
+                    "chrome" => File.Exists(chromePath) ? new SystemBrowserInfo() { Path = chromePath } : null,
+                    "brave" => File.Exists(bravePath) ? new SystemBrowserInfo() { Path = bravePath } : null,
+                    "firefox" => File.Exists(firefoxPath) ? new SystemBrowserInfo() { Path = firefoxPath } : null,
+                    _ => null
+                };
+            } 
+            else
+                inf = GetAll()
                 .Where(info => info.Name.Contains(browserName, StringComparison.InvariantCultureIgnoreCase))
                 .FirstOrDefault();
-            return browserInfo ?? throw new NotSupportedException(browserName);
+
+            return inf ?? throw new NotSupportedException(browserName);
         }
     }
 }
