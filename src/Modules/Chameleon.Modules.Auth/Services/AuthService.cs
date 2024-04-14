@@ -72,8 +72,8 @@ namespace Chameleon.Auth.Services
                     refreshTokenResponse = null;
                 }
             }
-            if (loginResult is null || refreshTokenResponse is null)
-                _eventAggregator.GetEvent<LoginFailEvent>().Publish();
+            //if (loginResult is null || refreshTokenResponse is null)
+            //    _eventAggregator.GetEvent<LoginFailEvent>().Publish();
 
             return loginResult is not null && refreshTokenResponse is not null;
         }
