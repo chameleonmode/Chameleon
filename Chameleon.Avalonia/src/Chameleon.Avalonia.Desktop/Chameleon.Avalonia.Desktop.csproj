@@ -13,9 +13,6 @@
   <ItemGroup>
     <None Remove="logosymbol.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <AvaloniaResource Include="logosymbol.ico" />
-  </ItemGroup>
 
   <ItemGroup>
   	<TrimmerRootDescriptor Include="Roots.xml" />
