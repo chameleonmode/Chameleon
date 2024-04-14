@@ -51,12 +51,7 @@ public partial class AuthTaskDialogViewModel : DialogBase, IAuthTaskDialogViewMo
             if (LicenceKey is not null && !LicenceKey.StartsWith("KEY") &&
                 !await _apiClient.IsLicenseActiveAsync(LicenceKey))
             {
-
-                result = await ContentDialogService.ShowContentDialogAsync(
-                   new DefaultContentDialogView(
-                       ContentDialogButtons.OKCancel,
-                       "Do you want to activate another license? Current one will not be active anymore.",
-                       "Warning"));
+                result = await MesageBoxHelper.ShowAsync("Warning", "Do you want to activate another license? Current one will not be active anymore.") ? IContentDialogResult.Primary : IContentDialogResult.Secondary;
             }
         }
         catch (AuthenticationException ex)
@@ -86,7 +81,7 @@ public partial class AuthTaskDialogViewModel : DialogBase, IAuthTaskDialogViewMo
         var result = await ContentDialogService.ShowContentDialogAsync(typeof(ILoginContentDialogContent));
         if (result == IContentDialogResult.Primary)
         {
-            await SubmitAsync();
+            result = await SubmitAsync();
         }
         return result;
     }

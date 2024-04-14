@@ -9,7 +9,7 @@ namespace Chameleon.Av.Fluent.Dialogs;
 
 public partial class LoginContentDialogContent : ContentDialogControlBase, ILoginContentDialogContent
 {
-    public override object? Title => ContainerServiceHelper.Current.ContainerProvider?.Resolve<IDefaultContentDialogTitle>();
+    public override object? Title => "User Login";//ContainerServiceHelper.Current.ContainerProvider?.Resolve<IDefaultContentDialogTitle>();
     public override string PrimaryButtonText  => "Login";
     
     public LoginContentDialogContent()
