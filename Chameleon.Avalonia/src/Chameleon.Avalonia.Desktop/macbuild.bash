@@ -19,10 +19,11 @@ mkdir "$APP_NAME"
 
 mkdir "$APP_NAME/Contents"
 mkdir "$APP_NAME/Contents/MacOS"
+mkdir "$APP_NAME/Contents/MacOS/BrowserExtensions"
 mkdir "$APP_NAME/Contents/Resources"
 mkdir "$APP_NAME/Contents/Resources/BrowserExtensions"
 
 cp "$INFO_PLIST" "$APP_NAME/Contents/Info.plist"
 cp "$ICON_FILE" "$APP_NAME/Contents/Resources/$ICON_FILE"
-cp -a "$PUBLISH_EXTENSTIONS" "$APP_NAME/Contents/Resources/BrowserExtensions"
+cp -a "$PUBLISH_EXTENSTIONS" "$APP_NAME/Contents/MacOS/BrowserExtensions"
 cp -a "$PUBLISH_OUTPUT_DIRECTORY" "$APP_NAME/Contents/MacOS"
