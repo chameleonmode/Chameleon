@@ -9,11 +9,11 @@ namespace Chameleon.SystemBrowser.Automation;
 public class Play
 {
     public static Play Instance { get; } = new Play();
-    readonly Dictionary<string,  Process?> _processMap = []; 
-    readonly Dictionary<string,  IBrowser?> createdContext = [];
+    readonly Dictionary<string, Process?> _processMap = [];
+    readonly Dictionary<string, IBrowser?> createdContext = [];
     IPlaywright? playwright = null;
     IBrowser? _browser = null;
-    
+
     public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
     private Play()
     {
@@ -134,12 +134,14 @@ public class Play
         try
         {
             var proxyextdir = Path.Combine(userDataDirDefault, "proxyext");
+            if (Directory.Exists(proxyextdir))
+                Directory.Delete(proxyextdir, true);
 
-            if (profile.Proxy != null && 
-                profile.Proxy.CanUse && 
-                !string.IsNullOrEmpty(profile.Proxy.Host) &&
-                !string.IsNullOrEmpty(profile.Proxy.UserName) && 
-                !string.IsNullOrEmpty(profile.Proxy.Password)) 
+            if (profile.Proxy != null &&
+            profile.Proxy.CanUse &&
+            !string.IsNullOrEmpty(profile.Proxy.Host) &&
+            !string.IsNullOrEmpty(profile.Proxy.UserName) &&
+            !string.IsNullOrEmpty(profile.Proxy.Password))
             {
                 //from：https://github.com/henices/Chrome-proxy-helper
                 var manifest_json = """
@@ -184,7 +186,7 @@ public class Play
             console.log("details: ", details.details)
         });
         """;
-             
+
                 if (!Directory.Exists(proxyextdir))
                     Directory.CreateDirectory(proxyextdir);
 
@@ -208,14 +210,14 @@ public class Play
                     "--in-process-gpu",
 
                     "--no-default-browser-check",
-                    "--no-first-run", 
+                    "--no-first-run",
                     "--disable-field-trial-config",
                     $"--remote-debugging-port={port}",
                 ];
             if (profile.Proxy.CanUse && !string.IsNullOrEmpty(profile.Proxy.Host))
             {
                 args.Add($"--proxy-server={profile.Proxy.Host}:{profile.Proxy.Port}");
-                if(Directory.Exists(proxyextdir))
+                if (Directory.Exists(proxyextdir))
                     exts = string.IsNullOrEmpty(exts) ? proxyextdir : $"{exts},{proxyextdir}";
             }
             if (!string.IsNullOrEmpty(exts))
@@ -248,21 +250,21 @@ public class Play
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = exepath,
-                    Arguments = string.Join(" ",args),
+                    Arguments = string.Join(" ", args),
                     UseShellExecute = true,
                     ErrorDialog = true
                 },
                 EnableRaisingEvents = true
             };
 
-            process.Exited += (s, e) => 
+            process.Exited += (s, e) =>
             {
                 createdContext.Remove(userDataDirDefault);
             };
-            process.Start();  
+            process.Start();
             //await Task.Delay(1000);
             //while(process.MainWindowHandle == IntPtr.Zero) 
-                //await Task.Delay(500);
+            //await Task.Delay(500);
 
             //BrowserTypeLaunchPersistentContextOptions options = new()
             //{
@@ -307,7 +309,7 @@ public class Play
 
             //browserContext = await playwright.Chromium.ConnectOverCDPAsync($"http://localhost:{port}");//.LaunchPersistentContextAsync(userDataDirDefault, options);
 
-        
+
             ////  while (t.)
             //if (browserContext != null && browserContext.IsConnected)
             //{
@@ -327,7 +329,7 @@ public class Play
             //    //    Proxy = options.Proxy,
             //    //});
             //    var browser = browserContext.Contexts[0];
-                
+
 
 
             //    browser.WebError += (s, e) => 
@@ -442,7 +444,7 @@ public class Play
         finally
         {
         }
-        
+
         Interlocked.Decrement(ref _isBusy);
     }
 
