@@ -18,5 +18,10 @@
 		<StyleInclude Source="avares://Chameleon.Av.Fluent.Common/Styling/ChameleonStyles.axaml" />
 		<!--<StyleInclude Source="avares://FAControlsGallery/Styling/ControlsGalleryStyles.axaml" />-->
 	</Application.Styles>
-	
+
+	<NativeMenu.Menu>
+		<NativeMenu>
+			<NativeMenuItem Header="Chameleon" />
+		</NativeMenu>
+	</NativeMenu.Menu>
 </Application>

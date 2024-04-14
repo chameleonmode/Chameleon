@@ -16,6 +16,7 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -37,6 +38,7 @@ public partial class DashboardViewModel
     private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _applicationUser;
     private readonly IUserAssistantService _userAssistantService;
+    private readonly ISystemBrowserManager _systemBrowserManager;
 
 
     private ObservableCollection<IUserProfile, UserProfileViewModel> _mapping;
@@ -50,7 +52,8 @@ public partial class DashboardViewModel
         IUserProfileFolderService userProfileFolderService,
         IShareUserProfilePopupService shareUserProfilePopupService,
         IApplicationUser applicationUser,
-        IUserAssistantService userAssistantService)
+        IUserAssistantService userAssistantService, 
+        ISystemBrowserManager systemBrowserManager)
     {
         Title = _pageTitle;
 
@@ -59,6 +62,7 @@ public partial class DashboardViewModel
         _shareUserProfilePopupService = shareUserProfilePopupService;
         _applicationUser = applicationUser;
         _userAssistantService = userAssistantService;
+        _systemBrowserManager = systemBrowserManager; 
 
         //EventAggregator
         //    .GetEvent<LoginSuccessEvent>()
@@ -149,6 +153,7 @@ public partial class DashboardViewModel
                     _userProfileService,
                     profile,
                     _applicationUser,
+                    _systemBrowserManager,
                     false
                 )
             );

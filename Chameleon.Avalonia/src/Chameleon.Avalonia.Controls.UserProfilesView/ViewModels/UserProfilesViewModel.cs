@@ -28,9 +28,9 @@ public partial class UserProfilesViewModel
     , IUserProfilesViewModel
 {
     private readonly IUserProfileService _userProfileService;
-    //TODO: private readonly IUserProfilesPopupService _userProfilesPopupService;
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IApplicationUser _currentUser;
+    private readonly ISystemBrowserManager _systemBrowserManager;
 
     private ObservableCollection<IUserProfile, UserProfileViewModel> _mapping;
 
@@ -38,12 +38,12 @@ public partial class UserProfilesViewModel
 
     public UserProfilesViewModel(
         IUserProfileService userProfileService,
-        //IUserProfilesPopupService userProfilesPopupService,
         IUserProfileFolderService userProfileFolderService,
+        ISystemBrowserManager systemBrowserManager,
         IApplicationUser currentUser)
     {
+        _systemBrowserManager = systemBrowserManager;
         _userProfileService = userProfileService;
-        //_userProfilesPopupService = userProfilesPopupService;
         _userProfileFolderService = userProfileFolderService;
         _currentUser = currentUser;
 
@@ -661,7 +661,7 @@ public partial class UserProfilesViewModel
 
         _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
         userProfiles, profile => new UserProfileViewModel
-            (_userProfileService, profile, _currentUser));
+            (_userProfileService, profile, _currentUser, _systemBrowserManager));
 
         _mapping.CollectionChanged += OnViewModelChange;
 

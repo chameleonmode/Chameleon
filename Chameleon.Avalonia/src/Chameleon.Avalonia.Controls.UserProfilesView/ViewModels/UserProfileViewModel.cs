@@ -27,7 +27,8 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
 {
     private readonly IUserProfileService _userProfileService;
     private readonly IApplicationUser _applicationUser;
-           
+    private readonly ISystemBrowserManager _systemBrowserManager;
+
     [ObservableProperty]
     private  IUserProfile _userProfile;
 
@@ -35,9 +36,11 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
         IUserProfileService userProfileService,
         IUserProfile userProfile,
         IApplicationUser applicationUser,
+        ISystemBrowserManager systemBrowserManager,
         bool isShowCheckboxColumn = true
         )
     {
+        _systemBrowserManager = systemBrowserManager;
         _userProfileService = userProfileService;
         _userProfile = userProfile;
         _applicationUser = applicationUser;   
