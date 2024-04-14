@@ -52,20 +52,15 @@ namespace Chameleon.Application.Startup
 
         public async Task RunAsync()
         {
-            //await _authService.ShowLoginDialogAsync();
-
-           await _authService.LoginAsync();
-            //if (string.IsNullOrEmpty(_settingsService.AuthAccessToken))
-            //{
-            // first create dialog not showing it
-
-            //}
-            // else
-            // {
-            //     _authManager.Login();
-            // }
-            //
-            // return Task.CompletedTask;
+            try
+            {
+                if (!await _authService.LoginAsync())
+                    await _authService.ShowLoginDialogAsync();
+            }                 
+            catch
+            {
+                await _authService.ShowLoginDialogAsync();
+            }
         }
 
         private void CloseApplication()

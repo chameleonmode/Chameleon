@@ -8,7 +8,7 @@
 			 x:DataType="vm:AuthTaskDialogViewModel"
              x:CompileBindings="True"
              x:Class="Chameleon.Av.Fluent.Dialogs.LoginContentDialogContent">
-	<dialogs:ChameleonDialogControl>
+	<dialogs:ChameleonDialogControl TitleDescription="Enter the provided activation information">
 		<!--<dialogs:ChameleonDialogControl.Header>
 			<StackPanel>
 				<TextBlock Text="{Binding Title}" />
