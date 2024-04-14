@@ -44,11 +44,15 @@ namespace Chameleon.SystemBrowser.Common
             _browserExeFilePath = browserExeFilePath;
             _browserDataFolderPath = browserDataFolderPath;
 
-            if (OperatingSystem.IsMacOS())  
+            if (OperatingSystem.IsMacOS())
                 _browserExtensionsRootFolderPath = Path.Combine(
                     Directory.GetCurrentDirectory(),
-                    "BrowserExtensions","mac");
-                else
+                    "Chameleon.app",
+                    "Contents", 
+                    "Resources",
+                    "BrowserExtensions", 
+                    "mac");
+            else
                 _browserExtensionsRootFolderPath = Path.Combine(
                     Directory.GetCurrentDirectory(),
                     "BrowserExtensions");
