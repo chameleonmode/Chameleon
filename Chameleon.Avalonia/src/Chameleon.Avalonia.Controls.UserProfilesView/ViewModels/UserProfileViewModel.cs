@@ -179,9 +179,10 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
     }
     [RelayCommand]
     public async Task OpenSystemBrowser(SystemBrowserType browserType)
-    {          
+    {
+        //await MesageBoxHelper.ShowAsync("",Directory.GetCurrentDirectory());
         string? uri = null;
-        //TODO
+        //TODO:
         //IUserDefaultSettingsService userDefaultsSettingsService = ContainerServiceHelper.Resolve<IUserDefaultSettingsService>();
         //var defaults = await Task.Run(()=>userDefaultsSettingsService.GetAll());
         //if (defaults.Any())
