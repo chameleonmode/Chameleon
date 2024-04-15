@@ -5,12 +5,13 @@
 					xmlns:local="using:Chameleon.Av.Fluent.Common.Controls"
                     xmlns:ui="using:FluentAvalonia.UI.Controls"
                     xmlns:sty="using:FluentAvalonia.Styling">
-		<conv:SvgNameToPathConverter x:Key="conv" />
+	<conv:SvgNameToPathConverter x:Key="conv" />
+	<conv:SvgNameToDataConverter x:Key="dataConv" />
 	<Design.PreviewWith>
 		<!---->
 		<ThemeVariantScope RequestedThemeVariant="Light">
 			<StackPanel Spacing="10" Margin="50" Width="500">
-				<local:SvgIconControl IconName="chrome" />
+				<local:SvgIconControl IconName="not-profiles" />
 			</StackPanel>
 		</ThemeVariantScope>
 	</Design.PreviewWith>
@@ -22,8 +23,12 @@
 		<Setter Property="Width" Value="50" />-->
 		<Setter Property="Template">
 			<ControlTemplate>
+				<Panel>
 				<Svg Name="SvgHost" 
 					 Path="{TemplateBinding IconName, Converter={StaticResource conv}}" />
+					<!--<Svg Name="svgString" 
+						 Source="{TemplateBinding IconName, Converter={StaticResource dataConv}}" />-->
+				</Panel>
 			</ControlTemplate>
 		</Setter>
 	</ControlTheme>
