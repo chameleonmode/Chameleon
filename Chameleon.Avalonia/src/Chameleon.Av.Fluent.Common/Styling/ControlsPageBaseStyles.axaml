@@ -317,7 +317,7 @@
                                 VerticalAlignment="Top"/>-->
 						<Grid ColumnDefinitions="*,Auto"
                               RowDefinitions="*,Auto"
-                              Margin="0 0 0 0"
+                              Margin="0 12 0 0"
                               ClipToBounds="False">
 							<Panel Name="PageDetails"
                                    Margin="2 0 0 0"

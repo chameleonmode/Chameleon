@@ -120,6 +120,7 @@ public partial class App : PrismApplication
 
     public override void Initialize()
     {
+        //App.Current.ActualThemeVariant = ThemeVariant.Dark;
         AvaloniaXamlLoader.Load(this);
 
         // Default logic doesn't auto detect windows theme anymore in designer

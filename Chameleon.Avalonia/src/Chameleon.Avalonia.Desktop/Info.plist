@@ -3,13 +3,13 @@
 <plist version="1.0">
   <dict>
     <key>CFBundleName</key>
-    <string>Chameleon.Avalonia.Desktop</string>
+    <string>Chameleon</string>
     <key>CFBundleDisplayName</key>
-    <string>Chameleon.Avalonia.Desktop</string>
+    <string>Chameleon.Desktop</string>
     <key>CFBundleIdentifier</key>
     <string>Chameleon.Avalonia.Desktop</string>
     <key>CFBundleVersion</key>
-    <string>1.0.0</string>
+    <string>0.0.1</string>
     <key>CFBundlePackageType</key>
     <string>AAPL</string>
     <key>CFBundleSignature</key>
@@ -17,7 +17,7 @@
     <key>CFBundleExecutable</key>
     <string>Chameleon.Avalonia.Desktop</string>
     <key>CFBundleIconFile</key>
-    <string>logosymbol.icns</string>
+    <string>logo-symbol.icns</string>
     <key>CFBundleShortVersionString</key>
     <string>0.0.1</string>
     <key>NSPrincipalClass</key>

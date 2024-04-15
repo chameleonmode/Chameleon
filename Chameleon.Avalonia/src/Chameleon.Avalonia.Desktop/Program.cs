@@ -23,6 +23,10 @@ class Program
             .With(new X11PlatformOptions
             {
             })
+            .With(new MacOSPlatformOptions
+            {
+                DisableDefaultApplicationMenuItems = true,
+            })
             .UseSkia()
             .LogToTrace();
     }

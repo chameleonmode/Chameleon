@@ -7,7 +7,7 @@
 	</Design.PreviewWith>
     <!-- Override this so content doesn't appear in title bar area -->
     <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
-	<Thickness x:Key="ChameleonAppPageMargin">10</Thickness>
+	<Thickness x:Key="ChameleonAppPageMargin">8 0</Thickness>
 	<Thickness x:Key="ChameleonControlMargin">8</Thickness>
 	<Thickness x:Key="ChameleonInnerControlMargin">4</Thickness>
 
