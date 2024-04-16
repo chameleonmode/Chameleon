@@ -7,9 +7,10 @@
 			 xmlns:interfaces="using:Chameleon.Interfaces.Proxies"
 			 xmlns:paginator="using:Chameleon.Avalonia.Controls.Paginator"
 			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
-			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="1480"
 			 x:DataType="vm:UserProxySettingsViewModel"
+			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.Settings.UserProxySettingsView">
 	<UserControl.Resources>
 		<conv:MultiStringJoinConverter x:Key="MultiStringJoin" />
@@ -17,15 +18,15 @@
 	</UserControl.Resources>
 		<Border Padding="20">
 			<Grid RowDefinitions="*,Auto">
-				<avfCommon:ChameleonContentControl Title="Proxies list"
+				<afv:ChameleonContentControl Title="Proxies list"
 												   TitleDescription="Select proxies to edit them">
-					<avfCommon:ChameleonContentControl.TitleContent>
+					<afv:ChameleonContentControl.TitleContent>
 						<paginator:PaginatorView Grid.Row="1"
 						 DataContext="{Binding PaginatorViewModel}" />
 						<!---->
-					</avfCommon:ChameleonContentControl.TitleContent>
+					</afv:ChameleonContentControl.TitleContent>
 
-					<avfCommon:ChameleonContentControl.Header>
+					<afv:ChameleonContentControl.Header>
 						<StackPanel>
 								<Button Content="select-all"
 										HorizontalAlignment="Left"
@@ -45,9 +46,9 @@
 								</HeaderedContentControl.Header>
 							</HeaderedContentControl>
 						</StackPanel>
-					</avfCommon:ChameleonContentControl.Header>
+					</afv:ChameleonContentControl.Header>
 					
-					<avfCommon:ChameleonContentControl.Options>
+					<afv:ChameleonContentControl.Options>
 						<StackPanel Spacing="18">
 							<ui:FAComboBox PlaceholderText="Selected Folder"
 										   Header="Folder:"
@@ -65,7 +66,7 @@
 											   Width="150"
 											   IsEditable="False"
 											   IsTextSearchEnabled="True"
-											   ItemsSource="{Binding Countries.Items}"
+											   ItemsSource="{Binding Countries}"
 											   SelectedItem="{Binding Country}">
 									<ui:FAComboBox.ItemTemplate>
 										<DataTemplate>
@@ -110,9 +111,9 @@
 								</ui:CommandBar.SecondaryCommands>
 							</ui:CommandBar>-->
 						</StackPanel>
-					</avfCommon:ChameleonContentControl.Options>
+					</afv:ChameleonContentControl.Options>
 					
-					<avfCommon:ChameleonContentControl.Content>
+					<afv:ChameleonContentControl.Content>
 						<!--<StackPanel>-->
 							<!--<paginator:PaginatorView Grid.Row="1"
 													 DataContext="{Binding PaginatorViewModel}" />-->
@@ -146,19 +147,19 @@
 
 													<Grid Grid.Column="2"
 														  Margin="12 0">
-														<avfCommon:HeaderdInputFieldsControl Title="{Binding Title}"
+														<afv:HeaderdInputFieldsControl Title="{Binding Title}"
 																							 Header="False">
-															<avfCommon:HeaderdInputFieldsControl.TextBoxes>
-																<TextBox Text="{Binding Path=UserProfileModel.Proxy.Host}"
+															<afv:HeaderdInputFieldsControl.TextBoxes>
+																<TextBox Text="{Binding Path=Host}"
 																		 IsReadOnly="True" />
-																<TextBox Text="{Binding Path=UserProfileModel.Proxy.PortString}"
+																<TextBox Text="{Binding Path=Port}"
 																		 IsReadOnly="True" />
-																<TextBox Text="{Binding Path=UserProfileModel.Proxy.UserName}"
+																<TextBox Text="{Binding Path=UserName}"
 																		 IsReadOnly="True" />
-																<TextBox Text="{Binding Path=UserProfileModel.Proxy.Password}"
+																<TextBox Text="{Binding Path=Password}"
 																		 IsReadOnly="True" />
-															</avfCommon:HeaderdInputFieldsControl.TextBoxes>
-														</avfCommon:HeaderdInputFieldsControl>
+															</afv:HeaderdInputFieldsControl.TextBoxes>
+														</afv:HeaderdInputFieldsControl>
 													</Grid>
 
 													<Button Grid.Column="4"
@@ -173,9 +174,9 @@
 								</ListBox>
 
 						<!--</StackPanel>-->
-					</avfCommon:ChameleonContentControl.Content>
+					</afv:ChameleonContentControl.Content>
 
-					<avfCommon:ChameleonContentControl.Footer>
+					<afv:ChameleonContentControl.Footer>
 						<ui:SettingsExpander Header="PROXIES EDITOR"
 											 VerticalAlignment="Bottom"
 											 IsVisible="{Binding ShowCustomizeProxies}"
@@ -242,16 +243,16 @@
 											</ItemsControl.ItemsPanel>
 											<ItemsControl.ItemTemplate>
 												<DataTemplate>
-													<avfCommon:HeaderdInputFieldsControl Title="{Binding Title}"
+													<afv:HeaderdInputFieldsControl Title="{Binding Title}"
 																						 IsVisible="{Binding IsSelected}"
 																						 Header="False">
-														<avfCommon:HeaderdInputFieldsControl.TextBoxes>
-															<TextBox Text="{Binding Path=UserProfileModel.Proxy.Host}" />
-															<TextBox Text="{Binding Path=UserProfileModel.Proxy.PortString}"/>
-															<TextBox Text="{Binding Path=UserProfileModel.Proxy.UserName}"/>
-															<TextBox Text="{Binding Path=UserProfileModel.Proxy.Password}" />
-														</avfCommon:HeaderdInputFieldsControl.TextBoxes>
-													</avfCommon:HeaderdInputFieldsControl>
+														<afv:HeaderdInputFieldsControl.TextBoxes>
+															<TextBox Text="{Binding Path=Host}" />
+															<TextBox Text="{Binding Path=Port}"/>
+															<TextBox Text="{Binding Path=UserName}"/>
+															<TextBox Text="{Binding Path=Password}" />
+														</afv:HeaderdInputFieldsControl.TextBoxes>
+													</afv:HeaderdInputFieldsControl>
 												</DataTemplate>
 											</ItemsControl.ItemTemplate>
 										</ItemsControl>
@@ -259,8 +260,8 @@
 								</Grid>
 							</ui:SettingsExpanderItem>
 						</ui:SettingsExpander>
-					</avfCommon:ChameleonContentControl.Footer>
-				</avfCommon:ChameleonContentControl>
+					</afv:ChameleonContentControl.Footer>
+				</afv:ChameleonContentControl>
 			</Grid>
 		</Border>
 </UserControl>

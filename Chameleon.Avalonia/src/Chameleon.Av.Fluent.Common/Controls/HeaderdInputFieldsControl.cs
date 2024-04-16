@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace Chameleon.Av.Fluent.Common.Controls;
 
-[TemplatePart("TextBoxesHost", typeof(ItemsPresenter))]
+[TemplatePart("TextBoxesHost", typeof(ItemsControl))]
 public class HeaderdInputFieldsControl : HeaderedContentControl
 {
     public HeaderdInputFieldsControl()

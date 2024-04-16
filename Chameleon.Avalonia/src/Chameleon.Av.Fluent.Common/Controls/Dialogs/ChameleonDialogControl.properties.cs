@@ -9,7 +9,7 @@ using Chameleon.Av.Fluent.Common.Controls.Dialogs;
 
 namespace Chameleon.Av.Fluent.Common.Controls.Dialogs;
 
-[TemplatePart(s_tpCommandsHost, typeof(ItemsPresenter))]
+[TemplatePart(s_tpCommandsHost, typeof(ItemsControl))]
 public partial class ChameleonDialogControl : HeaderedContentControl
 {
 

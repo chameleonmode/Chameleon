@@ -1,4 +1,5 @@
 ﻿using Chameleon.Application.Events;
+using Chameleon.Common.Helpers;
 using Chameleon.Common.Regions;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.UserProfiles;
@@ -52,15 +53,33 @@ namespace Chameleon.Application.Startup
 
         public async Task RunAsync()
         {
+            if (!await RunAsync(0))
+            {
+                await MesageBoxHelper.ShowErrorAsync("Error Logging In", "There was an error validationg the login information that was provided.");
+                CloseApplication();
+            }
+            else
+                _eventAggregator
+                       .GetEvent<LoginSuccessEvent>()
+                       .Publish(new LoginEventArgs(null));
+        }
+        public async Task<bool> RunAsync(int trys)
+        {
+            var success = false;
             try
             {
-                if (!await _authService.LoginAsync())
-                    await _authService.ShowLoginDialogAsync();
-            }                 
+                success = await _authService.LoginAsync();
+                if (!success)
+                    success = await _authService.ShowLoginDialogAsync();
+            }
             catch
             {
-                await _authService.ShowLoginDialogAsync();
+                if(trys < 1)
+                    return await RunAsync(trys);
+
+                success = false;
             }
+            return success;
         }
 
         private void CloseApplication()

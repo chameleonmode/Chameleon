@@ -9,11 +9,11 @@
              x:CompileBindings="True"
              x:Class="Chameleon.Av.Fluent.Dialogs.LoginContentDialogContent">
 	<dialogs:ChameleonDialogControl TitleDescription="Enter the provided activation information">
-		<!--<dialogs:ChameleonDialogControl.Header>
+		<dialogs:ChameleonDialogControl.Header>
 			<StackPanel>
 				<TextBlock Text="{Binding Title}" />
 			</StackPanel>
-		</dialogs:ChameleonDialogControl.Header>-->
+		</dialogs:ChameleonDialogControl.Header>
 		<dialogs:ChameleonDialogControl.DialogInputs>
 			<dialogs:DialogInputHost TextLabel="Email:" 
 									 Text="{Binding UserName}" />

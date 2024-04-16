@@ -15,7 +15,7 @@ public static class IContainerRegistryExtensions
         )
     {
         var executingAssembly = Assembly.GetExecutingAssembly();
-        var executingAssemblyBase = AssemblyResolver.GetAssembly();
+        var executingAssemblyBase = Chameleon.Infrastructure.AssemblyResolver.GetAssembly();
   
         self.RegisterTypesFrom(executingAssemblyBase);
         self.RegisterTypesFrom(executingAssembly);

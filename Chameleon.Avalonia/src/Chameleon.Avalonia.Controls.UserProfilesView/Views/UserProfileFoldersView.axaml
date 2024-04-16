@@ -5,9 +5,13 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="450"
+			 xmlns:vm="using:Chameleon.Avalonia.Controls.UserProfilesView.ViewModels"
+			 x:DataType="vm:UserProfileFoldersViewModel"
+			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfileFoldersView">
 	<UserControl.Resources>
 		<ControlTheme x:Key="OpenListViewItemButtonDataTemplate"
+					  x:DataType="vm:UserProfileFolderViewModel"
 					  TargetType="ContentControl">
 			<Setter Property="Template">
 				<ControlTemplate>
@@ -93,7 +97,8 @@
 		</ControlTheme>
 		<!--materialDesign:ButtonAssist.CornerRadius="0"-->
 		<!--Style="{StaticResource OutlinedButton}"-->
-		<DataTemplate x:Key="FoldersListViewTemplate">
+		<DataTemplate x:Key="FoldersListViewTemplate"
+					  x:DataType="vm:UserProfileFolderViewModel">
 			<Grid>
 				<ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}" />
 					<Grid>

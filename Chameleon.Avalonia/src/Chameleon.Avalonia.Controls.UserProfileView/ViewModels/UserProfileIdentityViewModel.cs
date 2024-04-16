@@ -56,6 +56,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         _authSession = authSession;
         _toastNotificationService = toastNotificationService;
 
+
         InitializeViewModels();
 
         Addresses.Binded += Addresses_Binded;
@@ -99,7 +100,9 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         await base.InitAsync(param);
 
         if (!Loaded)
+        {                     
             OnAuthenticated();
+        }
 
        // UserProfile = ContainerServiceHelper.Resolve<IDashboardViewModel>()?.SelectedProfile;
         // OnPropertyChanged(nameof(UserProfileModel));

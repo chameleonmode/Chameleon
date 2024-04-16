@@ -57,7 +57,7 @@ public class ContentDialogService : IContentDialogService
         var c = ContainerServiceHelper.Current.ContainerProvider?.Resolve<IContentDialogView>(contentDialog);
         var dialog = new ContentDialog()
         {
-            Title = c.Title,
+            Title = "True",
             Content = c,
             PrimaryButtonText = c.PrimaryButtonText,
             SecondaryButtonText = c.SecondaryButtonText,
@@ -110,7 +110,7 @@ public class ContentDialogService : IContentDialogService
     public async Task<IContentDialogResult> ShowContentDialogAsync(string title, string content, ContentDialogButtons btns = ContentDialogButtons.YesNo, IFontIconInfo? fontIconInfo = null)
     {
         var v = ContainerServiceHelper.Resolve<IDefaultContentDialogContentView>();
-        var c = v.GetDataContext<IDefaultContentDialogContentViewModel>();
+        var c = ((Control)v).DataContext as IDefaultContentDialogContentViewModel;
         c.Title = title;
         c.DialogContent = content;
         c.DialogButtons = btns;

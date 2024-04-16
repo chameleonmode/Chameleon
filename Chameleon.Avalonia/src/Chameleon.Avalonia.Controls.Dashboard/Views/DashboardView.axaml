@@ -2,11 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="1101"  
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:converter="using:Chameleon.Common.ValueConverters"
              xmlns:userProfiles="using:Chameleon.Avalonia.Controls.UserProfilesView"
-			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
-             mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="1101"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:vm="using:Chameleon.Avalonia.Controls.Dashboard.ViewModels"
+			 x:DataType="vm:DashboardViewModel"
+			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.Dashboard.DashboardView">
 	<UserControl.Resources>
 		<converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
@@ -14,7 +17,7 @@
 
 	<ScrollViewer> 
 		<StackPanel Spacing="-56">
-			<avfCommon:PageHeaderControl TextType="Dashboard"
+			<afv:PageHeaderControl TextType="Dashboard"
 										 Classes="smallest"/>
 			
 			<Grid Margin="{StaticResource ChameleonAppPageMargin}">
@@ -35,20 +38,20 @@
 								 Width="300"
 								 Text="{Binding SearchText}" />-->
 				
-				<avfCommon:ChameleonContentControl Grid.Row="2"
+				<afv:ChameleonContentControl Grid.Row="2"
 												   Title="Favorite Profiles"
 										TitleDescription="{Binding ViewModels.Count,
 											StringFormat='You have {0} favorited profiles.'}">
-					<avfCommon:ChameleonContentControl.Options>
+					<afv:ChameleonContentControl.Options>
 						<ui:FAComboBox Header="Sort by:"
 									   HorizontalAlignment="Right"
 									   ItemsSource="{Binding Sorts}"
 									   SelectedItem="{Binding SortSelected}"
 									   Width="150"
 									   IsEditable="False"/>
-					</avfCommon:ChameleonContentControl.Options>
+					</afv:ChameleonContentControl.Options>
 
-					<avfCommon:ChameleonContentControl.Content>
+					<afv:ChameleonContentControl.Content>
 						<Panel>
 							<ListBox Name="lbProfiles"
 									 
@@ -75,7 +78,7 @@
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center">
 								<StackPanel IsVisible="{Binding NoSearchResultsInFavorite}">
-									<avfCommon:SvgIconControl IconName="not-profiles"
+									<afv:SvgIconControl IconName="not-profiles"
 													  Height="102"
 													  Width="97"/>
 
@@ -90,23 +93,23 @@
 										   IsVisible="{Binding !NoSearchResultsInFavorite}" />
 							</StackPanel>
 						</Panel>
-					</avfCommon:ChameleonContentControl.Content>
-				</avfCommon:ChameleonContentControl>
+					</afv:ChameleonContentControl.Content>
+				</afv:ChameleonContentControl>
 
-				<avfCommon:ChameleonContentControl Grid.Row="3"
+				<afv:ChameleonContentControl Grid.Row="3"
 								   Title="Favorite Folders"
 												   TitleDescription="{Binding FoldersCount,
 											StringFormat='You have {0} favorited folders.'}">
-					<avfCommon:ChameleonContentControl.Options>
+					<afv:ChameleonContentControl.Options>
 						<ui:FAComboBox Header="Sort by:"
 									   HorizontalAlignment="Right"
 									   ItemsSource="{Binding Sorts}"
 									   SelectedItem="{Binding FolderSortSelected}"
 									   Width="150"
 									   IsEditable="False"/>
-					</avfCommon:ChameleonContentControl.Options>
+					</afv:ChameleonContentControl.Options>
 
-					<avfCommon:ChameleonContentControl.Content>
+					<afv:ChameleonContentControl.Content>
 						<Panel>
 							<ListBox
 								ItemsSource="{Binding FolderViewModels}"
@@ -173,7 +176,7 @@
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center">
 								<StackPanel IsVisible="{Binding NoSearchResultsInFavorite}">
-									<avfCommon:SvgIconControl IconName="not-profiles"
+									<afv:SvgIconControl IconName="not-profiles"
 													  Height="102"
 													  Width="97"/>
 
@@ -194,7 +197,7 @@
 										VerticalAlignment="Center">
 								
 								<StackPanel IsVisible="{Binding NoSearchResultsInFavorite}">
-									<avfCommon:SvgIconControl  IconName="not-profiles"
+									<afv:SvgIconControl  IconName="not-profiles"
 													   Height="102"
 													   Width="97" />
 
@@ -209,8 +212,8 @@
 										   IsVisible="{Binding !NoSearchResultsInFavorite}" />
 							</StackPanel>
 						</Panel>
-					</avfCommon:ChameleonContentControl.Content>
-				</avfCommon:ChameleonContentControl>
+					</afv:ChameleonContentControl.Content>
+				</afv:ChameleonContentControl>
 
 
 			</Grid>

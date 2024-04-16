@@ -124,8 +124,8 @@
 		<Setter Property="BorderBrush" Value="Transparent" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="CornerRadius" Value="180" />
-		<Setter Property="Width" Value="34" />
-		<Setter Property="Height" Value="34" />
+		<Setter Property="Width" Value="26" />
+		<Setter Property="Height" Value="26" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<ui:FABorder Name="Root"
@@ -135,8 +135,8 @@
                              CornerRadius="{TemplateBinding CornerRadius}">
 					<Panel Background="Transparent">
 					<local:SvgIconControl IconName="{TemplateBinding Content}"
-										  Width="20"
-										  Height="20"/>
+										  Width="18"
+										  Height="18"/>
 					</Panel>
 				</ui:FABorder>
 			</ControlTemplate>

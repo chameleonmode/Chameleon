@@ -113,8 +113,13 @@ public partial class UserProfileSidePanelViewModel : SubPageViewModelBase, IUser
     void Loader()
     {
         ProfileLogins = _userProfileAdditionalDataService.GetLogins(UserProfile.Id, false).ToList();
+        SelectedLogin = ProfileLogins.FirstOrDefault(); 
+
         ProfilePersons = _userProfileAdditionalDataService.GetPersons(UserProfile.Id, false).ToList();
+        SelectedPerson = ProfilePersons.FirstOrDefault();
+
         ProfileAddresses = _userProfileAdditionalDataService.GetAddresses(UserProfile.Id, false).ToList();
+        SelectedAddress = ProfileAddresses.FirstOrDefault();
 
         OnPropertyChanged(nameof(HasNoItems));
         OnPropertyChanged(nameof(HasNoAddressesItems));

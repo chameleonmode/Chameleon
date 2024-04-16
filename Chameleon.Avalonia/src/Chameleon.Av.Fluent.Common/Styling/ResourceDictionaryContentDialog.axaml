@@ -57,7 +57,68 @@
 		</Border>
 	</Design.PreviewWith>
 
+	<ControlTheme TargetType="dilgs:ChameleonDialogControl"
+			  x:Key="{x:Type dilgs:ChameleonDialogControl}">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ThemeVariantScope Name="ThemeScopeProvider">
+					<StackPanel>
+						<!-- Header -->
+						<ContentPresenter Name="HeaderPresenter"
+										  Content="{TemplateBinding Header}"
+										  ContentTemplate="{TemplateBinding HeaderTemplate}"
+										  FontSize="14"
+										  FontWeight="SemiBold"
+										  HorizontalContentAlignment="Center"
+										  VerticalContentAlignment="Center" />
 
+
+						<TextBlock Name="SubTit" 
+								   Text="{TemplateBinding TitleDescription}"
+								   IsVisible="{TemplateBinding TitleDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+								   TextWrapping="Wrap"
+								   Margin="0"/>
+						<!--Input Options-->
+						<ItemsControl Name="DialogsHost">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Spacing="2"
+												Margin="{StaticResource ContentDialogFooterMargin}" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+						</ItemsControl>
+
+						<!-- Area -->
+						<ui:FABorder Name="ControlPreviewAreaHost"
+								BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+								BorderThickness="0"
+								TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+								CornerRadius="{DynamicResource ControlCornerRadius}">
+							<ContentPresenter Name="ContentsPresenter"
+											  Content="{TemplateBinding Content}"
+											  ContentTemplate="{TemplateBinding ContentTemplate}"
+											  HorizontalAlignment="Stretch"
+											  VerticalAlignment="Stretch"
+											  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+											  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+								<ContentPresenter.Transitions>
+									<Transitions>
+										<ThicknessTransition Duration="00:00:00.167" Property="Padding" />
+									</Transitions>
+								</ContentPresenter.Transitions>
+							</ContentPresenter>
+						</ui:FABorder>
+					</StackPanel>
+				</ThemeVariantScope>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^ /template/ ui|FABorder#ControlPreviewAreaHost">
+			<Setter Property="CornerRadius"
+					Value="{Binding Source={StaticResource OverlayCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}" />
+		</Style>
+	</ControlTheme>
+	
 	<ControlTheme x:Key="{x:Type ui:ContentDialog}" TargetType="ui:ContentDialog">
 		<Setter Property="Foreground" Value="{DynamicResource ContentDialogForeground}"/>
 		<Setter Property="Background" Value="{DynamicResource ContentDialogBackground}"/>
@@ -87,9 +148,8 @@
                                  if we put ClipToBounds=True on BackgroundElement above, it clips the shadow -->
 							<Border ClipToBounds="True"
                                     CornerRadius="{TemplateBinding CornerRadius}">
-								<Grid Name="DialogSpace"
-									  ClipToBounds="True"
-									  RowDefinitions="*,Auto">
+								<Grid Name="DialogSpace" ClipToBounds="True"
+                                  RowDefinitions="Auto,*,Auto">
 									<ScrollViewer Name="ContentScrollViewer"
                                                   HorizontalScrollBarVisibility="Disabled"
                                                   VerticalScrollBarVisibility="Auto">
@@ -97,6 +157,7 @@
                                                 Padding="{DynamicResource ContentDialogPadding}"
                                                 BorderThickness="{StaticResource ContentDialogSeparatorThickness}"
                                                 BorderBrush="{DynamicResource ContentDialogSeparatorBorderBrush}">
+											
 											<Grid RowDefinitions="Auto,*" >
 												<Grid.Styles>
 													<!--Make sure text wrapping is on-->
@@ -104,24 +165,22 @@
 														<Setter Property="TextWrapping" Value="Wrap"/>
 													</Style>
 												</Grid.Styles>
-												<ContentControl IsVisible="{Binding Path=$self.Content}" 
-																Name="Title"
+												<ContentControl Name="Title"
+																IsVisible="{Binding Path=$self.Content}"
                                                                 Margin="{StaticResource ContentDialogTitleMargin}"
                                                                 Content="{TemplateBinding Title}"
                                                                 ContentTemplate="{TemplateBinding TitleTemplate}"
-                                                                FontSize="28"
+                                                                FontSize="20"
                                                                 FontFamily="Default"
                                                                 FontWeight="SemiBold"
                                                                 Foreground="{TemplateBinding Foreground}"
                                                                 HorizontalAlignment="Stretch"
-                                                                VerticalAlignment="Top"
-																>
+                                                                VerticalAlignment="Top">
 													<ContentControl.Template>
 														<ControlTemplate>
 															<ContentPresenter Content="{TemplateBinding Content}"
                                                                               ContentTemplate="{TemplateBinding ContentTemplate}"
                                                                               Margin="{TemplateBinding Padding}"
-																			  LineHeight="36"
                                                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
 														</ControlTemplate>
@@ -134,13 +193,14 @@
                                                                   FontSize="{StaticResource ControlContentThemeFontSize}"
                                                                   FontFamily="{StaticResource ContentControlThemeFontFamily}"
                                                                   Foreground="{TemplateBinding Foreground}"
+																  Margin="0 0 0 0"
                                                                   Grid.Row="1"/>
 											</Grid>
 										</Border>
 									</ScrollViewer>
 
 									<Border Padding="{StaticResource ContentDialogPadding}"
-                                            Grid.Row="1"
+                                            Grid.Row="2"
                                             HorizontalAlignment="Stretch"
                                             VerticalAlignment="Bottom"
                                             Background="{TemplateBinding Background}">
@@ -304,6 +364,7 @@
 		</Style>
 
 		<!-- Margins are defined by ContentDialogButtonSpacing (8) -->
+
 		<!-- Primary and Secondary -->
 		<Style Selector="^:primary:secondary /template/ Button#PrimaryButton">
 			<Setter Property="IsVisible" Value="True"/>
@@ -393,4 +454,6 @@
 			<Setter Property="Margin" Value="4 0 0 0" />
 		</Style>
 	</ControlTheme>
+
+
 </ResourceDictionary>

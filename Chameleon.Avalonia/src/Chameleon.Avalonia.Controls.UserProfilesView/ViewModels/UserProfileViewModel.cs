@@ -129,7 +129,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
     private async Task DeleteUserProfile()
     {
         if (await MesageBoxHelper.ShowAsync("Delete User Profile",
-          $"Are you sure you want to delete {_userProfile.Title}?",
+          $"Are you sure you want to delete {UserProfile.Title}?",
           ContentDialogButtons.YesNo,
           "DeleteLines"))
             EventAggregator

@@ -4,7 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="800"
-             x:Class="Chameleon.Avalonia.Controls.UserProfileView.UserProfileIdentityView">
+			 xmlns:vm="using:Chameleon.Avalonia.Controls.UserProfileView.ViewModels"
+			 x:DataType="vm:UserProfileIdentityViewModel"
+			 x:CompileBindings="False"
+             x:Class="Chameleon.Avalonia.Controls.UserProfileView.UserProfileIdentityView"
+			 Name="UC">
 	<UserControl.Resources>
 
 	</UserControl.Resources>
@@ -201,7 +205,7 @@
 
 												<Button Content="delete"
 														Tag="Delete"
-														Command="{Binding Path=$parent[ItemsControl].DataContext.DeletePersonCommand}"
+														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeletePersonCommand}"
 														CommandParameter="{Binding}"
 														HorizontalAlignment="Right"
 														Theme="{StaticResource SvgIconTextButton}" />
@@ -289,7 +293,7 @@
 
 												<Button Content="delete"
 														Tag="Delete"
-														Command="{Binding Path=$parent[ItemsControl].DataContext.DeleteBusinessCommand}"
+														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteBusinessCommand}"
 														CommandParameter="{Binding}"
 														HorizontalAlignment="Right"
 														Theme="{StaticResource SvgIconTextButton}" />
@@ -375,19 +379,19 @@
 												<avfCommon:HeaderdInputFieldsControl Title="Zip"
 																					 Text="{Binding Zip, FallbackValue=Zip}" />
 
-												<ComboBox ItemsSource="{Binding Path=Countries.Items}"
+												<ComboBox ItemsSource="{ReflectionBinding Path=Countries.Items}"
 														  PlaceholderText="Country"
 														  Margin="0 0 6 0"
 														  HorizontalAlignment="Stretch">
 													<ComboBox.SelectedItem>
 														<MultiBinding>
-															<Binding Path="CountryId"/>
-															<Binding Path="DataContext.Countries.Items" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" Mode="OneWay"/>
+															<ReflectionBinding Path="CountryId"/>
+															<ReflectionBinding Path="DataContext.Countries.Items" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" Mode="OneWay"/>
 														</MultiBinding>
 													</ComboBox.SelectedItem>
 													<ComboBox.ItemTemplate>
 														<DataTemplate>
-															<Label Content="{Binding Name}"/>
+															<Label Content="{ReflectionBinding Name}"/>
 														</DataTemplate>
 													</ComboBox.ItemTemplate>
 												</ComboBox>
@@ -397,7 +401,7 @@
 
 												<Button Content="delete"
 														Tag="Delete"
-														Command="{Binding Path=$parent[ItemsControl].DataContext.DeleteAddressCommand}"
+														Command="{ReflectionBinding  Path=$parent[ItemsControl].DataContext.DeleteAddressCommand}"
 														CommandParameter="{Binding}"
 														HorizontalAlignment="Right"
 														Theme="{StaticResource SvgIconTextButton}" />
@@ -484,7 +488,7 @@
 																					 Text="{Binding Notes, FallbackValue=Notes}" />
 												<Button Content="delete"
 														Tag="Delete"
-														Command="{Binding Path=$parent[ItemsControl].DataContext.DeleteLoginCommand}"
+														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteLoginCommand}"
 														CommandParameter="{Binding}"
 														HorizontalAlignment="Right"
 														Theme="{StaticResource SvgIconTextButton}" />

@@ -8,6 +8,9 @@
 			 xmlns:pagnator="using:Chameleon.Avalonia.Controls.Paginator"
 			 xmlns:converter="using:Chameleon.Common.ValueConverters"
              mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="800"
+			 xmlns:vm="using:Chameleon.Avalonia.Controls.UserProfilesView.ViewModels"
+			 x:DataType="vm:UserProfilesViewModel"
+			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfilesView">
 	<UserControl.Resources>
 		<converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
@@ -194,7 +197,7 @@
 							Theme="{StaticResource SubtitleTextBlockStyle}"
 							HorizontalAlignment="Center">
 							<TextBlock.IsVisible>
-								<MultiBinding>
+								<MultiBinding Converter="{x:Static BoolConverters.And}">
 									<Binding Path="HasNoItems" />
 									<Binding Path="IsProfilesExist"/>
 								</MultiBinding>

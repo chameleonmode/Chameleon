@@ -21,7 +21,7 @@ public class WindowDialogService : IWindowDialogService
 
             initialize?.Invoke(viewModel);
 
-            Window window = new Window() { Topmost = true, Width=480, Height=560 };
+            AcrylicWindow window = new AcrylicWindow() { Topmost = true, Width= 156 };
             window.Content = view;
             window.Show();
         }

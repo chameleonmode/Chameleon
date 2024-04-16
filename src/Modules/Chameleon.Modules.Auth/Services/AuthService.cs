@@ -7,6 +7,7 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
+using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Prism.Events;
 
@@ -15,11 +16,13 @@ namespace Chameleon.Auth.Services
     public class AuthService : IAuthService
     {
         private readonly IEventAggregator _eventAggregator;
-        private readonly IApplicationSettings _appSettings;
         private readonly IApplicationUser _applicationUser;
         private readonly IAuthSession _authSession;
         private readonly IAuthApiClient _apiClient;
-        private readonly IAuthTaskDialogViewModel _authContentDialogService;
+        private readonly IAuthTaskDialogViewModel _authContentDialogService;  
+        private readonly IApplicationSettingsService _settingsService;
+
+        private IApplicationSettings _appSettings;
 
         public AuthService(IAuthApiClient apiClient,
             IAuthSession authSession,
@@ -28,7 +31,8 @@ namespace Chameleon.Auth.Services
             IApplicationUser applicationUser,
             IAuthTaskDialogViewModel contentDialogService)
         {
-            _appSettings = settingsService.Get();
+            _settingsService = settingsService;
+            //_appSettings = settingsService.Get();
             _authSession = authSession;
             _applicationUser = applicationUser;
             _eventAggregator = eventAggregator;
@@ -44,6 +48,7 @@ namespace Chameleon.Auth.Services
             IAuthRefreshTokenResponse? refreshTokenResponse = null;
             try
             {
+                _appSettings = await _settingsService.GetAsync();
                 if (_appSettings.Login.LoginName.HasAny() && _appSettings.Login.LicenseKey.HasAny())
                 {
                     loginResult = await Login(_appSettings.Login.LoginName, _appSettings.Login.LicenseKey);
@@ -61,10 +66,6 @@ namespace Chameleon.Auth.Services
                     {
                         OnAuthenticateSuccess(loginResult);
                         refreshTokenResponse = await RefreshToken(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
-                        // trigger event
-                        _eventAggregator
-                            .GetEvent<LoginSuccessEvent>()
-                            .Publish(new LoginEventArgs(_authSession));
                     }
                 }
                 catch
@@ -77,16 +78,18 @@ namespace Chameleon.Auth.Services
 
             return loginResult is not null && refreshTokenResponse is not null;
         }
-        public async Task ShowLoginDialogAsync()
+        public async Task<bool> ShowLoginDialogAsync()
         {
             var result = await _authContentDialogService.ShowAsync();
-          
+
             if (result == IContentDialogResult.Primary)
             {
-                await LoginAsync();
+                return await LoginAsync();
             }
             else
-                _eventAggregator.GetEvent<LoginCancelEvent>().Publish();
+            {
+               return false;
+            }
         }
         
         public  void Login()

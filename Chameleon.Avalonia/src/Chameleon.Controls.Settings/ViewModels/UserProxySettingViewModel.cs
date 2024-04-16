@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using Chameleon.Avalonia.Controls.UserProfileView.Models.Profile;
 using Chameleon.CT.Common.Base;
+using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
@@ -26,12 +27,17 @@ public partial class UserProxySettingViewModel
         _userProfile = userProfile;
         _eventAggregator = eventAggregator;
 
-        UserProfileModel = _mapper.Map<UserProfileBindable>(_userProfile);
+        //UserProfileModel = _mapper.Map<UserProfileBindable>(_userProfile);
+        UserProfileModel = _mapper.Map<UserProfile>(_userProfile);
+        _host = UserProfileModel.Proxy.Host;
+        _port = ""+UserProfileModel.Proxy.Port;
+        _userName = UserProfileModel.Proxy.UserName;
+        _password = UserProfileModel.Proxy.Password;
     }
     public IUserProfile UserProfile => _userProfile;
 
-    private UserProfileBindable _userProfileModel;
-    public UserProfileBindable UserProfileModel
+    private UserProfile _userProfileModel;
+    public UserProfile UserProfileModel
     {
         get => _userProfileModel;
         set
@@ -39,6 +45,23 @@ public partial class UserProxySettingViewModel
             SetProperty(ref _userProfileModel, value);
         }
     }
+    [ObservableProperty]
+    private string? _host;
+   // partial void OnHostChanged(string? oldValue, string? newValue) => UserProfileModel.Proxy.Host = newValue;
+    [ObservableProperty]
+    private string? _userName;
+    //partial void OnUserNameChanged(string? oldValue, string? newValue) => UserProfileModel.Proxy.UserName = newValue;
+    [ObservableProperty]
+    private string? _password;
+    //partial void OnPasswordChanged(string? oldValue, string? newValue) => UserProfileModel.Proxy.Password = newValue;
+
+    [ObservableProperty]
+    private string? _port;
+  // partial void OnPortChanged(string? oldValue, string? newValue)
+  // {
+  //     if (int.TryParse(newValue, out var port)) { if (UserProfileModel.Proxy.Port != port) UserProfileModel.Proxy.Port = port; }
+  // }
+  //
 
     public string UserProfileTitle => _userProfile.Title ?? "<Title>";
 
@@ -94,12 +117,12 @@ public partial class UserProxySettingViewModel
         }
     }
 
-    public void SetProfile(IProxySettings proxySettings)
+    public void SetProfile()
     {
-        var host = proxySettings.Host;
-        var port = proxySettings.Port;
-        var userName = proxySettings.UserName;
-        var password = proxySettings.Password;
+        var host = Host;
+        var port = int.TryParse(Port, out var po) ? po : _userProfile.Proxy.Port;
+        var userName = UserName;
+        var password = Password;
 
         var profileProxy = _userProfile.Proxy;
         profileProxy.Host = host;

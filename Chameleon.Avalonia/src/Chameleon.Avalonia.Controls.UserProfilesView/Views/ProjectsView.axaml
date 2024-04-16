@@ -6,6 +6,9 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="850"
+			 xmlns:vm="using:Chameleon.Avalonia.Controls.UserProfilesView.ViewModels"
+			 x:DataType="vm:ProjectsViewModel"
+			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.ProjectsView">
 	<ScrollViewer>
 		<StackPanel Spacing="-18">

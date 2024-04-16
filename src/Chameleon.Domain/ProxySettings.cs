@@ -15,7 +15,7 @@ namespace Chameleon.Domain.Entities
         public string HostForRequest { get => HostConverter.GetHostForRequest(Host); }
 
         public const int DefaultPort = 80;
-        private int _port;
+        private int _port = DefaultPort;
         public int Port
         {
             get => _port;
@@ -23,7 +23,8 @@ namespace Chameleon.Domain.Entities
             {
                 if (value < 0 || value >= 65535)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    value = 0;
+                   // throw new ArgumentOutOfRangeException();
                 }
                 _port = value;
             }

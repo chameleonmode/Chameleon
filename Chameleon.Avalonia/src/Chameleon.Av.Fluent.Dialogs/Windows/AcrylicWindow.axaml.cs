@@ -1,0 +1,46 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Markup.Xaml;
+using Avalonia.Media;
+
+namespace Chameleon.Av.Fluent.Dialogs;
+
+public partial class AcrylicWindow : Window 
+{
+    public AcrylicWindow()
+    {
+        InitializeComponent();
+    }
+
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        base.OnPointerMoved(e);
+        if (e.Pointer.Captured != null)
+        {
+            //var currentPosition = e.GetPosition(this);
+
+            //var offsetX = currentPosition.X - _positionInBlock.X;
+            //var offsetY = currentPosition.Y - _positionInBlock.Y;
+
+            //var _transform = new TranslateTransform(offsetX, offsetY);
+            //RenderTransform = _transform;
+           // this.BeginMoveDrag(new PointerPressedEventArgs(e.Source, e.Pointer, this, e.GetPosition(this),e.Timestamp,e.p,));
+
+        }
+    }
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        if(e.Source != null && e.Source is Panel) 
+            BeginMoveDrag(e);
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+    }
+
+
+}

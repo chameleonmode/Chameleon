@@ -16,7 +16,7 @@ using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.CT.Common.Collections;
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -116,12 +116,20 @@ public partial class UserProxySettingsViewModel
         LoadUserProfileFolderViewModels();
     }
 
-    public AsyncCollectionViewModel<IProxyCountry> Countries { get; private set; }
+    public ObservableCollection<IProxyCountry> Countries { get; private set; } = new();
+    //public AsyncCollectionViewModel<IProxyCountry> Countries { get; private set; }
 
-    private Task InitializeCountriesAsync()
+    private async Task InitializeCountriesAsync()
     {
-        Countries = new AsyncCollectionViewModel<IProxyCountry>(GetCountries, true);
-        return Countries.Load();
+        //Countries = new AsyncCollectionViewModel<IProxyCountry>(GetCountries, true);
+        //return Countries.Load();
+
+        Countries.Clear();
+
+        foreach (var item in await Task.Run(() => _proxyService.GetCountries()))
+            Countries.Add(item);
+
+        Country = Countries.FirstOrDefault();
     }
 
     private IList<IProxyCountry> GetCountries()
@@ -281,7 +289,7 @@ public partial class UserProxySettingsViewModel
 
     private void ApplyProxy(IProxySettings proxySettings, UserProxySettingViewModel model)
     {
-        model.SetProfile(proxySettings);
+        model.SetProfile();
         _userProfileService.Save(model.UserProfile);
         //EventAggregator
         //    .GetEvent<OpenUserProfileEvent>()
@@ -306,10 +314,10 @@ public partial class UserProxySettingsViewModel
             {
                 foreach (var model in models)
                 {
-                    if (model.UserProfile.Proxy.Host != model.UserProfileModel.Proxy.Host ||
-                        model.UserProfile.Proxy.Port != model.UserProfileModel.Proxy.Port ||
-                        model.UserProfile.Proxy.UserName != model.UserProfileModel.Proxy.UserName ||
-                        model.UserProfile.Proxy.Password != model.UserProfileModel.Proxy.Password)
+                    if (model.UserProfile.Proxy.Host != model.Host ||
+                         (model.Port.HasAny() && int.TryParse(model.Port,out int port) && port!= model.UserProfile.Proxy.Port) ||
+                        model.UserProfile.Proxy.UserName != model.UserName ||
+                        model.UserProfile.Proxy.Password != model.Password)
                         ApplyProxy(model.UserProfileModel.Proxy, model);
                     //returned.Add(model.UserProfileModel.Proxy);
                 }

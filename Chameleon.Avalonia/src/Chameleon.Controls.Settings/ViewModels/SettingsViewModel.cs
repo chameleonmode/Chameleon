@@ -124,7 +124,7 @@ public partial class SettingsViewModel
 
         EventAggregator
           .GetEvent<LoginSuccessEvent>()
-          .Subscribe(args => InitializeLoginSucces());
+          .Subscribe(async args => await InitializeLoginSucces());
     }
 
     private async Task InitializeLoginSucces()

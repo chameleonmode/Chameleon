@@ -4,9 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:avCommon="using:Chameleon.Avalonia.Common"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d"
-             x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfileView">
+             x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfileView"
+			 xmlns:vm="using:Chameleon.Avalonia.Controls.UserProfilesView.ViewModels"
+			 x:DataType="vm:UserProfileViewModel"
+			 x:CompileBindings="True">
 	<Border>
 		<Grid ColumnDefinitions="Auto,Auto,*,Auto">
 			<StackPanel Grid.Column="0"
@@ -33,7 +36,7 @@
 								BorderThickness="1">
 
 							<TextBlock Text="{Binding Code,FallbackValue=E}"
-									   Margin="0 -1 0 0"
+									   Margin="0 0 0 0"
 									   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
 									   VerticalAlignment="Center"
 									   HorizontalAlignment="Center"
@@ -83,7 +86,7 @@
 				<Button Content="chameleon-logo"
 						ToolTip.Tip="Open In Chameleon Browser"
 						Theme="{StaticResource SvgIconButton}"
-						Command="{Binding OpenBrowserCommand}"/>
+						/><!--Command="{Binding OpenBrowserCommand}"-->
 
 				<!--<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
 							BorderThickness="1 0 0 0" />
