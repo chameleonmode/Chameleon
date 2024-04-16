@@ -12,8 +12,9 @@ public partial class AssistantUsersView : SubPageViewControl, IAssistantUsersVie
 {
     public AssistantUsersView()
     {
-        InitializeComponent();
-        Description = "Invite users and set their access to specific profiles";
+        InitializeComponent(); 
+        ControlName = "Assistant Taskforce";
+        Description = "Invite users to your taskforce and set their access to specific profiles";
         PreviewImage = ApplicationHelper.TryGetResource<IconSource>("User");
     }
 }

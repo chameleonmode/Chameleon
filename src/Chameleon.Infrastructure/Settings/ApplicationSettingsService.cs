@@ -47,5 +47,10 @@ namespace Chameleon.Infrastructure.Settings
             var json = System.Text.Json.JsonSerializer.Serialize(_settings);
             await File.WriteAllTextAsync(_settingsFilePath, json);
         }
+
+        public Task<IApplicationSettings> GetAsync()
+        {
+            return Task.Run(Get);
+        }
     }
 }

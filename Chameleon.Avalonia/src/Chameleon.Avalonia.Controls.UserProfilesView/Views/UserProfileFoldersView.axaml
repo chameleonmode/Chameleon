@@ -54,6 +54,11 @@
 									<Grid
 										  VerticalAlignment="Center">
 
+										<!--<ui:SymbolIcon Symbol="Folder" 
+													   FontSize="18" />
+										<ui:SymbolIcon Symbol="FolderFilled" 
+													   FontSize="18" 
+													   IsVisible="{Binding IsSelected}" />-->
 										<avfCommon:SvgIconControl IconName="folder"  />
 										<avfCommon:SvgIconControl IconName="selected-folder"
 																  IsVisible="{Binding IsSelected}" />
@@ -147,10 +152,11 @@
 									   TitleDescription="Select a folder to view profiles">
 		<avfCommon:ChameleonContentControl.TitleContent>
 			<Grid HorizontalAlignment="Right">
-				<Button
-					Content="new-folder"
+				<Button Tag="New"
+						Margin="0 0 6 6"
+						Content="new-folder"
 						ToolTip.Tip="Create Folder"
-						Theme="{StaticResource SvgIconButton}"
+						Theme="{StaticResource SvgIconTextButton}"
 						Command="{Binding CreateCommand}"
 						IsEnabled="{Binding IsCreateBtnEnabled}"/>
 			</Grid>

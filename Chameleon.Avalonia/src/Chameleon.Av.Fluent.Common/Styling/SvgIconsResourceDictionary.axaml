@@ -24,10 +24,10 @@
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Panel>
-				<Svg Name="SvgHost" 
-					 Path="{TemplateBinding IconName, Converter={StaticResource conv}}" />
-					<!--<Svg Name="svgString" 
-						 Source="{TemplateBinding IconName, Converter={StaticResource dataConv}}" />-->
+				<!--<Svg Name="SvgHost" 
+					 Path="{TemplateBinding IconName, Converter={StaticResource conv}}" />-->
+					<Svg Name="svgString" 
+						 Source="{TemplateBinding IconName, Converter={StaticResource dataConv}}" />
 				</Panel>
 			</ControlTemplate>
 		</Setter>

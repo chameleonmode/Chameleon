@@ -203,7 +203,7 @@ public class Play
             List<string> args =
                 [
                     $"--user-data-dir=\"{userDataDirDefault}\"",
-                    "--restore-last-session",
+                    //"--restore-last-session",
                     "--profile-directory=Default",
                     "--ash-no-nudges",
                     "--disable-domain-reliability",

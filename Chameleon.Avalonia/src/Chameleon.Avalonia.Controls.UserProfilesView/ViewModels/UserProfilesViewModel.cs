@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using AutoMapper;
+using Avalonia.Controls;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Common.Helpers;
 using Chameleon.Controls.AssistantUsers.Interfaces;
@@ -18,6 +19,7 @@ using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
@@ -81,7 +83,7 @@ public partial class UserProfilesViewModel
 
         EventAggregator
             .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-            .Subscribe(args => UpdateProfilesInFolder());
+            .Subscribe(UpdateProfilesInFolder);
 
         EventAggregator
             .GetEvent<SavedUserProfileFolderEvent>()
@@ -103,7 +105,7 @@ public partial class UserProfilesViewModel
         OnHandleUserEvent();
     }
 
-    private void UpdateProfilesInFolder()
+    private void UpdateProfilesInFolder(ChangeProfilesInFavoriteFolderEventArgs? args = null)
     {
         DispatcherService.InvokeOnUiThread(() =>
         {
@@ -112,6 +114,11 @@ public partial class UserProfilesViewModel
             OnPropertyChanged(nameof(ViewModels));
             OnPropertyChanged(nameof(HasNoItems));
             OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
+            if(args?.Navigate == true && args.Profile is not null)
+            {
+                NavigationService.NavigateToType(typeof(IUserProfileIdentityView), args.Profile);
+            }
+            
         });
     }
 

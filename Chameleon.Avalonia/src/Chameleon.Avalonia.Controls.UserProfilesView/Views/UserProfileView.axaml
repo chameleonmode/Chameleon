@@ -88,12 +88,17 @@
 				<!--<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
 							BorderThickness="1 0 0 0" />
 							IsVisible="{Binding HasMultiOptions}"-->
-
-				<Button ToolTip.Tip="Open copy-paste window"
+				
+				<Button Content="copy"
+						ToolTip.Tip="Open copy-paste window"
+						Theme="{StaticResource SvgIconButton}"
+						Command="{Binding ShowViewProfileCommand}"/>
+				
+				<!--<Button ToolTip.Tip="Open copy-paste window"
 						Theme="{StaticResource TransparentButton}"
 						Command="{Binding ShowViewProfileCommand}">
 					<ui:SymbolIcon Symbol="ClipboardCode" FontSize="20" />
-				</Button>
+				</Button>-->
 				<Button Content="three-dots"
 						ToolTip.Tip="Details"
 						Command="{Binding OpenMenuCommand}"

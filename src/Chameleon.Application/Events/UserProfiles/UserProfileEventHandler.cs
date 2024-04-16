@@ -201,12 +201,12 @@ namespace Chameleon.Application.Events
                 else throw;
                 return;
             }
-
-            OpenUserDetails(profile, UserProfileViewTab.Details);
-
+                                                      
             _eventAggregator
                 .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-                .Publish(new ChangeProfilesInFavoriteFolderEventArgs(folderId == null ? 0 : folderId.Value));
+                .Publish(new ChangeProfilesInFavoriteFolderEventArgs(folderId == null ? 0 : folderId.Value, true, profile));
+
+           // OpenUserDetails(profile, UserProfileViewTab.Details);
         }
 
         private void OnOpenUserDetails(IUserProfileInfo profileInfo)
