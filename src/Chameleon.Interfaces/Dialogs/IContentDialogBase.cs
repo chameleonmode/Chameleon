@@ -2,7 +2,7 @@
 
 public interface IViewModelAware 
 {
-    T? GetDataContext<T>();
+  
 }
 public interface IViewAware
 {

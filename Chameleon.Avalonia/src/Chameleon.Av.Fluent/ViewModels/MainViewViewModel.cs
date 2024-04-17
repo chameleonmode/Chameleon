@@ -25,15 +25,12 @@ public partial class MainViewViewModel:ObservableObjectBase, IMainViewViewModel
     [ObservableProperty]
     private bool isSplashVisible = true;
 
-    private readonly IAuthService _authService;
 
-    public MainViewViewModel(IAuthService authService)
+    public MainViewViewModel()
     {
-        _authService = authService;
-
-        EventAggregator
-            .GetEvent<LoginFailEvent>()
-            .SubscribeOnce(LoginFailEventMethod);
+        //EventAggregator
+        //    .GetEvent<LoginFailEvent>()
+        //    .SubscribeOnce(LoginFailEventMethod);
 
         EventAggregator
             .GetEvent<LoginSuccessEvent>()
@@ -45,14 +42,14 @@ public partial class MainViewViewModel:ObservableObjectBase, IMainViewViewModel
         IsSplashVisible = false;
     }
 
-    private async void LoginFailEventMethod()
-    {
-        if (!Design.IsDesignMode)
-        {
-            IsSplashVisible = true;
-            await _authService.ShowLoginDialogAsync();
-        }
-    }
+    //private async void LoginFailEventMethod()
+    //{
+    //    if (!Design.IsDesignMode)
+    //    {
+    //        IsSplashVisible = true;
+    //        await _authService.ShowLoginDialogAsync();
+    //    }
+    //}
 
     public void BuildSearchTerms(List<MainAppSearchItem> items)
     {

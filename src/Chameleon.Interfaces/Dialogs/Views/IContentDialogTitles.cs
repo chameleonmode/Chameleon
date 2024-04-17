@@ -5,3 +5,7 @@ namespace Chameleon.Interfaces.Dialogs.Views;
 public interface IDefaultContentDialogTitle :ITransientDependency
 {
 }
+
+public interface IChameleonLogoDialogTitle : ITransientDependency
+{
+}

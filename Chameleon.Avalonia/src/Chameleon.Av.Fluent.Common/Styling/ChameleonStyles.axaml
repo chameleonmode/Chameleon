@@ -142,7 +142,7 @@
 				<ResourceInclude Source="/Styling/ChameleonContentControlStyles.axaml" />
 				<ResourceInclude Source="/Styling/ChameleonDialogControlStyles.axaml" />
 				<ResourceInclude Source="/Styling/ControlThemes.axaml" />
-				<ResourceInclude Source="/Styling/ResourceDictionaryContentDialog.axaml" />
+				<!--<ResourceInclude Source="/Styling/ResourceDictionaryContentDialog.axaml" />-->
 				<ResourceInclude Source="/Styling/SvgIconsResourceDictionary.axaml" />
 				<ResourceInclude Source="/Styling/HeaderdInputFieldsResourceDictionary.axaml" />
 				<ResourceInclude Source="/Styling/ChameleonListBoxStyles.axaml" />

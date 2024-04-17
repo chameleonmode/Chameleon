@@ -5,17 +5,25 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              mc:Ignorable="d"
              x:Class="Chameleon.Av.Fluent.Dialogs.DefaultContentDialogTitle">
-	<Border BorderThickness="0 0 0 1"
-			HorizontalAlignment="Stretch"
-			BorderBrush="{StaticResource SurfaceStrokeColorDefault}"
-			Padding="0 0 0 8">
-		<StackPanel Orientation="Horizontal" >
-			<ui:IconSourceElement IconSource="{StaticResource logo_symbol}"
-								  Width="29"
-								  Height="32" />
-			<TextBlock Text="hameleon"
-					   VerticalAlignment="Bottom"
-					   Theme="{StaticResource TitleTextBlockStyle}"/>
-		</StackPanel>
-	</Border>
+	<Panel Name="HeaderHost">
+		<Viewbox Name="IconHost"
+				 Width="{StaticResource DefaultContentDialogIconSize}"
+				 Height="{StaticResource DefaultContentDialogIconSize}"
+				 VerticalAlignment="Center"
+				 HorizontalAlignment="Left"
+				 Margin="{StaticResource DefaultContentTaskDialogIconMargin}">
+			<ui:FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}"
+						 Glyph="{Binding Glyph}"
+						 FontSize="28"/>
+		</Viewbox>
+		<TextBlock Text="{Binding Title}"
+				   TextWrapping="Wrap"
+				   FontSize="{DynamicResource TaskDialogHeaderFontSize}"
+				   FontWeight="{StaticResource TaskDialogHeaderFontWeight}"
+				   VerticalAlignment="Center"
+				   HorizontalAlignment="Left"
+				   Margin="{DynamicResource TaskDialogHeaderPadding}"
+				   IsVisible="True"
+				   Name="HeaderText"/>
+	</Panel>
 </UserControl>

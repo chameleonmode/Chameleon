@@ -1,13 +1,15 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Chameleon.Av.Fluent.Common.Controls;
+using Chameleon.Interfaces;
+using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
 
 namespace Chameleon.Av.Fluent.Dialogs;
 
-public partial class DefaultContentDialogContentView : AutoViewModelLocatorControl,
-    IViewModelAware,
+public partial class DefaultContentDialogContentView : UserControl,
     IDefaultContentDialogContentView
 {
     public DefaultContentDialogContentView()
@@ -15,8 +17,10 @@ public partial class DefaultContentDialogContentView : AutoViewModelLocatorContr
         InitializeComponent();
     }
 
-    public T GetDataContext<T>()
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        return (T)DataContext ?? ContainerServiceHelper.Resolve<T>();
+        base.OnLoaded(e);
+        if (DataContext is IHaveInitialize sp)
+            sp.InvokeInitializeAsyncCommand(e);
     }
 }

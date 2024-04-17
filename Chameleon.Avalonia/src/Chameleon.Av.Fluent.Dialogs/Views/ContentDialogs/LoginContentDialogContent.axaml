@@ -11,7 +11,8 @@
 	<dialogs:ChameleonDialogControl TitleDescription="Enter the provided activation information">
 		<dialogs:ChameleonDialogControl.Header>
 			<StackPanel>
-				<TextBlock Text="{Binding Title}" />
+				<TextBlock Text="User Login"
+						   Theme="{StaticResource SubtitleTextBlockStyle}"/>
 			</StackPanel>
 		</dialogs:ChameleonDialogControl.Header>
 		<dialogs:ChameleonDialogControl.DialogInputs>

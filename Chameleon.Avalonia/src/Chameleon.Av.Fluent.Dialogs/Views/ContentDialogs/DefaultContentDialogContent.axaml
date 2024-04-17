@@ -6,15 +6,11 @@
 			 xmlns:vm="using:Chameleon.Av.Fluent.Dialogs.ViewModels"
              mc:Ignorable="d" 
 			 x:Class="Chameleon.Av.Fluent.Dialogs.DefaultContentDialogContentView"
-			 x:CompileBindings="True"
-			 x:DataType="vm:DefaultContentDialogContentViewModel">
+			 x:CompileBindings="False">
 	<Design.DataContext>
 		<vm:DefaultContentDialogContentViewModel />
 	</Design.DataContext>
-	<UserControl.Resources>
-		<x:Double x:Key="DefaultContentDialogIconSize">36</x:Double>
-		<Thickness x:Key="DefaultContentTaskDialogIconMargin">12</Thickness>
-	</UserControl.Resources>
+
 	<ui:FABorder MinWidth="{DynamicResource TaskDialogMinWidth}"
 		MaxWidth="{DynamicResource TaskDialogMaxWidth}"
 		MinHeight="{DynamicResource TaskDialogMinHeight}"
@@ -22,39 +18,12 @@
 		Name="ContentRoot"
 		HorizontalAlignment="Stretch"
 		VerticalAlignment="Top">
-		<Grid RowDefinitions="Auto,*">
-			<Panel Grid.Row="0"
-				   Name="HeaderHost">
-				<Viewbox Name="IconHost"
-						 Width="{StaticResource DefaultContentDialogIconSize}"
-						 Height="{StaticResource DefaultContentDialogIconSize}"
-						 VerticalAlignment="Center"
-						 HorizontalAlignment="Left"
-						 Margin="{StaticResource DefaultContentTaskDialogIconMargin}">
-					<ui:FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}"
-								 Glyph="{Binding Glyph}"
-								 FontSize="28"
-								 VerticalAlignment="Center"
-								 HorizontalAlignment="Center"/>
-				</Viewbox>
-				<TextBlock Text="{Binding Title}"
-						   TextWrapping="Wrap"
-						   FontSize="{DynamicResource TaskDialogHeaderFontSize}"
-						   FontWeight="{StaticResource TaskDialogHeaderFontWeight}"
-						   VerticalAlignment="Center"
-						   HorizontalAlignment="Left"
-						   Margin="{DynamicResource TaskDialogHeaderPadding}"
-						   IsVisible="True"
-						   Name="HeaderText"/>
-
-			</Panel>
-
 			<ScrollViewer HorizontalScrollBarVisibility="Disabled"
 						  VerticalScrollBarVisibility="Auto"
 						  Grid.Row="2"
 						  Margin="{StaticResource TaskDialogContentMargin}">
 				<ContentPresenter Name="ContentPresenter"
-								  Content="{Binding DialogContent}"
+								  Content="{Binding Content}"
 								  HorizontalContentAlignment="Stretch"
 								  VerticalContentAlignment="Stretch"
 								  HorizontalAlignment="Stretch"
@@ -67,6 +36,5 @@
 					</ContentPresenter.Styles>
 				</ContentPresenter>
 			</ScrollViewer>
-		</Grid>
 	</ui:FABorder>
 </UserControl>

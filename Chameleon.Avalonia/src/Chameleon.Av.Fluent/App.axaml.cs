@@ -58,6 +58,8 @@ using Chameleon.Avalonia.Controls.UserProfileView.Services;
 using Chameleon.Avalonia.Controls.UserProfileView;
 using Chameleon.Interfaces.App.UserProfiles.Views.List;
 using Chameleon.Interfaces;
+using Chameleon.Auth.Services;
+using Chameleon.SystemBrowser;
 
 namespace Chameleon.Av.Fluent;
      public class tempinits : IDialogWindowsService  , IPopupDialogService
@@ -197,6 +199,8 @@ public partial class App : PrismApplication
         Container.RegisterMapperFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);                 
         Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Common.AssemblyResolver).Assembly );  
         Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.AssemblyResolver).Assembly);     
+        Container.RegisterTypesFrom(typeof(AuthService).Assembly);
+        Container.RegisterTypesFrom(typeof(SystemBrowserManager).Assembly);
         Container.RegisterTypesFrom(Assembly.GetExecutingAssembly());
 
         // cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();

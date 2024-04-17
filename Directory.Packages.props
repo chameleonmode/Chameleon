@@ -18,6 +18,7 @@
     <PackageVersion Include="Avalonia.Browser" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Android" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.iOS" Version="$(AvaloniaVersion)" />
+	  <PackageVersion Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
 	  
     <PackageVersion Include="AutoMapper" Version="13.0.1" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.2.2" />
@@ -45,12 +46,14 @@
     <PackageVersion Include="Avalonia" Version="11.1.0-beta1" />
     <PackageVersion Include="Avalonia.Svg" Version="11.1.0-beta1" />
     <PackageVersion Include="Avalonia.Svg.Skia" Version="11.1.0-beta1" />
-    <PackageVersion Include="Avalonia.Diagnostics" Version="11.1.0-beta1" />
     <PackageVersion Include="Avalonia.Desktop" Version="11.1.0-beta1" />
     <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.1.0-beta1" />
 	  
-    <PackageVersion Include="Prism.Avalonia" Version="9.0.271.11074-pre" />
-    <PackageVersion Include="Prism.DryIoc.Avalonia" Version="9.0.271.11074-pre" />
+	  
+    <!--<PackageVersion Include="Prism.Avalonia" Version="9.0.271.11074-pre" />
+    <PackageVersion Include="Prism.DryIoc.Avalonia" Version="9.0.271.11074-pre" />-->
+	  <PackageVersion Include="Prism.Avalonia" Version="8.1.97.11072" />
+	  <PackageVersion Include="Prism.DryIoc.Avalonia" Version="8.1.97.11072" />
 	  
     <PackageVersion Include="System.Drawing.Common" Version="9.0.0-preview.3.24172.9" />
     <!-- Begin Android -->

@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Chameleon.Av.Fluent.Dialogs.ViewModels;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Dialogs.ViewModels;
@@ -8,7 +9,28 @@ using FluentAvalonia.UI.Controls;
 namespace Chameleon.Av.Fluent.Dialogs.Services;
 
 public class ContentDialogService : IContentDialogService
-{
+{      
+    async Task<IContentDialogResult> CreateDialog(IContentDialogAware contentDialog, Action<IContentDialogResult> OnClosing = null)
+    {
+        var dialog = new ContentDialog()
+        {
+            Title = contentDialog.Title,
+            Content = contentDialog.DialogContent,
+            PrimaryButtonText = contentDialog.PrimaryButtonText,
+            SecondaryButtonText = contentDialog.SecondaryButtonText,
+            CloseButtonText = contentDialog.CloseButtonText,
+            DefaultButton = ContentDialogButton.Primary,
+        };
+        if (OnClosing != null)
+        {
+            dialog.Closing += (s, e) =>
+            {
+                OnClosing?.Invoke((IContentDialogResult)e.Result);
+            };
+        }
+        var res = await dialog.ShowAsync();
+        return (IContentDialogResult)res;
+    }
     public Task<IContentDialogResult> ShowAsync<TView, TViewModel>(Action<TViewModel> initialize) where TViewModel : class
     {
         if (ContainerServiceHelper.Resolve<TView>() is Control view)
@@ -29,35 +51,23 @@ public class ContentDialogService : IContentDialogService
         }
         
         throw new ArgumentNullException("view");
+    } 
+    public async Task<IContentDialogResult> ShowContentDialogAsync(object content, Action<IContentDialogResult> OnClosing, string title = "False", ContentDialogButtons btns = ContentDialogButtons.OKCancel)
+    {
+        return await CreateDialog(new DefaultContentDialogView(btns, content, title), OnClosing);
     }
 
-    async Task<IContentDialogResult> CreateDialog(IContentDialogAware contentDialog, Action<IContentDialogResult> OnClosing = null)
+    public async Task<IContentDialogResult> ShowContentDialogAsync(IContentDialogAware contentDialog)
     {
-        var dialog = new ContentDialog()
-        {
-            Title = contentDialog.Title,
-            Content = contentDialog.DialogContent,
-            PrimaryButtonText = contentDialog.PrimaryButtonText,
-            SecondaryButtonText = contentDialog.SecondaryButtonText,
-            CloseButtonText = contentDialog.CloseButtonText,
-            DefaultButton = ContentDialogButton.Primary,
-        };
-        if(OnClosing != null)
-        {
-            dialog.Closing += (s, e) =>
-            {
-                OnClosing?.Invoke((IContentDialogResult)e.Result);
-            };
-        }
-        var res = await dialog.ShowAsync();
-        return (IContentDialogResult)res;
+        return await CreateDialog(contentDialog);
     }
+
     public async Task<IContentDialogResult> ShowContentDialogAsync(Type contentDialog)
     {
         var c = ContainerServiceHelper.Current.ContainerProvider?.Resolve<IContentDialogView>(contentDialog);
         var dialog = new ContentDialog()
         {
-            Title = "True",
+            Title = c.Title,
             Content = c,
             PrimaryButtonText = c.PrimaryButtonText,
             SecondaryButtonText = c.SecondaryButtonText,
@@ -69,15 +79,6 @@ public class ContentDialogService : IContentDialogService
         return (IContentDialogResult)res;
     }
     
-    public async Task<IContentDialogResult> ShowContentDialogAsync(object content, Action<IContentDialogResult> OnClosing, string title = "False", ContentDialogButtons btns = ContentDialogButtons.OKCancel)
-    {
-        return await CreateDialog(new DefaultContentDialogView(btns, content, title), OnClosing);
-    }
-
-    public async Task<IContentDialogResult> ShowContentDialogAsync(IContentDialogAware contentDialog)
-    {
-        return await CreateDialog(contentDialog);
-    }
 
     public async Task<IContentDialogResult> ShowContentDialogAsync(ContentDialogButtons btns, object content,
         object? title = null,
@@ -109,26 +110,28 @@ public class ContentDialogService : IContentDialogService
 
     public async Task<IContentDialogResult> ShowContentDialogAsync(string title, string content, ContentDialogButtons btns = ContentDialogButtons.YesNo, IFontIconInfo? fontIconInfo = null)
     {
-        var v = ContainerServiceHelper.Resolve<IDefaultContentDialogContentView>();
-        var c = ((Control)v).DataContext as IDefaultContentDialogContentViewModel;
-        c.Title = title;
-        c.DialogContent = content;
-        c.DialogButtons = btns;
-        c.Glyph = fontIconInfo?.Glyph;
-        return await ShowContentDialogAsync(c, v);
-    }
-    internal async Task<IContentDialogResult> ShowContentDialogAsync(IDefaultContentDialogContentViewModel contentDialog, IDefaultContentDialogContentView v)
-    {
+        var vt = ContainerServiceHelper.Resolve<IDefaultContentDialogTitle>();
+        var c = ContainerServiceHelper.Resolve<IDefaultContentDialogContentViewModel>();
+        //var v = ContainerServiceHelper.Resolve<IDefaultContentDialogContentView>();
+        //var c = new DefaultContentDialogContentViewModel();
+        //if( v is Control view)
+        //       view.DataContext = c;
+
+            c.Title = title;
+            c.DialogContent = content;
+            c.DialogButtons = btns;
+            c.Glyph = fontIconInfo?.Glyph;
+
         var dialog = new ContentDialog()
         {
-            Title = "False",
-            Content = v,
-            PrimaryButtonText = contentDialog.PrimaryButtonText,
-            SecondaryButtonText = contentDialog.SecondaryButtonText,
-            CloseButtonText = contentDialog.CloseButtonText,
+            Title = ContainerServiceHelper.Resolve<IDefaultContentDialogTitle>(),
+            Content = content,
+            DataContext = c,
+            PrimaryButtonText = c.PrimaryButtonText,
+            SecondaryButtonText = c.SecondaryButtonText,
+            CloseButtonText = c.CloseButtonText,
             DefaultButton = ContentDialogButton.Primary,
         };
-
         var res = await dialog.ShowAsync();
         return (IContentDialogResult)res;
     }
