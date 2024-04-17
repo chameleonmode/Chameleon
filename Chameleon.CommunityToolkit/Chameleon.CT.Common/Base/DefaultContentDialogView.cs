@@ -47,8 +47,8 @@ namespace Chameleon.CT.Common.Base;
     {
         ContentDialogButtons.YesNo => "No",
         ContentDialogButtons.YesNoCancel or
-        ContentDialogButtons.OKCancel or
-        _ => "Cancel"
+        ContentDialogButtons.OKCancel => "Cancel",
+        _ => null
     };
 
     public ContentDialogButtons DialogButtons { get; set; }

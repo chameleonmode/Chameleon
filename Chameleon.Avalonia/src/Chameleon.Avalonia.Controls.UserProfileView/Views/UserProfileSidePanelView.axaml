@@ -62,11 +62,7 @@
 			</Setter>
 		</ControlTheme>
 	</UserControl.Resources>
-	<Panel Margin="0 18 0 0">
-		<Panel Margin="0 -18 0 0"
-			VerticalAlignment="Top"
-			Background="{StaticResource AccentFillColorDefaultBrush}"
-			Height="18" />
+	<Panel>
 		<TabControl>
 			<TabItem>
 				<TabItem.Header>

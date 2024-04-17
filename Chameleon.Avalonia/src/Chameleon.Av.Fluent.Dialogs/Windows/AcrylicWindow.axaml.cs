@@ -11,6 +11,12 @@ public partial class AcrylicWindow : Window
     public AcrylicWindow()
     {
         InitializeComponent();
+        CloseBtn.Click += CloseBtn_Click;
+    }
+
+    private void CloseBtn_Click(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        this.Close();
     }
 
     protected override void OnPointerMoved(PointerEventArgs e)

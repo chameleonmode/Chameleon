@@ -9,7 +9,7 @@
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.AddUserProfilesPopupView">
 	<UserControl.Resources>
 		<DataTemplate x:Key="ProfilesListViewTemplate">
-			<Border x:Name="Border"
+			<Border Name="Border"
 				BorderThickness="1"
 				Height="56">
 				<Grid HorizontalAlignment="Stretch">
@@ -26,28 +26,17 @@
 							 Height="28"
 							 VerticalAlignment="Center">
 					</Ellipse>
-					<!--Foreground="{StaticResource PrimaryHueMidBrush}"-->
 					<TextBlock Grid.Column="0"
 							   Margin="16 0 0 0"
 							   Text="{Binding Code}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"
-							   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
-							   FontSize="11"
-							   FontWeight="Bold"
-							   FontFamily="Open Sans" />
-					<!--Foreground="{StaticResource MainBlack}"-->
+							   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}" />
 					<TextBlock Grid.Column="1"
 							   Margin="8 0 0 0"
 							   Text="{Binding Title}"
-							   VerticalAlignment="Center"
-							   FontFamily="Open Sans"
-                               
-							   FontSize="14"
-							   FontWeight="Normal">
+							   VerticalAlignment="Center">
 					</TextBlock>
-					<!--Background="{StaticResource PrimaryHueDarkBrush}"
-                              BorderBrush="{StaticResource PrimaryHueDarkBrush}"-->
 					<CheckBox Grid.Column="2"
 							  Margin="12 0 12 0"
 							  IsChecked="{Binding IsSelected}">
@@ -57,40 +46,30 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="ProfilesSelectedTemplate">
-			<!--BorderBrush="{StaticResource DividerLine}"
-                    Background="{StaticResource LightPurple}"-->
-			<Border x:Name="Border"
-                    BorderThickness="1"
-                    Height="28"
-					Background="{StaticResource AccentFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource DividerLine}"
-                    CornerRadius="4"
-                    Margin="8 0 0 6">
+			<Border
+				BorderThickness="1"
+				Height="28"
+				Background="{StaticResource ControlFillColorDefaultBrush}"
+				BorderBrush="{StaticResource ControlElevationBorderBrush}"
+				CornerRadius="4"
+				Margin="4">
 				<Grid HorizontalAlignment="Stretch">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 					<TextBlock Grid.Column="0"
-							   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
-                               Margin="12 4 0 4"
-                               Text="{Binding Title}"
-                               VerticalAlignment="Center"
-                               FontFamily="Open Sans"
-                               
-                               FontSize="12"
-                               FontWeight="DemiBold">
+							   Margin="12 4 0 4"
+							   Text="{Binding Title}"
+							   VerticalAlignment="Center">
 					</TextBlock>
 
 					<Button Grid.Column="1"
-                            Command="{Binding UnselectCommand}"
-                            Theme="{DynamicResource TransparentButton}"
-                         
-                            Margin="12 0 0 0"
-                            BorderThickness="0">
+							Command="{Binding UnselectCommand}"
+							Theme="{DynamicResource TransparentButton}">
 						<avfCommon:SvgIconControl IconName="x"
-                                              Height="10"
-                                              Width="10" />
+											  Height="10"
+											  Width="10" />
 					</Button>
 				</Grid>
 			</Border>
@@ -99,33 +78,150 @@
 	<dialogs:ChameleonDialogControl TitleDescription="{Binding Folder.Title,
 											StringFormat='Select profiles you want to add to {0} folder:'}">
 		<dialogs:ChameleonDialogControl.Content>
-			<StackPanel Margin="10">
+			<StackPanel>
 				<Border CornerRadius="2"
 						BorderThickness="0"
 						BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}">
-						<StackPanel Grid.Column="0"
-								VerticalAlignment="Center"
-								Margin="0 8 0 0">
 							<ItemsControl
 									ItemsSource="{Binding SelectedViewModels}"
 									ItemTemplate="{StaticResource ProfilesSelectedTemplate}"
 									VerticalAlignment="Top"
-									Margin="1 2 0 0"
 									ScrollViewer.VerticalScrollBarVisibility="Visible">
+								<!--<ItemsControl.Items>
+									<ListBoxItem>
+										<Border
+											BorderThickness="1"
+											Height="28"
+											Background="{StaticResource ControlFillColorDefaultBrush}"
+											BorderBrush="{StaticResource ControlElevationBorderBrush}"
+											CornerRadius="4"
+											Margin="0 0 0 0">
+											<Grid HorizontalAlignment="Stretch">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*" />
+													<ColumnDefinition Width="Auto" />
+												</Grid.ColumnDefinitions>
+												<TextBlock Grid.Column="0"
+														   Margin="12 4 0 4"
+														   Text="{Binding Title}"
+														   VerticalAlignment="Center">
+												</TextBlock>
+
+												<Button Grid.Column="1"
+														Command="{Binding UnselectCommand}"
+														Theme="{DynamicResource TransparentButton}">
+													<avfCommon:SvgIconControl IconName="x"
+																		  Height="10"
+																		  Width="10" />
+												</Button>
+											</Grid>
+										</Border>
+									</ListBoxItem>
+
+									<ListBoxItem>
+										<Border
+											BorderThickness="1"
+											Height="28"
+											Background="{StaticResource ControlFillColorDefaultBrush}"
+											BorderBrush="{StaticResource ControlElevationBorderBrush}"
+											CornerRadius="4"
+											Margin="0 0 0 0">
+											<Grid HorizontalAlignment="Stretch">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*" />
+													<ColumnDefinition Width="Auto" />
+												</Grid.ColumnDefinitions>
+												<TextBlock Grid.Column="0"
+														   Margin="12 4 0 4"
+														   Text="{Binding Title}"
+														   VerticalAlignment="Center">
+												</TextBlock>
+
+												<Button Grid.Column="1"
+														Command="{Binding UnselectCommand}"
+														Theme="{DynamicResource TransparentButton}">
+													<avfCommon:SvgIconControl IconName="x"
+																		  Height="10"
+																		  Width="10" />
+												</Button>
+											</Grid>
+										</Border>
+									</ListBoxItem>
+
+									<ListBoxItem>
+										<Border
+											BorderThickness="1"
+											Height="28"
+											Background="{StaticResource ControlFillColorDefaultBrush}"
+											BorderBrush="{StaticResource ControlElevationBorderBrush}"
+											CornerRadius="4"
+											Margin="0 0 0 0">
+											<Grid HorizontalAlignment="Stretch">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*" />
+													<ColumnDefinition Width="Auto" />
+												</Grid.ColumnDefinitions>
+												<TextBlock Grid.Column="0"
+														   Margin="12 4 0 4"
+														   Text="{Binding Title}"
+														   VerticalAlignment="Center">
+												</TextBlock>
+
+												<Button Grid.Column="1"
+														Command="{Binding UnselectCommand}"
+														Theme="{DynamicResource TransparentButton}">
+													<avfCommon:SvgIconControl IconName="x"
+																		  Height="10"
+																		  Width="10" />
+												</Button>
+											</Grid>
+										</Border>
+									</ListBoxItem>
+
+									<ListBoxItem>
+										<Border
+											BorderThickness="1"
+											Height="28"
+											Background="{StaticResource ControlFillColorDefaultBrush}"
+											BorderBrush="{StaticResource ControlElevationBorderBrush}"
+											CornerRadius="4"
+											Margin="0 0 0 0">
+											<Grid HorizontalAlignment="Stretch">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*" />
+													<ColumnDefinition Width="Auto" />
+												</Grid.ColumnDefinitions>
+												<TextBlock Grid.Column="0"
+														   Margin="12 4 0 4"
+														   Text="{Binding Title}"
+														   VerticalAlignment="Center">
+												</TextBlock>
+
+												<Button Grid.Column="1"
+														Command="{Binding UnselectCommand}"
+														Theme="{DynamicResource TransparentButton}">
+													<avfCommon:SvgIconControl IconName="x"
+																		  Height="10"
+																		  Width="10" />
+												</Button>
+											</Grid>
+										</Border>
+									</ListBoxItem>
+
+								</ItemsControl.Items>-->
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
-										<WrapPanel Orientation="Horizontal"/>
+										<UniformGrid />
 									</ItemsPanelTemplate>
 								</ItemsControl.ItemsPanel>
 							</ItemsControl>
-						</StackPanel>
 				</Border>
 				<Expander Grid.Row="1"
 						  Header="Profiles">
 					<Border CornerRadius="0 0 4 4"
 							BorderThickness="0"
 							BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-							Margin="12 2 12 0">
+							Margin="0 2 0 0">
 						<ScrollViewer
 							VerticalScrollBarVisibility="Auto"
 							MaxHeight="220"

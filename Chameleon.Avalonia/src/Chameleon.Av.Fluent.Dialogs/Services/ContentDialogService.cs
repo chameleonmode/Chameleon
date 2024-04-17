@@ -110,31 +110,21 @@ public class ContentDialogService : IContentDialogService
 
     public async Task<IContentDialogResult> ShowContentDialogAsync(string title, string content, ContentDialogButtons btns = ContentDialogButtons.YesNo, IFontIconInfo? fontIconInfo = null)
     {
-        var vt = ContainerServiceHelper.Resolve<IDefaultContentDialogTitle>();
         var c = ContainerServiceHelper.Resolve<IDefaultContentDialogContentViewModel>();
-        //var v = ContainerServiceHelper.Resolve<IDefaultContentDialogContentView>();
-        //var c = new DefaultContentDialogContentViewModel();
-        //if( v is Control view)
-        //       view.DataContext = c;
-
-            c.Title = title;
-            c.DialogContent = content;
-            c.DialogButtons = btns;
-            c.Glyph = fontIconInfo?.Glyph;
+        c.Title = title;
+        c.Glyph = fontIconInfo?.Glyph;
 
         var dialog = new ContentDialog()
         {
             Title = ContainerServiceHelper.Resolve<IDefaultContentDialogTitle>(),
             Content = content,
             DataContext = c,
-            PrimaryButtonText = c.PrimaryButtonText,
-            SecondaryButtonText = c.SecondaryButtonText,
-            CloseButtonText = c.CloseButtonText,
+            PrimaryButtonText = DefaultContentDialogView.GetPrimaryButtonText(btns),
+            SecondaryButtonText = DefaultContentDialogView.GetSecondaryButtonText(btns),
+            CloseButtonText = DefaultContentDialogView.GetCloseButtonText(btns),
             DefaultButton = ContentDialogButton.Primary,
         };
         var res = await dialog.ShowAsync();
         return (IContentDialogResult)res;
     }
-
-   
 }

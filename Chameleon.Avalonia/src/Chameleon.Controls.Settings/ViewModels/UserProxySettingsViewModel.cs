@@ -17,6 +17,7 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.CT.Common.Collections;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using Chameleon.Common.Helpers;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -260,12 +261,6 @@ public partial class UserProxySettingsViewModel
             return;
         }
 
-        //if (proxyCount == 1)
-        //{
-        //    ApplyProxy(proxies[0], models);
-        //    return;
-        //}
-
         ApplyProxy(proxies, models);
 
         //EventAggregator
@@ -273,36 +268,66 @@ public partial class UserProxySettingsViewModel
         //   .Publish();
     }
 
+
+    [RelayCommand]
+    public void FillProxies()
+    {
+        var profiles = SelectedProfiles();
+        if (profiles.Count == 0)
+        {
+            return;
+        }
+
+        var proxyUrls = GetProxyAccess(profiles.Count);
+        if (proxyUrls.Length == 0)
+        {
+            PurchaseMessage();
+            return;
+        }
+
+        var proxies = ParseProxiesSettings(proxyUrls);
+
+        ApplyProxy(proxies, profiles);
+
+        IsSelectedAll = false;
+        OnPropertyChanged(nameof(IsSelectedAll));
+    }
+
     private void ApplyProxy(List<IProxySettings> proxies, List<UserProxySettingViewModel> models)
     {
-        var proxyCount = proxies.Count;
-        var modelCount = models.Count;
-        var minCount = proxyCount >= modelCount
-            ? modelCount
-            : proxyCount;
-
-        for (var i = 0; i < minCount; ++i)
+        if (proxies.Count == 1)
         {
-            ApplyProxy(proxies[i], models[i]);
+            for (var i = 0; i < models.Count; ++i)
+            {
+                ApplyProxy(proxies[0], models[i]);
+            }
+        }
+        else
+        {
+            var minCount = Math.Min(proxies.Count, models.Count);
+
+            for (var i = 0; i < minCount; ++i)
+            {
+                ApplyProxy(proxies[i], models[i]);
+            }
         }
     }
 
     private void ApplyProxy(IProxySettings proxySettings, UserProxySettingViewModel model)
     {
+        if (proxySettings != null)
+        {
+            model.Host = proxySettings.Host;
+            model.Port = "" + proxySettings.Port;
+            model.UserName = proxySettings.UserName;
+            model.Password = proxySettings.Password;
+        }
         model.SetProfile();
         _userProfileService.Save(model.UserProfile);
         //EventAggregator
         //    .GetEvent<OpenUserProfileEvent>()
         //    .Publish(new UserProfileEventArgs(model._userProfile));
 
-    }
-
-    private void ApplyProxy(IProxySettings proxySettings, List<UserProxySettingViewModel> models)
-    {
-        foreach (var model in models)
-        {
-            ApplyProxy(proxySettings, model);
-        }
     }
 
     private List<IProxySettings> SetProxies(List<UserProxySettingViewModel>? models = null)
@@ -315,22 +340,19 @@ public partial class UserProxySettingsViewModel
                 foreach (var model in models)
                 {
                     if (model.UserProfile.Proxy.Host != model.Host ||
-                         (model.Port.HasAny() && int.TryParse(model.Port,out int port) && port!= model.UserProfile.Proxy.Port) ||
+                        (model.Port.HasAny() && int.TryParse(model.Port,out int port) && port!= model.UserProfile.Proxy.Port) ||
                         model.UserProfile.Proxy.UserName != model.UserName ||
                         model.UserProfile.Proxy.Password != model.Password)
-                        ApplyProxy(model.UserProfileModel.Proxy, model);
-                    //returned.Add(model.UserProfileModel.Proxy);
+                        ApplyProxy(null, model);
                 }
             }
 
             return [];
         }
 
-        var applingProxyList = _applingProxy.Split(new[]
-        {
-                Environment.NewLine
-        },
-        StringSplitOptions.RemoveEmptyEntries);
+        var applingProxyList = ApplingProxy.Split(
+            [Environment.NewLine],
+            StringSplitOptions.RemoveEmptyEntries);
 
         var proxies = ParseProxiesSettings(applingProxyList);
         return proxies;
@@ -343,7 +365,7 @@ public partial class UserProxySettingsViewModel
         {
             if (!ParseProxySettings(item, out var proxy))
             {
-                break;
+                continue;
             }
             proxies.Add(proxy);
         }
@@ -393,30 +415,6 @@ public partial class UserProxySettingsViewModel
         }
     }
 
-    [RelayCommand]
-    public void FillProxies()
-    {
-        var profiles = SelectedProfiles();
-        if (profiles.Count == 0)
-        {
-            return;
-        }
-
-        var proxyUrls = GetProxyAccess(profiles.Count);
-        if (proxyUrls.Length == 0)
-        {
-            PurchaseMessage();
-            return;
-        }
-
-        var proxies = ParseProxiesSettings(proxyUrls);
-
-        ApplyProxy(proxies, profiles);
-
-        IsSelectedAll = false;
-        OnPropertyChanged(nameof(IsSelectedAll));
-    }
-
     private List<UserProxySettingViewModel> SelectedProfiles()
     {
         var models = new List<UserProxySettingViewModel>();
@@ -431,21 +429,14 @@ public partial class UserProxySettingsViewModel
         return models;
     }
 
-    private void ErrorMessage(string message)
+    private async void ErrorMessage(string message)
     {
-        ContentDialogService.ShowContentDialogAsync(
-            ContentDialogButtons.OK,
-            message,
-            "Warning");
+        await MesageBoxHelper.ShowErrorAsync("Warning", message);
     }
 
     private async void PurchaseMessage()
     {
-        var result = await ContentDialogService.ShowContentDialogAsync( 
-            ContentDialogButtons.OKCancel, 
-            "You have no proxy to set. Purchase them on Proxy Credit tab",
-            "No Proxy Credit");
-        if(result == IContentDialogResult.Primary)
+        if(await MesageBoxHelper.ShowAsync("No Proxy Credit","You have no proxy to set. Purchase them on Proxy Credit tab"))
         {
             var args = new ChangeSelectedTabIndexEventArgs() { SelectedIndex = 2 };
             EventAggregator
@@ -664,11 +655,15 @@ public partial class UserProxySettingsViewModel
     [RelayCommand]
     private void SelectAll()
     {
+        foreach (var model in ViewModels)
+        {
+            model.IsSelected = true;
+        }
+    }
+    [RelayCommand]
+    private void SelectAllFromFolder()
+    {
         IsSelectedAll = true;
-        //foreach (var model in ViewModels.Items)
-        //{
-        //    model.IsSelected = true;
-        //}
     }
 
     [RelayCommand]

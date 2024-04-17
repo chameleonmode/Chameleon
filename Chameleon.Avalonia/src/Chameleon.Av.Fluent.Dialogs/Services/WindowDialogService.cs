@@ -1,5 +1,6 @@
 ﻿
 using Avalonia.Controls;
+using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Interfaces.Views;
 
 namespace Chameleon.Av.Fluent.Dialogs.Services;
@@ -21,9 +22,13 @@ public class WindowDialogService : IWindowDialogService
 
             initialize?.Invoke(viewModel);
 
-            AcrylicWindow window = new AcrylicWindow() { Topmost = true, Width= 156 };
-            window.Content = view;
-            window.Show();
+            AcrylicWindow window = new()
+            {
+                Topmost = true,
+                Width = 156
+            };
+            window.MainPanel.Children.Add(view);
+            window.Show(ApplicationHelper.GetMainWindow());
         }
     }
 }

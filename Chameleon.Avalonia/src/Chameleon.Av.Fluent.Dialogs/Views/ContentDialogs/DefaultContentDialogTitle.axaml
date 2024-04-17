@@ -6,24 +6,20 @@
              mc:Ignorable="d"
              x:Class="Chameleon.Av.Fluent.Dialogs.DefaultContentDialogTitle">
 	<Panel Name="HeaderHost">
-		<Viewbox Name="IconHost"
-				 Width="{StaticResource DefaultContentDialogIconSize}"
-				 Height="{StaticResource DefaultContentDialogIconSize}"
-				 VerticalAlignment="Center"
-				 HorizontalAlignment="Left"
-				 Margin="{StaticResource DefaultContentTaskDialogIconMargin}">
-			<ui:FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}"
-						 Glyph="{Binding Glyph}"
-						 FontSize="28"/>
-		</Viewbox>
-		<TextBlock Text="{Binding Title}"
-				   TextWrapping="Wrap"
-				   FontSize="{DynamicResource TaskDialogHeaderFontSize}"
-				   FontWeight="{StaticResource TaskDialogHeaderFontWeight}"
-				   VerticalAlignment="Center"
-				   HorizontalAlignment="Left"
-				   Margin="{DynamicResource TaskDialogHeaderPadding}"
-				   IsVisible="True"
-				   Name="HeaderText"/>
+		<ui:FontIcon
+			FontFamily="{StaticResource SymbolThemeFontFamily}"
+			VerticalAlignment="Center"
+			HorizontalAlignment="Left"
+			Glyph="{Binding Glyph}"
+			FontSize="36"/>
+		<TextBlock
+			Text="{Binding Title}"
+			TextWrapping="Wrap"
+			FontSize="{DynamicResource TaskDialogHeaderFontSize}"
+			FontWeight="{StaticResource TaskDialogHeaderFontWeight}"
+			VerticalAlignment="Center"
+			HorizontalAlignment="Left"
+			Margin="42 0 0 0"
+			IsVisible="True"/>
 	</Panel>
 </UserControl>

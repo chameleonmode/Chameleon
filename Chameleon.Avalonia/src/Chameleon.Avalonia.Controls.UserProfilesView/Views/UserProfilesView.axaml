@@ -33,32 +33,32 @@
 		<avfCommon:ChameleonContentControl.Header>
 			<StackPanel IsVisible="{Binding !HasNoItems}">
 				<Panel VerticalAlignment="Center">
-					<StackPanel Orientation="Horizontal">
-					<Button Content="select-all"
-							Tag="Select all"
-							Theme="{StaticResource SvgIconTextButton}"
-							Command="{Binding SelectAllCommand}" />
-					<Button Content="select-all"
-							Tag="Select all in folder"
-							Theme="{StaticResource SvgIconTextButton}"
-							Command="{Binding SelectAllProfilesFromFolderCommand}" />
-					<StackPanel
-						Orientation="Horizontal"
-						Margin="2 0 0 0">
-						<StackPanel.IsVisible>
-							<MultiBinding  Converter="{x:Static BoolConverters.Or}">
-								<Binding Path="HasFolder"/>
-								<Binding Path="IsProfilesExist"/>
-							</MultiBinding>
-						</StackPanel.IsVisible>
-						<Button Content="plus-in-circle"
-								Tag="Add profile"
+					<!--<StackPanel Orientation="Horizontal">
+						<Button Content="select-all"
+								Tag="Select all"
 								Theme="{StaticResource SvgIconTextButton}"
-								Command="{Binding AddProfilesToFolderCommand}" />
-					</StackPanel>
-					</StackPanel>
+								Command="{Binding SelectAllCommand}" />
+						<Button Content="select-all"
+								Tag="Select all in folder"
+								Theme="{StaticResource SvgIconTextButton}"
+								Command="{Binding SelectAllProfilesFromFolderCommand}" />
+						<StackPanel
+							Orientation="Horizontal"
+							Margin="2 0 0 0">
+							<StackPanel.IsVisible>
+								<MultiBinding  Converter="{x:Static BoolConverters.Or}">
+									<Binding Path="HasFolder"/>
+									<Binding Path="IsProfilesExist"/>
+								</MultiBinding>
+							</StackPanel.IsVisible>
+							<Button Content="plus-in-circle"
+									Tag="Add profile"
+									Theme="{StaticResource SvgIconTextButton}"
+									Command="{Binding AddProfilesToFolderCommand}" />
+						</StackPanel>
+					</StackPanel>-->
 
-					<TextBox HorizontalAlignment="Right"
+					<TextBox HorizontalAlignment="Left"
 						 Margin="0 0 -6 6"
 						 Width="300"
 						 Text="{Binding SearchText}" />
@@ -119,14 +119,42 @@
 		</avfCommon:ChameleonContentControl.Header>
 
 		<avfCommon:ChameleonContentControl.Options>
+			<StackPanel 
+				IsVisible="{Binding IsProfilesExist}"
+				Spacing="12">
+				<Button 
+					Content="select-all"
+					Tag="Select all"
+					Theme="{StaticResource SvgIconTextButton}"
+					Command="{Binding SelectAllCommand}" />
+				<Button 
+					Content="select-all"
+					Tag="Select all in folder"
+					Theme="{StaticResource SvgIconTextButton}"
+					Command="{Binding SelectAllProfilesFromFolderCommand}" />
+				<StackPanel
+					Orientation="Horizontal"
+					Margin="2 0 0 0">
+					<StackPanel.IsVisible>
+						<MultiBinding  Converter="{x:Static BoolConverters.And}">
+							<Binding Path="HasFolder"/>
+							<Binding Path="IsProfilesExist"/>
+						</MultiBinding>
+					</StackPanel.IsVisible>
+					<Button Content="plus-in-circle"
+							Tag="Add profile"
+							Theme="{StaticResource SvgIconTextButton}"
+							Command="{Binding AddProfilesToFolderCommand}" />
+				</StackPanel>
 
-			<ui:FAComboBox Width="150"
-						   IsEditable="False"
-						   HorizontalAlignment="Right"
-						   Header="Sort by:"
-						   ItemsSource="{Binding Sorts}"
-						   SelectedItem="{Binding SortSelected}"
-						   IsVisible="{Binding IsProfilesExist}" />
+				<ui:FAComboBox 
+					Width="200"
+					IsEditable="False"
+					HorizontalAlignment="Right"
+					Header="Sort by:"
+					ItemsSource="{Binding Sorts}"
+					SelectedItem="{Binding SortSelected}" />
+			</StackPanel>
 		</avfCommon:ChameleonContentControl.Options>
 
 		<avfCommon:ChameleonContentControl.Content>

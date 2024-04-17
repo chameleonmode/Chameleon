@@ -269,7 +269,7 @@ public partial class UserProfilesViewModel
 
         int folderId = Folder.Id;
 
-        if (folderId == default(int))
+        if (folderId == default)
         {
             HasFolder = false;
             Filter = null;

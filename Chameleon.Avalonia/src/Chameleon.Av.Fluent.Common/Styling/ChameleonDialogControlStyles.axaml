@@ -4,7 +4,7 @@
 		xmlns:dilgs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
                     xmlns:core="using:FluentAvalonia.Core"
 		xmlns:ui="using:FluentAvalonia.UI.Controls">
-	<x:Double x:Key="DefaultContentDialogIconSize">36</x:Double>
+	<x:Double x:Key="DefaultContentDialogIconSize">10</x:Double>
 	<Thickness x:Key="DefaultContentTaskDialogIconMargin">12</Thickness>
 	<Thickness x:Key="ContentDialogPadding">8 8 8 8</Thickness>
 	<Thickness x:Key="ContentDialogTitleMargin">0,0,0,6</Thickness>
@@ -53,22 +53,18 @@
 									  core:VisualStateHelper.ForcedClassesProperty=":primary,:secondary,:close">
 						<ui:ContentDialog.Title>
 							<Panel>
-								<Viewbox  Width="{StaticResource DefaultContentDialogIconSize}"
-										 Height="{StaticResource DefaultContentDialogIconSize}"
-										 VerticalAlignment="Center"
-										 HorizontalAlignment="Left"
-										 Margin="6">
-									<ui:FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}"
-												 Glyph="&#xF8001;"
-												 FontSize="28"/>
-								</Viewbox>
+								<ui:FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}"
+									 VerticalAlignment="Center"
+									 HorizontalAlignment="Left"
+											 Glyph="&#xF8001;"
+											 FontSize="36"/>
 								<TextBlock Text="Alert"
 										   TextWrapping="Wrap"
 										   FontSize="{DynamicResource TaskDialogHeaderFontSize}"
 										   FontWeight="{StaticResource TaskDialogHeaderFontWeight}"
 										   VerticalAlignment="Center"
 										   HorizontalAlignment="Left"
-										   Margin="{DynamicResource TaskDialogHeaderPadding}"
+										   Margin="42 0 0 0"
 										   IsVisible="True"/>
 							</Panel>
 						</ui:ContentDialog.Title>

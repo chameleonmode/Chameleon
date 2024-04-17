@@ -27,15 +27,6 @@
 					</afv:ChameleonContentControl.TitleContent>
 
 					<afv:ChameleonContentControl.Header>
-						<StackPanel>
-								<Button Content="select-all"
-										HorizontalAlignment="Left"
-										VerticalAlignment="Center"
-										Tag="Select all"
-										Theme="{StaticResource SvgIconTextButton}"
-										Command="{Binding SelectAllCommand}" />
-							
-
 							<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
 								<HeaderedContentControl.Header>
 									<Button Theme="{StaticResource TransparentButton}"
@@ -45,11 +36,23 @@
 											Command="{Binding ChangeProxiesCommand}"/>
 								</HeaderedContentControl.Header>
 							</HeaderedContentControl>
-						</StackPanel>
 					</afv:ChameleonContentControl.Header>
 					
 					<afv:ChameleonContentControl.Options>
-						<StackPanel Spacing="18">
+						<StackPanel Spacing="12">
+							<Button 
+								Content="select-all"
+								HorizontalAlignment="Left"
+								VerticalAlignment="Center"
+								Tag="Select all"
+								Theme="{StaticResource SvgIconTextButton}"
+								Command="{Binding SelectAllCommand}" />
+							<Button
+								Content="select-all"
+								Tag="Select all in folder"
+								Theme="{StaticResource SvgIconTextButton}"
+								Command="{Binding SelectAllFromFolderCommand}" />
+							
 							<ui:FAComboBox PlaceholderText="Selected Folder"
 										   Header="Folder:"
 										   Width="200"
@@ -59,7 +62,7 @@
 										   SelectedItem="{Binding SelectedFolder}"
 										   ItemsSource="{Binding FolderViewModels.Items}"
 										   DisplayMemberBinding="{Binding Title, x:DataType=vm:ProfileFolderViewModel}" />
-
+							
 							<StackPanel Orientation="Horizontal">
 								<ui:FAComboBox Header="Auto Update Proxies:"
 											   PlaceholderText="Proxy Country:"

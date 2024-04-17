@@ -70,12 +70,18 @@ public class AddUserProfilesPopupViewModel : ObservableObjectBase, IAddUserProfi
         EventAggregator
             .GetEvent<SelectedChangePopupUserProfileEvent>()
             .Subscribe(OnSelectedChange);
+    }
+
+    public override async Task InitAsync(object? param)
+    {
+        await base.InitAsync(param);
 
         var userProfiles = _userProfileService.GetAll();
 
         _mapping = new ObservableCollection<IUserProfile, PopupUserProfileViewModel>(
             userProfiles, profile => new PopupUserProfileViewModel(profile, EventAggregator)
             );
+        OnPropertyChanged(nameof(ViewModels));
     }
 
     private void OnSelectedChange(SelectedUserProfileEventArgs args)
