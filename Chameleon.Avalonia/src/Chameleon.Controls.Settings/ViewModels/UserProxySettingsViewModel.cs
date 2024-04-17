@@ -51,9 +51,9 @@ public partial class UserProxySettingsViewModel
         _proxyAccessViewModels.AddItems(CountProxies);
         _userProfileFolderService = userProfileFolderService;
 
-        EventAggregator
-            .GetEvent<SavedUserProfileEvent>()
-            .Subscribe(args => OnUserProfileSaved());
+        //EventAggregator
+        //    .GetEvent<SavedUserProfileEvent>()
+        //    .Subscribe(args => OnUserProfileSaved());
 
         EventAggregator
           .GetEvent<UpdateStaleDataEvent>()
@@ -249,10 +249,10 @@ public partial class UserProxySettingsViewModel
     }
 
     [RelayCommand]
-    public void ApplyProxy()
+    public async Task ApplyProxy()
     {                                            
         var models = SelectedProfiles();
-        var proxies = SetProxies(models);
+        var proxies = await SetProxies(models);
 
         var proxyCount = proxies.Count;
         var modelCount = models.Count;
@@ -261,16 +261,12 @@ public partial class UserProxySettingsViewModel
             return;
         }
 
-        ApplyProxy(proxies, models);
-
-        //EventAggregator
-        //   .GetEvent<SyncChangesEvent>()
-        //   .Publish();
+        await ApplyProxy(proxies, models);
     }
 
 
     [RelayCommand]
-    public void FillProxies()
+    public async Task FillProxies()
     {
         var profiles = SelectedProfiles();
         if (profiles.Count == 0)
@@ -287,19 +283,19 @@ public partial class UserProxySettingsViewModel
 
         var proxies = ParseProxiesSettings(proxyUrls);
 
-        ApplyProxy(proxies, profiles);
+        await ApplyProxy(proxies, profiles);
 
         IsSelectedAll = false;
         OnPropertyChanged(nameof(IsSelectedAll));
     }
 
-    private void ApplyProxy(List<IProxySettings> proxies, List<UserProxySettingViewModel> models)
+    private async Task ApplyProxy(List<IProxySettings> proxies, List<UserProxySettingViewModel> models)
     {
         if (proxies.Count == 1)
         {
             for (var i = 0; i < models.Count; ++i)
             {
-                ApplyProxy(proxies[0], models[i]);
+                await ApplyProxy(proxies[0], models[i]);
             }
         }
         else
@@ -308,12 +304,12 @@ public partial class UserProxySettingsViewModel
 
             for (var i = 0; i < minCount; ++i)
             {
-                ApplyProxy(proxies[i], models[i]);
+                await ApplyProxy(proxies[i], models[i]);
             }
         }
     }
 
-    private void ApplyProxy(IProxySettings proxySettings, UserProxySettingViewModel model)
+    private async Task ApplyProxy(IProxySettings proxySettings, UserProxySettingViewModel model)
     {
         if (proxySettings != null)
         {
@@ -323,14 +319,14 @@ public partial class UserProxySettingsViewModel
             model.Password = proxySettings.Password;
         }
         model.SetProfile();
-        _userProfileService.Save(model.UserProfile);
+        await Task.Run(()=>_userProfileService.Save(model.UserProfile));
         //EventAggregator
         //    .GetEvent<OpenUserProfileEvent>()
         //    .Publish(new UserProfileEventArgs(model._userProfile));
 
     }
 
-    private List<IProxySettings> SetProxies(List<UserProxySettingViewModel>? models = null)
+    private async Task<List<IProxySettings>> SetProxies(List<UserProxySettingViewModel>? models = null)
     {
         if (string.IsNullOrWhiteSpace(_applingProxy))
         {
@@ -343,7 +339,7 @@ public partial class UserProxySettingsViewModel
                         (model.Port.HasAny() && int.TryParse(model.Port,out int port) && port!= model.UserProfile.Proxy.Port) ||
                         model.UserProfile.Proxy.UserName != model.UserName ||
                         model.UserProfile.Proxy.Password != model.Password)
-                        ApplyProxy(null, model);
+                        await ApplyProxy(null, model);
                 }
             }
 
