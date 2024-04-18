@@ -129,5 +129,7 @@ namespace Chameleon.Domain.Entities
         {
             return PermissionNames.Contains(permissionName);
         }
+
+        public bool Navigated { get; set; }
     }
 }

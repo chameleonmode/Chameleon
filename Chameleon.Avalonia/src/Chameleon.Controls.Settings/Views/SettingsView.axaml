@@ -91,7 +91,7 @@
 				<ui:SettingsExpander Header="App Accent Color"
 					 IconSource="ColorLine"
 					 Description="Set a custom accent color for the App"
-					 IsExpanded="True">
+					 IsExpanded="False">
 
 					<ui:SettingsExpanderItem Content="Preview">
 						<ui:SettingsExpanderItem.Footer>

@@ -5,9 +5,11 @@ using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces;
+using Chameleon.Interfaces.App;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Services;
+using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -66,8 +68,12 @@ public partial class MainViewViewModel:ObservableObjectBase, IMainViewViewModel
     {
         //var pvm = ContainerServiceHelper.Resolve<IUserProfilesViewModel>();
         //var pvm2 = ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>();
-        if (newValue != null) 
+        if (newValue != null)
+        {
+            if (newValue.ViewModel is INavigateFromSearch nfs)
+                nfs.Navigated = false;
             ContainerServiceHelper.Resolve<INavigationService>().NavigateToType(typeof(IProjectsView), newValue.ViewModel);
+        }
     }
 
     [RelayCommand]

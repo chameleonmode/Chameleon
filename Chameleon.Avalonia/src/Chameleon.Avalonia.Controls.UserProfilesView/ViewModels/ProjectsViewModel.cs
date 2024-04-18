@@ -2,6 +2,7 @@
 using Chameleon.Authorization;
 using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
+using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.Assistants.Events;
 using Chameleon.Interfaces.App.Synchronization.Events;
@@ -125,12 +126,19 @@ public partial class ProjectsViewModel : PageViewModelBase,
             //    .GetEvent<OpenUserProfileFolderEvent>()
             //    .Publish(new UserProfileFolderEventArgs(folder));
 
-            folders.OnNavigatingTo(folder);
+            if (!folder.Navigated)
+            {
+                folders.OnNavigatingTo(folder);
+                folder.Navigated = true;
+            }
         }
         else if(param is IUserProfile up)
         {
-
-            profiles.OnFilterTo(up);
+            if (!up.Navigated)
+            {
+                profiles.OnFilterTo(up);
+                up.Navigated = true;
+            }
         }
         else
         {
@@ -152,6 +160,7 @@ public partial class ProjectsViewModel : PageViewModelBase,
                 .GetEvent<CreateNewUserProfileEvent>()
                 .Publish();
 
+            //SyncChanges();
             //_featureTourNavigator.IfCurrentStepEquals(ElementID.CreateProfileBtn).GoNext();
         }
         finally

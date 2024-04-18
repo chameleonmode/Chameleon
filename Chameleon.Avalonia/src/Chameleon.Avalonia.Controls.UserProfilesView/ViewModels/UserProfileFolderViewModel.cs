@@ -58,6 +58,8 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     public void Open()
     {
         foldervm.OnNavigatingTo(UserProfileFolder);
+        //foldervm.OnNavigatingTo(null);
+        IsSelected = true;
         //IsSelected = true;
         //ContainerServiceHelper.Resolve<IUserProfilesViewModel>().Open(UserProfileFolder);
         //EventAggregator
@@ -209,4 +211,5 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     public IApplicationUser CurrentUser => _currentUser;
     public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(_folder);
     public bool IsContextMenuItemEnabled => !CurrentUser.IsAssistant;
+    
 }

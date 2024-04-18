@@ -5,10 +5,11 @@ using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.App.Prospector;
 using Chameleon.Interfaces.YouTube;
 using Chameleon.Interfaces.WordPress;
+using Chameleon.Interfaces.App;
 
 namespace Chameleon.Interfaces.UserProfiles
 {
-    public interface IUserProfile : IUserProfileInfo
+    public interface IUserProfile : IUserProfileInfo  , INavigateFromSearch
     {
         IProxySettings Proxy { get; set; }
         IWebBrowserSettings WebBrowser { get; set; }

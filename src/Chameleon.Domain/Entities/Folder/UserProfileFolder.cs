@@ -9,5 +9,6 @@ namespace Chameleon.Domain.Entities
         public bool IsFavorite { get; set; }
         public int ProfilesCount { get; set; }
         public long? CreatorUserId { get; set; }
+        public bool Navigated { get; set; }
     }
 }

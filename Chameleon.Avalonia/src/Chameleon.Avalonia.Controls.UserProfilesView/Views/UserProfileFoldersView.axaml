@@ -136,11 +136,13 @@
 									<ui:MenuFlyoutItem Text="Rename folder"
 													   IconSource="Rename"
 													   Command="{Binding StartRenameCommand}"
-													   IsEnabled="{Binding IsContextMenuItemEnabled}"/>
+													   IsEnabled="{Binding IsContextMenuItemEnabled}"
+													   IsVisible="{Binding IsFavoriteButtonVisible}"/>
 									<ui:MenuFlyoutItem Text="Delete"
 													   IconSource="Delete"
 													   Command="{Binding DeleteCommand}"
-													   IsEnabled="{Binding IsContextMenuItemEnabled}" />
+													   IsEnabled="{Binding IsContextMenuItemEnabled}"
+													   IsVisible="{Binding IsFavoriteButtonVisible}" />
 								</ui:FAMenuFlyout>
 							</Button.Flyout>
 						</Button>
@@ -154,6 +156,7 @@
 		</DataTemplate>
 	</UserControl.Resources>
 	<avfCommon:ChameleonContentControl Title="Folders"
+									   Header=""
 									   TitleDescription="Select a folder to view profiles">
 		<avfCommon:ChameleonContentControl.TitleContent>
 			<Grid HorizontalAlignment="Right">
@@ -171,8 +174,8 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
-			<ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}"
-							DataContext="{Binding AllProfiles}"/>
+			<!--<ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}"
+							DataContext="{Binding AllProfiles}"/>-->
 <!--SelectedItem="{Binding SelectedFolder}"-->
 			<ItemsControl
 				Grid.Row="1"

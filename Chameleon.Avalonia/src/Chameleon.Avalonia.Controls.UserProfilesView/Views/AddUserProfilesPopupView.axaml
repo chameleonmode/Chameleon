@@ -217,7 +217,8 @@
 							</ItemsControl>
 				</Border>
 				<Expander Grid.Row="1"
-						  Header="Profiles">
+						  Header="Profiles"
+						  IsExpanded="True">
 					<Border CornerRadius="0 0 4 4"
 							BorderThickness="0"
 							BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"

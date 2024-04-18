@@ -35,9 +35,10 @@ public class SvgNameToDataConverter : IValueConverter
             Application.Current.TryGetResource("ControlStrokeColorOnAccentDefaultBrush", Application.Current.ActualThemeVariant, out object strokebrush))
         {
             var acc = accentbrush.ToString().Replace("#ff", "#");
-            //8094AE
+            //8094AE   B5B5B5
             data = data.Replace("#5D25A6", acc);
             data = data.Replace("#8094AE", acc);
+            data = data.Replace("#B5B5B5", acc);
             if (a == ThemeVariant.Dark)
                 data = data.Replace("fill=\"black\"", "fill=\"white\"");
             //XmlDocument xmlDoc = new XmlDocument();

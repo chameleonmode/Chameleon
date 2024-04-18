@@ -109,16 +109,25 @@ public partial class UserProfilesViewModel
     {
         DispatcherService.InvokeOnUiThread(() =>
         {
+
+            if (args is not null && args.Profile is not null)
+            {
+                if(!_mapping.Any(p=>p.UserProfile.Id == args.Profile.Id))
+                {
+                    var np = new UserProfileViewModel(_userProfileService, args.Profile, _currentUser);
+                    _mapping.Add(np);
+                    ViewModels.Add(np);
+                }
+                if (args.Navigate == true)
+                    NavigationService.NavigateToType(typeof(IUserProfileIdentityView), args.Profile);
+            }
+
             OnViewModelChange(this, EventArgs.Empty);
             SetViewModelsFilter();
             OnPropertyChanged(nameof(ViewModels));
             OnPropertyChanged(nameof(HasNoItems));
             OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
-            if(args?.Navigate == true && args.Profile is not null)
-            {
-                NavigationService.NavigateToType(typeof(IUserProfileIdentityView), args.Profile);
-            }
-            
+
         });
     }
 
@@ -210,6 +219,13 @@ public partial class UserProfilesViewModel
 
         UnselectItems();
         OnPropertyChanged(nameof(HasNoItems));
+    }
+    public void Open(IUserProfileFolder? folder)
+    {
+        OnOpenFolder(folder);
+        //_viewModels.Refresh();
+        //Folder = folder;
+        //OnPropertyChanged(nameof(Folder));
     }
 
     private IUserProfileFolder? _folder;
@@ -714,13 +730,6 @@ public partial class UserProfilesViewModel
     private bool FilterByUserProfile(IUserProfile profile, string searchText)
     {
         return profile.Title.ToLower().Contains(searchText);
-    }
-
-    public void Open(IUserProfileFolder? folder)
-    {
-        //_viewModels.Refresh();
-        Folder = folder;
-        OnPropertyChanged(nameof(Folder));
     }
 
     public bool IsProfilesExist => ViewModels != null &&

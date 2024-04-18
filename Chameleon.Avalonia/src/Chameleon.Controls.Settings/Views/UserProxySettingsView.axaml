@@ -28,9 +28,9 @@
 
 					<afv:ChameleonContentControl.Header>
 							<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
-								<HeaderedContentControl.Header>
+								<HeaderedContentControl.Header><!--TextElement.Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"-->
 									<Button Theme="{StaticResource TransparentButton}"
-											TextElement.Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+											
 											Content="Change proxies"
 											Grid.Column="2"
 											Command="{Binding ChangeProxiesCommand}"/>

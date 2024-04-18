@@ -62,7 +62,7 @@ public partial class UserProfileFoldersViewModel
             LoadAsync();
         //OnPropertyChanged(nameof(AllProfiles));
         }
-        AllProfiles.IsSelected = AllProfiles.IsSelected;
+     
         IsWaiting = false;
 
         //if(SelectedFolder != null)
@@ -99,7 +99,7 @@ public partial class UserProfileFoldersViewModel
                     )
                 { IsFavoriteButtonVisible = false };
 
-                OnNavigatingTo(null);
+                //OnNavigatingTo(null);
                 //_allProfiles.Open();
                 //_allProfiles.IsSelected = true;
             }
@@ -144,7 +144,9 @@ public partial class UserProfileFoldersViewModel
                 this
                 )
             );
+        _mapping.Insert(0, AllProfiles);
 
+        AllProfiles.Open();
         OnPropertyChanged(nameof(ViewModels));
     }
 
@@ -194,22 +196,21 @@ public partial class UserProfileFoldersViewModel
             //EventAggregator
             //    .GetEvent<OpenUserProfileFolderEvent>()
             //    .Publish(new UserProfileFolderEventArgs(p));
-            _allProfiles.IsSelected = false;
+            //_allProfiles.IsSelected = false;
 
             foreach (var item in _mapping)
-                item.IsSelected = false;
+                item.IsSelected = item.UserProfileFolder.Id == p.Id;
 
             var pvm = _mapping.FirstOrDefault(vm =>vm.UserProfileFolder.Id == p.Id);
             if (pvm != null)
             {
-                pvm.IsSelected = true;
                 ContainerServiceHelper.Resolve<IUserProfilesViewModel>().Open(p);
             }
         }
-        else
-        {
-            _allProfiles.Open();
-        }
+        //else
+        //{
+        //    AllProfiles.Open();
+        //}
         //SearchText = p.Title;
     }
 

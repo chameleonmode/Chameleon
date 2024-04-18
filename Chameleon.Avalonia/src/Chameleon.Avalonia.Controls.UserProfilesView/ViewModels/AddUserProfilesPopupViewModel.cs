@@ -155,7 +155,8 @@ public class AddUserProfilesPopupViewModel : ObservableObjectBase, IAddUserProfi
 
     private void AddProfilesToFolder()
     {
-        if (!_selectedViewModels.Any())
+        if (_selectedViewModels is null || 
+            !_selectedViewModels.Any())
         {
             return;
         }

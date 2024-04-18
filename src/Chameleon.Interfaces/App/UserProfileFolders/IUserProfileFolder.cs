@@ -1,6 +1,10 @@
-﻿namespace Chameleon.Interfaces.UserProfileFolders
+﻿using Chameleon.Interfaces.App;
+
+namespace Chameleon.Interfaces.UserProfileFolders
 {
-    public interface IUserProfileFolder : IUserProfileFolderInfo
+    public interface IUserProfileFolder : IUserProfileFolderInfo, 
+        INavigateFromSearch
     {
+       
     }
 }

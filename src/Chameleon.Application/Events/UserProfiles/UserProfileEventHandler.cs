@@ -192,6 +192,7 @@ namespace Chameleon.Application.Events
             IUserProfile profile;
             try
             {
+                _userProfileService.Sync();
                 profile = _userProfileService.Create(folderId);
             }
             catch (Exception ex)

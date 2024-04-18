@@ -94,7 +94,7 @@ public class NavigationService : INavigationService
 
     public Task PopAsync()
     {
-        if (_frame?.CanGoBack == true)
+        if (_frame?.CanGoBack == true && _frame.Content.GetType().Name == "UserProfileIdentityView")
             _frame?.GoBack();
 
         return Task.CompletedTask;
