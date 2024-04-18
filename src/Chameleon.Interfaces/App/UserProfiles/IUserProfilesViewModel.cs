@@ -1,4 +1,5 @@
 ﻿using Chameleon.Interfaces.Ioc;
+using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 
 namespace Chameleon.Interfaces.App.UserProfiles;
@@ -7,6 +8,6 @@ namespace Chameleon.Interfaces.App.UserProfiles;
 public interface IUserProfilesViewModel :ISingletonDependency
 {
     Func<IUserProfile, bool> Filter { get; set; }
-    void Refresh();
+    void Open(IUserProfileFolder? folder);
     void OnFilterTo(IUserProfile p = null);
 }

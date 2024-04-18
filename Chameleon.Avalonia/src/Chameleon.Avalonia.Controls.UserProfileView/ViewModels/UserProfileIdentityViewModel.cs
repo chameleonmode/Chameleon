@@ -89,12 +89,22 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             .GetEvent<UserProfileTabChangedEvent>()
             .Subscribe(Discard);
 
+        EventAggregator
+            .GetEvent<DeleteUserProfileEvent>()
+            .Subscribe(OnDeleteUserProfileEvent);
+
         //_featureTourNavigator = FeatureTour.GetNavigator();
 
         //_featureTourNavigator.ForStep(ElementID.SaveChangesBtn).AttachDoable(
         //           currentStep => OnSaveProfile());
 
     }
+
+    private void OnDeleteUserProfileEvent(UserProfileEventArgs args)
+    {
+        NavigationService.PopAsync();
+    }
+
     public override async Task InitAsync(object? param)
     {
         await base.InitAsync(param);
@@ -188,9 +198,13 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
     #region UserProfile
 
+    [ObservableProperty]
+    private UserProfilesView.ViewModels.UserProfileViewModel _profileVM;
+
     private IUserProfile _userProfile;
     public IUserProfile UserProfile
     {
+        get => _userProfile;
         set
         {
             SetProperty(ref _userProfile, value);
@@ -219,6 +233,13 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         Persons.Reload();
         Addresses.Reload();
         Businesses.Reload();
+
+       ProfileVM = new UserProfilesView.ViewModels.UserProfileViewModel(
+                      _userProfileService,
+                      UserProfile,
+                      _applicationUser,
+                      false
+                  );
 
         SetVisible(true);
     }

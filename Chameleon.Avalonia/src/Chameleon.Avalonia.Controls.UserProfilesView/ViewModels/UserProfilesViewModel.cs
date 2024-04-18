@@ -668,7 +668,7 @@ public partial class UserProfilesViewModel
 
         _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
         userProfiles, profile => new UserProfileViewModel
-            (_userProfileService, profile, _currentUser, _systemBrowserManager));
+            (_userProfileService, profile, _currentUser));
 
         _mapping.CollectionChanged += OnViewModelChange;
 
@@ -716,10 +716,10 @@ public partial class UserProfilesViewModel
         return profile.Title.ToLower().Contains(searchText);
     }
 
-    public void Refresh()
+    public void Open(IUserProfileFolder? folder)
     {
-        _viewModels.Refresh();
-        Folder = new UserProfileFolder { Title = "All profiles" };
+        //_viewModels.Refresh();
+        Folder = folder;
         OnPropertyChanged(nameof(Folder));
     }
 

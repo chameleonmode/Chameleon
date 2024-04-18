@@ -125,12 +125,16 @@ public partial class ProjectsViewModel : PageViewModelBase,
             //    .GetEvent<OpenUserProfileFolderEvent>()
             //    .Publish(new UserProfileFolderEventArgs(folder));
 
-            ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(folder);
+            folders.OnNavigatingTo(folder);
         }
         else if(param is IUserProfile up)
         {
-          
-            ContainerServiceHelper.Resolve<IUserProfilesViewModel>().OnFilterTo(up);
+
+            profiles.OnFilterTo(up);
+        }
+        else
+        {
+            //folders.OnNavigatingTo(null);
         }
     }
 

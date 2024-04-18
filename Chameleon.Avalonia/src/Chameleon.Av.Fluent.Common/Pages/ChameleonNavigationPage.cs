@@ -6,6 +6,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Chameleon.Av.Fluent.Common.Controls;
+using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.UserProfiles;
@@ -26,6 +27,27 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
         // Back/Forward navigation and not just explicit page invokes
         AddHandler(Frame.NavigatingFromEvent, OnNavigatingFrom, RoutingStrategies.Direct);
         AddHandler(Frame.NavigatedToEvent, OnNavigatedTo, RoutingStrategies.Direct);
+
+        Tapped += OnPageTapped;
+    }
+
+    private void OnPageTapped(object sender, TappedEventArgs e)
+    {
+        if (e.Source is Visual v)
+        {
+            if (v.FindAncestorOfType<Button>(true) is null &&
+                v.FindAncestorOfType<ListBoxItem>(true) is ListBoxItem lbi && 
+                lbi.DataContext is IUserProfileViewModelBase up)
+            {
+                //var item = lbi.GetVisualDescendants()
+                //    .Where(x => x is Viewbox && x.Name == "IconHost")
+                //    .FirstOrDefault();
+                //_animationPage = fci;
+
+                //NavigationService.Instance.NavigateFromContext(fci);
+                up.Open();
+            }
+        }
     }
 
     private async void OnNavigatedTo(object sender, NavigationEventArgs e)
@@ -102,11 +124,11 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
                 _animationPageParent = this.GetVisualDescendants()?
                     .Where(x => x is ListBox && x.Name == "lbProfiles")?
                     .FirstOrDefault();
-                if (this is IDashboardView)
-                    _animationPage = _animationPageParent?.GetVisualDescendants()?
-                        .Where(x => x is Viewbox b && b.Tag == iprofile)?
-                        .FirstOrDefault();
-                else
+                //if (this is IDashboardView)
+                //    _animationPage = _animationPageParent?.GetVisualDescendants()?
+                //        .Where(x => x is Viewbox b && b.Tag == iprofile)?
+                //        .FirstOrDefault();
+                //else
                     _animationPage = _animationPageParent?.GetVisualDescendants()?
                         .Where(x => x is ListBoxItem b && b.DataContext is IUserProfileViewModelBase dc && dc.UserProfile == iprofile)?
                         .FirstOrDefault();

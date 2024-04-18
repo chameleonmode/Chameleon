@@ -94,7 +94,10 @@ public class NavigationService : INavigationService
 
     public Task PopAsync()
     {
-        throw new NotImplementedException();
+        if (_frame?.CanGoBack == true)
+            _frame?.GoBack();
+
+        return Task.CompletedTask;
     }
 }
 

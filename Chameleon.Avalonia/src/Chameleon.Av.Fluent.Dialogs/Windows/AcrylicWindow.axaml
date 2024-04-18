@@ -7,14 +7,23 @@
         x:Class="Chameleon.Av.Fluent.Dialogs.AcrylicWindow"
         Icon="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico"
         Title="Copy Pasta"
-        TransparencyLevelHint="AcrylicBlur"
+		SizeToContent="Height"
+		TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
 		WindowStartupLocation="CenterOwner"
 		ExtendClientAreaChromeHints="NoChrome"
-		ExtendClientAreaToDecorationsHint="True"
-		SizeToContent="Height">
+		ExtendClientAreaToDecorationsHint="True">
+	<!--TransparencyLevelHint="Transparent"
+		TransparencyBackgroundFallback="Transparent"
+		Background="Transparent"
+		SystemDecorations="None"-->
+	<!--TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+		WindowStartupLocation="CenterOwner"
+		ExtendClientAreaChromeHints="NoChrome"
+		ExtendClientAreaToDecorationsHint="True"-->
 	<Panel>
-		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+		<!--<ExperimentalAcrylicBorder IsHitTestVisible="False">
 			<ExperimentalAcrylicBorder.Material>
 				<ExperimentalAcrylicMaterial
 					BackgroundSource="Digger"
@@ -22,7 +31,7 @@
 					TintOpacity="1"
 					MaterialOpacity="0.1" />
 			</ExperimentalAcrylicBorder.Material>
-		</ExperimentalAcrylicBorder>
+		</ExperimentalAcrylicBorder>-->
 		<Panel Name="MainPanel"
 			   Margin="0 26 0 0">
 			<Panel Margin="0 -26 0 0"

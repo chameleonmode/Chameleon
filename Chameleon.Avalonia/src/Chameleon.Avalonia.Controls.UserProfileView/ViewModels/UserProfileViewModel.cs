@@ -280,4 +280,9 @@ public partial class UserProfileViewModel
     {
         Tab = UserProfileViewTab.Browser;
     }
+
+    public void Open()
+    {
+        throw new NotImplementedException();
+    }
 }

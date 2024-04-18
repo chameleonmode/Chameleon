@@ -2,7 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:ups="using:Chameleon.Avalonia.Controls.UserProfilesView"
              mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="800"
 			 xmlns:vm="using:Chameleon.Avalonia.Controls.UserProfileView.ViewModels"
 			 x:DataType="vm:UserProfileIdentityViewModel"
@@ -15,9 +16,11 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<Panel>
+		<ups:UserProfileView Name="UPView" DataContext="{Binding ProfileVM}" />
+		<Panel Grid.Row="1">
 			<Button Theme="{StaticResource SyncChangesButton}" Margin="6 -5 6 6" />
 
 			<StackPanel Orientation="Horizontal"
@@ -32,7 +35,7 @@
 			</StackPanel>
 		</Panel>
 		<!--{Binding SelectedTadIndex}-->
-		<TabControl Grid.Row="1"
+		<TabControl Grid.Row="2"
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Stretch"
 					Padding="108 18"
@@ -46,7 +49,7 @@
 							Orientation="Horizontal"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center">
-							<avfCommon:SvgIconControl
+							<afv:SvgIconControl
 								Height="18"
 								IconName="profile-main" />
 							<TextBlock
@@ -59,23 +62,23 @@
 				</TabItem.Header>
 				<TabItem.Content>
 					<StackPanel Spacing="18">
-						<avfCommon:HeaderdInputFieldsControl Title="PROFILE NAME"
+						<afv:HeaderdInputFieldsControl Title="PROFILE NAME"
 															 Text="{Binding UserProfileModel.Title, FallbackValue=NAME}" />
 
-						<avfCommon:HeaderdInputFieldsControl Title="PROXY CONFIGURATION"
+						<afv:HeaderdInputFieldsControl Title="PROXY CONFIGURATION"
 															 Header="False">
-							<avfCommon:HeaderdInputFieldsControl.TextBoxes>
+							<afv:HeaderdInputFieldsControl.TextBoxes>
 								<TextBox Text="{Binding Path=UserProfileModel.Proxy.Host}" />
 								<TextBox Text="{Binding Path=UserProfileModel.Proxy.PortString}"  />
 								<TextBox Text="{Binding Path=UserProfileModel.Proxy.UserName}" />
 								<TextBox Text="{Binding Path=UserProfileModel.Proxy.Password}"  />
-							</avfCommon:HeaderdInputFieldsControl.TextBoxes>
-						</avfCommon:HeaderdInputFieldsControl>
+							</afv:HeaderdInputFieldsControl.TextBoxes>
+						</afv:HeaderdInputFieldsControl>
 
-						<avfCommon:HeaderdInputFieldsControl Title="NOTES"
+						<afv:HeaderdInputFieldsControl Title="NOTES"
 															 Text="{Binding UserProfileModel.Notes, FallbackValue=Notes}" />
 
-						<avfCommon:HeaderdInputFieldsControl Title="CANVAS VALUE"
+						<afv:HeaderdInputFieldsControl Title="CANVAS VALUE"
 											 Text="{Binding UserProfileModel.WebBrowser.Canvas, FallbackValue=Canvas}" />
 
 
@@ -107,7 +110,7 @@
 							Orientation="Horizontal"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center">
-							<avfCommon:SvgIconControl
+							<afv:SvgIconControl
 								IconName="profile-persons" />
 							<TextBlock
 								Text="Persons"
@@ -119,7 +122,7 @@
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<avfCommon:SvgIconControl IconName="no-peresons"
+						<afv:SvgIconControl IconName="no-peresons"
 												  Width="210" 
 												  Margin="0 0 0 126"
 												  IsVisible="{Binding Path=!HasNoItems}"/>
@@ -153,22 +156,22 @@
 												  Header="{Binding Title}"
 												  Margin="0 0 0 6">
 											<StackPanel Spacing="18">
-												<avfCommon:HeaderdInputFieldsControl Title="Title"
+												<afv:HeaderdInputFieldsControl Title="Title"
 																					 Text="{Binding Title, FallbackValue=Title}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Name first, middle, last"
+												<afv:HeaderdInputFieldsControl Title="Name first, middle, last"
 																					 Header="False">
-													<avfCommon:HeaderdInputFieldsControl.TextBoxes>
+													<afv:HeaderdInputFieldsControl.TextBoxes>
 														<TextBox  Text="{Binding FirstName,FallbackValue=first}" />
 														<TextBox  Text="{Binding MiddleName,FallbackValue=middle}"  />
 														<TextBox Text="{Binding LastName,FallbackValue=last}" />
-													</avfCommon:HeaderdInputFieldsControl.TextBoxes>
-												</avfCommon:HeaderdInputFieldsControl>
+													</afv:HeaderdInputFieldsControl.TextBoxes>
+												</afv:HeaderdInputFieldsControl>
 
-												<avfCommon:HeaderdInputFieldsControl Title="Job Title"
+												<afv:HeaderdInputFieldsControl Title="Job Title"
 																					 Text="{Binding JobTitle, FallbackValue=JobTitle}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Phone Number"
+												<afv:HeaderdInputFieldsControl Title="Phone Number"
 																					 Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
 
 												<UniformGrid Rows="1">
@@ -197,10 +200,10 @@
 												<DatePicker SelectedDate="{Binding BirthDateOffset, FallbackValue=1/2/23}"
 															Margin="0"/>
 
-												<avfCommon:HeaderdInputFieldsControl Title="BirthPlace"
+												<afv:HeaderdInputFieldsControl Title="BirthPlace"
 																					 Text="{Binding BirthPlace, FallbackValue=BirthPlace}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Notes"
+												<afv:HeaderdInputFieldsControl Title="Notes"
 																					 Text="{Binding Notes, FallbackValue=Notes}" />
 
 												<Button Content="delete"
@@ -226,7 +229,7 @@
 							Orientation="Horizontal"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center">
-							<avfCommon:SvgIconControl
+							<afv:SvgIconControl
 								Height="18"
 								IconName="profile-businesses" />
 							<TextBlock
@@ -239,7 +242,7 @@
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<avfCommon:SvgIconControl IconName="no-business"
+						<afv:SvgIconControl IconName="no-business"
 						  Width="210"
 						  Margin="0 0 0 126"
 						  IsVisible="{Binding Path=!HasNoBusinessItems}"/>
@@ -273,22 +276,22 @@
 												  Header="{Binding Title}"
 												  Margin="0 0 0 6">
 											<StackPanel Spacing="18">
-												<avfCommon:HeaderdInputFieldsControl Title="Title"
+												<afv:HeaderdInputFieldsControl Title="Title"
 																					 Text="{Binding Title, FallbackValue=Title}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Company Name"
+												<afv:HeaderdInputFieldsControl Title="Company Name"
 																		 Text="{Binding CompanyName, FallbackValue=CompanyName}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Department"
+												<afv:HeaderdInputFieldsControl Title="Department"
 																		 Text="{Binding Department, FallbackValue=Department}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Phone Number"
+												<afv:HeaderdInputFieldsControl Title="Phone Number"
 																		 Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Web Site"
+												<afv:HeaderdInputFieldsControl Title="Web Site"
 																		 Text="{Binding WebSite, FallbackValue=WebSite}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Notes"
+												<afv:HeaderdInputFieldsControl Title="Notes"
 																		 Text="{Binding Notes, FallbackValue=Notes}" />
 
 												<Button Content="delete"
@@ -314,7 +317,7 @@
 							Orientation="Horizontal"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center">
-							<avfCommon:SvgIconControl
+							<afv:SvgIconControl
 								Height="18"
 								IconName="profile-addresses" />
 							<TextBlock
@@ -327,7 +330,7 @@
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<avfCommon:SvgIconControl IconName="no-address"
+						<afv:SvgIconControl IconName="no-address"
 						  Width="210"
 						  Margin="0 0 0 126"
 						  IsVisible="{Binding Path=!HasNoAddressesItems}"/>
@@ -361,22 +364,22 @@
 												  Header="{Binding Title}"
 												  Margin="0 0 0 6">
 											<StackPanel Spacing="18">
-												<avfCommon:HeaderdInputFieldsControl Title="Title"
+												<afv:HeaderdInputFieldsControl Title="Title"
 																					 Text="{Binding Title, FallbackValue=Title}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="AddressLine1"
+												<afv:HeaderdInputFieldsControl Title="AddressLine1"
 																					 Text="{Binding AddressLine1, FallbackValue=AddressLine1}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="AddressLine2"
+												<afv:HeaderdInputFieldsControl Title="AddressLine2"
 																					 Text="{Binding AddressLine2, FallbackValue=AddressLine2}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="City"
+												<afv:HeaderdInputFieldsControl Title="City"
 																					 Text="{Binding City, FallbackValue=City}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="State"
+												<afv:HeaderdInputFieldsControl Title="State"
 																					 Text="{Binding State, FallbackValue=State}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Zip"
+												<afv:HeaderdInputFieldsControl Title="Zip"
 																					 Text="{Binding Zip, FallbackValue=Zip}" />
 
 												<ComboBox ItemsSource="{ReflectionBinding Path=Countries.Items}"
@@ -396,7 +399,7 @@
 													</ComboBox.ItemTemplate>
 												</ComboBox>
 
-												<avfCommon:HeaderdInputFieldsControl Title="Notes"
+												<afv:HeaderdInputFieldsControl Title="Notes"
 																					 Text="{Binding Notes, FallbackValue=Notes}" />
 
 												<Button Content="delete"
@@ -422,7 +425,7 @@
 							Orientation="Horizontal"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center">
-							<avfCommon:SvgIconControl
+							<afv:SvgIconControl
 								Height="18"
 								IconName="profile-logins" />
 							<TextBlock
@@ -435,7 +438,7 @@
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<avfCommon:SvgIconControl IconName="no-logins"
+						<afv:SvgIconControl IconName="no-logins"
 						  Width="210"
 						  Margin="0 0 0 126"
 						  IsVisible="{Binding Path=!HasNoLoginsItems}"/>
@@ -469,22 +472,22 @@
 												  Header="{Binding Title}"
 												  Margin="0 0 0 6">
 											<StackPanel Spacing="18">
-												<avfCommon:HeaderdInputFieldsControl Title="Title"
+												<afv:HeaderdInputFieldsControl Title="Title"
 																					 Text="{Binding Title, FallbackValue=Title}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="WebSite"
+												<afv:HeaderdInputFieldsControl Title="WebSite"
 																					 Text="{Binding WebSite, FallbackValue=WebSite}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Email"
+												<afv:HeaderdInputFieldsControl Title="Email"
 																					 Text="{Binding Email, FallbackValue=Email}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="UserName"
+												<afv:HeaderdInputFieldsControl Title="UserName"
 																					 Text="{Binding UserName, FallbackValue=UserName}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Password"
+												<afv:HeaderdInputFieldsControl Title="Password"
 																					 Text="{Binding Password, FallbackValue=Password}" />
 
-												<avfCommon:HeaderdInputFieldsControl Title="Notes"
+												<afv:HeaderdInputFieldsControl Title="Notes"
 																					 Text="{Binding Notes, FallbackValue=Notes}" />
 												<Button Content="delete"
 														Tag="Delete"

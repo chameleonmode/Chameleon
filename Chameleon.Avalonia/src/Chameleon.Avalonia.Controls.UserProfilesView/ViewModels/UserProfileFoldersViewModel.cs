@@ -13,6 +13,7 @@ using Chameleon.Interfaces.UserProfiles;
 using Avalonia.Controls;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Chameleon.Common.Helpers;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
@@ -56,10 +57,16 @@ public partial class UserProfileFoldersViewModel
         await base.InitAsync(param);
         IsWaiting = true;
 
-        if(!Loaded)
+        if (!Loaded)
+        {
             LoadAsync();
-
+        //OnPropertyChanged(nameof(AllProfiles));
+        }
+        AllProfiles.IsSelected = AllProfiles.IsSelected;
         IsWaiting = false;
+
+        //if(SelectedFolder != null)
+        // SelectedFolder.IsSelected = true;
     }
 
     [RelayCommand]
@@ -88,16 +95,20 @@ public partial class UserProfileFoldersViewModel
                 var folder = new UserProfileFolder { Title = "All profiles"};
                 _allProfiles = new UserProfileFolderViewModel(_currentUser,
                     folder,
-                    _userProfileFolderService
+                    _userProfileFolderService,this
                     )
                 { IsFavoriteButtonVisible = false };
 
-                _allProfiles.Open();
+                OnNavigatingTo(null);
+                //_allProfiles.Open();
+                //_allProfiles.IsSelected = true;
             }
 
             return _allProfiles;
         }
     }
+    [ObservableProperty]
+    private UserProfileFolderViewModel _selectedFolder;
 
     private ObservableCollectionView<UserProfileFolderViewModel> _viewModels;
     public ObservableCollectionView<UserProfileFolderViewModel> ViewModels
@@ -129,7 +140,8 @@ public partial class UserProfileFoldersViewModel
         _mapping = new ObservableCollection<IUserProfileFolder, UserProfileFolderViewModel>(
             folders, folder => new UserProfileFolderViewModel(_currentUser,
                 folder,
-                _userProfileFolderService
+                _userProfileFolderService,
+                this
                 )
             );
 
@@ -179,9 +191,20 @@ public partial class UserProfileFoldersViewModel
 
         if (p != null)
         {
-            EventAggregator
-                .GetEvent<OpenUserProfileFolderEvent>()
-                .Publish(new UserProfileFolderEventArgs(p));
+            //EventAggregator
+            //    .GetEvent<OpenUserProfileFolderEvent>()
+            //    .Publish(new UserProfileFolderEventArgs(p));
+            _allProfiles.IsSelected = false;
+
+            foreach (var item in _mapping)
+                item.IsSelected = false;
+
+            var pvm = _mapping.FirstOrDefault(vm =>vm.UserProfileFolder.Id == p.Id);
+            if (pvm != null)
+            {
+                pvm.IsSelected = true;
+                ContainerServiceHelper.Resolve<IUserProfilesViewModel>().Open(p);
+            }
         }
         else
         {

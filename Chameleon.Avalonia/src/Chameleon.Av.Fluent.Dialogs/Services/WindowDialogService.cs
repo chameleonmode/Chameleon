@@ -28,7 +28,7 @@ public class WindowDialogService : IWindowDialogService
                 Width = 156
             };
             window.MainPanel.Children.Add(view);
-            window.Show(ApplicationHelper.GetMainWindow());
+            window.Show();
         }
     }
 }

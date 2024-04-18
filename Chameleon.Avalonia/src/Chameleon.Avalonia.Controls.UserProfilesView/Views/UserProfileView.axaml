@@ -108,9 +108,9 @@
 						Theme="{StaticResource SvgIconButton}">
 					<Button.Flyout>
 						<ui:FAMenuFlyout Placement="Bottom">
-							<ui:MenuFlyoutItem Text="View profile"
+							<!--<ui:MenuFlyoutItem Text="View profile"
 											   IconSource="Contact"
-											   Command="{Binding OpenUserProfileCommand}"/>
+											   Command="{Binding OpenUserProfileCommand}"/>-->
 							<ui:MenuFlyoutItem Text="Delete"
 											   IconSource="Delete"
 											   IsVisible="{Binding IsDeleteProfileBtnVisible}"

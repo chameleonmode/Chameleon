@@ -15,7 +15,8 @@ public partial class UserProfileIdentityView : SubPageViewControl, IUserProfileI
     public UserProfileIdentityView()
     {
         InitializeComponent();
-        Description = "Customize profile related data";
-        PreviewImage = ApplicationHelper.TryGetResource<IconSource>("ProfilePageIcon");
+        //Description = "Customize profile related data";
+        //PreviewImage = ApplicationHelper.TryGetResource<IconSource>("ProfilePageIcon");
+        AnimateVisual = UPView;
     }
 }

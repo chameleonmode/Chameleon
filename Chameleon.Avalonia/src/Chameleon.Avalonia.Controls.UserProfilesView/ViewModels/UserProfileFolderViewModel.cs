@@ -4,6 +4,7 @@ using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
+using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.OutReach;
@@ -20,26 +21,29 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     private readonly IUserProfileFolder _folder;
     private readonly IUserProfileFolderService _userProfileFolderService;
 
-    [ObservableProperty]
+    UserProfileFoldersViewModel foldervm;
+
+   [ObservableProperty]
     private bool _isFavoriteButtonVisible = true;
 
     public UserProfileFolderViewModel(
         IApplicationUser currentUser,
         IUserProfileFolder folder,
-        IUserProfileFolderService userProfileFolderService
-        )
+        IUserProfileFolderService userProfileFolderService,
+        UserProfileFoldersViewModel f)
     {
         _currentUser = currentUser;
         _folder = folder;
         _userProfileFolderService = userProfileFolderService;
+        foldervm = f;
 
         EventAggregator
             .GetEvent<SavedUserProfileFolderEvent>()
             .Subscribe(OnFolderSaved);
 
-        EventAggregator
-            .GetEvent<OpenUserProfileFolderEvent>()
-            .Subscribe(SetSelected);
+        //EventAggregator
+        //    .GetEvent<OpenUserProfileFolderEvent>()
+        //    .Subscribe(SetSelected);
 
         EventAggregator
             .GetEvent<UpdateUserProfileFolderEvent>()
@@ -53,9 +57,12 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
    [RelayCommand]
     public void Open()
     {
-        EventAggregator
-            .GetEvent<OpenUserProfileFolderEvent>()
-            .Publish(new UserProfileFolderEventArgs(_folder));
+        foldervm.OnNavigatingTo(UserProfileFolder);
+        //IsSelected = true;
+        //ContainerServiceHelper.Resolve<IUserProfilesViewModel>().Open(UserProfileFolder);
+        //EventAggregator
+        //    .GetEvent<OpenUserProfileFolderEvent>()
+        //    .Publish(new UserProfileFolderEventArgs(_folder));
     }
 
     [RelayCommand]
@@ -177,6 +184,10 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             if (value == false)
             {
                 IsRenamed = false;
+            }
+            else
+            {
+                foldervm.SelectedFolder = this;
             }
         }
     }

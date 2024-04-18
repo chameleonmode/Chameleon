@@ -67,6 +67,8 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
     }
     #endregion
 
+    public Visual? AnimateVisual { get; set; }
+
     //protected ThemeVariantScope? ThemeScopeProvider { get; private set; }
 
     #region overrides
@@ -184,13 +186,13 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
 
     private void FrameNavigatingFrom(object sender, NavigatingCancelEventArgs e)
     {
-        if(_previewImageHost == null)
+        if (_previewImageHost == null)
             return;
 
         //If TargetType is not set, we know we're currently on a CoreControls page since those
         // are grouped pages - whereas, FA controls only display one control per page and
         // set all the extra properties
-       //bool isFAControlPage = TargetType != null;
+        //bool isFAControlPage = TargetType != null;
 
         // Only setup the ConnectedAnimation if it makes sense
         //if ((!isFAControlPage && e.SourcePageType == typeof(CoreControlsPageViewModel)) ||
@@ -198,8 +200,8 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
         //{
         //    // Only setup the Back connected animation if we're going back to the
         //    // controls list pages
-            var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-            svc.PrepareToAnimate("BackAnimation", (Control)_previewImageHost.Parent);
+        var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
+        svc.PrepareToAnimate("BackAnimation", AnimateVisual != null ? AnimateVisual : (Control)_previewImageHost.Parent);
         ContainerServiceHelper.Resolve<INavigationService>().PreviousPage = this;
         //}
     }
@@ -217,16 +219,15 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
 
         if (animation != null)
         {
-            var coordinated = new List<Visual>
-            {
-                //_optionsHost,
-                _detailsHost,
-                _scroller
-            };
-
             // PreviewImageHost is inside a Viewbox which can really mess with the Composition 
             // animation - use the viewbox directly for the animation to ensure it works correctly
-            animation.TryStart((Control)_previewImageHost.Parent, coordinated);
+            if(AnimateVisual != null)
+            {
+                _detailsPanel.IsVisible = false; 
+                animation.TryStart(AnimateVisual, [_scroller]);
+            }
+            else
+                animation.TryStart((Control)_previewImageHost.Parent, [_detailsHost,_scroller]);
 
         }
     }

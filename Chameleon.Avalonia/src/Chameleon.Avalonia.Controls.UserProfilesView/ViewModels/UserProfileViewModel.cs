@@ -27,7 +27,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
 {
     private readonly IUserProfileService _userProfileService;
     private readonly IApplicationUser _applicationUser;
-    private readonly ISystemBrowserManager _systemBrowserManager;
+   // private readonly ISystemBrowserManager _systemBrowserManager;
 
     [ObservableProperty]
     private  IUserProfile _userProfile;
@@ -36,11 +36,11 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
         IUserProfileService userProfileService,
         IUserProfile userProfile,
         IApplicationUser applicationUser,
-        ISystemBrowserManager systemBrowserManager,
+       // ISystemBrowserManager systemBrowserManager,
         bool isShowCheckboxColumn = true
         )
     {
-        _systemBrowserManager = systemBrowserManager;
+      //  _systemBrowserManager = systemBrowserManager;
         _userProfileService = userProfileService;
         _userProfile = userProfile;
         _applicationUser = applicationUser;   
@@ -135,6 +135,10 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
             EventAggregator
              .GetEvent<DeleteUserProfileEvent>()
              .Publish(new UserProfileEventArgs(UserProfile));
+    }
+    public void Open()
+    {
+        OpenUserProfile();
     }
     [RelayCommand]
     private void OpenUserProfile()

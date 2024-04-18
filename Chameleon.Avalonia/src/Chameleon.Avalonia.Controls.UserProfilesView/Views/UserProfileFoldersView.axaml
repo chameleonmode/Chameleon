@@ -173,12 +173,13 @@
 			</Grid.RowDefinitions>
 			<ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}"
 							DataContext="{Binding AllProfiles}"/>
-
+<!--SelectedItem="{Binding SelectedFolder}"-->
 			<ItemsControl
 				Grid.Row="1"
 				x:Name="itemsList"
 				ItemsSource="{Binding ViewModels}"
 				ItemTemplate="{StaticResource FoldersListViewTemplate}"
+				
 				Padding="0"
 				VerticalAlignment="Top"
 				HorizontalAlignment="Stretch"/>
