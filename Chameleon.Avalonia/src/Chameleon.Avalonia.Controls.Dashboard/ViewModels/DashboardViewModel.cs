@@ -163,18 +163,12 @@ public partial class DashboardViewModel
 
     private async Task LoadUserProfileFolderViewModels()
     {
-        var ascending = FolderViewModels?.Ascending ?? true;
         FolderViewModels?.Clear();
 
         var folders = await _userProfileFolderService.GetAllAsync();
 
         _folderMapping = new ObservableCollection<IUserProfileFolder, FolderViewModel>(
             folders, folder => new FolderViewModel(folder, _userProfileService, _userProfileFolderService, NavigationService));
-
-        if (FolderViewModels != null)
-        {
-            FolderViewModels.Ascending = ascending;
-        }
 
         OnPropertyChanged(nameof(FolderViewModels));
     }
@@ -185,8 +179,13 @@ public partial class DashboardViewModel
     }
 
 
-    private void OnUpdateViewModel(UserProfileEventArgs args)
+    private async void OnUpdateViewModel(UserProfileEventArgs args)
     {
+        await LoadUserProfileViewModels();
+        await LoadUserProfileFolderViewModels();
+
+        OnPropertyChanged(nameof(FolderViewModels));
+        OnPropertyChanged(nameof(ViewModels));
         OnPropertyChanged(nameof(HasNoItems));
     }
 

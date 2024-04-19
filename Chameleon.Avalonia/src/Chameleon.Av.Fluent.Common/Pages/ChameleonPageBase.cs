@@ -208,6 +208,8 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
 
     private async void FrameNavigatedTo(object sender, NavigationEventArgs e)
     {
+        await FrameNavigatedTo();
+
         if (DataContext is ISubPageViewModel pageViewModel)
         {
             await pageViewModel.OnNavigatedToAsync(e.Parameter);
@@ -231,4 +233,6 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
 
         }
     }
+
+    public virtual Task FrameNavigatedTo()=>Task.CompletedTask;
 }

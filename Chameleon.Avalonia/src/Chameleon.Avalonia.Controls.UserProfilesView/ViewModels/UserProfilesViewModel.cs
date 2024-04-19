@@ -109,25 +109,26 @@ public partial class UserProfilesViewModel
     {
         DispatcherService.InvokeOnUiThread(() =>
         {
-
             if (args is not null && args.Profile is not null)
             {
                 if(!_mapping.Any(p=>p.UserProfile.Id == args.Profile.Id))
                 {
                     var np = new UserProfileViewModel(_userProfileService, args.Profile, _currentUser);
                     _mapping.Add(np);
-                    ViewModels.Add(np);
                 }
-                if (args.Navigate == true)
-                    NavigationService.NavigateToType(typeof(IUserProfileIdentityView), args.Profile);
+                if (!ViewModels.Any(p => p.UserProfile.Id == args.Profile.Id))
+                {
+                    _viewModels = null;
+                    OnPropertyChanged(nameof(ViewModels));
+                }
             }
-
+            
             OnViewModelChange(this, EventArgs.Empty);
             SetViewModelsFilter();
-            OnPropertyChanged(nameof(ViewModels));
-            OnPropertyChanged(nameof(HasNoItems));
-            OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
+            OnHandleUserEvent();
 
+            if (args?.Navigate == true)
+                NavigationService.NavigateToType(typeof(IUserProfileIdentityView), args.Profile);
         });
     }
 
@@ -149,7 +150,9 @@ public partial class UserProfilesViewModel
 
     private void OnHandleUserEvent()
     {
+        OnPropertyChanged(nameof(ViewModels));
         OnPropertyChanged(nameof(HasNoItems));
+        OnPropertyChanged(nameof(IsProfilesExist));
         OnPropertyChanged(nameof(HasSelectedItems));
         OnPropertyChanged(nameof(HasProfileWithoutFolder));
         OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
@@ -161,6 +164,9 @@ public partial class UserProfilesViewModel
         if (profile != null)
             profile.IsSelected = false;
 
+        _mapping.Remove(profile);
+        _viewModels = null;
+        OnPropertyChanged(nameof(ViewModels));
         OnSelectedChanged();
         OnHandleUserEvent();
     }
@@ -514,8 +520,7 @@ public partial class UserProfilesViewModel
             .GetEvent<CreateUserProfileEvent>()
             .Publish(new CreateUserProfileEventArgs(folderId));
 
-        OnPropertyChanged(nameof(HasProfileWithoutFolder));
-        OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
+        //OnHandleUserEvent();
     }
 
     private ObservableCollectionView<UserProfileViewModel> _viewModels;
@@ -691,7 +696,8 @@ public partial class UserProfilesViewModel
         //ApplySearchFilter();
 
         OnPropertyChanged(nameof(ViewModels));
-        OnPropertyChanged(nameof(IsProfilesExist));
+
+
         OnPropertyChanged(nameof(HasSelectedItems));
         OnPropertyChanged(nameof(HasProfileWithoutFolder));
         OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));

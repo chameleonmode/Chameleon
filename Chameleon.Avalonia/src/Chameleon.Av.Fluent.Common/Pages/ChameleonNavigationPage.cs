@@ -132,6 +132,8 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
                     _animationPage = _animationPageParent?.GetVisualDescendants()?
                         .Where(x => x is ListBoxItem b && b.DataContext is IUserProfileViewModelBase dc && dc.UserProfile == iprofile)?
                         .FirstOrDefault();
+                if (_animationPage == null && _animationPageParent is ListBox l && l.Items.Count == 1)
+                    _animationPage = _animationPageParent;
             }
             else if (navParam is IUserProfileFolder)
             {

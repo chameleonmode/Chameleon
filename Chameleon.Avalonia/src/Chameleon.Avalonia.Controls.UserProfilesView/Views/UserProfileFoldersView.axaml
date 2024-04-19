@@ -147,7 +147,7 @@
 							</Button.Flyout>
 						</Button>
 							<Button Grid.Column="2"
-										IsVisible="True"
+										IsVisible="{Binding IsFavoriteButtonVisible}"
 										Command="{Binding SetFavoriteCommand}"
 										Theme="{StaticResource FavoriteButton}"/>
 						</StackPanel>

@@ -126,7 +126,7 @@ public partial class ProjectsViewModel : PageViewModelBase,
             //    .GetEvent<OpenUserProfileFolderEvent>()
             //    .Publish(new UserProfileFolderEventArgs(folder));
 
-            if (!folder.Navigated)
+            if (!folder.Navigated || folders is UserProfileFoldersViewModel f && f.SelectedFolder.UserProfileFolder.Id == folder.Id)
             {
                 folders.OnNavigatingTo(folder);
                 folder.Navigated = true;
@@ -142,7 +142,8 @@ public partial class ProjectsViewModel : PageViewModelBase,
         }
         else
         {
-            //folders.OnNavigatingTo(null);
+            if(folders is UserProfileFoldersViewModel f && f.SelectedFolder != null)
+                folders.OnNavigatingTo(f.SelectedFolder.UserProfileFolder);
         }
     }
 
