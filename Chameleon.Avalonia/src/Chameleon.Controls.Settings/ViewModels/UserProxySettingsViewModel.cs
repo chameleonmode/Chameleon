@@ -19,6 +19,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
+using System.Threading;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -58,11 +59,11 @@ public partial class UserProxySettingsViewModel
 
         EventAggregator
           .GetEvent<UpdateStaleDataEvent>()
-          .Subscribe(() => OnUserProfileSaved());
+          .Subscribe(() => OnUpdateStaleDataEvent());
 
-        EventAggregator
-            .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-            .Subscribe(UpdateProfilesInFolder);
+        //EventAggregator
+        //    .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
+        //    .Subscribe(UpdateProfilesInFolder);
 
         EventAggregator
             .GetEvent<SelectedChangeUserProfileEvent>()
@@ -105,6 +106,8 @@ public partial class UserProxySettingsViewModel
         {
             while(!Loaded)
                 await Task.Delay(100);
+            _folderId = 0;
+            _selectedFolder = null;
             FolderId = folderId.Id;
             //await InitializeViewModels();
         }
@@ -139,8 +142,11 @@ public partial class UserProxySettingsViewModel
         Country = Countries.FirstOrDefault();
     }
 
+    static SemaphoreSlim initializeViewModelsSlim = new SemaphoreSlim(1, 1);
     private async Task InitializeViewModels()
     {
+        await initializeViewModelsSlim.WaitAsync();
+        
         ViewModels?.Clear();
         var userProfiles = await _userProfileService.GetAllAsync();
 
@@ -152,9 +158,13 @@ public partial class UserProxySettingsViewModel
         OnPropertyChanged(nameof(ViewModels));
         OnPropertyChanged(nameof(HasSelectedItems));
         OnPropertyChanged(nameof(FillProxiesIsEnabled));
+
+        initializeViewModelsSlim.Release();
     }
+    static SemaphoreSlim initializeFolderViewModelsSlim = new SemaphoreSlim(1, 1);
     private async Task LoadUserProfileFolderViewModels()
     {
+        await initializeFolderViewModelsSlim.WaitAsync();
         FolderViewModels?.Clear();
 
         var folders = await _userProfileFolderService.GetAllAsync();
@@ -164,6 +174,8 @@ public partial class UserProxySettingsViewModel
 
         _initFolderViewModels = true;
         OnPropertyChanged(nameof(FolderViewModels));
+
+        initializeFolderViewModelsSlim.Release();
     }
 
     private async void UpdateProfilesInFolder(ChangeProfilesInFavoriteFolderEventArgs args)
@@ -209,9 +221,13 @@ public partial class UserProxySettingsViewModel
         }
     }
 
-    private void OnUserProfileSaved()
+    private void OnUpdateStaleDataEvent()
     {
-        DispatcherService.InvokeOnUiThreadAsync(InitializeViewModels);
+        DispatcherService.InvokeOnUiThreadAsync(async() =>
+        {
+            await LoadUserProfileFolderViewModels();
+            await InitializeViewModels();
+        });
     }
 
     private void OnUserProfileSelected()
