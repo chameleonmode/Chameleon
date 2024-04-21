@@ -1,5 +1,7 @@
-﻿using Avalonia.Controls;
+﻿using AutoMapper;
+using Avalonia.Controls;
 using Chameleon.Authorization;
+using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
@@ -144,9 +146,10 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
     private void OpenUserProfile()
     {
         OpenMenu();
-        EventAggregator
-            .GetEvent<OpenUserProfileEvent>()
-            .Publish(new UserProfileEventArgs(UserProfile));
+        NavigationService.NavigateToType(typeof(IUserProfileIdentityView), UserProfile);
+        //EventAggregator
+        //    .GetEvent<OpenUserProfileEvent>()
+        //    .Publish(new UserProfileEventArgs(UserProfile));
     }
     [RelayCommand]
     private void OpenUserBrowser()

@@ -146,7 +146,7 @@ public partial class UserProfileFoldersViewModel
             );
         _mapping.Insert(0, AllProfiles);
 
-        AllProfiles.Open();
+        //AllProfiles.Open();
         OnPropertyChanged(nameof(ViewModels));
     }
 
@@ -207,10 +207,14 @@ public partial class UserProfileFoldersViewModel
                 ContainerServiceHelper.Resolve<IUserProfilesViewModel>().Open(p);
             }
         }
-        //else
-        //{
-        //    AllProfiles.Open();
-        //}
+        else
+        {
+            if (!AllProfiles.UserProfileFolder.Navigated)
+            {
+                AllProfiles.UserProfileFolder.Navigated = true;
+                AllProfiles.Open();
+            }
+        }
         //SearchText = p.Title;
     }
 

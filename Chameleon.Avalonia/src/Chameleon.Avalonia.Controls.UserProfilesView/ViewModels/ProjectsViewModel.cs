@@ -144,6 +144,8 @@ public partial class ProjectsViewModel : PageViewModelBase,
         {
             if(folders is UserProfileFoldersViewModel f && f.SelectedFolder != null)
                 folders.OnNavigatingTo(f.SelectedFolder.UserProfileFolder);
+            else
+                folders.OnNavigatingTo(null);
         }
     }
 

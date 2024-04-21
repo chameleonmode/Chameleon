@@ -28,7 +28,7 @@ namespace Chameleon.Avalonia.Controls.Dashboard.ViewModels;
 public partial class DashboardViewModel
        : PageViewModelBase
        , IDashboardViewModel
-{                
+{
     private const string _pageTitle = "Dashboard";
 
     //private readonly IAuthSession _authSession;
@@ -52,7 +52,7 @@ public partial class DashboardViewModel
         IUserProfileFolderService userProfileFolderService,
         IShareUserProfilePopupService shareUserProfilePopupService,
         IApplicationUser applicationUser,
-        IUserAssistantService userAssistantService, 
+        IUserAssistantService userAssistantService,
         ISystemBrowserManager systemBrowserManager)
     {
         Title = _pageTitle;
@@ -62,7 +62,7 @@ public partial class DashboardViewModel
         _shareUserProfilePopupService = shareUserProfilePopupService;
         _applicationUser = applicationUser;
         _userAssistantService = userAssistantService;
-        _systemBrowserManager = systemBrowserManager; 
+        _systemBrowserManager = systemBrowserManager;
 
         //EventAggregator
         //    .GetEvent<LoginSuccessEvent>()
@@ -94,7 +94,7 @@ public partial class DashboardViewModel
 
         EventAggregator
             .GetEvent<SavedUserAssistantEvent>()
-            .Subscribe(async(args) => await CheckHasAssistantsAsync());
+            .Subscribe(async (args) => await CheckHasAssistantsAsync());
 
         EventAggregator
             .GetEvent<DeletedUserAssistantEvent>()
@@ -104,6 +104,27 @@ public partial class DashboardViewModel
             .GetEvent<UpdateStaleDataEvent>()
             .Subscribe(LoadAsync);
 
+        EventAggregator
+            .GetEvent<AfterCreateOrRemoveFolderEvent>()
+            .Subscribe(async () =>
+            {
+                await LoadUserProfileFolderViewModels();
+                OnPropertyChanged(nameof(FolderViewModels));
+                BuildSearchTerms();
+            });
+        EventAggregator
+            .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
+            .Subscribe(async (arg) =>
+            {
+                await LoadUserProfileViewModels();
+                await LoadUserProfileFolderViewModels();
+
+                OnPropertyChanged(nameof(FolderViewModels));
+                OnPropertyChanged(nameof(ViewModels));
+                OnPropertyChanged(nameof(HasNoItems));
+
+                BuildSearchTerms();
+            });
     }
     public override async Task InitAsync(object? param)
     {
@@ -153,7 +174,7 @@ public partial class DashboardViewModel
                     _userProfileService,
                     profile,
                     _applicationUser,
-                   // _systemBrowserManager,
+                    // _systemBrowserManager,
                     false
                 )
             );
@@ -187,6 +208,8 @@ public partial class DashboardViewModel
         OnPropertyChanged(nameof(FolderViewModels));
         OnPropertyChanged(nameof(ViewModels));
         OnPropertyChanged(nameof(HasNoItems));
+
+        BuildSearchTerms();
     }
 
     private bool _isWaiting = true;
@@ -216,7 +239,7 @@ public partial class DashboardViewModel
 
                 OnPropertyChanged(nameof(HasNoItems));
 
-                if(_viewModels.Count > 0)
+                if (_viewModels.Count > 0)
                 {
                     SelectedProfile = _viewModels[0].UserProfile;
                 }
@@ -280,26 +303,26 @@ public partial class DashboardViewModel
         }
     }
 
-   //private BreadcrumbsViewModel _breadcrumbsViewModel;
-   //public BreadcrumbsViewModel BreadcrumbsViewModel
-   //{
-   //    get
-   //    {
-   //        if (_breadcrumbsViewModel == null)
-   //        {
-   //            _breadcrumbsViewModel = new BreadcrumbsViewModel();
-   //
-   //            var root = new BreadcrumbViewModel
-   //            {
-   //                Title = _pageTitle
-   //            };
-   //
-   //            _breadcrumbsViewModel.Breadcrumbs.Add(root);
-   //        }
-   //
-   //        return _breadcrumbsViewModel;
-   //    }
-   //}
+    //private BreadcrumbsViewModel _breadcrumbsViewModel;
+    //public BreadcrumbsViewModel BreadcrumbsViewModel
+    //{
+    //    get
+    //    {
+    //        if (_breadcrumbsViewModel == null)
+    //        {
+    //            _breadcrumbsViewModel = new BreadcrumbsViewModel();
+    //
+    //            var root = new BreadcrumbViewModel
+    //            {
+    //                Title = _pageTitle
+    //            };
+    //
+    //            _breadcrumbsViewModel.Breadcrumbs.Add(root);
+    //        }
+    //
+    //        return _breadcrumbsViewModel;
+    //    }
+    //}
 
     public bool HasNoItems => _viewModels?.Count == 0;
 
@@ -376,7 +399,7 @@ public partial class DashboardViewModel
         List<MainAppSearchItem> items = [];
 
         foreach (var item in _mapping)
-            items.Add(new() 
+            items.Add(new()
             {
                 Header = item.Title,
                 Namespace = "Profile",
@@ -388,11 +411,11 @@ public partial class DashboardViewModel
             items.Add(new()
             {
                 Header = item.Title,
-                Namespace = "Profiles "+item.ProfilesCount,
+                Namespace = "Profiles " + item.ProfilesCount,
                 ViewModel = item.Folder,
                 PageType = this.GetType()
             });
 
-        MVVM.BuildSearchTerms(items);
+        DispatcherService.InvokeOnUiThread(() => MVVM.BuildSearchTerms(items));
     }
 }

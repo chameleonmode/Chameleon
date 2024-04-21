@@ -19,6 +19,7 @@ using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
+using System.Security.Cryptography;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
@@ -759,8 +760,9 @@ public partial class UserProfilesViewModel
         }
         else
         {
-            Filter = null;
-            ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
+            //Filter = profile => 0 == profile.Id;
+            ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().SetSelectedById(0);
+            //ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
         }
 
         OnPropertyChanged(nameof(ViewModels));

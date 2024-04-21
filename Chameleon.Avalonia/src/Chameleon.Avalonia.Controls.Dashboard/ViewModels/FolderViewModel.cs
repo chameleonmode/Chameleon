@@ -53,6 +53,7 @@ public partial class FolderViewModel : SubPageViewModelBase
     [RelayCommand]
     private void ViewGroup()
     {
+        _folder.Navigated = false;
         _navigationService.NavigateToType(typeof(IProjectsView), _folder);
         //EventAggregator
         //    .GetEvent<OpenUserProfilesViewEvent>()
