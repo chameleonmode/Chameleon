@@ -18,6 +18,7 @@ using Chameleon.CT.Common.Collections;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.App.UserProfileFolders.Events;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -60,6 +61,10 @@ public partial class UserProxySettingsViewModel
           .Subscribe(() => OnUserProfileSaved());
 
         EventAggregator
+            .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
+            .Subscribe(UpdateProfilesInFolder);
+
+        EventAggregator
             .GetEvent<SelectedChangeUserProfileEvent>()
             .Subscribe(args => OnUserProfileSelected());
 
@@ -73,19 +78,22 @@ public partial class UserProxySettingsViewModel
 
         EventAggregator
            .GetEvent<AfterCreateOrRemoveFolderEvent>()
-           .Subscribe(ChangeFoldersCollection);
+           .Subscribe(async()=> await LoadUserProfileFolderViewModels());
 
         EventAggregator
             .GetEvent<RenameFolderEvent>()
             .Subscribe(args => OnRenameFolder(args.FolderId, args.Title));
     }
+
     public override async Task InitAsync(object? param)
     {
         await base.InitAsync(param);
         if (!Loaded)
-        {
-            Load();
+        {                                      
+            await LoadUserProfileFolderViewModels();
+            await InitializeViewModels();
             await InitializeCountriesAsync();
+            SetFilter();
         }
 
         OnPropertyChanged(string.Empty);
@@ -98,6 +106,7 @@ public partial class UserProxySettingsViewModel
             while(!Loaded)
                 await Task.Delay(100);
             FolderId = folderId.Id;
+            //await InitializeViewModels();
         }
     }
     private void OnRenameFolder(int folderId, string title)
@@ -106,40 +115,7 @@ public partial class UserProxySettingsViewModel
         item.Title = title;
     }
 
-    private void ChangeFoldersCollection()
-    {
-        LoadUserProfileFolderViewModels();
-    }
-
-    private void Load()
-    {
-        DispatcherService.InvokeOnUiThreadAsync(InitializeViewModels);
-        LoadUserProfileFolderViewModels();
-    }
-
-    public ObservableCollection<IProxyCountry> Countries { get; private set; } = new();
-    //public AsyncCollectionViewModel<IProxyCountry> Countries { get; private set; }
-
-    private async Task InitializeCountriesAsync()
-    {
-        //Countries = new AsyncCollectionViewModel<IProxyCountry>(GetCountries, true);
-        //return Countries.Load();
-
-        Countries.Clear();
-
-        foreach (var item in await Task.Run(() => _proxyService.GetCountries()))
-            Countries.Add(item);
-
-        Country = Countries.FirstOrDefault();
-    }
-
-    private IList<IProxyCountry> GetCountries()
-    {
-        var countries = _proxyService.GetCountries();
-        DispatcherService.InvokeOnUiThread(() => Country = countries.FirstOrDefault());
-        return countries;
-    }
-
+    public ObservableCollection<IProxyCountry> Countries { get; private set; } = new(); 
     public IProxyCountry Country
     {
         get => _proxyService.CurrentCountry;
@@ -153,6 +129,50 @@ public partial class UserProxySettingsViewModel
             }
         }
     }
+    private async Task InitializeCountriesAsync()
+    {
+        Countries.Clear();
+
+        foreach (var item in await Task.Run(() => _proxyService.GetCountries()))
+            Countries.Add(item);
+
+        Country = Countries.FirstOrDefault();
+    }
+
+    private async Task InitializeViewModels()
+    {
+        ViewModels?.Clear();
+        var userProfiles = await _userProfileService.GetAllAsync();
+
+        _mapping = new ObservableCollection<IUserProfile, UserProxySettingViewModel>(
+            userProfiles, userProfile => new UserProxySettingViewModel(_mapper, userProfile, EventAggregator)
+            );
+
+        _initViewModels = true;
+        OnPropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(HasSelectedItems));
+        OnPropertyChanged(nameof(FillProxiesIsEnabled));
+    }
+    private async Task LoadUserProfileFolderViewModels()
+    {
+        FolderViewModels?.Clear();
+
+        var folders = await _userProfileFolderService.GetAllAsync();
+
+        _folderMapping = new ObservableCollection<IUserProfileFolder, ProfileFolderViewModel>(
+            folders, folder => new ProfileFolderViewModel(folder.Id, folder.Title));
+
+        _initFolderViewModels = true;
+        OnPropertyChanged(nameof(FolderViewModels));
+    }
+
+    private async void UpdateProfilesInFolder(ChangeProfilesInFavoriteFolderEventArgs args)
+    {
+        //TODO: throw new NotImplementedException();
+        await LoadUserProfileFolderViewModels();
+        await InitializeViewModels();
+    }
+
 
     private void UpdateProxyAccessAsync()
     {
@@ -196,20 +216,6 @@ public partial class UserProxySettingsViewModel
 
     private void OnUserProfileSelected()
     {
-        OnPropertyChanged(nameof(FillProxiesIsEnabled));
-    }
-
-    private void InitializeViewModels()
-    {
-        var userProfiles = _userProfileService.GetAll();
-
-        _mapping = new ObservableCollection<IUserProfile, UserProxySettingViewModel>(
-            userProfiles, userProfile => new UserProxySettingViewModel(_mapper, userProfile, EventAggregator)
-            );
-
-        InitViewModels = true;
-        OnPropertyChanged(nameof(ViewModels));
-        OnPropertyChanged(nameof(HasSelectedItems));
         OnPropertyChanged(nameof(FillProxiesIsEnabled));
     }
 
@@ -429,7 +435,6 @@ public partial class UserProxySettingsViewModel
     {
         await MesageBoxHelper.ShowErrorAsync("Warning", message);
     }
-
     private async void PurchaseMessage()
     {
         if(await MesageBoxHelper.ShowAsync("No Proxy Credit","You have no proxy to set. Purchase them on Proxy Credit tab"))
@@ -441,15 +446,15 @@ public partial class UserProxySettingsViewModel
         }
     }
 
-    private bool InitViewModels = false;
+    bool _initViewModels;
     private ObservableCollectionView<UserProxySettingViewModel> _viewModels;
     public ObservableCollectionView<UserProxySettingViewModel> ViewModels
     {
         get
         {
-            if ((_viewModels == null || InitViewModels) && _mapping != null)
+            if ((_viewModels == null || _initViewModels) && _mapping != null)
             {
-                InitViewModels = false;
+                _initViewModels = false;
                 _viewModels = new ObservableCollectionView<UserProxySettingViewModel>(_mapping)
                 {
                     TrackItemChanges = true,
@@ -478,14 +483,16 @@ public partial class UserProxySettingsViewModel
         }
     }
 
+    bool _initFolderViewModels;
     private ObservableCollectionView<ProfileFolderViewModel> _folderViewModels;
     public ObservableCollectionView<ProfileFolderViewModel> FolderViewModels
     {
         get
         {
-            if ((_folderViewModels == null || _folderViewModels.Count == 0 || _initFolderViewModels) && _folderMapping != null)
+            if ((_folderViewModels == null || _initFolderViewModels) && _folderMapping != null)
             {
                 _initFolderViewModels = false;
+
                 var items = _folderMapping
                     .OrderBy(a => a.Title)
                     .ToList();
@@ -499,27 +506,12 @@ public partial class UserProxySettingsViewModel
                     Order = folder => folder.Title
                 };
 
-                SetFilter();
+                //SetFilter();
             }
 
             return _folderViewModels;
         }
-    }
-
-    private void SetFilter()
-    {
-        if (FolderId != 0)
-        {
-            SelectedFolder = _folderViewModels.Items.First(a => a.Id == FolderId);
-        }
-        else
-        {
-            SelectedFolder = _folderViewModels.Items.First(a => a.Id == 0);
-        }
-
-        OnPropertyChanged(nameof(SelectedFolder));
-    }
-
+    }      
     private ProfileFolderViewModel _selectedFolder;
     public ProfileFolderViewModel SelectedFolder
     {
@@ -535,6 +527,21 @@ public partial class UserProxySettingsViewModel
         }
     }
 
+
+    private void SetFilter()
+    {
+        if (FolderId != 0)
+        {
+            SelectedFolder = _folderViewModels.Items.First(a => a.Id == FolderId);
+        }
+        else
+        {
+            SelectedFolder = _folderViewModels.Items.First(a => a.Id == 0);
+        }
+
+        OnPropertyChanged(nameof(SelectedFolder));
+    }
+
     private int _folderId;
     public int FolderId
     {
@@ -548,24 +555,13 @@ public partial class UserProxySettingsViewModel
         }
     }
 
-    private bool _initFolderViewModels;
-    private void LoadUserProfileFolderViewModels()
-    {
-        var folders = _userProfileFolderService.GetAll();
-
-        _folderMapping = new ObservableCollection<IUserProfileFolder, ProfileFolderViewModel>(
-            folders, folder => new ProfileFolderViewModel(folder.Id, folder.Title));
-
-        _initFolderViewModels = true;
-        OnPropertyChanged(nameof(FolderViewModels));
-    }
-
     private void InitPaginator()
     {
         PaginatorViewModel = new PaginatorViewModel(_viewModels.Count);
         ViewModels.Offset = PaginatorViewModel.Skip;
         ViewModels.Limit = PaginatorViewModel.OnPageItems;
         TotalCount = PaginatorViewModel.TotalCount;
+        //PaginatorViewModel.PageIndex = 0;  //TODO: update on folder change
     }
 
     private string[] GetProxyAccess(int count)

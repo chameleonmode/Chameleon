@@ -632,7 +632,8 @@
 					HorizontalAlignment="Center"
 					Height="50"
 					CornerRadius="{StaticResource ControlCornerRadius}"
-					Margin="0 0 0 3">
+					Margin="0 0 0 3"
+					BoxShadow="0 8 32 0 #66000000">
 					<Grid Margin="24 0"
 						 ColumnDefinitions="*,Auto">
 						<TextBlock 

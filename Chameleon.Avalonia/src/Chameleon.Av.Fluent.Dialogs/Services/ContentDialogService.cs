@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Chameleon.Av.Fluent.Dialogs.ViewModels;
+using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Dialogs.ViewModels;
@@ -28,7 +29,7 @@ public class ContentDialogService : IContentDialogService
                 OnClosing?.Invoke((IContentDialogResult)e.Result);
             };
         }
-        var res = await dialog.ShowAsync();
+        var res = await dialog.ShowAsync(ApplicationHelper.GetMainWindow());
         return (IContentDialogResult)res;
     }
     public Task<IContentDialogResult> ShowAsync<TView, TViewModel>(Action<TViewModel> initialize) where TViewModel : class
