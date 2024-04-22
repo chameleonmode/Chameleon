@@ -8,7 +8,7 @@ namespace Chameleon.Av.Fluent.Dialogs.ViewModels;
 public partial class AuthTaskDialogViewModel : DialogBase, IAuthTaskDialogViewModel
 {
     private readonly IAuthApiClient _apiClient;
-    private readonly IApplicationSettings _settings;
+    private IApplicationSettings _settings;
     private readonly IApplicationSettingsService _settingsService;
     public AuthTaskDialogViewModel(IAuthApiClient authService,
         IApplicationSettingsService settingsService)
@@ -18,12 +18,16 @@ public partial class AuthTaskDialogViewModel : DialogBase, IAuthTaskDialogViewMo
         _apiClient = authService;
         _settingsService = settingsService;
 
-        _settings = _settingsService.Get();
-        UserName = _settings.Login.LoginName;
-        LicenceKey = _settings.Login.LicenseKey;
+
 
 
         IsInputEnabled = true;
+    }
+
+    public override Task InitAsync(object? param)
+    {
+
+        return base.InitAsync(param);
     }
 
     [ObservableProperty]
@@ -80,6 +84,9 @@ public partial class AuthTaskDialogViewModel : DialogBase, IAuthTaskDialogViewMo
 
     public override async Task<IContentDialogResult> ShowAsync()
     {
+        _settings = await _settingsService.GetAsync();
+        UserName = _settings.Login.LoginName;
+        LicenceKey = _settings.Login.LicenseKey;
         var result = await ContentDialogService.ShowContentDialogAsync(typeof(ILoginContentDialogContent));
         if (result == IContentDialogResult.Primary)
         {
