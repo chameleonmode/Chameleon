@@ -14,7 +14,7 @@
 				</HeaderedContentControl.Header>
 			</HeaderedContentControl>
 			
-		<Border Padding="20" Width="710" Height="480">
+		<Border Padding="20" Width="800" Height="480">
 			<Grid ColumnDefinitions="*,Auto,0.01*">
 				<ctrls:ChameleonContentControl Title="Some Title"
 											   TitleDescription="some kinda description over here">
@@ -424,6 +424,7 @@
 
 									<!-- Options Area -->
 									<ui:FABorder 
+										VerticalAlignment="Top"
 										Name="OptionsHost"
 										Margin="12 0 12 12"
 										Padding="12"

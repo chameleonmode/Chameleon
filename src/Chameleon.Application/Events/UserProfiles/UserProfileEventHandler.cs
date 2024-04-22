@@ -73,7 +73,7 @@ namespace Chameleon.Application.Events
 
             _eventAggregator
                 .GetEvent<CreateUserProfileEvent>()
-                .Subscribe(args => CreateUserProfile(args.FolderId));
+                .Subscribe(CreateUserProfile);
 
             _eventAggregator
                 .GetEvent<DeleteUserProfileEvent>()
@@ -187,13 +187,13 @@ namespace Chameleon.Application.Events
             _userProfileService.Delete(userProfile);
         }
 
-        private void CreateUserProfile(int? folderId)
+        private async void CreateUserProfile(CreateUserProfileEventArgs? args)
         {
             IUserProfile profile;
             try
             {
-                _userProfileService.Sync();
-                profile = _userProfileService.Create(folderId);
+                //TODO: ? _userProfileService.Sync();
+                profile = await Task.Run(() => _userProfileService.Create(args?.FolderId)); 
             }
             catch (Exception ex)
             {
@@ -201,13 +201,13 @@ namespace Chameleon.Application.Events
                     _userProfileService.ShowOutOfLimitPopup();
                 else throw;
                 return;
-            }
-                                                      
+            }                                                                                                                                                               
+            var e = new ChangeProfilesInFavoriteFolderEventArgs(args == null || args.FolderId == null ? 0 : args.FolderId.Value, true, profile);
+
+            _eventAggregator.Publish<OnCreatedCreateUserProfileEvent, ChangeProfilesInFavoriteFolderEventArgs>(e);
             _eventAggregator
                 .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-                .Publish(new ChangeProfilesInFavoriteFolderEventArgs(folderId == null ? 0 : folderId.Value, true, profile));
-
-           // OpenUserDetails(profile, UserProfileViewTab.Details);
+                .Publish(e);
         }
 
         private void OnOpenUserDetails(IUserProfileInfo profileInfo)

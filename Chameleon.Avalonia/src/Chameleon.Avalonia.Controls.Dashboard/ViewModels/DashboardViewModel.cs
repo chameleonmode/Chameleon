@@ -83,14 +83,14 @@ public partial class DashboardViewModel
         EventAggregator
             .GetEvent<UnfavoriteUserProfileEvent>()
             .Subscribe(OnUpdateViewModel);
+                                                   
+        EventAggregator
+            .GetEvent<SavedUserProfileEvent>()
+            .Subscribe(OnUpdateViewModel);
 
         EventAggregator
             .GetEvent<UpdateFavoriteFolderEvent>()
             .Subscribe(OnUpdateFavoriteFolders);
-
-        EventAggregator
-            .GetEvent<SavedUserProfileEvent>()
-            .Subscribe(OnUpdateViewModel);
 
         EventAggregator
             .GetEvent<SavedUserAssistantEvent>()
@@ -114,14 +114,18 @@ public partial class DashboardViewModel
             });
         EventAggregator
             .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-            .Subscribe(async (arg) =>
+            .Subscribe( (arg) =>
             {
-                await LoadUserProfileViewModels();
-                await LoadUserProfileFolderViewModels();
+                //if(ViewModels.Count == 0)
+                //{
 
-                OnPropertyChanged(nameof(FolderViewModels));
-                OnPropertyChanged(nameof(ViewModels));
-                OnPropertyChanged(nameof(HasNoItems));
+                //}
+                //await LoadUserProfileViewModels();
+                //await LoadUserProfileFolderViewModels();
+
+                //OnPropertyChanged(nameof(FolderViewModels));
+                //OnPropertyChanged(nameof(ViewModels));
+                //OnPropertyChanged(nameof(HasNoItems));
 
                 BuildSearchTerms();
             });

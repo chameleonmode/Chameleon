@@ -169,7 +169,8 @@ public partial class ProjectsViewModel : PageViewModelBase,
         finally
         {
             //TODO: Remove hardcode
-            UserProfilesViewModel.IsDisabledCreateNewProfile = false;
+            //UserProfilesViewModel.IsDisabledCreateNewProfile = false;
+            //UserProfilesViewModel.IsDisabledCreateNewProfile = false;
         }
     }
 

@@ -79,11 +79,21 @@ public partial class UserProxySettingsViewModel
 
         EventAggregator
            .GetEvent<AfterCreateOrRemoveFolderEvent>()
-           .Subscribe(async()=> await LoadUserProfileFolderViewModels());
+           .Subscribe(OnAfterCreateOrRemoveFolderEvent);
 
         EventAggregator
             .GetEvent<RenameFolderEvent>()
             .Subscribe(args => OnRenameFolder(args.FolderId, args.Title));
+    }
+
+    private void OnAfterCreateOrRemoveFolderEvent()
+    {
+        _initFolderViewModels = true;
+        OnPropertyChanged(nameof(FolderViewModels));
+        if (FolderId != 0 && !FolderViewModels.Any(f => f.Id == FolderId))
+        {
+            FolderId = 0;   //TODO: combobox no update when folder delete of selected folder
+        }
     }
 
     public override async Task InitAsync(object? param)
@@ -483,7 +493,7 @@ public partial class UserProxySettingsViewModel
                 }
                 else
                 {
-                    ViewModels.Filter = folder => folder.UserProfileModel.FolderId == SelectedFolder.Id;
+                    ViewModels.Filter = folder => folder.UserProfileModel.FolderId == SelectedFolder?.Id;
                 }
 
                 SelectedCount = 0;

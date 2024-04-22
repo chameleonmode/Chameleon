@@ -143,7 +143,7 @@ public partial class MainView : UserControl
         {
             mainPage = "Profiles";
         }
-        else if (dc.GetType() == typeof(SettingsViewModel) || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.Settings"))
+        else if (dc.GetType() == typeof(SettingsViewModel))//TODO: || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.Settings"))
         {
             mainPage = "Settings";
         }

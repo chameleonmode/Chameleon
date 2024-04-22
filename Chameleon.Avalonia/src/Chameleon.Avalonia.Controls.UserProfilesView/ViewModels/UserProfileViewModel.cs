@@ -104,28 +104,28 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
             FavoriteUserProfile();
         else
             UnfavoriteUserProfile();
+
+        EventAggregator
+            .GetEvent<UpdateFavoriteFolderEvent>()
+            .Publish();
+
+        OnPropertyChanged(nameof(IsFavorite));
     }
 
    
     private void FavoriteUserProfile()
     {
+        UserProfile.IsFavourite = true;
         EventAggregator
             .GetEvent<FavoriteUserProfileEvent>()
-            .Publish(new UserProfileEventArgs(_userProfile));
-
-        EventAggregator
-            .GetEvent<UpdateFavoriteFolderEvent>()
-            .Publish();
+            .Publish(new UserProfileEventArgs(UserProfile));
     }
     private void UnfavoriteUserProfile()
     {
+        UserProfile.IsFavourite = false;
         EventAggregator
             .GetEvent<UnfavoriteUserProfileEvent>()
-            .Publish(new UserProfileEventArgs(_userProfile));
-
-        EventAggregator
-            .GetEvent<UpdateFavoriteFolderEvent>()
-            .Publish();
+            .Publish(new UserProfileEventArgs(UserProfile));
     }
     [RelayCommand]
     private async Task DeleteUserProfile()

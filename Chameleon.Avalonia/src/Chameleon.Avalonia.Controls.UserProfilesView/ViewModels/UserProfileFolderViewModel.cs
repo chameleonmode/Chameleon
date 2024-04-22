@@ -108,7 +108,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             $"Are you sure you want to delete {UserProfileFolder.Title} folder? This will not affect individual profiles within the folder.",
             ContentDialogButtons.YesNo,
             "DeleteLines"))
-            EventAggregator.PublishEvent<DeleteUserProfileFolderEvent, UserProfileFolderEventArgs>(new UserProfileFolderEventArgs(_folder));
+            EventAggregator.Publish<DeleteUserProfileFolderEvent, UserProfileFolderEventArgs>(new UserProfileFolderEventArgs(_folder));
                 //.GetEvent<DeleteUserProfileFolderEvent>()
                 //.Publish(new UserProfileFolderEventArgs(_folder));
     }

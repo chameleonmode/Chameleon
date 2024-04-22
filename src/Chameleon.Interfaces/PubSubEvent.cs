@@ -831,8 +831,10 @@ public interface IEventAggregator
         // Returns:
         //     An instance of an event object of type TEventType.
         TEventType GetEvent<TEventType>() where TEventType : EventBase, new();
-        void SetEventSubscription<TEventType, TPayload>(Action<TPayload> action) where TEventType : PubSubEvent<TPayload>, new();
-        void PublishEvent<TEventType, TPayload>(TPayload action) where TEventType : PubSubEvent<TPayload>, new();
+        void Subscribe<TEventType, TPayload>(Action<TPayload> action) where TEventType : PubSubEvent<TPayload>, new(); 
+        void Subscribe<TPayload>(Action<TPayload> action);
+        void Publish<TEventType, TPayload>(TPayload action) where TEventType : PubSubEvent<TPayload>, new();
+        void Publish<TPayload>(TPayload action);
 }
 
 /// <summary>
@@ -894,15 +896,23 @@ public class EventAggregator : IEventAggregator
         }
     }
 
-    public void SetEventSubscription<TEventType, TPayload>(Action<TPayload> action) 
+    public void Subscribe<TEventType, TPayload>(Action<TPayload> action) 
         where TEventType : PubSubEvent<TPayload>, new()
     {
         GetEvent<TEventType>().Subscribe(action);
     }
 
-    public void PublishEvent<TEventType, TPayload>(TPayload action) where TEventType : PubSubEvent<TPayload>, new()
+    public void Publish<TEventType, TPayload>(TPayload action) where TEventType : PubSubEvent<TPayload>, new()
     {
         GetEvent<TEventType>().Publish(action);
+    }
+    public void Publish<TPayload>(TPayload action) 
+    {
+        GetEvent<PubSubEvent<TPayload>>().Publish(action);
+    }
+    public void Subscribe<TPayload>(Action<TPayload> action)
+    {
+        GetEvent<PubSubEvent<TPayload>>().Subscribe(action);
     }
 }
 

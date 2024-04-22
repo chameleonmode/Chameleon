@@ -216,7 +216,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
             ControlName = pageViewModel.Title;
         }
 
-        var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
+        var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));   //TODO: might crash if wrong page
         var animation = svc.GetAnimation("ForwardAnimation");
 
         if (animation != null)

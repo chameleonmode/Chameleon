@@ -73,9 +73,9 @@ public partial class AssistantUsersViewModel
         if (Loaded)
             return;
 
-        EventAggregator.SetEventSubscription<InviteUserAssistantEvent, InviteUserAssistantEventArgs>(OnCreate);
+        EventAggregator.Subscribe<InviteUserAssistantEvent, InviteUserAssistantEventArgs>(OnCreate);
 
-        EventAggregator.SetEventSubscription<SavedUserAssistantEvent, SavedUserAssistantEventArgs>(OnUserAssistantSaved);
+        EventAggregator.Subscribe<SavedUserAssistantEvent, SavedUserAssistantEventArgs>(OnUserAssistantSaved);
             //.GetEvent<SavedUserAssistantEvent>()
             //.Subscribe(args => OnUserAssistantSaved(args));
 

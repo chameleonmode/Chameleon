@@ -61,7 +61,7 @@
 										   HorizontalAlignment="Left"
 										   SelectedItem="{Binding SelectedFolder}"
 										   ItemsSource="{Binding FolderViewModels.Items}"
-										   DisplayMemberBinding="{Binding Title, x:DataType=vm:ProfileFolderViewModel}" />
+										   DisplayMemberBinding="{Binding Title}" />
 							
 							<StackPanel Orientation="Horizontal">
 								<ui:FAComboBox Header="Auto Update Proxies:"
