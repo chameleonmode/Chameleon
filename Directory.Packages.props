@@ -39,15 +39,22 @@
 	  
     <PackageVersion Include="System.Text.Json" Version="6.0.5" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
     <PackageVersion Include="System.Text.Json" Version="6.0.5" Condition="'$(TargetFramework)' == 'netstandard2.1'" />
-	  
-    <PackageVersion Include="FluentAvaloniaUI" Version="2.1.0-preview1" />
+
+	  <PackageVersion Include="FluentAvaloniaUI" Version="2.0.5" />
+    <!--<PackageVersion Include="FluentAvaloniaUI" Version="2.1.0-preview1" />-->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.3.24172.9" />
-	  
-    <PackageVersion Include="Avalonia" Version="11.1.0-beta1" />
-    <PackageVersion Include="Avalonia.Svg" Version="11.1.0-beta1" />
-    <PackageVersion Include="Avalonia.Svg.Skia" Version="11.1.0-beta1" />
-    <PackageVersion Include="Avalonia.Desktop" Version="11.1.0-beta1" />
-    <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.1.0-beta1" />
+
+	  <PackageVersion Include="Avalonia.Svg" Version="11.0.0.18" />
+	  <PackageVersion Include="Avalonia.Svg.Skia" Version="11.0.0.18" />
+	  <PackageVersion Include="Avalonia" Version="$(AvaloniaVersion)" />
+	  <PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+	  <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="$(AvaloniaVersion)" />
+    <!--<PackageVersion Include="Avalonia" Version="11.1.0-beta1" />   
+	  <PackageVersion Include="Avalonia.Desktop" Version="11.1.0-beta1" />
+    <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.1.0-beta1" />-->
+    <!--<PackageVersion Include="Avalonia.Svg" Version="11.1.0-beta1" />
+    <PackageVersion Include="Avalonia.Svg.Skia" Version="11.1.0-beta1" />-->
+
 	  
 	  
     <!--<PackageVersion Include="Prism.Avalonia" Version="9.0.271.11074-pre" />
