@@ -175,21 +175,19 @@
 																					 Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
 
 												<UniformGrid Rows="1">
+													<!--todo https://github.com/AvaloniaUI/Avalonia/issues/3016-->
 													<Border HorizontalAlignment="Stretch" Padding="15 0 22 0">
-														<RadioButton GroupName="rbgGender">
-															<RadioButton.IsChecked>
-																<Binding Path="Gender" />
-															</RadioButton.IsChecked>
+														<RadioButton 
+															GroupName="rbgGender"
+															IsChecked="{Binding GenderMale}">		
 															<RadioButton.Content>
 																<TextBlock Text="Male"  />
 															</RadioButton.Content>
 														</RadioButton>
 													</Border>
 													<Border Grid.Column="1" Padding="15 0 22 0">
-														<RadioButton GroupName="rbgGender">
-															<RadioButton.IsChecked>
-																<Binding Path="Gender" />
-															</RadioButton.IsChecked>
+														<RadioButton GroupName="rbgGender"
+															IsChecked="{Binding GenderFeMale}">
 															<RadioButton.Content>
 																<TextBlock Text="Female"  />
 															</RadioButton.Content>

@@ -19,17 +19,27 @@ namespace Chameleon.Infrastructure.Bookmarks
         {
             _repository = repository;
 
-            var entities = _repository.GetAll();
-            _settings = new BookmarkFiles()
-            {
-                entities
-            };
+            //var entities = _repository.GetAll();
+            //_settings = new BookmarkFiles()
+            //{
+            //    entities
+            //};
         }
 
         private IBookmarkFiles _settings;
         private IBookmarkFiles Settings
         {
-            get => _settings;
+            get {
+                if(_settings == null)
+                {
+                    var entities = _repository.GetAll();
+            _settings = new BookmarkFiles()
+            {
+                entities
+            };
+                }
+                return _settings;
+            } 
         }
 
         public IBookmarkFiles GetAll()

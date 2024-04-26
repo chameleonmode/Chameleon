@@ -132,7 +132,7 @@
 												Tag="{Binding SelectedPerson.BirthDate, StringFormat=yyyy/MM/dd}"
 												Theme="{StaticResource CopyPasta}" />
 						<HeaderedContentControl Header="Gender"
-												Tag="{Binding SelectedPerson.Gender}"
+												Tag="{Binding SelectedPerson.Gendertext}"
 												Theme="{StaticResource CopyPasta}" />
 						<HeaderedContentControl Header="Notes"
 												Tag="{Binding SelectedPerson.Notes}"

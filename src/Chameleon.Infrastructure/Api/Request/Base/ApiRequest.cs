@@ -99,7 +99,7 @@ namespace Chameleon.Infrastructure.Api
         private void CreateRequest()
         {
             var requestUrl = GetRequestUrl();
-            _request = (HttpWebRequest)WebRequest.Create(requestUrl);
+            _request = (HttpWebRequest)WebRequest.Create(requestUrl);//TODO: update
             _request.AutomaticDecompression = DecompressionMethods.GZip;
             _request.ServerCertificateValidationCallback += RemoteCertificateValidationCallback;
         }

@@ -1,5 +1,6 @@
 ﻿using Chameleon.Interfaces.Api;
 using Chameleon.Interfaces.Auth;
+using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Environments;
 
 namespace Chameleon.Infrastructure.Api
@@ -10,8 +11,9 @@ namespace Chameleon.Infrastructure.Api
     {
         public ApiClient(
             IAuthSession session,
-            IApplicationConfiguration configuration) 
-            : base(session, configuration)
+            IApplicationConfiguration configuration,
+            IToastNotificationService toaster) 
+            : base(session, configuration,toaster)
         {
         }
     }

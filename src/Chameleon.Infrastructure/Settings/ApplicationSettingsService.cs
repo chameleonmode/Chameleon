@@ -42,18 +42,21 @@ namespace Chameleon.Infrastructure.Settings
         //    }
         //    return _settings;
         //}
-        static SemaphoreSlim l = new SemaphoreSlim(1, 1);
+        SemaphoreSlim l = new SemaphoreSlim(1, 1);
         public async Task Save()
         {
             await l.WaitAsync();
+            try{
             string json = System.Text.Json.JsonSerializer.Serialize(_settings);
             await Task.Run(() => File.WriteAllText(_settingsFilePath, json));
+            }finally{
             l.Release();
+            }
         }
 
         public async Task<IApplicationSettings> GetAsync()
         {
-            await l.WaitAsync();
+            //await l.WaitAsync();
             if (_settings != null)
             {
                 return _settings;
@@ -72,7 +75,7 @@ namespace Chameleon.Infrastructure.Settings
                 _settings = new ApplicationSettings();
             }
 
-            l.Release();
+            //l.Release();
             return _settings;
         }
     }

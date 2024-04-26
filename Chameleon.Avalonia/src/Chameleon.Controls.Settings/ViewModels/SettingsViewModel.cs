@@ -185,8 +185,11 @@ public partial class SettingsViewModel
         NavigationService.NavigateToType(type,param);
     }
 
+bool save = true;
     partial void OnUseCustomAccentColorChanged(bool oldValue, bool newValue)
     {
+        if(Loaded)
+save = false;
         if (newValue)
         {
             if (_faTheme.TryGetResource("SystemAccentColor", null, out var curColor))
@@ -248,7 +251,7 @@ public partial class SettingsViewModel
         {
             _faTheme.PreferSystemTheme = true;
         }
-
+if(save)
         Save();
     }
     private async void Save()
@@ -260,6 +263,7 @@ public partial class SettingsViewModel
             _settings.Settings.UseCustomAccentColor = UseCustomAccentColor;
 
             await _settingsService.Save();
+            save = true;
         }
     }
     private void UpdateAppAccentColor(Color? color)
@@ -267,6 +271,7 @@ public partial class SettingsViewModel
         if (_faTheme.CustomAccentColor != color)
             _faTheme.CustomAccentColor = color;
 
+if(save)
         Save();
     }  
 

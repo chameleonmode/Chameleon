@@ -69,9 +69,9 @@ public partial class UserProfilesViewModel
         //   .GetEvent<CreateUserProfileEvent>()
         //   .Subscribe(OnHandleUserEvent);
 
-        EventAggregator
-            .GetEvent<OpenUserProfileFolderEvent>()
-            .Subscribe(args => OnOpenFolder(args.UserProfileFolder));
+        //EventAggregator
+        //    .GetEvent<OpenUserProfileFolderEvent>()
+        //    .Subscribe(args => OnOpenFolder(args.UserProfileFolder));
 
         EventAggregator
             .GetEvent<CreateNewUserProfileEvent>()
@@ -499,9 +499,10 @@ public partial class UserProfilesViewModel
     private void OnCreateUserProfileEvent(ChangeProfilesInFavoriteFolderEventArgs e)
     {
         if (e.FolderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == e.Profile.Id))
-            _viewModels = null;
+            OnHandleUserEvent();
+            //_viewModels = null;
 
-        OnHandleUserEvent();
+        //OnHandleUserEvent();
 
         if (e.Navigate == true)
             NavigationService.NavigateToType(typeof(IUserProfileIdentityView), e.Profile);

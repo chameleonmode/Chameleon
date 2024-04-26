@@ -10,7 +10,7 @@ namespace Chameleon.Avalonia.Common.Services;
 public class ToastNotificationService
         : IToastNotificationService
 {
-    private int _notificationTimeout = 10;
+    private int _notificationTimeout = 9;
     private WindowNotificationManager _notificationManager;
     private readonly IDispatcherService _dispatcher;
 
@@ -61,7 +61,7 @@ public class ToastNotificationService
         var notificationManager = new WindowNotificationManager((hostWindow as TopLevel) ?? ApplicationHelper.GetMainWindow())
         {
             Position = NotificationPosition.BottomRight,
-            MaxItems = 4,
+            MaxItems = 6,
             Margin = new Thickness(0, 0, 15, 40)
         };
 

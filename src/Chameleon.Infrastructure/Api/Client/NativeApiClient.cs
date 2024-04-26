@@ -1,4 +1,5 @@
 ﻿using Chameleon.Interfaces.Auth;
+using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Environments;
 using System.Threading.Tasks;
 
@@ -8,23 +9,28 @@ namespace Chameleon.Infrastructure.Api
     {
         private readonly IAuthSession _session;
         protected readonly IApplicationConfiguration _configuration;
-
+        readonly IToastNotificationService _toaster;
         public NativeApiClient(
             IAuthSession session,
-            IApplicationConfiguration configuration
+            IApplicationConfiguration configuration,
+            IToastNotificationService toaster
             )
         {
+            _toaster = toaster;
             _session = session;
             _configuration = configuration;
         }
 
         public virtual TResponse Get<TResponse>(string url, object query = null)
         {
-            return CreateGetRequest()
+            //_toaster.ShowInformation($"get-{url}");
+            var r = CreateGetRequest()
                 .ForUrl(url)
                 .WithQuery(query)
                 .Send()
                 .GetResult<TResponse>();
+            //_toaster.ShowSuccess($"get-{url}");
+            return r;
         }
         public virtual async Task<TResponse> GetAsync<TResponse>(string url, object query = null)
         {
@@ -39,11 +45,13 @@ namespace Chameleon.Infrastructure.Api
 
         public virtual TResponse Post<TResponse>(string url, object body = null)
         {
+            //_toaster.ShowInformation($"post-{url}");
             var result = CreatePostRequest()
                 .ForUrl(url)
                 .WithBody(body)
                 .Send()
                 .GetResult<TResponse>();
+            //_toaster.ShowSuccess($"post-{url}");
             return result;
         }
         public virtual async Task<TResponse> PostAsync<TResponse>(string url, object query = null)
@@ -62,19 +70,23 @@ namespace Chameleon.Infrastructure.Api
 
         public virtual void Put(string url, object body = null)
         {
+            //_toaster.ShowInformation($"put-{url}");
             new ApiPutRequest(_session, _configuration)
                 .ForUrl(url)
                 .WithBody(body)
                 .Send()
                 .GetResult();
+            //_toaster.ShowSuccess($"put-{url}");
         }
 
         public virtual void Delete(string url)
         {
+            //_toaster.ShowInformation($"delete-{url}");
             new ApiDeleteRequest(_session, _configuration)
                 .ForUrl(url)
                 .Send()
                 .GetResult();
+            //_toaster.ShowSuccess($"delete-{url}");
         }
     }
 }

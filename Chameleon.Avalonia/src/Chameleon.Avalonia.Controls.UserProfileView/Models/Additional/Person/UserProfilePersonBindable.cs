@@ -124,11 +124,45 @@ namespace Chameleon.Controls.UserProfileView.Models.Additional
             set => SetProperty(ref _notes,value); 
         }
 
-        private GenderType _gender;
+        [ObservableProperty]
+        bool _genderMale;
+        partial void OnGenderMaleChanged(bool oldValue, bool newValue)
+        {
+            if(newValue)
+                Gender = GenderType.Male;
+            else
+                Gender = GenderType.Female;
+        }
+         [ObservableProperty]
+        bool _genderFeMale = true;
+        partial void OnGenderFeMaleChanged(bool oldValue, bool newValue)
+        {
+            if(newValue)
+                Gender = GenderType.Female;
+            else
+                Gender = GenderType.Male;
+        }
+        [ObservableProperty]
+        string _gendertext = "Female";
+        private GenderType _gender = GenderType.Female;
         public GenderType Gender 
         { 
             get => _gender;
-            set => SetProperty(ref _gender,value); 
+            set {
+                if(SetProperty(ref _gender,value))
+                {
+                    if(Gender == GenderType.Female)
+                   {  
+                     GenderMale = false;
+                     GenderFeMale = true;
+                     Gendertext = "Female";
+                   }else if(Gender == GenderType.Male){
+                       GenderMale = true;
+                     GenderFeMale = false;
+                     Gendertext = "Male";
+                   }
+                }
+            }
         }
 
         private int _profileId;

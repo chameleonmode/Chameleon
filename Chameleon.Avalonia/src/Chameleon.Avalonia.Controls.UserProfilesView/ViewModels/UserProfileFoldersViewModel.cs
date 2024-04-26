@@ -51,7 +51,18 @@ public partial class UserProfileFoldersViewModel
         EventAggregator
            .GetEvent<UpdateStaleDataEvent>()
            .Subscribe(LoadAsync);
+
+        EventAggregator
+            .GetEvent<OpenUserProfileFolderEvent>()
+            .Subscribe(args => OnOpenFolder(args.UserProfileFolder));
     }
+
+    private void OnOpenFolder(IUserProfileFolder userProfileFolder)
+    {
+        OnNavigatingTo(userProfileFolder);
+    }
+
+
     public override async Task InitAsync(object? param)
     {
         await base.InitAsync(param);

@@ -38,6 +38,7 @@ namespace Chameleon.Application.Events
        // private readonly IDialogWindowsService _dialogWindowsService;
         private readonly IErrorContentDialogView _userFriendlyExceptionView;
         private readonly INavigationService _navigationSrvice;
+        readonly IToastNotificationService _toaster;
         public UserProfileEventHandler(
             //IMainWindow mainWindow,
             IUserProfileService userProfileService,
@@ -46,11 +47,13 @@ namespace Chameleon.Application.Events
             ISystemBrowserManager systemBrowserManager,
             //IOutReachTemplateView outReachView,
             IAuthSession authSession,
-            INavigationService navigationService
+            INavigationService navigationService,
+            IToastNotificationService toaster
             // IDialogWindowsService dialogWindowsService
             //TODO: IErrorContentDialogView userFriendlyExceptionView
             )
         {
+            _toaster = toaster;
             //_outReachView = outReachView;
             //_messageBoxService = messageBoxService;
             //_mainWindow = mainWindow;
@@ -187,13 +190,15 @@ namespace Chameleon.Application.Events
             _userProfileService.Delete(userProfile);
         }
 
-        private async void CreateUserProfile(CreateUserProfileEventArgs? args)
+        private void CreateUserProfile(CreateUserProfileEventArgs? args)
         {
+            //_toaster.ShowInformation("Creating New Profile...");
             IUserProfile profile;
             try
             {
                 //TODO: ? _userProfileService.Sync();
-                profile = await Task.Run(() => _userProfileService.Create(args?.FolderId)); 
+                //profile = await Task.Run(() => _userProfileService.Create(args?.FolderId)); 
+                profile =  _userProfileService.Create(args?.FolderId); 
             }
             catch (Exception ex)
             {
