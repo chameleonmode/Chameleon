@@ -121,6 +121,8 @@ namespace Chameleon.SystemBrowser.Firefox
                 fileTextLines.Add("user_pref(\"network.proxy.backup.socks\", \"" + host + "\");");
                 fileTextLines.Add("user_pref(\"network.proxy.backup.socks_port\", " + port + ");");
 
+                fileTextLines.Add("user_pref(\"signon.autologin.proxy\", true);");
+//user_pref("signon.autologin.proxy", true);
                 //if (!_dynamicProxyServer.IsCertificateTrusted())
                 //{
                 //    //https://www.techwalla.com/articles/how-to-disable-invalid-ssl-in-firefox

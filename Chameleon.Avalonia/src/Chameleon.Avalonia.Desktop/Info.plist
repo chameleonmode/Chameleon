@@ -5,7 +5,7 @@
     <key>CFBundleName</key>
     <string>Chameleon</string>
     <key>CFBundleDisplayName</key>
-    <string>Chameleon.Desktop</string>
+    <string>Chameleon</string>
     <key>CFBundleIdentifier</key>
     <string>Chameleon.Avalonia.Desktop</string>
     <key>CFBundleVersion</key>
@@ -15,7 +15,7 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleExecutable</key>
-    <string>Chameleon.Avalonia.Desktop</string>
+    <string>Chameleon</string>
     <key>CFBundleIconFile</key>
     <string>logo-symbol.icns</string>
     <key>CFBundleShortVersionString</key>

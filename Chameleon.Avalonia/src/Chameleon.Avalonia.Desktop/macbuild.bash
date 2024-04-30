@@ -1,6 +1,6 @@
 #!/bin/bash
 APP_NAME="Chameleon.app"
-PUBLISH_OUTPUT_DIRECTORY="obj/output/."
+PUBLISH_OUTPUT_DIRECTORY="obj/outmac/."
 PUBLISH_EXTENSTIONS="BrowserExtensions/."
 mkdir "$PUBLISH_OUTPUT_DIRECTORY"
 # PUBLISH_OUTPUT_DIRECTORY should point to the output directory of your dotnet publish command.
