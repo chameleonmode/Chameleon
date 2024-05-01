@@ -131,5 +131,8 @@ namespace Chameleon.Domain.Entities
         }
 
         public bool Navigated { get; set; }
+        public bool IsChromeRunning { get; set; }
+        public bool IsBraveRunning { get; set; }
+        public bool IsFFRunning { get; set; }
     }
 }

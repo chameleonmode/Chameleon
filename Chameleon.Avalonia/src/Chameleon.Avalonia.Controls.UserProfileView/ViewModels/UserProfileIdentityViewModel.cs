@@ -22,6 +22,7 @@ using Chameleon.Domain.Entities;
 using Chameleon.Common.Helpers;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Chameleon.Interfaces.WebBrowser;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 
@@ -37,6 +38,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     //TODO: private readonly IFeatureTourNavigator _featureTourNavigator;
     private readonly IAuthSession _authSession;
     private readonly IToastNotificationService _toastNotificationService;
+    private readonly ISystemBrowserManager _systemBrowserManager;
 
     public UserProfileIdentityViewModel(
         IMapper mapper,
@@ -45,9 +47,11 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         IUserAssistantService userAssistantService,
         IApplicationUser applicationUser,
         IAuthSession authSession,
+        ISystemBrowserManager systemBrowserManager,
         IToastNotificationService toastNotificationService
         )
     {
+        _systemBrowserManager = systemBrowserManager;
         _mapper = mapper;
         _userProfileService = userProfileService;
         _userProfileAdditionalDataService = userProfileAdditionalDataService;
@@ -238,6 +242,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
                       _userProfileService,
                       UserProfile,
                       _applicationUser,
+                      _systemBrowserManager,
                       false
                   );
 

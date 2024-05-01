@@ -22,6 +22,7 @@ using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Drawing;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
@@ -29,25 +30,36 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
 {
     private readonly IUserProfileService _userProfileService;
     private readonly IApplicationUser _applicationUser;
-   // private readonly ISystemBrowserManager _systemBrowserManager;
+    private readonly ISystemBrowserManager _systemBrowserManager;
 
     [ObservableProperty]
     private  IUserProfile _userProfile;
+
+    [ObservableProperty]
+    private bool _isChromeRunning;
+    [ObservableProperty]
+    private bool _isBraveRunning;
+    [ObservableProperty]
+    private bool _isFFRunning;
+
 
     public UserProfileViewModel(
         IUserProfileService userProfileService,
         IUserProfile userProfile,
         IApplicationUser applicationUser,
-       // ISystemBrowserManager systemBrowserManager,
+        ISystemBrowserManager systemBrowserManager,
         bool isShowCheckboxColumn = true
         )
     {
-      //  _systemBrowserManager = systemBrowserManager;
+        _systemBrowserManager = systemBrowserManager;
         _userProfileService = userProfileService;
         _userProfile = userProfile;
         _applicationUser = applicationUser;   
 
         Title = _userProfile.Title;
+        IsChromeRunning = _userProfile.IsChromeRunning;
+        IsBraveRunning = _userProfile.IsBraveRunning;
+        IsFFRunning = _userProfile.IsFFRunning;
 
         IsShowCheckboxColumn = isShowCheckboxColumn && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
         IsEnabledCheckboxColumn = !_userProfileService.IsSharedProfile(_userProfile);
@@ -56,8 +68,13 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
              .GetEvent<SavedUserProfileEvent>()
              .Subscribe(args => OnUserProfileSaved(args.UserProfile));
 
+        EventAggregator
+           .GetEvent<OpenedUserSystemBrowserEvent>()
+           .Subscribe(OnOpenedBrowserEvent);
+
         OnPropertyChanged(nameof(UserProfile));
     }
+
     [RelayCommand]
     private void ShowViewProfile()
     {
@@ -78,7 +95,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
     {
         EventAggregator
             .GetEvent<OutReachLinksOpenEvent>()
-            .Publish(new OutReachEventArgs(_userProfile));
+            .Publish(new OutReachEventArgs(UserProfile));
     }
 
     [RelayCommand]
@@ -86,7 +103,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
     {
         EventAggregator
             .GetEvent<OutReachOpenEvent>()
-            .Publish(new OutReachEventArgs(_userProfile));
+            .Publish(new OutReachEventArgs(UserProfile));
     }
 
     private void OnUserProfileSaved(IUserProfile userProfile)
@@ -195,12 +212,72 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
         //if (defaults.Any())
         //    uri = defaults[new Random().Next(defaults.Count)].DefaultUrl;
 
-      var args = new UserProfileSystemBrowserEventArgs(
-            UserProfile, browserType, uri);
+        //var args = new UserProfileSystemBrowserEventArgs(
+        //      UserProfile, browserType, uri);
 
-        EventAggregator
-            .GetEvent<OpenUserSystemBrowserEvent>()
-            .Publish(args);
+        //EventAggregator
+        //    .GetEvent<OpenUserSystemBrowserEvent>()
+        //    .Publish(args);
+
+
+        var browser = await _systemBrowserManager
+                .Get(browserType)
+                .Open(new SystemBrowserLaunchOptions
+                {
+                    Url = uri,
+                    SignIn = false,
+                    UserProfile = UserProfile,
+                    BrowserType = browserType,
+                });
+        if(browser != null)
+            browser.OnProcessClosed += Browser_OnProcessClosed;
+    }
+
+    private void OnOpenedBrowserEvent(UserProfileSystemBrowserProcessEventArgs args)
+    {
+        if (args.UserProfile.Id != UserProfile.Id)
+            return;
+
+        switch (args.BrowserType)
+        {
+            case SystemBrowserType.Unknown:
+                break;
+            case SystemBrowserType.Chrome:
+                IsChromeRunning = UserProfile.IsChromeRunning = true;
+                break;
+            case SystemBrowserType.Firefox:
+                IsFFRunning = UserProfile.IsFFRunning = true;
+                break;
+            case SystemBrowserType.Brave:
+                IsBraveRunning = UserProfile.IsBraveRunning = true;
+                break;
+            default:
+                break;
+        }
+
+        OnPropertyChanged(string.Empty);
+    }
+
+    private void Browser_OnProcessClosed(ISystemBrowserLaunchOptions e)
+    {
+        switch (e.BrowserType)
+        {
+            case SystemBrowserType.Unknown:
+                break;
+            case SystemBrowserType.Chrome:
+                IsChromeRunning = UserProfile.IsChromeRunning = false;
+                break;
+            case SystemBrowserType.Firefox:
+                IsFFRunning = UserProfile.IsFFRunning = false;
+                break;
+            case SystemBrowserType.Brave:
+                IsBraveRunning = UserProfile.IsBraveRunning = false;
+                break;
+            default:
+                break;
+        }
+
+        OnPropertyChanged(nameof(UserProfile));
     }
 
     [RelayCommand]
@@ -225,7 +302,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
             {
                 EventAggregator
                     .GetEvent<SelectedChangeUserProfileEvent>()
-                    .Publish(new SelectedUserProfileEventArgs(_userProfile, _isSelected));
+                    .Publish(new SelectedUserProfileEventArgs(UserProfile, _isSelected));
             }
         }
     }
@@ -249,7 +326,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileV
 
     public bool IsDeleteProfileBtnVisible => !IsSharedProfile && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
 
-    public bool IsOutreachBtnEnabled => !IsSharedProfile || _userProfile.HasPermission(PermissionNames.Pages_Outreach);
+    public bool IsOutreachBtnEnabled => !IsSharedProfile || UserProfile.HasPermission(PermissionNames.Pages_Outreach);
 
-    public bool IsRssBtnEnabled => !IsSharedProfile || _userProfile.HasPermission(PermissionNames.Pages_RSS);
+    public bool IsRssBtnEnabled => !IsSharedProfile || UserProfile.HasPermission(PermissionNames.Pages_RSS);
 }

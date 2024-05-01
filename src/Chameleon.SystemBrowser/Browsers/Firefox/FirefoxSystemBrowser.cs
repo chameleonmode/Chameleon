@@ -1,10 +1,11 @@
 ﻿using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
+using Chameleon.SystemBrowser.Browsers;
 
 namespace Chameleon.SystemBrowser.Firefox
 {
-    public class FirefoxSystemBrowser : IFirefoxSystemBrowser
+    public class FirefoxSystemBrowser : SystemBrowserBase, IFirefoxSystemBrowser
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly IApplicationEnvironment _applicationEnvironment;
@@ -21,15 +22,13 @@ namespace Chameleon.SystemBrowser.Firefox
             _systemBrowserInfoManager = systemBrowserInfoManager;
         }
 
-        public void Open(ISystemBrowserLaunchOptions options)
+        public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
         {
-            var browser = new FirefoxSystemBrowserInstance(
+            return new FirefoxSystemBrowserInstance(
                 _eventAggregator,
-                options,
+                o,
                 _applicationEnvironment.ApplicationDataFolderPath,
-                GetBrowserExePath()
-                );
-            browser.Open();
+                GetBrowserExePath());
         }
 
         private string GetBrowserExePath()

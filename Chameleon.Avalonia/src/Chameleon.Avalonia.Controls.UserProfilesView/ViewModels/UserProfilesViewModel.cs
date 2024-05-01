@@ -669,7 +669,7 @@ public partial class UserProfilesViewModel
 
         _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
         userProfiles, profile => new UserProfileViewModel
-            (_userProfileService, profile, _currentUser));
+            (_userProfileService, profile, _currentUser, _systemBrowserManager));
 
         _mapping.CollectionChanged += OnViewModelChange;
 

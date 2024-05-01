@@ -24,5 +24,10 @@ namespace Chameleon.Interfaces.UserProfiles
         IList<IUserProfileProspectorBlogsOfInterest> ProspectorBlogsOfInterest { get; }
 
         bool HasPermission(string permissionName);
+
+     
+        bool IsChromeRunning { get; set; }
+         bool IsBraveRunning { get; set; }
+         bool IsFFRunning { get; set; }
     }    
 }

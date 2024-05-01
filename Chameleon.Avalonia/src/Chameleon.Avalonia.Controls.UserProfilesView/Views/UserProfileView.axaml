@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"    
 			 xmlns:avCommon="using:Chameleon.Avalonia.Common"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
@@ -10,6 +11,9 @@
 			 xmlns:vm="using:Chameleon.Avalonia.Controls.UserProfilesView.ViewModels"
 			 x:DataType="vm:UserProfileViewModel"
 			 x:CompileBindings="True">
+	<UserControl.Resources>
+		<conv:IsActiveBackgroundConverter x:Key="activebgConv" />
+	</UserControl.Resources>
 	<Border>
 		<Grid ColumnDefinitions="Auto,Auto,*,Auto">
 			<StackPanel Grid.Column="0"
@@ -71,24 +75,40 @@
 			<UniformGrid Grid.Column="3"
 						 HorizontalAlignment="Right"
 						 Rows="1">
-				<Button Content="chrome"
-						ToolTip.Tip="Open In System Chrome"
-						Theme="{StaticResource SvgIconButton}"
-						Command="{Binding OpenChromeCommand}"/>
-				<Button Content="firefox"
+				<Border Background="{Binding IsChromeRunning, Converter={StaticResource activebgConv}}"
+						CornerRadius="180"
+						Height="36"
+						Width="36">
+					<Button Content="chrome"
+							ToolTip.Tip="Open In System Chrome"
+							Theme="{StaticResource SvgIconButton}"
+							Command="{Binding OpenChromeCommand}" />
+				</Border>
+				<Border Background="{Binding IsFFRunning, Converter={StaticResource activebgConv}}"
+					CornerRadius="180"
+					Height="36"
+					Width="36">
+					<Button Content="firefox"
 						ToolTip.Tip="Open In System Firefox"
 						Theme="{StaticResource SvgIconButton}"
 						Command="{Binding OpenFirefoxCommand}"/>
-				<Button Content="brave"
+				</Border>
+				<Border Background="{Binding IsBraveRunning, Converter={StaticResource activebgConv}}"
+					CornerRadius="180"
+					Height="36"
+					Width="36">
+					<Button Content="brave"
 						ToolTip.Tip="Open In System Brave"
 						Theme="{StaticResource SvgIconButton}"
 						Command="{Binding OpenBraveCommand}"/>
+				</Border>
+				
 				<Button Content="chameleon-logo"
 						ToolTip.Tip="Open In Chameleon Browser"
 						Theme="{StaticResource SvgIconButton}"
 						/><!--Command="{Binding OpenBrowserCommand}"-->
 
-				<!--<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+				<!--<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"  
 							BorderThickness="1 0 0 0" />
 							IsVisible="{Binding HasMultiOptions}"-->
 				

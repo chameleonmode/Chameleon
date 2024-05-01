@@ -1,10 +1,12 @@
 ﻿using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
+using Chameleon.SystemBrowser.Browsers;
+using Chameleon.SystemBrowser.Firefox;
 
 namespace Chameleon.SystemBrowser.Chrome
 {
-    public class ChromeSystemBrowser : IChromeSystemBrowser
+    public class ChromeSystemBrowser : SystemBrowserBase, IChromeSystemBrowser
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly IApplicationEnvironment _applicationEnvironment;
@@ -24,16 +26,14 @@ namespace Chameleon.SystemBrowser.Chrome
             _setPreferencesService = setPreferencesService;
         }
 
-        public void Open(ISystemBrowserLaunchOptions options)
+        public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
         {
-            var browser = new ChromeSystemBrowserInstance(
+            return new ChromeSystemBrowserInstance(
                 _eventAggregator,
-                options,
+                o,
                 _setPreferencesService,
                 _applicationEnvironment,
-                GetBrowserExePath()
-                );
-            browser.Open();
+                GetBrowserExePath());
         }
 
         private string GetBrowserExePath()

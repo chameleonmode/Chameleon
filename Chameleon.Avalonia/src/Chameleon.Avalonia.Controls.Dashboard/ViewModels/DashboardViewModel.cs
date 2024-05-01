@@ -178,7 +178,7 @@ public partial class DashboardViewModel
                     _userProfileService,
                     profile,
                     _applicationUser,
-                    // _systemBrowserManager,
+                     _systemBrowserManager,
                     false
                 )
             );

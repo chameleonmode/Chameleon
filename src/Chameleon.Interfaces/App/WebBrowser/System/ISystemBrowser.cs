@@ -4,6 +4,7 @@ namespace Chameleon.Interfaces.WebBrowser
 {
     public interface ISystemBrowser : ISingletonDependency
     {
-        void Open(ISystemBrowserLaunchOptions options);
+        Dictionary<int, ISystemBrowserInstance> Instances { get; }
+        Task<ISystemBrowserInstance> Open(ISystemBrowserLaunchOptions options);
     }
 }

@@ -23,9 +23,10 @@ namespace Chameleon.SystemBrowser.Firefox
         }
 
         protected override SystemBrowserType BrowserType => SystemBrowserType.Firefox;
-        protected override void OnProfileFolderCreated()
+        protected override Task OnProfileFolderCreated()
         {
             CreateProfile();
+            return Task.CompletedTask;
         }
 
         private void CreateProfile()
@@ -43,9 +44,9 @@ namespace Chameleon.SystemBrowser.Firefox
             createProfileProcess.WaitForExit();
         }
 
-        protected override void InitializeProfileFolder()
+        protected override async Task InitializeProfileFolder()
         {
-            InitializePrefsJs();
+            await Task.Run(() => InitializePrefsJs());
         }
 
         // TODO: refactor next legacy code
@@ -121,8 +122,6 @@ namespace Chameleon.SystemBrowser.Firefox
                 fileTextLines.Add("user_pref(\"network.proxy.backup.socks\", \"" + host + "\");");
                 fileTextLines.Add("user_pref(\"network.proxy.backup.socks_port\", " + port + ");");
 
-                fileTextLines.Add("user_pref(\"signon.autologin.proxy\", true);");
-//user_pref("signon.autologin.proxy", true);
                 //if (!_dynamicProxyServer.IsCertificateTrusted())
                 //{
                 //    //https://www.techwalla.com/articles/how-to-disable-invalid-ssl-in-firefox
@@ -255,20 +254,21 @@ namespace Chameleon.SystemBrowser.Firefox
 
         protected override string GetCommandLineArguments()
         {
-            var arguments = new StringBuilder(1024);
-            arguments.Append($"-new-instance -profile \"{_browserProfileFolderPath}\"");
 
+            return string.Join(" ", [
+                "-new-instance",
+                $"-profile \"{_browserProfileFolderPath}\"",
+                //"-no-remote"
+                ]); 
             //TODO: investigate how to install ecxtension via config file (*.ini)
             //var extensionsToInstal = GetLoadExtensionsArgument();
             //arguments.Append($"-install-extension {extensionsToInstal}");
-
-            return arguments.ToString();
         }
 
         private string GetLoadExtensionsArgument()
         {
             return Directory
-                .GetFiles(_browserExtensionsFolderPath)
+                .GetFiles(BrowserExtensionsFolderPath)
                 .AddQuotesToEachElement()
                 .ToCommaSeparatedString();
         }
