@@ -20,7 +20,7 @@ mkdir "$APP_NAME"
 
 mkdir "$APP_NAME/Contents"
 mkdir "$APP_NAME/Contents/MacOS"
-mkdir "$APP_NAME/Contents/MacOS/BrowserExtensions"
+#mkdir "$APP_NAME/Contents/MacOS/BrowserExtensions"
 mkdir "$APP_NAME/Contents/Resources"
 mkdir "$APP_NAME/Contents/Resources/BrowserExtensions"
 
