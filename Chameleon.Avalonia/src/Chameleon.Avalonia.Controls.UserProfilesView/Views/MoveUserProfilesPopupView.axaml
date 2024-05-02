@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.MoveUserProfilesPopupView">

@@ -46,6 +46,15 @@ public class PageHeaderControl : TemplatedControl
         set => SetAndRaise(TitleTextImageProperty, ref _titleTextImage, value);
     }
 
+    public static readonly DirectProperty<PageHeaderControl, object> ContentObjectProperty =
+        AvaloniaProperty.RegisterDirect<PageHeaderControl, object>(nameof(ContentObject),
+        x => x.ContentObject, (x, v) => x.ContentObject = v);
+    public object ContentObject
+    {
+        get => _contentObject;
+        set => SetAndRaise(ContentObjectProperty, ref _contentObject, value);
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -108,6 +117,7 @@ public class PageHeaderControl : TemplatedControl
         UpdateTitleText();
     }
 
+    private object _contentObject;
     private Uri _titleTextImage;
     private Image _text1;
     private FontIcon _fontIcon;

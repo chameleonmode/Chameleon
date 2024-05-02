@@ -28,7 +28,8 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
         AddHandler(Frame.NavigatingFromEvent, OnNavigatingFrom, RoutingStrategies.Direct);
         AddHandler(Frame.NavigatedToEvent, OnNavigatedTo, RoutingStrategies.Direct);
 
-        Tapped += OnPageTapped;
+        //Tapped += OnPageTapped;
+        DoubleTapped += OnPageTapped;
     }
 
     private void OnPageTapped(object sender, TappedEventArgs e)

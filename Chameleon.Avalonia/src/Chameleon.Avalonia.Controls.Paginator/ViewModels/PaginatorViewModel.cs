@@ -123,6 +123,8 @@ public partial class PaginatorViewModel
     {
         OnPropertyChanged(nameof(PrevButtonIsEnabled));
         OnPropertyChanged(nameof(NextButtonIsEnabled));
+        OnPropertyChanged(nameof(FirstVisibleElementNumber));
+        OnPropertyChanged(nameof(LastVisibleElementNumber));
     }
 
 

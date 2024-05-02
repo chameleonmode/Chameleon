@@ -2,9 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"    
-			 xmlns:avCommon="using:Chameleon.Avalonia.Common"
+			 xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:avCommon="using:Chameleon.Avalonia.Common"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfileView"
@@ -13,17 +15,25 @@
 			 x:CompileBindings="True">
 	<UserControl.Resources>
 		<conv:IsActiveBackgroundConverter x:Key="activebgConv" />
+
 	</UserControl.Resources>
+
+	<UserControl.Styles>
+		<Style Selector=":is(Button)[Tag=True]">
+			<Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}"/>
+		</Style>
+	</UserControl.Styles>
+
 	<Border>
 		<Grid ColumnDefinitions="Auto,Auto,*,Auto">
 			<StackPanel Grid.Column="0"
 						Orientation="Horizontal">
-				
-			<CheckBox Margin="6 0 -12 0"
-					  IsChecked="{Binding IsSelected}"
-						  IsVisible="{Binding IsShowCheckboxColumn}"
-						  IsEnabled="{Binding IsEnabledCheckboxColumn}">
-			</CheckBox>
+
+				<CheckBox Margin="6 0 -12 0"
+						  IsChecked="{Binding IsSelected}"
+							  IsVisible="{Binding IsShowCheckboxColumn}"
+							  IsEnabled="{Binding IsEnabledCheckboxColumn}">
+				</CheckBox>
 
 
 				<Viewbox Width="30"
@@ -75,53 +85,40 @@
 			<UniformGrid Grid.Column="3"
 						 HorizontalAlignment="Right"
 						 Rows="1">
-				<Border Background="{Binding IsChromeRunning, Converter={StaticResource activebgConv}}"
-						CornerRadius="180"
-						Height="36"
-						Width="36">
-					<Button Content="chrome"
-							ToolTip.Tip="Open In System Chrome"
-							Theme="{StaticResource SvgIconButton}"
-							Command="{Binding OpenChromeCommand}" />
-				</Border>
-				<Border Background="{Binding IsFFRunning, Converter={StaticResource activebgConv}}"
-					CornerRadius="180"
-					Height="36"
-					Width="36">
-					<Button Content="firefox"
-						ToolTip.Tip="Open In System Firefox"
-						Theme="{StaticResource SvgIconButton}"
-						Command="{Binding OpenFirefoxCommand}"/>
-				</Border>
-				<Border Background="{Binding IsBraveRunning, Converter={StaticResource activebgConv}}"
-					CornerRadius="180"
-					Height="36"
-					Width="36">
-					<Button Content="brave"
-						ToolTip.Tip="Open In System Brave"
-						Theme="{StaticResource SvgIconButton}"
-						Command="{Binding OpenBraveCommand}"/>
-				</Border>
-				
-				<Button Content="chameleon-logo"
-						ToolTip.Tip="Open In Chameleon Browser"
-						Theme="{StaticResource SvgIconButton}"
-						/><!--Command="{Binding OpenBrowserCommand}"-->
+				<Button
+					Content="chrome"
+					ToolTip.Tip="Open In System Chrome"
+					Tag="{Binding IsChromeRunning}"
+					Command="{Binding OpenChromeCommand}"
+					Theme="{StaticResource SvgIconButton}" />
+				<Button
+					Content="firefox"
+					ToolTip.Tip="Open In System Firefox"
+					Tag="{Binding IsFFRunning}"
+					Command="{Binding OpenFirefoxCommand}"
+					Theme="{StaticResource SvgIconButton}" />
+				<Button 
+					Content="brave"
+					ToolTip.Tip="Open In System Brave"
+					Tag="{Binding IsBraveRunning}"
+					Command="{Binding OpenBraveCommand}"
+					Theme="{StaticResource SvgIconButton}"/>
+
+				<Button 
+					Content="chameleon-logo"
+					ToolTip.Tip="Open In Chameleon Browser"
+					Theme="{StaticResource SvgIconButton}" />
+				<!--Command="{Binding OpenBrowserCommand}"-->
 
 				<!--<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"  
 							BorderThickness="1 0 0 0" />
 							IsVisible="{Binding HasMultiOptions}"-->
-				
+
 				<Button Content="copy"
 						ToolTip.Tip="Open copy-paste window"
 						Theme="{StaticResource SvgIconButton}"
 						Command="{Binding ShowViewProfileCommand}"/>
-				
-				<!--<Button ToolTip.Tip="Open copy-paste window"
-						Theme="{StaticResource TransparentButton}"
-						Command="{Binding ShowViewProfileCommand}">
-					<ui:SymbolIcon Symbol="ClipboardCode" FontSize="20" />
-				</Button>-->
+
 				<Button Content="three-dots"
 						ToolTip.Tip="Details"
 						Command="{Binding OpenMenuCommand}"

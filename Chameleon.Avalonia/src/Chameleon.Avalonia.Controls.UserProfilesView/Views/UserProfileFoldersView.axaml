@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="450"
 			 xmlns:vm="using:Chameleon.Avalonia.Controls.UserProfilesView.ViewModels"
 			 x:DataType="vm:UserProfileFoldersViewModel"
@@ -63,8 +63,8 @@
 										<ui:SymbolIcon Symbol="FolderFilled" 
 													   FontSize="18" 
 													   IsVisible="{Binding IsSelected}" />-->
-										<avfCommon:SvgIconControl IconName="folder"  />
-										<avfCommon:SvgIconControl IconName="selected-folder"
+										<afv:SvgIconControl IconName="folder"  />
+										<afv:SvgIconControl IconName="selected-folder"
 																  IsVisible="{Binding IsSelected}" />
 
 										<Grid IsVisible="{Binding IsSharedFolder}"
@@ -155,10 +155,10 @@
 			</Grid>
 		</DataTemplate>
 	</UserControl.Resources>
-	<avfCommon:ChameleonContentControl Title="Folders"
+	<afv:ChameleonContentControl Title="Folders"
 									   Header=""
 									   TitleDescription="Select a folder to view profiles">
-		<avfCommon:ChameleonContentControl.TitleContent>
+		<afv:ChameleonContentControl.TitleContent>
 			<Grid HorizontalAlignment="Right">
 				<Button Tag="New"
 						Margin="0 0 6 6"
@@ -168,7 +168,7 @@
 						Command="{Binding CreateCommand}"
 						IsEnabled="{Binding IsCreateBtnEnabled}"/>
 			</Grid>
-		</avfCommon:ChameleonContentControl.TitleContent>
+		</afv:ChameleonContentControl.TitleContent>
 		<Grid VerticalAlignment="Top">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
@@ -192,5 +192,5 @@
             DataContext="{Binding}"
             IsIndicatorVisible="{Binding IsWaiting}"/>-->
 		</Grid>
-	</avfCommon:ChameleonContentControl>
+	</afv:ChameleonContentControl>
 </UserControl>

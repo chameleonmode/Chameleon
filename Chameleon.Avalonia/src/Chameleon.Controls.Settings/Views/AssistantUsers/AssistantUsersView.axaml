@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:paginator="using:Chameleon.Avalonia.Controls.Paginator"
 			 xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.ViewModels"
@@ -27,7 +27,7 @@
 				<Button Grid.Column="1"
 						Command="{Binding UnshareCommand}"
 						Theme="{DynamicResource TransparentButton}">
-					<avfCommon:SvgIconControl IconName="x" />
+					<afv:SvgIconControl IconName="x" />
 				</Button>
 			</Grid>
 		</DataTemplate>
@@ -37,13 +37,13 @@
 		</ItemsPanelTemplate>
 	</UserControl.Resources>
 	<Border Padding="20">
-		<avfCommon:ChameleonContentControl Title="Current Users"
+		<afv:ChameleonContentControl Title="Current Users"
 										   TitleDescription="Manage your taskforce users control">
 
-			<avfCommon:ChameleonContentControl.TitleContent>
+			<afv:ChameleonContentControl.TitleContent>
 				<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
-			</avfCommon:ChameleonContentControl.TitleContent>
-			<avfCommon:ChameleonContentControl.Options>
+			</afv:ChameleonContentControl.TitleContent>
+			<afv:ChameleonContentControl.Options>
 				<ui:CommandBar HorizontalAlignment="Right"
 							   DefaultLabelPosition="Right">
 					<ui:CommandBar.PrimaryCommands>
@@ -52,9 +52,9 @@
 											 Command="{Binding CreateNewUserAssistantCommand}"/>
 					</ui:CommandBar.PrimaryCommands>
 				</ui:CommandBar>
-			</avfCommon:ChameleonContentControl.Options>
+			</afv:ChameleonContentControl.Options>
 
-			<avfCommon:ChameleonContentControl.Content>
+			<afv:ChameleonContentControl.Content>
 				<!--BorderBrush="{StaticResource InsertProfilesLine}"-->
 				<ItemsControl ItemsSource="{Binding ViewModels}">
 					<!--<ItemsControl.Items>
@@ -95,7 +95,7 @@
 											Command="{Binding OpenPopupCommand}"
 											Theme="{DynamicResource TransparentButton}">
 
-										<avfCommon:SvgIconControl IconName="three-dots" />
+										<afv:SvgIconControl IconName="three-dots" />
 										<Button.Flyout>
 											<ui:FAMenuFlyout Placement="Bottom">
 												<ui:MenuFlyoutItem Text="Add more profiles"
@@ -115,15 +115,15 @@
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
-			</avfCommon:ChameleonContentControl.Content>
+			</afv:ChameleonContentControl.Content>
 
-			<!--<avfCommon:ChameleonContentControl.Footer>
+			<!--<afv:ChameleonContentControl.Footer>
 				<Border Grid.Row="1"
 						BorderThickness="1 0 1 1"
 						CornerRadius="0 0 2 2">
 					<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
 				</Border>
-			</avfCommon:ChameleonContentControl.Footer>-->
-		</avfCommon:ChameleonContentControl>
+			</afv:ChameleonContentControl.Footer>-->
+		</afv:ChameleonContentControl>
 	</Border>
 </UserControl>

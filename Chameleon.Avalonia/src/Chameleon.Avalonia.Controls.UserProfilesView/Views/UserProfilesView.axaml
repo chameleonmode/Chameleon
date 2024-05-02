@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:userProfiles="using:Chameleon.Avalonia.Controls.UserProfilesView"
 			 xmlns:pagnator="using:Chameleon.Avalonia.Controls.Paginator"
@@ -15,10 +15,10 @@
 	<UserControl.Resources>
 		<converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
 	</UserControl.Resources>
-		<avfCommon:ChameleonContentControl Title="{Binding SelectedFolderTitle}"
+		<afv:ChameleonContentControl Title="{Binding SelectedFolderTitle}"
 										TitleDescription="{Binding TotalCount,
 											StringFormat='You have {0} profiles.'}">
-		<avfCommon:ChameleonContentControl.TitleContent>
+		<afv:ChameleonContentControl.TitleContent>
 			<Grid ColumnDefinitions="*,Auto">
 				<pagnator:PaginatorView
 	DataContext="{Binding PaginatorViewModel}" />
@@ -28,9 +28,9 @@
 						 Text="{Binding SearchText}" />-->
 
 			</Grid>
-		</avfCommon:ChameleonContentControl.TitleContent>
+		</afv:ChameleonContentControl.TitleContent>
 
-		<avfCommon:ChameleonContentControl.Header>
+		<afv:ChameleonContentControl.Header>
 			<StackPanel IsVisible="{Binding !HasNoItems}">
 				<Panel VerticalAlignment="Center">
 					<!--<StackPanel Orientation="Horizontal">
@@ -116,9 +116,9 @@
 					</HeaderedContentControl.Header>
 				</HeaderedContentControl>
 			</StackPanel>
-		</avfCommon:ChameleonContentControl.Header>
+		</afv:ChameleonContentControl.Header>
 
-		<avfCommon:ChameleonContentControl.Options>
+		<afv:ChameleonContentControl.Options>
 			<StackPanel 
 				IsVisible="{Binding IsProfilesExist}"
 				Spacing="12">
@@ -155,9 +155,9 @@
 					ItemsSource="{Binding Sorts}"
 					SelectedItem="{Binding SortSelected}" />
 			</StackPanel>
-		</avfCommon:ChameleonContentControl.Options>
+		</afv:ChameleonContentControl.Options>
 
-		<avfCommon:ChameleonContentControl.Content>
+		<afv:ChameleonContentControl.Content>
 			<Panel>
 				<Panel VerticalAlignment="Top">
 					<Panel.IsVisible>
@@ -211,7 +211,7 @@
 							<Binding Path="!IsProfilesExist"/>
 						</MultiBinding>
 					</Panel.IsVisible>
-					<avfCommon:SvgIconControl
+					<afv:SvgIconControl
 						IconName="not-profiles"
 						  Width="128"
 						Margin="0 0 0 178" />
@@ -247,11 +247,11 @@
 					DataContext="{Binding}"
 					IsIndicatorVisible="{Binding IsWaiting}"/>-->
 			</Panel>
-		</avfCommon:ChameleonContentControl.Content>
+		</afv:ChameleonContentControl.Content>
 
-		<!--<avfCommon:ChameleonContentControl.Footer>
+		<!--<afv:ChameleonContentControl.Footer>
 			<pagnator:PaginatorView
 				DataContext="{Binding PaginatorViewModel}" />
-		</avfCommon:ChameleonContentControl.Footer>-->
-	</avfCommon:ChameleonContentControl>
+		</afv:ChameleonContentControl.Footer>-->
+	</afv:ChameleonContentControl>
 </UserControl>

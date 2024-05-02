@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
-			 xmlns:avfCommon="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d"
              x:Class="Chameleon.Avalonia.Controls.Settings.InviteUserOrAddProfilesView">
 	<UserControl.Resources>
@@ -96,7 +96,7 @@
                          
                             Margin="12 0 10 0"
                             BorderThickness="0">
-						<avfCommon:SvgIconControl IconName="x"
+						<afv:SvgIconControl IconName="x"
                                               Height="10"
                                               Width="10" />
 					</Button>

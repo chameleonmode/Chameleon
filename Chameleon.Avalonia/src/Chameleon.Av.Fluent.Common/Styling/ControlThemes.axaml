@@ -6,9 +6,12 @@
 	<Design.PreviewWith>
 		<!---->
 		<ThemeVariantScope RequestedThemeVariant="Light">
-			<StackPanel Spacing="10" Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
-                    Margin="50" Width="500">
-				<local:PageHeaderControl Classes="smallest" />
+			<StackPanel Spacing="10" Width="1080">
+				<local:PageHeaderControl Classes="smallest">
+					<local:PageHeaderControl.ContentObject>
+						<Button Theme="{StaticResource SyncChangesButton}" />
+					</local:PageHeaderControl.ContentObject>
+				</local:PageHeaderControl>
 			</StackPanel>
 		</ThemeVariantScope>
 	</Design.PreviewWith>
@@ -115,6 +118,7 @@
                             OpacityMask="{DynamicResource HeaderOpacityMaskBrush}" />-->
 
 					<Panel>
+						
 						<Image Name="TitleTextImageHost"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
@@ -132,16 +136,42 @@
 							</Image.Transitions>
 						</Image>
 
-						<ui:FontIcon Name="TitleTextFontHost"
-									 Glyph="Dashboard"
-									 FontSize="36" 
-									 FontWeight="SemiBold"
-									 VerticalAlignment="Top"
-                               HorizontalAlignment="Left"
-                               MaxWidth="400"
-                               Margin="18 12 0 12"
-                               MinWidth="150"
-									  />
+						<StackPanel Orientation="Horizontal"
+										 Margin="18 12 0 12">
+							<ui:FontIcon Name="TitleTextFontHost"
+										 Glyph="Dashboard"
+										 FontSize="36"
+										 FontWeight="SemiBold"
+										 VerticalAlignment="Top"
+										 HorizontalAlignment="Left"
+										 MaxWidth="400"
+										 MinWidth="150" />
+							<!--<Button Content="three-dots"
+							Margin="0 26 0  0"
+							Theme="{StaticResource SvgIconButton}">
+								<Button.Flyout>
+									<ui:FAMenuFlyout Placement="Bottom">
+										<ui:MenuFlyoutItem Text="Sync Changes"
+														   IconSource="Sync"
+														   IsVisible="{Binding IsDeleteProfileBtnVisible}"
+														   Command="{Binding DeleteUserProfileCommand}" />
+									</ui:FAMenuFlyout>
+								</Button.Flyout>
+							</Button>-->
+							<!--<Button Theme="{StaticResource SyncChangesButton}" />-->
+							
+						</StackPanel>
+
+
+						<StackPanel Orientation="Horizontal"
+										  HorizontalAlignment="Right"
+										  VerticalAlignment="Center">
+							
+						<ContentPresenter Name="TitleContentPresenter"
+										  Content="{TemplateBinding  ContentObject}"/>
+
+
+						</StackPanel>
 					</Panel>
 				</Panel>
 			</ControlTemplate>

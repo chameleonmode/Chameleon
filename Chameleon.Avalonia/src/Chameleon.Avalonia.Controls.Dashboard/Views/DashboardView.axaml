@@ -18,7 +18,11 @@
 	<ScrollViewer> 
 		<StackPanel Spacing="-56">
 			<afv:PageHeaderControl TextType="Dashboard"
-										 Classes="smallest"/>
+										 Classes="smallest">
+				<afv:PageHeaderControl.ContentObject>
+					<Button Theme="{StaticResource SyncChangesButton}" />
+				</afv:PageHeaderControl.ContentObject>
+			</afv:PageHeaderControl>
 			
 			<Grid Margin="{StaticResource ChameleonAppPageMargin}">
 				<Grid.RowDefinitions>
@@ -30,7 +34,7 @@
 						<!--<breadcrumbsView:BreadcrumbsView DataContext="{Binding BreadcrumbsViewModel}"
 														 VerticalAlignment="Center"
 														 Margin="23 0 0 0" />-->
-				<Button Theme="{StaticResource SyncChangesButton}" />
+				<!--<Button Theme="{StaticResource SyncChangesButton}" />-->
 
 				<!--<TextBox Grid.Row="1"
 						 HorizontalAlignment="Center"
@@ -193,8 +197,7 @@
 				</afv:ChameleonContentControl>
 
 
-			</Grid>
-			
+			</Grid>			
 		</StackPanel>
 	</ScrollViewer>
 </UserControl>
