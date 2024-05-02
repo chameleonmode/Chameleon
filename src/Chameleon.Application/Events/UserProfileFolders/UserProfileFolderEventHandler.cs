@@ -25,12 +25,12 @@ namespace Chameleon.Application.Events
                 .GetEvent<CreateUserProfileFolderEvent>()
                 .Subscribe(CreateFolder);
 
-            _eventAggregator
-               .GetEvent<DeleteUserProfileFolderEvent>()
-               .Subscribe(args => DeleteFolder(args.UserProfileFolder));
+            //_eventAggregator
+            //   .GetEvent<DeleteUserProfileFolderEvent>()
+            //   .Subscribe(args => DeleteFolder(args.UserProfileFolder));
         }
 
-        private void DeleteFolder(IUserProfileFolder userProfileFolder)
+        public async Task DeleteFolder(IUserProfileFolder userProfileFolder)
         {
             var userProfiles = _userProfileService.GetAll()
                 .Where(a => a.FolderId == userProfileFolder.Id)
@@ -39,7 +39,7 @@ namespace Chameleon.Application.Events
             foreach (var item in userProfiles)
             {
                 item.FolderId = null;
-                _userProfileService.Save(item);
+                await Task.Run(()=> _userProfileService.Save(item));
             }
 
             _userProfileFolderService.Delete(userProfileFolder);

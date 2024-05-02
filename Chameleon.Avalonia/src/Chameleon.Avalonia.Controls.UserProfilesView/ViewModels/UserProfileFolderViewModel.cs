@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Chameleon.Application.Events;
 using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
@@ -108,7 +109,12 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             $"Are you sure you want to delete {UserProfileFolder.Title} folder? This will not affect individual profiles within the folder.",
             ContentDialogButtons.YesNo,
             "DeleteLines"))
-            EventAggregator.Publish<DeleteUserProfileFolderEvent, UserProfileFolderEventArgs>(new UserProfileFolderEventArgs(_folder));
+        {
+
+            await ContainerServiceHelper.Resolve<IUserProfileFolderEventHandler>().DeleteFolder(_folder);
+            foldervm.AllProfiles.Open();
+        }
+           // EventAggregator.Publish<DeleteUserProfileFolderEvent, UserProfileFolderEventArgs>(new UserProfileFolderEventArgs(_folder));
                 //.GetEvent<DeleteUserProfileFolderEvent>()
                 //.Publish(new UserProfileFolderEventArgs(_folder));
     }

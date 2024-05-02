@@ -95,16 +95,16 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
 
         if (_animationPage is not null)
         {
+            var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
             try
             {
-                var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
                 svc.PrepareToAnimate("ForwardAnimation", _animationPage);
             }
             catch (Exception ex)
             {
-
+                svc.GetAnimation("ForwardAnimation");
+                _animationPage = _animationPageParent = null;
             }
-
         }
     }
 

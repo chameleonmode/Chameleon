@@ -60,9 +60,13 @@ public partial class UserProfilesViewModel
            .GetEvent<DeleteUserProfileEvent>()
            .Subscribe(OnDeleteUserProfileEvent);
 
+        //EventAggregator
+        //   .GetEvent<DeleteUserProfileFolderEvent>()
+        //   .Subscribe(OnHandleUserEvent);
+
         EventAggregator
-           .GetEvent<DeleteUserProfileFolderEvent>()
-           .Subscribe(OnHandleUserEvent);
+            .GetEvent<AfterCreateOrRemoveFolderEvent>()
+            .Subscribe(OnHandleUserEvent);
 
         EventAggregator.Subscribe<OnCreatedCreateUserProfileEvent, ChangeProfilesInFavoriteFolderEventArgs>(OnCreateUserProfileEvent);
         //EventAggregator

@@ -14,7 +14,7 @@ namespace Chameleon.Avalonia.Controls.Dashboard.ViewModels;
 
 public partial class FolderViewModel : SubPageViewModelBase
 {
-    private readonly IUserProfileFolder _folder;
+    private IUserProfileFolder _folder;
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly INavigationService _navigationService;
@@ -44,9 +44,9 @@ public partial class FolderViewModel : SubPageViewModelBase
         {
             return;
         }
-
-        var folder = _userProfileFolderService.Get(folderId);
-        ProfilesCount = _userProfileService.GetAll().Count(a => a.FolderId == folderId);
+        _folder = _userProfileFolderService.Get(folderId);
+        ProfilesCount = _userProfileService.GetAll().Count(a => a.FolderId == folderId);          
+        IsFavorite = _folder.IsFavorite;
         OnPropertyChanged(nameof(ProfilesCount));
     }
 
@@ -107,5 +107,5 @@ public partial class FolderViewModel : SubPageViewModelBase
         set => SetProperty(ref _profilesCount, value);
     }
 
-    public IUserProfileFolder Folder => _folder;
+    public IUserProfileFolder Folder { get => _folder; }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using Chameleon.Auth.Api;
+using Chameleon.Auth.Api.Response;
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Extensions;
 using Chameleon.Interfaces.Auth;
@@ -65,7 +66,13 @@ namespace Chameleon.Auth.Services
                     if (loginResult is not null)
                     {
                         OnAuthenticateSuccess(loginResult);
-                        refreshTokenResponse = await RefreshToken(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
+
+                        refreshTokenResponse = loginResult.HasAuthToken ? new AuthRefreshTokenResponse()
+                        {
+                            ExpireInSeconds = loginResult.ExpireInSeconds, 
+                            NewAccessToken = loginResult.AuthToken, 
+                            NewRefreshToken = loginResult.AuthRefreshToken 
+                        } : await RefreshToken(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
                     }
                 }
                 catch

@@ -44,9 +44,9 @@ public partial class UserProfileFoldersViewModel
         //    .GetEvent<LoginSuccessEvent>()
         //    .SubscribeOnce(OnAuthenticated);
 
-        EventAggregator
-          .GetEvent<DeleteUserProfileFolderEvent>()
-          .Subscribe(OnDeleteFolder);
+        //EventAggregator
+        //  .GetEvent<DeleteUserProfileFolderEvent>()
+        //  .Subscribe(OnDeleteFolder);
 
         EventAggregator
            .GetEvent<UpdateStaleDataEvent>()

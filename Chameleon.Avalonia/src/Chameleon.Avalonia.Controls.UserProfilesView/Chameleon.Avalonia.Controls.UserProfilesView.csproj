@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj" />
+    <ProjectReference Include="..\..\..\src\Chameleon.Application\Chameleon.Application.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Domain\Chameleon.Domain.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />

@@ -104,37 +104,36 @@ public partial class DashboardViewModel
             .GetEvent<UpdateStaleDataEvent>()
             .Subscribe(LoadAsync);
 
-        EventAggregator
-            .GetEvent<AfterCreateOrRemoveFolderEvent>()
-            .Subscribe(async () =>
-            {
-                await LoadUserProfileFolderViewModels();
-                OnPropertyChanged(nameof(FolderViewModels));
-                BuildSearchTerms();
-            });
-        EventAggregator
-            .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-            .Subscribe( (arg) =>
-            {
-                //if(ViewModels.Count == 0)
-                //{
+        //EventAggregator
+        //    .GetEvent<AfterCreateOrRemoveFolderEvent>()
+        //    .Subscribe(async () =>
+        //    {
+        //        await LoadUserProfileFolderViewModels();
+        //        OnPropertyChanged(nameof(FolderViewModels));
+        //        BuildSearchTerms();
+        //    });
+        //EventAggregator
+        //    .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
+        //    .Subscribe((arg) =>
+        //    {
+        //        //if(ViewModels.Count == 0)
+        //        //{
 
-                //}
-                //await LoadUserProfileViewModels();
-                //await LoadUserProfileFolderViewModels();
+        //        //}
+        //        //await LoadUserProfileViewModels();
+        //        //await LoadUserProfileFolderViewModels();
 
-                //OnPropertyChanged(nameof(FolderViewModels));
-                //OnPropertyChanged(nameof(ViewModels));
-                //OnPropertyChanged(nameof(HasNoItems));
+        //        //OnPropertyChanged(nameof(FolderViewModels));
+        //        //OnPropertyChanged(nameof(ViewModels));
+        //        //OnPropertyChanged(nameof(HasNoItems));
 
-                BuildSearchTerms();
-            });
+        //        BuildSearchTerms();
+        //    });
     }
     public override async Task InitAsync(object? param)
     {
         if (!Loaded)
         {
-
             await base.InitAsync(param);
 
             IsWaiting = true;
@@ -144,83 +143,15 @@ public partial class DashboardViewModel
             await CheckHasAssistantsAsync();
 
             IsWaiting = false;
+            BuildSearchTerms();
         }
 
-        BuildSearchTerms();
     }
-    //public void OnAuthenticated()
-    //{
-    //    IsWaiting = true;
 
-    //    DispatcherService.InvokeOnUiThreadAsync(
-    //        () =>
-    //        {
-    //            LoadAsync();
-    //            SyncBtnVisibilityChange();
-    //        },
-    //        _ => IsWaiting = false
-    //        );
-    //}
     private void LoadAsync()
     {
         //LoadUserProfileViewModels();
         //LoadUserProfileFolderViewModels();
-    }
-
-    private async Task LoadUserProfileViewModels()
-    {
-        ViewModels?.Clear();
-
-        var userProfiles = await _userProfileService.GetAllAsync();
-
-        _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
-            userProfiles, profile => new UserProfileViewModel(
-                    _userProfileService,
-                    profile,
-                    _applicationUser,
-                     _systemBrowserManager,
-                    false
-                )
-            );
-
-        OnPropertyChanged(nameof(ViewModels));
-    }
-
-    private async Task LoadUserProfileFolderViewModels()
-    {
-        FolderViewModels?.Clear();
-
-        var folders = await _userProfileFolderService.GetAllAsync();
-
-        _folderMapping = new ObservableCollection<IUserProfileFolder, FolderViewModel>(
-            folders, folder => new FolderViewModel(folder, _userProfileService, _userProfileFolderService, NavigationService));
-
-        OnPropertyChanged(nameof(FolderViewModels));
-    }
-
-    private async void OnUpdateFavoriteFolders()
-    {
-        await LoadUserProfileFolderViewModels();
-    }
-
-
-    private async void OnUpdateViewModel(UserProfileEventArgs args)
-    {
-        await LoadUserProfileViewModels();
-        await LoadUserProfileFolderViewModels();
-
-        OnPropertyChanged(nameof(FolderViewModels));
-        OnPropertyChanged(nameof(ViewModels));
-        OnPropertyChanged(nameof(HasNoItems));
-
-        BuildSearchTerms();
-    }
-
-    private bool _isWaiting = true;
-    public bool IsWaiting
-    {
-        get => _isWaiting;
-        set => SetProperty(ref _isWaiting, value);
     }
 
     private ObservableCollectionView<UserProfileViewModel> _viewModels;
@@ -242,15 +173,79 @@ public partial class DashboardViewModel
                 _viewModels.Filter = profile => FilterProfiles(profile.UserProfile);
 
                 OnPropertyChanged(nameof(HasNoItems));
-
-                if (_viewModels.Count > 0)
-                {
-                    SelectedProfile = _viewModels[0].UserProfile;
-                }
             }
 
             return _viewModels;
         }
+    }
+
+    private async Task LoadUserProfileViewModels()
+    {
+        ViewModels?.Clear();
+
+        var userProfiles = await _userProfileService.GetAllAsync();
+
+        _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
+            userProfiles, profile => new UserProfileViewModel(
+                    _userProfileService,
+                    profile,
+                    _applicationUser,
+                     _systemBrowserManager,
+                    false
+                )
+            );
+        _mapping.CollectionChanged += _mapping_CollectionChanged;
+
+        OnPropertyChanged(nameof(ViewModels));
+    }
+
+    private void _mapping_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        BuildSearchTerms();
+    }
+
+    private async Task LoadUserProfileFolderViewModels()
+    {
+        FolderViewModels?.Clear();
+
+        var folders = await _userProfileFolderService.GetAllAsync();
+
+        _folderMapping = new ObservableCollection<IUserProfileFolder, FolderViewModel>(
+            folders, folder => new FolderViewModel(folder, _userProfileService, _userProfileFolderService, NavigationService));
+        _folderMapping.CollectionChanged += _folderMapping_CollectionChanged;
+
+        OnPropertyChanged(nameof(FolderViewModels));
+    }
+
+    private void _folderMapping_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        BuildSearchTerms();
+    }
+
+    private void OnUpdateFavoriteFolders()
+    {
+        //await LoadUserProfileFolderViewModels();
+        OnPropertyChanged(nameof(FolderViewModels));
+    }
+
+
+    private void OnUpdateViewModel(UserProfileEventArgs args)
+    {
+        //await LoadUserProfileViewModels();
+        //await LoadUserProfileFolderViewModels();
+
+        OnPropertyChanged(nameof(FolderViewModels));
+        OnPropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(HasNoItems));
+
+        //BuildSearchTerms();
+    }
+
+    private bool _isWaiting = true;
+    public bool IsWaiting
+    {
+        get => _isWaiting;
+        set => SetProperty(ref _isWaiting, value);
     }
 
     private bool FilterProfiles(IUserProfile profile)

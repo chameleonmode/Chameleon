@@ -56,10 +56,11 @@ public partial class MainViewViewModel:ObservableObjectBase, IMainViewViewModel
     public void BuildSearchTerms(List<MainAppSearchItem> items)
     {
         SearchTerms.Clear();
-        foreach (var item in items)
-        {
-            SearchTerms.Add(item);
-        }
+        SearchTerms.AddRange(items);
+        //foreach (var item in items)
+        //{
+        //    SearchTerms.Add(item);
+        //}
 
         //OnPropertyChanged(nameof(SearchTerms));
     }

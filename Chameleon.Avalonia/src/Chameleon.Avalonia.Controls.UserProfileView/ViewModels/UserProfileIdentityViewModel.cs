@@ -125,9 +125,8 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     {
         await base.OnNavigatedToAsync(param);
 
-        if (param is null)
-            UserProfile = ContainerServiceHelper.Resolve<IDashboardViewModel>()?.SelectedProfile;
-        else if (param is IUserProfile up)
+        
+        if (param is IUserProfile up)
             UserProfile = up;
 
         Title = UserProfileModel.Title;
