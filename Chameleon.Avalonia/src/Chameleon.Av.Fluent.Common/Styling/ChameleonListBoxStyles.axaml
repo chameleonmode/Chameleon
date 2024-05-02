@@ -168,7 +168,6 @@
 						BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
 						BorderThickness="1">
 					<ContentPresenter Name="PART_ContentPresenter"
-									  Padding="6"
 									   ContentTemplate="{TemplateBinding ContentTemplate}"
 									  Content="{TemplateBinding Content}"/>
 				</Border>

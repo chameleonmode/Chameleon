@@ -131,7 +131,8 @@
 									</ListBox.ItemsPanel>
 									<ListBox.ItemTemplate>
 										<DataTemplate>
-											<Grid ColumnDefinitions="Auto,Auto,*,Auto">
+											<Grid Margin="6"
+												  ColumnDefinitions="Auto,Auto,*,Auto">
 													<CheckBox IsChecked="{Binding IsSelected}"
 															  Margin="6 0 0 0" />
 													

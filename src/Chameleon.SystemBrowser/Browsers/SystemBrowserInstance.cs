@@ -189,17 +189,26 @@ namespace Chameleon.SystemBrowser.Common
                 //Brocess.Refresh();
                 await Task.Delay(500);
             }
-            while (waited++ <= 5 && (Handle is null || !User32.IsWindow((IntPtr)Handle)));
+            while (waited++ <= 9 && (Handle is null || !User32.IsWindow((IntPtr)Handle)));
 
            //if(!Brocess?.HasExited == false)
            // Handle = Brocess.MainWindowHandle;
 
             if (Brocess != null && Handle != null)
-            {
+            {      
+                winEventsCaptureDelegate = WinEventProc;
+                // capture EVENT_OBJECT_FOCUS
+                this.winEventHooks.Add(User32.SetWinEventHook(
+                    User32Events.EVENT_OBJECT_FOCUS,
+                    User32Events.EVENT_OBJECT_FOCUS,
+                    IntPtr.Zero,
+                    winEventsCaptureDelegate,
+                    (uint)Brocess.Id,
+                    0,
+                    (uint)User32Events.WINEVENT_OUTOFCONTEXT));
+
                 if (BrowserType == SystemBrowserType.Firefox)
                 {
-                    winEventsCaptureDelegate = WinEventProc;
-
                     // capture window close
                     this.winEventHooks.Add(User32.SetWinEventHook(
                         User32Events.EVENT_OBJECT_DESTROY,
@@ -211,8 +220,14 @@ namespace Chameleon.SystemBrowser.Common
                         (uint)User32Events.WINEVENT_OUTOFCONTEXT));
                 }
 
-                User32.SendMessage((IntPtr)Handle, User32.WM_SETTEXT,0, new System.Text.StringBuilder(UserProfile.Title));
+                //TODO: User32.SendMessage((IntPtr)Handle, User32.WM_SETTEXT,0, new System.Text.StringBuilder(UserProfile.Title));
+
+                await Open();
+                _eventAggregator
+                         .GetEvent<ForegroundUserSystemBrowserEvent>()
+                         .Publish(GetArgs(Brocess));
             }
+
             PublishOpendedEvent(Brocess);
         }
         private readonly List<IntPtr> winEventHooks = new List<IntPtr>();
@@ -221,6 +236,14 @@ namespace Chameleon.SystemBrowser.Common
         {
             switch (eventType)
             {
+                case User32Events.EVENT_OBJECT_FOCUS:
+                    if(hwnd == Handle)
+                    {
+                        _eventAggregator
+                            .GetEvent<ForegroundUserSystemBrowserEvent>()
+                            .Publish(GetArgs(Brocess));
+                    }
+                    break; 
                 case User32Events.EVENT_SYSTEM_MENUSTART:
                 case User32Events.EVENT_SYSTEM_MENUEND:
                     if (idObject == 0 || idObject == -1)

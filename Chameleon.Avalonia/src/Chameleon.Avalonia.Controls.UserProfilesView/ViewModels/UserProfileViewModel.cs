@@ -38,6 +38,8 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
     [ObservableProperty]
     private bool _isShowF;
 
+    [ObservableProperty]
+    private bool _isForeground;
     public UserProfileViewModel(
         IUserProfileService userProfileService,
         UserProfile userProfile,
@@ -73,8 +75,27 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
 
         EventAggregator
             .GetEvent<ClosedUserSystemBrowserEvent>()
-            .Subscribe(a => SetRunning(a, false));
+            .Subscribe(a => { IsForeground = SetRunning(a, false); });
+
+        EventAggregator
+            .GetEvent<ForegroundUserSystemBrowserEvent>()
+            .Subscribe(a => SetForgroung(a));
     }
+
+    void SetForgroung(UserProfileSystemBrowserProcessEventArgs args)
+    {
+        if (args.UserProfile.Id == UserProfile.Id)
+            IsForeground = true;
+        else
+            IsForeground = false;
+    }
+    bool SetRunning(UserProfileSystemBrowserProcessEventArgs args, bool running) => args.UserProfile.Id == UserProfile.Id && args.BrowserType switch
+    {
+        SystemBrowserType.Chrome => IsChromeRunning = UserProfile.IsChromeRunning = running,
+        SystemBrowserType.Firefox => IsFFRunning = UserProfile.IsFFRunning = running,
+        SystemBrowserType.Brave => IsBraveRunning = UserProfile.IsBraveRunning = running,
+        _ => false
+    };
 
     [RelayCommand]
     private void ShowViewProfile()
@@ -82,7 +103,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
         ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<IUserProfileSidePanelView, IUserProfileSidePanelViewModel>(vm =>
         {
             vm.UserProfile = UserProfile;
-        }, 156);
+        }, null,"Copy Pasta",156);
     }
 
     [RelayCommand]
@@ -140,14 +161,18 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
     [RelayCommand]
     public async Task OpenUserBrowser()
     {
-        ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<ITopMostSidePanelView, ITopMostSidePanelViewModel>(vm =>
-        {
-            if(!vm.RunningList.Contains(this))
-                vm.RunningList.Add(this);
+        ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<ITopMostSidePanelView, ITopMostSidePanelViewModel>(
+            vm =>
+            {
+                if(!vm.RunningList.Contains(this))
+                    vm.RunningList.Add(this);
 
-            vm.Update();
-        },256,
-        vm => { vm.RunningList.Clear(); });
+                vm.Update();
+            },
+            vm => 
+            { 
+                vm.RunningList.Clear();
+            },"C", 172);
         //EventAggregator
         //    .GetEvent<OpenUserBrowserEvent>()
         //    .Publish(new UserProfileEventArgs(UserProfile));
@@ -196,13 +221,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
                     BrowserType = browserType,
                 });
     }
-    bool SetRunning(UserProfileSystemBrowserProcessEventArgs args, bool running) => args.UserProfile.Id == UserProfile.Id && args.BrowserType switch
-    {
-        SystemBrowserType.Chrome => IsChromeRunning = UserProfile.IsChromeRunning = running,
-        SystemBrowserType.Firefox => IsFFRunning = UserProfile.IsFFRunning = running,
-        SystemBrowserType.Brave => IsBraveRunning = UserProfile.IsBraveRunning = running,
-        _ => false
-    };
 
     private bool _isSelected;
     public bool IsSelected

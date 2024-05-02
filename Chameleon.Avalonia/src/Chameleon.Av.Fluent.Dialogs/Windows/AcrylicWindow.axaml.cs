@@ -57,6 +57,6 @@ public partial class AcrylicWindow : Window
     protected override void OnPointerExited(PointerEventArgs e)
     {
         base.OnPointerExited(e);
-        this.Opacity = 0.2;
+        this.Opacity = 0.4;
     }
 }

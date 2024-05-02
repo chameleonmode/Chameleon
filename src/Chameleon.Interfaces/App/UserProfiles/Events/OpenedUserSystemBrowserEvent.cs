@@ -31,4 +31,9 @@ namespace Chameleon.Interfaces.UserProfiles
     : PubSubEvent<UserProfileSystemBrowserProcessEventArgs>
     {
     }
+
+    public class ForegroundUserSystemBrowserEvent
+        : PubSubEvent<UserProfileSystemBrowserProcessEventArgs>
+    {
+    }
 }

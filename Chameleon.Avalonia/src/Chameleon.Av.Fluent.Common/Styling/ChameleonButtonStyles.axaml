@@ -126,8 +126,8 @@
 		<Setter Property="BorderBrush" Value="Transparent" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="CornerRadius" Value="180" />
-		<Setter Property="Width" Value="36" />
-		<Setter Property="Height" Value="36" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="32" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<ui:FABorder Name="Root"

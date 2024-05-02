@@ -18,7 +18,7 @@ public class WindowDialogService : IWindowDialogService
         
     }
 
-    public void ShowTopmost<TView, TViewModel>(Action<TViewModel> initialize, int width, Action<TViewModel>? OnClosed = null) where TViewModel : class
+    public void ShowTopmost<TView, TViewModel>(Action<TViewModel> initialize, Action<TViewModel>? OnClosed = null,string title = "Copy Pasta", int width = 256) where TViewModel : class
     {
         if (ContainerServiceHelper.Resolve<TView>() is Control view)
         {
@@ -50,7 +50,8 @@ public class WindowDialogService : IWindowDialogService
                 {
                     Topmost = true,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                    Width = width
+                    Width = width,
+                    Title = title,
                 };
                 windows[viewModel] = w;
 
