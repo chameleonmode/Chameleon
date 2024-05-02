@@ -5,7 +5,7 @@ namespace Chameleon.Interfaces.App.UserProfiles;
 
 public interface IUserProfileIdentityViewModel 
 {
-    IUserProfile UserProfile { set; }
+    //IUserProfile UserProfile { set; }
 }
 
 public interface IUserProfileSidePanelViewModel

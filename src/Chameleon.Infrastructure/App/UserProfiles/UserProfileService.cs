@@ -179,6 +179,7 @@ namespace Chameleon.Infrastructure.Profiles
                 FolderId = folderId,
                 Title = $"New Profile {userProfiles.Count + 1}"
             };
+            EnsureProfileHasUniqueName(profile);
 
             _userProfileRepository.Insert(profile);
             InitializeWebBrowserUserAgent(profile);

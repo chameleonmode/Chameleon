@@ -12,7 +12,8 @@
         Background="Transparent"
 		WindowStartupLocation="CenterOwner"
 		ExtendClientAreaChromeHints="NoChrome"
-		ExtendClientAreaToDecorationsHint="True">
+		ExtendClientAreaToDecorationsHint="True"
+		>
 	<!--TransparencyLevelHint="Transparent"
 		TransparencyBackgroundFallback="Transparent"
 		Background="Transparent"

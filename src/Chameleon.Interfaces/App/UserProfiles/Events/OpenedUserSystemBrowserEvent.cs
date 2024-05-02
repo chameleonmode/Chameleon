@@ -26,4 +26,9 @@ namespace Chameleon.Interfaces.UserProfiles
         : PubSubEvent<UserProfileSystemBrowserProcessEventArgs>
     {
     }
+
+    public class ClosedUserSystemBrowserEvent
+    : PubSubEvent<UserProfileSystemBrowserProcessEventArgs>
+    {
+    }
 }

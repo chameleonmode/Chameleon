@@ -126,7 +126,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         await base.OnNavigatedToAsync(param);
 
         
-        if (param is IUserProfile up)
+        if (param is UserProfile up)
             UserProfile = up;
 
         Title = UserProfileModel.Title;
@@ -204,8 +204,8 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     [ObservableProperty]
     private UserProfilesView.ViewModels.UserProfileViewModel _profileVM;
 
-    private IUserProfile _userProfile;
-    public IUserProfile UserProfile
+    private UserProfile _userProfile;
+    public UserProfile UserProfile
     {
         get => _userProfile;
         set

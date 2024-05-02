@@ -90,7 +90,6 @@
 								Margin="3 0 0 0"
 								ToolTip.Tip="Open In Chameleon Browser"
 								Theme="{StaticResource SvgIconButton}"
-								IsEnabled="False"
 								Command="{Binding OpenChameleonBrowserCommand}"/>
 
 							<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"

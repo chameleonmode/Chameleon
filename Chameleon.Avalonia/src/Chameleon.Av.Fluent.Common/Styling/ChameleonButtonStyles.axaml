@@ -126,8 +126,8 @@
 		<Setter Property="BorderBrush" Value="Transparent" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="CornerRadius" Value="180" />
-		<Setter Property="Width" Value="26" />
-		<Setter Property="Height" Value="26" />
+		<Setter Property="Width" Value="36" />
+		<Setter Property="Height" Value="36" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<ui:FABorder Name="Root"
@@ -135,22 +135,23 @@
                              BorderBrush="{TemplateBinding BorderBrush}"
                              BorderThickness="{TemplateBinding BorderThickness}"
                              CornerRadius="{TemplateBinding CornerRadius}">
-					<Panel Name="Pnl" 
-						   Background="Transparent">
+					<Border Name="Pnl"
+							Background="Transparent"
+							CornerRadius="{TemplateBinding CornerRadius}">
 					<local:SvgIconControl IconName="{TemplateBinding Content}"
 										  Width="18"
 										  Height="18"/>
-					</Panel>
+					</Border>
 				</ui:FABorder>
 			</ControlTemplate>
 		</Setter>
-		<Style Selector="^:pointerover /template/ Panel#Pnl">
+		<Style Selector="^:pointerover /template/ Border#Pnl">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
 		</Style>
-		<Style Selector="^:pressed /template/ Panel#Pnl">
+		<Style Selector="^:pressed /template/ Border#Pnl">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
 		</Style>
-		<Style Selector="^:disabled /template/ Panel#Pnl">
+		<Style Selector="^:disabled /template/ Border#Pnl">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
 		</Style>
 	</ControlTheme>

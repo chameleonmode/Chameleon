@@ -4,6 +4,7 @@ using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.Core.Util;
 using Chameleon.CT.Common.Base;
+using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.Assistants.Events;
@@ -188,7 +189,7 @@ public partial class DashboardViewModel
         _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
             userProfiles, profile => new UserProfileViewModel(
                     _userProfileService,
-                    profile,
+                    profile as UserProfile,
                     _applicationUser,
                      _systemBrowserManager,
                     false

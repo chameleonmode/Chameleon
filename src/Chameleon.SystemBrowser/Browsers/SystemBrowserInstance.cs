@@ -293,21 +293,23 @@ namespace Chameleon.SystemBrowser.Common
             Brocess = null;
             Handle = IntPtr.Zero;
             OnProcessClosed?.Invoke(Options);
+            _eventAggregator
+               .GetEvent<ClosedUserSystemBrowserEvent>()
+               .Publish(GetArgs(Brocess));
         }
 
-        private void PublishOpendedEvent(Process process)
-        {
-            var args = new UserProfileSystemBrowserProcessEventArgs(
+        UserProfileSystemBrowserProcessEventArgs GetArgs(Process process) => new UserProfileSystemBrowserProcessEventArgs(
                     UserProfile,
                     BrowserType,
                     process,
                     Options.Url,
                     Options.SignIn
                     );
-
+        private void PublishOpendedEvent(Process process)
+        {
             _eventAggregator
                 .GetEvent<OpenedUserSystemBrowserEvent>()
-                .Publish(args);
+                .Publish(GetArgs(process));
         }
 
         private Task EnsureProfileFolderCreated()

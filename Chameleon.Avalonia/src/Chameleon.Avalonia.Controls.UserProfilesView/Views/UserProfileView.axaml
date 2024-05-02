@@ -37,8 +37,9 @@
 
 
 				<Viewbox Width="30"
+						 IsVisible="{Binding IsShowGlyph}"
 						Height="30"
-						Margin="12 8"
+						Margin="12 8 12 14"
 						Name="IconHost"
 						 Tag="{Binding UserProfile}">
 					<Grid Width="30"
@@ -72,7 +73,7 @@
 			</StackPanel>
 
 			<TextBlock Grid.Column="1"
-					   Margin="6 0 0 0"
+					   Margin="0 0 0 0"
 					   HorizontalAlignment="Left"
 					   Text="{Binding Title, FallbackValue=Cannot find name}"
 					   VerticalAlignment="Center"
@@ -106,8 +107,10 @@
 
 				<Button 
 					Content="chameleon-logo"
+					IsVisible="{Binding IsShowC}"
 					ToolTip.Tip="Open In Chameleon Browser"
-					Theme="{StaticResource SvgIconButton}" />
+					Theme="{StaticResource SvgIconButton}"
+					Command="{Binding OpenUserBrowserCommand}"/>
 				<!--Command="{Binding OpenBrowserCommand}"-->
 
 				<!--<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"  
@@ -120,8 +123,8 @@
 						Command="{Binding ShowViewProfileCommand}"/>
 
 				<Button Content="three-dots"
+					IsVisible="{Binding IsShowD}"
 						ToolTip.Tip="Details"
-						Command="{Binding OpenMenuCommand}"
 						Theme="{StaticResource SvgIconButton}">
 					<Button.Flyout>
 						<ui:FAMenuFlyout Placement="Bottom">
@@ -137,6 +140,7 @@
 				</Button>
 
 				<Button Grid.Column="3"
+					IsVisible="{Binding IsShowF}"
 						Theme="{StaticResource FavoriteButton}"
 						Command="{Binding FavoriteCommand}"/>
 			</UniformGrid>

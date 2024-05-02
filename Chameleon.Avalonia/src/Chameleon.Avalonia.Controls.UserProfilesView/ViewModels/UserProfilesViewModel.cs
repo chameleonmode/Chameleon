@@ -457,7 +457,7 @@ public partial class UserProfilesViewModel
     private async Task MoveProfilesToFolder()
     {
         var selectedUserProfiles = _selectedProfiles
-            .Select(p => p.UserProfile)
+            .Select(p => (IUserProfile)p.UserProfile)
             .ToList();
 
        if(await ContentDialogService.ShowAsync<IMoveUserProfilesPopupView, IMoveUserProfilesPopupViewModel>(
@@ -568,11 +568,9 @@ public partial class UserProfilesViewModel
     {
         var profiles = GetSelectedProfiles();
 
-        profiles.ForEach(profile =>
+        profiles.ForEach(async profile =>
         {
-            EventAggregator
-                .GetEvent<OpenUserBrowserEvent>()
-                .Publish(new UserProfileEventArgs(profile.UserProfile));
+            await profile.OpenUserBrowser();
         });
 
         //TODO: ? EventAggregator
@@ -673,7 +671,7 @@ public partial class UserProfilesViewModel
 
         _mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
         userProfiles, profile => new UserProfileViewModel
-            (_userProfileService, profile, _currentUser, _systemBrowserManager));
+            (_userProfileService, profile as UserProfile, _currentUser, _systemBrowserManager));
 
         _mapping.CollectionChanged += OnViewModelChange;
 

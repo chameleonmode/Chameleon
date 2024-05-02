@@ -7,8 +7,11 @@ public interface IUserProfileViewModelBase
     IUserProfile UserProfile { get; set; }
     void Open();
 }
+public interface IUserProfileActionsViewModel : IUserProfileViewModelBase, IPageViewModel
+{
+}
 
-public interface IUserProfileViewModel : IUserProfileViewModelBase
+public interface IUserProfileViewModel : IUserProfileViewModelBase, IPageViewModel
 {
     UserProfileViewTab Tab { get; set; }
 }

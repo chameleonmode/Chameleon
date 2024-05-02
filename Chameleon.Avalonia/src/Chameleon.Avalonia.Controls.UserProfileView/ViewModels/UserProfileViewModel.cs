@@ -48,9 +48,9 @@ public partial class UserProfileViewModel
         //    .GetEvent<LoginSuccessEvent>()
         //    .Subscribe(args => OnAuthentication(args.Session));
 
-        EventAggregator
-            .GetEvent<SavedUserProfileEvent>()
-            .Subscribe(_ => UpdateBreadcrumbs());
+        //EventAggregator
+        //    .GetEvent<SavedUserProfileEvent>()
+        //    .Subscribe(_ => UpdateBreadcrumbs());
 
         //_featureTourNavigator.ForStep(ElementID.OpenBrowserTab).AttachDoable(
         //           currentStep => Tab = UserProfileViewTab.Browser);
