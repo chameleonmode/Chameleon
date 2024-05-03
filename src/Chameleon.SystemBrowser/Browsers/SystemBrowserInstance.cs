@@ -89,64 +89,248 @@ namespace Chameleon.SystemBrowser.Common
                 UserProfile.Proxy.UserName.HasAny() &&
                 UserProfile.Proxy.Password.HasAny())
             {
+                var filesname = BrowserType == SystemBrowserType.Chrome ? "service_worker.js" : "background.js";
                 //from：https://github.com/henices/Chrome-proxy-helper
                 var manifest_json = """
-    {
-        "version": "1.0.0",
-        "manifest_version": 3,
-        "name": "Chameleon Proxy",
-        "permissions": [
-            "tabs",
-            "unlimitedStorage",
-            "storage",
-            "webRequest",
-            "webRequestAuthProvider"
-        ],
-         "host_permissions": [
-             "<all_urls>"
-         ],
-        "background": {
-        "service_worker": "service_worker.js",
-        "type": "module"
-        },
-        "minimum_chrome_version":"22.0.0"
-    }
-    """;
+                {
+                  "manifest_version": 2,
+                  "name": "onAuth demo",
+                  "short_name": "onAuth demo",
+                  "description": "onAuth demo",
+                  "version": "1.0.0",
+                  "permissions": [
+                    "webRequest",
+                    "webRequestBlocking",
+                    "<all_urls>"
+                  ],
+                  "background": {
+                    "scripts": [
+                      "background.js"
+                    ]
+                  }
+                }
+                """;
 
                 var background_js = """
-                chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
-                callbackFn({ authCredentials: { username:
-                """
-                + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
-                """
-        });
-        },{urls: ["<all_urls>"]},['blocking']);
-        """;
-                                   //            function callbackFn(details) {
-        //            return { authCredentials: {username: 
-        //         """
-        //        + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
-        //            """
-        //} };
-        //    };
-        
+                    chrome.webRequest.onAuthRequired.addListener(onAuthChromeHandler, {urls: ["<all_urls>"]}, ["blocking"]);
+                    function onAuthChromeHandler() {
+                      console.log("onAuthRequired is fired!");
+                    }
+                    """;
 
-        //chrome.webRequest.onAuthRequired.addListener(
-        //            callbackFn,
-        //            {urls: ["<all_urls>"]},
-        //            ['blocking']
-        //);
+                //var manifest_json = """
+                // {
+                //    "version": "1.0.0",
+                //    "manifest_version": 3,
+                //    "name": "Chameleon Proxy",
+                //    "permissions": [
+                //        "tabs",
+                //        "unlimitedStorage",
+                //        "storage",
+                //             "webRequestBlocking",
+                //             "webRequest",
+                //             "webRequestAuthProvider"
+                //    ],
+                //     "host_permissions": [
+                //         "<all_urls>"
+                //     ],
+                //    "background": {
+                // """
+                //     + $"\"service_worker\": \"{filesname}\"" +
+                //""" 
+                //    },
+                //    "minimum_chrome_version":"22.0.0"
+                //}
+                //""";
 
-        //        chrome.proxy.onProxyError.addListener(function(details) {
-        //    console.log("fatal: ", details.fatal);
-        //    console.log("error: ", details.error);
-        //    console.log("details: ", details.details)
-        //});
+                //var background_js = """
+                //            chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
+                //            console.log("onAuthRequired!", details, callbackFn);
+                //            callbackFn({ authCredentials: { username:
+                //            """
+                //+ $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
+                //"""
+                //    }});
+                //    },{urls: ["<all_urls>"]},['blocking']);
+                //    """;
+
+
+                //var manifest_json = """
+                //{
+                //    "version": "1.0.0",
+                //    "manifest_version": 2,
+                //    "name": "Chrome Proxy",
+                //    "permissions": [
+                //        "proxy",
+                //        "tabs",
+                //        "unlimitedStorage",
+                //        "storage",
+                //        "<all_urls>",
+                //        "webRequest",
+                //        "webRequestBlocking"
+                //    ],
+                //    "background": {
+                //        "scripts": ["background.js"]
+                //    },
+                //    "minimum_chrome_version":"22.0.0"
+                //}
+                //""";
+
+                //var background_js = """
+                //                function callbackFn(details) {
+                //                return { authCredentials: {username: 
+                //             """
+                //+ $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
+                //    """
+                //    } };
+                //        };
+
+
+                //    chrome.webRequest.onAuthRequired.addListener(
+                //                callbackFn,
+                //                {urls: ["<all_urls>"]},
+                //                ['blocking']
+                //    );
+
+                //            chrome.proxy.onProxyError.addListener(function(details) {
+                //        console.log("fatal: ", details.fatal);
+                //        console.log("error: ", details.error);
+                //        console.log("details: ", details.details)
+                //    });
+                //    """;
+
+                //if (BrowserType == SystemBrowserType.Brave)
+                //{
+                //    manifest_json = """
+                //    {
+                //        "version": "1.0.0",
+                //        "manifest_version": 3,
+                //        "name": "Chameleon Proxy",
+                //        "permissions": [
+                //            "proxy",
+                //            "tabs",
+                //            "unlimitedStorage",
+                //            "storage",
+                //            "<all_urls>",
+                //            "webRequestBlocking",
+                //            "webRequest",
+                //            "webRequestAuthProvider"
+                //        ],
+                //         "host_permissions": [
+                //             "<all_urls>"
+                //         ],
+                //        "background": {
+                //            "service_worker": "background.js"
+                //        },
+                //        "minimum_chrome_version":"22.0.0"
+                //    }
+                //    """;
+
+                //    background_js = """
+                //        chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
+                //            callbackFn({
+                //        """
+                //             + $"authCredentials: {{username: \"{UserProfile.Proxy.UserName}\", password: \"{UserProfile.Proxy.Password}\"}}" +
+                //        """
+                //            });
+                //        },{urls: ["<all_urls>"]},['blocking']);
+                //        """;
+                //}
+
+                //var manifest_json = """
+                //{
+                //    "version": "1.0.0",
+                //    "manifest_version": 3,
+                //    "name": "Chameleon Proxy",
+                //    "permissions": [
+                //        "tabs",
+                //        "unlimitedStorage",
+                //        "storage",
+                //        "webRequest",
+                //        "webRequestAuthProvider"
+                //    ],
+                //     "host_permissions": [
+                //         "<all_urls>"
+                //     ],
+                //    "background": {
+                //    "service_worker": "background.js",
+                //    "type": "module"
+                //    },
+                //    "minimum_chrome_version":"22.0.0"
+                //}
+                //""";
+
+                //var background_js = """
+                //            chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
+                //            callbackFn({ authCredentials: { username:
+                //            """
+                //+ $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
+                //"""
+                //    });
+                //    },{urls: ["<all_urls>"]},['blocking']);
+                // """;
+
+                //        var background_js = """
+                //            function callbackFn(details) {
+                //            return { authCredentials: {username: 
+                //         """
+                //        + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
+                //            """
+                //} };
+                //    };
+
+
+                //chrome.webRequest.onAuthRequired.addListener(
+                //            callbackFn,
+                //            {urls: ["<all_urls>"]},
+                //            ['blocking']
+                //);
+
+                //        chrome.proxy.onProxyError.addListener(function(details) {
+                //    console.log("fatal: ", details.fatal);
+                //    console.log("error: ", details.error);
+                //    console.log("details: ", details.details)
+                //});
+                //""";
+                //            var manifest_json = """
+                //{
+                //    "version": "1.0.0",
+                //    "manifest_version": 3,
+                //    "name": "Chameleon Proxy",
+                //    "permissions": [
+                //        "tabs",
+                //        "unlimitedStorage",
+                //        "storage",
+                //        "webRequest",
+                //        "webRequestAuthProvider"
+                //    ],
+                //     "host_permissions": [
+                //         "<all_urls>"
+                //     ],
+                //    "background": {
+                //    "service_worker": "service_worker.js",
+                //    "type": "module"
+                //    },
+                //    "minimum_chrome_version":"22.0.0"
+                //}
+                //""";
+
+                //            var background_js = """
+                //            chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
+                //            callbackFn({ authCredentials: { username:
+                //            """
+                //            + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
+                //            """
+                //    });
+                //    },{urls: ["<all_urls>"]},['asyncBlocking']);
+                //    """;
+
+
                 if (!Directory.Exists(proxyextdir))
                     Directory.CreateDirectory(proxyextdir);
 
                 await File.WriteAllTextAsync(Path.Combine(proxyextdir, "manifest.json"), manifest_json);
-                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "service_worker.js"), background_js);
+                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "background.js"), background_js);
             }
             BrowserExtensionsFolderPath = Path.Combine(BrowserExtensionsRootFolderPath, BrowserType.ToString());// GetExtensionPath(BrowserType);
         }
