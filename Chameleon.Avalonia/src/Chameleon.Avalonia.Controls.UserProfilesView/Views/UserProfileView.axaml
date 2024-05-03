@@ -55,7 +55,8 @@
 						<Border Background="{StaticResource AccentFillColorDefaultBrush}"
 								 BorderBrush="{StaticResource ControlStrokeColorOnAccentDefaultBrush}"
 								CornerRadius="180"
-								BorderThickness="1">
+								BorderThickness="1"
+								ToolTip.Tip="{Binding Title, FallbackValue=Cannot find name}">
 
 							<TextBlock Text="{Binding Code,FallbackValue=E}"
 									   Margin="0 -1 0 0"

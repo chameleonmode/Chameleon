@@ -14,6 +14,7 @@ using Chameleon.SystemBrowser.Automation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Chameleon.Common.WinApiBridge;
 using System.Reflection.Metadata;
+using Microsoft.Playwright;
 
 namespace Chameleon.SystemBrowser.Common
 {
@@ -38,6 +39,8 @@ namespace Chameleon.SystemBrowser.Common
 
         public Process? Brocess { get; private set; } = null;
         public IntPtr? Handle { get; private set; } = IntPtr.Zero;
+
+        int port;
 
         protected SystemBrowserInstance(
             IEventAggregator eventAggregator,
@@ -90,52 +93,60 @@ namespace Chameleon.SystemBrowser.Common
                 var manifest_json = """
     {
         "version": "1.0.0",
-        "manifest_version": 2,
-        "name": "Chrome Proxy",
+        "manifest_version": 3,
+        "name": "Chameleon Proxy",
         "permissions": [
-            "proxy",
             "tabs",
             "unlimitedStorage",
             "storage",
-            "<all_urls>",
             "webRequest",
-            "webRequestBlocking"
+            "webRequestAuthProvider"
         ],
+         "host_permissions": [
+             "<all_urls>"
+         ],
         "background": {
-            "scripts": ["background.js"]
+        "service_worker": "service_worker.js",
+        "type": "module"
         },
         "minimum_chrome_version":"22.0.0"
     }
     """;
 
                 var background_js = """
-                    function callbackFn(details) {
-                    return { authCredentials: {username: 
-                 """
+                chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
+                callbackFn({ authCredentials: { username:
+                """
                 + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
-                    """
-        } };
-            };
+                """
+        });
+        },{urls: ["<all_urls>"]},['blocking']);
+        """;
+                                   //            function callbackFn(details) {
+        //            return { authCredentials: {username: 
+        //         """
+        //        + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
+        //            """
+        //} };
+        //    };
         
 
-        chrome.webRequest.onAuthRequired.addListener(
-                    callbackFn,
-                    {urls: ["<all_urls>"]},
-                    ['blocking']
-        );
+        //chrome.webRequest.onAuthRequired.addListener(
+        //            callbackFn,
+        //            {urls: ["<all_urls>"]},
+        //            ['blocking']
+        //);
 
-                chrome.proxy.onProxyError.addListener(function(details) {
-            console.log("fatal: ", details.fatal);
-            console.log("error: ", details.error);
-            console.log("details: ", details.details)
-        });
-        """;
-
+        //        chrome.proxy.onProxyError.addListener(function(details) {
+        //    console.log("fatal: ", details.fatal);
+        //    console.log("error: ", details.error);
+        //    console.log("details: ", details.details)
+        //});
                 if (!Directory.Exists(proxyextdir))
                     Directory.CreateDirectory(proxyextdir);
 
                 await File.WriteAllTextAsync(Path.Combine(proxyextdir, "manifest.json"), manifest_json);
-                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "background.js"), background_js);
+                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "service_worker.js"), background_js);
             }
             BrowserExtensionsFolderPath = Path.Combine(BrowserExtensionsRootFolderPath, BrowserType.ToString());// GetExtensionPath(BrowserType);
         }
@@ -219,6 +230,55 @@ namespace Chameleon.SystemBrowser.Common
                         0,
                         (uint)User32Events.WINEVENT_OUTOFCONTEXT));
                 }
+                else
+                {
+                    //ManualResetEventSlim m_openEvent = new ManualResetEventSlim(false);
+                    //var playwright = await Playwright.CreateAsync();
+                    ////var chromium = playwright.Chromium;
+
+                    //var b = await playwright.Chromium.ConnectOverCDPAsync($"http://localhost:{port}");
+                    //var browser = b.Contexts[0];
+                    ////            await browser.AddInitScriptAsync("""
+                    ////            function callbackFn(details) {
+                    ////            return { authCredentials: {username: 
+                    ////         """
+                    ////        + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
+                    ////            """
+                    ////} };
+                    ////    };
+
+
+                    ////chrome.webRequest.onAuthRequired.addListener(
+                    ////            callbackFn,
+                    ////            {urls: ["<all_urls>"]},
+                    ////            ['blocking']
+                    ////);
+
+                    ////        chrome.proxy.onProxyError.addListener(function(details) {
+                    ////    console.log("fatal: ", details.fatal);
+                    ////    console.log("error: ", details.error);
+                    ////    console.log("details: ", details.details)
+                    ////});
+                    ////"""
+                    ////);
+                    //var s = await b.NewBrowserCDPSessionAsync();
+                    //await s.SendAsync("Fetch.enable");
+                    //s.Event("Fetch.requestPaused").OnEvent += async (o, e) =>
+                    //{
+                    //    var r = e.Value.GetProperty("requestId");
+                    //    var sss = await s.SendAsync("Fetch.continueRequest", new() { { "requestId", r.ToString() } });
+                    //    // m_openEvent.Set();
+                    //};
+                    //s.Event("Fetch.basicAuthenticationRequested").OnEvent += async (o, e) =>
+                    //{
+                    //    var r = e.Value.GetProperty("requestId");
+                    //    await s.SendAsync("Fetch.continueWithAuth", new() { { "requestId", r.ToString() }, { "authChallengeResponse", new AuthChallengeResponse() { password = UserProfile.Proxy.Password, username = UserProfile.Proxy.UserName } } });
+                    //    m_openEvent.Set();
+                    //};
+                    //await Task.Run(() => m_openEvent.Wait());
+
+                    //playwright.Dispose();
+                }
 
                 //TODO: User32.SendMessage((IntPtr)Handle, User32.WM_SETTEXT,0, new System.Text.StringBuilder(UserProfile.Title));
 
@@ -229,6 +289,12 @@ namespace Chameleon.SystemBrowser.Common
             }
 
             PublishOpendedEvent(Brocess);
+        }
+        class AuthChallengeResponse
+        {
+            public string response = "ProvideCredentials";
+            public string username;
+            public string password;
         }
         private readonly List<IntPtr> winEventHooks = new List<IntPtr>();
         private User32.WinEventDelegate winEventsCaptureDelegate;
@@ -355,7 +421,7 @@ namespace Chameleon.SystemBrowser.Common
 
         protected virtual string GetCommandLineArguments()
         {
-            var port = SystemBrowserInstance.NextFreePort(1000);
+            port = SystemBrowserInstance.NextFreePort(1000);
             var exts = GetLoadExtensionsArgument();
             List<string> args =
                 [
@@ -370,6 +436,8 @@ namespace Chameleon.SystemBrowser.Common
                     "--no-default-browser-check",
                     "--no-first-run",
                     "--disable-field-trial-config",
+                    "--disable-software-rasterizer",
+                    //"--disable-blink-features=\"BlockCredentialedSubresources\"",
                     $"--remote-debugging-port={port}",
                 ];
 
