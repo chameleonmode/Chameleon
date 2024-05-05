@@ -80,7 +80,7 @@ namespace Chameleon.SystemBrowser.Common
 
         protected virtual async Task InitializeExtensionPath()
         {
-            proxyextdir = Path.Combine(_browserProfileFolderPath, "proxyext");
+            proxyextdir = Path.Combine(_browserProfileFolderPath, "ChameleonAutoExt");
             if (Directory.Exists(proxyextdir))
                 Directory.Delete(proxyextdir, true);
 
@@ -89,34 +89,82 @@ namespace Chameleon.SystemBrowser.Common
                 UserProfile.Proxy.UserName.HasAny() &&
                 UserProfile.Proxy.Password.HasAny())
             {
-                var filesname = BrowserType == SystemBrowserType.Chrome ? "service_worker.js" : "background.js";
+                //var filesname = BrowserType == SystemBrowserType.Chrome ? "service_worker.js" : "background.js";
                 //from：https://github.com/henices/Chrome-proxy-helper
                 var manifest_json = """
                 {
-                  "manifest_version": 2,
-                  "name": "onAuth demo",
-                  "short_name": "onAuth demo",
-                  "description": "onAuth demo",
+                  "manifest_version": 3,
+                  "name": "Chameleon Auto Proxy",
                   "version": "1.0.0",
                   "permissions": [
                     "webRequest",
                     "webRequestBlocking",
+                    "webRequestAuthProvider",
+                    "<all_urls>"
+                  ],
+                  "host_permissions": [
                     "<all_urls>"
                   ],
                   "background": {
-                    "scripts": [
-                      "background.js"
-                    ]
+                    "service_worker": "background.js"
                   }
                 }
                 """;
+                //"background": {
+                //  "scripts": ["background.js"]
+                //}
+                //"background": {
+                //  "service_worker": "background.js"
+                //}
 
+                //chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
+                //console.log("onAuthRequired is fired 1!");
+                //"""
+                //+ "callbackFn({ authCredentials: { username:" + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" + "}});" +
+                //"""
+                //},{urls: ["<all_urls>"]},['asyncBlocking']);
+                //
+                //chrome.webRequest.onAuthRequired.addListener((details, callback) => {
+                //    callback({
+                //      authCredentials: {
+                //        username: 'guest',
+                //        password: 'guest'
+                //      }
+                //    });
+                //  },
+                //  { urls: ['https://httpbin.org/basic-auth/guest/guest'] },
+                //  ['asyncBlocking']
+                //);
                 var background_js = """
-                    chrome.webRequest.onAuthRequired.addListener(onAuthChromeHandler, {urls: ["<all_urls>"]}, ["blocking"]);
-                    function onAuthChromeHandler() {
-                      console.log("onAuthRequired is fired!");
-                    }
+                          chrome.webRequest.onAuthRequired.addListener((details, callback) => {
+                              callback({
+                                authCredentials: {
+                          """
+                            + "username:" + $"\"{UserProfile.Proxy.UserName}\","
+                            + "password: " + $"\"{UserProfile.Proxy.Password}\"" +
+                           """
+                          }
+                        });
+                      },
+                      { urls: ['<all_urls>'] },
+                      ['asyncBlocking']
+                    );
                     """;
+                //var background_js = """
+                //          chrome.webRequest.onAuthRequired.addListener((details) => {
+                //          return {
+                //          authCredentials: {
+                //          """ 
+                //            + "username:" + $"\"{UserProfile.Proxy.UserName}\","
+                //            + "password: " + $"\"{UserProfile.Proxy.Password}\""  +
+                //           """
+                //          }
+                //        };
+                //      },
+                //      { urls: ['<all_urls>'] },
+                //      ['blocking']
+                //    );
+                //    """;
 
                 //var manifest_json = """
                 // {

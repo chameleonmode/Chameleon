@@ -20,7 +20,7 @@
 			<afv:PageHeaderControl TextType="Dashboard"
 										 Classes="smallest">
 				<afv:PageHeaderControl.ContentObject>
-					<Button Theme="{StaticResource SyncChangesButton}" />
+					<Button Theme="{StaticResource SyncChangesButton}" Margin="6 -18 6 6"  />
 				</afv:PageHeaderControl.ContentObject>
 			</afv:PageHeaderControl>
 			

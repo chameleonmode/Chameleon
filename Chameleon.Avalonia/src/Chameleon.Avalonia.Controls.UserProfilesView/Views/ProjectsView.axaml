@@ -16,7 +16,7 @@
 							 Classes="smallest">
 				<afv:PageHeaderControl.ContentObject>
 					<StackPanel Orientation="Horizontal">
-						<Button Margin="6 0"
+						<Button Margin="6 -18 8 0"
 								Classes="accent"
 								Command="{Binding CreateProfileCommand}"
 								IsVisible="{Binding IsCreateProfileBtnVisible}">
@@ -26,7 +26,7 @@
 										   VerticalAlignment="Center"/>
 							</StackPanel>
 						</Button>
-						<Button Theme="{StaticResource SyncChangesButton}" />
+						<!--<Button Theme="{StaticResource SyncChangesButton}" />-->
 					</StackPanel>
 				</afv:PageHeaderControl.ContentObject>
 			</afv:PageHeaderControl>
