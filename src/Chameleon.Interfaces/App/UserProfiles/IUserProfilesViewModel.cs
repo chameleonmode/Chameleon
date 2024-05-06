@@ -7,6 +7,7 @@ namespace Chameleon.Interfaces.App.UserProfiles;
 //TODO: ???
 public interface IUserProfilesViewModel :ISingletonDependency
 {
+    Task<IUserProfile> CreateNewProfile();
     Func<IUserProfile, bool> Filter { get; set; }
     void Open(IUserProfileFolder? folder);
     void OnFilterTo(IUserProfile p = null);

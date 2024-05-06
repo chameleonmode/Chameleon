@@ -68,7 +68,7 @@ public partial class UserProfilesViewModel
             .GetEvent<AfterCreateOrRemoveFolderEvent>()
             .Subscribe(OnHandleUserEvent);
 
-        EventAggregator.Subscribe<OnCreatedCreateUserProfileEvent, ChangeProfilesInFavoriteFolderEventArgs>(OnCreateUserProfileEvent);
+        //EventAggregator.Subscribe<OnCreatedCreateUserProfileEvent, ChangeProfilesInFavoriteFolderEventArgs>(OnCreateUserProfileEvent);
         //EventAggregator
         //   .GetEvent<CreateUserProfileEvent>()
         //   .Subscribe(OnHandleUserEvent);
@@ -77,9 +77,9 @@ public partial class UserProfilesViewModel
         //    .GetEvent<OpenUserProfileFolderEvent>()
         //    .Subscribe(args => OnOpenFolder(args.UserProfileFolder));
 
-        EventAggregator
-            .GetEvent<CreateNewUserProfileEvent>()
-            .Subscribe(CreateNewProfile);
+        //EventAggregator
+        //    .GetEvent<CreateNewUserProfileEvent>()
+        //    .Subscribe(CreateNewProfile);
 
         EventAggregator
             .GetEvent<SelectedChangeUserProfileEvent>()
@@ -481,38 +481,36 @@ public partial class UserProfilesViewModel
             .Publish(new ChangeProfilesInFavoriteFolderEventArgs(folderId));
     }
 
-    public bool IsDisabledCreateNewProfile = false;
-    private void CreateNewProfile()
-    {
-        if (IsDisabledCreateNewProfile)
-        {
-            return;
-        }
-        //TODO: Remove hardcode
-        IsDisabledCreateNewProfile = true;
 
+    public async Task<IUserProfile> CreateNewProfile()
+    {
         var folderId = HasFolder ? (int?)Folder.Id : null;
 
-        EventAggregator
-            .GetEvent<CreateUserProfileEvent>()
-            .Publish(new CreateUserProfileEventArgs(folderId));
+        var profile = await _userProfileService.CreateAsync(folderId);
+        if(folderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == profile.Id));
+            OnHandleUserEvent();
+
+        return profile;
+        //EventAggregator
+        //    .GetEvent<CreateUserProfileEvent>()
+        //    .Publish(new CreateUserProfileEventArgs(folderId));
 
         //EventAggregator.PublishPubSubEvent(new CreateUserProfileEventArgs(folderId));
         //OnHandleUserEvent();
     }
-    private void OnCreateUserProfileEvent(ChangeProfilesInFavoriteFolderEventArgs e)
-    {
-        if (e.FolderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == e.Profile.Id))
-            OnHandleUserEvent();
-            //_viewModels = null;
+    //private void OnCreateUserProfileEvent(ChangeProfilesInFavoriteFolderEventArgs e)
+    //{
+    //    if (e.FolderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == e.Profile.Id))
+    //        OnHandleUserEvent();
+    //        //_viewModels = null;
 
-        //OnHandleUserEvent();
+    //    //OnHandleUserEvent();
 
-        if (e.Navigate == true)
-            NavigationService.NavigateToType(typeof(IUserProfileIdentityView), e.Profile);
+    //    if (e.Navigate == true)
+    //        NavigationService.NavigateToType(typeof(IUserProfileIdentityView), e.Profile);
 
-        IsDisabledCreateNewProfile = false;
-    }
+    //    //IsDisabledCreateNewProfile = false;
+    //}
 
     private ObservableCollectionView<UserProfileViewModel> _viewModels;
     public ObservableCollectionView<UserProfileViewModel> ViewModels

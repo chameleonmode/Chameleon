@@ -23,6 +23,7 @@
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageVersion Include="Dotnet.Bundle" Version="0.9.13" />
     <PackageVersion Include="Fluxzy.Core" Version="1.22.12" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.43.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="MicroCom.CodeGenerator.MSBuild" Version="0.11.0" />
@@ -53,8 +54,8 @@
     <PackageVersion Include="Avalonia.Svg.Skia" Version="11.1.0-beta1" />-->
     <!--<PackageVersion Include="Prism.Avalonia" Version="9.0.271.11074-pre" />
     <PackageVersion Include="Prism.DryIoc.Avalonia" Version="9.0.271.11074-pre" />-->
-    <PackageVersion Include="Prism.Avalonia" Version="8.1.97.11072" />
-    <PackageVersion Include="Prism.DryIoc.Avalonia" Version="8.1.97.11072" />
+    <PackageVersion Include="Prism.Avalonia" Version="8.1.97.11073" />
+    <PackageVersion Include="Prism.DryIoc.Avalonia" Version="8.1.97.11073" />
     <PackageVersion Include="System.Drawing.Common" Version="8.0.2" />
     <!--<PackageVersion Include="System.Drawing.Common" Version="9.0.0-preview.3.24172.9" />-->
     <!-- Begin Android -->

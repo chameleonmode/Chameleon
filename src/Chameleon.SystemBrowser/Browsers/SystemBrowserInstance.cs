@@ -15,6 +15,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Chameleon.Common.WinApiBridge;
 using System.Reflection.Metadata;
 using Microsoft.Playwright;
+using System.Security;
+using Newtonsoft.Json.Linq;
 
 namespace Chameleon.SystemBrowser.Common
 {
@@ -40,7 +42,9 @@ namespace Chameleon.SystemBrowser.Common
         public Process? Brocess { get; private set; } = null;
         public IntPtr? Handle { get; private set; } = IntPtr.Zero;
 
-        int port;
+        public IBrowserContext BrowserContext { get; set; }
+
+        public int Port { get; private set; }
 
         protected SystemBrowserInstance(
             IEventAggregator eventAggregator,
@@ -65,10 +69,23 @@ namespace Chameleon.SystemBrowser.Common
         {
             if (Brocess is null || Handle is null || Handle == IntPtr.Zero || !User32.IsWindow((IntPtr)Handle))
             {
+                Port = SystemBrowserInstance.NextFreePort(1000);
                 await EnsureProfileFolderCreated();
                 await InitializeProfileFolder();
-                await InitializeExtensionPath();
-                await StartProcess();
+                if (BrowserType != SystemBrowserType.Firefox)
+                {
+                    await InitializeExtensionPath();
+                    await StartProcess();
+                }
+                else
+                {
+                    await BrowserContext.Pages[0].BringToFrontAsync();
+                    Handle = User32.GetForegroundWindow();
+                    var iid = User32.GetWindowThreadProcessId((IntPtr)Handle, out uint id);
+                    Brocess = Process.GetProcessById((int)id);
+                    SetWin32Events();
+                    PublishOpendedEvent(Brocess);
+                }
             }
 
             if (Handle is not null && Handle != IntPtr.Zero)
@@ -80,16 +97,22 @@ namespace Chameleon.SystemBrowser.Common
 
         protected virtual async Task InitializeExtensionPath()
         {
+            //proxyext
             proxyextdir = Path.Combine(_browserProfileFolderPath, "ChameleonAutoExt");
-            if (Directory.Exists(proxyextdir))
-                Directory.Delete(proxyextdir, true);
-
-            if (UserProfile.Proxy?.CanUse == true &&
-                UserProfile.Proxy.Host.HasAny() &&
-                UserProfile.Proxy.UserName.HasAny() &&
-                UserProfile.Proxy.Password.HasAny())
+            await Task.Run(() => 
             {
-                //var filesname = BrowserType == SystemBrowserType.Chrome ? "service_worker.js" : "background.js";
+               var old_proxyextdir = Path.Combine(_browserProfileFolderPath, "proxyext");
+                if (Directory.Exists(old_proxyextdir))
+                    Directory.Delete(old_proxyextdir, true);
+
+                if (Directory.Exists(proxyextdir))
+                    Directory.Delete(proxyextdir, true);
+            });
+
+            proxyextdir = Path.Combine(_browserProfileFolderPath, "ChameleonAutoExt", Guid.NewGuid().ToString());
+
+            if (HasProxyLogin)
+            {
                 //from：https://github.com/henices/Chrome-proxy-helper
                 var manifest_json = """
                 {
@@ -113,28 +136,6 @@ namespace Chameleon.SystemBrowser.Common
                 //"background": {
                 //  "scripts": ["background.js"]
                 //}
-                //"background": {
-                //  "service_worker": "background.js"
-                //}
-
-                //chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
-                //console.log("onAuthRequired is fired 1!");
-                //"""
-                //+ "callbackFn({ authCredentials: { username:" + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" + "}});" +
-                //"""
-                //},{urls: ["<all_urls>"]},['asyncBlocking']);
-                //
-                //chrome.webRequest.onAuthRequired.addListener((details, callback) => {
-                //    callback({
-                //      authCredentials: {
-                //        username: 'guest',
-                //        password: 'guest'
-                //      }
-                //    });
-                //  },
-                //  { urls: ['https://httpbin.org/basic-auth/guest/guest'] },
-                //  ['asyncBlocking']
-                //);
                 var background_js = """
                           chrome.webRequest.onAuthRequired.addListener((details, callback) => {
                               callback({
@@ -166,242 +167,30 @@ namespace Chameleon.SystemBrowser.Common
                 //    );
                 //    """;
 
-                //var manifest_json = """
-                // {
-                //    "version": "1.0.0",
-                //    "manifest_version": 3,
-                //    "name": "Chameleon Proxy",
-                //    "permissions": [
-                //        "tabs",
-                //        "unlimitedStorage",
-                //        "storage",
-                //             "webRequestBlocking",
-                //             "webRequest",
-                //             "webRequestAuthProvider"
-                //    ],
-                //     "host_permissions": [
-                //         "<all_urls>"
-                //     ],
-                //    "background": {
-                // """
-                //     + $"\"service_worker\": \"{filesname}\"" +
-                //""" 
-                //    },
-                //    "minimum_chrome_version":"22.0.0"
-                //}
-                //""";
-
-                //var background_js = """
-                //            chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
-                //            console.log("onAuthRequired!", details, callbackFn);
-                //            callbackFn({ authCredentials: { username:
-                //            """
-                //+ $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
-                //"""
-                //    }});
-                //    },{urls: ["<all_urls>"]},['blocking']);
-                //    """;
-
-
-                //var manifest_json = """
-                //{
-                //    "version": "1.0.0",
-                //    "manifest_version": 2,
-                //    "name": "Chrome Proxy",
-                //    "permissions": [
-                //        "proxy",
-                //        "tabs",
-                //        "unlimitedStorage",
-                //        "storage",
-                //        "<all_urls>",
-                //        "webRequest",
-                //        "webRequestBlocking"
-                //    ],
-                //    "background": {
-                //        "scripts": ["background.js"]
-                //    },
-                //    "minimum_chrome_version":"22.0.0"
-                //}
-                //""";
-
-                //var background_js = """
-                //                function callbackFn(details) {
-                //                return { authCredentials: {username: 
-                //             """
-                //+ $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
-                //    """
-                //    } };
-                //        };
-
-
-                //    chrome.webRequest.onAuthRequired.addListener(
-                //                callbackFn,
-                //                {urls: ["<all_urls>"]},
-                //                ['blocking']
-                //    );
-
-                //            chrome.proxy.onProxyError.addListener(function(details) {
-                //        console.log("fatal: ", details.fatal);
-                //        console.log("error: ", details.error);
-                //        console.log("details: ", details.details)
-                //    });
-                //    """;
-
-                //if (BrowserType == SystemBrowserType.Brave)
-                //{
-                //    manifest_json = """
-                //    {
-                //        "version": "1.0.0",
-                //        "manifest_version": 3,
-                //        "name": "Chameleon Proxy",
-                //        "permissions": [
-                //            "proxy",
-                //            "tabs",
-                //            "unlimitedStorage",
-                //            "storage",
-                //            "<all_urls>",
-                //            "webRequestBlocking",
-                //            "webRequest",
-                //            "webRequestAuthProvider"
-                //        ],
-                //         "host_permissions": [
-                //             "<all_urls>"
-                //         ],
-                //        "background": {
-                //            "service_worker": "background.js"
-                //        },
-                //        "minimum_chrome_version":"22.0.0"
-                //    }
-                //    """;
-
-                //    background_js = """
-                //        chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
-                //            callbackFn({
-                //        """
-                //             + $"authCredentials: {{username: \"{UserProfile.Proxy.UserName}\", password: \"{UserProfile.Proxy.Password}\"}}" +
-                //        """
-                //            });
-                //        },{urls: ["<all_urls>"]},['blocking']);
-                //        """;
-                //}
-
-                //var manifest_json = """
-                //{
-                //    "version": "1.0.0",
-                //    "manifest_version": 3,
-                //    "name": "Chameleon Proxy",
-                //    "permissions": [
-                //        "tabs",
-                //        "unlimitedStorage",
-                //        "storage",
-                //        "webRequest",
-                //        "webRequestAuthProvider"
-                //    ],
-                //     "host_permissions": [
-                //         "<all_urls>"
-                //     ],
-                //    "background": {
-                //    "service_worker": "background.js",
-                //    "type": "module"
-                //    },
-                //    "minimum_chrome_version":"22.0.0"
-                //}
-                //""";
-
-                //var background_js = """
-                //            chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
-                //            callbackFn({ authCredentials: { username:
-                //            """
-                //+ $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
-                //"""
-                //    });
-                //    },{urls: ["<all_urls>"]},['blocking']);
-                // """;
-
-                //        var background_js = """
-                //            function callbackFn(details) {
-                //            return { authCredentials: {username: 
-                //         """
-                //        + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
-                //            """
-                //} };
-                //    };
-
-
-                //chrome.webRequest.onAuthRequired.addListener(
-                //            callbackFn,
-                //            {urls: ["<all_urls>"]},
-                //            ['blocking']
-                //);
-
-                //        chrome.proxy.onProxyError.addListener(function(details) {
-                //    console.log("fatal: ", details.fatal);
-                //    console.log("error: ", details.error);
-                //    console.log("details: ", details.details)
-                //});
-                //""";
-                //            var manifest_json = """
-                //{
-                //    "version": "1.0.0",
-                //    "manifest_version": 3,
-                //    "name": "Chameleon Proxy",
-                //    "permissions": [
-                //        "tabs",
-                //        "unlimitedStorage",
-                //        "storage",
-                //        "webRequest",
-                //        "webRequestAuthProvider"
-                //    ],
-                //     "host_permissions": [
-                //         "<all_urls>"
-                //     ],
-                //    "background": {
-                //    "service_worker": "service_worker.js",
-                //    "type": "module"
-                //    },
-                //    "minimum_chrome_version":"22.0.0"
-                //}
-                //""";
-
-                //            var background_js = """
-                //            chrome.webRequest.onAuthRequired.addListener(function(details, callbackFn) {
-                //            callbackFn({ authCredentials: { username:
-                //            """
-                //            + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
-                //            """
-                //    });
-                //    },{urls: ["<all_urls>"]},['asyncBlocking']);
-                //    """;
-
-
                 if (!Directory.Exists(proxyextdir))
                     Directory.CreateDirectory(proxyextdir);
 
                 await File.WriteAllTextAsync(Path.Combine(proxyextdir, "manifest.json"), manifest_json);
                 await File.WriteAllTextAsync(Path.Combine(proxyextdir, "background.js"), background_js);
             }
-            BrowserExtensionsFolderPath = Path.Combine(BrowserExtensionsRootFolderPath, BrowserType.ToString());// GetExtensionPath(BrowserType);
-        }
 
-        //protected void EnsureExtensionsFolderExistsAsCopyFrom(SystemBrowserType copyFromBrowserType)
+            BrowserExtensionsFolderPath = Path.Combine(BrowserExtensionsRootFolderPath, BrowserType.ToString());
+        }
+        //public static SecureString ConvertToSecureString(this string password)
         //{
-        //    if (Directory.Exists(_browserExtensionsRootFolderPath) && 
-        //        !Directory.Exists(BrowserExtensionsFolderPath))
+        //    if (password == null)
+        //        throw new ArgumentNullException("password");
+
+        //    unsafe
         //    {
-        //        var chromeExtensionsFolderPath = GetExtensionPath(copyFromBrowserType);
-        //        var chromeExtensionsFolderInfo = new DirectoryInfo(chromeExtensionsFolderPath);
-        //        chromeExtensionsFolderInfo.CopyTo(BrowserExtensionsFolderPath);
+        //        fixed (char* passwordChars = password)
+        //        {
+        //            var securePassword = new SecureString(passwordChars, password.Length);
+        //            securePassword.MakeReadOnly();
+        //            return securePassword;
+        //        }
         //    }
         //}
-
-        //protected string GetExtensionPath(SystemBrowserType systemBrowserType)
-        //{
-        //    if (systemBrowserType == SystemBrowserType.Brave)
-        //        systemBrowserType = SystemBrowserType.Chrome;
-
-        //    return Path.Combine(_browserExtensionsRootFolderPath, systemBrowserType.ToString());
-        //}
-
         protected virtual async Task StartProcess()
         {
             Brocess = new Process
@@ -412,13 +201,19 @@ namespace Chameleon.SystemBrowser.Common
                     Arguments = GetCommandLineArguments(),
                     UseShellExecute = true,
                     ErrorDialog = true,
-                    //UserName = UserProfile.Proxy.UserName,
-                    //Password = new System.Security.SecureString(UserProfile.Proxy.Password.ToCharArray(), UserProfile.Proxy.Password.Length),
                 },
                 EnableRaisingEvents = true,
-                // PriorityBoostEnabled = true,
             };
-
+            //if (UserProfile.Proxy?.CanUse == true &&
+            //    UserProfile.Proxy.Host.HasAny() &&
+            //    UserProfile.Proxy.UserName.HasAny() &&
+            //    UserProfile.Proxy.Password.HasAny())
+            //{
+            //    Brocess.StartInfo.Domain = UserProfile.Proxy.Server;
+            //    Brocess.StartInfo.UserName = UserProfile.Proxy.UserName;
+            //    Brocess.StartInfo.PasswordInClearText = UserProfile.Proxy.UserName;
+            //}
+            
             Brocess.Exited += new EventHandler(Process_Exited);
             Brocess.Start();
 
@@ -434,11 +229,14 @@ namespace Chameleon.SystemBrowser.Common
             }
             while (waited++ <= 9 && (Handle is null || !User32.IsWindow((IntPtr)Handle)));
 
-           //if(!Brocess?.HasExited == false)
-           // Handle = Brocess.MainWindowHandle;
+            SetWin32Events();
+            PublishOpendedEvent(Brocess);
+        }
 
+        private void SetWin32Events()
+        {
             if (Brocess != null && Handle != null)
-            {      
+            {
                 winEventsCaptureDelegate = WinEventProc;
                 // capture EVENT_OBJECT_FOCUS
                 this.winEventHooks.Add(User32.SetWinEventHook(
@@ -464,64 +262,21 @@ namespace Chameleon.SystemBrowser.Common
                 }
                 else
                 {
-                    //ManualResetEventSlim m_openEvent = new ManualResetEventSlim(false);
-                    //var playwright = await Playwright.CreateAsync();
-                    ////var chromium = playwright.Chromium;
-
-                    //var b = await playwright.Chromium.ConnectOverCDPAsync($"http://localhost:{port}");
-                    //var browser = b.Contexts[0];
-                    ////            await browser.AddInitScriptAsync("""
-                    ////            function callbackFn(details) {
-                    ////            return { authCredentials: {username: 
-                    ////         """
-                    ////        + $"\"{UserProfile.Proxy.UserName}\"," + " password: " + $"\"{UserProfile.Proxy.Password}\"" +
-                    ////            """
-                    ////} };
-                    ////    };
-
-
-                    ////chrome.webRequest.onAuthRequired.addListener(
-                    ////            callbackFn,
-                    ////            {urls: ["<all_urls>"]},
-                    ////            ['blocking']
-                    ////);
-
-                    ////        chrome.proxy.onProxyError.addListener(function(details) {
-                    ////    console.log("fatal: ", details.fatal);
-                    ////    console.log("error: ", details.error);
-                    ////    console.log("details: ", details.details)
-                    ////});
-                    ////"""
-                    ////);
-                    //var s = await b.NewBrowserCDPSessionAsync();
-                    //await s.SendAsync("Fetch.enable");
-                    //s.Event("Fetch.requestPaused").OnEvent += async (o, e) =>
-                    //{
-                    //    var r = e.Value.GetProperty("requestId");
-                    //    var sss = await s.SendAsync("Fetch.continueRequest", new() { { "requestId", r.ToString() } });
-                    //    // m_openEvent.Set();
-                    //};
-                    //s.Event("Fetch.basicAuthenticationRequested").OnEvent += async (o, e) =>
-                    //{
-                    //    var r = e.Value.GetProperty("requestId");
-                    //    await s.SendAsync("Fetch.continueWithAuth", new() { { "requestId", r.ToString() }, { "authChallengeResponse", new AuthChallengeResponse() { password = UserProfile.Proxy.Password, username = UserProfile.Proxy.UserName } } });
-                    //    m_openEvent.Set();
-                    //};
-                    //await Task.Run(() => m_openEvent.Wait());
-
-                    //playwright.Dispose();
                 }
 
                 //TODO: User32.SendMessage((IntPtr)Handle, User32.WM_SETTEXT,0, new System.Text.StringBuilder(UserProfile.Title));
 
-                await Open();
+                //if (Handle is not null && Handle != IntPtr.Zero)
+                //{
+                User32.SetForegroundWindow((IntPtr)Handle);
+                User32.SetActiveWindow((IntPtr)Handle);
+                //}
                 _eventAggregator
                          .GetEvent<ForegroundUserSystemBrowserEvent>()
                          .Publish(GetArgs(Brocess));
             }
-
-            PublishOpendedEvent(Brocess);
         }
+
         class AuthChallengeResponse
         {
             public string response = "ProvideCredentials";
@@ -604,13 +359,16 @@ namespace Chameleon.SystemBrowser.Common
                 return false;
         }
 
-        protected virtual void Cleanup()
+        protected virtual async void Cleanup()
         {
             //_dynamicProxyServer?.Stop();
             foreach (var item in winEventHooks)
             {
                 User32.UnhookWinEvent(item);
             }
+            if(BrowserContext != null)
+                await BrowserContext.DisposeAsync();
+
             Brocess = null;
             Handle = IntPtr.Zero;
             OnProcessClosed?.Invoke(Options);
@@ -653,7 +411,6 @@ namespace Chameleon.SystemBrowser.Common
 
         protected virtual string GetCommandLineArguments()
         {
-            port = SystemBrowserInstance.NextFreePort(1000);
             var exts = GetLoadExtensionsArgument();
             List<string> args =
                 [
@@ -670,7 +427,7 @@ namespace Chameleon.SystemBrowser.Common
                     "--disable-field-trial-config",
                     "--disable-software-rasterizer",
                     //"--disable-blink-features=\"BlockCredentialedSubresources\"",
-                    $"--remote-debugging-port={port}",
+                    $"--remote-debugging-port={Port}",
                 ];
 
             if (UserProfile.Proxy?.CanUse == true && UserProfile.Proxy.Host.HasAny())
@@ -735,5 +492,9 @@ namespace Chameleon.SystemBrowser.Common
             return port;
         }  
         protected abstract SystemBrowserType BrowserType { get; }
+        public bool HasProxyLogin => UserProfile.Proxy?.CanUse == true &&
+            UserProfile.Proxy.Host.HasAny() &&
+            UserProfile.Proxy.UserName.HasAny() &&
+            UserProfile.Proxy.Password.HasAny();
     }
 }

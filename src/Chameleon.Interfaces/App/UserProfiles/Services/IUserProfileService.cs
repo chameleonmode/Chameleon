@@ -11,7 +11,7 @@ namespace Chameleon.Interfaces.UserProfiles
         Task<IUserProfiles> GetAllAsync();
         List<IUserProfile> GetAllByUserId(int id);
         IUserProfile Get(int Id, bool ignoreCache = false);
-        IUserProfile Create(int? folderId);
+        Task<IUserProfile> CreateAsync(int? folderId);
         void Delete(IUserProfile userProfile);
         void Save(IUserProfile userProfile);
         void Import(IUserProfile userProfile);

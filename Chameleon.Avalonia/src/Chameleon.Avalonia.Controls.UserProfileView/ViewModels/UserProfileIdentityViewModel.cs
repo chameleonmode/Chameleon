@@ -125,12 +125,15 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     {
         await base.OnNavigatedToAsync(param);
 
-        
+
         if (param is UserProfile up)
+        {
+            //TODO: UserAgent var p = await Task.Run(() => { return _userProfileService.Get(up.Id, false); });
+            await Task.Delay(256);
             UserProfile = up;
+        }
 
         Title = UserProfileModel.Title;
-
     }
 
     public bool HasNoItems => Persons?.Items?.Count > 0;

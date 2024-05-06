@@ -150,7 +150,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
     public void Open()
     {
         NavigationService.NavigateToType(typeof(IUserProfileIdentityView), UserProfile);
-        OpenUserProfile();
+        //OpenUserProfile();
     }
 
     [RelayCommand]

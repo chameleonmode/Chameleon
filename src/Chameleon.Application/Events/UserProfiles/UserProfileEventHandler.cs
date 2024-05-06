@@ -74,9 +74,9 @@ namespace Chameleon.Application.Events
                 .GetEvent<OpenUserBrowserEvent>()
                 .Subscribe(args => OnOpenUserBrowser(args.UserProfile));
 
-            _eventAggregator
-                .GetEvent<CreateUserProfileEvent>()
-                .Subscribe(CreateUserProfile);
+            //_eventAggregator
+            //    .GetEvent<CreateUserProfileEvent>()
+            //    .Subscribe(CreateUserProfile);
 
             _eventAggregator
                 .GetEvent<DeleteUserProfileEvent>()
@@ -192,13 +192,14 @@ namespace Chameleon.Application.Events
 
         private void CreateUserProfile(CreateUserProfileEventArgs? args)
         {
+            
             //_toaster.ShowInformation("Creating New Profile...");
             IUserProfile profile;
             try
             {
                 //TODO: ? _userProfileService.Sync();
                 //profile = await Task.Run(() => _userProfileService.Create(args?.FolderId)); 
-                profile =  _userProfileService.Create(args?.FolderId); 
+                //profile =  _userProfileService.Create(args?.FolderId); 
             }
             catch (Exception ex)
             {
@@ -207,12 +208,12 @@ namespace Chameleon.Application.Events
                 else throw;
                 return;
             }                                                                                                                                                               
-            var e = new ChangeProfilesInFavoriteFolderEventArgs(args == null || args.FolderId == null ? 0 : args.FolderId.Value, true, profile);
+            //var e = new ChangeProfilesInFavoriteFolderEventArgs(args == null || args.FolderId == null ? 0 : args.FolderId.Value, true, profile);
 
-            _eventAggregator.Publish<OnCreatedCreateUserProfileEvent, ChangeProfilesInFavoriteFolderEventArgs>(e);
-            _eventAggregator
-                .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-                .Publish(e);
+            //_eventAggregator.Publish<OnCreatedCreateUserProfileEvent, ChangeProfilesInFavoriteFolderEventArgs>(e);
+            //_eventAggregator
+            //    .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
+            //    .Publish(e);
         }
 
         private void OnOpenUserDetails(IUserProfileInfo profileInfo)

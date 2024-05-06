@@ -161,28 +161,35 @@ namespace Chameleon.Infrastructure.Profiles
             }
 
             IWebBrowserUserAgent userAgent = null;
-            this.TryCatchIgnore(() => 
-            { 
-                userAgent = _webBrowserUserAgentRepository.Get(userAgentId.Value); 
-            });
+            this.TryOrCatch(
+                () => 
+                { 
+                    userAgent = _webBrowserUserAgentRepository.Get(userAgentId.Value); 
+                },
+                () => 
+                {
+                     userAgent = new WebBrowserUserAgent();
+                });
             profile.WebBrowser.UserAgent = userAgent;
 
             //var userAgent = _webBrowserUserAgentRepository.Get(userAgentId.Value);
             //profile.WebBrowser.UserAgent = userAgent;
         }
 
-        public IUserProfile Create(int? folderId)
+        public async Task<IUserProfile> CreateAsync(int? folderId)
         {
-            var userProfiles = Profiles;
             var profile = new UserProfile
             {
-                FolderId = folderId,
-                Title = $"New Profile {userProfiles.Count + 1}"
+                FolderId = folderId
             };
-            EnsureProfileHasUniqueName(profile);
 
-            _userProfileRepository.Insert(profile);
-            InitializeWebBrowserUserAgent(profile);
+            await Task.Run(() => 
+            {
+                EnsureProfileHasUniqueName(profile);
+
+                _userProfileRepository.Insert(profile);
+                InitializeWebBrowserUserAgent(profile);
+            });
 
             Profiles.Add(profile);
             return profile;
@@ -257,10 +264,11 @@ namespace Chameleon.Infrastructure.Profiles
 
         private void EnsureProfileHasUniqueName(IUserProfile userProfile)
         {
-            while (Profiles.HasWithTitle(userProfile.Title))
+            int trys = 0;
+            do
             {
-                userProfile.Title += "_1";
-            }
+                userProfile.Title = $"New Profile {Profiles.Count + trys++}";
+            } while (Profiles.HasWithTitle(userProfile.Title));
         }
 
         private void SetProfileId<T>(IUserProfile userProfile, IList<T> items)

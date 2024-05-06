@@ -1,8 +1,10 @@
-﻿using Chameleon.Interfaces.Ioc;
+﻿using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.Ioc;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.SystemBrowser.Browsers.Brave;
 using Chameleon.SystemBrowser.Chrome;
 using Chameleon.SystemBrowser.Firefox;
+using Microsoft.Playwright;
 
 namespace Chameleon.SystemBrowser
 {
@@ -16,8 +18,8 @@ namespace Chameleon.SystemBrowser
                 { SystemBrowserType.Brave, typeof(IBraveSystemBrowser) },
             };
 
-
         private readonly IHaveContainerProvider _containerProvider;
+        public static IPlaywright Blaywright { get; set; }
 
         public SystemBrowserManager(IHaveContainerProvider containerProvider)
         {
@@ -31,6 +33,14 @@ namespace Chameleon.SystemBrowser
                 return (ISystemBrowser)_containerProvider.Resolve(type);
             }
             throw new KeyNotFoundException(browserType.ToString());
+        }
+
+        public static ContainerServiceHelper Current
+        {
+            get
+            {
+                return (ContainerServiceHelper)ContainerServiceHelper.Current.ContainerProvider.Resolve<ISystemBrowserManager>();
+            }
         }
     }
 }

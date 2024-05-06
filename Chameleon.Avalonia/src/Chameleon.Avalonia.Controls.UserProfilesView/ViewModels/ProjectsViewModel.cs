@@ -1,11 +1,15 @@
-﻿using Avalonia.Controls;
+﻿using AutoMapper;
+using Avalonia.Controls;
 using Chameleon.Authorization;
 using Chameleon.Common.Helpers;
+using Chameleon.Core.Settings;
+using Chameleon.Core.Util;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.Assistants.Events;
 using Chameleon.Interfaces.App.Synchronization.Events;
+using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Common;
@@ -15,6 +19,7 @@ using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
@@ -154,23 +159,41 @@ public partial class ProjectsViewModel : PageViewModelBase,
         return base.InitAsync(param);
     }
 
+    public bool IsDisabledCreateNewProfile = false;
     [RelayCommand]
-    private void CreateProfile()
+    private async Task CreateProfile()
     {
+        if (IsDisabledCreateNewProfile)
+        {
+            return;
+        }
+        //TODO:
+        IsDisabledCreateNewProfile = true;
+        var filter = profiles.Filter;
         try
         {
-            EventAggregator
-                .GetEvent<CreateNewUserProfileEvent>()
-                .Publish();
+            var p = await profiles.CreateNewProfile();
+            profiles.Filter = profile => p.Id == profile.Id;
+            NavigationService.NavigateToType(typeof(IUserProfileIdentityView), p);
 
-            //SyncChanges();
-            //_featureTourNavigator.IfCurrentStepEquals(ElementID.CreateProfileBtn).GoNext();
+            EventAggregator.Publish<ChangeProfilesInFavoriteFolderEvent, ChangeProfilesInFavoriteFolderEventArgs>(new ChangeProfilesInFavoriteFolderEventArgs(p.FolderId ?? 0, false, p));
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message == "limit_ex")
+            {
+                if (await MesageBoxHelper.ShowAsync("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
+                    ProcessesUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
+            }
+            else
+            {
+                await MesageBoxHelper.ShowErrorAsync("Wooopsy?", ex.Message);
+            }
         }
         finally
         {
-            //TODO: Remove hardcode
-            //UserProfilesViewModel.IsDisabledCreateNewProfile = false;
-            //UserProfilesViewModel.IsDisabledCreateNewProfile = false;
+            profiles.Filter = filter;
+            IsDisabledCreateNewProfile = false;
         }
     }
 

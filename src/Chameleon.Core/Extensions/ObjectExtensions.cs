@@ -15,7 +15,7 @@ public static class ObjectExtensions
         throw new NotImplementedException();
         // return Application.Current.Dispatcher.Invoke(action);
     }
-    public static void TryCatchIgnore(this object self, Action action)
+    public static void TryOrCatch(this object self, Action action, Action? caught = null)
     {
         //TODO: refactu ??
         try
@@ -24,6 +24,7 @@ public static class ObjectExtensions
         }
         catch
         {
+            caught?.Invoke();
             //ignore
         }
     }
