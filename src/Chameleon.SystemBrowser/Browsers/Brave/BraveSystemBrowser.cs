@@ -2,6 +2,7 @@
 using Chameleon.Interfaces.Environments;
 using Chameleon.Prism.Events;
 using Chameleon.SystemBrowser.Chrome;
+using Chameleon.Interfaces.Settings;
 
 namespace Chameleon.SystemBrowser.Browsers.Brave
 {
@@ -11,18 +12,21 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
         private readonly IApplicationEnvironment _applicationEnvironment;
         private readonly ISystemBrowserInfoManager _systemBrowserInfoManager;
         private readonly ISetPreferencesService _setPreferencesService;
+        private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
 
         public BraveSystemBrowser(
             IEventAggregator eventAggregator,
             IApplicationEnvironment applicationEnvironment,
             ISystemBrowserInfoManager systemBrowserInfoManager,
-            ISetPreferencesService setPreferencesService
+            ISetPreferencesService setPreferencesService,
+             IUserDefaultSettingsService userDefaultsSettingsService
             )
         {
             _eventAggregator = eventAggregator;
             _applicationEnvironment = applicationEnvironment;
             _systemBrowserInfoManager = systemBrowserInfoManager;
             _setPreferencesService = setPreferencesService;
+            _userDefaultsSettingsService = userDefaultsSettingsService;
         }
 
         public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
@@ -32,6 +36,7 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
                  o,
                  _setPreferencesService,
                  _applicationEnvironment,
+                 _userDefaultsSettingsService,
                  GetBrowserExePath());
         }
 

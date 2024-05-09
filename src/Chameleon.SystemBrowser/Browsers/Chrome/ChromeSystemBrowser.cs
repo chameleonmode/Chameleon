@@ -1,4 +1,5 @@
 ﻿using Chameleon.Interfaces.Environments;
+using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
 using Chameleon.SystemBrowser.Browsers;
@@ -12,18 +13,21 @@ namespace Chameleon.SystemBrowser.Chrome
         private readonly IApplicationEnvironment _applicationEnvironment;
         private readonly ISystemBrowserInfoManager _systemBrowserInfoManager;
         private readonly ISetPreferencesService _setPreferencesService;
+        private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
 
         public ChromeSystemBrowser(
             IEventAggregator eventAggregator,
             IApplicationEnvironment applicationEnvironment,
             ISystemBrowserInfoManager systemBrowserInfoManager,
-            ISetPreferencesService setPreferencesService
+            ISetPreferencesService setPreferencesService,
+             IUserDefaultSettingsService userDefaultsSettingsService
             )
         {
             _eventAggregator = eventAggregator;
             _applicationEnvironment = applicationEnvironment;
             _systemBrowserInfoManager = systemBrowserInfoManager;
             _setPreferencesService = setPreferencesService;
+            _userDefaultsSettingsService = userDefaultsSettingsService;
         }
 
         public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
@@ -31,8 +35,9 @@ namespace Chameleon.SystemBrowser.Chrome
             return new ChromeSystemBrowserInstance(
                 _eventAggregator,
                 o,
-                _setPreferencesService,
-                _applicationEnvironment,
+                     _setPreferencesService,
+                 _applicationEnvironment,
+                 _userDefaultsSettingsService,
                 GetBrowserExePath());
         }
 

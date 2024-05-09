@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.WebBrowser;
+﻿using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.WebBrowser;
 
 namespace Chameleon.SystemBrowser.Browsers;
 
@@ -18,7 +19,7 @@ public abstract class SystemBrowserBase : ISystemBrowser
             await Task.Delay(500);
 
         Interlocked.Increment(ref _isBusy);
-        ISystemBrowserInstance browser;
+        ISystemBrowserInstance browser = null;
         try
         {
             if (!Instances.TryGetValue(o.UserProfile.Id, out browser))
@@ -29,6 +30,10 @@ public abstract class SystemBrowserBase : ISystemBrowser
             }
 
             await browser.Open();
+        }
+        catch(Exception e)
+        {
+            await MesageBoxHelper.ShowErrorAsync("Error", e.Message);
         }
         finally { Interlocked.Decrement(ref _isBusy); }
 

@@ -1,15 +1,34 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Chameleon.Common.WinApiBridge;
 
+//private static void RegisterResolver()
+//{
+//    Type type = typeof(DllImportSearchPath).Assembly.GetType("System.Runtime.InteropServices.NativeLibrary");
+//    if (!(type == null))
+//    {
+//        Type type2 = typeof(DllImportSearchPath).Assembly.GetType("System.Runtime.InteropServices.DllImportResolver");
+//        MethodInfo? method = type.GetMethod("SetDllImportResolver", BindingFlags.Static | BindingFlags.Public, null, new Type[2]
+//        {
+//                typeof(Assembly),
+//                type2
+//        }, null);
+//        Delegate @delegate = Delegate.CreateDelegate(type2, typeof(LibPcapSafeNativeMethods).GetMethod("Resolver"));
+//        method.Invoke(null, new object[2]
+//        {
+//                typeof(LibPcapSafeNativeMethods).Assembly,
+//                @delegate
+//        });
+//    }
+//}
 
-
-    /**
-     * This is a subset of events from winuser.h.
-     * See: https://docs.microsoft.com/en-us/windows/win32/winauto/event-constants
-     */
-    public enum User32Events : uint
+/**
+ * This is a subset of events from winuser.h.
+ * See: https://docs.microsoft.com/en-us/windows/win32/winauto/event-constants
+ */
+public enum User32Events : uint
 {
     EVENT_MIN = 0x00000001,
     EVENT_MAX = 0x7FFFFFFF,

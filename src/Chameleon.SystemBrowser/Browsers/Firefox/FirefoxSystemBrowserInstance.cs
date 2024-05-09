@@ -12,6 +12,7 @@ using Microsoft.Playwright;
 using System.Collections;
 using Microsoft.Playwright.Transport;
 using Microsoft.Playwright.Transport.Protocol;
+using Chameleon.Interfaces.Settings;
 
 namespace Chameleon.SystemBrowser.Firefox
 {
@@ -23,12 +24,14 @@ namespace Chameleon.SystemBrowser.Firefox
     //}
     public class FirefoxSystemBrowserInstance : SystemBrowserInstance
     {
+        private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
         public FirefoxSystemBrowserInstance(
             IEventAggregator eventAggregator,
             ISystemBrowserLaunchOptions options,
+            IUserDefaultSettingsService userDefaultsSettingsService,
             string browserDataFolderPath,
             string browserExeFilePath
-            ) : base(eventAggregator, options, browserDataFolderPath, browserExeFilePath)
+            ) : base(eventAggregator, options, userDefaultsSettingsService, browserDataFolderPath, browserExeFilePath)
         {
         }
 
@@ -125,7 +128,7 @@ namespace Chameleon.SystemBrowser.Firefox
                     {
                         "--allow-downgrade",
                         "--start-maximized", 
-                        //$"--start-debugger-server {Port}" 
+                        $"--start-debugger-server {Port}" 
                     },
                     //IgnoreDefaultArgs = new[] { "-silent" },
                     Headless = false,

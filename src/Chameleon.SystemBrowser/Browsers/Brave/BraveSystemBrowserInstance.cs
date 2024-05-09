@@ -7,12 +7,14 @@ using Chameleon.SystemBrowser.Chrome;
 using Chameleon.SystemBrowser.Common;
 using Chameleon.SystemBrowser.Proxy;
 using Chameleon.Prism.Events;
+using Chameleon.Interfaces.Settings;
 
 namespace Chameleon.SystemBrowser.Browsers.Brave
 {
     public class BraveSystemBrowserInstance : SystemBrowserInstance
     {
         private readonly ISetPreferencesService _setPreferencesService;
+        private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
 
         protected override SystemBrowserType BrowserType => SystemBrowserType.Brave;
 
@@ -21,8 +23,9 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
             ISystemBrowserLaunchOptions options,
             ISetPreferencesService setPreferencesService,
             IApplicationEnvironment applicationEnvironment,
+            IUserDefaultSettingsService userDefaultsSettingsService,
             string browserExeFilePath
-            ) : base(eventAggregator, options, applicationEnvironment.ApplicationDataFolderPath, browserExeFilePath)
+            ) : base(eventAggregator, options, userDefaultsSettingsService, applicationEnvironment.ApplicationDataFolderPath, browserExeFilePath)
         {
             _setPreferencesService = setPreferencesService;
         }

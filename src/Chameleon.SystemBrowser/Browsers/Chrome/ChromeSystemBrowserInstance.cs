@@ -10,12 +10,14 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using static System.Net.Mime.MediaTypeNames;
+using Chameleon.Interfaces.Settings;
 
 namespace Chameleon.SystemBrowser.Chrome
 {
     public class ChromeSystemBrowserInstance : SystemBrowserInstance
     {
-        private readonly ISetPreferencesService _setPreferencesService;  
+        private readonly ISetPreferencesService _setPreferencesService;
+        private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
 
         protected override SystemBrowserType BrowserType => SystemBrowserType.Chrome;
 
@@ -24,8 +26,9 @@ namespace Chameleon.SystemBrowser.Chrome
             ISystemBrowserLaunchOptions options,
             ISetPreferencesService setPreferencesService,
             IApplicationEnvironment applicationEnvironment,
+            IUserDefaultSettingsService userDefaultsSettingsService,
             string browserExeFilePath
-            ) : base(eventAggregator, options, applicationEnvironment.ApplicationDataFolderPath, browserExeFilePath)
+            ) : base(eventAggregator, options, userDefaultsSettingsService, applicationEnvironment.ApplicationDataFolderPath, browserExeFilePath)
         {
             _setPreferencesService = setPreferencesService;
         }

@@ -17,6 +17,7 @@ using System.Reflection.Metadata;
 using Microsoft.Playwright;
 using System.Security;
 using Newtonsoft.Json.Linq;
+using Chameleon.Interfaces.Settings;
 
 namespace Chameleon.SystemBrowser.Common
 {
@@ -28,6 +29,7 @@ namespace Chameleon.SystemBrowser.Common
 
         private readonly IEventAggregator _eventAggregator;
         private readonly ISystemBrowserLaunchOptions _options;
+        private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
 
         public event Action<ISystemBrowserLaunchOptions> OnProcessClosed;
 
@@ -35,6 +37,7 @@ namespace Chameleon.SystemBrowser.Common
         public IUserProfile UserProfile => _options.UserProfile;
 
         private string proxyextdir;
+        string starturl = "https://www.chameleonmde.com";
 
         protected string BrowserExtensionsRootFolderPath { get; set; }
         protected string BrowserExtensionsFolderPath { get; set; }
@@ -49,12 +52,14 @@ namespace Chameleon.SystemBrowser.Common
         protected SystemBrowserInstance(
             IEventAggregator eventAggregator,
             ISystemBrowserLaunchOptions options,
+            IUserDefaultSettingsService userDefaultsSettingsService,
             string browserDataFolderPath,
             string browserExeFilePath
             )
         {
             _eventAggregator = eventAggregator;
             _options = options;
+            _userDefaultsSettingsService = userDefaultsSettingsService;
             _browserExeFilePath = browserExeFilePath;
             _browserDataFolderPath = browserDataFolderPath;
             _browserProfileFolderPath = Path.Combine(_browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
@@ -69,7 +74,12 @@ namespace Chameleon.SystemBrowser.Common
         {
             if (Brocess is null || Handle is null || Handle == IntPtr.Zero || !User32.IsWindow((IntPtr)Handle))
             {
-                Port = SystemBrowserInstance.NextFreePort(1000);
+                var userSettings = await Task.Run(() => _userDefaultsSettingsService.GetAll());
+                if (userSettings != null && userSettings.Any())
+                {
+                    starturl = userSettings[new Random().Next(userSettings.Count)].DefaultUrl;
+                }
+                Port = SystemBrowserInstance.NextFreePort(9222);
                 await EnsureProfileFolderCreated();
                 await InitializeProfileFolder();
                 if (BrowserType != SystemBrowserType.Firefox)
@@ -134,38 +144,41 @@ namespace Chameleon.SystemBrowser.Common
                 }
                 """;
                 //"background": {
+                //    "service_worker": "background.js"
+                //  }
+                //"background": {
                 //  "scripts": ["background.js"]
                 //}
+                //var background_js = """
+                //          chrome.webRequest.onAuthRequired.addListener((details, callback) => {
+                //              callback({
+                //                authCredentials: {
+                //          """
+                //            + "username:" + $"\"{UserProfile.Proxy.UserName}\","
+                //            + "password: " + $"\"{UserProfile.Proxy.Password}\"" +
+                //           """
+                //          }
+                //        });
+                //      },
+                //      { urls: ['<all_urls>'] },
+                //      ['asyncBlocking']
+                //    );
+                //    """;
                 var background_js = """
-                          chrome.webRequest.onAuthRequired.addListener((details, callback) => {
-                              callback({
-                                authCredentials: {
+                          chrome.webRequest.onAuthRequired.addListener((details) => {
+                          return {
+                          authCredentials: {
                           """
                             + "username:" + $"\"{UserProfile.Proxy.UserName}\","
                             + "password: " + $"\"{UserProfile.Proxy.Password}\"" +
                            """
                           }
-                        });
+                        };
                       },
                       { urls: ['<all_urls>'] },
-                      ['asyncBlocking']
+                      ['blocking']
                     );
                     """;
-                //var background_js = """
-                //          chrome.webRequest.onAuthRequired.addListener((details) => {
-                //          return {
-                //          authCredentials: {
-                //          """ 
-                //            + "username:" + $"\"{UserProfile.Proxy.UserName}\","
-                //            + "password: " + $"\"{UserProfile.Proxy.Password}\""  +
-                //           """
-                //          }
-                //        };
-                //      },
-                //      { urls: ['<all_urls>'] },
-                //      ['blocking']
-                //    );
-                //    """;
 
                 if (!Directory.Exists(proxyextdir))
                     Directory.CreateDirectory(proxyextdir);
@@ -366,8 +379,8 @@ namespace Chameleon.SystemBrowser.Common
             {
                 User32.UnhookWinEvent(item);
             }
-            if(BrowserContext != null)
-                await BrowserContext.DisposeAsync();
+            //if(BrowserContext != null)
+            //    await BrowserContext.DisposeAsync();
 
             Brocess = null;
             Handle = IntPtr.Zero;
@@ -394,7 +407,10 @@ namespace Chameleon.SystemBrowser.Common
         private Task EnsureProfileFolderCreated()
         {
             if (!Directory.Exists(_browserProfileFolderPath))
+            {
                 Directory.CreateDirectory(_browserProfileFolderPath);
+               
+            }
 
             return OnProfileFolderCreated();
         }
@@ -415,7 +431,7 @@ namespace Chameleon.SystemBrowser.Common
             List<string> args =
                 [
                     $"--user-data-dir=\"{_browserProfileFolderPath}\"",
-                    //"--restore-last-session",
+                    "--restore-last-session",
                     "--new-window",
                     $"--window-name=\"{UserProfile.Title}\"",
                     "--profile-directory=Default",
@@ -428,11 +444,14 @@ namespace Chameleon.SystemBrowser.Common
                     "--disable-software-rasterizer",
                     //"--disable-blink-features=\"BlockCredentialedSubresources\"",
                     $"--remote-debugging-port={Port}",
+                    starturl
                 ];
 
             if (UserProfile.Proxy?.CanUse == true && UserProfile.Proxy.Host.HasAny())
             {
-                args.Add($"--proxy-server={UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}");
+                args.Add($"--proxy-server=http://{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}");
+                //args.Add($"--proxy-auth={UserProfile.Proxy.UserName}:{UserProfile.Proxy.Password}");
+
                 if (Directory.Exists(proxyextdir))
                     exts = exts.HasAny() ? $"{exts},{proxyextdir}" : proxyextdir;
             }
