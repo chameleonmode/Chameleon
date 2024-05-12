@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Playwright" />
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\git cloned\playwright-dotnet\src\Playwright\Playwright.csproj" />
     <ProjectReference Include="..\Chameleon.Common\Chameleon.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Core\Chameleon.Core.csproj" />
     <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />

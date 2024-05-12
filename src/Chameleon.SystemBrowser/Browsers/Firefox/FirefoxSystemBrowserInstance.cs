@@ -13,6 +13,7 @@ using System.Collections;
 using Microsoft.Playwright.Transport;
 using Microsoft.Playwright.Transport.Protocol;
 using Chameleon.Interfaces.Settings;
+using System.Text.RegularExpressions;
 
 namespace Chameleon.SystemBrowser.Firefox
 {
@@ -22,7 +23,7 @@ namespace Chameleon.SystemBrowser.Firefox
     //    {
     //    }
     //}
-    public class FirefoxSystemBrowserInstance : SystemBrowserInstance
+    public partial class FirefoxSystemBrowserInstance : SystemBrowserInstance
     {
         private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
         public FirefoxSystemBrowserInstance(
@@ -59,9 +60,13 @@ namespace Chameleon.SystemBrowser.Firefox
 
         protected override async Task InitializeProfileFolder()
         {
-            //await Task.Run(() => InitializePrefsJs());
+            if (!Directory.Exists(_browserProfileFolderPath))
+                Directory.CreateDirectory(_browserProfileFolderPath);
 
-            //await Task.Run(() => InitializePrefsJs());
+           
+            var prefs = await InitializePrefsJs();
+
+            return;
             if (SystemBrowserManager.Blaywright == null)
                 SystemBrowserManager.Blaywright = await Playwright.CreateAsync();
 
@@ -75,356 +80,375 @@ namespace Chameleon.SystemBrowser.Firefox
                     Password = UserProfile.Proxy.Password,
                 };
             }
-            var prefs = new Dictionary<string, object>
-            {
-                ["browser.newtabpage.enabled"] = true,
-                ["browser.startup.page"] = 3,
-                ["signon.autofillForms"] = true,
-                ["signon.rememberSignons"] = true,
-                ["browser.urlbar.suggest.searches"] = true,
-                ["browser.search.update"] = true,
-                ["plugin.state.npctr"] = 0,
-                ["plugin.state.java"] = 0,
-                ["devtools.debugger.remote-enabled"]= true,
-                ["devtools.debugger.prompt-connection"] = false,
-                ["extensions.manifestV3.enabled"] = true,
-                ["xpinstall.signatures.required"]  = false,
-                ["dom.forms.autocomplete.formautofill"]  = true,
-                //["extensions.installDistroAddons"]  = true,
-                //["extensions.activeThemeID"] = "default-theme@mozilla.org",
-                //["extensions.webextensions.uuids"] = "{\"formautofill@mozilla.org\":\"c330de13-262b-4cd6-a1b0-d21a562bddf2\",\"pictureinpicture@mozilla.org\":\"e83f77e3-edc8-49a1-9380-c41b262b6827\",\"screenshots@mozilla.org\":\"c7378971-4642-4032-88af-d3859d0dc38c\",\"webcompat-reporter@mozilla.org\":\"0d708515-bf56-4230-845d-f8968fdd804c\",\"webcompat@mozilla.org\":\"913bae20-34ba-49ac-81f3-b877eef1e835\",\"default-theme@mozilla.org\":\"a8f49007-78b9-49e8-972e-f45f0ea3474a\",\"addons-search-detection@mozilla.com\":\"27eee07a-9853-4705-a711-38401c593408\",\"google@search.mozilla.org\":\"ba5c7604-a4b9-44ed-8b12-23c372247a11\",\"wikipedia@search.mozilla.org\":\"6504e91a-fd2b-4978-88b1-42f394365fec\",\"bing@search.mozilla.org\":\"228d075e-3d66-4dfb-a3cf-213faec1c2fb\",\"ddg@search.mozilla.org\":\"1066adbc-d81a-469b-afa9-a95de4a49a6e\"}"
-            };
-            // Turn off search suggestions in the location bar so as not to trigger
-            // network connections.
-            //pref("browser.urlbar.suggest.searches", false);
-            //user_pref("extensions.webextensions.uuids", "{\"formautofill@mozilla.org\":\"10b01988-a0ad-4f29-b09d-adf0d2153cfc\",\"pictureinpicture@mozilla.org\":\"bd05d1f6-6fd0-4a15-91cc-8034d73abc6a\",\"screenshots@mozilla.org\":\"dfec2e2f-9716-49e6-8893-204236c90ffa\",\"webcompat-reporter@mozilla.org\":\"12469d55-18f6-4c8d-8c25-b05575e57f01\",\"webcompat@mozilla.org\":\"8097d201-1756-4285-9f85-33c990f2bb72\",\"default-theme@mozilla.org\":\"25737c7c-4cd5-4860-8d62-149b04f02dec\",\"addons-search-detection@mozilla.com\":\"73db796e-3569-4fe8-8f12-55ced9147f48\",\"google@search.mozilla.org\":\"abd57346-3bf3-4681-8030-11602dd93cca\",\"wikipedia@search.mozilla.org\":\"ce750d58-35d5-47ac-a3d0-315885fca341\",\"bing@search.mozilla.org\":\"b565dc02-e1d5-4212-b690-b07fd5375d1b\",\"ddg@search.mozilla.org\":\"2cdfdb52-ef25-49a8-9587-4630cd212427\"}");
-            // user_pref("browser.urlbar.placeholderName", "Google");
-            var webBrowser = UserProfile.WebBrowser;
-            if (!webBrowser.WebGL)
-            {
-                prefs["webgl.disabled"] = true;
-            }
-            if (!webBrowser.WebRTC)
-            {
-                prefs["media.navigator.enabled"] = false;
-                prefs["media.peerconnection.enabled"] = false;
-            }
-            if (!webBrowser.Flash)
-            {
-                prefs["plugin.state.flash"] = 0;
-                prefs["plugins.flashBlock.enabled"] = true;
-            }
-            if (!webBrowser.Tracking)
-            {
-                prefs["privacy.donottrackheader.enabled"] = true;
-                prefs["privacy.donottrackheader.enabled"] = true;
-            }
+
             BrowserContext = await SystemBrowserManager.Blaywright.Firefox.LaunchPersistentContextAsync(
                 _browserProfileFolderPath,
                 new()
                 {
-                    ExecutablePath = Path.Combine(Directory.GetCurrentDirectory(), @"firefox-1447\firefox\firefox.exe"),// @"C:\dev\browsers\Firefox-124\firefox.exe",// Path.Combine(Directory.GetCurrentDirectory(), @"firefox-1447\firefox\firefox.exe"),
-                    Args = new[] 
+                    ExecutablePath = Path.Combine(Directory.GetCurrentDirectory(), @"firefox-1447\firefox\firefox.exe"), //@"C:\Program Files\Mozilla Firefox\firefox.exe",//Path.Combine(Directory.GetCurrentDirectory(), @"firefox-1447\firefox\firefox.exe"),// @"C:\dev\browsers\Firefox-124\firefox.exe",// Path.Combine(Directory.GetCurrentDirectory(), @"firefox-1447\firefox\firefox.exe"),
+                    Args = new[]
                     {
                         "--allow-downgrade",
-                        "--start-maximized", 
-                        $"--start-debugger-server {Port}" 
+                        "--start-maximized",
+                        $"--start-debugger-server {Port}"
                     },
                     //IgnoreDefaultArgs = new[] { "-silent" },
+                    Env = new Dictionary<string, string>()
+                    {
+                        ["MOZ_REMOTE_SETTINGS_DEVTOOLS"] = "1"
+                    },
+
                     Headless = false,
                     Proxy = proxy,
                     ViewportSize = ViewportSize.NoViewport,
                     FirefoxUserPrefs = prefs,
                 });
-
-            // Force Firefox Devtools to open in a separate window.
-            //pref("devtools.toolbox.host", "window");
-
-            // Disable auto translations
-            //pref("browser.translations.enable", false);
-
-            // Disable spell check
-            //pref("layout.spellcheckDefault", 0);
-
-            // Do not automatically fill sign-in forms with known usernames and
-            // passwords
-            //pref("signon.autofillForms", false);
-
-            // Disable password capture, so that tests that include forms are not
-            // influenced by the presence of the persistent doorhanger notification
-            //pref("signon.rememberSignons", false);
-
-            // Disable installing any distribution extensions or add-ons.
-            //pref("extensions.installDistroAddons", false);
-
-            // Disable metadata caching for installed add-ons by default
-            //pref("extensions.getAddons.cache.enabled", false);
-
-            // Turn off search suggestions in the location bar so as not to trigger
-            // network connections.
-            //pref("browser.urlbar.suggest.searches", false);
-
-            // Disable safebrowsing components.
-            //pref("browser.safebrowsing.blockedURIs.enabled", false);
-            //pref("browser.safebrowsing.downloads.enabled", false);
-            //pref("browser.safebrowsing.passwords.enabled", false);
-            //pref("browser.safebrowsing.malware.enabled", false);
-            //pref("browser.safebrowsing.phishing.enabled", false);
-
-            // Dislabe newtabpage
-            //pref("browser.startup.homepage", "about:blank");
-            //pref("browser.startup.page", 0);
-            //pref("browser.newtabpage.enabled", false);
-
-            // Use light theme by default.
-            //pref("ui.systemUsesDarkTheme", 0);
-
-            // Disable auto-fill for credit cards and addresses.
-            // See https://github.com/microsoft/playwright/issues/21393
-            //pref("extensions.formautofill.creditCards.supported", "off");
-            //pref("extensions.formautofill.addresses.supported", "off");
-
-            // Only load extensions from the application and user profile
-            // AddonManager.SCOPE_PROFILE + AddonManager.SCOPE_APPLICATION
-            //pref("extensions.autoDisableScopes", 0);
-            //pref("extensions.enabledScopes", 5);
-
-            // Turn off extension updates so they do not bother tests
-            //pref("extensions.update.enabled", false);
-
-            //pref("extensions.screenshots.disabled", true);
-            //pref("extensions.screenshots.upload-disabled", true);
-
-            // Disable updates to search engines.
-            //pref("browser.search.update", false);
         }
 
         // TODO: refactor next legacy code
-        private void InitializePrefsJs()
+        private async Task<Dictionary<string, object>> InitializePrefsJs()
         {
+            var prefs = new Dictionary<string, object>()
+            {
+
+                // Only allow the old modal dialogs. This should be removed when there is
+                // support for the new modal UI (see Bug 1686743).
+                ["prompts.contentPromptSubDialog"] = false,
+                ["alerts.useSystemBackend"] = false,
+                ["app.normandy.first_run"] = false,
+                //["prompts.modalType.confirmAuth"] = 2,
+                //["privacy.authPromptSpoofingProtection"] = false,
+                //["prompts.defaultModalType"] = 1,
+                //["prompts.windowPromptSubDialog"] = false,
+                //["browser.startup.windowsLaunchOnLogin.disableLaunchOnLoginPrompt"] = true,
+                //["network.auth.subresource-http-auth-allow"] = 2,
+                //["prompts.authentication_dialog_abuse_limit"] = -1,
+                ["browser.newtab.preload"] = false,
+                ["app.shield.optoutstudies.enabled"] = false,
+                ["extensions.pendingOperations"] = false,
+                ["media.hardware-video-decoding.failed"] = false,
+                ["sanity-test.running"] = false,
+                // =================================================================
+                // THESE ARE THE PROPERTIES THAT MUST BE ENABLED FOR JUGGLER TO WORK
+                // =================================================================
+                ["dom.input_events.security.minNumTicks"] = 0,
+                ["dom.input_events.security.minTimeElapsedInMS"] = 0,
+                ["dom.iframe_lazy_loading.enabled"] = false,
+                ["datareporting.policy.dataSubmissionEnabled"] = false,
+                ["datareporting.policy.dataSubmissionPolicyAccepted"] = false,
+                ["datareporting.policy.dataSubmissionPolicyBypassNotification"] = false,
+                // Force pdfs into downloads.
+                //pref("pdfjs.disabled", true);
+                // This preference breaks our authentication flow.  
+                ["network.auth.use_redirect_for_retries"] = false,
+                // Disable cross-process iframes, but not cross-process navigations.  
+                ["fission.webContentIsolationStrategy"] = 0,
+                // Disable BFCache in parent process.
+                // We also separately disable BFCache in content via docSchell property.  
+                ["fission.bfcacheInParent"] = false,
+                // Disable first-party-based cookie partitioning.
+                // When it is enabled, we have to retain "thirdPartyCookie^" permissions
+                // in the storageState.      
+                ["network.cookie.cookieBehavior"] = 4,
+                // Increase max number of child web processes so that new pages
+                // get a new process by default and we have a process isolation
+                // between pages from different contexts. If this becomes a performance
+                // issue we can povide custom '@mozilla.org/ipc/processselector;1'    
+                ["dom.ipc.processCount"] = 60000,
+
+                // Never reuse processes as they may keep previously overridden values
+                // (locale, timezone etc.).       
+                ["dom.ipc.processPrelaunch.enabled"] = false,
+                // Isolate permissions by user context.      
+                ["permissions.isolateBy.userContex"] = true,
+
+                // Allow creating files in content process - required for
+                // |Page.setFileInputFiles| protocol method. 
+                ["dom.file.createInChild"] = true,
+                // Do not warn when closing all open tabs   
+                ["browser.tabs.warnOnClose"] = false,
+                // Do not warn when closing all other open tabs   
+                ["browser.tabs.warnOnCloseOtherTabs"] = false,
+                // Do not warn when multiple tabs will be opened    
+                ["browser.tabs.warnOnOpen"] = false,
+                // Do not warn on quitting Firefox     
+                ["browser.warnOnQuit"] = false,
+                // Disable popup-blocker
+                //pref("dom.disable_open_during_load", false);
+                // Disable the ProcessHangMonitor        
+                ["dom.ipc.reportProcessHangs"] = false,
+                ["hangmonitor.timeou"] = 0,
+                // Allow the application to have focus even it runs in the background 
+                ["focusmanager.testmode"] = true,
+                // No ICC color correction. We need this for reproducible screenshots.
+                // See https://developer.mozilla.org/en/docs/Mozilla/Firefox/Releases/3.5/ICC_color_correction_in_Firefox.
+                //pref("gfx.color_management.mode", 0);
+                //pref("gfx.color_management.rendering_intent", 3);
+                // Always use network provider for geolocation tests so we bypass the
+                // macOS dialog raised by the corelocation provider   
+                ["geo.provider.testing"] = true,
+                // =================================================================
+                // THESE ARE NICHE PROPERTIES THAT ARE NICE TO HAVE
+                // =================================================================
+                // Enable software-backed webgl. See https://phabricator.services.mozilla.com/D164016
+                //pref("webgl.forbid-software", false);
+                // Disable auto-fill for credit cards and addresses.
+                // See https://github.com/microsoft/playwright/issues/21393
+                //pref("extensions.formautofill.creditCards.supported", "off");
+                //pref("extensions.formautofill.addresses.supported", "off");
+                // Allow access to system-added self-signed certificates. This aligns
+                // firefox behavior with other browser defaults.
+                ["security.enterprise_roots.enabled"] = true,
+                // Avoid stalling on shutdown, after "xpcom-will-shutdown" phase.
+                // This at least happens when shutting down soon after launching.
+                // See AppShutdown.cpp for more details on shutdown phases.
+                ["toolkit.shutdown.fastShutdownStage"] = 3,
+                // Use light theme by default.
+                //pref("ui.systemUsesDarkTheme", 0);
+                // Do not use system colors - they are affected by themes.
+                ["ui.use_standins_for_native_colors"] = true,
+                // Turn off the Push service.
+                ["dom.push.serverURL"] = "",
+                // Prevent Remote Settings (firefox.settings.services.mozilla.com) to issue non local connections.
+                ["services.settings.server"] = "",
+                // Prevent location.services.mozilla.com to issue non local connections.
+                ["browser.region.network.url"] = "",
+                ["browser.pocket.enabled"] = false,
+                ["browser.newtabpage.activity-stream.feeds.topsites"] = false,
+                // required to prevent non-local access to push.services.mozilla.com
+                ["dom.push.connection.enabled"] = false,
+                // Prevent contile.services.mozilla.com to issue non local connections.
+                ["browser.topsites.contile.enabled"] = false,
+                ["browser.safebrowsing.provider.mozilla.updateURL"] = "",
+                ["browser.library.activity-stream.enabled"] = false,
+                ["browser.search.geoSpecificDefaults"] = false,
+                ["browser.search.geoSpecificDefaults.url"] = "",
+                ["captivedetect.canonicalURL"] = "",
+                ["network.captive-portal-service.enabled"] = false,
+                ["network.connectivity-service.enabled"] = false,
+                ["browser.newtabpage.activity-stream.asrouter.providers.snippets"] = "",
+                // Make sure Shield doesn't hit the network.
+                ["app.normandy.api_url"] = "",
+                ["app.normandy.enabled"] = false,
+                // Disable updater
+                ["app.update.enabled"] = false,
+                // Disable Firefox old build background check   
+                ["app.update.checkInstallTim"] = false,
+                // Disable automatically upgrading Firefox     
+                ["app.update.disabledForTesting"] = true,
+                // make absolutely sure it is really off
+                ["app.update.auto"] = false,
+                ["app.update.mode"] = 0,
+                ["app.update.service.enabled"] = false,
+                // Dislabe newtabpage    
+                ["browser.startup.homepage"] = "about:blank",
+                ["browser.newtabpage.enabled"] = false,
+                ["browser.startup.page"] = 3, // 0 for no restore  3 for restore
+                // Do not redirect user when a milstone upgrade of Firefox is detected
+                ["browser.startup.homepage_override.mstone"] = "ignore",
+                // Disable topstories                       
+                ["browser.newtabpage.activity-stream.feeds.section.topstories"] = false,
+                // DevTools JSONViewer sometimes fails to load dependencies with its require.js.
+                // This spams console with a lot of unpleasant errors.
+                // (bug 1424372)
+                ["devtools.jsonview.enabled"] = false,
+                // Increase the APZ content response timeout in tests to 1 minute.
+                // This is to accommodate the fact that test environments tends to be
+                // slower than production environments (with the b2g emulator being
+                // the slowest of them all), resulting in the production timeout value
+                // sometimes being exceeded and causing false-positive test failures.
+                //
+                // (bug 1176798, bug 1177018, bug 1210465)
+                ["apz.content_response_timeout"] = 60000,
+                // Indicate that the download panel has been shown once so that
+                // whichever download test runs first doesn't show the popup
+                // inconsistently.
+                ["browser.download.panel.shown"] = true,
+                // Background thumbnails in particular cause grief, and disabling
+                // thumbnails in general cannot hurt
+                ["browser.pagethumbnails.capturing_disabled"] = true,
+                // Disable safebrowsing components.    
+                ["browser.safebrowsing.blockedURIs.enabled"] = false,
+                ["browser.safebrowsing.downloads.enabled"] = false,
+                ["browser.safebrowsing.passwords.enabled"] = false,
+                ["browser.safebrowsing.malware.enabled"] = false,
+                ["browser.safebrowsing.phishing.enabled"] = false,
+                // Disable updates to search engines.
+                ["browser.search.update"] = false,
+                // Turn off search suggestions in the location bar so as not to trigger
+                // network connections.
+                ["browser.urlbar.suggest.searches"] = true,
+                // Do not restore the last open set of tabs if the browser has crashed
+                ["browser.sessionstore.resume_from_crash"] = false,
+                // Don't check for the default web browser during startup.
+                ["browser.shell.checkDefaultBrowser"] = false,
+                // Disable browser animations (tabs, fullscreen, sliding alerts)
+                ["toolkit.cosmeticAnimations.enabled"] = false,
+                // Close the window when the last tab gets closed
+                ["browser.tabs.closeWindowWithLastTab"] = true,
+                // Do not allow background tabs to be zombified on Android, otherwise for
+                // tests that open additional tabs, the test harness tab itself might get
+                // unloaded
+                //pref("browser.tabs.disableBackgroundZombification", false);
+                // Disable first run splash page on Windows 10
+                ["browser.usedOnWindows10.introURL"] = "",
+                // Disable the UI tour.
+                //
+                // Should be set in profile.
+                ["browser.uitour.enabled"] = false,
+                // Do not show datareporting policy notifications which can
+                // interfere with tests    
+                ["datareporting.healthreport.documentServerURI"] = "",
+                ["datareporting.healthreport.about.reportUrl"] = "",
+                ["datareporting.healthreport.logging.consoleEnabled"] = false,
+                ["datareporting.healthreport.service.enabled"] = false,
+                ["datareporting.healthreport.service.firstRun"] = false,
+                ["datareporting.healthreport.uploadEnabled"] = false,
+                // Automatically unload beforeunload alerts  
+                ["dom.disable_beforeunload"] = false,
+                // Disable slow script dialogues    
+                ["dom.max_chrome_script_run_time"] = 0,
+                ["dom.max_script_run_time"] = 0,
+                // Only load extensions from the application and user profile
+                // AddonManager.SCOPE_PROFILE + AddonManager.SCOPE_APPLICATION
+                //pref("extensions.autoDisableScopes", 0);
+                //pref("extensions.enabledScopes", 15);
+                // Disable metadata caching for installed add-ons by default
+                //pref("extensions.getAddons.cache.enabled", false);
+                // Disable installing any distribution extensions or add-ons.
+                // pref("extensions.installDistroAddons", false);
+                // Turn off extension updates so they do not bother tests
+                //pref("extensions.update.enabled", false);
+                // pref("extensions.update.notifyUser", false);
+                // Make sure opening about:addons will not hit the network   
+                ["extensions.webservice.discoverURL"] = "",
+                //pref("extensions.screenshots.disabled", true);
+                //pref("extensions.screenshots.upload-disabled", true);
+                // Disable useragent updates
+                //pref("general.useragent.updates.enabled", false);   
+                // Do not scan Wifi    
+                ["geo.wifi.scan"] = false,
+                // Show chrome errors and warnings in the error console
+                ["javascript.options.showInConsole"] = true,
+                // Disable download and usage of OpenH264: and Widevine plugins
+                // pref("media.gmp-manager.updateEnabled", false);
+                // Do not prompt with long usernames or passwords in URLs 
+                ["network.http.phishy-userpass-length"] = 255,
+                // Do not prompt for temporary redirects         
+                ["network.http.prompt-temp-redirect"] = false,
+                // Disable speculative connections so they are not reported as leaking
+                // when they are hanging around
+                ["network.http.speculative-parallel-limit"] = 0,
+                // Do not automatically switch between offline and online  
+                ["network.manage-offline-status"] = false,
+                // Make sure SNTP requests do not hit the network
+                ["network.sntp.pools"] = "",
+                ["security.certerrors.mitm.priming.enabled"] = false,
+                // Local documents have access to all other local documents,
+                // including directory listings
+                ["security.fileuri.strict_origin_policy"] = false,
+                // Tests do not wait for the notification button security delay  
+                ["security.fileuri.notification_enable_delay"] = 0,
+                // Do not automatically fill sign-in forms with known usernames and
+                // passwords
+                //pref("signon.autofillForms", false);
+                // Disable password capture, so that tests that include forms are not
+                // influenced by the presence of the persistent doorhanger notification
+                //pref("signon.rememberSignons", false);
+                // Disable first-run welcome page  
+                ["startup.homepage_welcome_url"] = "about:blank",
+                ["startup.homepage_welcome_url.additional"] = "",
+                // Prevent starting into safe mode after application crashes  
+                ["toolkit.startup.max_resumed_crashes"] = -1,
+                ["toolkit.crashreporter.enabled"] = false,
+                ["toolkit.telemetry.enabled"] = false,
+                ["toolkit.telemetry.server"] = "",
+                // Disable downloading the list of blocked extensions. 
+                ["extensions.blocklist.enabled"] = false,
+                // Force Firefox Devtools to open in a separate window.
+                //pref("devtools.toolbox.host", "window");
+                // Disable auto translations
+                //pref("browser.translations.enable", false);
+                // Disable spell check
+                //pref("layout.spellcheckDefault", 0);
+                ["webgl.disabled"] = !UserProfile.WebBrowser.WebGL,
+                ["media.navigator.enabled"] = UserProfile.WebBrowser.WebRTC,
+                ["media.peerconnection.enabled"] = UserProfile.WebBrowser.WebRTC,
+                ["plugin.state.flash"] = UserProfile.WebBrowser.Flash ? 1 : 0,
+                ["plugins.flashBlock.enabled"] = !UserProfile.WebBrowser.Flash,
+                ["privacy.donottrackheader.enabled"] = !UserProfile.WebBrowser.Tracking,
+                ["privacy.trackingprotection.enabled"] = UserProfile.WebBrowser.Tracking,
+                ["plugin.state.npctr"] = 0,
+                ["plugin.state.java"] = 0,
+                ["devtools.debugger.remote-enabled"] = true,
+                ["devtools.debugger.prompt-connection"] = false,
+                ["extensions.manifestV3.enabled"] = true,
+                ["xpinstall.signatures.required"] = false,
+                ["dom.forms.autocomplete.formautofill"] = true,
+                ["signon.autologin.proxy"] = true,
+                ["network.auth.use-sspi"] = false,
+
+                ["network.proxy.type"] = 1,
+            };
+            if (UserProfile.Proxy.CanUse)
+            {
+                var host = UserProfile.Proxy.Host; 
+                var port = UserProfile.Proxy.Port;
+                prefs["network.proxy.http"] = host;
+                prefs["network.proxy.http_port"] = port;
+                prefs["network.proxy.backup.http"] = host;
+                prefs["network.proxy.backup.http_port"] = port;
+                prefs["network.proxy.ssl"] = host;
+                prefs["network.proxy.ssl_port"] = port;
+                prefs["network.proxy.backup.ssl"] = host;
+                prefs["network.proxy.backup.ssl_port"] = port;
+            }
+
+            // Define a regular expression pattern to extract key-value pairs
+            Regex regex = UserPrefRegex();
+                                                                           
             var prefsFilePath = Path.Combine(_browserProfileFolderPath, "prefs.js");
-
-            var fileTextLines = GetPerfsFileLines(prefsFilePath);
-
-            //https://github.com/arkenfox/user.js/blob/master/user.js - all settings
-
-            fileTextLines.Add("user_pref(\"browser.startup.page\", 3);");
-
-            //fileTextLines.Add("user_pref(\"signon.autologin.proxy\", true);");
-            //fileTextLines.Add("user_pref(\"network.proxy.share_proxy_settings\", false);"); 
-            ////fileTextLines.Add("user_pref(\"network.auth.use-sspi\", false);");
-            //fileTextLines.Add("user_pref(\"network.negotiate-auth.allow-proxies\", true);");
-            //fileTextLines.Add("user_pref(\"network.automatic-ntlm-auth.allow-proxies\", true);");
-            //fileTextLines.Add("user_pref(\"network.automatic-ntlm-auth.allow-non-fqdn\", true);");
-            //fileTextLines.Add("user_pref(\"network.negotiate-auth.allow-non-fqdn\", true);");
-            ////pref("network.negotiate-auth.trusted-uris", site - list);
-            ////pref("network.negotiate-auth.delegation-uris", site - list);
-            ////pref("network.automatic-ntlm-auth.trusted-uris", site - list);
-            //fileTextLines.Add($"user_pref(\"network.automatic-ntlm-auth.trusted-uris\",{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port},http://localhost);");
-            //fileTextLines.Add($"user_pref(\"network.negotiate-auth.delegation-uris\", {UserProfile.Proxy.Host}:{UserProfile.Proxy.Port},http://localhost);");
-            //fileTextLines.Add($"user_pref(\"network.negotiate-auth.trusted-uris\", {UserProfile.Proxy.Host}:{UserProfile.Proxy.Port},http://localhost);");
-
-            //fileTextLines.Add("user_pref(\"extensions.getAddons.showPane\", false);");
-            //fileTextLines.Add("user_pref(\"browser.discovery.enabled\", false);");
-            //fileTextLines.Add("user_pref(\"browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons\", false);");
-            //fileTextLines.Add("user_pref(\"browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features\", false);");
-            //fileTextLines.Add("user_pref(\"trailhead.firstrun.branches\", \"nofirstrun-empty\");");
-            //fileTextLines.Add("user_pref(\"browser.aboutwelcome.enabled\", false);");
-
-            //fileTextLines.Add("user_pref(\"plugin.state.npctrl\", 0);");
-            //fileTextLines.Add("user_pref(\"plugin.state.java\", 0);");
-            //fileTextLines.Add("user_pref(\"browser.tabs.remote.autostart.2\", false);");
-            //fileTextLines.Add("user_pref(\"browser.tabs.remote.autostart\", false);");
-            //fileTextLines.Add("user_pref(\"browser.shell.checkDefaultBrowser\", false);");
-            //fileTextLines.Add("user_pref(\"browser.tabs.closeWindowWithLastTab\", false);");
-            //fileTextLines.Add("user_pref(\"plugin.state.flash\", 2);");
-            //fileTextLines.Add("user_pref(\"plugins.flashBlock.enabled\", false);");
-            //fileTextLines.Add("user_pref(\"privacy.resistFingerprinting\", true);");
-            //fileTextLines.Add("user_pref(\"xpinstall.signatures.required\", false);");
-            //fileTextLines.Add("user_pref(\"xpinstall.whitelist.required\", false);");
-
-            fileTextLines.Add($"user_pref(\"browser.startup.homepage\", \"{Options.Url}\");");
-
-            var webBrowser = UserProfile.WebBrowser;
-            if (!webBrowser.WebGL)
+            if(File.Exists(prefsFilePath))
             {
-                fileTextLines.Add("user_pref(\"webgl.disabled\", true);");
+               foreach(var userPref in await File.ReadAllLinesAsync(prefsFilePath))
+                {
+                    if (!userPref.HasAny()) continue;
+                    // Match the pattern in the input string
+                    Match match = regex.Match(userPref);
+
+                    // If the pattern is found, extract key-value pairs
+                    if (match.Success)
+                    {
+                        string key = match.Groups[1].Value;
+                        string value = match.Groups[2].Value.Trim('"');
+
+                        // Add key-value pair to the dictionary
+                        if(!prefs.ContainsKey(key) && !key.Contains(".proxy."))
+                            prefs[key] = value;
+                    }
+
+                }
             }
-            if (!webBrowser.WebRTC)
+            List<string> filePrefs = [];
+            foreach (var item in prefs)
             {
-                fileTextLines.Add("user_pref(\"media.navigator.enabled\", false);");
-                fileTextLines.Add("user_pref(\"media.peerconnection.enabled\", false);");
+                filePrefs.Add($"user_pref(\"{item.Key}\", {ParseValue(item.Value.ToString())});");
             }
-            if (!webBrowser.Flash)
-            {
-                fileTextLines.Add("user_pref(\"plugin.state.flash\", 0);");
-                fileTextLines.Add("user_pref(\"plugins.flashBlock.enabled\", true);");
-            }
-            if (!webBrowser.Tracking)
-            {
-                fileTextLines.Add("user_pref(\"privacy.donottrackheader.enabled\", true);");
-                fileTextLines.Add("user_pref(\"services.sync.prefs.sync.privacy.donottrackheader.enabled\", true);");
-            }
-
-            var proxy = UserProfile.Proxy;
-            if (proxy.CanUse)
-            {
-                //_dynamicProxyServer = DynamicProxyServerFactory.Create(proxy);
-
-                var host = UserProfile.Proxy.Host; //_dynamicProxyServer.Host;
-                var port = UserProfile.Proxy.Port; //_dynamicProxyServer.Port;
-
-                fileTextLines.Add("user_pref(\"network.proxy.type\", 1); ");
-                fileTextLines.Add($"user_pref(\"network.proxy.username\", {UserProfile.Proxy.UserName}); ");
-                fileTextLines.Add($"user_pref(\"network.proxy.password \", {UserProfile.Proxy.Password}); ");
-                //fileTextLines.Add("user_pref(\"network.proxy.share_proxy_settings\", true);");
-
-                fileTextLines.Add("user_pref(\"network.proxy.http\", \"" + host + "\");");
-                fileTextLines.Add("user_pref(\"network.proxy.http_port\", " + port + ");");
-
-                fileTextLines.Add("user_pref(\"network.proxy.ssl\", \"" + host + "\");");
-                fileTextLines.Add("user_pref(\"network.proxy.ssl_port\", " + port + ");");
-
-                fileTextLines.Add("user_pref(\"network.proxy.backup.ssl\", \"" + host + "\");");
-                fileTextLines.Add("user_pref(\"network.proxy.backup.ssl_port\", " + port + ");");
-
-                fileTextLines.Add("user_pref(\"network.proxy.ftp\", \"" + host + "\");");
-                fileTextLines.Add("user_pref(\"network.proxy.backup.ftp_port\", " + port + ");");
-
-                fileTextLines.Add("user_pref(\"network.proxy.socks\", \"" + host + "\");");
-                fileTextLines.Add("user_pref(\"network.proxy.socks_port\", " + port + ");");
-
-                fileTextLines.Add("user_pref(\"network.proxy.backup.socks\", \"" + host + "\");");
-                fileTextLines.Add("user_pref(\"network.proxy.backup.socks_port\", " + port + ");");
-
-                //if (!_dynamicProxyServer.IsCertificateTrusted())
-                //{
-                //    //https://www.techwalla.com/articles/how-to-disable-invalid-ssl-in-firefox
-                //    // In case when windows popup/messagebox for trust proxy certificate was aborted by user by mistake
-                //    // we anyway will allow to use browser and proxy by ignoring certificates
-                //    fileTextLines.Add("user_pref(\"browser.ssl_override_behavior\", 1);");
-                //}
-
-                //pref("app.update.staging.enabled", true);
-                //pref("app.update.service.enabled", true);
-                //pref["app.update.enabled"] = false;
-                //pref["app.update.autoUpdateEnabled"] = false;
-                //pref["app.update.auto"] = false;
-                //pref["app.update.mode"] = 0;
-                //pref["app.update.service.enabled"] = false;
-                //pref("browser.startup.homepage",            "about:home");
-                //signon.autologin.proxy
-            }
-            File.WriteAllLines(prefsFilePath, fileTextLines.ToArray());
+            await File.WriteAllLinesAsync(prefsFilePath, filePrefs);
+            return prefs;
         }
-
-        // TODO: refactor next legacy code
-        private List<string> GetPerfsFileLines(string prefsFilePath)
+        object ParseValue(string value)
         {
-            var lines = new List<string>();
-            if (!File.Exists(prefsFilePath))
-            {
-                return lines;
-            }
+            // Try parsing value as int
+            if (int.TryParse(value, out int intValue))
+                return intValue;
 
-            lines = File
-                .ReadAllLines(prefsFilePath)
-                .ToList();
+            // Try parsing value as bool
+            if (bool.TryParse(value, out bool boolValue))
+                return boolValue.ToString().ToLower();
 
-            for (int i = lines.Count - 1; i >= 0; i--)
-            {
-                var line = lines[i];
-                if (line.Contains("user_pref(\"plugin.state.npctrl\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"webgl.disabled\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"plugin.state.flash\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"plugin.state.java\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"media.peerconnection.enabled\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"privacy.donottrackheader.enabled\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"services.sync.prefs.sync.privacy.donottrackheader.enabled\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"browser.shell.checkDefaultBrowser\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"browser.tabs.closeWindowWithLastTab\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.type\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.http\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.http_port\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.ssl\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.ssl_port\", "))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.backup.ssl\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.backup.ssl_port\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.ftp\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.ftp_port\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.socks\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.socks_port\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.backup.socks\","))
-                {
-                    lines.RemoveAt(i);
-                }
-                else if (line.Contains("user_pref(\"network.proxy.backup.socks_port\","))
-                {
-                    lines.RemoveAt(i);
-                }
-            }
-
-            return lines;
+            // Otherwise, treat it as a string
+            return $"\"{value}\"";
         }
 
         protected override string GetCommandLineArguments()
@@ -433,7 +457,7 @@ namespace Chameleon.SystemBrowser.Firefox
             return string.Join(" ", [
                 "-new-instance",
                 "-wait-for-browser",
-                $"-new-window about:blank",
+                $"-new-window {Starturl}",
                 //$"-url \"{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}\"",
                 $"-profile \"{_browserProfileFolderPath}\"",
                 //"-no-remote"
@@ -450,5 +474,8 @@ namespace Chameleon.SystemBrowser.Firefox
                 .AddQuotesToEachElement()
                 .ToCommaSeparatedString();
         }
+
+        [GeneratedRegex(@"user_pref\(""(.*?)"", (\""(.*?)\""|.*?)\);")]
+        private static partial Regex UserPrefRegex();
     }
 }
