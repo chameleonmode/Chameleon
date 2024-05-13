@@ -36,5 +36,8 @@
         public const string Pages_ProxyCredits = "Pages.ProxyCredits";
         public const string Pages_ProxyCredits_Create = Pages_ProxyCredits + ".Create";
         public const string Pages_ProxyCredits_Update = Pages_ProxyCredits + ".Update";
+
+        public const string Automation = "Automaation";
+        public const string Automation_Edit = Automation + ".Edit";
     }
 }

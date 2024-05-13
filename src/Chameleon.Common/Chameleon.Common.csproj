@@ -8,11 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
   </ItemGroup>
 

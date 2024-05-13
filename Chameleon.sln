@@ -38,7 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia", "Avalonia", "{DE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Application", "src\Chameleon.Application\Chameleon.Application.csproj", "{8B2F015D-2EDE-48A0-A1A9-36AE918CF81D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AvApp", "AvApp", "{CE5E137F-ECF3-42D0-99BB-18BA964E56EF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{CE5E137F-ECF3-42D0-99BB-18BA964E56EF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Prism.Infrastructure", "Chameleon.Avalonia\src\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj", "{1A229BA5-507D-4AEF-A113-62C00955568F}"
 EndProject
@@ -72,21 +72,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Controls
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Desktop", "Chameleon.Avalonia\src\Chameleon.Avalonia.Desktop\Chameleon.Avalonia.Desktop.csproj", "{ABEAB877-7688-494A-84DF-7B44989A2F3E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Av.Fluent", "Chameleon.Avalonia\src\Chameleon.Av.Fluent\Chameleon.Av.Fluent.csproj", "{AD9B695F-B074-4788-9D4C-645719EA0716}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Fluent", "Chameleon.Avalonia\src\Chameleon.Av.Fluent\Chameleon.Avalonia.Fluent.csproj", "{AD9B695F-B074-4788-9D4C-645719EA0716}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Av.Fluent.Common", "Chameleon.Avalonia\src\Chameleon.Av.Fluent.Common\Chameleon.Av.Fluent.Common.csproj", "{332C26D1-5E70-4486-B5E4-653BF586F3F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Fluent.Common", "Chameleon.Avalonia\src\Chameleon.Av.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj", "{332C26D1-5E70-4486-B5E4-653BF586F3F9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dialogs", "Dialogs", "{3C9BA5F3-8C8F-4451-A521-38179E5256C2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Av.Fluent.Dialogs", "Chameleon.Avalonia\src\Chameleon.Av.Fluent.Dialogs\Chameleon.Av.Fluent.Dialogs.csproj", "{089453ED-4D62-438C-ABED-2EA7DFDA197D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Fluent.Dialogs", "Chameleon.Avalonia\src\Chameleon.Av.Fluent.Dialogs\Chameleon.Avalonia.Fluent.Dialogs.csproj", "{089453ED-4D62-438C-ABED-2EA7DFDA197D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommunityToolkit", "CommunityToolkit", "{31D09692-9476-4B2B-A3D0-04C8F71BA830}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.CT.Common", "Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj", "{61A73058-5D30-48C4-90BF-5814A6584B06}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Common", "Chameleon.Avalonia\src\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj", "{87EF0DE8-2435-413F-88F2-B9321DFB2DCA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Playwright", "..\..\git cloned\playwright-dotnet\src\Playwright\Playwright.csproj", "{99E4A926-067C-4C03-AC36-78A6C8B1ED3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -182,10 +180,6 @@ Global
 		{87EF0DE8-2435-413F-88F2-B9321DFB2DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87EF0DE8-2435-413F-88F2-B9321DFB2DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87EF0DE8-2435-413F-88F2-B9321DFB2DCA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99E4A926-067C-4C03-AC36-78A6C8B1ED3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99E4A926-067C-4C03-AC36-78A6C8B1ED3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99E4A926-067C-4C03-AC36-78A6C8B1ED3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99E4A926-067C-4C03-AC36-78A6C8B1ED3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

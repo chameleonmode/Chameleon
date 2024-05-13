@@ -1,6 +1,6 @@
 ﻿
 using Chameleon.Interfaces.Services;
-using Microsoft.Extensions.DependencyInjection;
+//using Microsoft.Extensions.DependencyInjection; TODO: and move to Chameleon.CT.Common  or create Chameleon.Microsoft.Common
 
 namespace Chameleon.Common.CommunityIOC;
 
@@ -20,31 +20,31 @@ public class CTServiceProvider
     {
     }
 
-    public ServiceCollection ServiceCollect { get; } = new ServiceCollection();
+    //public ServiceCollection ServiceCollect { get; } = new ServiceCollection();
 
     /// <summary>
     /// Configures the singles for the application.
     /// </summary>
-    public void ConfigureTyps(Dictionary<Type,Type> singles, ConfigureType ct)
-    {
-        foreach (var type in singles)
-            switch (ct)
-            {
-                case ConfigureType.Single:
-                    ServiceCollect.AddSingleton(type.Key, type.Value);
-                    break;
-                case ConfigureType.Transient:
-                    ServiceCollect.AddTransient(type.Key, type.Value);
-                    break;
-                case ConfigureType.Scoped:
-                    ServiceCollect.AddScoped(type.Key, type.Value);
-                    break;
-                default:
-                    break;
-            }
+    //public void ConfigureTyps(Dictionary<Type,Type> singles, ConfigureType ct)
+    //{
+    //    foreach (var type in singles)
+    //        switch (ct)
+    //        {
+    //            case ConfigureType.Single:
+    //                ServiceCollect.AddSingleton(type.Key, type.Value);
+    //                break;
+    //            case ConfigureType.Transient:
+    //                ServiceCollect.AddTransient(type.Key, type.Value);
+    //                break;
+    //            case ConfigureType.Scoped:
+    //                ServiceCollect.AddScoped(type.Key, type.Value);
+    //                break;
+    //            default:
+    //                break;
+    //        }
 
-        Services = ServiceCollect.BuildServiceProvider();
-    }
+    //    Services = ServiceCollect.BuildServiceProvider();
+    //}
 
     /// <summary>
     /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.

@@ -17,7 +17,7 @@
     <ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Domain\Chameleon.Domain.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
-    <ProjectReference Include="..\Chameleon.Av.Fluent.Common\Chameleon.Av.Fluent.Common.csproj" />
+    <ProjectReference Include="..\Chameleon.Av.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
   </ItemGroup>
