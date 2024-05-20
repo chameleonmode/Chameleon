@@ -19,14 +19,17 @@ namespace Chameleon.Av.Fluent.Common.Services;
 
 public class NavigationService : INavigationService
 {
+    public NavigationFactory NavigationFactory { get; }
+
     public NavigationService()
     {
-       
+        NavigationFactory = new NavigationFactory();
     }
+
     public static NavigationService Instance { get; } = ContainerServiceHelper.Resolve<INavigationService>() as NavigationService;
 
     public object? PreviousPage { get; set; }
-    public object? NavFactory { get; } = new NavigationFactory();
+    public object? NavFactory => throw new NotImplementedException();//{ get; } = new NavigationFactory();
 
     public void SetFrame(object f)
     {
@@ -94,6 +97,7 @@ public class NavigationService : INavigationService
 
     public Task PopAsync()
     {
+        //TODO: implement other back possibilitys when they come up
         if (_frame?.CanGoBack == true && _frame.Content.GetType().Name == "UserProfileIdentityView")
             _frame?.GoBack();
 

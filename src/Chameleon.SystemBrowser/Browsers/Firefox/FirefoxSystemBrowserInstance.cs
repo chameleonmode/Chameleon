@@ -14,6 +14,8 @@ using Microsoft.Playwright.Transport;
 using Microsoft.Playwright.Transport.Protocol;
 using Chameleon.Interfaces.Settings;
 using System.Text.RegularExpressions;
+using System;
+using System.Net;
 
 namespace Chameleon.SystemBrowser.Firefox
 {
@@ -43,27 +45,46 @@ namespace Chameleon.SystemBrowser.Firefox
         //    return Task.CompletedTask;
         //}
 
-        private void CreateProfile()
+        private Task CreateProfileAsync()
         {
-            var createProfileProcess = new Process
+            return Task.Run(async () => 
             {
-                StartInfo = new ProcessStartInfo
+                using var createProfileProcess = new Process
                 {
-                    Arguments = $"firefox -CreateProfile \"{UserProfile.Id} {_browserProfileFolderPath}\"",
-                    FileName = _browserExeFilePath,
-                }
-            };
+                    StartInfo = new ProcessStartInfo
+                    {                                                                  
+                        // $"firefox -CreateProfile \"{UserProfile.Id} {_browserProfileFolderPath}\"",
+                        Arguments = $"-headless -url {UserProfile.Proxy.Host}:{UserProfile.Proxy.Port} -profile \"{_browserProfileFolderPath}\"",
+                        FileName = _browserExeFilePath,
+                    }
+                };
 
-            createProfileProcess.Start();
-            createProfileProcess.WaitForExit();
+                createProfileProcess.Start();
+                Process[] firefoxInstances = Process.GetProcessesByName("firefox");
+
+                foreach (Process firefoxInstance in firefoxInstances)
+                {
+                    if (!firefoxInstance.HasExited &&
+                        firefoxInstance.StartTime > createProfileProcess.StartTime &&
+                        firefoxInstance.MainWindowHandle != IntPtr.Zero)
+                    {
+                        firefoxInstance.Close();
+                    }
+                }
+                await Task.Delay(1000);
+                createProfileProcess.Close();
+            });
         }
 
         protected override async Task InitializeProfileFolder()
         {
             if (!Directory.Exists(_browserProfileFolderPath))
+            {
                 Directory.CreateDirectory(_browserProfileFolderPath);
+                //await Task.Delay(1000);
+               // await CreateProfileAsync();
+            }
 
-           
             var prefs = await InitializePrefsJs();
 
             return;
@@ -111,20 +132,136 @@ namespace Chameleon.SystemBrowser.Firefox
             var prefs = new Dictionary<string, object>()
             {
 
+                // =================================================================
+                // THESE ARE THE PROPERTIES FROM https://arkenfox.github.io/gui/
+                // =================================================================  
+                //[SECTION 0100]: STARTUP        
+                // Dislabe newtabpage    
+                ["browser.startup.homepage"] = "about:blank",
+                ["browser.newtabpage.enabled"] = false,
+                ["browser.startup.page"] = 3, //0=blank, 1=home, 2=last visited page, 3=resume previous session
+                ["browser.newtabpage.activity-stream.showSponsored"] = false,
+                ["browser.newtabpage.activity-stream.showSponsoredTopSites"] = false,
+                ["browser.newtabpage.activity-stream.default.sites"] = "",
+                //[SECTION 0200]: GEOLOCATION 
+                ["geo.provider.network.url"] = "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%",
+                ["geo.provider.network.logging.enabled"] = true,
+                ["geo.provider.ms-windows-location"] = false,
+                ["geo.provider.use_corelocation"] = false,
+                ["geo.provider.use_gpsd"] = false,
+                ["geo.provider.use_geoclue"] = false,
+                //[SECTION 0300]: QUIETER FOX
+                //  RECOMMENDATIONS
+                ["extensions.getAddons.showPane"] = false,
+                ["extensions.htmlaboutaddons.recommendations.enabled"] = false,
+                ["browser.discovery.enabled"] = false,
+                ["browser.shopping.experience2023.enabled"] = false,
+                //  TELEMETRY
+                ["datareporting.policy.dataSubmissionEnabled"] = false,
+                ["datareporting.healthreport.uploadEnabled"] = false,
+                ["toolkit.telemetry.unified"] = false,
+                ["toolkit.telemetry.enabled"] = false,
+                ["toolkit.telemetry.server"] = "data:,",
+                ["toolkit.telemetry.archive.enabled"] = false,
+                ["toolkit.telemetry.newProfilePing.enabled"] = false,
+                ["toolkit.telemetry.shutdownPingSender.enabled"] = false,
+                ["toolkit.telemetry.updatePing.enabled"] = false,
+                ["toolkit.telemetry.bhrPing.enabled"] = false,
+                ["toolkit.telemetry.firstShutdownPing.enabled"] = false,
+                ["toolkit.telemetry.coverage.opt-out"] = true,
+                ["toolkit.coverage.opt-out"] = true,
+                ["toolkit.coverage.endpoint.base"] = "",
+                ["browser.newtabpage.activity-stream.feeds.telemetry"] = false,
+                ["browser.newtabpage.activity-stream.telemetry"] = false,
+                //  STUDIES
+                ["app.shield.optoutstudies.enabled"] = false,
+                ["app.normandy.enabled"] = false,
+                ["app.normandy.api_url"] = "",
+                //  CRASH REPORTS
+                ["breakpad.reportURL"] = "",
+                ["browser.tabs.crashReporting.sendReport"] = false,
+                ["browser.crashReports.unsubmittedCheck.enabled"] = false,
+                ["browser.crashReports.unsubmittedCheck.autoSubmit2"] = false,
+                //	OTHER
+                ["captivedetect.canonicalURL"] = "",
+                //["network.captive-portal-service.enabled"] = false,
+                //["network.connectivity-service.enabled"] = false, 
+                //[SECTION 0400]: SAFE BROWSING (SB)   
+                ["browser.safebrowsing.malware.enabled"] = false,
+                ["browser.safebrowsing.phishing.enabled"] = false,
+                ["browser.safebrowsing.downloads.enabled"] = false, 
+                ["browser.safebrowsing.downloads.remote.enabled"] = false,
+                ["browser.safebrowsing.downloads.remote.url"] = "",
+                ["browser.safebrowsing.downloads.remote.block_potentially_unwanted"] = false,
+                ["browser.safebrowsing.downloads.remote.block_uncommon"] = false,
+                ["browser.safebrowsing.allowOverride"] = false,
+                //[SECTION 0600]: BLOCK IMPLICIT OUTBOUND [not explicitly asked for - e.g. clicked on]
+                ["network.prefetch-next"] = false,
+                ["network.dns.disablePrefetch"] = true,
+                ["network.dns.disablePrefetchFromHTTPS"] = true,
+                ["network.predictor.enabled"] = false,
+                ["network.predictor.enable-prefetch"] = false,
+                //["network.http.speculative-parallel-limit"] = 0,
+                ["browser.places.speculativeConnect.enabled"] = false,
+                ["browser.send_pings"] = false,
+                //[SECTION 0700]: DNS / DoH / PROXY / SOCKS 
+                ["network.proxy.socks_remote_dns"] = true,
+                ["network.file.disable_unc_paths"] = true,
+                ["network.gio.supported-protocols"] = "",
+                ["network.proxy.failover_direct"] = false,
+                ["network.proxy.allow_bypass"] = false,
+                /*** [SECTION 0700]: HTTP* / TCP/IP / DNS / PROXY / SOCKS etc https://github.com/arkenfox/user.js/blob/5bd5f6b28e801b8437e2574fad35f52365a6b593/user.js ***/
+                ["network.dns.disableIPv6"] = true,
+                ["network.ftp.enabled"] = false,
+                ["browser.fixup.alternate.enabled"] = false,
+                ["browser.casting.enabled"] = false,
+                //["network.trr.mode"] = 3,
+                //["network.trr.uri"] = $"{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}",
+                //["network.trr.custom_uri"] = $"https://{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}",     
+                //["network.trr.credentials"] = $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{UserProfile.Proxy.UserName}:{UserProfile.Proxy.Password}"))}",     
+                //[SECTION 2000]: PLUGINS / MEDIA / WEBRTC    
+                ["media.peerconnection.ice.proxy_only_if_behind_proxy"] = true,
+                ["media.peerconnection.ice.default_address_only"] = true,
+                ["media.peerconnection.ice.no_host"] = true,
+                ["media.gmp-provider.enabled"] = false,
+                //[SECTION 2600]: MISCELLANEOUS 
+                ["permissions.manager.defaultsUrl"] = "",
+                ["webchannel.allowObject.urlWhitelist"] = "",
+                ["pdfjs.disabled"] = false,
+                ["pdfjs.enableScripting"] = false,
+                //[SECTION 2700]: ETP (ENHANCED TRACKING PROTECTION)  
+                ["browser.contentblocking.category"] = "strict",
+                ["privacy.antitracking.enableWebcompat"] = false,
+                // =================================================================
+                // THESE ARE THE PROPERTIES FROM https://mullvad.net/en/browser/hard-facts
+                // =================================================================
+                ["privacy.resistFingerprinting"] = true,
+                ["privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts"] = true,
+                ["privacy.resistFingerprinting.block_mozAddonManager"] = true,
+                ["privacy.resistFingerprinting.exemptedDomains"] = "*.example.invalid",
+                ["privacy.resistFingerprinting.jsmloglevel"] = "Warn",
+                ["privacy.resistFingerprinting.letterboxing"] = true,
+                ["privacy.resistFingerprinting.randomDataOnCanvasExtract"] = true,
+                ["privacy.resistFingerprinting.reduceTimerPrecision.jitter"] = true,
+                ["privacy.resistFingerprinting.reduceTimerPrecision.microseconds"] = 1000,
+                ["privacy.resistFingerprinting.target_video_res"] = 480,
+                ["privacy.resistFingerprinting.testGranularityMask"] = 0,
+                ["services.sync.prefs.sync.privacy.resistFingerprinting.reduceTimerPrecision.jitter"] = true,
+                ["services.sync.prefs.sync.privacy.resistFingerprinting.reduceTimerPrecision.microseconds"] = true,
                 // Only allow the old modal dialogs. This should be removed when there is
                 // support for the new modal UI (see Bug 1686743).
-                ["prompts.contentPromptSubDialog"] = false,
-                ["alerts.useSystemBackend"] = false,
-                ["app.normandy.first_run"] = false,
+                //["prompts.contentPromptSubDialog"] = true,
+                //["alerts.useSystemBackend"] = false,
                 //["prompts.modalType.confirmAuth"] = 2,
                 //["privacy.authPromptSpoofingProtection"] = false,
                 //["prompts.defaultModalType"] = 1,
                 //["prompts.windowPromptSubDialog"] = false,
                 //["browser.startup.windowsLaunchOnLogin.disableLaunchOnLoginPrompt"] = true,
-                //["network.auth.subresource-http-auth-allow"] = 2,
-                //["prompts.authentication_dialog_abuse_limit"] = -1,
+                // Turn off the authentication dialog blocking 
+                ["network.negotiate-auth.allow-proxies"] = true,
+                ["network.auth.subresource-http-auth-allow"] = 1,
+                ["prompts.authentication_dialog_abuse_limit"] = -1,
                 ["browser.newtab.preload"] = false,
-                ["app.shield.optoutstudies.enabled"] = false,
                 ["extensions.pendingOperations"] = false,
                 ["media.hardware-video-decoding.failed"] = false,
                 ["sanity-test.running"] = false,
@@ -134,7 +271,7 @@ namespace Chameleon.SystemBrowser.Firefox
                 ["dom.input_events.security.minNumTicks"] = 0,
                 ["dom.input_events.security.minTimeElapsedInMS"] = 0,
                 ["dom.iframe_lazy_loading.enabled"] = false,
-                ["datareporting.policy.dataSubmissionEnabled"] = false,
+                //["datareporting.policy.dataSubmissionEnabled"] = false,
                 ["datareporting.policy.dataSubmissionPolicyAccepted"] = false,
                 ["datareporting.policy.dataSubmissionPolicyBypassNotification"] = false,
                 // Force pdfs into downloads.
@@ -223,13 +360,14 @@ namespace Chameleon.SystemBrowser.Firefox
                 ["browser.library.activity-stream.enabled"] = false,
                 ["browser.search.geoSpecificDefaults"] = false,
                 ["browser.search.geoSpecificDefaults.url"] = "",
-                ["captivedetect.canonicalURL"] = "",
+                //["captivedetect.canonicalURL"] = "",
                 ["network.captive-portal-service.enabled"] = false,
                 ["network.connectivity-service.enabled"] = false,
                 ["browser.newtabpage.activity-stream.asrouter.providers.snippets"] = "",
                 // Make sure Shield doesn't hit the network.
-                ["app.normandy.api_url"] = "",
-                ["app.normandy.enabled"] = false,
+                //["app.normandy.api_url"] = "",
+                //["app.normandy.enabled"] = false,     
+                //["app.normandy.first_run"] = false,
                 // Disable updater
                 ["app.update.enabled"] = false,
                 // Disable Firefox old build background check   
@@ -240,10 +378,6 @@ namespace Chameleon.SystemBrowser.Firefox
                 ["app.update.auto"] = false,
                 ["app.update.mode"] = 0,
                 ["app.update.service.enabled"] = false,
-                // Dislabe newtabpage    
-                ["browser.startup.homepage"] = "about:blank",
-                ["browser.newtabpage.enabled"] = false,
-                ["browser.startup.page"] = 3, // 0 for no restore  3 for restore
                 // Do not redirect user when a milstone upgrade of Firefox is detected
                 ["browser.startup.homepage_override.mstone"] = "ignore",
                 // Disable topstories                       
@@ -269,10 +403,10 @@ namespace Chameleon.SystemBrowser.Firefox
                 ["browser.pagethumbnails.capturing_disabled"] = true,
                 // Disable safebrowsing components.    
                 ["browser.safebrowsing.blockedURIs.enabled"] = false,
-                ["browser.safebrowsing.downloads.enabled"] = false,
-                ["browser.safebrowsing.passwords.enabled"] = false,
-                ["browser.safebrowsing.malware.enabled"] = false,
-                ["browser.safebrowsing.phishing.enabled"] = false,
+                ["browser.safebrowsing.passwords.enabled"] = false, 
+                //["browser.safebrowsing.downloads.enabled"] = false,
+                //["browser.safebrowsing.malware.enabled"] = false,
+                //["browser.safebrowsing.phishing.enabled"] = false,
                 // Disable updates to search engines.
                 ["browser.search.update"] = false,
                 // Turn off search suggestions in the location bar so as not to trigger
@@ -296,6 +430,7 @@ namespace Chameleon.SystemBrowser.Firefox
                 //
                 // Should be set in profile.
                 ["browser.uitour.enabled"] = false,
+                ["browser.uitour.url"] = "",
                 // Do not show datareporting policy notifications which can
                 // interfere with tests    
                 ["datareporting.healthreport.documentServerURI"] = "",
@@ -303,7 +438,7 @@ namespace Chameleon.SystemBrowser.Firefox
                 ["datareporting.healthreport.logging.consoleEnabled"] = false,
                 ["datareporting.healthreport.service.enabled"] = false,
                 ["datareporting.healthreport.service.firstRun"] = false,
-                ["datareporting.healthreport.uploadEnabled"] = false,
+                //["datareporting.healthreport.uploadEnabled"] = false,
                 // Automatically unload beforeunload alerts  
                 ["dom.disable_beforeunload"] = false,
                 // Disable slow script dialogues    
@@ -361,8 +496,6 @@ namespace Chameleon.SystemBrowser.Firefox
                 // Prevent starting into safe mode after application crashes  
                 ["toolkit.startup.max_resumed_crashes"] = -1,
                 ["toolkit.crashreporter.enabled"] = false,
-                ["toolkit.telemetry.enabled"] = false,
-                ["toolkit.telemetry.server"] = "",
                 // Disable downloading the list of blocked extensions. 
                 ["extensions.blocklist.enabled"] = false,
                 // Force Firefox Devtools to open in a separate window.
@@ -392,7 +525,7 @@ namespace Chameleon.SystemBrowser.Firefox
             };
             if (UserProfile.Proxy.CanUse)
             {
-                var host = UserProfile.Proxy.Host; 
+                var host = UserProfile.Proxy.Host;
                 var port = UserProfile.Proxy.Port;
                 prefs["network.proxy.http"] = host;
                 prefs["network.proxy.http_port"] = port;
@@ -457,7 +590,9 @@ namespace Chameleon.SystemBrowser.Firefox
             return string.Join(" ", [
                 "-new-instance",
                 "-wait-for-browser",
-                $"-new-window {Starturl}",
+                //$"-new-window",
+                "-new-instance",
+                $"-url {Starturl}",
                 //$"-url \"{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}\"",
                 $"-profile \"{_browserProfileFolderPath}\"",
                 //"-no-remote"

@@ -139,8 +139,12 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
     }
     private async void AnimateOptions(bool toSmall)
     {
-        if (!_hasLoaded)
-            await Task.Delay(1000);
+        for (int i = 0; i < 4; i++)
+        {
+            if (!_hasLoaded)
+                await Task.Delay(250);
+        }
+      
         if (!_hasLoaded)
             return;
 

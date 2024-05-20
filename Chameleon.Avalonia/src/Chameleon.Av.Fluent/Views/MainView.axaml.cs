@@ -19,6 +19,7 @@ using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces;
+using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Dialogs;
@@ -37,8 +38,6 @@ namespace Chameleon.Av.Fluent.Views;
 
 public partial class MainView : UserControl
 {
-    private bool _isDesktop;
-
     public MainView()
     {
         InitializeComponent();
@@ -60,23 +59,23 @@ public partial class MainView : UserControl
 
         App.OnFramworkInitComplete += OnFrameworkInit;
 
-        if (e.Root is AppWindow aw && aw.SplashScreen is MainAppSplashScreen mass)
-        {
-            mass.InitApp += async () =>
-            {
-            };
-        }
-        else
-        {
-        }
+        //if (e.Root is AppWindow aw && aw.SplashScreen is MainAppSplashScreen mass)
+        //{
+        //    mass.InitApp += async () =>
+        //    {
+        //    };
+        //}
+        //else
+        //{
+        //}
     }
 
-    public async void OnFrameworkInit(AppWindow aw) 
+    public async void OnFrameworkInit(AppWindow aw)
     {
         App.OnFramworkInitComplete -= OnFrameworkInit;
 
-        var top = TopLevel.GetTopLevel(this); 
-        
+        var top = TopLevel.GetTopLevel(this);
+
         _isDesktop = top is Window;
 
         // Initialize the WindowNotificationManager with the "TopLevel". Previously (v0.10), MainWindow
@@ -97,6 +96,45 @@ public partial class MainView : UserControl
         NavView.ItemInvoked += OnNavigationViewItemInvoked;
         NavView.BackRequested += OnNavigationViewBackRequested;
     }
+    private void InitializeNavigationPages()
+    {
+        FrameView.NavigationPageFactory = NavigationService.Instance.NavigationFactory;
+        NavigationService.Instance.SetFrame(FrameView);
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            //foreach (var page in pages)
+            //{
+            //    var nvi = new NavigationViewItem
+            //    {
+            //        Content = page.NavHeader,
+            //        Tag = page,
+            //        IconSource = (IconSource)this.FindResource(page.IconKey),
+            //    };
+            //    nvi.Classes.Add("SampleAppNav");
+
+            //    if (page.ShowsInFooter)
+            //        footeritems.Add(nvi);
+            //    else
+            //        headeritems.Add(nvi);
+            //}
+            NavView.MenuItemsSource = pages.Where(p=> !p.ShowsInFooter).Select(a => a.GetNavigationViewItemBase(this)).ToList(); 
+            NavView.FooterMenuItemsSource = pages.Where(p => p.ShowsInFooter).Select(a => a.GetNavigationViewItemBase(this)).ToList(); 
+
+            FrameView.NavigateToType(pages[0].Tag, null, null);
+
+            //if (_isDesktop || OperatingSystem.IsBrowser())
+            //{
+            //}
+            //else
+            //{
+            //    NavView.PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
+            //}
+
+
+            //FrameView.NavigateFromObject((NavView.MenuItemsSource.ElementAt(0) as Control).Tag);
+        });
+    }
     private void OnNavigationViewBackRequested(object? sender, NavigationViewBackRequestedEventArgs e)
     {
         FrameView.GoBack();
@@ -105,7 +143,7 @@ public partial class MainView : UserControl
     private void OnNavigationViewItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
     {
         // Change the current selected item back to normal
-        // SetNVIIcon(sender as NavigationViewItem, false);
+        SetNVIIcon(sender as NavigationViewItem, false);
 
         if (e.InvokedItemContainer is NavigationViewItem nvi)
         {
@@ -122,7 +160,8 @@ public partial class MainView : UserControl
                 info = e.RecommendedNavigationTransitionInfo;
             }
 
-            NavigationService.Instance.NavigateFromContext(nvi.Tag, info);
+            NavigationService.Instance.NavigateToType((nvi.Tag as MainPageModelBase).Tag, info);
+            //NavigationService.Instance.NavigateFromContext(nvi.Tag, info);
             //(ContainerServiceHelper.Resolve<INavigationService>() as NavigationService).NavigateFromContext(nvi.Tag, info);
         }
     }
@@ -130,26 +169,37 @@ public partial class MainView : UserControl
 
     private void OnFrameViewNavigated(object sender, NavigationEventArgs e)
     {
-        var page = e.Content as Control;
-        object? dc = page.DataContext;
-
-        string mainPage = null;
-
-        if (dc.GetType() == typeof(DashboardViewModel))
+        var page = pages.SingleOrDefault(p => p.Tag.Name[1..] == (e.Content as Control).GetType().Name) ?? pages[1];
+        foreach (NavigationViewItem nvi in ((List<NavigationViewItemBase>)NavView.MenuItemsSource).Concat((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource))
         {
-            mainPage = "Dashboard";
-        }
-        else if (dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.UserProfilesView") || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.UserProfileView"))
-        {
-            mainPage = "Profiles";
-        }
-        else if (dc.GetType() == typeof(SettingsViewModel))//TODO: || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.Settings"))
-        {
-            mainPage = "Settings";
-        }
+            var set = nvi.Tag == page;
+            if (set)
+            {
+                NavView.SelectedItem = nvi;
+                SetNVIIcon(nvi, true);
+            }
 
-        SetNVI((List<NavigationViewItemBase>)NavView.MenuItemsSource, mainPage);
-        SetNVI((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource, mainPage);
+            //nvi.IconSource = this.TryFindResource(set ? $"{page.IconKey}Filled" : page.IconKey, out var value) ? (IconSource)value : null;
+        }
+        //object? dc = page.DataContext;
+
+        //string mainPage = null;
+
+        //if (dc.GetType() == typeof(DashboardViewModel))
+        //{
+        //    mainPage = "Dashboard";
+        //}
+        //else if (dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.UserProfilesView") || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.UserProfileView"))
+        //{
+        //    mainPage = "Profiles";
+        //}
+        //else if (dc.GetType() == typeof(SettingsViewModel))//TODO: || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.Settings"))
+        //{
+        //    mainPage = "Settings";
+        //}
+
+        //SetNVI((List<NavigationViewItemBase>)NavView.MenuItemsSource, mainPage);
+        //SetNVI((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource, mainPage);
 
 
         if (FrameView.BackStackDepth > 0 && !NavView.IsBackButtonVisible)
@@ -162,19 +212,19 @@ public partial class MainView : UserControl
         }
     }
 
-    void SetNVI(List<NavigationViewItemBase> source, string mainPage)
-    {
-        foreach (NavigationViewItem nvi in source)
-        {
-            var set = false;
-            if (nvi.Content is string t && t == mainPage) 
-            {
-                set = true;
-                NavView.SelectedItem = nvi;
-            }
-            SetNVIIcon(nvi, set);
-        }
-    }
+    //void SetNVI(List<NavigationViewItemBase> source, string mainPage)
+    //{
+    //    foreach (NavigationViewItem nvi in source)
+    //    {
+    //        var set = false;
+    //        if (nvi.Content is string t && t == mainPage)
+    //        {
+    //            set = true;
+    //            NavView.SelectedItem = nvi;
+    //        }
+    //        SetNVIIcon(nvi, set);
+    //    }
+    //}
 
     private void SetNVIIcon(NavigationViewItem item, bool selected)
     {
@@ -268,68 +318,28 @@ public partial class MainView : UserControl
         }
     }
 
-
-    private void InitializeNavigationPages()
-    {
-        FrameView.NavigationPageFactory = ContainerServiceHelper.Resolve<INavigationService>().NavFactory as NavigationFactory;
-        ContainerServiceHelper.Resolve<INavigationService>().SetFrame(FrameView);
-
-        var pages = new List<MainPageModelBase>()
-        {
+    private bool _isDesktop;
+    readonly List<MainPageModelBase> pages =
+        [
             new()
             {
                 NavHeader = "Dashboard",
                 IconKey = "HomeIcon",
+                Tag = typeof(IDashboardView)
             },
-            new ()
+            new()
             {
                 NavHeader = "Profiles",
                 IconKey = "ContactIcon",
+                Tag = typeof(IProjectsView)
             },
             new()
             {
                 NavHeader = "Settings",
                 IconKey = "SettingsIcon",
                 ShowsInFooter = true,
+                Tag = typeof(ISettingsView)
             }
-        };
+        ];
 
-        //UserControlPageBase chameleonPageBase = new UserControlPageBase();
-        //ChameleonContentControl s = new ChameleonContentControl();
-        Dispatcher.UIThread.Post(() =>
-        {
-            var headeritems = new List<NavigationViewItemBase>(2);
-            var footeritems = new List<NavigationViewItemBase>(1);
-            foreach (var page in pages)
-            {
-                var nvi = new NavigationViewItem
-                {
-                    Content = page.NavHeader,
-                    Tag = page,
-                    IconSource = (IconSource)this.FindResource(page.IconKey),
-                };
-                nvi.Classes.Add("SampleAppNav");
-
-                if (page.ShowsInFooter)
-                    footeritems.Add(nvi);
-                else
-                    headeritems.Add(nvi);
-            }
-
-            if (_isDesktop || OperatingSystem.IsBrowser())
-            {                    
-                //NavView.Classes.Add("SampleAppNav");
-            }
-            else
-            {
-                NavView.PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
-            }
-
-            NavView.MenuItemsSource = headeritems;
-            NavView.FooterMenuItemsSource = footeritems;
-
-
-            FrameView.NavigateFromObject((NavView.MenuItemsSource.ElementAt(0) as Control).Tag);
-        });
-    }
 }

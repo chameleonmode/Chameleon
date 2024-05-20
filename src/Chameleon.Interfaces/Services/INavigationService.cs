@@ -9,8 +9,8 @@ public interface INavigationService
 
     Task PopAsync();
 
-    object? NavFactory { get; }
-    object? PreviousPage { get; set; }
+    object? NavFactory { get; }   //TODO: change to actual
+    object? PreviousPage { get; set; }  //TODO: change to actual
     void SetFrame(object f); //TODO: change to actual
     void SetOverlayHost(object p); //TODO: change to actual
     void Navigate(Type t);

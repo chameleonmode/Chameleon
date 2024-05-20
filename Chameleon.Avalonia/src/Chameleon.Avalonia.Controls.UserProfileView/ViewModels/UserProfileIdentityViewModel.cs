@@ -129,7 +129,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         if (param is UserProfile up)
         {
             //TODO: UserAgent var p = await Task.Run(() => { return _userProfileService.Get(up.Id, false); });
-            await Task.Delay(256);
+            //await Task.Delay(256);
             UserProfile = up;
         }
 
@@ -222,7 +222,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
     public int UserProfileId => _userProfile?.Id ?? 0;
 
-    private void BindUi()
+    private async void BindUi()
     {
         if (UserProfileModel == null)
         {
@@ -233,22 +233,26 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             return;
         }
 
-        Countries.Load();
+        ProfileVM = new UserProfilesView.ViewModels.UserProfileViewModel(
+                       _userProfileService,
+                       UserProfile,
+                       _applicationUser,
+                       _systemBrowserManager,
+                       false
+                   );
 
-        Logins.Reload();
-        Persons.Reload();
-        Addresses.Reload();
-        Businesses.Reload();
+        //new Thread(async () => 
+        //{
+            await Task.WhenAll(Countries.Load(), Logins.Reload(), Persons.Reload(), Addresses.Reload(), Businesses.Reload());
+            SetVisible(true);
+        //}).Start();
+        //await Countries.Load();
+        //await Logins.Reload();
+        //await Persons.Reload();
+        //await Addresses.Reload();
+        //await Businesses.Reload();
 
-       ProfileVM = new UserProfilesView.ViewModels.UserProfileViewModel(
-                      _userProfileService,
-                      UserProfile,
-                      _applicationUser,
-                      _systemBrowserManager,
-                      false
-                  );
-
-        SetVisible(true);
+       
     }
 
     private void SetVisible(bool isVisible)
@@ -656,12 +660,10 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         return _applicationUser.IsAuthenticated && _userAssistantService.Get().Count > 0;
     }
     public bool IsSyncChangesBtnVisible => _applicationUser.IsAssistant ? _userProfileService.IsSharedProfile(_userProfile) : HasAssistants();
-
+    #endregion  
+    
     public void OnAuthenticated()
     {
         SyncBtnVisibilityChange();
-
     }
-
-    #endregion
 }

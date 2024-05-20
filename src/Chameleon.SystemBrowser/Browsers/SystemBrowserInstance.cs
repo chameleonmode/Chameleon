@@ -386,6 +386,7 @@ namespace Chameleon.SystemBrowser.Common
 
         private Task EnsureProfileFolderCreated()
         {
+            if(BrowserType != SystemBrowserType.Firefox)
             if (!Directory.Exists(_browserProfileFolderPath))
             {
                 Directory.CreateDirectory(_browserProfileFolderPath);
