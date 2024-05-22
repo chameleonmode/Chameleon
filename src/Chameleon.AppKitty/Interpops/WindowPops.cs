@@ -1,10 +1,15 @@
 ﻿namespace Chameleon.AppKitty.Interpops;
 
-public class WindowPops
+public static class WindowPops
 {
-    public static IntPtr GetWindowHandle(int pid)
+    public static IntPtr GetWindowHandle(IntPtr pid)
     {
-        NSWindow nSWindow = null;
+#if MACOS
+        NSWindow nSWindow = new NSWindow(pid);
+        nSWindow.DidUpdate += (s,e) => 
+        {
+        };
+#endif
 
         return IntPtr.Zero;
     }

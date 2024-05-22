@@ -19,6 +19,7 @@ using System.Security;
 using Newtonsoft.Json.Linq;
 using Chameleon.Interfaces.Settings;
 using System.Reflection;
+using Chameleon.AppKitty.Interpops;
 
 namespace Chameleon.SystemBrowser.Common
 {
@@ -41,7 +42,7 @@ namespace Chameleon.SystemBrowser.Common
         public IUserProfile UserProfile => _options.UserProfile;
 
         private string proxyextdir;
-
+        public bool IsMao => OperatingSystem.IsMacOS();
 
         public string Starturl { get; private set; } = "https://www.duckduckgo.com/";
 
@@ -70,7 +71,7 @@ namespace Chameleon.SystemBrowser.Common
             _browserDataFolderPath = browserDataFolderPath;
             _browserProfileFolderPath = Path.Combine(_browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
 
-            if (OperatingSystem.IsMacOS())
+            if (IsMao)
                 BrowserExtensionsRootFolderPath = "/Applications/Chameleon.app/Contents/Resources/BrowserExtensions/mac";
             else
                 BrowserExtensionsRootFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "BrowserExtensions");
@@ -104,7 +105,8 @@ namespace Chameleon.SystemBrowser.Common
                 //}
             }
 
-            if (Handle != IntPtr.Zero)
+            if (!IsMao && 
+                Handle != IntPtr.Zero)
             {
                 User32.SetForegroundWindow((IntPtr)Handle);
                 User32.SetActiveWindow((IntPtr)Handle);
@@ -212,7 +214,7 @@ namespace Chameleon.SystemBrowser.Common
             await Task.Delay(500);
             Brocess.Refresh();
 
-            if (BrowserType == SystemBrowserType.Firefox)
+            if (!IsMao && BrowserType == SystemBrowserType.Firefox)
             {
                 await GotMainFFHandle(Brocess, 0);
             } 
@@ -231,10 +233,15 @@ namespace Chameleon.SystemBrowser.Common
             int waited = 0;
             do
             {
-                if (User32.IsWindow(Handle))
-                    break;
+                if (!IsMao)
+                { 
+                    Handle = Brocess.MainWindowHandle;
 
-                Handle = Brocess.MainWindowHandle;
+                    if (User32.IsWindow(Handle))
+                        break;
+                }
+                else
+                    Handle = Brocess.Handle;
                 await Task.Delay(500);
             }
             while (waited++ <= 9 && Handle == IntPtr.Zero);
@@ -242,36 +249,40 @@ namespace Chameleon.SystemBrowser.Common
             if (Brocess != null && Handle != IntPtr.Zero)
             {
                 winEventsCaptureDelegate = WinEventProc;
-                // capture EVENT_OBJECT_FOCUS
-                this.winEventHooks.Add(User32.SetWinEventHook(
-                    User32Events.EVENT_OBJECT_FOCUS,
-                    User32Events.EVENT_OBJECT_FOCUS,
-                    IntPtr.Zero,
-                    winEventsCaptureDelegate,
-                    (uint)Brocess.Id,
-                    0,
-                    (uint)User32Events.WINEVENT_OUTOFCONTEXT));
-
-                if (BrowserType == SystemBrowserType.Firefox)
+                if (IsMao)
                 {
-                    // capture window close
+                   _ = WindowPops.GetWindowHandle(Handle);
+                }
+                else
+                {
+                    // capture EVENT_OBJECT_FOCUS
                     this.winEventHooks.Add(User32.SetWinEventHook(
-                        User32Events.EVENT_OBJECT_DESTROY,
-                        User32Events.EVENT_OBJECT_DESTROY,
+                        User32Events.EVENT_OBJECT_FOCUS,
+                        User32Events.EVENT_OBJECT_FOCUS,
                         IntPtr.Zero,
                         winEventsCaptureDelegate,
                         (uint)Brocess.Id,
                         0,
                         (uint)User32Events.WINEVENT_OUTOFCONTEXT));
-                }
-                else
-                {
-                }
 
-                //TODO: User32.SendMessage((IntPtr)Handle, User32.WM_SETTEXT,0, new System.Text.StringBuilder(UserProfile.Title));
+                    if (BrowserType == SystemBrowserType.Firefox)
+                    {
+                        // capture window close
+                        this.winEventHooks.Add(User32.SetWinEventHook(
+                            User32Events.EVENT_OBJECT_DESTROY,
+                            User32Events.EVENT_OBJECT_DESTROY,
+                            IntPtr.Zero,
+                            winEventsCaptureDelegate,
+                            (uint)Brocess.Id,
+                            0,
+                            (uint)User32Events.WINEVENT_OUTOFCONTEXT));
+                    }
 
-                User32.SetForegroundWindow((IntPtr)Handle);
-                User32.SetActiveWindow((IntPtr)Handle);
+                    //TODO: User32.SendMessage((IntPtr)Handle, User32.WM_SETTEXT,0, new System.Text.StringBuilder(UserProfile.Title));
+
+                    User32.SetForegroundWindow((IntPtr)Handle);
+                    User32.SetActiveWindow((IntPtr)Handle);
+                }
 
                 _eventAggregator
                          .GetEvent<ForegroundUserSystemBrowserEvent>()
