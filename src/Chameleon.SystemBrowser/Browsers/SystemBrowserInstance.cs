@@ -222,12 +222,6 @@ namespace Chameleon.SystemBrowser.Common
             //if (BrowserType == SystemBrowserType.Firefox)
             //    await Brocess.WaitForExitAsync();
 
-            await SetWin32Events();
-            PublishOpendedEvent(Brocess);
-        }
-
-        private async Task SetWin32Events()
-        {
             int waited = 0;
             do
             {
@@ -239,7 +233,13 @@ namespace Chameleon.SystemBrowser.Common
             }
             while (waited++ <= 9 && Handle == IntPtr.Zero);
 
-            if (Brocess != null && Handle != IntPtr.Zero)
+            SetWin32Events();
+            PublishOpendedEvent(Brocess);
+        }
+
+        private void SetWin32Events()
+        {
+            if (Brocess != null && Handle != null)
             {
                 winEventsCaptureDelegate = WinEventProc;
                 // capture EVENT_OBJECT_FOCUS
