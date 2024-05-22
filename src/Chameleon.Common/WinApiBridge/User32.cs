@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Text;
 
 namespace Chameleon.Common.WinApiBridge;
@@ -198,6 +199,7 @@ public enum WindowStyleFlags
     CHILDWINDOW = 1073741824
 }
 
+[SupportedOSPlatform("windows")]
 public partial class User32
 {
     #region delegates
