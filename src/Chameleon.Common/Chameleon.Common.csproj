@@ -8,12 +8,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="NativeMethods.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Base\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.CsWin32">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.SDK.Win32Metadata" />
   </ItemGroup>
 
 </Project>
