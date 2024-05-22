@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using Chameleon.Interfaces.Settings;
 using System.Reflection;
 using Chameleon.AppKitty.Interpops;
+using Chameleon.AppKitty.OSX;
 
 namespace Chameleon.SystemBrowser.Common
 {
@@ -251,7 +252,10 @@ namespace Chameleon.SystemBrowser.Common
                 winEventsCaptureDelegate = WinEventProc;
                 if (IsMao)
                 {
-                   _ = WindowPops.GetWindowHandle(Handle);
+                    Macops.RegisterFocusObserver(Brocess.Id, (t) => 
+                    {
+
+                    });
                 }
                 else
                 {
