@@ -1,7 +1,7 @@
 #!/bin/bash
 APP_NAME="Chameleon.app"
 ENTITLEMENTS="Chameleonmode.entitlements"
-SIGNING_IDENTITY="dev@chameleonmode.com" # matches Keychain Access certificate name
+SIGNING_IDENTITY="Simon Dadia" # matches Keychain Access certificate name
 
 find "$APP_NAME/Contents/MacOS/"|while read fname; do
     if [[ -f $fname ]]; then

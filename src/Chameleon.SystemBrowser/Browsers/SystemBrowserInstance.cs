@@ -19,7 +19,6 @@ using System.Security;
 using Newtonsoft.Json.Linq;
 using Chameleon.Interfaces.Settings;
 using System.Reflection;
-using Chameleon.AppKitty.Interpops;
 using Chameleon.AppKitty.OSX;
 
 namespace Chameleon.SystemBrowser.Common
@@ -80,7 +79,7 @@ namespace Chameleon.SystemBrowser.Common
 
         public async Task Open()
         {
-            if (Brocess is null || Handle == IntPtr.Zero || !User32.IsWindow(Handle))
+            if (Brocess is null || Handle == IntPtr.Zero || (!IsMao && !User32.IsWindow(Handle)))
             {
                 var userSettings = await Task.Run(() => _userDefaultsSettingsService.GetAll());
                 if (userSettings != null && userSettings.Any())
@@ -106,11 +105,17 @@ namespace Chameleon.SystemBrowser.Common
                 //}
             }
 
-            if (!IsMao && 
-                Handle != IntPtr.Zero)
+            if (Handle != IntPtr.Zero)
             {
-                User32.SetForegroundWindow((IntPtr)Handle);
-                User32.SetActiveWindow((IntPtr)Handle);
+                if(!IsMao)
+                {
+                    User32.SetForegroundWindow((IntPtr)Handle);
+                    User32.SetActiveWindow((IntPtr)Handle);
+                }else
+                {
+                    //TODO:
+                    //Macops.SetActiveWindow(Handle);
+                }
             }
         }
 
@@ -234,6 +239,7 @@ namespace Chameleon.SystemBrowser.Common
             int waited = 0;
             do
             {
+                await Task.Delay(500);
                 if (!IsMao)
                 { 
                     Handle = Brocess.MainWindowHandle;
@@ -241,9 +247,10 @@ namespace Chameleon.SystemBrowser.Common
                     if (User32.IsWindow(Handle))
                         break;
                 }
-                else
+                else{
+                //Handle = Macops.GetMainWindow(Brocess.Id);TODO:?
                     Handle = Brocess.Handle;
-                await Task.Delay(500);
+                }
             }
             while (waited++ <= 9 && Handle == IntPtr.Zero);
 
@@ -252,10 +259,11 @@ namespace Chameleon.SystemBrowser.Common
                 winEventsCaptureDelegate = WinEventProc;
                 if (IsMao)
                 {
-                    Macops.RegisterFocusObserver(Brocess.Id, (t) => 
-                    {
+                    //TODO
+                   //Macops.RegisterFocusObserver(Brocess.Id, (t) => 
+                   //{
 
-                    });
+                   //});
                 }
                 else
                 {
@@ -370,6 +378,7 @@ namespace Chameleon.SystemBrowser.Common
         protected virtual async void Cleanup()
         {
             //_dynamicProxyServer?.Stop();
+            if(IsMao)
             foreach (var item in winEventHooks)
             {
                 User32.UnhookWinEvent(item);

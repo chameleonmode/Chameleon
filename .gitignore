@@ -362,3 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 .DS_Store
+Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/Chameleon.pkg
+Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/App/ad12574c-e0f5-46ca-b1b2-dbd08cbb759d/Chameleon.zip
+Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/Chameleon.zip
+Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/chamelionairbundlepp.provisionprofile

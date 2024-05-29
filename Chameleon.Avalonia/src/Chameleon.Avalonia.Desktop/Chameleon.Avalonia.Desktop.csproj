@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <!--<OutputType>Exe</OutputType>-->
+    <OutputType>WinExe</OutputType>
     <!--If you are willing to use Windows/MacOS native APIs you will need to create 3 projects.
     One for Windows with net7.0-windows TFM, one for MacOS with net7.0-macos and one with net7.0 TFM for Linux.-->
-    <TargetFrameworks>net8.0;net8.0-macos</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
 	  <ApplicationIcon>logosymbol.ico</ApplicationIcon>
 	  <UseAppHost>true</UseAppHost>
 	  <AssemblyName>Chameleon</AssemblyName>
-	  <StartupObject>Chameleon.Av.Desktop.Program</StartupObject>
-	  <OutputType>Exe</OutputType>
+	   <!--<StartupObject>Chameleon.Av.Desktop.Program</StartupObject>
+	  <OutputType>Exe</OutputType>-->
 	  <!--<RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
 	  <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>-->
   </PropertyGroup>
