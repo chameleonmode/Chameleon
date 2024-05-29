@@ -86,10 +86,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.CT.Common", "Cham
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Common", "Chameleon.Avalonia\src\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj", "{87EF0DE8-2435-413F-88F2-B9321DFB2DCA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Appkit", "Appkit", "{8C028C20-656B-4C1A-A547-EE83104242D7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.AppKitty", "src\Chameleon.AppKitty\Chameleon.AppKitty.csproj", "{F5D5C609-45C4-485E-B617-3962DBF226B3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -184,10 +180,6 @@ Global
 		{87EF0DE8-2435-413F-88F2-B9321DFB2DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87EF0DE8-2435-413F-88F2-B9321DFB2DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87EF0DE8-2435-413F-88F2-B9321DFB2DCA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5D5C609-45C4-485E-B617-3962DBF226B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5D5C609-45C4-485E-B617-3962DBF226B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5D5C609-45C4-485E-B617-3962DBF226B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5D5C609-45C4-485E-B617-3962DBF226B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -226,8 +218,6 @@ Global
 		{089453ED-4D62-438C-ABED-2EA7DFDA197D} = {3C9BA5F3-8C8F-4451-A521-38179E5256C2}
 		{61A73058-5D30-48C4-90BF-5814A6584B06} = {31D09692-9476-4B2B-A3D0-04C8F71BA830}
 		{87EF0DE8-2435-413F-88F2-B9321DFB2DCA} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
-		{8C028C20-656B-4C1A-A547-EE83104242D7} = {DD2E432A-BC2B-432B-BC89-0777702DB877}
-		{F5D5C609-45C4-485E-B617-3962DBF226B3} = {8C028C20-656B-4C1A-A547-EE83104242D7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

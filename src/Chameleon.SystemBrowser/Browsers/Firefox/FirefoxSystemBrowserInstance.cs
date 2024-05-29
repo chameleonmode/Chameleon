@@ -1,21 +1,13 @@
 ﻿using Chameleon.Core.Extensions;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.SystemBrowser.Proxy;
-using Chameleon.SystemBrowser.Common;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Chameleon.Prism.Events;
-using Microsoft.Playwright;
-using System.Collections;
-using Microsoft.Playwright.Transport;
-using Microsoft.Playwright.Transport.Protocol;
 using Chameleon.Interfaces.Settings;
+using Chameleon.Interfaces.UserProfiles;
+using Chameleon.Interfaces.WebBrowser;
+using Chameleon.Prism.Events;
+using Chameleon.SystemBrowser.Common;
+using Microsoft.Playwright;
+using System.Diagnostics;
+using System.IO.Compression;
 using System.Text.RegularExpressions;
-using System;
-using System.Net;
 
 namespace Chameleon.SystemBrowser.Firefox
 {
@@ -27,6 +19,9 @@ namespace Chameleon.SystemBrowser.Firefox
     //}
     public partial class FirefoxSystemBrowserInstance : SystemBrowserInstance
     {
+        public const string FirefoxAutoProxyFolderName = "ChameleonAutoExt";
+        public const string FirefoxAutoProxyAddonName = "autoproxy.chameleon.zip";
+
         private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
         public FirefoxSystemBrowserInstance(
             IEventAggregator eventAggregator,
@@ -54,7 +49,7 @@ namespace Chameleon.SystemBrowser.Firefox
                     StartInfo = new ProcessStartInfo
                     {                                                                  
                         // $"firefox -CreateProfile \"{UserProfile.Id} {_browserProfileFolderPath}\"",
-                        Arguments = $"-headless -url {UserProfile.Proxy.Host}:{UserProfile.Proxy.Port} -profile \"{_browserProfileFolderPath}\"",
+                        Arguments = $"-headless -profile \"{_browserProfileFolderPath}\"",
                         FileName = _browserExeFilePath,
                     }
                 };
@@ -523,19 +518,6 @@ namespace Chameleon.SystemBrowser.Firefox
 
                 ["network.proxy.type"] = 1,
             };
-            if (UserProfile.Proxy.CanUse)
-            {
-                var host = UserProfile.Proxy.Host;
-                var port = UserProfile.Proxy.Port;
-                prefs["network.proxy.http"] = host;
-                prefs["network.proxy.http_port"] = port;
-                prefs["network.proxy.backup.http"] = host;
-                prefs["network.proxy.backup.http_port"] = port;
-                prefs["network.proxy.ssl"] = host;
-                prefs["network.proxy.ssl_port"] = port;
-                prefs["network.proxy.backup.ssl"] = host;
-                prefs["network.proxy.backup.ssl_port"] = port;
-            }
 
             // Define a regular expression pattern to extract key-value pairs
             Regex regex = UserPrefRegex();
@@ -602,15 +584,104 @@ namespace Chameleon.SystemBrowser.Firefox
             //arguments.Append($"-install-extension {extensionsToInstal}");
         }
 
-        private string GetLoadExtensionsArgument()
-        {
-            return Directory
-                .GetFiles(BrowserExtensionsFolderPath)
-                .AddQuotesToEachElement()
-                .ToCommaSeparatedString();
-        }
+        public override string GetLoadExtensionsArgument() => string.Empty;
 
         [GeneratedRegex(@"user_pref\(""(.*?)"", (\""(.*?)\""|.*?)\);")]
         private static partial Regex UserPrefRegex();
+
+        protected override async Task InitializeExtensionPath()
+        {
+            string proxyextdir = Path.Combine(_browserProfileFolderPath, FirefoxAutoProxyFolderName);
+            string pxoyextFile = Path.Combine(proxyextdir, FirefoxAutoProxyAddonName);
+
+            if (File.Exists(pxoyextFile))
+            {
+                File.Delete(pxoyextFile);
+            }
+
+            if (HasProxyLogin)
+            {
+                IProxySettings proxy = UserProfile.Proxy;
+                if (!Directory.Exists(proxyextdir))
+                {
+                    Directory.CreateDirectory(proxyextdir);
+                }
+
+                var manifestJson = """
+                {
+                    "manifest_version": 2,
+                    "name": "Chameleon Auto Proxy",
+                    "description": "A Chameleon addon to set proxy username and password.",
+                    "version": "1.0.0",
+                    "permissions": [
+                        "proxy",
+                        "storage",
+                        "webRequest",
+                        "webRequestBlocking",
+                        "webRequestAuthProvider",
+                        "<all_urls>"
+                    ],
+                    "background": {
+                        "scripts": ["background.js"]
+                    },
+                    "browser_specific_settings": {
+                        "gecko": {
+                            "id": "autoproxy@chameleonmode.com",
+                            "strict_min_version": "42.0"
+                        }
+                    }
+                }
+                """;
+
+                var backgroundJs =  """
+                browser.webRequest.onAuthRequired.addListener((details) => {
+                    return {
+                        authCredentials: {
+                """
+                            + $"username: \"{proxy.UserName}\","
+                            + $"password: \"{proxy.Password}\"" +
+                """
+                            }
+                        };
+                    },
+                    { urls: ['<all_urls>'] },
+                    ['blocking']
+                );
+                const proxyConfig = {
+                        proxyType: "manual",
+                """
+                      + $"http: \"{proxy.Server}\"," +
+                """       
+                        httpProxyAll : true,
+                        autoLogin: false
+                    };
+
+                browser.proxy.settings.set(
+                    { value: proxyConfig, scope: 'regular' }
+                );
+                """;
+
+                using (var fileStream = new FileStream(pxoyextFile, FileMode.CreateNew))
+                {
+                    using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
+                    {
+                        await AddFileToArchive("manifest.json", manifestJson, archive);
+                        await AddFileToArchive("background.js", backgroundJs, archive);
+                    }
+                }
+            }
+        }
+
+        private static async Task AddFileToArchive(string fileName, string fileText, ZipArchive archive)
+        {
+            var zipArchiveManifest = archive.CreateEntry(fileName, CompressionLevel.Fastest);
+            using (var zipStream = zipArchiveManifest.Open())
+            {
+                using (var writer = new StreamWriter(zipStream))
+                {
+                    await writer.WriteAsync(fileText);
+                }
+            }
+        }
     }
 }
