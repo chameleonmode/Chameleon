@@ -3,8 +3,8 @@
     <OutputType>WinExe</OutputType>
     <!--If you are willing to use Windows/MacOS native APIs you will need to create 3 projects.
     One for Windows with net7.0-windows TFM, one for MacOS with net7.0-macos and one with net7.0 TFM for Linux.-->
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net8.0</TargetFrameworks> <!--need to now use TargetFrameworks instead of TargetFramework some net8 bug with xamrin fixed in net9 -->
+	  <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
 	  <ApplicationIcon>logosymbol.ico</ApplicationIcon>
