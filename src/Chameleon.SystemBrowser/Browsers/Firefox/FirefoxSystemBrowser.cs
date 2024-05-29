@@ -119,7 +119,7 @@ namespace Chameleon.SystemBrowser.Firefox
         {
             var GetinstallExtension = IsMao ? 
             "await installExtension(`${folder}/ChameleonAutoExt/autoproxy.chameleon.zip`, true);"
-            : "await installExtension('${folder}\\ChameleonAutoExt\\autoproxy.chameleon.zip', true);"
+            : "await installExtension(`${folder}\\\\ChameleonAutoExt\\\\autoproxy.chameleon.zip`, true);"
 ;
             string userChrome = """ 
                     // First line is always a comment

@@ -19,7 +19,6 @@ using System.Security;
 using Newtonsoft.Json.Linq;
 using Chameleon.Interfaces.Settings;
 using System.Reflection;
-using Chameleon.AppKitty.OSX;
 
 namespace Chameleon.SystemBrowser.Common
 {
@@ -329,7 +328,7 @@ namespace Chameleon.SystemBrowser.Common
                     break;
 
                 case User32Events.EVENT_OBJECT_DESTROY:
-                    if (hwnd == Handle || Brocess.HasExited)
+                    if (hwnd == Handle || Brocess == null || Brocess.HasExited)
                     Cleanup();
                     break;
 

@@ -1,2 +1,2 @@
-dotnet publish -r win-x64 -c Release -p:DebugType=None -p:DebugSymbols=false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true --self-contained true -o "obj/outwin"
+dotnet publish -r win-x64 -c Release -f net8.0 -p:DebugType=None -p:DebugSymbols=false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true --self-contained true -o "obj/outwin"
 dotnet publish -r win-x64 -c Release -p:DebugType=None -o "obj/outwinfull"
