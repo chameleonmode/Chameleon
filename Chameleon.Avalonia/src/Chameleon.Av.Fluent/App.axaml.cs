@@ -1,53 +1,34 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Chameleon.Av.Fluent.Views;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
-using Chameleon.Controls.AssistantUsers.Interfaces;
-using Chameleon.Core.Attributes;
 using Chameleon.Infrastructure.Ioc;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Infrastructure.Repositories;
-using Chameleon.Interfaces.App.Settings;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Interfaces.Modules;
 using Chameleon.Interfaces.Repository;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.Startup;
 using Chameleon.Interfaces.Windows;
 using DryIoc;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
-
-using System.Globalization;
 using System.Reflection;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 using Chameleon.Avalonia.Controls.Dashboard.ViewModels;
-using Chameleon.Avalonia.Controls.Settings.ViewModels;
-using Chameleon.Avalonia.Controls.Settings;
-using Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
-using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
 using Chameleon.Avalonia.Controls.Dashboard;
-using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Dialogs;
-using Chameleon.Av.Fluent.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
-using Chameleon.Av.Fluent.Dialogs.Controls;
-using Chameleon.Av.Fluent.Dialogs.Services;
-using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Av.Fluent.ViewModels;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Views;
 using System.ComponentModel;
-using Avalonia.Svg.Skia;
 using Chameleon.Interfaces.Services;
-using FluentAvalonia.UI.Windowing;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Avalonia.Controls.UserProfilesView;
 using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
@@ -60,9 +41,19 @@ using Chameleon.Interfaces.App.UserProfiles.Views.List;
 using Chameleon.Interfaces;
 using Chameleon.Auth.Services;
 using Chameleon.SystemBrowser;
+using Chameleon.Interfaces.App.Automation.Views;
+using Chameleon.Avalonia.Controls.Automation.Views;
+using Chameleon.Interfaces.App.Automation.ViewModels;
+using Chameleon.Avalonia.Controls.Automation.ViewModels;
+using Chameleon.Infrastructure.App.Automation;
+using Chameleon.Interfaces.App.Automation.Services;
+using Chameleon.Interfaces.App.Automation.Repositories;
+using Chameleon.Interfaces.App.Automation.Entities;
+using Chameleon.Domain.Entities.Automation;
+using Chameleon.Avalonia.Controls.Automation.Views.ViewModels;
 
 namespace Chameleon.Av.Fluent;
-     public class tempinits : IDialogWindowsService  , IPopupDialogService
+public class tempinits : IDialogWindowsService  , IPopupDialogService
 {
     public Task<int> ShowDialogWindow(IViewControl viewControl, string title)
     {
@@ -168,8 +159,8 @@ public partial class App : PrismApplication
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
         Console.WriteLine("RegisterTypes()");
-                                                          
-        containerRegistry.RegisterInstance(containerRegistry);  
+
+        containerRegistry.RegisterInstance(containerRegistry);
         RegisterIocContainer(containerRegistry);
 
         // Services
@@ -196,9 +187,9 @@ public partial class App : PrismApplication
         //Assemblys
         Container.RegisterTypesFrom(typeof(Chameleon.Domain.AssemblyResolver).Assembly);
         Container.RegisterTypesFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);
-        Container.RegisterMapperFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);                 
-        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Common.AssemblyResolver).Assembly );  
-        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.AssemblyResolver).Assembly);     
+        Container.RegisterMapperFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);
+        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Common.AssemblyResolver).Assembly);
+        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.AssemblyResolver).Assembly);
         Container.RegisterTypesFrom(typeof(AuthService).Assembly);
         Container.RegisterTypesFrom(typeof(SystemBrowserManager).Assembly);
         Container.RegisterTypesFrom(Assembly.GetExecutingAssembly());
@@ -227,14 +218,16 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IDashboardViewModel, DashboardViewModel>();
         containerRegistry.RegisterSingleton<IDashboardView, DashboardView>();
 
-        cr.RegisterSingleton<IProjectsViewModel, ProjectsViewModel>();   
+        RegisterAutomationTypes(containerRegistry);
+
+        cr.RegisterSingleton<IProjectsViewModel, ProjectsViewModel>();
         cr.RegisterSingleton<IProjectsView, ProjectsView>();
-        cr.RegisterSingleton<IUserProfilesView, UserProfilesView>();                         
+        cr.RegisterSingleton<IUserProfilesView, UserProfilesView>();
         cr.RegisterSingleton<IUserProfileAdditionalDataService, UserProfileAdditionalDataService>();
         Container.RegisterMapperFrom(typeof(UserProfileIdentityViewModel).Assembly);
-        cr.RegisterSingleton<IUserProfileIdentityViewModel, UserProfileIdentityViewModel>(); 
-        cr.Register<IUserProfileIdentityView, UserProfileIdentityView>();   
-        cr.RegisterSingleton<IUserProfileFoldersView, UserProfileFoldersView>();    
+        cr.RegisterSingleton<IUserProfileIdentityViewModel, UserProfileIdentityViewModel>();
+        cr.Register<IUserProfileIdentityView, UserProfileIdentityView>();
+        cr.RegisterSingleton<IUserProfileFoldersView, UserProfileFoldersView>();
         cr.RegisterSingleton<IUserProfileFoldersViewModel, UserProfileFoldersViewModel>();
         cr.RegisterSingleton<IUserProfilesViewModel, UserProfilesViewModel>();
         //containerRegistry.RegisterSingleton<ISettingsViewModel, SettingsViewModel>();
@@ -259,6 +252,21 @@ public partial class App : PrismApplication
         //containerRegistry.RegisterForNavigation<AssistantUsersView, IAssistantUsersViewModel>();
         //containerRegistry.RegisterForNavigation<ImportView, ImportViewModel>();
     }
+
+    private static void RegisterAutomationTypes(IContainerRegistry containerRegistry)
+    {
+        containerRegistry.RegisterSingleton<IAutomationScriptRepository, AutomationScriptRepository>();
+        containerRegistry.RegisterSingleton<IAutomationService, AutomationService>();
+        containerRegistry.Register<IAutomationView, AutomationView>();
+        containerRegistry.Register<IAutomationViewModel, AutomationViewModel>();
+        containerRegistry.Register<IAutomationScriptViewModel, AutomationScriptViewModel>();
+        containerRegistry.Register<IAutomationScriptParameterViewModel, AutomationScriptParameterViewModel>();
+        containerRegistry.Register<IAutomationParameterValueViewModel, AutomationParameterValueViewModel>();
+        containerRegistry.Register<IAutomationScriptDescription, AutomationScriptDescription>();
+        containerRegistry.Register<IAddScriptParametersPopupView, AddScriptParametersPopupView>();
+        containerRegistry.Register<IAddScriptParametersPopupViewModel, AddScriptParametersPopupViewModel>();
+    }
+
     private void RegisterIocContainer(IContainerRegistry containerRegistry)
     {
         var container = containerRegistry.GetContainer();

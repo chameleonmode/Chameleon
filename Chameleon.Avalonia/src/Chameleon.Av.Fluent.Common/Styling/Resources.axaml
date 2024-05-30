@@ -22,6 +22,9 @@
 	<ui:ImageIconSource x:Key="logo_big" Source="avares://Chameleon.Avalonia.Common/Assets/logo-big.png" />
 	<ui:ImageIconSource x:Key="logo_symbol" Source="avares://Chameleon.Avalonia.Common/Assets/logo-symbol.png" />
 
+	<ui:SymbolIconSource Symbol="Keyboard" x:Key="AutomationIcon" />
+	<ui:SymbolIconSource Symbol="KeyboardFilled" x:Key="AutomationIconFilled" />
+	
 	<ui:SymbolIconSource Symbol="StarFilled" x:Key="StarFilledIcon" />
 	<ui:SymbolIconSource Symbol="Settings" x:Key="SettingsIcon" />
 	<ui:SymbolIconSource Symbol="SettingsFilled" x:Key="SettingsIconFilled" />

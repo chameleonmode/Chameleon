@@ -136,8 +136,7 @@
 							</Image.Transitions>
 						</Image>
 
-						<StackPanel Orientation="Horizontal"
-										 Margin="18 12 0 12">
+						<StackPanel Orientation="Horizontal" >
 							<ui:FontIcon Name="TitleTextFontHost"
 										 Glyph="Dashboard"
 										 FontSize="36"

@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" />
+    <PackageReference Include="Prism.Core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj" />
+    <ProjectReference Include="..\..\..\src\Chameleon.Application\Chameleon.Application.csproj" />
+    <ProjectReference Include="..\..\..\src\Chameleon.Domain\Chameleon.Domain.csproj" />
+    <ProjectReference Include="..\Chameleon.Av.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
+    <ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -12,6 +12,7 @@ public enum PageHeaderTextType
 {
     Dashboard,
     Profiles,
+    Automation,
     Main,
     CoreControls,
     FAControls,
@@ -96,6 +97,7 @@ public class PageHeaderControl : TemplatedControl
         {
             PageHeaderTextType.Dashboard => "Dashboard",
             PageHeaderTextType.Profiles => "Profiles & Folders",
+            PageHeaderTextType.Automation => "Automation",
             PageHeaderTextType.Settings => "Settings",
             _ => "Chameleon"
         };

@@ -11,6 +11,9 @@ namespace Chameleon.Av.Fluent.Common.Controls;
 
 public class ChameleonContentControl : HeaderedContentControl
 {
+    public static new readonly StyledProperty<string?> HeaderProperty =
+        AvaloniaProperty.Register<ChameleonContentControl, string?>(nameof(Header));
+
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<ChameleonContentControl, string?>(nameof(Title));
 
