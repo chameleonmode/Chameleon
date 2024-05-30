@@ -20,6 +20,8 @@ using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Navigation;
 using FluentAvalonia.UI.Windowing;
+using System.Xml.Linq;
+using System.Linq;
 
 namespace Chameleon.Av.Fluent.Views;
 
@@ -156,17 +158,16 @@ public partial class MainView : UserControl
 
     private void OnFrameViewNavigated(object sender, NavigationEventArgs e)
     {
-        var page = pages.SingleOrDefault(p => p.Tag.Name[1..] == (e.Content as Control).GetType().Name) ?? pages[1];
-        foreach (NavigationViewItem nvi in ((List<NavigationViewItemBase>)NavView.MenuItemsSource).Concat((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource))
+        var page = pages.SingleOrDefault(p => p.Tag.Name[1..] == (e.Content as Control).GetType().Name);
+        page ??= e.Content.GetType().FullName.StartsWith("Chameleon.Avalonia.Controls.Settings") ? pages[2] : pages[1];
+        foreach (var nvi in from NavigationViewItem nvi in ((List<NavigationViewItemBase>)NavView.MenuItemsSource).Concat((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource)
+                            let set = nvi.Tag == page
+                            where set
+                            select nvi//nvi.IconSource = this.TryFindResource(set ? $"{page.IconKey}Filled" : page.IconKey, out var value) ? (IconSource)value : null;
+        )
         {
-            var set = nvi.Tag == page;
-            if (set)
-            {
-                NavView.SelectedItem = nvi;
-                SetNVIIcon(nvi, true);
-            }
-
-            //nvi.IconSource = this.TryFindResource(set ? $"{page.IconKey}Filled" : page.IconKey, out var value) ? (IconSource)value : null;
+            NavView.SelectedItem = nvi;
+            SetNVIIcon(nvi, true);
         }
         //object? dc = page.DataContext;
 

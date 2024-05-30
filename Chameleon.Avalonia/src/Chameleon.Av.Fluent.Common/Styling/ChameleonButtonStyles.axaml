@@ -40,7 +40,7 @@
 		
 		<Setter Property="Template">
 			<ControlTemplate>
-				<ui:FABorder Name="Root"
+				<Border Name="Root"
                              Background="Transparent"
                              BorderBrush="{TemplateBinding BorderBrush}"
                              BorderThickness="{TemplateBinding BorderThickness}"
@@ -56,26 +56,26 @@
 									   Text=" Sync changes" />-->
 						</StackPanel>
 
-				</ui:FABorder>
+				</Border>
 			</ControlTemplate>
 		</Setter>
 
 
-		<Style Selector="^:pointerover /template/ ui|FABorder#Root">
+		<Style Selector="^:pointerover /template/ Border#Root">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
 		</Style>
 		<Style Selector="^:pointerover /template/ TextBlock#SyncText">
 			<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
 		</Style>
 
-		<Style Selector="^:pressed /template/ ui|FABorder#Root">
+		<Style Selector="^:pressed /template/ Border#Root">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
 		</Style>
 		<Style Selector="^:pressed /template/ TextBlock#SyncText">
 			<Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
 		</Style>
 
-		<Style Selector="^:disabled /template/ ui|FABorder#Root">
+		<Style Selector="^:disabled /template/ Border#Root">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
 		</Style>
 		<Style Selector="^:disabled /template/ TextBlock#SyncText">
@@ -92,7 +92,7 @@
 		<Setter Property="ToolTip.Tip" Value="Toggle Favorite" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<ui:FABorder Name="Root"
+				<Border Name="Root"
                              Background="{TemplateBinding Background}"
                              BorderBrush="{TemplateBinding BorderBrush}"
                              BorderThickness="{TemplateBinding BorderThickness}"
@@ -107,16 +107,16 @@
 											  Width="12"
 											  Height="12" />
 					</Panel>
-				</ui:FABorder>
+				</Border>
 			</ControlTemplate>
 		</Setter>
-		<Style Selector="^:pointerover /template/ ui|FABorder#Root">
+		<Style Selector="^:pointerover /template/ Border#Root">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
 		</Style>
-		<Style Selector="^:pressed /template/ ui|FABorder#Root">
+		<Style Selector="^:pressed /template/ Border#Root">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
 		</Style>
-		<Style Selector="^:disabled /template/ ui|FABorder#Root">
+		<Style Selector="^:disabled /template/ Border#Root">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
 		</Style>
 	</ControlTheme>
@@ -130,7 +130,7 @@
 		<Setter Property="Height" Value="32" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<ui:FABorder Name="Root"
+				<Border Name="Root"
                              Background="{TemplateBinding Background}"
                              BorderBrush="{TemplateBinding BorderBrush}"
                              BorderThickness="{TemplateBinding BorderThickness}"
@@ -142,7 +142,7 @@
 										  Width="18"
 										  Height="18"/>
 					</Border>
-				</ui:FABorder>
+				</Border>
 			</ControlTemplate>
 		</Setter>
 		<Style Selector="^:pointerover /template/ Border#Pnl">
@@ -162,7 +162,7 @@
 		<Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<ui:FABorder Name="Root"
+				<Border Name="Root"
                              Background="{TemplateBinding Background}"
                              BorderBrush="{TemplateBinding BorderBrush}"
                              BorderThickness="{TemplateBinding BorderThickness}"
@@ -177,16 +177,16 @@
 								   Margin="0 0 12 0"
 								   VerticalAlignment="Center"/>
 						</StackPanel> 		  
-				</ui:FABorder>
+				</Border>
 			</ControlTemplate>
 		</Setter>
-		<Style Selector="^:pointerover /template/ ui|FABorder#Root">
+		<Style Selector="^:pointerover /template/ Border#Root">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
 		</Style>
-		<Style Selector="^:pressed /template/ ui|FABorder#Root">
+		<Style Selector="^:pressed /template/ Border#Root">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
 		</Style>
-		<Style Selector="^:disabled /template/ ui|FABorder#Root">
+		<Style Selector="^:disabled /template/ Border#Root">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
 		</Style>
 	</ControlTheme>

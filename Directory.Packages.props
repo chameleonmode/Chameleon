@@ -1,35 +1,56 @@
 ﻿<Project>
   <PropertyGroup>
+    <PublishAot>false</PublishAot>
+    <PublishTrimmed>false</PublishTrimmed>
+	<StripSymbols>false</StripSymbols>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <PropertyGroup>
-    <AvaloniaVersion>11.0.10</AvaloniaVersion>
+    <AvaloniaVersion>11.1.0-beta1</AvaloniaVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia" Version="11.1.0-beta2" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.1.0-beta2" />
     <PackageVersion Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Controls.ItemsRepeater" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Skia" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Headless" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Headless.XUnit" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Diagnostics" Version="11.1.0-beta2" />
     <PackageVersion Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Browser" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Android" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.iOS" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.AvaloniaEdit" Version="11.0" />
+    <PackageVersion Include="AvaloniaEdit.TextMate" Version="11.0" />
+    <PackageVersion Include="Avalonia.Headless" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Headless.XUnit" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Controls.ItemsRepeater" Version="$(AvaloniaVersion)" />
+    <!--<PackageVersion Include="Avalonia" Version="11.1.0-beta2" />-->
+    <!--<PackageVersion Include="Avalonia.Desktop" Version="11.1.0-beta2" />-->
+    <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.1.0-beta2.1" />
+    <PackageVersion Include="Avalonia.Svg" Version="11.1.0-beta1" />
+    <PackageVersion Include="Avalonia.Svg.Skia" Version="11.1.0-beta1" />
+    <!--<PackageVersion Include="Avalonia" Version="11.1.0-beta1" />   
+	  <PackageVersion Include="Avalonia.Desktop" Version="11.1.0-beta1" />
+    <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.1.0-beta1" />-->
+    <!--<PackageVersion Include="Avalonia.Svg" Version="11.1.0-beta1" />
+    <PackageVersion Include="Avalonia.Svg.Skia" Version="11.1.0-beta1" />-->
+    <!--<PackageVersion Include="Prism.Avalonia" Version="9.0.271.11074-pre" />
+    <PackageVersion Include="Prism.DryIoc.Avalonia" Version="9.0.271.11074-pre" />-->
+    <PackageVersion Include="Prism.Avalonia" Version="9.0.401.11000-pre" />
+    <PackageVersion Include="Prism.DryIoc.Avalonia" Version="9.0.401.11000-pre" />
+    <!--<PackageVersion Include="Avalonia.Diagnostics" Version="11.1.0-beta2" />-->
     <PackageVersion Include="AutoMapper" Version="13.0.1" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageVersion Include="Dotnet.Bundle" Version="0.9.13" />
     <PackageVersion Include="Fluxzy.Core" Version="1.22.12" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.43.0" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.44.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="MicroCom.CodeGenerator.MSBuild" Version="0.11.0" />
     <PackageVersion Include="MicroCom.Runtime" Version="0.11.0" />
-    <PackageVersion Include="Avalonia.AvaloniaEdit" Version="11.0" />
-    <PackageVersion Include="AvaloniaEdit.TextMate" Version="11.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageVersion Include="Moq" Version="4.16.1" />
@@ -39,10 +60,11 @@
     <PackageVersion Include="coverlet.collector" Version="3.0.2" />
     <PackageVersion Include="System.Text.Json" Version="6.0.5" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
     <PackageVersion Include="System.Text.Json" Version="6.0.5" Condition="'$(TargetFramework)' == 'netstandard2.1'" />
-    <PackageVersion Include="FluentAvaloniaUI" Version="2.0.5" />
+    <PackageVersion Include="FluentAvaloniaUI" Version="2.1.0-preview5" />
     <!--<PackageVersion Include="FluentAvaloniaUI" Version="2.1.0-preview1" />-->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <!--<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.3.24172.9" />-->
+
     <PackageVersion Include="Avalonia" Version="11.0.10" />
     <PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.0.10.9" />
@@ -57,7 +79,7 @@
     <PackageVersion Include="Prism.DryIoc.Avalonia" Version="9.0.271.11074-pre" />-->
     <PackageVersion Include="Prism.Avalonia" Version="8.1.97.11073" />
     <PackageVersion Include="Prism.DryIoc.Avalonia" Version="8.1.97.11073" />
-    <PackageVersion Include="System.Drawing.Common" Version="8.0.2" />
+    <PackageVersion Include="System.Drawing.Common" Version="9.0.0-preview.4.24267.1" />
     <!--<PackageVersion Include="System.Drawing.Common" Version="9.0.0-preview.3.24172.9" />-->
     <!-- Begin Android -->
     <!--<PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1" />-->

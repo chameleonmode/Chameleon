@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Chameleon.Avalonia.Desktop": {
+      "commandName": "Project",
+      "commandLineArgs": "/p:Platform=\"AnyCPU\""
+    },
+    "Profile 1": {
+      "commandName": "Project"
+    }
+  }
+}

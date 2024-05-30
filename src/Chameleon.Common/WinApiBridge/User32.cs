@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Text;
 
 namespace Chameleon.Common.WinApiBridge;
@@ -198,7 +199,8 @@ public enum WindowStyleFlags
     CHILDWINDOW = 1073741824
 }
 
-public class User32
+[SupportedOSPlatform("windows")]
+public partial class User32
 {
     #region delegates
     public delegate IntPtr MouseHookHandler(int nCode, uint wParam, IntPtr lParam);
@@ -212,8 +214,8 @@ public class User32
         uint dwmsEventTime);
     #endregion
 
-    [DllImport("user32.dll")]
-    public static extern IntPtr SetWinEventHook(
+    [LibraryImport("user32.dll")]
+    public static partial IntPtr SetWinEventHook(
         User32Events eventMin,
         User32Events eventMax,
         IntPtr hmodWinEventProc,
@@ -222,8 +224,16 @@ public class User32
         uint idThread,
         uint dwFlags);
 
-    [DllImport("user32.dll")]
-    public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool UnhookWinEvent(IntPtr hWinEventHook);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    public static partial IntPtr SetActiveWindow(IntPtr hWnd);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool IsWindow(IntPtr hWnd);
 
     [DllImport("user32.dll")]
     public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumDelegate lpfnEnum, IntPtr dwData);
@@ -354,10 +364,6 @@ public class User32
         SWP_NOZORDER = 0x0004,
         SWP_SHOWWINDOW = 0x0040
     };
-
-    [DllImport("user32.dll")]
-    public static extern bool EndDeferWindowPos(IntPtr hWinPosInfo);
-
     public enum RedrawWindowFlags : uint
     {
         /// <summary>
@@ -406,14 +412,15 @@ public class User32
 
         NoFrame = 0x800
     }
+
+    [DllImport("user32.dll")]
+    public static extern bool EndDeferWindowPos(IntPtr hWinPosInfo);
+
+
     [DllImport("user32.dll")]
     public static extern bool RedrawWindow(IntPtr hWnd,
         IntPtr lprcUpdate, //[In] ref RECT lprcUpdate, 
         IntPtr hrgnUpdate, RedrawWindowFlags flags);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool IsWindow(IntPtr hWnd);
 
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -482,9 +489,6 @@ public class User32
     public static extern bool SetForegroundWindow(IntPtr hWnd);
     [DllImport("user32.dll")]
     public static extern IntPtr GetForegroundWindow();
-
-    [DllImport("user32.dll", SetLastError = true)]
-    public static extern IntPtr SetActiveWindow(IntPtr hWnd);
 
     [DllImport("user32.dll", SetLastError = true)]
     public static extern long GetWindowLong(IntPtr hWnd, int nIndex);
