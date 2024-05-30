@@ -24,7 +24,7 @@ public abstract class SystemBrowserBase : ISystemBrowser
         {
             if (!Instances.TryGetValue(o.UserProfile.Id, out browser))
             {
-                browser = InitializeBrowser(o);
+                browser = await Task.Run(() => InitializeBrowser(o));
                 browser.OnProcessClosed += Browser_OnProcessClosed;
                 Instances[o.UserProfile.Id] = browser;
             }

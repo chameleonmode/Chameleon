@@ -11,7 +11,7 @@
 		<vm:DefaultContentDialogContentViewModel />
 	</Design.DataContext>
 
-	<ui:FABorder MinWidth="{DynamicResource TaskDialogMinWidth}"
+	<Border MinWidth="{DynamicResource TaskDialogMinWidth}"
 		MaxWidth="{DynamicResource TaskDialogMaxWidth}"
 		MinHeight="{DynamicResource TaskDialogMinHeight}"
 		MaxHeight="{DynamicResource TaskDialogMaxHeight}"
@@ -36,5 +36,5 @@
 					</ContentPresenter.Styles>
 				</ContentPresenter>
 			</ScrollViewer>
-	</ui:FABorder>
+	</Border>
 </UserControl>

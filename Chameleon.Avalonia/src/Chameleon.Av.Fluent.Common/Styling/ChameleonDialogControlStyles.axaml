@@ -170,7 +170,7 @@
 						</ItemsControl>
 
 						<!-- Area -->
-						<ui:FABorder Name="ControlPreviewAreaHost"
+						<Border Name="ControlPreviewAreaHost"
 								BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
 								BorderThickness="0"
 								TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -188,13 +188,13 @@
 									</Transitions>
 								</ContentPresenter.Transitions>
 							</ContentPresenter>
-						</ui:FABorder>
+						</Border>
 					</StackPanel>
 				</ThemeVariantScope>
 			</ControlTemplate>
 		</Setter>
 
-		<Style Selector="^ /template/ ui|FABorder#ControlPreviewAreaHost">
+		<Style Selector="^ /template/ Border#ControlPreviewAreaHost">
 			<Setter Property="CornerRadius"
 					Value="{Binding Source={StaticResource OverlayCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}" />
 		</Style>
@@ -230,7 +230,7 @@
 				<Border Name="Container">
 					<Panel Name="LayoutRoot"
                            Background="{DynamicResource ContentDialogSmokeFill}">
-						<ui:FABorder Name="BackgroundElement"
+						<Border Name="BackgroundElement"
                                 Background="{TemplateBinding Background}"
                                 BorderThickness="{StaticResource ContentDialogBorderWidth}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -343,7 +343,7 @@
 									</Border>
 								</Grid>
 							</Border>
-						</ui:FABorder>
+						</Border>
 					</Panel>
 				</Border>
 			</ControlTemplate>
@@ -418,7 +418,7 @@
 		</Style>
 
 		<!--Handle FullDialogSizing-->
-		<Style Selector="^:fullsize /template/ ui|FABorder#BackgroundElement">
+		<Style Selector="^:fullsize /template/ Border#BackgroundElement">
 			<Setter Property="VerticalAlignment" Value="Stretch"/>
 		</Style>
 

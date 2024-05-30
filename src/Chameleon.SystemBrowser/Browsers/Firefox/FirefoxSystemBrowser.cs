@@ -260,7 +260,7 @@ namespace Chameleon.SystemBrowser.Firefox
             var ucp = Path.Combine(directory, "Contents", "Resources",
             "userChrome.js");
             var cpp = Path.Combine(directory, "Contents", "Resources", "defaults", "pref",
-             "config-prefs.js");
+            "config-prefs.js");
             if (!IsMao)
             {
                 ucp = Path.Combine(directory, "userChrome.js");

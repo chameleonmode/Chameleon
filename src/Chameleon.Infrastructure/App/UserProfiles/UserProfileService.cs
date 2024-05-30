@@ -161,7 +161,7 @@ namespace Chameleon.Infrastructure.Profiles
             }
 
             IWebBrowserUserAgent userAgent = null;
-            this.TryOrCatch(
+            ExUtil.TryOrCatch(
                 () => 
                 { 
                     userAgent = _webBrowserUserAgentRepository.Get(userAgentId.Value); 

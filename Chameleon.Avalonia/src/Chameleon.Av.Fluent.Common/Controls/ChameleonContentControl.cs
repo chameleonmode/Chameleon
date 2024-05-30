@@ -73,7 +73,7 @@ public class ChameleonContentControl : HeaderedContentControl
     {
         base.OnApplyTemplate(e);
 
-        //_optionsHost = e.NameScope.Find<FABorder>("OptionsRegion");
+        //_optionsHost = e.NameScope.Find<Border>("OptionsRegion");
         //_exampleThemeScopeProvider = e.NameScope.Find<ThemeVariantScope>("ThemeScopeProvider");
 
         _expandOptionsButton = e.NameScope.Find<Button>("ShowHideOptionsButton");
@@ -149,6 +149,6 @@ public class ChameleonContentControl : HeaderedContentControl
     }
 
     private Button _expandOptionsButton;
-    private FABorder _optionsHost;
+    private Border _optionsHost;
     private static ImplicitAnimationCollection _optionsHostAnimation;
 }

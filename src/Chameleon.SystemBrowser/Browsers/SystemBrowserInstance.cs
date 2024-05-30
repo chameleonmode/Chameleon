@@ -19,6 +19,7 @@ using System.Security;
 using Newtonsoft.Json.Linq;
 using Chameleon.Interfaces.Settings;
 using System.Reflection;
+using Chameleon.Core.Util;
 
 namespace Chameleon.SystemBrowser.Common
 {
@@ -253,7 +254,7 @@ namespace Chameleon.SystemBrowser.Common
 
         private void SetWin32Events()
         {
-            if (Brocess != null && Handle != null)
+            if (Brocess != null && Handle != IntPtr.Zero)
             {
                 winEventsCaptureDelegate = WinEventProc;
                 if (IsMao)
@@ -328,7 +329,7 @@ namespace Chameleon.SystemBrowser.Common
                     break;
 
                 case User32Events.EVENT_OBJECT_DESTROY:
-                    if (hwnd == Handle || Brocess == null || Brocess.HasExited)
+                    if (Handle == IntPtr.Zero || hwnd == Handle || Brocess == null || Brocess.HasExited)
                     Cleanup();
                     break;
 
@@ -365,9 +366,9 @@ namespace Chameleon.SystemBrowser.Common
                     return true;
                 }
             }
-            if (trys++ < 5)
+            if (trys++ < 10)
             {
-                await Task.Delay(1000);
+                await Task.Delay(500);
                 return await GotMainFFHandle(process, trys);
             }
             else
@@ -376,14 +377,15 @@ namespace Chameleon.SystemBrowser.Common
 
         protected virtual async void Cleanup()
         {
-            //_dynamicProxyServer?.Stop();
-            if(IsMao)
-            foreach (var item in winEventHooks)
+            ExUtil.TryCatch(() =>
             {
-                User32.UnhookWinEvent(item);
-            }
-            //if(BrowserContext != null)
-            //    await BrowserContext.DisposeAsync();
+                if (!IsMao)
+                    foreach (var item in winEventHooks)
+                    {
+                        User32.UnhookWinEvent(item);
+                    }
+            });
+         
 
             Brocess = null;
             Handle = IntPtr.Zero;

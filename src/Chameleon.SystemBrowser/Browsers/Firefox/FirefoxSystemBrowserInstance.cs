@@ -1,4 +1,5 @@
 ﻿using Chameleon.Core.Extensions;
+using Chameleon.Core.Util;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
@@ -6,6 +7,7 @@ using Chameleon.Prism.Events;
 using Chameleon.SystemBrowser.Common;
 using Microsoft.Playwright;
 using System.Diagnostics;
+using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 
@@ -669,6 +671,11 @@ namespace Chameleon.SystemBrowser.Firefox
                         await AddFileToArchive("background.js", backgroundJs, archive);
                     }
                 }
+
+                var mf = Path.Combine(pxoyextFile, "manifest.json");
+                var bf = Path.Combine(pxoyextFile, "background.js");
+                IOUtil.DeleteFileIfExists(mf);
+                IOUtil.DeleteFileIfExists(bf);
             }
         }
 

@@ -15,19 +15,6 @@ public static class ObjectExtensions
         throw new NotImplementedException();
         // return Application.Current.Dispatcher.Invoke(action);
     }
-    public static void TryOrCatch(this object self, Action action, Action? caught = null)
-    {
-        //TODO: refactu ??
-        try
-        {
-            action();
-        }
-        catch
-        {
-            caught?.Invoke();
-            //ignore
-        }
-    }
 
     public static T1 CopyFrom<T1, T2>(this T1 destObject, T2 srcObject)
         where T1 : class

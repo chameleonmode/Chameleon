@@ -24,7 +24,11 @@
   <ItemGroup>
     <None Remove="logosymbol.ico" />
   </ItemGroup>
-
+	<ItemGroup>
+		<Content Include="BrowserExtensions\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
   <ItemGroup>
   	<TrimmerRootDescriptor Include="Roots.xml" />
   </ItemGroup>
