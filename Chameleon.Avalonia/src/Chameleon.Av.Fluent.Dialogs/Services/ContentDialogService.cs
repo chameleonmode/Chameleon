@@ -51,7 +51,7 @@ public class ContentDialogService : IContentDialogService
 
         }
         
-        throw new ArgumentNullException("view");
+        throw new ArgumentNullException("TView");
     } 
     public async Task<IContentDialogResult> ShowContentDialogAsync(object content, Action<IContentDialogResult> OnClosing, string title = "False", ContentDialogButtons btns = ContentDialogButtons.OKCancel)
     {
