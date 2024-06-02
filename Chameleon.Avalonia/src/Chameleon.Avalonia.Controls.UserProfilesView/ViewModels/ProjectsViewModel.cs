@@ -176,7 +176,7 @@ public partial class ProjectsViewModel : PageViewModelBase,
             profiles.Filter = profile => p.Id == profile.Id;
             NavigationService.NavigateToType(typeof(IUserProfileIdentityView), p);
 
-            EventAggregator.Publish<ChangeProfilesInFavoriteFolderEvent, ChangeProfilesInFavoriteFolderEventArgs>(new ChangeProfilesInFavoriteFolderEventArgs(p.FolderId ?? 0, false, p));
+            EventAggregator.Push<ChangeProfilesInFavoriteFolderEvent, ChangeProfilesInFavoriteFolderEventArgs>(new ChangeProfilesInFavoriteFolderEventArgs(p.FolderId ?? 0, false, p));
         }
         catch (Exception ex)
         {

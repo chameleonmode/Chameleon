@@ -99,8 +99,8 @@
 				</afv:ChameleonContentControl>
 
 				<afv:ChameleonContentControl Grid.Row="3"
-								   Title="Favorite Folders"
-												   TitleDescription="{Binding FoldersCount,
+											 Title="Favorite Folders"
+											 TitleDescription="{Binding FoldersCount,
 											StringFormat='You have {0} favorited folders.'}">
 					<afv:ChameleonContentControl.Options>
 						<ui:FAComboBox Header="Sort by:"
