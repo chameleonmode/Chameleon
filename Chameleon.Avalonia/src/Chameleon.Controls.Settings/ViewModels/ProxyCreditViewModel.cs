@@ -3,6 +3,7 @@ using Chameleon.Avalonia.Common.Services;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.CreditPlan;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
 using Chameleon.Core.Collections.Views;
+using Chameleon.Core.Extensions;
 using Chameleon.CT.Common.Base;
 using Chameleon.CT.Common.Collections;
 using Chameleon.Interfaces.App.Settings;
@@ -253,14 +254,16 @@ public partial class ProxyCreditViewModel
 
         if (currentCount > _countProxies)
         {
-            _proxyAccessViewModels.RemoveAt(_countProxies);
+            while (_proxyAccessViewModels.Count > _countProxies)
+             _proxyAccessViewModels.RemoveAt(_proxyAccessViewModels.Count - 1);
         }
         else
         {
             _proxyAccessViewModels.AddItems(_countProxies - currentCount);
+            UpdateProxyAccess();
         }
 
-        UpdateProxyAccess();
+
         OnPropertyChanged(nameof(Access));
     }
 
