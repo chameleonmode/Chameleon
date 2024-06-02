@@ -20,15 +20,6 @@
 						   Theme="{StaticResource TitleLargeTextBlockStyle}"/>-->
 			<StackPanel Spacing="15"
                         Margin="30 0 30 30">
-				<ui:SettingsExpander Header="App Theme"
-	 IconSource="DarkTheme"
-	 Description="Change the current app theme">
-					<ui:SettingsExpander.Footer>
-						<ComboBox SelectedItem="{Binding CurrentAppTheme}"
-								  ItemsSource="{Binding AppThemes}"
-								  MinWidth="150" />
-					</ui:SettingsExpander.Footer>
-				</ui:SettingsExpander>
 				
 				<ui:SettingsExpander Header="Web"
 									 Name="Default"
@@ -85,9 +76,6 @@
 					</ui:SettingsExpanderItem>
 				</ui:SettingsExpander>
 				
-				
-
-
 				<ui:SettingsExpander Header="App Accent Color"
 					 IconSource="ColorLine"
 					 Description="Set a custom accent color for the App"
@@ -243,6 +231,25 @@
 
 				</ui:SettingsExpander>
 
+				<ui:SettingsExpander Header="App Theme"
+					 IconSource="DarkTheme"
+					 Description="Change the current app theme">
+					<ui:SettingsExpander.Footer>
+						<ComboBox SelectedItem="{Binding CurrentAppTheme}"
+								  ItemsSource="{Binding AppThemes}"
+								  MinWidth="150" />
+					</ui:SettingsExpander.Footer>
+				</ui:SettingsExpander>
+
+				<ui:SettingsExpander Header="Account"
+					 IconSource="Contact"
+					 Description="Default app Settings">
+					<ui:SettingsExpander.Footer>
+						<Button Command="{Binding LogoutCommand}"
+								Content="Logout"
+								  MinWidth="150" />
+					</ui:SettingsExpander.Footer>
+				</ui:SettingsExpander>
 				<!--<ui:SettingsExpander Header="IMPORT PROFILES"
 									 Name="IMPORTPROFILES"
 					 IconSource="{StaticResource Import}"

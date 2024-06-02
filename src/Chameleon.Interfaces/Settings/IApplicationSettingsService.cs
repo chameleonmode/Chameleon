@@ -7,5 +7,6 @@ namespace Chameleon.Interfaces.Settings
         //IApplicationSettings Get();
         Task<IApplicationSettings> GetAsync();
         Task Save();
+        Task Logout();
     }
 }

@@ -124,7 +124,6 @@
 								Grid.Column="1"
 								Content="three-dots"
 								ToolTip.Tip="Details"
-								Command="{Binding OpenMenuCommand}"
 								Theme="{StaticResource SvgIconButton}">
 							<Button.Flyout>
 								<ui:FAMenuFlyout Placement="Bottom">

@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Reflection;
 using System.Resources;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Chameleon.Prism.Events;
@@ -816,25 +817,34 @@ public class PubSubEvent<TPayload> : EventBase
 }
 
 //
-    // Summary:
-    //     Defines an interface to get instances of an event type.
+// Summary:
+//     Defines an interface to get instances of an event type.
 public interface IEventAggregator
-    {
-        //
-        // Summary:
-        //     Gets an instance of an event type.
-        //
-        // Type parameters:
-        //   TEventType:
-        //     The type of event to get.
-        //
-        // Returns:
-        //     An instance of an event object of type TEventType.
-        TEventType GetEvent<TEventType>() where TEventType : EventBase, new();
-        void Subscribe<TEventType, TPayload>(Action<TPayload> action) where TEventType : PubSubEvent<TPayload>, new(); 
-        void Subscribe<TPayload>(Action<TPayload> action);
-        void Publish<TEventType, TPayload>(TPayload action) where TEventType : PubSubEvent<TPayload>, new();
-        void Publish<TPayload>(TPayload action);
+{
+    //
+    // Summary:
+    //     Gets an instance of an event type.
+    //
+    // Type parameters:
+    //   TEventType:
+    //     The type of event to get.
+    //
+    // Returns:
+    //     An instance of an event object of type TEventType.
+    TEventType GetEvent<TEventType>()
+        where TEventType : EventBase, new();
+
+    void Sub<TEventType, TPayload>(Action<TPayload> action)
+        where TEventType : PubSubEvent<TPayload>, new();
+
+    void Push<TEventType, TPayload, T>(T param)
+        where TEventType : PubSubEvent<TPayload>, new()
+        where TPayload : EventArgs;
+    void Push<TEventType, TPayload>(params object[] p)
+        where TEventType : PubSubEvent<TPayload>, new()
+        where TPayload : EventArgs;
+    void Push<TEventType, TPayload>(TPayload load)
+        where TEventType : PubSubEvent<TPayload>, new();
 }
 
 /// <summary>
@@ -896,7 +906,7 @@ public class EventAggregator : IEventAggregator
         }
     }
 
-    public void Subscribe<TEventType, TPayload>(Action<TPayload> action) 
+    public void Sub<TEventType, TPayload>(Action<TPayload> action) 
         where TEventType : PubSubEvent<TPayload>, new()
     {
         GetEvent<TEventType>().Subscribe(action);
@@ -906,15 +916,34 @@ public class EventAggregator : IEventAggregator
     {
         GetEvent<TEventType>().Publish(action);
     }
-    public void Publish<TPayload>(TPayload action) 
+    public void Push<TEventType, TPayload, T>(T param) 
+        where TEventType : PubSubEvent<TPayload>, new()
+        where TPayload : EventArgs
     {
-        GetEvent<PubSubEvent<TPayload>>().Publish(action);
+        GetEvent<TEventType>().Publish(Activator.CreateInstance(typeof(TPayload), param) as TPayload);
     }
-    public void Subscribe<TPayload>(Action<TPayload> action)
+    public void Push<TEventType, TPayload>(params object[] p)
+      where TEventType : PubSubEvent<TPayload>, new()
+      where TPayload : EventArgs
     {
-        GetEvent<PubSubEvent<TPayload>>().Subscribe(action);
+        GetEvent<TEventType>().Publish(Activator.CreateInstance(typeof(TPayload), p) as TPayload);
+    }
+    public void Push<TEventType, TPayload>(TPayload load)
+        where TEventType : PubSubEvent<TPayload>, new()
+    {
+        GetEvent<TEventType>().Publish(load);
     }
 }
+
+//[Serializable]
+//public class EventArgs<T>
+//{
+//    public static readonly EventArgs<T> Empty = new EventArgs<T>();
+
+//    public EventArgs(T? t = default)
+//    {
+//    }
+//}
 
 ///<summary>
 /// Defines a base class to publish and subscribe to events.
