@@ -482,8 +482,11 @@ public partial class UserProfilesViewModel
                  viewModel.Profiles = selectedUserProfiles;
              }) == IContentDialogResult.Primary)
         {
-            Filter = p => p.FolderId == _folder.Id;
-            OnHandleUserEvent();
+            if (_folder.Id != 0)
+            {
+                Filter = p => p.FolderId == _folder.Id;
+                OnHandleUserEvent();
+            }
         }
     }
 

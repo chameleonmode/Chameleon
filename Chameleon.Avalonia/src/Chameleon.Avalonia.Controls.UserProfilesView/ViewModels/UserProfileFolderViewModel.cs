@@ -48,20 +48,15 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         _folder = folder;
         _userProfileFolderService = userProfileFolderService;
         foldervm = f;
-
-        EventAggregator
-            .GetEvent<SavedUserProfileFolderEvent>()
-            .Subscribe(OnFolderSaved);
-
-        //EventAggregator
-        //    .GetEvent<OpenUserProfileFolderEvent>()
-        //    .Subscribe(SetSelected);
-
-        EventAggregator
-            .GetEvent<UpdateUserProfileFolderEvent>()
-            .Subscribe(SetSelected);
-
         IsFavorite = folder.IsFavorite;
+
+        EventAggregator.Sub<UpdateUserProfileFolderEvent, UserProfileFolderEventArgs>((a) =>
+        {
+            if (a.UserProfileFolder.Id == _folder.Id)
+            {
+                IsFavorite = _folder.IsFavorite = a.UserProfileFolder.IsFavorite;
+            }
+        });
     }
 
     public IUserProfileFolder UserProfileFolder => _folder;
@@ -91,6 +86,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         EventAggregator
             .GetEvent<UpdateFavoriteFolderEvent>()
             .Publish();
+
         EventAggregator
             .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
             .Publish(new ChangeProfilesInFavoriteFolderEventArgs(UserProfileFolder.Id)); 
@@ -133,12 +129,10 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             return;
         }
     }
-
+    
     [RelayCommand]
     private async Task Delete()
     {
-        IsOpenMenuPopup = false;
-
         if (await MesageBoxHelper.ShowAsync("Delete Folder",
             $"Are you sure you want to delete {UserProfileFolder.Title} folder? This will not affect individual profiles within the folder.",
             ContentDialogButtons.YesNo,
@@ -153,24 +147,10 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
                 //.Publish(new UserProfileFolderEventArgs(_folder));
     }
 
-    [RelayCommand]
-    private void OpenMenu()
-    {
-        IsOpenMenuPopup = !IsOpenMenuPopup;
-    }
-
-    private bool _isOpenMenuPopup;
-    public bool IsOpenMenuPopup
-    {
-        get => _isOpenMenuPopup;
-        set => SetProperty(ref _isOpenMenuPopup, value);
-    }
-
    [RelayCommand]
     private void StartRename()
     {
         Title = _folder.Title;
-        IsOpenMenuPopup = false;
         IsRenamed = true;
     }
 
@@ -216,6 +196,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
            .Publish();
     }
 
+
     private bool _isSelected;
     public bool IsSelected
     {
@@ -233,20 +214,12 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             }
         }
     }
-
+    
+    [ObservableProperty]
     private bool _isRenamed;
-    public bool IsRenamed
-    {
-        get => _isRenamed;
-        set => SetProperty(ref _isRenamed, value);
-    }
 
+    [ObservableProperty]
     private bool _isFavorite;
-    public bool IsFavorite
-    {
-        get => _isFavorite;
-        set => SetProperty(ref _isFavorite, value);
-    }
 
     public IApplicationUser CurrentUser => _currentUser;
     public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(_folder);

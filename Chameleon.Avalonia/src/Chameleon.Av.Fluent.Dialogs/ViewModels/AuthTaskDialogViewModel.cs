@@ -2,6 +2,7 @@
 using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
 using Chameleon.Interfaces.MessageBox;
+using System.Runtime;
 
 namespace Chameleon.Av.Fluent.Dialogs.ViewModels;
 
@@ -98,6 +99,7 @@ public partial class AuthTaskDialogViewModel : DialogBase, IAuthTaskDialogViewMo
     {
         // store auth info to reuse next startup
         _settings.Login.Set(UserName, LicenceKey);
+        _settings.Settings.AutoLogin = true;
         await _settingsService.Save();
     }
     async Task DoRequest()
