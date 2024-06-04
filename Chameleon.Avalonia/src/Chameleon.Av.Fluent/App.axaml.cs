@@ -14,8 +14,6 @@ using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.Windows;
 using DryIoc;
 using Prism.DryIoc;
-using Prism.Ioc;
-using Prism.Modularity;
 using System.Reflection;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 using Chameleon.Avalonia.Controls.Dashboard.ViewModels;
@@ -265,6 +263,8 @@ public partial class App : PrismApplication
         containerRegistry.Register<IAutomationScriptDescription, AutomationScriptDescription>();
         containerRegistry.Register<IAddScriptParametersPopupView, AddScriptParametersPopupView>();
         containerRegistry.Register<IAddScriptParametersPopupViewModel, AddScriptParametersPopupViewModel>();
+        containerRegistry.Register<ISelectAutomationPopupViewModel, SelectAutomationPopupViewModel>();
+        containerRegistry.Register<ISelectAutomationPopupView, SelectAutomationPopupView>();
     }
 
     private void RegisterIocContainer(IContainerRegistry containerRegistry)

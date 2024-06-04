@@ -1,28 +1,22 @@
-﻿using AutoMapper;
-using Avalonia.Controls;
-using Chameleon.Avalonia.Controls.Paginator.ViewModels;
+﻿using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Common.Helpers;
-using Chameleon.Controls.AssistantUsers.Interfaces;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
-using Chameleon.Infrastructure.Profiles;
+using Chameleon.Interfaces.App.Automation.ViewModels;
+using Chameleon.Interfaces.App.Automation.Views;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.App.UserProfiles.Services;
 using Chameleon.Interfaces.App.UserProfiles.Views.List;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
-using System.Security.Cryptography;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
@@ -302,6 +296,7 @@ public partial class UserProfilesViewModel
     public bool HasSelectedItems => ViewModels != null && ViewModels.Count(v => v.IsSelected) > 0;
 
     private IEnumerable<UserProfileViewModel> _selectedProfiles;
+
     private void OnSelectedChanged()
     {
         _selectedProfiles = _mapping.Where(profile => profile.IsSelected);
@@ -367,18 +362,38 @@ public partial class UserProfilesViewModel
     [RelayCommand]
     private async Task Delete()
     {
-        if (await MesageBoxHelper.ShowAsync("Delete User Profiles", 
+        if (await MesageBoxHelper.ShowAsync("Delete User Profiles",
             $"Are you sure you want to delete {SelectedCount} profiles?",
-            ContentDialogButtons.YesNo, 
+            ContentDialogButtons.YesNo,
             "DeleteLines"))
             await DeleteProfiles();
     }
+
+    [RelayCommand]
+    private async Task OpenAutomation()
+    {
+        var userProfiles = GetSelectedProfiles();
+        var userProfilesToApply = new List<IUserProfile>();
+
+        foreach (var userProfile in userProfiles)// linq
+        {
+            userProfilesToApply.Add(userProfile.UserProfile);
+        }
+
+        var result = await ContentDialogService
+           .ShowAsync<ISelectAutomationPopupView, ISelectAutomationPopupViewModel>(viewModel =>
+           {
+               viewModel.Title = "Select Automation";
+               viewModel.UserProfiles = userProfilesToApply;
+           });
+    }
+
     private void OnDeleteUserProfileEvent(UserProfileEventArgs obj)
     {
         var profile = _mapping.FirstOrDefault(profile => profile.UserProfile.Id == obj.UserProfile.Id);
         if (profile != null)
             profile.IsSelected = false;
-        
+
         _mapping.Remove(profile);
         _viewModels = null;
         OnPropertyChanged(nameof(ViewModels));
@@ -390,7 +405,7 @@ public partial class UserProfilesViewModel
         var profiles = _selectedProfiles.ToList();
 
         foreach (var profile in profiles)
-        {                                                
+        {
 
             await Task.Run(() => _userProfileService.Delete(profile.UserProfile));
             profile.IsSelected = false;
@@ -416,8 +431,8 @@ public partial class UserProfilesViewModel
     [RelayCommand]
     private void RemoveProfilesFromFolder()
     {
-        if (_folder.Id == 0 || 
-            _selectedProfiles == null || 
+        if (_folder.Id == 0 ||
+            _selectedProfiles == null ||
             !_selectedProfiles.Any())
         {
             return;
@@ -460,12 +475,12 @@ public partial class UserProfilesViewModel
             .Select(p => (IUserProfile)p.UserProfile)
             .ToList();
 
-       if(await ContentDialogService.ShowAsync<IMoveUserProfilesPopupView, IMoveUserProfilesPopupViewModel>(
-            viewModel =>
-            {
-                viewModel.Title = "Add To Folder";
-                viewModel.Profiles = selectedUserProfiles;
-            }) == IContentDialogResult.Primary)
+        if (await ContentDialogService.ShowAsync<IMoveUserProfilesPopupView, IMoveUserProfilesPopupViewModel>(
+             viewModel =>
+             {
+                 viewModel.Title = "Add To Folder";
+                 viewModel.Profiles = selectedUserProfiles;
+             }) == IContentDialogResult.Primary)
         {
             Filter = p => p.FolderId == _folder.Id;
             OnHandleUserEvent();
@@ -487,8 +502,8 @@ public partial class UserProfilesViewModel
         var folderId = HasFolder ? (int?)Folder.Id : null;
 
         var profile = await _userProfileService.CreateAsync(folderId);
-        if(folderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == profile.Id));
-            OnHandleUserEvent();
+        if (folderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == profile.Id)) ;
+        OnHandleUserEvent();
 
         return profile;
         //EventAggregator
@@ -581,7 +596,7 @@ public partial class UserProfilesViewModel
     {
         var profiles = GetSelectedProfiles();
 
-        profiles.ForEach(async(selectedProfile) =>
+        profiles.ForEach(async (selectedProfile) =>
         {
             await selectedProfile.OpenSystemBrowser(browserType);
             //var profile = selectedProfile.UserProfile;
@@ -644,7 +659,7 @@ public partial class UserProfilesViewModel
                 PaginatorViewModel.PageIndex = 0;
             }
         }
-    }      
+    }
 
     public void OnAuthenticated()
     {
@@ -729,8 +744,8 @@ public partial class UserProfilesViewModel
             if (p.FolderId is int fid && fid != 0)
                 ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().SetSelectedById(fid);
             else
-                ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null); 
-            
+                ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
+
             Filter = profile => p.Id == profile.Id;
         }
         else
@@ -750,7 +765,7 @@ public partial class UserProfilesViewModel
     }
 
     public bool IsProfilesExist => _mapping?.Any() == true;
-    public bool HasNoItems => 
+    public bool HasNoItems =>
         ViewModels == null ||
-        ViewModels.Count == 0; 
+        ViewModels.Count == 0;
 }

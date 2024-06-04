@@ -2,7 +2,8 @@
 
 namespace Chameleon.Interfaces.App.Automation.ViewModels;
 public interface IAutomationScriptViewModel
-    : ITransientDependency, IHaveInitialize
+    : ITransientDependency
+    , IHaveInitialize
 {
     int Id { get; set; }
     string Title { get; set; }

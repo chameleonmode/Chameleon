@@ -1,14 +1,8 @@
-﻿using AutoMapper;
-using Chameleon.Avalonia.Controls.Automation.ViewModels;
-using Chameleon.Core.Extensions;
-using Chameleon.CT.Common.Base;
-using Chameleon.Domain.Entities.Automation;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
 using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.Repository;
-using System.Reflection.Metadata;
 
 namespace Chameleon.Avalonia.Controls.Automation.Views.ViewModels;
 

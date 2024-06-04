@@ -1,15 +1,14 @@
-﻿using Avalonia.Controls;
-using Chameleon.Application.Events;
+﻿using Chameleon.Application.Events;
 using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
-using Chameleon.Domain.Entities;
+using Chameleon.Interfaces.App.Automation.ViewModels;
+using Chameleon.Interfaces.App.Automation.Views;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
-using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.UserProfileFolders;
+using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.UserSettings;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -21,19 +20,31 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     private readonly IApplicationUser _currentUser;
     private readonly IUserProfileFolder _folder;
     private readonly IUserProfileFolderService _userProfileFolderService;
+    private readonly IUserProfileService _userProfileService;
 
     UserProfileFoldersViewModel foldervm;
 
-   [ObservableProperty]
+    [ObservableProperty]
     private bool _isFavoriteButtonVisible = true;
+
+    private IList<IUserProfile> _selectedUserProfiles = new List<IUserProfile>();
+    public IList<IUserProfile> SelectedUserProfiles
+    {
+        get => _selectedUserProfiles;
+        set => SetProperty(ref _selectedUserProfiles, value);
+    }
+
+    public bool IsFolderNotEmpty => GetProfilesByCurrentFolder().Any();
 
     public UserProfileFolderViewModel(
         IApplicationUser currentUser,
         IUserProfileFolder folder,
         IUserProfileFolderService userProfileFolderService,
-        UserProfileFoldersViewModel f)
+        UserProfileFoldersViewModel f,
+        IUserProfileService userProfileService)
     {
         _currentUser = currentUser;
+        _userProfileService = userProfileService;
         _folder = folder;
         _userProfileFolderService = userProfileFolderService;
         foldervm = f;
@@ -85,6 +96,29 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             .Publish(new ChangeProfilesInFavoriteFolderEventArgs(UserProfileFolder.Id)); 
         
         OnPropertyChanged(nameof(UserProfileFolder));
+    }
+
+    [RelayCommand]
+    private async Task OpenAutomation()
+    {
+        var userProfilesToApply = GetProfilesByCurrentFolder();
+
+        var result = await ContentDialogService
+           .ShowAsync<ISelectAutomationPopupView, ISelectAutomationPopupViewModel>(viewModel =>
+           {
+               viewModel.Title = "Select Automation";
+               viewModel.UserProfiles = userProfilesToApply;
+           });
+    }
+
+    private IList<IUserProfile> GetProfilesByCurrentFolder()
+    {
+        var userProfilesFromCurrentFolder = _userProfileService
+            .GetAll()
+            .Where(profiles => profiles.FolderId == _folder.Id)
+            .ToList();
+
+        return userProfilesFromCurrentFolder;
     }
 
     private void SetSelected(UserProfileFolderEventArgs args)

@@ -1,15 +1,13 @@
-using Avalonia.Controls;
-using Chameleon.Av.Fluent.Common.Controls;
-using Chameleon.Common.Helpers;
-using Chameleon.Domain.Entities.Automation;
-using Chameleon.Interfaces.App.Automation.Entities;
-using Chameleon.Interfaces.App.Automation.ViewModels;
+using Chameleon.Avalonia.Controls.Automation.Views.ViewModels;
+using Chameleon.Avalonia.Fluent.Common.Controls;
+using Chameleon.Core.Attributes;
 using Chameleon.Interfaces.App.Automation.Views;
 
 namespace Chameleon.Avalonia.Controls.Automation.Views;
 
+[ViewModel(typeof(AddScriptParametersPopupViewModel))]
 public partial class AddScriptParametersPopupView
-    : AutoViewModelLocatorControl
+    : ViewControlBase<AddScriptParametersPopupViewModel>
     , IAddScriptParametersPopupView
 {
     public AddScriptParametersPopupView()

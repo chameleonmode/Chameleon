@@ -128,21 +128,29 @@
 								Theme="{StaticResource SvgIconButton}">
 							<Button.Flyout>
 								<ui:FAMenuFlyout Placement="Bottom">
-									<ui:MenuFlyoutItem Text="Change Proxies"
-													   Tag="{Binding UserProfileFolder}"
-													   IconSource="Wifi4"
-													   Command="{Binding ChangeProxiesCommand}"
-													   IsEnabled="{Binding IsContextMenuItemEnabled}"/>
-									<ui:MenuFlyoutItem Text="Rename folder"
-													   IconSource="Rename"
-													   Command="{Binding StartRenameCommand}"
-													   IsEnabled="{Binding IsContextMenuItemEnabled}"
-													   IsVisible="{Binding IsFavoriteButtonVisible}"/>
-									<ui:MenuFlyoutItem Text="Delete"
-													   IconSource="Delete"
-													   Command="{Binding DeleteCommand}"
-													   IsEnabled="{Binding IsContextMenuItemEnabled}"
-													   IsVisible="{Binding IsFavoriteButtonVisible}" />
+									<ui:MenuFlyoutItem 
+										Text="Change Proxies"
+										Tag="{Binding UserProfileFolder}"
+										IconSource="Wifi4"
+										Command="{Binding ChangeProxiesCommand}"
+										IsEnabled="{Binding IsContextMenuItemEnabled}"/>
+									<ui:MenuFlyoutItem 
+										Text="Run Automation"
+										IconSource="Checkmark"
+										Command="{Binding OpenAutomationCommand}"
+										IsEnabled="{Binding IsFolderNotEmpty}"/>
+									<ui:MenuFlyoutItem 
+										Text="Rename folder"
+										IconSource="Rename"
+										Command="{Binding StartRenameCommand}"
+										IsEnabled="{Binding IsContextMenuItemEnabled}"
+										IsVisible="{Binding IsFavoriteButtonVisible}"/>
+									<ui:MenuFlyoutItem 
+										Text="Delete"
+										IconSource="Delete"
+										Command="{Binding DeleteCommand}"
+										IsEnabled="{Binding IsContextMenuItemEnabled}"
+										IsVisible="{Binding IsFavoriteButtonVisible}" />
 								</ui:FAMenuFlyout>
 							</Button.Flyout>
 						</Button>

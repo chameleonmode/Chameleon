@@ -1,0 +1,76 @@
+<UserControl
+	xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
+    x:Class="Chameleon.Avalonia.Controls.UserProfilesView.SelectAutomationPopupView"
+	xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+	xmlns:ui="using:FluentAvalonia.UI.Controls"
+	Width="450"
+    mc:Ignorable="d">
+
+	<dialogs:ChameleonDialogControl TitleDescription="{Binding UserProfiles.Count, StringFormat='Run automation for {0} profile(s).'}">
+		<dialogs:ChameleonDialogControl.Content>
+			<StackPanel
+				Margin="10"
+				Spacing="6">
+				<TextBlock
+					Text="Select Automation"
+					Padding="4"
+					Theme="{StaticResource SubtitleTextBlockStyle}"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center">
+				</TextBlock>
+
+				<ui:FAComboBox
+					HorizontalAlignment="Stretch"
+					ItemsSource="{Binding ViewModels}"
+					SelectedItem="{Binding SelectedScriptDescription}" 
+					IsTextSearchEnabled="True">
+					<ui:FAComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock
+								Text="{Binding Title}" 
+								TextTrimming="WordEllipsis" 
+								TextWrapping="NoWrap" 
+								ToolTip.Tip="{Binding Title}"/>
+						</DataTemplate>
+					</ui:FAComboBox.ItemTemplate>
+				</ui:FAComboBox>
+
+			</StackPanel>
+		</dialogs:ChameleonDialogControl.Content>
+	</dialogs:ChameleonDialogControl>
+
+
+	<!--<dialogs:ChameleonDialogControl
+		   TitleDescription="{Binding ViewModels.Count, StringFormat='You have {0} Automation:'}">
+		<dialogs:ChameleonDialogControl.Content>
+			<ListBox
+				ItemsSource="{Binding ViewModels}"
+				ScrollViewer.VerticalScrollBarVisibility="Auto"
+				Margin="0 20"
+				MaxHeight="300">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Grid Margin="0 0 15 10">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<TextBlock
+								Grid.Row="0"
+								Text="{Binding Title}"
+								Foreground="#8094AE"
+								Padding="0 5"/>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</dialogs:ChameleonDialogControl.Content>
+	</dialogs:ChameleonDialogControl>-->
+
+
+
+</UserControl>
