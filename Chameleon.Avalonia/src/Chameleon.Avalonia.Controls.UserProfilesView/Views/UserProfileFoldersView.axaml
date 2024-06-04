@@ -135,7 +135,7 @@
 										IsEnabled="{Binding IsContextMenuItemEnabled}"/>
 									<ui:MenuFlyoutItem 
 										Text="Run Automation"
-										IconSource="Checkmark"
+										IconSource="Play"
 										Command="{Binding OpenAutomationCommand}"
 										IsEnabled="{Binding IsFolderNotEmpty}"/>
 									<ui:MenuFlyoutItem 

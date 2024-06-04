@@ -70,7 +70,7 @@
 						<StackPanel Orientation="Horizontal">
 
 							<Button
-								Content="launch-profiles"
+								Content="play"
 								Tag="Automate"
 								ToolTip.Tip="Run Automate"
 								Command="{Binding OpenAutomationCommand}"
