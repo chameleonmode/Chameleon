@@ -521,6 +521,20 @@ namespace Chameleon.SystemBrowser.Firefox
                 ["network.proxy.type"] = 1,
             };
 
+            if (UserProfile.Proxy.CanUse)
+            {
+                var host = UserProfile.Proxy.Host;
+                var port = UserProfile.Proxy.Port;
+                prefs["network.proxy.http"] = host;
+                prefs["network.proxy.http_port"] = port;
+                prefs["network.proxy.backup.http"] = host;
+                prefs["network.proxy.backup.http_port"] = port;
+                prefs["network.proxy.ssl"] = host;
+                prefs["network.proxy.ssl_port"] = port;
+                prefs["network.proxy.backup.ssl"] = host;
+                prefs["network.proxy.backup.ssl_port"] = port;
+            }
+
             // Define a regular expression pattern to extract key-value pairs
             Regex regex = UserPrefRegex();
                                                                            
@@ -661,6 +675,8 @@ namespace Chameleon.SystemBrowser.Firefox
                 browser.proxy.settings.set(
                     { value: proxyConfig, scope: 'regular' }
                 );
+
+                browser.tabs.reload();
                 """;
 
                 using (var fileStream = new FileStream(pxoyextFile, FileMode.CreateNew))
