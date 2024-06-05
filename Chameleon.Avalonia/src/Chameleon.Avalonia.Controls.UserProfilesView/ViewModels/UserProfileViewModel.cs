@@ -40,6 +40,20 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
 
     [ObservableProperty]
     private bool _isForeground;
+
+    public string SubTitle => "Profiles";
+    public bool HasMultiOptions => true;
+    public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
+    public bool IsFavorite => UserProfile?.IsFavourite ?? false;
+    public bool IsSharedProfile => _userProfileService.IsSharedProfile(UserProfile);
+    public bool IsShowCheckboxColumn { get; }
+    public bool IsEnabledCheckboxColumn { get; }
+    public bool IsDeleteProfileBtnVisible => !IsSharedProfile && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
+    public bool IsOutreachBtnEnabled => !IsSharedProfile || UserProfile.HasPermission(PermissionNames.Pages_Outreach);
+    public bool IsRssBtnEnabled => !IsSharedProfile || UserProfile.HasPermission(PermissionNames.Pages_RSS);
+
+    IUserProfile IUserProfileViewModelBase.UserProfile => UserProfile; 
+
     public UserProfileViewModel(
         IUserProfileService userProfileService,
         UserProfile userProfile,
@@ -80,6 +94,16 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
         EventAggregator
             .GetEvent<ForegroundUserSystemBrowserEvent>()
             .Subscribe(a => SetForgroung(a));
+
+        EventAggregator.GetEvent<SavedUserProfileEvent>().Subscribe(a =>
+        {
+            if (a.UserProfile.Id == UserProfile.Id)
+            {
+                Title = _userProfile.Title;
+                OnPropertyChanged(nameof(Title));
+                OnPropertyChanged(nameof(Code));
+            }
+        });
     }
 
     void SetForgroung(UserProfileSystemBrowserProcessEventArgs args)
@@ -236,19 +260,4 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
             }
         }
     }
-
-    public string SubTitle => "Profiles";
-    public bool HasMultiOptions => true;
-
-    public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
-
-    public bool IsFavorite => UserProfile?.IsFavourite ?? false;
-    public bool IsSharedProfile => _userProfileService.IsSharedProfile(UserProfile); 
-    public bool IsShowCheckboxColumn { get; }
-    public bool IsEnabledCheckboxColumn { get; }
-    public bool IsDeleteProfileBtnVisible => !IsSharedProfile && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
-    public bool IsOutreachBtnEnabled => !IsSharedProfile || UserProfile.HasPermission(PermissionNames.Pages_Outreach);
-    public bool IsRssBtnEnabled => !IsSharedProfile || UserProfile.HasPermission(PermissionNames.Pages_RSS);
-
-    IUserProfile IUserProfileViewModelBase.UserProfile { get => UserProfile; set => throw new NotImplementedException(); }
 }
