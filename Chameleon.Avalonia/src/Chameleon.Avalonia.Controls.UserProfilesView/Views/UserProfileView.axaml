@@ -43,41 +43,38 @@
 							  IsEnabled="{Binding IsEnabledCheckboxColumn}">
 				</CheckBox>
 
-
-				<Viewbox Width="30"
-						Height="30"
-						Margin="0 0 0 0"
-						Name="IconHost"
-						 Tag="{Binding UserProfile}">
-					<Grid Width="30"
-						  Height="30"
+					<Panel 
+						  Name="IconHost"
+						  Tag="{Binding UserProfile}"
 						  VerticalAlignment="Center">
 						<Border Background="{StaticResource AccentFillColorDefaultBrush}"
-								 BorderBrush="{StaticResource ControlStrokeColorOnAccentDefaultBrush}"
+								BorderBrush="{StaticResource ControlStrokeColorOnAccentDefaultBrush}"
 								CornerRadius="180"
 								BorderThickness="1"
+								Width="34"
+								Height="34"
 								ToolTip.Tip="{Binding Title, FallbackValue=Cannot find name}">
 
-							<TextBlock Text="{Binding Code,FallbackValue=E}"
-									   Margin="0 -1 0 0"
-									   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
-									   VerticalAlignment="Center"
+							<TextBlock Text="{Binding Code,FallbackValue=N}"
 									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center"
+									   TextAlignment="Center"
+									   Margin="0 0 0 0"
+									   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
 									   Theme="{StaticResource BodyStrongTextBlockStyle}"/>
 						</Border>
 
-						<Grid IsVisible="{Binding IsSharedProfile}"
-							  Width="10"
-							  Height="10"
+						<Panel IsVisible="{Binding IsSharedProfile}"
+							  Width="8"
+							  Height="8"
 							  VerticalAlignment="Bottom"
 							  HorizontalAlignment="Right">
 
 							<Ellipse Fill="{StaticResource ControlOnImageFillColorDefaultBrush}"/>
 
 							<ui:SymbolIcon Symbol="Share" FontSize="8" />
-						</Grid>
-					</Grid>
-				</Viewbox>
+						</Panel>
+					</Panel>
 			</StackPanel>
 
 			<TextBlock Grid.Column="1"
