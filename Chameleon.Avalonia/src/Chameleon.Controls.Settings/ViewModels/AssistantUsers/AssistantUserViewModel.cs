@@ -2,7 +2,6 @@
 using Chameleon.Controls.AssistantUsers.Interfaces;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
-using Chameleon.Core.Util;
 using Chameleon.Domain.Entities;
 using Chameleon.Domain.Entities.Assistants;
 using Chameleon.Infrastructure.Users;
@@ -12,12 +11,11 @@ using Chameleon.Interfaces.App.ShareFolders;
 using Chameleon.Interfaces.App.Users.AssistantUser.Events;
 using Chameleon.Interfaces.Assistants;
 using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.Views;
+using Chameleon.Avalonia.Common.Helpers;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
@@ -81,7 +79,6 @@ public partial class AssistantUserViewModel
             .GetEvent<UnshareFolderEvent>()
             .Subscribe(args => OnUnshareFolder(args));
     }
-
 
     #region Properties
 
@@ -210,11 +207,19 @@ public partial class AssistantUserViewModel
                 viewModel.AssistantId = UserAssistant.Id;
             });
     }
+
     [RelayCommand]
-    private void SendLicenceKey()
+    private async Task SendLicenceKey()
     {
-        var url = $"mailto:{UserAssistant.EmailAddress}?subject=Chameleon invitation&body=You’ve been invited to Chameleon. Your credentials:%0DEmail: {UserAssistant.EmailAddress}%0DKey: {UserAssistant.Password}%0D";
-        ProcessesUtil.GoToUrlDefault(url);
+        var clipboard = ApplicationHelper.GetClipboard();
+        if (clipboard == null)
+        {
+            _toastNotificationService.ShowError("Fail to copy details to clipboard");
+            return;
+        }
+
+        await clipboard.SetTextAsync($"{UserAssistant.EmailAddress} {UserAssistant.UserName} {UserAssistant.Password}");
+        _toastNotificationService.ShowSuccess("The details copied to the clipboard");
     }
     private void AddFolders(AddProfilesEventArgs args)
     {
