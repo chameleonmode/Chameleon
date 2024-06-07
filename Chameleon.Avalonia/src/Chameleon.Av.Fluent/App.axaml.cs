@@ -267,6 +267,8 @@ public partial class App : PrismApplication
         containerRegistry.Register<IAutomationScriptDescription, AutomationScriptDescription>();
         containerRegistry.Register<IAddScriptParametersPopupView, AddScriptParametersPopupView>();
         containerRegistry.Register<IAddScriptParametersPopupViewModel, AddScriptParametersPopupViewModel>();
+        containerRegistry.Register<ISelectAutomationPopupViewModel, SelectAutomationPopupViewModel>();
+        containerRegistry.Register<ISelectAutomationPopupView, SelectAutomationPopupView>();
     }
 
     private void RegisterPlaywrightTypes(IContainerRegistry containerRegistry)

@@ -185,7 +185,14 @@ public partial class SettingsViewModel
         NavigationService.NavigateToType(type,param);
     }
 
-bool save = true;
+    [RelayCommand]
+    public async Task Logout()
+    {
+       await _settingsService.Logout();
+    }
+
+    //TODO: refactor
+    bool save = true;
     partial void OnUseCustomAccentColorChanged(bool oldValue, bool newValue)
     {
         if(Loaded)

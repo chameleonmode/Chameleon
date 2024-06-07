@@ -71,7 +71,7 @@ public partial class MoveUserProfilesPopupViewModel : ObservableObjectBase,
 
     private void MoveProfilesToFolder()
     {
-        if (!_profiles.Any())
+        if (SelectedFolder is null || !_profiles.Any())
         {
             return;
         }

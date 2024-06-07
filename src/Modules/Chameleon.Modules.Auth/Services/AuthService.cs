@@ -50,6 +50,9 @@ namespace Chameleon.Auth.Services
             try
             {
                 _appSettings = await _settingsService.GetAsync();
+                if(!_appSettings.Settings.AutoLogin)
+                    return false;
+
                 if (_appSettings.Login.LoginName.HasAny() && _appSettings.Login.LicenseKey.HasAny())
                 {
                     loginResult = await Login(_appSettings.Login.LoginName, _appSettings.Login.LicenseKey);
