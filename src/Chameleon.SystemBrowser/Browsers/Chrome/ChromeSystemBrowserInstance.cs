@@ -1,16 +1,8 @@
-﻿using Chameleon.Core.Extensions;
-using Chameleon.Interfaces.Environments;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.SystemBrowser.Common;
-using Chameleon.SystemBrowser.Proxy;
-using Chameleon.Prism.Events;
-using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web;
-using static System.Net.Mime.MediaTypeNames;
+﻿using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.Settings;
+using Chameleon.Interfaces.WebBrowser;
+using Chameleon.Prism.Events;
+using Chameleon.SystemBrowser.Common;
 
 namespace Chameleon.SystemBrowser.Chrome
 {

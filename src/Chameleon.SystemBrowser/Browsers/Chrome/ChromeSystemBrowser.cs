@@ -9,11 +9,11 @@ namespace Chameleon.SystemBrowser.Chrome
 {
     public class ChromeSystemBrowser : SystemBrowserBase, IChromeSystemBrowser
     {
-        private readonly IEventAggregator _eventAggregator;
-        private readonly IApplicationEnvironment _applicationEnvironment;
-        private readonly ISystemBrowserInfoManager _systemBrowserInfoManager;
-        private readonly ISetPreferencesService _setPreferencesService;
-        private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
+        protected readonly IEventAggregator _eventAggregator;
+        protected readonly IApplicationEnvironment _applicationEnvironment;
+        protected readonly ISystemBrowserInfoManager _systemBrowserInfoManager;
+        protected readonly ISetPreferencesService _setPreferencesService;
+        protected readonly IUserDefaultSettingsService _userDefaultsSettingsService;
 
         public ChromeSystemBrowser(
             IEventAggregator eventAggregator,
@@ -41,7 +41,7 @@ namespace Chameleon.SystemBrowser.Chrome
                 GetBrowserExePath());
         }
 
-        private string GetBrowserExePath()
+        protected string GetBrowserExePath()
         {
             return _systemBrowserInfoManager
                 .FindByName("chrome")

@@ -2,55 +2,56 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
+using Chameleon.Auth.Services;
+using Chameleon.Av.Fluent.Common.Services;
+using Chameleon.Av.Fluent.Dialogs;
+using Chameleon.Av.Fluent.ViewModels;
 using Chameleon.Av.Fluent.Views;
+using Chameleon.Avalonia.Controls.Automation.ViewModels;
+using Chameleon.Avalonia.Controls.Automation.Views;
+using Chameleon.Avalonia.Controls.Automation.Views.ViewModels;
+using Chameleon.Avalonia.Controls.Dashboard;
+using Chameleon.Avalonia.Controls.Dashboard.ViewModels;
+using Chameleon.Avalonia.Controls.UserProfilesView;
+using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
+using Chameleon.Avalonia.Controls.UserProfileView;
+using Chameleon.Avalonia.Controls.UserProfileView.Services;
+using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
+using Chameleon.Avalonia.Playwright.Automation.Chrome;
+using Chameleon.Avalonia.Playwright.Automation.Manager;
+using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
+using Chameleon.Domain.Entities.Automation;
+using Chameleon.Infrastructure.App.Automation;
 using Chameleon.Infrastructure.Ioc;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Infrastructure.Repositories;
+using Chameleon.Interfaces;
+using Chameleon.Interfaces.App.Automation.Entities;
+using Chameleon.Interfaces.App.Automation.Manager;
+using Chameleon.Interfaces.App.Automation.Repositories;
+using Chameleon.Interfaces.App.Automation.Services;
+using Chameleon.Interfaces.App.Automation.ViewModels;
+using Chameleon.Interfaces.App.Automation.Views;
+using Chameleon.Interfaces.App.UserProfiles;
+using Chameleon.Interfaces.App.UserProfiles.Views.List;
 using Chameleon.Interfaces.Dashboard;
+using Chameleon.Interfaces.Dialogs;
+using Chameleon.Interfaces.Dialogs.Views;
+using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Interfaces.Modules;
 using Chameleon.Interfaces.Repository;
+using Chameleon.Interfaces.Services;
+using Chameleon.Interfaces.UserProfileFolders;
+using Chameleon.Interfaces.UserProfiles;
+using Chameleon.Interfaces.Views;
 using Chameleon.Interfaces.Windows;
+using Chameleon.SystemBrowser;
 using DryIoc;
 using Prism.DryIoc;
-using Prism.Ioc;
-using Prism.Modularity;
-using System.Reflection;
-using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
-using Chameleon.Avalonia.Controls.Dashboard.ViewModels;
-using Chameleon.Avalonia.Controls.Dashboard;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Av.Fluent.Common.Services;
-using Chameleon.Av.Fluent.Dialogs;
-using Chameleon.Interfaces.Dialogs.Views;
-using Chameleon.Av.Fluent.ViewModels;
-using Chameleon.Interfaces.DialogWindows;
-using Chameleon.Interfaces.Views;
 using System.ComponentModel;
-using Chameleon.Interfaces.Services;
-using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Avalonia.Controls.UserProfilesView;
-using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
-using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.UserProfileFolders;
-using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
-using Chameleon.Avalonia.Controls.UserProfileView.Services;
-using Chameleon.Avalonia.Controls.UserProfileView;
-using Chameleon.Interfaces.App.UserProfiles.Views.List;
-using Chameleon.Interfaces;
-using Chameleon.Auth.Services;
-using Chameleon.SystemBrowser;
-using Chameleon.Interfaces.App.Automation.Views;
-using Chameleon.Avalonia.Controls.Automation.Views;
-using Chameleon.Interfaces.App.Automation.ViewModels;
-using Chameleon.Avalonia.Controls.Automation.ViewModels;
-using Chameleon.Infrastructure.App.Automation;
-using Chameleon.Interfaces.App.Automation.Services;
-using Chameleon.Interfaces.App.Automation.Repositories;
-using Chameleon.Interfaces.App.Automation.Entities;
-using Chameleon.Domain.Entities.Automation;
-using Chameleon.Avalonia.Controls.Automation.Views.ViewModels;
+using System.Reflection;
 
 namespace Chameleon.Av.Fluent;
 public class tempinits : IDialogWindowsService  , IPopupDialogService
@@ -219,6 +220,7 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IDashboardView, DashboardView>();
 
         RegisterAutomationTypes(containerRegistry);
+        RegisterPlaywrightTypes(containerRegistry);
 
         cr.RegisterSingleton<IProjectsViewModel, ProjectsViewModel>();
         cr.RegisterSingleton<IProjectsView, ProjectsView>();
@@ -265,6 +267,13 @@ public partial class App : PrismApplication
         containerRegistry.Register<IAutomationScriptDescription, AutomationScriptDescription>();
         containerRegistry.Register<IAddScriptParametersPopupView, AddScriptParametersPopupView>();
         containerRegistry.Register<IAddScriptParametersPopupViewModel, AddScriptParametersPopupViewModel>();
+    }
+
+    private void RegisterPlaywrightTypes(IContainerRegistry containerRegistry)
+    {
+        containerRegistry.RegisterSingleton<IPlaywrightBrowserManager, PlaywrightBrowserManager>();
+        containerRegistry.RegisterSingleton<IChromePlaywrightBrowser, ChromePlaywrightBrowser>();
+        //containerRegistry.RegisterSingleton<IBravePlaywrightBrowser, BravePlaywrightBrowser>();
     }
 
     private void RegisterIocContainer(IContainerRegistry containerRegistry)
