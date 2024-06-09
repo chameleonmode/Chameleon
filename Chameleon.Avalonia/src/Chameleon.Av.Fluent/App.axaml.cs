@@ -17,10 +17,7 @@ using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using Chameleon.Avalonia.Controls.UserProfileView;
 using Chameleon.Avalonia.Controls.UserProfileView.Services;
 using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
-using Chameleon.Avalonia.Playwright.Automation.Brave;
-using Chameleon.Avalonia.Playwright.Automation.Chrome;
 using Chameleon.Avalonia.Playwright.Automation.Manager;
-using Chameleon.Avalonia.Playwright.Automation.Services;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Domain.Entities.Automation;
@@ -30,7 +27,6 @@ using Chameleon.Infrastructure.Profiles;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.Automation.Entities;
-using Chameleon.Interfaces.App.Automation.Manager;
 using Chameleon.Interfaces.App.Automation.Repositories;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
@@ -195,6 +191,7 @@ public partial class App : PrismApplication
         Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.AssemblyResolver).Assembly);
         Container.RegisterTypesFrom(typeof(AuthService).Assembly);
         Container.RegisterTypesFrom(typeof(SystemBrowserManager).Assembly);
+        Container.RegisterTypesFrom(typeof(PlaywrightBrowserManager).Assembly);
         Container.RegisterTypesFrom(Assembly.GetExecutingAssembly());
 
         // cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();
@@ -222,7 +219,6 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IDashboardView, DashboardView>();
 
         RegisterAutomationTypes(containerRegistry);
-        RegisterPlaywrightTypes(containerRegistry);
 
         cr.RegisterSingleton<IProjectsViewModel, ProjectsViewModel>();
         cr.RegisterSingleton<IProjectsView, ProjectsView>();
@@ -271,17 +267,6 @@ public partial class App : PrismApplication
         containerRegistry.Register<IAddScriptParametersPopupViewModel, AddScriptParametersPopupViewModel>();
         containerRegistry.Register<ISelectAutomationPopupViewModel, SelectAutomationPopupViewModel>();
         containerRegistry.Register<ISelectAutomationPopupView, SelectAutomationPopupView>();
-    }
-
-    private void RegisterPlaywrightTypes(IContainerRegistry containerRegistry)
-    {
-        containerRegistry.RegisterSingleton<IPlaywrightBrowserManager, PlaywrightBrowserManager>();
-        containerRegistry.RegisterSingleton<IAutomationBrowserService, AutomationBrowserService>();
-        containerRegistry.RegisterSingleton<ICompileScriptService, CompileScriptService>();
-
-
-        containerRegistry.RegisterSingleton<IChromePlaywrightBrowser, ChromePlaywrightBrowser>();
-        containerRegistry.RegisterSingleton<IBravePlaywrightBrowser, BravePlaywrightBrowser>();
     }
 
     private void RegisterIocContainer(IContainerRegistry containerRegistry)

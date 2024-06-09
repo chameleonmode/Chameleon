@@ -8,6 +8,5 @@ public interface IAutomationService
     IList<IAutomationScriptDescription> GetAll();
     void UpdateParameter(IAutomationScriptParameter param);
     void SetParametersValue(IList<IAutomationParameterValue> values);
-
     string GetScriptBody(int id);
 }
