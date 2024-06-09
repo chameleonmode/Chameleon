@@ -3,6 +3,7 @@ using Chameleon.Infrastructure.App.Automation.DTOs;
 using Chameleon.Interfaces.Api;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.Repository;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Chameleon.Infrastructure.App.Automation;
@@ -38,5 +39,12 @@ public class AutomationScriptApi
 
         var scriptDtos = _apiClient.Get<AutomationScriptDescriptionDto[]>(GetEndpointUrl("GetAllScriptDescription"), query);
         return scriptDtos;
+    }
+
+    public string GetScriptBody(int id)
+    {
+        var query = new { Id = id };
+        var scriptDtos = _apiClient.Get<AutomationScriptBodyDto>(GetEndpointUrl("GetScriptBody"), query);
+        return scriptDtos.Script;
     }
 }

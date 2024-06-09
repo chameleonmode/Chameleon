@@ -15,17 +15,13 @@ public class TopMostSidePanelViewModel : SubPageViewModelBase, ITopMostSidePanel
     private readonly IApplicationUser _applicationUser;
     private readonly ISystemBrowserManager _systemBrowserManager;
 
-    private readonly IPlaywrightBrowserManager _playWritingBrowserManager;
-
     public TopMostSidePanelViewModel(IUserProfileService userProfileService,
         IApplicationUser applicationUser,
-        ISystemBrowserManager systemBrowserManager,
-        IPlaywrightBrowserManager playWritingBrowserManager)
+        ISystemBrowserManager systemBrowserManager)
     {
         _systemBrowserManager = systemBrowserManager;
         _userProfileService = userProfileService;
         _applicationUser = applicationUser;
-        _playWritingBrowserManager = playWritingBrowserManager;
     }   
     public List<IUserProfileActionsViewModel> RunningList { get; set; } = [];
 
@@ -72,7 +68,6 @@ public class TopMostSidePanelViewModel : SubPageViewModelBase, ITopMostSidePanel
                     profile as UserProfile,
                     _applicationUser,
                     _systemBrowserManager,
-                    _playWritingBrowserManager,
                     false,
                     false,
                     false,

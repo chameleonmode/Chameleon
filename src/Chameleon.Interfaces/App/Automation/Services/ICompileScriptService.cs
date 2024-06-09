@@ -5,5 +5,5 @@ namespace Chameleon.Interfaces.App.Automation.Services;
 public interface ICompileScriptService
     : ISingletonDependency
 {
-    MethodInfo? CompileScript(string script);
+    object CompileScript(string script);
 }

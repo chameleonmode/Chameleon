@@ -17,8 +17,10 @@ using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using Chameleon.Avalonia.Controls.UserProfileView;
 using Chameleon.Avalonia.Controls.UserProfileView.Services;
 using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
+using Chameleon.Avalonia.Playwright.Automation.Brave;
 using Chameleon.Avalonia.Playwright.Automation.Chrome;
 using Chameleon.Avalonia.Playwright.Automation.Manager;
+using Chameleon.Avalonia.Playwright.Automation.Services;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Domain.Entities.Automation;
@@ -274,8 +276,12 @@ public partial class App : PrismApplication
     private void RegisterPlaywrightTypes(IContainerRegistry containerRegistry)
     {
         containerRegistry.RegisterSingleton<IPlaywrightBrowserManager, PlaywrightBrowserManager>();
+        containerRegistry.RegisterSingleton<IAutomationBrowserService, AutomationBrowserService>();
+        containerRegistry.RegisterSingleton<ICompileScriptService, CompileScriptService>();
+
+
         containerRegistry.RegisterSingleton<IChromePlaywrightBrowser, ChromePlaywrightBrowser>();
-        //containerRegistry.RegisterSingleton<IBravePlaywrightBrowser, BravePlaywrightBrowser>();
+        containerRegistry.RegisterSingleton<IBravePlaywrightBrowser, BravePlaywrightBrowser>();
     }
 
     private void RegisterIocContainer(IContainerRegistry containerRegistry)

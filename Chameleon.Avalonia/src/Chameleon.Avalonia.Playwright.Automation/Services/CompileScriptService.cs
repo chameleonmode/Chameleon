@@ -1,8 +1,11 @@
-﻿using Chameleon.Interfaces.App.Automation.Services;
+﻿using Chameleon.Avalonia.Playwright.Automation.ExternalScript;
+using Chameleon.Interfaces.App.Automation.Services;
+using Chameleon.Interfaces.WebBrowser;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Chameleon.Avalonia.Playwright.Automation.Services
@@ -10,9 +13,7 @@ namespace Chameleon.Avalonia.Playwright.Automation.Services
     public class CompileScriptService
     : ICompileScriptService
     {
-        public const string ScriptMainMethodName = "Run";
-
-        public MethodInfo? CompileScript(string script)
+        public object CompileScript(string script)
         {
             Assembly assembly = CompileCode(script);
 
@@ -22,9 +23,14 @@ namespace Chameleon.Avalonia.Playwright.Automation.Services
             }
 
             var type = assembly.GetTypes().FirstOrDefault();
-            MethodInfo method = type.GetMethod(ScriptMainMethodName);
+            if (!typeof(IExternalScript).IsAssignableFrom(type))
+            {
+                throw new Exception("The script does not meet the requirements to run. Please implement the IExternalScript interface.");
+            }
 
-            return method;
+            IExternalScript instance = (IExternalScript) Activator.CreateInstance(type);
+
+            return instance;
         }
 
         private Assembly CompileCode(string code)
@@ -38,7 +44,9 @@ namespace Chameleon.Avalonia.Playwright.Automation.Services
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Console).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Regex).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(Microsoft.Playwright.Playwright).Assembly.Location)
+                MetadataReference.CreateFromFile(typeof(Microsoft.Playwright.Playwright).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(SystemBrowserType).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(IExternalScript).Assembly.Location)
             };
 
             typeof(Microsoft.Playwright.Playwright).Assembly.GetReferencedAssemblies()
@@ -60,15 +68,19 @@ namespace Chameleon.Avalonia.Playwright.Automation.Services
 
                 if (!result.Success)
                 {
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine("It was a error when compiling the script:");
+
                     IEnumerable<Diagnostic> failures = result.Diagnostics.Where(diagnostic =>
                         diagnostic.IsWarningAsError ||
                         diagnostic.Severity == DiagnosticSeverity.Error);
 
                     foreach (Diagnostic diagnostic in failures)
                     {
-                        Console.WriteLine($"{diagnostic.Id}: {diagnostic.GetMessage()}");
+                        sb.AppendLine($"{diagnostic.Id}: {diagnostic.GetMessage()}");
                     }
-                    return null;
+                    
+                    throw new Exception(sb.ToString());
                 }
                 else
                 {

@@ -1,11 +1,8 @@
 ﻿using Chameleon.CT.Common.Base;
-using Chameleon.Domain.Entities.Automation;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
 using Chameleon.Interfaces.App.Automation.Views;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.UserProfileFolders;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Automation.ViewModels;
@@ -25,10 +22,11 @@ public partial class AutomationScriptViewModel
         Id = automationScriptDescription.Id;
         Title = automationScriptDescription.Title;
         Description = automationScriptDescription.Description;
-        ScriptBody = automationScriptDescription.Script;
         Parameters = automationScriptDescription.Parameters
             .Select(param => new AutomationScriptParameterViewModel(param))
             .ToList<IAutomationScriptParameterViewModel>();
+
+        ScriptDescription = automationScriptDescription;
     }
 
     private int _id;
@@ -52,13 +50,6 @@ public partial class AutomationScriptViewModel
         set => SetProperty(ref _description, value);
     }
 
-    private string _scriptBody;
-    public string ScriptBody
-    {
-        get => _scriptBody;
-        set => SetProperty(ref _scriptBody, value);
-    }
-
     private IList<IAutomationScriptParameterViewModel> _parameters;
     public IList<IAutomationScriptParameterViewModel> Parameters
     {
@@ -67,7 +58,7 @@ public partial class AutomationScriptViewModel
     }
 
     private IAutomationScriptDescription _selectedScriptDescription;
-    public IAutomationScriptDescription SelectedScriptDescription
+    public IAutomationScriptDescription ScriptDescription
     {
         get => _selectedScriptDescription;
         set => SetProperty(ref _selectedScriptDescription, value);
@@ -78,16 +69,16 @@ public partial class AutomationScriptViewModel
     [RelayCommand]
     public async Task OpenParamsPopup(int selectedIdScript)
     {
-        var selectedScriptDescription = _automationService
-            .GetAll()
-            .FirstOrDefault(sd => sd.Id == selectedIdScript);
-        SelectedScriptDescription = selectedScriptDescription;
+        //var selectedScriptDescription = _automationService
+        //    .GetAll()
+        //    .FirstOrDefault(sd => sd.Id == selectedIdScript);
+        //ScriptDescription = selectedScriptDescription;
 
         var result = await ContentDialogService
             .ShowAsync<IAddScriptParametersPopupView, IAddScriptParametersPopupViewModel>(viewModel =>
            {
                viewModel.Title = "Set Script Parameters";
-               viewModel.ScriptDescription = selectedScriptDescription;
+               viewModel.ScriptDescription = ScriptDescription;
            });
     }
 }
