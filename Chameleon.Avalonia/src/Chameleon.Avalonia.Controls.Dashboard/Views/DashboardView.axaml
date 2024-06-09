@@ -53,7 +53,6 @@
 							ItemsSource="{Binding Sorts}"
 							SelectedItem="{Binding SortSelected}"
 							Width="150"
-							MaxHeight="0"
 							IsEditable="False"/>
 					</afv:ChameleonContentControl.Options>
 
@@ -115,7 +114,6 @@
 									   ItemsSource="{Binding Sorts}"
 									   SelectedItem="{Binding FolderSortSelected}"
 									   Width="150"
-									   MaxHeight="0"
 									   IsEditable="False"/>
 					</afv:ChameleonContentControl.Options>
 
