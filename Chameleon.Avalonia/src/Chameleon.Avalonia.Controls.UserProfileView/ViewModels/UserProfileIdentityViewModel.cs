@@ -119,9 +119,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         {                     
             OnAuthenticated();
         }
-
-       // UserProfile = ContainerServiceHelper.Resolve<IDashboardViewModel>()?.SelectedProfile;
-        // OnPropertyChanged(nameof(UserProfileModel));
     }
     public override async Task OnNavigatedToAsync(object? param)
     {
@@ -218,21 +215,10 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
                        UserProfile,
                        _applicationUser,
                        _systemBrowserManager,
-                       false
-                   );
+                       false);
 
-        //new Thread(async () => 
-        //{
-            await Task.WhenAll(Countries.Load(), Logins.Reload(), Persons.Reload(), Addresses.Reload(), Businesses.Reload());
-            SetVisible(true);
-        //}).Start();
-        //await Countries.Load();
-        //await Logins.Reload();
-        //await Persons.Reload();
-        //await Addresses.Reload();
-        //await Businesses.Reload();
-
-       
+        await Task.WhenAll(Countries.Load(), Logins.Reload(), Persons.Reload(), Addresses.Reload(), Businesses.Reload());
+        SetVisible(true);
     }
 
     private void SetVisible(bool isVisible)
@@ -241,6 +227,8 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         Persons.IsVisible = isVisible;
         Addresses.IsVisible = isVisible;
         Businesses.IsVisible = isVisible;
+
+        CollectionChanged(this, null);
 
         Logins.Items.CollectionChanged += CollectionChanged;
         Persons.Items.CollectionChanged += CollectionChanged;

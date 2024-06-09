@@ -637,24 +637,25 @@
 					BoxShadow="0 8 32 0 #66000000">
 					<Grid Margin="24 0"
 						 ColumnDefinitions="*,Auto">
-						<TextBlock 
-								   VerticalAlignment="Center">
+						<TextBlock VerticalAlignment="Center">
 							<Run Text="{Binding SelectedCount}" />
 							<Run Text=" Selected" />
 						</TextBlock>
-
+						
 						<StackPanel Orientation="Horizontal"
 									Grid.Column="1">
-							<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-									Margin="18 6"
-									BorderThickness="1 0 0 0" />
+							<Border 
+								BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+								Margin="18 6"
+								BorderThickness="1 0 0 0"
+								IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
 							<ContentPresenter Content="{TemplateBinding Header}" />
 
 							<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
 									Margin="18 6"
 									BorderThickness="1 0 0 0" />
-<!--TextElement.Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"-->
+							
 							<Button Theme="{StaticResource TransparentButton}"
 									Classes="accent"
 									Content="Unselect"
