@@ -16,6 +16,7 @@ using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.Common.Helpers;
 using Chameleon.Avalonia.Common.Helpers;
+using Chameleon.Avalonia.Common.Services;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
@@ -211,15 +212,7 @@ public partial class AssistantUserViewModel
     [RelayCommand]
     private async Task SendLicenceKey()
     {
-        var clipboard = ApplicationHelper.GetClipboard();
-        if (clipboard == null)
-        {
-            _toastNotificationService.ShowError("Fail to copy details to clipboard");
-            return;
-        }
-
-        await clipboard.SetTextAsync($"{UserAssistant.EmailAddress} {UserAssistant.UserName} {UserAssistant.Password}");
-        _toastNotificationService.ShowSuccess("The details copied to the clipboard");
+        await ClipboardService.Instance.SetTextAsync($"{UserAssistant.EmailAddress} {UserAssistant.UserName} {UserAssistant.Password}");
     }
     private void AddFolders(AddProfilesEventArgs args)
     {

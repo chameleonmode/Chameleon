@@ -59,14 +59,11 @@ public partial class ProxyCreditViewModel
 
         OnPropertyChanged(string.Empty);
     }
-
-    private const string ClipboardText = "Copied to clipboard";
    [RelayCommand]
     public async Task CopyAllUrls()
     {
         var list = Access.Select(a => a.Url);
         await ClipboardService.Instance.SetTextAsync(string.Join("\n", list));
-        _toastNotificationService.ShowSuccess(ClipboardText);
     }
 
     private void InitializeCreditPlans()

@@ -11,6 +11,23 @@ public static class ApplicationHelper
 {
     public static Window? GetMainWindow()
     {
+        //Should have been Implemented here
+            //Desktop
+            //if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } window })
+            //{
+            //    return window!;
+
+            //}
+
+            //Android (and iOS?)
+            //else if (Application.Current?.ApplicationLifetime is ISingleViewApplicationLifetime { MainView: { } mainView })
+            //{
+            //    var visualRoot = mainView.GetVisualRoot();
+            //    if (visualRoot is TopLevel topLevel)
+            //    {
+            //        return topLevel.Clipboard!;
+            //    }
+            //}
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && desktopLifetime.MainWindow != null)
             return desktopLifetime.MainWindow;
 
@@ -73,27 +90,5 @@ public static class ApplicationHelper
     public static Visual? GetToplevetVisual()
     {
         return GetMainWindow()?.GetVisualRoot() as Visual;
-    }
-
-    public static IClipboard GetClipboard()
-    {
-        //Desktop
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } window })
-        {
-            return window.Clipboard!;
-
-        }
-
-        //Android (and iOS?)
-        else if (Application.Current?.ApplicationLifetime is ISingleViewApplicationLifetime { MainView: { } mainView })
-        {
-            var visualRoot = mainView.GetVisualRoot();
-            if (visualRoot is TopLevel topLevel)
-            {
-                return topLevel.Clipboard!;
-            }
-        }
-
-        return null!;
     }
 }
