@@ -1,9 +1,9 @@
-﻿using Chameleon.Playwright.Automation.ExternalScript;
-using Chameleon.Interfaces.WebBrowser;
+﻿using Chameleon.Interfaces.WebBrowser;
 using Microsoft.Playwright;
 using System.Collections.Generic;  // required for "IDictionary<string, string>"
 using System;
-using System.Threading.Tasks; // required for "async Task"
+using System.Threading.Tasks;
+using Chameleon.Interfaces.App.Automation.ExternalScript; // required for "async Task"
 
 public class ExternalScript : IExternalScript
 {

@@ -1,10 +1,10 @@
-﻿using Chameleon.Playwright.Automation.ExternalScript;
+﻿using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.App.Automation.Entities;
+using Chameleon.Interfaces.App.Automation.ExternalScript;
 using Chameleon.Interfaces.App.Automation.Manager;
 using Chameleon.Interfaces.App.Automation.Playwright;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Common.Helpers;
 
 namespace Chameleon.Playwright.Automation.Services;
 public class AutomationBrowserService 
@@ -32,29 +32,33 @@ public class AutomationBrowserService
         try
         {
             string scripBody = _automationService.GetScriptBody(script.Id);
-            IExternalScript instance = (IExternalScript)_compileScriptService.CompileScript(scripBody);
+            IExternalScript instance = _compileScriptService.CompileScript(scripBody);
             var browser = _playwrightBrowserManager.Get(instance.BrowserType);
 
             IDictionary<string, string> parameters = script.Parameters
-            .Select(x => KeyValuePair.Create(x.Name, x.Value))
-            .ToDictionary();
+                .Select(x => KeyValuePair.Create(x.Name, x.Value))
+                .ToDictionary();
 
-            foreach (IUserProfile profile in userProfiles)
+            using (var playwright = await Microsoft.Playwright.Playwright.CreateAsync())
             {
-                var options = new PlaywrightBrowserLaunchOptions
+                foreach (IUserProfile profile in userProfiles)
                 {
-                    UserProfile = profile
-                };
+                    var options = new PlaywrightBrowserLaunchOptions
+                    {
+                        UserProfile = profile,
+                        Playwright = playwright
+                    };
 
-                var browserInstance = (IPlaywrightBrowserInstanceWithContext)await browser.Open(options);
+                    var browserInstance = await browser.Open(options);
 
-                try
-                {
-                    await instance.Run(browserInstance.BrowserContext, parameters);
-                }
-                catch (Exception ex)
-                {
-                    await MesageBoxHelper.ShowErrorAsync("Script error", ex.Message);
+                    try
+                    {
+                        await instance.Run(browserInstance.BrowserContext, parameters);
+                    }
+                    catch (Exception ex)
+                    {
+                        await MesageBoxHelper.ShowErrorAsync("Script error", ex.Message);
+                    }
                 }
             }
         }

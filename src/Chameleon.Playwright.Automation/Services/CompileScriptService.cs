@@ -1,4 +1,4 @@
-﻿using Chameleon.Playwright.Automation.ExternalScript;
+﻿using Chameleon.Interfaces.App.Automation.ExternalScript;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.WebBrowser;
 using Microsoft.CodeAnalysis;
@@ -13,7 +13,7 @@ namespace Chameleon.Playwright.Automation.Services
     public class CompileScriptService
     : ICompileScriptService
     {
-        public object CompileScript(string script)
+        public IExternalScript CompileScript(string script)
         {
             Assembly assembly = CompileCode(script);
 

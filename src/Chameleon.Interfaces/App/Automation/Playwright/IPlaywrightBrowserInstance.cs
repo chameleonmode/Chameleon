@@ -1,5 +1,8 @@
-﻿namespace Chameleon.Interfaces.App.Automation.Playwright;
+﻿using Microsoft.Playwright;
+
+namespace Chameleon.Interfaces.App.Automation.Playwright;
 public interface IPlaywrightBrowserInstance
 {
+    IBrowserContext BrowserContext { get; }
     Task Open();
 }

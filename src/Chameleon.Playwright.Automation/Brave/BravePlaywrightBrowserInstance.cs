@@ -9,10 +9,9 @@ using Microsoft.Playwright;
 namespace Chameleon.Playwright.Automation.Brave;
 public class BravePlaywrightBrowserInstance
     : BraveSystemBrowserInstance
-    , IPlaywrightBrowserInstanceWithContext
+    , IPlaywrightBrowserInstance
 {
-    protected IPlaywright _playwright;
-    private readonly IPlaywrightBrowserLaunchOptions _playwritingOptions;
+    private readonly IPlaywrightBrowserLaunchOptions _playwrightOptions;
 
     private IBrowserContext _browserContext;
     public IBrowserContext BrowserContext => _browserContext;
@@ -31,13 +30,11 @@ public class BravePlaywrightBrowserInstance
             userDefaultsSettingsService,
             browserExeFilePath)
     {
-        _playwritingOptions = options;
+        _playwrightOptions = options;
     }
 
     public override async Task Open()
     {
-        _playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-
         await EnsureProfileFolderCreated();
         await InitializeProfileFolder();
         await InitializeExtensionPath();
@@ -55,7 +52,7 @@ public class BravePlaywrightBrowserInstance
             args.Add($"--load-extension={exts}");
         }
 
-        _browserContext = await _playwright.Chromium.LaunchPersistentContextAsync(
+        _browserContext = await _playwrightOptions.Playwright.Chromium.LaunchPersistentContextAsync(
             _browserProfileFolderPath,
             new BrowserTypeLaunchPersistentContextOptions
             {

@@ -1,7 +1,7 @@
 ﻿using Chameleon.Interfaces.WebBrowser;
 using Microsoft.Playwright;
 
-namespace Chameleon.Playwright.Automation.ExternalScript;
+namespace Chameleon.Interfaces.App.Automation.ExternalScript;
 public interface IExternalScript
 {
     SystemBrowserType BrowserType { get; }

@@ -1,9 +1,9 @@
-﻿using Chameleon.Interfaces.Ioc;
-using System.Reflection;
+﻿using Chameleon.Interfaces.App.Automation.ExternalScript;
+using Chameleon.Interfaces.Ioc;
 
 namespace Chameleon.Interfaces.App.Automation.Services;
 public interface ICompileScriptService
     : ISingletonDependency
 {
-    object CompileScript(string script);
+    IExternalScript CompileScript(string script);
 }

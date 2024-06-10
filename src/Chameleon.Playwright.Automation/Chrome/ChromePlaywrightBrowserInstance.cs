@@ -9,13 +9,15 @@ using Microsoft.Playwright;
 namespace Chameleon.Playwright.Automation.Chrome;
 public class ChromePlaywrightBrowserInstance
     : ChromeSystemBrowserInstance
-    , IPlaywrightBrowserInstanceWithContext
+    , IPlaywrightBrowserInstance
 {
-    protected IPlaywright _playwright;
-    private readonly IPlaywrightBrowserLaunchOptions _playwritingOptions;
+    private readonly IPlaywrightBrowserLaunchOptions _playwrightOptions;
 
     private IBrowserContext _browserContext;
     public IBrowserContext BrowserContext => _browserContext;
+    
+    protected IPlaywright _playwright;
+    public IPlaywright PlaywrightInstance => _playwright;
 
     public ChromePlaywrightBrowserInstance(
         IEventAggregator eventAggregator,
@@ -31,13 +33,11 @@ public class ChromePlaywrightBrowserInstance
             userDefaultsSettingsService, 
             browserExeFilePath)
     {
-        _playwritingOptions = options;
+        _playwrightOptions = options;
     }
 
     public override async Task Open()
     {
-        _playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-
         await EnsureProfileFolderCreated();
         await InitializeProfileFolder();
         await InitializeExtensionPath();
