@@ -100,23 +100,6 @@ public partial class ProjectsViewModel : PageViewModelBase,
              .GetEvent<RestrictContentEvent>()
              .Subscribe(args => IsCreateProfileBtnVisible = args.Permissions.Contains(PermissionNames.Pages_CreateProfiles)                                                           
              && (!_applicationUser.IsAssistant || _authSession.CanCreateProfiles));
-
-        EventAggregator
-            .GetEvent<LoginSuccessEvent>()
-            .SubscribeOnce(OnAuthenticated);
-
-        EventAggregator
-            .GetEvent<SavedUserAssistantEvent>()
-            .Subscribe(args => SyncBtnVisibilityChange());
-
-        EventAggregator
-            .GetEvent<DeletedUserAssistantEvent>()
-            .Subscribe(args => SyncBtnVisibilityChange());
-
-        //_featureTourNavigator = FeatureTour.GetNavigator();
-
-        //_featureTourNavigator.ForStep(ElementID.CreateProfileBtn).AttachDoable(
-        //            currentStep => OnCreateProfile());
     }
 
     public override async Task OnNavigatedToAsync(object? param)
@@ -147,10 +130,13 @@ public partial class ProjectsViewModel : PageViewModelBase,
         }
         else
         {
-            if(folders is UserProfileFoldersViewModel f && f.SelectedFolder != null)
-                folders.OnNavigatingTo(f.SelectedFolder.UserProfileFolder);
+            if (folders is UserProfileFoldersViewModel f && f.SelectedFolder != null)
+                await folders.OnNavigatingTo(f.SelectedFolder.UserProfileFolder);
             else
-                folders.OnNavigatingTo(null);
+                await folders.OnNavigatingTo(null);
+
+            if (param is string p)
+                profiles.SearchText = p;
         }
     }
 
@@ -160,6 +146,7 @@ public partial class ProjectsViewModel : PageViewModelBase,
     }
 
     public bool IsDisabledCreateNewProfile = false;
+
     [RelayCommand]
     private async Task CreateProfile()
     {
@@ -195,29 +182,5 @@ public partial class ProjectsViewModel : PageViewModelBase,
             profiles.Filter = filter;
             IsDisabledCreateNewProfile = false;
         }
-    }
-
-    [RelayCommand]
-    private void SyncChanges()
-    {
-        EventAggregator
-            .GetEvent<SyncChangesEvent>()
-            .Publish();
-    }
-
-    private void SyncBtnVisibilityChange()
-    {
-        OnPropertyChanged(nameof(IsSyncChangesBtnVisible));
-    }
-
-    private bool HasAssistants()
-    {
-        return _applicationUser.IsAuthenticated && _userAssistantService.Get().Count > 0;
-    }
-    public bool IsSyncChangesBtnVisible => _applicationUser.IsAssistant || HasAssistants();
-
-    public void OnAuthenticated()
-    {
-        SyncBtnVisibilityChange();
     }
 }

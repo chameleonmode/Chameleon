@@ -197,7 +197,7 @@ public partial class UserProfileFoldersViewModel
     }
 
 
-    public async void OnNavigatingTo(IUserProfileFolder p = null)
+    public async Task OnNavigatingTo(IUserProfileFolder p = null)
     {
         while (!Loaded)
             await Task.Delay(250);

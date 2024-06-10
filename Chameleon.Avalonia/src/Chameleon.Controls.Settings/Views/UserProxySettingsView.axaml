@@ -28,13 +28,13 @@
 
 					<afv:ChameleonContentControl.Header>
 							<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
-								<HeaderedContentControl.Header><!--TextElement.Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"-->
+								<!--<HeaderedContentControl.Header>
 									<Button Theme="{StaticResource TransparentButton}"
 											
 											Content="Change proxies"
 											Grid.Column="2"
 											Command="{Binding ChangeProxiesCommand}"/>
-								</HeaderedContentControl.Header>
+								</HeaderedContentControl.Header>-->
 							</HeaderedContentControl>
 					</afv:ChameleonContentControl.Header>
 					
@@ -166,12 +166,12 @@
 														</afv:HeaderdInputFieldsControl>
 													</Grid>
 
-													<Button Grid.Column="4"
+													<!--<Button Grid.Column="4"
 															Margin="0 0 6 0"
 															Theme="{StaticResource TransparentButton}"
 															Command="{Binding ClickIconChangeProxiesCommand}">
 														<ui:SymbolIcon Symbol="Add" />
-													</Button>
+													</Button>-->
 												</Grid>
 										</DataTemplate>
 									</ListBox.ItemTemplate>

@@ -31,7 +31,7 @@
 		</afv:ChameleonContentControl.TitleContent>
 
 		<afv:ChameleonContentControl.Header>
-			<StackPanel IsVisible="{Binding !HasNoItems}">
+			<StackPanel>
 				<Panel VerticalAlignment="Center">
 					<!--<StackPanel Orientation="Horizontal">
 						<Button Content="select-all"
@@ -174,9 +174,6 @@
 							<Binding Path="IsProfilesExist"/>
 						</MultiBinding>
 					</Panel.IsVisible>
-					<!--<StackPanel>-->
-						<!--<pagnator:PaginatorView
-							DataContext="{Binding PaginatorViewModel}" />-->
 					<ListBox Name="lbProfiles"
 							 ItemsSource="{Binding ViewModels}"
 							 Theme="{StaticResource ListBoxNoScroller}"
@@ -192,26 +189,7 @@
 							</DataTemplate>
 						</ListBox.ItemTemplate>
 					</ListBox>
-					<!--</StackPanel>-->
 				</Panel>
-				<!--<Panel>
-					<Panel.IsVisible>
-						<MultiBinding Converter="{x:Static BoolConverters.Or}">
-							<Binding Path="HasNoItems" />
-							<Binding Path="!IsProfilesExist"/>
-						</MultiBinding>
-					</Panel.IsVisible>-->
-					<!--<Border
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center">
-						<TextBlock
-							Grid.Row="2"
-							Margin="0 25 0 0"
-							Text="Profiles not found"
-							Theme="{StaticResource SubtitleTextBlockStyle}"
-							HorizontalAlignment="Center"
-							IsVisible="{Binding !IsProfilesExist}"/>
-					</Border>-->
 				<Panel>
 					<Panel.IsVisible>
 						<MultiBinding Converter="{x:Static BoolConverters.Or}">

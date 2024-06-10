@@ -116,7 +116,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
         else if (navParam is not null and string command)
         {
             _animationPageParent = this.GetVisualDescendants()?.Where(x => (x as ICommandSource)?.CommandParameter is string cmd && cmd == command)?.FirstOrDefault();
-            _animationPage = _animationPageParent?.GetVisualDescendants()?.Where(x => x is Viewbox && x.Name == "IconHost")?.FirstOrDefault();
+            _animationPage = _animationPageParent?.GetVisualDescendants()?.Where(x => x.Name == "IconHost")?.FirstOrDefault();
         }
         else
         {
@@ -148,7 +148,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
                     .Where(x => x is IUserProfileFoldersView)?
                     .FirstOrDefault();
                 _animationPage = _animationPageParent?.GetVisualDescendants()?
-                     .Where(x => x is Viewbox && x.Name == "IconHost" && (x as Control).Tag == navParam)?
+                     .Where(x => x.Name == "IconHost" && (x as Control).Tag == navParam)?
                      .FirstOrDefault();
             }
         }

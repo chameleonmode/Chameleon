@@ -2,6 +2,7 @@
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
+using Chameleon.Core.Extensions;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.Automation.ViewModels;
@@ -46,53 +47,19 @@ public partial class UserProfilesViewModel
         _userProfileFolderService = userProfileFolderService;
         _currentUser = currentUser;
 
-        //EventAggregator
-        //    .GetEvent<LoginSuccessEvent>()
-        //    .SubscribeOnce(OnAuthenticated);
-
-        EventAggregator
-           .GetEvent<DeleteUserProfileEvent>()
+        EventAggregator.GetEvent<DeleteUserProfileEvent>()
            .Subscribe(OnDeleteUserProfileEvent);
 
-        //EventAggregator
-        //   .GetEvent<DeleteUserProfileFolderEvent>()
-        //   .Subscribe(OnHandleUserEvent);
-
-        EventAggregator
-            .GetEvent<AfterCreateOrRemoveFolderEvent>()
+        EventAggregator.GetEvent<AfterCreateOrRemoveFolderEvent>()
             .Subscribe(OnHandleUserEvent);
 
-        //EventAggregator.Subscribe<OnCreatedCreateUserProfileEvent, ChangeProfilesInFavoriteFolderEventArgs>(OnCreateUserProfileEvent);
-        //EventAggregator
-        //   .GetEvent<CreateUserProfileEvent>()
-        //   .Subscribe(OnHandleUserEvent);
+        EventAggregator.GetEvent<SelectedChangeUserProfileEvent>()
+            .Subscribe(OnSelectedChanged);
 
-        //EventAggregator
-        //    .GetEvent<OpenUserProfileFolderEvent>()
-        //    .Subscribe(args => OnOpenFolder(args.UserProfileFolder));
-
-        //EventAggregator
-        //    .GetEvent<CreateNewUserProfileEvent>()
-        //    .Subscribe(CreateNewProfile);
-
-        EventAggregator
-            .GetEvent<SelectedChangeUserProfileEvent>()
-            .Subscribe(_ => OnSelectedChanged());
-
-        //EventAggregator
-        //    .GetEvent<AddUserProfileToFolderEvent>()
-        //    .Subscribe(OnHandleUserEvent);
-
-        //EventAggregator
-        //    .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-        //    .Subscribe(UpdateProfilesInFolder);
-
-        EventAggregator
-            .GetEvent<SavedUserProfileFolderEvent>()
+        EventAggregator.GetEvent<SavedUserProfileFolderEvent>()
             .Subscribe(OnSaveFolder);
 
-        EventAggregator
-           .GetEvent<UpdateStaleDataEvent>()
+        EventAggregator.GetEvent<UpdateStaleDataEvent>()
            .Subscribe(LoadAsync);
     }
 
@@ -103,7 +70,10 @@ public partial class UserProfilesViewModel
 
         if (!Loaded)
         {
-            OnAuthenticated();
+            IsWaiting = true;
+            LoadAsync();
+
+            IsWaiting = false;
         }
 
         OnHandleUserEvent();
@@ -296,8 +266,7 @@ public partial class UserProfilesViewModel
     public bool HasSelectedItems => ViewModels != null && ViewModels.Count(v => v.IsSelected) > 0;
 
     private IEnumerable<UserProfileViewModel> _selectedProfiles;
-
-    private void OnSelectedChanged()
+    private void OnSelectedChanged(SelectedUserProfileEventArgs arr = null)
     {
         _selectedProfiles = _mapping.Where(profile => profile.IsSelected);
         SelectedCount = _selectedProfiles.Count();
@@ -676,7 +645,7 @@ public partial class UserProfilesViewModel
         LoadAsync();
 
         IsWaiting = false;
-    }
+    } 
 
     private void LoadAsync()
     {
@@ -691,14 +660,7 @@ public partial class UserProfilesViewModel
 
         _mapping.CollectionChanged += OnViewModelChange;
 
-        //ApplySearchFilter();
-
-        OnPropertyChanged(nameof(ViewModels));
-
-
-        OnPropertyChanged(nameof(HasSelectedItems));
-        OnPropertyChanged(nameof(HasProfileWithoutFolder));
-        OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
+        OnHandleUserEvent();
     }
 
     private void ApplySearchFilter()
@@ -711,6 +673,7 @@ public partial class UserProfilesViewModel
 
         OnPropertyChanged(nameof(ViewModels));
         OnPropertyChanged(nameof(IsProfilesExist));
+        OnPropertyChanged(nameof(HasNoItems));
     }
 
     private bool FilterByFolder(IUserProfile profile, bool hasSearchText, bool isInCurrentFolder, string searchText)
@@ -747,14 +710,16 @@ public partial class UserProfilesViewModel
             if (p.FolderId is int fid && fid != 0)
                 ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().SetSelectedById(fid);
             else
-                ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
-
+               //ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
+               //await ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null); 
+            
             Filter = profile => p.Id == profile.Id;
         }
         else
         {
             //Filter = profile => 0 == profile.Id;
             ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().SetSelectedById(0);
+            Filter = null;
             //ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
         }
 
@@ -768,7 +733,9 @@ public partial class UserProfilesViewModel
     }
 
     public bool IsProfilesExist => _mapping?.Any() == true;
-    public bool HasNoItems =>
+    
+    public bool HasNoItems => 
+        !SearchText.HasAny() &&
         ViewModels == null ||
         ViewModels.Count == 0;
 }

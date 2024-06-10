@@ -35,10 +35,14 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     private readonly IUserProfileAdditionalDataService _userProfileAdditionalDataService;
     private readonly IUserAssistantService _userAssistantService;
     private readonly IApplicationUser _applicationUser;
-    //TODO: private readonly IFeatureTourNavigator _featureTourNavigator;
     private readonly IAuthSession _authSession;
     private readonly IToastNotificationService _toastNotificationService;
     private readonly ISystemBrowserManager _systemBrowserManager;
+
+    public bool HasNoItems => Persons?.Items?.Count > 0;
+    public bool HasNoBusinessItems => Businesses?.Items?.Count > 0;
+    public bool HasNoAddressesItems => Addresses?.Items?.Count > 0;
+    public bool HasNoLoginsItems => Logins?.Items?.Count > 0;
 
     public UserProfileIdentityViewModel(
         IMapper mapper,
@@ -60,8 +64,20 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         _authSession = authSession;
         _toastNotificationService = toastNotificationService;
 
+        Countries = new AsyncCollectionViewModel<CountryBindable>(() 
+            => _userProfileAdditionalDataService.GetCountries());
 
-        InitializeViewModels();
+        Persons = new AsyncCollectionViewModel<UserProfilePersonBindable>(()
+             => _userProfileAdditionalDataService.GetPersons(UserProfileModel.Id));
+
+        Addresses = new AsyncCollectionViewModel<UserProfileAddressBindable>(()
+            => _userProfileAdditionalDataService.GetAddresses(UserProfileModel.Id));
+
+        Logins = new AsyncCollectionViewModel<UserProfileLoginBindable>(()
+            => _userProfileAdditionalDataService.GetLogins(UserProfileModel.Id));
+
+        Businesses = new AsyncCollectionViewModel<UserProfileBusinessBindable>(()
+            => _userProfileAdditionalDataService.GetBusinesses(UserProfileModel.Id));
 
         Addresses.Binded += Addresses_Binded;
 
@@ -85,10 +101,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             .GetEvent<DeletedUserAssistantEvent>()
             .Subscribe(args => SyncBtnVisibilityChange());
 
-        //EventAggregator
-        //    .GetEvent<LoginSuccessEvent>()
-        //    .SubscribeOnce(OnAuthenticated);
-
         EventAggregator
             .GetEvent<UserProfileTabChangedEvent>()
             .Subscribe(Discard);
@@ -97,16 +109,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             .GetEvent<DeleteUserProfileEvent>()
             .Subscribe(OnDeleteUserProfileEvent);
 
-        //_featureTourNavigator = FeatureTour.GetNavigator();
-
-        //_featureTourNavigator.ForStep(ElementID.SaveChangesBtn).AttachDoable(
-        //           currentStep => OnSaveProfile());
-
-    }
-
-    private void OnDeleteUserProfileEvent(UserProfileEventArgs args)
-    {
-        NavigationService.PopAsync();
     }
 
     public override async Task InitAsync(object? param)
@@ -117,9 +119,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         {                     
             OnAuthenticated();
         }
-
-       // UserProfile = ContainerServiceHelper.Resolve<IDashboardViewModel>()?.SelectedProfile;
-        // OnPropertyChanged(nameof(UserProfileModel));
     }
     public override async Task OnNavigatedToAsync(object? param)
     {
@@ -136,32 +135,9 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         Title = UserProfileModel.Title;
     }
 
-    public bool HasNoItems => Persons?.Items?.Count > 0;
-    public bool HasNoBusinessItems => Businesses?.Items?.Count > 0;
-    public bool HasNoAddressesItems => Addresses?.Items?.Count > 0;
-    public bool HasNoLoginsItems => Logins?.Items?.Count > 0;
-
-    private void InitializeViewModels()
+    private void OnDeleteUserProfileEvent(UserProfileEventArgs args)
     {
-        Countries = new AsyncCollectionViewModel<CountryBindable>(() =>
-            _userProfileAdditionalDataService.GetCountries()
-        );
-
-        Persons = new AsyncCollectionViewModel<UserProfilePersonBindable>(()
-             => _userProfileAdditionalDataService.GetPersons(UserProfileModel.Id)
-             );
-
-        Addresses = new AsyncCollectionViewModel<UserProfileAddressBindable>(()
-            => _userProfileAdditionalDataService.GetAddresses(UserProfileModel.Id)
-            );
-
-        Logins = new AsyncCollectionViewModel<UserProfileLoginBindable>(()
-            => _userProfileAdditionalDataService.GetLogins(UserProfileModel.Id)
-            );
-
-        Businesses = new AsyncCollectionViewModel<UserProfileBusinessBindable>(()
-            => _userProfileAdditionalDataService.GetBusinesses(UserProfileModel.Id)
-            );
+        NavigationService.PopAsync();
     }
 
     private void OpenUserProfileIdentityTab(UserProfileIdentityTab userProfileIdentityTab)
@@ -182,6 +158,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             }
         }
     }
+
     [RelayCommand]
     private void Discard()
     {
@@ -238,21 +215,10 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
                        UserProfile,
                        _applicationUser,
                        _systemBrowserManager,
-                       false
-                   );
+                       false);
 
-        //new Thread(async () => 
-        //{
-            await Task.WhenAll(Countries.Load(), Logins.Reload(), Persons.Reload(), Addresses.Reload(), Businesses.Reload());
-            SetVisible(true);
-        //}).Start();
-        //await Countries.Load();
-        //await Logins.Reload();
-        //await Persons.Reload();
-        //await Addresses.Reload();
-        //await Businesses.Reload();
-
-       
+        await Task.WhenAll(Countries.Load(), Logins.Reload(), Persons.Reload(), Addresses.Reload(), Businesses.Reload());
+        SetVisible(true);
     }
 
     private void SetVisible(bool isVisible)
@@ -261,6 +227,8 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         Persons.IsVisible = isVisible;
         Addresses.IsVisible = isVisible;
         Businesses.IsVisible = isVisible;
+
+        CollectionChanged(this, null);
 
         Logins.Items.CollectionChanged += CollectionChanged;
         Persons.Items.CollectionChanged += CollectionChanged;

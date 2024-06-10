@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input.Platform;
 using Avalonia.VisualTree;
 
 namespace Chameleon.Avalonia.Common.Helpers;
@@ -10,6 +11,23 @@ public static class ApplicationHelper
 {
     public static Window? GetMainWindow()
     {
+        //Should have been Implemented here
+            //Desktop
+            //if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } window })
+            //{
+            //    return window!;
+
+            //}
+
+            //Android (and iOS?)
+            //else if (Application.Current?.ApplicationLifetime is ISingleViewApplicationLifetime { MainView: { } mainView })
+            //{
+            //    var visualRoot = mainView.GetVisualRoot();
+            //    if (visualRoot is TopLevel topLevel)
+            //    {
+            //        return topLevel.Clipboard!;
+            //    }
+            //}
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && desktopLifetime.MainWindow != null)
             return desktopLifetime.MainWindow;
 

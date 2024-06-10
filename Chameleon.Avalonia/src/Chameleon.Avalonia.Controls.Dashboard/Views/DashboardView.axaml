@@ -30,8 +30,8 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
-					<RowDefinition Height="280*" />
-					<RowDefinition Height="220*" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 						<!--<breadcrumbsView:BreadcrumbsView DataContext="{Binding BreadcrumbsViewModel}"
 														 VerticalAlignment="Center"
@@ -44,22 +44,24 @@
 								 Width="300"
 								 Text="{Binding SearchText}" />-->
 				
-				<afv:ChameleonContentControl Grid.Row="2"
-												   Title="Favorite Profiles"
-										TitleDescription="{Binding ViewModels.Count,
-											StringFormat='You have {0} favorited profiles.'}">
+				<afv:ChameleonContentControl 
+					Grid.Row="2"
+					Title="Favorite Profiles"
+					TitleDescription="{Binding ViewModels.Count, StringFormat='You have {0} favorited profiles.'}">
 					<afv:ChameleonContentControl.Options>
-						<ui:FAComboBox Header="Sort by:"
-									   HorizontalAlignment="Right"
-									   ItemsSource="{Binding Sorts}"
-									   SelectedItem="{Binding SortSelected}"
-									   Width="150"
-									   IsEditable="False"/>
+						<ui:FAComboBox 
+							Header="Sort by:"
+							HorizontalAlignment="Right"
+							ItemsSource="{Binding Sorts}"
+							SelectedItem="{Binding SortSelected}"
+							Width="150"
+							IsEditable="False"/>
 					</afv:ChameleonContentControl.Options>
 
 					<afv:ChameleonContentControl.Content>
 						<Panel>
-							<ListBox Name="lbProfiles"
+							<ListBox 
+								Name="lbProfiles"
 								IsVisible="{Binding !HasNoItems}"
 								ItemsSource="{Binding ViewModels}"
 								Theme="{StaticResource ListBoxNoScroller}"
@@ -82,28 +84,32 @@
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center">
 								<StackPanel IsVisible="{Binding NoSearchResultsInFavorite}">
-									<afv:SvgIconControl IconName="not-profiles"
-													  Height="102"
-													  Width="97"/>
+									<afv:SvgIconControl 
+										IconName="not-profiles"
+										Height="102"
+										Width="97"/>
 
-									<TextBlock Margin="0 25 0 0"
-											   Text="No favorite profiles selected yet"
-											   Theme="{StaticResource SubtitleTextBlockStyle}" />
+
+									<TextBlock 
+										Margin="0 25 0 0"
+									    Text="No favorite profiles selected yet"
+									    Theme="{StaticResource SubtitleTextBlockStyle}" />
 								</StackPanel>
 
-								<TextBlock Margin="0 25 0 0"
-										   Text="Profiles not found"
-										   Theme="{StaticResource SubtitleTextBlockStyle}"
-										   IsVisible="{Binding !NoSearchResultsInFavorite}" />
+								<TextBlock 
+									Margin="0 25 0 0"
+									Text="Profiles not found"
+									Theme="{StaticResource SubtitleTextBlockStyle}"
+									IsVisible="{Binding !NoSearchResultsInFavorite}" />
 							</StackPanel>
 						</Panel>
 					</afv:ChameleonContentControl.Content>
 				</afv:ChameleonContentControl>
 
-				<afv:ChameleonContentControl Grid.Row="3"
-											 Title="Favorite Folders"
-											 TitleDescription="{Binding FoldersCount,
-											StringFormat='You have {0} favorited folders.'}">
+				<afv:ChameleonContentControl 
+					Grid.Row="3"
+					Title="Favorite Folders"
+					TitleDescription="{Binding FoldersCount, StringFormat='You have {0} favorited folders.'}">
 					<afv:ChameleonContentControl.Options>
 						<ui:FAComboBox Header="Sort by:"
 									   HorizontalAlignment="Right"
