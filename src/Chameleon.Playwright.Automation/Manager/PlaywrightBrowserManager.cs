@@ -1,11 +1,11 @@
-﻿using Chameleon.Avalonia.Playwright.Automation.Brave;
-using Chameleon.Avalonia.Playwright.Automation.Chrome;
+﻿using Chameleon.Playwright.Automation.Brave;
+using Chameleon.Playwright.Automation.Chrome;
 using Chameleon.Interfaces.App.Automation.Manager;
 using Chameleon.Interfaces.App.Automation.Playwright;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Interfaces.WebBrowser;
 
-namespace Chameleon.Avalonia.Playwright.Automation.Manager;
+namespace Chameleon.Playwright.Automation.Manager;
 public class PlaywrightBrowserManager : IPlaywrightBrowserManager
 {
     private readonly Dictionary<SystemBrowserType, Type> _mapping =

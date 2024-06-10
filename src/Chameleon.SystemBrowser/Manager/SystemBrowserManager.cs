@@ -4,7 +4,6 @@ using Chameleon.Interfaces.WebBrowser;
 using Chameleon.SystemBrowser.Browsers.Brave;
 using Chameleon.SystemBrowser.Chrome;
 using Chameleon.SystemBrowser.Firefox;
-using Microsoft.Playwright;
 
 namespace Chameleon.SystemBrowser
 {
@@ -19,7 +18,6 @@ namespace Chameleon.SystemBrowser
             };
 
         private readonly IHaveContainerProvider _containerProvider;
-        public static IPlaywright Blaywright { get; set; }
 
         public SystemBrowserManager(IHaveContainerProvider containerProvider)
         {

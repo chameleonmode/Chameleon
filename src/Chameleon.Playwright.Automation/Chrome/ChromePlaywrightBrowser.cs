@@ -1,36 +1,34 @@
-﻿using Chameleon.Avalonia.Playwright.Automation.Chrome;
-using Chameleon.Common.Helpers;
+﻿using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.App.Automation.Playwright;
 using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
 using Chameleon.SystemBrowser;
-using Chameleon.SystemBrowser.Browsers.Brave;
-using Chameleon.SystemBrowser.Services;
+using Chameleon.SystemBrowser.Chrome;
 
-namespace Chameleon.Avalonia.Playwright.Automation.Brave;
-public class BravePlaywrightBrowser
-    : BraveSystemBrowser
-    , IBravePlaywrightBrowser
+namespace Chameleon.Playwright.Automation.Chrome;
+public class ChromePlaywrightBrowser
+    : ChromeSystemBrowser
+    , IChromePlaywrightBrowser
 {
-    public BravePlaywrightBrowser(
-        IEventAggregator eventAggregator,
-        IApplicationEnvironment applicationEnvironment,
-        ISystemBrowserInfoManager systemBrowserInfoManager,
-        ISetPreferencesService setPreferencesService,
-        IUserDefaultSettingsService userDefaultsSettingsService)
-        : base(eventAggregator,
-            applicationEnvironment,
-            systemBrowserInfoManager,
-            setPreferencesService,
+    public ChromePlaywrightBrowser(
+        IEventAggregator eventAggregator, 
+        IApplicationEnvironment applicationEnvironment, 
+        ISystemBrowserInfoManager systemBrowserInfoManager, 
+        ISetPreferencesService setPreferencesService, 
+        IUserDefaultSettingsService userDefaultsSettingsService) 
+        : base(eventAggregator, 
+            applicationEnvironment, 
+            systemBrowserInfoManager, 
+            setPreferencesService, 
             userDefaultsSettingsService)
     {
     }
 
     public IPlaywrightBrowserInstance InitializeBrowser(IPlaywrightBrowserLaunchOptions o)
     {
-        return new BravePlaywrightBrowserInstance(
+        return new ChromePlaywrightBrowserInstance(
             _eventAggregator,
             o,
             _setPreferencesService,

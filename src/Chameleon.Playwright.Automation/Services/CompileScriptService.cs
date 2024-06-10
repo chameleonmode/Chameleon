@@ -1,4 +1,4 @@
-﻿using Chameleon.Avalonia.Playwright.Automation.ExternalScript;
+﻿using Chameleon.Playwright.Automation.ExternalScript;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.WebBrowser;
 using Microsoft.CodeAnalysis;
@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Chameleon.Avalonia.Playwright.Automation.Services
+namespace Chameleon.Playwright.Automation.Services
 {
     public class CompileScriptService
     : ICompileScriptService

@@ -17,7 +17,7 @@ using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using Chameleon.Avalonia.Controls.UserProfileView;
 using Chameleon.Avalonia.Controls.UserProfileView.Services;
 using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
-using Chameleon.Avalonia.Playwright.Automation.Manager;
+using Chameleon.Playwright.Automation.Manager;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Domain.Entities.Automation;

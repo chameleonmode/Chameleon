@@ -1,25 +1,13 @@
-﻿using Chameleon.Core.Extensions;
+﻿using Chameleon.Common.WinApiBridge;
+using Chameleon.Core.Extensions;
+using Chameleon.Core.Util;
+using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
-using Chameleon.SystemBrowser.Proxy;
 using Chameleon.Prism.Events;
-using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.NetworkInformation;
 using System.Net;
-using System.Threading.Tasks;
-using Chameleon.SystemBrowser.Automation;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Chameleon.Common.WinApiBridge;
-using System.Reflection.Metadata;
-using Microsoft.Playwright;
-using System.Security;
-using Newtonsoft.Json.Linq;
-using Chameleon.Interfaces.Settings;
-using System.Reflection;
-using Chameleon.Core.Util;
+using System.Net.NetworkInformation;
 
 namespace Chameleon.SystemBrowser.Common
 {
@@ -51,8 +39,6 @@ namespace Chameleon.SystemBrowser.Common
 
         public Process? Brocess { get; private set; } = null;
         public IntPtr Handle { get; private set; } = IntPtr.Zero;
-
-        public IBrowserContext BrowserContext { get; set; }
 
         public int Port { get; private set; }
 

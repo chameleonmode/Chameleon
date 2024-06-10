@@ -1,4 +1,4 @@
-﻿using Chameleon.Avalonia.Playwright.Automation.ExternalScript;
+﻿using Chameleon.Playwright.Automation.ExternalScript;
 using Chameleon.Interfaces.WebBrowser;
 using Microsoft.Playwright;
 using System.Collections.Generic;  // required for "IDictionary<string, string>"

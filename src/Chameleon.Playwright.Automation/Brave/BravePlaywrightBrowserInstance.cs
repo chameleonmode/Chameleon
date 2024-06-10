@@ -3,12 +3,12 @@ using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
-using Chameleon.SystemBrowser.Chrome;
+using Chameleon.SystemBrowser.Browsers.Brave;
 using Microsoft.Playwright;
 
-namespace Chameleon.Avalonia.Playwright.Automation.Chrome;
-public class ChromePlaywrightBrowserInstance
-    : ChromeSystemBrowserInstance
+namespace Chameleon.Playwright.Automation.Brave;
+public class BravePlaywrightBrowserInstance
+    : BraveSystemBrowserInstance
     , IPlaywrightBrowserInstanceWithContext
 {
     protected IPlaywright _playwright;
@@ -17,18 +17,18 @@ public class ChromePlaywrightBrowserInstance
     private IBrowserContext _browserContext;
     public IBrowserContext BrowserContext => _browserContext;
 
-    public ChromePlaywrightBrowserInstance(
+    public BravePlaywrightBrowserInstance(
         IEventAggregator eventAggregator,
-        IPlaywrightBrowserLaunchOptions options, 
-        ISetPreferencesService setPreferencesService, 
-        IApplicationEnvironment applicationEnvironment, 
-        IUserDefaultSettingsService userDefaultsSettingsService, 
-        string browserExeFilePath) 
-        : base(eventAggregator, 
-            options, 
-            setPreferencesService, 
-            applicationEnvironment, 
-            userDefaultsSettingsService, 
+        IPlaywrightBrowserLaunchOptions options,
+        ISetPreferencesService setPreferencesService,
+        IApplicationEnvironment applicationEnvironment,
+        IUserDefaultSettingsService userDefaultsSettingsService,
+        string browserExeFilePath)
+        : base(eventAggregator,
+            options,
+            setPreferencesService,
+            applicationEnvironment,
+            userDefaultsSettingsService,
             browserExeFilePath)
     {
         _playwritingOptions = options;

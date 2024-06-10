@@ -5,9 +5,7 @@ using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
 using Chameleon.SystemBrowser.Common;
-using Microsoft.Playwright;
 using System.Diagnostics;
-using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 
@@ -83,44 +81,6 @@ namespace Chameleon.SystemBrowser.Firefox
             }
 
             var prefs = await InitializePrefsJs();
-
-            return;
-            if (SystemBrowserManager.Blaywright == null)
-                SystemBrowserManager.Blaywright = await Playwright.CreateAsync();
-
-            Microsoft.Playwright.Proxy? proxy = null;
-            if (HasProxyLogin)
-            {
-                proxy = new Microsoft.Playwright.Proxy()
-                {
-                    Server = $"http://{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}",
-                    Username = UserProfile.Proxy.UserName,
-                    Password = UserProfile.Proxy.Password,
-                };
-            }
-
-            BrowserContext = await SystemBrowserManager.Blaywright.Firefox.LaunchPersistentContextAsync(
-                _browserProfileFolderPath,
-                new()
-                {
-                    ExecutablePath = Path.Combine(Directory.GetCurrentDirectory(), @"firefox-1447\firefox\firefox.exe"), //@"C:\Program Files\Mozilla Firefox\firefox.exe",//Path.Combine(Directory.GetCurrentDirectory(), @"firefox-1447\firefox\firefox.exe"),// @"C:\dev\browsers\Firefox-124\firefox.exe",// Path.Combine(Directory.GetCurrentDirectory(), @"firefox-1447\firefox\firefox.exe"),
-                    Args = new[]
-                    {
-                        "--allow-downgrade",
-                        "--start-maximized",
-                        $"--start-debugger-server {Port}"
-                    },
-                    //IgnoreDefaultArgs = new[] { "-silent" },
-                    Env = new Dictionary<string, string>()
-                    {
-                        ["MOZ_REMOTE_SETTINGS_DEVTOOLS"] = "1"
-                    },
-
-                    Headless = false,
-                    Proxy = proxy,
-                    ViewportSize = ViewportSize.NoViewport,
-                    FirefoxUserPrefs = prefs,
-                });
         }
 
         // TODO: refactor next legacy code

@@ -5,30 +5,30 @@ using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
 using Chameleon.SystemBrowser;
-using Chameleon.SystemBrowser.Chrome;
+using Chameleon.SystemBrowser.Browsers.Brave;
 
-namespace Chameleon.Avalonia.Playwright.Automation.Chrome;
-public class ChromePlaywrightBrowser
-    : ChromeSystemBrowser
-    , IChromePlaywrightBrowser
+namespace Chameleon.Playwright.Automation.Brave;
+public class BravePlaywrightBrowser
+    : BraveSystemBrowser
+    , IBravePlaywrightBrowser
 {
-    public ChromePlaywrightBrowser(
-        IEventAggregator eventAggregator, 
-        IApplicationEnvironment applicationEnvironment, 
-        ISystemBrowserInfoManager systemBrowserInfoManager, 
-        ISetPreferencesService setPreferencesService, 
-        IUserDefaultSettingsService userDefaultsSettingsService) 
-        : base(eventAggregator, 
-            applicationEnvironment, 
-            systemBrowserInfoManager, 
-            setPreferencesService, 
+    public BravePlaywrightBrowser(
+        IEventAggregator eventAggregator,
+        IApplicationEnvironment applicationEnvironment,
+        ISystemBrowserInfoManager systemBrowserInfoManager,
+        ISetPreferencesService setPreferencesService,
+        IUserDefaultSettingsService userDefaultsSettingsService)
+        : base(eventAggregator,
+            applicationEnvironment,
+            systemBrowserInfoManager,
+            setPreferencesService,
             userDefaultsSettingsService)
     {
     }
 
     public IPlaywrightBrowserInstance InitializeBrowser(IPlaywrightBrowserLaunchOptions o)
     {
-        return new ChromePlaywrightBrowserInstance(
+        return new BravePlaywrightBrowserInstance(
             _eventAggregator,
             o,
             _setPreferencesService,
