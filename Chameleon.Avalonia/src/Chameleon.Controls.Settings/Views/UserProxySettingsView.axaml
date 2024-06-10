@@ -86,33 +86,6 @@
 								</Button>
 							</StackPanel>
 
-
-							<!--<ui:CommandBar HorizontalAlignment="Right" 
-										   DefaultLabelPosition="Right">
-								<ui:CommandBar.PrimaryCommands>
-									<ui:CommandBarElementContainer>
-										<ui:FAComboBox PlaceholderText="Proxy Country:"
-													   Header="Proxy Country:"
-													   ItemsSource="{Binding Countries.Items}"
-													SelectedItem="{Binding Country}"
-													 IsEditable="False"
-													 IsTextSearchEnabled="True"
-														VerticalAlignment="Center">
-											<ui:FAComboBox.ItemTemplate>
-												<DataTemplate>
-													<Label Content="{Binding Name}"/>
-												</DataTemplate>
-											</ui:FAComboBox.ItemTemplate>
-										</ui:FAComboBox>
-									</ui:CommandBarElementContainer>
-								</ui:CommandBar.PrimaryCommands>
-								<ui:CommandBar.SecondaryCommands>
-									<ui:CommandBarButton IconSource="Refresh"
-														 Label="Auto Update Proxies"
-														 Command="{Binding FillProxiesCommand}"
-														 IsEnabled="{Binding FillProxiesIsEnabled}"/>
-								</ui:CommandBar.SecondaryCommands>
-							</ui:CommandBar>-->
 						</StackPanel>
 					</afv:ChameleonContentControl.Options>
 					
