@@ -176,11 +176,6 @@ public partial class AssistantUserViewModel
 
     //    return (ButtonResult)await _dialogWindowsService.ShowDialogWindow(_unshareProfilePopupView, title, initialize);
     //}
-    [RelayCommand]
-    private void OpenPopup()
-    {
-        IsOpenPopup = !IsOpenPopup;
-    }
   
     [RelayCommand]
     private async Task DeleteAssistant()
