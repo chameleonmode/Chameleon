@@ -1,11 +1,8 @@
 ﻿using Chameleon.CT.Common.Base;
-using Chameleon.Domain.Entities.Automation;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
 using Chameleon.Interfaces.App.Automation.Views;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.UserProfileFolders;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Automation.ViewModels;

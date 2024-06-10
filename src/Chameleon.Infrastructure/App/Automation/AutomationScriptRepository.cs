@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using Chameleon.Core.Extensions;
 using Chameleon.Domain.Entities.Automation;
 using Chameleon.Infrastructure.App.Automation.DTOs;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Repositories;
-using Chameleon.Interfaces.Entities;
 using Chameleon.Interfaces.Repository;
-using Prism.Ioc;
 using System.Collections.Generic;
 
 namespace Chameleon.Infrastructure.App.Automation;

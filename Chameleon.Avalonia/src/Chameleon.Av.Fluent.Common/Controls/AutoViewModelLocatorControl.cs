@@ -27,7 +27,7 @@ public class AutoViewModelLocatorControl : UserControl
         }
         else
         {
-            var message = $"AViewModel {vm} not found.";
+            var message = $"ViewModel {vm} not found.";
             throw new NullReferenceException(message);
         }
     }

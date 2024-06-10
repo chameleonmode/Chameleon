@@ -1,38 +1,17 @@
-using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Chameleon.Common.Helpers;
-using Chameleon.Interfaces;
-using Chameleon.Interfaces.App.Automation.ViewModels;
+using Chameleon.Avalonia.Controls.Automation.ViewModels;
+using Chameleon.Avalonia.Fluent.Common.Controls;
+using Chameleon.Core.Attributes;
 using Chameleon.Interfaces.App.Automation.Views;
-using System.Diagnostics;
 
 namespace Chameleon.Avalonia.Controls.Automation.Views;
+
+[ViewModel(typeof(AutomationViewModel))]
 public partial class AutomationView
-    : UserControl
+    : ViewControlBase<AutomationViewModel>
     , IAutomationView
 {
     public AutomationView()
     {
-        try
-        {
-            DataContext = ContainerServiceHelper.Resolve<IAutomationViewModel>()
-                ?? throw new InvalidOperationException("Not resolve moodel");
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error: {ex.Message}");
-            throw;
-        }
-
         InitializeComponent();
-    }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        if (DataContext is IHaveInitialize sp)
-        {
-            sp.InvokeInitializeAsyncCommand(e);
-        }
     }
 }
