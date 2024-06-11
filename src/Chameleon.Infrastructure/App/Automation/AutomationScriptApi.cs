@@ -3,7 +3,6 @@ using Chameleon.Infrastructure.App.Automation.DTOs;
 using Chameleon.Interfaces.Api;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.Repository;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Chameleon.Infrastructure.App.Automation;

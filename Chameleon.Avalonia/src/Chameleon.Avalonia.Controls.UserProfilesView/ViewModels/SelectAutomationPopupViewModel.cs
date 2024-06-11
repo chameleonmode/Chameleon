@@ -27,8 +27,6 @@ public partial class SelectAutomationPopupViewModel
     {
         _automationService = automationService;
         _automationBrowserService = automationBrowserService;
-
-        //Initialize();
     }
 
     private ObservableCollectionView<IAutomationScriptViewModel> _viewModels;
@@ -110,5 +108,4 @@ public partial class SelectAutomationPopupViewModel
         IAutomationScriptDescription script = _selectedScriptDescription.ScriptDescription;
         _automationBrowserService.RunScript(script, _selectedBrowser, _userProfiles);
     }
-
 }

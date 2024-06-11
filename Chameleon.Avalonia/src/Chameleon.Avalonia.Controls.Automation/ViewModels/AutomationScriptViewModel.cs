@@ -69,11 +69,6 @@ public partial class AutomationScriptViewModel
     [RelayCommand]
     public async Task OpenParamsPopup(int selectedIdScript)
     {
-        //var selectedScriptDescription = _automationService
-        //    .GetAll()
-        //    .FirstOrDefault(sd => sd.Id == selectedIdScript);
-        //ScriptDescription = selectedScriptDescription;
-
         var result = await ContentDialogService
             .ShowAsync<IAddScriptParametersPopupView, IAddScriptParametersPopupViewModel>(viewModel =>
            {

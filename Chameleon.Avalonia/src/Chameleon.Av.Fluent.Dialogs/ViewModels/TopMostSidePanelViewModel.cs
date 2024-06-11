@@ -2,7 +2,6 @@
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.Domain.Entities;
-using Chameleon.Interfaces.App.Automation.Manager;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
@@ -14,7 +13,6 @@ public class TopMostSidePanelViewModel : SubPageViewModelBase, ITopMostSidePanel
     private readonly IUserProfileService _userProfileService;
     private readonly IApplicationUser _applicationUser;
     private readonly ISystemBrowserManager _systemBrowserManager;
-
     public TopMostSidePanelViewModel(IUserProfileService userProfileService,
         IApplicationUser applicationUser,
         ISystemBrowserManager systemBrowserManager)

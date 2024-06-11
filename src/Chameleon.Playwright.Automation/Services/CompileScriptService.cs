@@ -45,7 +45,6 @@ namespace Chameleon.Playwright.Automation.Services
                 MetadataReference.CreateFromFile(typeof(Console).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Regex).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Microsoft.Playwright.Playwright).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(SystemBrowserType).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(IExternalScript).Assembly.Location)
             };
 
