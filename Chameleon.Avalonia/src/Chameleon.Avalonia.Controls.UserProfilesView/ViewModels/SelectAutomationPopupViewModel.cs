@@ -101,13 +101,14 @@ public partial class SelectAutomationPopupViewModel
 
     public void OnDialogClosing(IContentDialogResult result)
     {
-        if (result != IContentDialogResult.Primary)
+        if (result != IContentDialogResult.Primary
+            || _selectedBrowser == SystemBrowserType.Unknown)
         {
             return;
         }
 
         IAutomationScriptDescription script = _selectedScriptDescription.ScriptDescription;
-        _automationBrowserService.RunScript(script, _userProfiles);
+        _automationBrowserService.RunScript(script, _selectedBrowser, _userProfiles);
     }
 
 }

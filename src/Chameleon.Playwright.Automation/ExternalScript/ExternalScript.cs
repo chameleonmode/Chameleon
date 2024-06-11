@@ -1,5 +1,4 @@
-﻿using Chameleon.Interfaces.WebBrowser;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using System.Collections.Generic;  // required for "IDictionary<string, string>"
 using System;
 using System.Threading.Tasks;
@@ -7,8 +6,6 @@ using Chameleon.Interfaces.App.Automation.ExternalScript; // required for "async
 
 public class ExternalScript : IExternalScript
 {
-    public SystemBrowserType BrowserType => SystemBrowserType.Brave;
-
     public async Task Run(IBrowserContext context, IDictionary<string, string> args)
     {
         IPage page = context.Pages[0];

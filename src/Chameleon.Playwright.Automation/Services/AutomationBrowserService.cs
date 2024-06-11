@@ -5,6 +5,7 @@ using Chameleon.Interfaces.App.Automation.Manager;
 using Chameleon.Interfaces.App.Automation.Playwright;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.Interfaces.WebBrowser;
 
 namespace Chameleon.Playwright.Automation.Services;
 public class AutomationBrowserService 
@@ -26,14 +27,15 @@ public class AutomationBrowserService
     }
 
     public async void RunScript(
-        IAutomationScriptDescription script, 
+        IAutomationScriptDescription script,
+        SystemBrowserType browserType,
         IList<IUserProfile> userProfiles)
     {
         try
         {
             string scripBody = _automationService.GetScriptBody(script.Id);
             IExternalScript instance = _compileScriptService.CompileScript(scripBody);
-            var browser = _playwrightBrowserManager.Get(instance.BrowserType);
+            var browser = _playwrightBrowserManager.Get(browserType);
 
             IDictionary<string, string> parameters = script.Parameters
                 .Select(x => KeyValuePair.Create(x.Name, x.Value))

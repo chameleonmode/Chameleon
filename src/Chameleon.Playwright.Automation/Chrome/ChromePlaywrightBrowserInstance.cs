@@ -15,10 +15,7 @@ public class ChromePlaywrightBrowserInstance
 
     private IBrowserContext _browserContext;
     public IBrowserContext BrowserContext => _browserContext;
-    
-    protected IPlaywright _playwright;
-    public IPlaywright PlaywrightInstance => _playwright;
-
+   
     public ChromePlaywrightBrowserInstance(
         IEventAggregator eventAggregator,
         IPlaywrightBrowserLaunchOptions options, 
@@ -55,7 +52,7 @@ public class ChromePlaywrightBrowserInstance
             args.Add($"--load-extension={exts}");
         }
 
-        _browserContext = await _playwright.Chromium.LaunchPersistentContextAsync(
+        _browserContext = await _playwrightOptions.Playwright.Chromium.LaunchPersistentContextAsync(
             _browserProfileFolderPath,
             new BrowserTypeLaunchPersistentContextOptions
             {
