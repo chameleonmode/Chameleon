@@ -1,5 +1,5 @@
 using Chameleon.Avalonia.Controls.Automation.ViewModels;
-using Chameleon.Avalonia.Fluent.Common.Controls;
+using Chameleon.Av.Fluent.Common.Controls;
 using Chameleon.Core.Attributes;
 using Chameleon.Interfaces.App.Automation.Views;
 

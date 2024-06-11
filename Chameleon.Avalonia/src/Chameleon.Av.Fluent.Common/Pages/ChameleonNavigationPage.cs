@@ -1,16 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Chameleon.Av.Fluent.Common.Controls;
-using Chameleon.Av.Fluent.Common.Services;
-using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using FluentAvalonia.UI.Controls;
