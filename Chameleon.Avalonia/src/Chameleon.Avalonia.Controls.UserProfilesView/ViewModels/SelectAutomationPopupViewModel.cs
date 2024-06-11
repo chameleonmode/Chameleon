@@ -7,6 +7,7 @@ using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.Interfaces.WebBrowser;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
@@ -22,8 +23,6 @@ public partial class SelectAutomationPopupViewModel
         )
     {
         _automationService = automationService;
-
-        //Initialize();
     }
 
     private ObservableCollectionView<IAutomationScriptViewModel> _viewModels;
@@ -34,9 +33,6 @@ public partial class SelectAutomationPopupViewModel
             if (_viewModels == null && _mapping != null)
             {
                 _viewModels = new ObservableCollectionView<IAutomationScriptViewModel>(_mapping);
-
-                //_mapping.CollectionChanged += OnViewModelChange;
-                //InitPaginator();
             }
 
             return _viewModels;
@@ -63,9 +59,19 @@ public partial class SelectAutomationPopupViewModel
             {
                 _selectedScriptDescription = value;
                 OnPropertyChanged(nameof(SelectedScriptDescription));
+                OnPropertyChanged(nameof(IsSelectedScript));
             }
         }
     }
+
+    private SystemBrowserType _selectedBrowser;
+    public SystemBrowserType SelectedBrowser
+    {
+        get => _selectedBrowser;
+        set => SetProperty(ref _selectedBrowser, value);
+    }
+
+    public bool IsSelectedScript => SelectedScriptDescription != null;
 
     public override async Task InitAsync(object? param)
     {
@@ -91,7 +97,9 @@ public partial class SelectAutomationPopupViewModel
     {
         if (result == IContentDialogResult.Primary)
         {
-            
+            var browser = SelectedBrowser;
+            var profiles = UserProfiles;
+            var selectedScript = SelectedScriptDescription;
         }
     }
 }
