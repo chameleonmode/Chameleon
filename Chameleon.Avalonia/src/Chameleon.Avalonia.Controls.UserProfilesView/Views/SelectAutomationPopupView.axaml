@@ -39,38 +39,28 @@
 					</ui:FAComboBox.ItemTemplate>
 				</ui:FAComboBox>
 
+				<!--Select Browser-->
+				<Border 
+					HorizontalAlignment="Stretch" 
+					Padding="15 0 22 0"
+					IsEnabled="{Binding IsSelectedScript}">
+					<RadioButton
+						GroupName="rbgGender"
+						IsChecked="{Binding SelectedBrowser}"
+						Content="Chrome"> 
+					</RadioButton>
+				</Border>
+				<Border 
+					Padding="15 0 22 0"
+					IsEnabled="{Binding IsSelectedScript}">
+					<RadioButton 
+						GroupName="rbgGender"
+						IsChecked="{Binding SelectedBrowser}"
+						Content="Brave">
+					</RadioButton>
+				</Border>
+			
 			</StackPanel>
 		</dialogs:ChameleonDialogControl.Content>
 	</dialogs:ChameleonDialogControl>
-
-
-	<!--<dialogs:ChameleonDialogControl
-		   TitleDescription="{Binding ViewModels.Count, StringFormat='You have {0} Automation:'}">
-		<dialogs:ChameleonDialogControl.Content>
-			<ListBox
-				ItemsSource="{Binding ViewModels}"
-				ScrollViewer.VerticalScrollBarVisibility="Auto"
-				Margin="0 20"
-				MaxHeight="300">
-				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<Grid Margin="0 0 15 10">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-							</Grid.RowDefinitions>
-							<TextBlock
-								Grid.Row="0"
-								Text="{Binding Title}"
-								Foreground="#8094AE"
-								Padding="0 5"/>
-						</Grid>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-		</dialogs:ChameleonDialogControl.Content>
-	</dialogs:ChameleonDialogControl>-->
-
-
-
 </UserControl>

@@ -373,12 +373,10 @@ public partial class UserProfilesViewModel
     private async Task OpenAutomation()
     {
         var userProfiles = GetSelectedProfiles();
-        var userProfilesToApply = new List<IUserProfile>();
 
-        foreach (var userProfile in userProfiles)// linq
-        {
-            userProfilesToApply.Add(userProfile.UserProfile);
-        }
+        var userProfilesToApply = userProfiles
+            .Select(up => up.UserProfile)
+            .ToList<IUserProfile>();
 
         var result = await ContentDialogService
            .ShowAsync<ISelectAutomationPopupView, ISelectAutomationPopupViewModel>(viewModel =>
