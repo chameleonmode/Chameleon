@@ -41,22 +41,26 @@
 
 				<!--Select Browser-->
 				<Border 
+					Padding="15 0 22 0"
+					IsEnabled="{Binding IsSelectedScript}">
+					<RadioButton 
+						GroupName="rbgGender"
+						IsChecked="True"
+						Content="Brave"
+						Command="{Binding UpdateBrowserCommand}"
+						CommandParameter="Brave">
+					</RadioButton>
+				</Border>
+				<Border 
 					HorizontalAlignment="Stretch" 
 					Padding="15 0 22 0"
 					IsEnabled="{Binding IsSelectedScript}">
 					<RadioButton
 						GroupName="rbgGender"
 						IsChecked="{Binding SelectedBrowser}"
-						Content="Chrome"> 
-					</RadioButton>
-				</Border>
-				<Border 
-					Padding="15 0 22 0"
-					IsEnabled="{Binding IsSelectedScript}">
-					<RadioButton 
-						GroupName="rbgGender"
-						IsChecked="{Binding SelectedBrowser}"
-						Content="Brave">
+						Content="Chrome"
+						Command="{Binding UpdateBrowserCommand}"
+						CommandParameter="Chrome"> 
 					</RadioButton>
 				</Border>
 			
