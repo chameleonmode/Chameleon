@@ -9,6 +9,8 @@ using Chameleon.Interfaces.App.Automation.ViewModels;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
@@ -68,7 +70,7 @@ public partial class SelectAutomationPopupViewModel
         }
     }
 
-    private SystemBrowserType _selectedBrowser;
+    private SystemBrowserType _selectedBrowser = SystemBrowserType.Brave;
     public SystemBrowserType SelectedBrowser
     {
         get => _selectedBrowser;
@@ -76,6 +78,17 @@ public partial class SelectAutomationPopupViewModel
     }
 
     public bool IsSelectedScript => SelectedScriptDescription != null;
+
+    private ICommand _updateBrowserCommand;
+    public ICommand UpdateBrowserCommand => _updateBrowserCommand ??= new RelayCommand<string>(UpdateBrowser);
+
+    private void UpdateBrowser(string browser)
+    {
+        if (Enum.TryParse(browser, true, out SystemBrowserType browserEnum))
+        {
+            SelectedBrowser = browserEnum;
+        }
+    }
 
     public override async Task InitAsync(object? param)
     {
