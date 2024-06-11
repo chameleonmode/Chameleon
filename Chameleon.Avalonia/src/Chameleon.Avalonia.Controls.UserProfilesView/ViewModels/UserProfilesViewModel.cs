@@ -383,25 +383,26 @@ public partial class UserProfilesViewModel
         OnHandleUserEvent();
     }
 
-    [RelayCommand]
-    private void RemoveProfilesFromFolder()
-    {
-        if (_folder.Id == 0 || 
-            _selectedProfiles == null || 
-            !_selectedProfiles.Any())
-        {
-            return;
-        }
+    //Task 35 Remove profile appears in all profiles
+    //[RelayCommand]
+    //private void RemoveProfilesFromFolder()
+    //{
+    //    if (_folder.Id == 0 || 
+    //        _selectedProfiles == null || 
+    //        !_selectedProfiles.Any())
+    //    {
+    //        return;
+    //    }
 
-        var ids = _selectedProfiles
-            .Select(a => a.UserProfile.Id)
-            .ToList();
+    //    var ids = _selectedProfiles
+    //        .Select(a => a.UserProfile.Id)
+    //        .ToList();
 
-        _userProfileService.MoveUserProfileToFolder(ids, null);
-        Filter = p => p.FolderId == _folder.Id;
-        OnHandleUserEvent();
-        ChangeProfilesInFavoriteFolder();
-    }
+    //    _userProfileService.MoveUserProfileToFolder(ids, null);
+    //    Filter = p => p.FolderId == _folder.Id;
+    //    OnHandleUserEvent();
+    //    ChangeProfilesInFavoriteFolder();
+    //}
 
     [RelayCommand]
     private async Task AddProfilesToFolder()
