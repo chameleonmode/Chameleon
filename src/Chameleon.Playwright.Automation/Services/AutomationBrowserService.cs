@@ -26,7 +26,7 @@ public class AutomationBrowserService
         _automationService = automationService;
     }
 
-    public async void RunScript(
+    public async Task RunScript(
         IAutomationScriptDescription script,
         SystemBrowserType browserType,
         IList<IUserProfile> userProfiles)

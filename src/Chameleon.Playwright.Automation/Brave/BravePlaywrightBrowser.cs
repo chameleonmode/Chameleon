@@ -43,7 +43,7 @@ public class BravePlaywrightBrowser
         IPlaywrightBrowserInstance browser = null;
         try
         {
-            browser = await Task.Run(() => InitializeBrowser(o));
+            browser = InitializeBrowser(o);
 
             await browser.Open();
         }
@@ -55,6 +55,7 @@ public class BravePlaywrightBrowser
         return browser;
     }
 
+    // use BraveSystemBrowser for call this method
     public override async Task<ISystemBrowserInstance> Open(ISystemBrowserLaunchOptions o)
     {
         throw new NotImplementedException();

@@ -43,7 +43,7 @@ public class ChromePlaywrightBrowser
         IPlaywrightBrowserInstance browser = null;
         try
         {
-            browser = await Task.Run(() => InitializeBrowser(o));
+            browser = InitializeBrowser(o);
 
             await browser.Open();
         }
@@ -55,6 +55,7 @@ public class ChromePlaywrightBrowser
         return browser;
     }
 
+    // use ChromeSystemBrowser for call this method
     public override async Task<ISystemBrowserInstance> Open(ISystemBrowserLaunchOptions o)
     {
         throw new NotImplementedException();
