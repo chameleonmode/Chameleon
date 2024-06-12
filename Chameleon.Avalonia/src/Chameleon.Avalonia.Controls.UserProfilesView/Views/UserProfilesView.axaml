@@ -101,12 +101,12 @@
 								Command="{Binding MoveProfilesToFolderCommand}"
 								Theme="{StaticResource SvgIconTextButton}" />
 
-							<!--Task 35 Remove profile appears in all profiles-->
-							<!--<Button Content="minus-in-circle"
+							<Button Content="minus-in-circle"
 									Tag="Remove profile"
 									Command="{Binding RemoveProfilesFromFolderCommand}" 
 									Theme="{StaticResource SvgIconTextButton}"
-									Margin="4 0 0 0"/>-->
+									Margin="4 0 0 0"
+									IsVisible="{Binding HasFolder}"/>
 							
 							<Button
 								Theme="{StaticResource SvgIconTextButton}"
