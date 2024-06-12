@@ -24,6 +24,10 @@ namespace Chameleon.SystemBrowser.Firefox
         public const string FirefoxAutoProxyFolderName = "ChameleonAutoExt";
         public const string FirefoxAutoProxyAddonName = "autoproxy.chameleon.zip";
 
+        public const string UrlSchemeEnd = "://";
+        public const string HTTPSScheme = "https://";
+        public const string DomainLevelDelimiter = ".";
+
         private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
         public FirefoxSystemBrowserInstance(
             IEventAggregator eventAggregator,
@@ -583,23 +587,30 @@ namespace Chameleon.SystemBrowser.Firefox
             return $"\"{value}\"";
         }
 
-        protected override string GetCommandLineArguments()
+        protected List<string> GetCommandLineArgumentsList()
         {
-
-            return string.Join(" ", [
+            var arguments = new List<string>()
+            {
                 "-new-instance",
                 "-wait-for-browser",
                 //$"-new-window",
                 "-new-instance",
-                $"-url about:blank",//added for now to work around proxy refresh issue
-                //$"-url {Starturl}",
-                //$"-url \"{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}\"",
                 $"-profile \"{_browserProfileFolderPath}\"",
                 //"-no-remote"
-                ]); 
-            //TODO: investigate how to install ecxtension via config file (*.ini)
-            //var extensionsToInstal = GetLoadExtensionsArgument();
-            //arguments.Append($"-install-extension {extensionsToInstal}");
+            };
+
+            string startUrl = HasProxyLogin && Starturl.Contains(DomainLevelDelimiter)
+                ? "about:blank" //added for now to work around proxy refresh issue
+                : Starturl;
+            
+            arguments.Add($"-url {startUrl}");
+            return arguments;
+        }
+
+        protected override string GetCommandLineArguments()
+        {
+            List<string> argumentsList = GetCommandLineArgumentsList();
+            return string.Join(" ", argumentsList);
         }
 
         public override string GetLoadExtensionsArgument() => string.Empty;
@@ -619,6 +630,12 @@ namespace Chameleon.SystemBrowser.Firefox
 
             if (HasProxyLogin)
             {
+                bool needLoadUrl = Starturl.Contains(DomainLevelDelimiter);
+
+                string startUrl = Starturl.Contains(UrlSchemeEnd)
+                    ? Starturl
+                    : $"{HTTPSScheme}{Starturl}";
+
                 IProxySettings proxy = UserProfile.Proxy;
                 if (!Directory.Exists(proxyextdir))
                 {
@@ -651,7 +668,11 @@ namespace Chameleon.SystemBrowser.Firefox
                 }
                 """;
 
-                var backgroundJs =  """
+                string loadUrl = needLoadUrl ?
+                $", () => {{ browser.tabs.update({{ url:\"{startUrl}\" }}); }});"
+                : ");" ;
+
+                var backgroundJs ="""
                 browser.webRequest.onAuthRequired.addListener((details) => {
                     return {
                         authCredentials: {
@@ -673,14 +694,12 @@ namespace Chameleon.SystemBrowser.Firefox
                         httpProxyAll : true,
                         autoLogin: false
                     };
-
                 browser.proxy.settings.set(
                     { value: proxyConfig, scope: 'regular' }
-                );
+                """
+                + loadUrl;
 
-                browser.tabs.reload();
-                """;
-
+                
                 using (var fileStream = new FileStream(pxoyextFile, FileMode.CreateNew))
                 {
                     using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
