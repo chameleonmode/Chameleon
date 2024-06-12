@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
-using Chameleon.Auth.Api.Client;
+﻿using Chameleon.Auth.Api.Client;
 using Chameleon.Auth.Api.Response;
 using Chameleon.Interfaces.Api;
 using Chameleon.Interfaces.Auth;
+using System.Net;
 
 namespace Chameleon.Auth.Api
 {
@@ -37,9 +34,9 @@ namespace Chameleon.Auth.Api
             return response;
         }
 
-        public async Task<IAuthRefreshTokenResponse?> RefreshTokenAsync(string acessToken, string refreshToken)
+        public async Task<IAuthRefreshTokenResponse?> RefreshTokenAsync(string acessToken, string refreshToken, long delayInSeconds)
         {
-            //await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
+            await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
 
             var requestDto = new RefreshTokenRequestDto
             {
