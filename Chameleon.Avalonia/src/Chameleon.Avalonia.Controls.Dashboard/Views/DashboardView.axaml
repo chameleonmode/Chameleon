@@ -52,8 +52,6 @@
 							HorizontalAlignment="Right"
 							ItemsSource="{Binding Sorts}"
 							SelectedItem="{Binding SortSelected}"
-							Width="150"
-							MaxHeight="0" 
 							IsEditable="False"/>
 					</afv:ChameleonContentControl.Options>
 
@@ -63,6 +61,7 @@
 								Name="lbProfiles"
 								IsVisible="{Binding !HasNoItems}"
 								ItemsSource="{Binding ViewModels}"
+								VerticalAlignment="Top"
 								Theme="{StaticResource ListBoxNoScroller}"
 								ItemContainerTheme="{StaticResource GridViewItem}">
 								<ListBox.ItemsPanel>
@@ -114,8 +113,7 @@
 									   HorizontalAlignment="Right"
 									   ItemsSource="{Binding Sorts}"
 									   SelectedItem="{Binding FolderSortSelected}"
-									   Width="150"
-									   MaxHeight="0"
+									   
 									   IsEditable="False"/>
 					</afv:ChameleonContentControl.Options>
 
@@ -126,6 +124,7 @@
 								Theme="{StaticResource ListBoxNoScroller}"
 								ItemContainerTheme="{StaticResource GridViewItem}"
 								Grid.Row="1"
+								VerticalAlignment="Top"
 								IsVisible="{Binding !HasNoFolderItems}">
 								<ListBox.ItemsPanel>
 									<ItemsPanelTemplate>
