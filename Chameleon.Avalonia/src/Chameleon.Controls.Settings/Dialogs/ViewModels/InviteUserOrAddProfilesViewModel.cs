@@ -216,7 +216,7 @@ public partial class InviteUserOrAddProfilesViewModel : ObservableObjectBase,
 
         EventAggregator
             .GetEvent<SelectedProfileChangeEvent>()
-            .SubscribeOnce(OnSelectedProfileChange);
+            .Subscribe(OnSelectedProfileChange);
 
         EventAggregator
             .GetEvent<SelectedFolderChangeEvent>()
