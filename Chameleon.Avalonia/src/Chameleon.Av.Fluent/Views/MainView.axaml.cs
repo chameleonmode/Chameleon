@@ -63,13 +63,9 @@ public partial class MainView : UserControl
     {
         App.OnFramworkInitComplete -= OnFrameworkInit;
 
-        var top = TopLevel.GetTopLevel(this);
-
-        _isDesktop = top is Window;
-
         // Initialize the WindowNotificationManager with the "TopLevel". Previously (v0.10), MainWindow
         var notifyService = ContainerServiceHelper.Resolve<IToastNotificationService>();
-        notifyService.SetHostWindow(top);
+        notifyService.SetHostWindow(TopLevel.GetTopLevel(this));
 
 
         if (ContainerServiceHelper.Current.ContainerProvider is not null)
@@ -92,23 +88,14 @@ public partial class MainView : UserControl
 
         Dispatcher.UIThread.Post(() =>
         {
-            NavView.MenuItemsSource = pages.Where(p=> !p.ShowsInFooter).Select(a => a.GetNavigationViewItemBase(this)).ToList(); 
-            NavView.FooterMenuItemsSource = pages.Where(p => p.ShowsInFooter).Select(a => a.GetNavigationViewItemBase(this)).ToList(); 
+            NavView.MenuItemsSource = pages.Where(p=> !p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList(); 
+            NavView.FooterMenuItemsSource = pages.Where(p => p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList(); 
 
-            FrameView.NavigateToType(pages[0].Tag, null, null);
-
-            //if (_isDesktop || OperatingSystem.IsBrowser())
-            //{
-            //}
-            //else
-            //{
-            //    NavView.PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
-            //}
-
-
+            FrameView.NavigateToType(pages["Dashboard"].Tag, null, null);
             //FrameView.NavigateFromObject((NavView.MenuItemsSource.ElementAt(0) as Control).Tag);
         });
     }
+
     private void OnNavigationViewBackRequested(object? sender, NavigationViewBackRequestedEventArgs e)
     {
         FrameView.GoBack();
@@ -125,14 +112,9 @@ public partial class MainView : UserControl
 
             // Keep the frame navigation when not using connected animation but suppress it
             // if we have a connected animation binding two pages
-            if (FrameView.Content is ChameleonPageBase cpb)
-            {
-                info = new SuppressNavigationTransitionInfo();
-            }
-            else
-            {
-                info = e.RecommendedNavigationTransitionInfo;
-            }
+            info = FrameView.Content is ChameleonPageBase ? 
+                new SuppressNavigationTransitionInfo() : 
+                e.RecommendedNavigationTransitionInfo;
 
             NavigationService.Instance.NavigateToType((nvi.Tag as MainPageModelBase).Tag, info);
             //NavigationService.Instance.NavigateFromContext(nvi.Tag, info);
@@ -143,12 +125,16 @@ public partial class MainView : UserControl
 
     private void OnFrameViewNavigated(object sender, NavigationEventArgs e)
     {
-        var page = pages.SingleOrDefault(p => p.Tag.Name[1..] == (e.Content as Control).GetType().Name);
-        page ??= e.Content.GetType().FullName.StartsWith("Chameleon.Avalonia.Controls.Settings") ? pages[2] : pages[1];
+        var page = pages.SingleOrDefault(
+                p => p.Value.Tag.Name[1..] == (e.Content as Control).GetType().Name).Value;
+        page ??= e.Content.GetType().FullName.StartsWith("Chameleon.Avalonia.Controls.Settings") ?
+            pages["Settings"] :
+            pages["Profiles"];
+
         foreach (var nvi in from NavigationViewItem nvi in ((List<NavigationViewItemBase>)NavView.MenuItemsSource).Concat((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource)
                             let set = nvi.Tag == page
                             where set
-                            select nvi//nvi.IconSource = this.TryFindResource(set ? $"{page.IconKey}Filled" : page.IconKey, out var value) ? (IconSource)value : null;
+                            select nvi
         )
         {
             NavView.SelectedItem = nvi;
@@ -168,20 +154,17 @@ public partial class MainView : UserControl
     {
         // Technically, yes you could set up binding and converters and whatnot to let the icon change
         // between filled and unfilled based on selection, but this is so much simpler 
-
         if (item == null)
             return;
 
-        var t = item.Tag;
-
-        if (t is MainPageModelBase m)
+        if (item.Tag is MainPageModelBase m)
         {
             item.IconSource = this.TryFindResource(selected ? $"{m.IconKey}Filled" : m.IconKey, out var value) ?
                 (IconSource)value : null;
         }
         else
         {
-
+           //TODO: :P
         }
     }
 
@@ -256,34 +239,37 @@ public partial class MainView : UserControl
         }
     }
 
-    private bool _isDesktop;
-    readonly List<MainPageModelBase> pages =
-        [
-            new()
-            {
-                NavHeader = "Dashboard",
-                IconKey = "HomeIcon",
-                Tag = typeof(IDashboardView)
-            },
-            new()
-            {
-                NavHeader = "Profiles",
-                IconKey = "ContactIcon",
-                Tag = typeof(IProjectsView)
-            },
-            new()
-            {
-                NavHeader = "Automation",
-                IconKey = "AutomationIcon",
-                Tag = typeof(IAutomationView)
-            },
-            new()
-            {
-                NavHeader = "Settings",
-                IconKey = "SettingsIcon",
-                ShowsInFooter = true,
-                Tag = typeof(ISettingsView)
-            }
-        ];
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
+    readonly Dictionary<string, MainPageModelBase> pages = new List<MainPageModelBase>
+    {
+        new MainPageModelBase
+        {
+            NavHeader = "Dashboard",
+            IconKey = "HomeIcon",
+            Tag = typeof(IDashboardView)
+        },
+        new MainPageModelBase
+        {
+            NavHeader = "Profiles",
+            IconKey = "ContactIcon",
+            Tag = typeof(IProjectsView)
+        },
+        new MainPageModelBase
+        {
+            NavHeader = "Automation",
+            IconKey = "AutomationIcon",
+            Tag = typeof(IAutomationView)
+        },
+        new MainPageModelBase
+        {
+            NavHeader = "Settings",
+            IconKey = "SettingsIcon",
+            ShowsInFooter = true,
+            Tag = typeof(ISettingsView)
+        }
+#pragma warning disable CS8621 // Nullability of reference types in return type doesn't match the target delegate (possibly because of nullability attributes).
+    }.ToDictionary(page => page.NavHeader, page => page);
+#pragma warning restore CS8621 // Nullability of reference types in return type doesn't match the target delegate (possibly because of nullability attributes).
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
 
 }
