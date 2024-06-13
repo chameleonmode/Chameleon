@@ -502,7 +502,7 @@ public partial class InviteUserOrAddProfilesViewModel : ObservableObjectBase,
             .Select(a => a.UserFolder)
             .ToList();
 
-        var folderPermissionIds = _selectedFolderPermissionViewModels?
+        var folderPermissionIds = FolderPermissionViewModels?
             .Select(a => a.PermissionId)
             .ToList();
 

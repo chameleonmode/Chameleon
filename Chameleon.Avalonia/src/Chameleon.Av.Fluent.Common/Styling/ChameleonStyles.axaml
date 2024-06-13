@@ -277,4 +277,12 @@
 			</Template>
 		</Setter>
 	</Style>
+	
+	<!--TextBlock-->
+	<Style Selector="TextBlock.NoWrap">
+		<Setter Property="ToolTip.Tip" Value="{Binding $self.Text}" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="TextWrapping" Value="NoWrap" />
+		<Setter Property="Margin" Value="6" />
+	</Style>
 </Styles>
