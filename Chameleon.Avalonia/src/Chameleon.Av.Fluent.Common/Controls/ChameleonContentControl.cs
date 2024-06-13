@@ -4,8 +4,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Rendering.Composition.Animations;
 using Avalonia.Rendering.Composition;
-using Avalonia.Controls.Templates;
-using FluentAvalonia.UI.Controls;
+using Chameleon.Avalonia.Fluent.Common.Base;
 
 namespace Chameleon.Av.Fluent.Common.Controls;
 
@@ -28,6 +27,15 @@ public class ChameleonContentControl : HeaderedContentControl
 
     public static readonly StyledProperty<object> TitleContentProperty =
         AvaloniaProperty.Register<ChameleonContentControl, object>(nameof(TitleContent));
+
+    public static readonly StyledProperty<string> IconShevronProperty =
+       AvaloniaProperty.Register<ChameleonContentControl, string>(nameof(IconShevron));
+
+    public string IconShevron
+    {
+        get => GetValue(IconShevronProperty);
+        set => SetValue(IconShevronProperty, value);
+    }
 
     public string? Title
     {
@@ -67,6 +75,20 @@ public class ChameleonContentControl : HeaderedContentControl
     public ChameleonContentControl()
     {
         PseudoClasses.Add(":optionsfull");
+
+        AttachedToVisualTree += OnAttachedToVisualTree;
+    }
+
+    private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        var window = VisualRoot as Window;
+        if (window == null)
+        {
+            return;
+        }
+        window
+            .GetObservable(Window.ClientSizeProperty)
+            .Subscribe(OnWindowSizeChanged);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -78,6 +100,17 @@ public class ChameleonContentControl : HeaderedContentControl
 
         _expandOptionsButton = e.NameScope.Find<Button>("ShowHideOptionsButton");
         _expandOptionsButton.Click += OnExpandOptionsClick;
+    }
+
+    private void OnWindowSizeChanged(Size newSize)
+    {
+        bool isWindowChange = newSize.Width < ResponsiveConstants.MaxWindowWidth1060;
+
+        _expandOptionsButton?.SetValue(IsVisibleProperty, isWindowChange);
+
+        IsOptionsExpanded = !isWindowChange;
+
+        UpdateIcon();
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -146,6 +179,13 @@ public class ChameleonContentControl : HeaderedContentControl
     private void OnExpandOptionsClick(object sender, RoutedEventArgs e)
     {
         IsOptionsExpanded = !IsOptionsExpanded;
+
+        UpdateIcon();
+    }
+
+    private void UpdateIcon()
+    {
+        IconShevron = IsOptionsExpanded ? "ChevronUp" : "ChevronDown";
     }
 
     private Button _expandOptionsButton;

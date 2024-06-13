@@ -395,6 +395,7 @@ public partial class UserProfilesViewModel
         OnHandleUserEvent();
     }
 
+    
     [RelayCommand]
     private void RemoveProfilesFromFolder()
     {

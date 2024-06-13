@@ -153,15 +153,12 @@ public partial class AssistantUsersViewModel
             new AssistantUserViewModel
                 (userAssistant,
                 _userAssistantService,
-                EventAggregator,
-                // _unshareProfilePopupView,
-                //_dialogWindowsService,
-                // _inviteUserOrAddProfilesPopupService,
-                // _deleteAssistantUserPopupView,
                 _shareFoldersService,
                 _toastNotificationService,
-                _userProfileService)
-            );
+                _userProfileService));
+
+        foreach (var a in _mapping)
+            await a.InvokeInitializeAsyncCommand();
 
         OnPropertyChanged(nameof(ViewModels));
     }
@@ -206,7 +203,6 @@ public partial class AssistantUsersViewModel
         var assistantUserViewModel = new AssistantUserViewModel(
             userAssistant,
             _userAssistantService,
-            EventAggregator,
             _shareFoldersService,
             _toastNotificationService,
             _userProfileService);
