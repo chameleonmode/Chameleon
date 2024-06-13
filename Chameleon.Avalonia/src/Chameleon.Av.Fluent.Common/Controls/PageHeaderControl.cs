@@ -95,7 +95,7 @@ public class PageHeaderControl : TemplatedControl
         _fontIcon.Glyph = TextType switch
         {
             PageHeaderTextType.Dashboard => "Dashboard",
-            PageHeaderTextType.Profiles => "Profiles & Folders",
+            PageHeaderTextType.Profiles => "Profiles & Folders",   //removed  & Folders might feel better
             PageHeaderTextType.Settings => "Settings",
             _ => "Chameleon"
         };

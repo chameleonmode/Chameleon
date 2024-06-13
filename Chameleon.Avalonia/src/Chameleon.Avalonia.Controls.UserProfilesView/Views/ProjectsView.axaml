@@ -31,8 +31,7 @@
 				</afv:PageHeaderControl.ContentObject>
 			</afv:PageHeaderControl>
 
-			<Grid Grid.Row="1"
-				  Margin="{StaticResource ChameleonAppPageMargin}">
+			<Grid Margin="{StaticResource ChameleonAppPageMargin}">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*"/>
