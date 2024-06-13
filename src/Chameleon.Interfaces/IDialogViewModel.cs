@@ -2,5 +2,5 @@
 
 public interface IContentDialogViewModel:IPageViewModel
 {
-    void OnDialogClosing(IContentDialogResult result);
+     void OnDialogClosing(IContentDialogResult result);
 }
