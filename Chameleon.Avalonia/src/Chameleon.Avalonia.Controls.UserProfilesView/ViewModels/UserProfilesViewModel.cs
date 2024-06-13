@@ -383,11 +383,12 @@ public partial class UserProfilesViewModel
         OnHandleUserEvent();
     }
 
+    
     [RelayCommand]
     private void RemoveProfilesFromFolder()
     {
-        if (_folder.Id == 0 || 
-            _selectedProfiles == null || 
+        if (_folder.Id == 0 ||
+            _selectedProfiles == null ||
             !_selectedProfiles.Any())
         {
             return;

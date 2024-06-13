@@ -23,10 +23,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Base\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj" />
 	  <ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
 	  <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
