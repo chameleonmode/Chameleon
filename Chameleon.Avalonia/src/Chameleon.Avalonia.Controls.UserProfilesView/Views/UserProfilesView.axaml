@@ -68,6 +68,15 @@
 				<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
 					<HeaderedContentControl.Header>
 						<StackPanel Orientation="Horizontal">
+
+							<Button
+								Content="play"
+								Tag="Automate"
+								ToolTip.Tip="Run Automate"
+								Command="{Binding OpenAutomationCommand}"
+								Theme="{StaticResource SvgIconTextButton}"
+								Margin="4 0 0 0"/>
+							
 							<Button
 								Content="chrome"
 								ToolTip.Tip="Open In System Chrome"

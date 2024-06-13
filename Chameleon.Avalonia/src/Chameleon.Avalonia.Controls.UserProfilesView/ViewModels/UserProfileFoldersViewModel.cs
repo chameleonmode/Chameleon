@@ -5,13 +5,10 @@ using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.UserProfileFolders;
-using Chameleon.Prism.Events;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.UserProfiles;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.Interfaces.UserProfiles;
-using Avalonia.Controls;
-using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.Common.Helpers;
 
@@ -25,6 +22,7 @@ public partial class UserProfileFoldersViewModel
     private readonly IAuthSession _authSession;
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IDialogWindowsService _dialogWindowsService;
+    private readonly IUserProfileService _userProfileService;
 
     private ObservableCollection<IUserProfileFolder, UserProfileFolderViewModel> _mapping;
 
@@ -32,13 +30,14 @@ public partial class UserProfileFoldersViewModel
         IAuthSession authSession,
         IUserProfileFolderService userProfileFolderService,
         IDialogWindowsService dialogWindowsService,
-        IApplicationUser currentUser
-        )
+        IApplicationUser currentUser,
+        IUserProfileService userProfileService)
     {
         _currentUser = currentUser;
         _authSession = authSession;
         _userProfileFolderService = userProfileFolderService;
         _dialogWindowsService = dialogWindowsService;
+        _userProfileService = userProfileService;
 
         //EventAggregator
         //    .GetEvent<LoginSuccessEvent>()
@@ -106,7 +105,7 @@ public partial class UserProfileFoldersViewModel
                 var folder = new UserProfileFolder { Title = "All profiles"};
                 _allProfiles = new UserProfileFolderViewModel(_currentUser,
                     folder,
-                    _userProfileFolderService,this
+                    _userProfileFolderService,this, _userProfileService
                     )
                 { IsFavoriteButtonVisible = false };
 
@@ -152,7 +151,8 @@ public partial class UserProfileFoldersViewModel
             folders, folder => new UserProfileFolderViewModel(_currentUser,
                 folder,
                 _userProfileFolderService,
-                this
+                this,
+                _userProfileService
                 )
             );
         _mapping.Insert(0, AllProfiles);

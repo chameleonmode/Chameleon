@@ -127,6 +127,8 @@ public class NavigationFactory : INavigationPageFactory
                 c = ContainerServiceHelper.Resolve<IDashboardView>() as Control;
             else if (t.NavHeader == "Profiles")
                 c = ContainerServiceHelper.Resolve<IProjectsView>() as Control;
+            else if (t.NavHeader == "Automation")
+                c = ContainerServiceHelper.Resolve<IProjectsView>() as Control;
             else if (t.NavHeader == "Settings")
                 c = ContainerServiceHelper.Resolve<ISettingsView>() as Control;
 

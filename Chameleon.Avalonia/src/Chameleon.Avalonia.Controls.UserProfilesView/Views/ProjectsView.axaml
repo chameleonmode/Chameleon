@@ -10,9 +10,9 @@
 			 x:DataType="vm:ProjectsViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.ProjectsView">
-	<ScrollViewer>
-		<StackPanel Spacing="-18">
-			<afv:PageHeaderControl TextType="Profiles"
+	<ScrollViewer Padding="12">
+		<StackPanel>
+			<afv:PageHeaderControl TextType="Profiles" 
 							 Classes="smallest">
 				<afv:PageHeaderControl.ContentObject>
 					<StackPanel Orientation="Horizontal">
@@ -30,7 +30,7 @@
 					</StackPanel>
 				</afv:PageHeaderControl.ContentObject>
 			</afv:PageHeaderControl>
-
+      
 			<Grid Margin="{StaticResource ChameleonAppPageMargin}">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />

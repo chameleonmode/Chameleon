@@ -2,32 +2,20 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
-using Chameleon.Av.Fluent.Common.Controls;
 using Chameleon.Av.Fluent.Common.Models;
 using Chameleon.Av.Fluent.Common.Pages;
 using Chameleon.Av.Fluent.Common.Services;
-using Chameleon.Av.Fluent.Common.Startup;
-using Chameleon.Av.Fluent.Dialogs;
 using Chameleon.Av.Fluent.ViewModels;
-using Chameleon.Avalonia.Controls.Dashboard.ViewModels;
-using Chameleon.Avalonia.Controls.Settings.ViewModels;
-using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
-using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces;
+using Chameleon.Interfaces.App.Automation.Views;
 using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.Startup;
-using Chameleon.Interfaces.UserProfiles;
-using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Navigation;
@@ -282,6 +270,12 @@ public partial class MainView : UserControl
                 NavHeader = "Profiles",
                 IconKey = "ContactIcon",
                 Tag = typeof(IProjectsView)
+            },
+            new()
+            {
+                NavHeader = "Automation",
+                IconKey = "AutomationIcon",
+                Tag = typeof(IAutomationView)
             },
             new()
             {

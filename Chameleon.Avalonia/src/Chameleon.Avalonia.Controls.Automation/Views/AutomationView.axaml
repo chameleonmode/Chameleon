@@ -1,0 +1,127 @@
+<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignWidth="800"
+	d:DesignHeight="450"
+	xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+	xmlns:ui="using:FluentAvalonia.UI.Controls"
+	xmlns:vm="using:Chameleon.Avalonia.Controls.Automation.ViewModels"
+	x:DataType="vm:AutomationViewModel"
+	xmlns:paginator="using:Chameleon.Avalonia.Controls.Paginator"
+	xmlns:converter="using:Chameleon.Common.ValueConverters"
+	xmlns:local="clr-namespace:Chameleon.Avalonia.Controls.Automation.Views"
+	x:CompileBindings="True"
+	x:Class="Chameleon.Avalonia.Controls.Automation.Views.AutomationView">
+
+	<ScrollViewer>
+		<Grid
+			RowDefinitions="Auto,Auto,*"
+			Margin="0">
+
+			<!-- Header -->
+			<afv:PageHeaderControl
+				Grid.Row="0"
+				Margin="12 12 12 0"
+				TextType="Automation"
+				Classes="smallest">
+			</afv:PageHeaderControl>
+
+			<!-- Content -->
+			<afv:ChameleonContentControl
+				Grid.Row="1"
+				Margin="12 0 12 12"
+				Title="{Binding Title}"
+				TitleDescription="{Binding TotalCount, StringFormat='You have {0} scripts.'}">
+
+				<afv:ChameleonContentControl.TitleContent>
+					<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
+				</afv:ChameleonContentControl.TitleContent>
+
+				<afv:ChameleonContentControl.Content>
+
+					<!-- ListBox with ViewModel items -->
+					<ListBox
+						Name="lbProfiles"
+						ItemsSource="{Binding ViewModels}"
+						Theme="{StaticResource ListBoxNoScroller}"
+						ItemContainerTheme="{StaticResource GridViewItem}"
+						Grid.Row="1">
+						<ListBox.ItemsPanel>
+							<ItemsPanelTemplate>
+								<UniformGrid Columns="1"/>
+							</ItemsPanelTemplate>
+						</ListBox.ItemsPanel>
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="0.5*"/>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="50"/>
+									</Grid.ColumnDefinitions>
+
+									<!-- Title -->
+									<TextBlock
+										Grid.Column="0"
+										Text="{Binding Title}"
+										ToolTip.Tip="{Binding Title}"
+										VerticalAlignment="Center"
+										HorizontalAlignment="Left"
+										FontSize="14"
+									    Theme="{StaticResource BodyStrongTextBlockStyle}"
+										TextTrimming="CharacterEllipsis"
+										TextWrapping="NoWrap"
+										Margin="5 5 10 5"/>
+
+									<!-- Description -->
+									<TextBlock
+										Grid.Column="1"
+										Text="{Binding Description}"
+										ToolTip.Tip="{Binding Description}"
+										VerticalAlignment="Center"
+										Foreground="#8094AE"
+									    Theme="{StaticResource BodyStrongTextBlockStyle}"
+										Margin="10 5 5 5"
+										TextTrimming="CharacterEllipsis"
+										TextWrapping="NoWrap"/>
+
+									<!-- PopUp Buttom -->
+									<Button 
+										Grid.Column="2"
+										Command="{Binding OpenParamsPopupCommand}"
+										CommandParameter="{Binding Id}"
+										IsVisible="{Binding IsHasParameter}"
+										ToolTip.Tip="Set Parameters"
+										Content="three-dots"
+										Theme="{DynamicResource SvgIconButton}">
+									</Button>
+									
+								</Grid>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+
+				</afv:ChameleonContentControl.Content>
+
+			</afv:ChameleonContentControl>
+
+			<!-- Footer -->
+			<StackPanel
+				Grid.Row="2"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center">
+				<TextBlock
+					FontSize="18"
+					TextAlignment="Center"
+					HorizontalAlignment="Center">
+					More pre-installed and custom
+					<LineBreak/>
+					automations coming soon
+				</TextBlock>
+			</StackPanel>
+		</Grid>
+	</ScrollViewer>
+</UserControl>

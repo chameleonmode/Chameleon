@@ -12,6 +12,7 @@ public enum PageHeaderTextType
 {
     Dashboard,
     Profiles,
+    Automation,
     Main,
     CoreControls,
     FAControls,
@@ -95,7 +96,8 @@ public class PageHeaderControl : TemplatedControl
         _fontIcon.Glyph = TextType switch
         {
             PageHeaderTextType.Dashboard => "Dashboard",
-            PageHeaderTextType.Profiles => "Profiles & Folders",   //removed  & Folders might feel better
+            PageHeaderTextType.Automation => "Automation",
+            PageHeaderTextType.Profiles => "Profiles & Folders",   //removeing  & Folders might feel better should test out in future
             PageHeaderTextType.Settings => "Settings",
             _ => "Chameleon"
         };

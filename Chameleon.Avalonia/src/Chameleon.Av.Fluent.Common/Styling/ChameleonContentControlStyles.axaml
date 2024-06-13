@@ -372,9 +372,8 @@
 					<!-- Content Area -->
 					<Border Name="ControlPreviewAreaHost"
 								 Grid.Row="1"
-								 Margin="6 0"
 							BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-							BorderThickness="1"
+							BorderThickness="0"
 							Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
 							TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 							CornerRadius="{DynamicResource OverlayCornerRadius}">
@@ -571,7 +570,7 @@
 		<Style Selector="^:mediumWidth">
 			<Style Selector="^ /template/ ContentPresenter#ContentsPresenter">
 				<Setter Property="Grid.ColumnSpan" Value="2" />
-				<Setter Property="Padding" Value="12 24 12 12" />
+				<!--<Setter Property="Padding" Value="12 24 12 12" />-->
 			</Style>
 
 			<Style Selector="^ /template/ Border#OptionsHost">
