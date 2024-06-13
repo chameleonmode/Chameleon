@@ -104,21 +104,6 @@ public partial class MainView : UserControl
 
         Dispatcher.UIThread.Post(() =>
         {
-            //foreach (var page in pages)
-            //{
-            //    var nvi = new NavigationViewItem
-            //    {
-            //        Content = page.NavHeader,
-            //        Tag = page,
-            //        IconSource = (IconSource)this.FindResource(page.IconKey),
-            //    };
-            //    nvi.Classes.Add("SampleAppNav");
-
-            //    if (page.ShowsInFooter)
-            //        footeritems.Add(nvi);
-            //    else
-            //        headeritems.Add(nvi);
-            //}
             NavView.MenuItemsSource = pages.Where(p=> !p.ShowsInFooter).Select(a => a.GetNavigationViewItemBase(this)).ToList(); 
             NavView.FooterMenuItemsSource = pages.Where(p => p.ShowsInFooter).Select(a => a.GetNavigationViewItemBase(this)).ToList(); 
 
@@ -181,26 +166,6 @@ public partial class MainView : UserControl
             NavView.SelectedItem = nvi;
             SetNVIIcon(nvi, true);
         }
-        //object? dc = page.DataContext;
-
-        //string mainPage = null;
-
-        //if (dc.GetType() == typeof(DashboardViewModel))
-        //{
-        //    mainPage = "Dashboard";
-        //}
-        //else if (dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.UserProfilesView") || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.UserProfileView"))
-        //{
-        //    mainPage = "Profiles";
-        //}
-        //else if (dc.GetType() == typeof(SettingsViewModel))//TODO: || dc.GetType().FullName.Contains("Chameleon.Avalonia.Controls.Settings"))
-        //{
-        //    mainPage = "Settings";
-        //}
-
-        //SetNVI((List<NavigationViewItemBase>)NavView.MenuItemsSource, mainPage);
-        //SetNVI((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource, mainPage);
-
 
         if (FrameView.BackStackDepth > 0 && !NavView.IsBackButtonVisible)
         {
@@ -211,21 +176,6 @@ public partial class MainView : UserControl
             AnimateContentForBackButton(false);
         }
     }
-
-    //void SetNVI(List<NavigationViewItemBase> source, string mainPage)
-    //{
-    //    foreach (NavigationViewItem nvi in source)
-    //    {
-    //        var set = false;
-    //        if (nvi.Content is string t && t == mainPage)
-    //        {
-    //            set = true;
-    //            NavView.SelectedItem = nvi;
-    //        }
-    //        SetNVIIcon(nvi, set);
-    //    }
-    //}
-
     private void SetNVIIcon(NavigationViewItem item, bool selected)
     {
         // Technically, yes you could set up binding and converters and whatnot to let the icon change

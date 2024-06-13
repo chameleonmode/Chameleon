@@ -65,8 +65,4 @@
     <ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
     <ProjectReference Include="..\Chameleon.Controls.Settings\Chameleon.Avalonia.Controls.Settings.csproj" />
   </ItemGroup>
-	
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
 </Project>

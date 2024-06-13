@@ -5,6 +5,7 @@ using Chameleon.Common.Helpers;
 using Chameleon.Controls.AssistantUsers.Interfaces;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
+using Chameleon.Core.Extensions;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Profiles;
@@ -382,11 +383,12 @@ public partial class UserProfilesViewModel
         OnHandleUserEvent();
     }
 
+    
     [RelayCommand]
     private void RemoveProfilesFromFolder()
     {
-        if (_folder.Id == 0 || 
-            _selectedProfiles == null || 
+        if (_folder.Id == 0 ||
+            _selectedProfiles == null ||
             !_selectedProfiles.Any())
         {
             return;
@@ -644,6 +646,7 @@ public partial class UserProfilesViewModel
 
         OnPropertyChanged(nameof(ViewModels));
         OnPropertyChanged(nameof(IsProfilesExist));
+        OnPropertyChanged(nameof(HasNoItems));
     }
 
     private bool FilterByFolder(IUserProfile profile, bool hasSearchText, bool isInCurrentFolder, string searchText)
@@ -680,7 +683,7 @@ public partial class UserProfilesViewModel
             if (p.FolderId is int fid && fid != 0)
                 ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().SetSelectedById(fid);
             else
-                ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null); 
+               await ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null); 
             
             Filter = profile => p.Id == profile.Id;
         }
@@ -688,6 +691,7 @@ public partial class UserProfilesViewModel
         {
             //Filter = profile => 0 == profile.Id;
             ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().SetSelectedById(0);
+            Filter = null;
             //ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
         }
 
@@ -702,6 +706,7 @@ public partial class UserProfilesViewModel
 
     public bool IsProfilesExist => _mapping?.Any() == true;
     public bool HasNoItems => 
+        !SearchText.HasAny() &&
         ViewModels == null ||
         ViewModels.Count == 0; 
 }

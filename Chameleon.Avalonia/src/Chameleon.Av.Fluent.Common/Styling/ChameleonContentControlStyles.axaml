@@ -1,7 +1,9 @@
-<ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
-		xmlns:ui="using:FluentAvalonia.UI.Controls">
+<ResourceDictionary 
+	xmlns="https://github.com/avaloniaui"              
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
+	xmlns:ui="using:FluentAvalonia.UI.Controls">
+
 	<Design.PreviewWith>
 		<StackPanel>
 			<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
@@ -64,7 +66,7 @@
 											Command="{Binding AddProfilesToFolderCommand}"
 											IsEnabled="{Binding IsAddProfilesToFolderCommandEnabled}" />
 									<Button Content="minus-in-circle"
-											Tag="Remove profile"
+											Tag="Remove profile!!!"
 											Theme="{StaticResource SvgIconTextButton}"
 											Margin="4 0 0 0"
 											Command="{Binding RemoveProfilesFromFolderCommand}" />
@@ -444,20 +446,21 @@
 										</Border.Transitions>
 										<StackPanel>
 											<DockPanel LastChildFill="False">
-												<TextBlock Text="Options"
-														   DockPanel.Dock="Left"
-														   HorizontalAlignment="Left"
-														   VerticalAlignment="Center"
-														   FontWeight="SemiBold"
-														   Margin="0 3 0 0" />
+												<TextBlock
+													Text="Options"
+													DockPanel.Dock="Left"
+													HorizontalAlignment="Left"
+													VerticalAlignment="Center"
+													FontWeight="SemiBold"
+													Margin="0 3 0 0" />
 
-												<Button Name="ShowHideOptionsButton"
-														Theme="{StaticResource TransparentButton}"
-														DockPanel.Dock="Right"
-														Margin="6 0 0 0"
-														IsVisible="False">
-													<ui:SymbolIcon Name="OptionsChevron"
-																   Symbol="ChevronDown" />
+												<Button
+													Name="ShowHideOptionsButton"
+													Theme="{StaticResource TransparentButton}"
+													DockPanel.Dock="Right"
+													Margin="6 0 0 0"
+													IsVisible="False">
+													<ui:SymbolIcon Symbol="{TemplateBinding IconShevron}" />
 												</Button>
 											</DockPanel>
 											<ContentPresenter Name="OptionPresenter"
@@ -637,24 +640,25 @@
 					BoxShadow="0 8 32 0 #66000000">
 					<Grid Margin="24 0"
 						 ColumnDefinitions="*,Auto">
-						<TextBlock 
-								   VerticalAlignment="Center">
+						<TextBlock VerticalAlignment="Center">
 							<Run Text="{Binding SelectedCount}" />
 							<Run Text=" Selected" />
 						</TextBlock>
-
+						
 						<StackPanel Orientation="Horizontal"
 									Grid.Column="1">
-							<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-									Margin="18 6"
-									BorderThickness="1 0 0 0" />
+							<Border 
+								BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+								Margin="18 6"
+								BorderThickness="1 0 0 0"
+								IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
 							<ContentPresenter Content="{TemplateBinding Header}" />
 
 							<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
 									Margin="18 6"
 									BorderThickness="1 0 0 0" />
-<!--TextElement.Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"-->
+							
 							<Button Theme="{StaticResource TransparentButton}"
 									Classes="accent"
 									Content="Unselect"

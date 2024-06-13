@@ -8,7 +8,7 @@
 		  <AutoCompleteBox Name="SearchBox"
 				   MaxWidth="500"
 				   Watermark="Search"
-				   Classes="SampleApp">
+				   Classes="MainSearchBox">
 		  </AutoCompleteBox>
 		  
 	  <Border Background="LightBlue"
@@ -256,20 +256,23 @@
 	</Style>
 
 	<!-- AutoCompleteBox Search box in MainView $parent[TextBox].Clear-->
-	<Style Selector="AutoCompleteBox.SampleApp /template/ TextBox#PART_TextBox">
+	<Style Selector="AutoCompleteBox.MainSearchBox /template/ TextBox#PART_TextBox">
 		<Setter Property="InnerRightContent">
 			<Template>
 				<StackPanel Orientation="Horizontal">
-					<Button Content="&#xE8BB;"
+					<Button
+						Content="&#xE8BB;"
                                FontFamily="{StaticResource SymbolThemeFontFamily}"
                                Theme="{StaticResource TransparentButton}"
                                Command="{Binding ClearSearchCommand}"
                                IsVisible="{Binding Text, RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-					<Button Content="&#xE721;"
-                               FontFamily="{StaticResource SymbolThemeFontFamily}"
-                               Theme="{StaticResource TransparentButton}"
-                               Command="{Binding $parent[TextBox].Clear}"
-                               IsHitTestVisible="False"/>
+					<Button 
+						Content="&#xE721;"
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        Theme="{StaticResource TransparentButton}"
+                        Command="{Binding ClickSearchCommand}"
+						CommandParameter="{Binding Text, RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}}"
+                        IsHitTestVisible="True"/>
 				</StackPanel>
 			</Template>
 		</Setter>

@@ -12,6 +12,7 @@ using Chameleon.Interfaces.Proxies;
 using Chameleon.Interfaces.ProxyCredit;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfiles;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ExCSS;
 
@@ -25,6 +26,28 @@ public partial class ProxyCreditViewModel
     private readonly IProxyCreditService _proxyCreditService;
     private readonly IProxyAccessViewModels _proxyAccessViewModels;
     private readonly IToastNotificationService _toastNotificationService;
+
+    [ObservableProperty]
+    public CreditPlans _creditPlans;
+
+    [ObservableProperty]
+    private CreditPlan.CreditPlan _selectedCreditPlan;
+
+    [ObservableProperty]
+    private bool _hasSelectedCreditPlan;
+
+    [ObservableProperty]
+    private int _countProxies;
+
+    [ObservableProperty]
+    private bool _isGettingAccess;
+
+    [ObservableProperty]
+    private bool _isGettingBallance;
+
+    public List<int> CountsProxies { get; } = [5, 10, 100, 500];
+    public string Balance => $"${_balanceAmount}";
+
     public ProxyCreditViewModel(
         IProxyService proxyService,
         IProxyCreditService proxyCreditService,
@@ -49,9 +72,9 @@ public partial class ProxyCreditViewModel
         if (Loaded)
             return;
 
-        await InitializeBalanceAsync();
+        await UpdateBalanceAsync();
         await InitializeCountriesAsync();
-        InitializeCreditPlans();    
+        CreditPlans = new CreditPlans(EventAggregator);
 
         EventAggregator
             .GetEvent<SelectedCreditPlanEvent>()
@@ -60,39 +83,12 @@ public partial class ProxyCreditViewModel
         OnPropertyChanged(string.Empty);
     }
 
-    private const string ClipboardText = "Copied to clipboard";
-   [RelayCommand]
-    public async Task CopyAllUrls()
-    {
-        var list = Access.Select(a => a.Url);
-        await ClipboardService.Instance.SetTextAsync(string.Join("\n", list));
-        _toastNotificationService.ShowSuccess(ClipboardText);
-    }
-
-    private void InitializeCreditPlans()
-    {
-        CreditPlans = new CreditPlans(EventAggregator);
-    }
-
-    private async Task InitializeBalanceAsync()
-    {
-        BalanceAmount = await Task.Run(GetBalance);
-    }
-
-    private decimal GetBalance()
-    {
-        return _proxyCreditService
-            .GetCredits()
-            .Amount;
-    }
-
     private Task InitializeCountriesAsync()
     {
         Countries = new AsyncCollectionViewModel<IProxyCountry>(GetCountries, true);
         Countries.Clear();
         return Countries.Load();
-    }
-
+    }     
     private IList<IProxyCountry> GetCountries()
     {
         var countries = _proxyService.GetCountries();
@@ -100,88 +96,68 @@ public partial class ProxyCreditViewModel
         return countries;
     }
 
-    private decimal _balanceAmount;
-    public decimal BalanceAmount
+    [RelayCommand]
+    public async Task CopyAllUrls()
     {
-        get => _balanceAmount;
-        set
-        {
-            if (SetProperty(ref _balanceAmount, value))
-            {
-                OnPropertyChanged(nameof(Balance));
-            }
-        }
+        var list = Access.Select(a => a.Url);
+        await ClipboardService.Instance.SetTextAsync(string.Join("\n", list));
     }
-
-    public string Balance => $"${_balanceAmount}";
 
     [RelayCommand]
-    private void PurchaseCredit()
-    {
+    private async Task PurchaseCredit()
+    {                      
+        if (!HasSelectedCreditPlan)
+        {
+            return;
+        }
         IsLoadingIndicatorVisible = true;
-        DispatcherService.InvokeOnUiThreadAsync(BuyCredits, null,
-            () => IsLoadingIndicatorVisible = false);
+        await MakePaymentAsync();
+        IsLoadingIndicatorVisible = false;
     }
 
+    [ObservableProperty]
     private bool _isLoadingIndicatorVisible;
-    public bool IsLoadingIndicatorVisible
-    {
-        get => _isLoadingIndicatorVisible;
-        set => SetProperty(ref _isLoadingIndicatorVisible, value);
-    }
 
     private void OnSelectedCreditPlan(SelectedCreditPlanEventArgs args)
     {
         SelectedCreditPlan = CreditPlans.First(a => a.IsChecked);
         HasSelectedCreditPlan = true;
-
-        OnPropertyChanged(nameof(SelectedCreditPlan));
-        OnPropertyChanged(nameof(HasSelectedCreditPlan));
-    }
-
-    public CreditPlans _creditPlans;
-    public CreditPlans CreditPlans
-    {
-        get => _creditPlans;
-        set => SetProperty(ref _creditPlans, value);
-    }
-
-    private CreditPlan.CreditPlan _selectedCreditPlan;
-    public CreditPlan.CreditPlan SelectedCreditPlan
-    {
-        get => _selectedCreditPlan;
-        set => SetProperty(ref _selectedCreditPlan, value);
-    }
-
-    private bool _hasSelectedCreditPlan;
-    public bool HasSelectedCreditPlan
-    {
-        get => _hasSelectedCreditPlan;
-        set => SetProperty(ref _hasSelectedCreditPlan, value);
-    }
-
-    private void BuyCredits()
-    {
-        if (!HasSelectedCreditPlan)
-        {
-            return;
-        }
-        PurchaseCredits();
-    }
-
-    private void PurchaseCredits()
-    {
-        MakePaymentAsync();
     }
 
     [RelayCommand]
-    private void Refresh()
+    private async Task Refresh()
     {
-        UpdateBalance();
-        UpdateProxyAccessAsync();
+        await UpdateBalanceAsync();
+    }
+    [RelayCommand]
+    private async Task RefreshProxies()
+    {
+        await UpdateProxyAccessAsync();
     }
 
-    private void MakePaymentAsync()
+    [RelayCommand]
+    private async Task RefreshProxiesCount()
+    {
+        var currentCount = _proxyAccessViewModels.Count;
+        _access = null;
+
+        if (currentCount > CountProxies)
+        {
+            while (_proxyAccessViewModels.Count > CountProxies)
+                _proxyAccessViewModels.RemoveAt(_proxyAccessViewModels.Count - 1);
+        }
+        else
+        {
+            _proxyAccessViewModels.AddItems(CountProxies - currentCount);
+            await UpdateProxyAccessAsync();
+        }
+
+
+        OnPropertyChanged(nameof(Access));
+    }
+
+
+    private async Task MakePaymentAsync()
     {
         IProxyCreditOrder proxyCreditOrder;
         IsLoadingIndicatorVisible = true;
@@ -192,8 +168,8 @@ public partial class ProxyCreditViewModel
                 Amount = SelectedCreditPlan.Amount
             };
 
-            proxyCreditOrder = _proxyCreditService
-                .CreateOrder(request);
+            proxyCreditOrder = await Task.Run(
+                () => _proxyCreditService.CreateOrder(request));
         }
         finally
         {
@@ -203,18 +179,41 @@ public partial class ProxyCreditViewModel
         Core.Util.ProcessesUtil.GoToUrlDefault(proxyCreditOrder.Url);
     }
 
-    private void UpdateBalance()
+    private async Task UpdateBalanceAsync()
     {
         IsGettingBallance = true;
 
-        DispatcherService.InvokeOnUiThreadAsync(UpdateBalanceAsync,
-            null, () => IsGettingBallance = false);
+        BalanceAmount = await Task.Run(
+        () => _proxyCreditService.GetCredits().Amount);
+
+        IsGettingBallance = false;
     }
 
-    private void UpdateBalanceAsync()
+    private async Task UpdateProxyAccessAsync()
     {
-        var newBalanceAmount = GetBalance();
-        BalanceAmount = newBalanceAmount;
+        IsGettingAccess = true;
+
+        var request = new ProxyAccessRequestDto
+        {
+            HostType = ProxyHostType.Hostname,
+            IpType = ProxyIpType.Sticky,
+            ProtocolType = ProxyProtocolType.Http,
+            Count = _proxyAccessViewModels.Count,
+        };
+
+        var urls = await Task.Run(() => {
+            return _proxyService
+            .GetAccess(request)
+            .Select(access => access.Url)
+            .ToList();
+        });
+
+        for (var i = 0; i < urls.Count; ++i)
+        {
+            _proxyAccessViewModels[i].Url = urls[i];
+        }
+
+        IsGettingAccess = false;
     }
 
     private ObservableCollectionView<ProxyAccessViewModel> _access;
@@ -230,42 +229,8 @@ public partial class ProxyCreditViewModel
             return _access;
         }
     }
+
     public AsyncCollectionViewModel<IProxyCountry> Countries { get; private set; }
-
-    private int _countProxies;
-    public int CountProxies
-    {
-        get => _countProxies;
-        set
-        {
-            if (SetProperty(ref _countProxies, value))
-            {
-                DispatcherService.InvokeOnUiThreadAsync(UpdateProxiesListCountAsync);
-            }
-        }
-    }
-
-    public List<int> CountsProxies { get; } = new List<int>() { 5, 10, 100, 500 };
-
-    private void UpdateProxiesListCountAsync()
-    {
-        var currentCount = _proxyAccessViewModels.Count;
-        _access = null;
-
-        if (currentCount > _countProxies)
-        {
-            while (_proxyAccessViewModels.Count > _countProxies)
-             _proxyAccessViewModels.RemoveAt(_proxyAccessViewModels.Count - 1);
-        }
-        else
-        {
-            _proxyAccessViewModels.AddItems(_countProxies - currentCount);
-            UpdateProxyAccess();
-        }
-
-
-        OnPropertyChanged(nameof(Access));
-    }
 
     public IProxyCountry Country
     {
@@ -275,51 +240,21 @@ public partial class ProxyCreditViewModel
             if (_proxyService.CurrentCountry != value)
             {
                 _proxyService.CurrentCountry = value;
-                OnPropertyChanged();
-                UpdateProxyAccessAsync();
+                OnPropertyChanged(nameof(Country));
             }
         }
     }
 
-    private bool _isGettingAccess;
-    public bool IsGettingAccess
+    private decimal _balanceAmount;
+    public decimal BalanceAmount
     {
-        get => _isGettingAccess;
-        set => SetProperty(ref _isGettingAccess, value);
-    }
-
-    private bool _isGettingBallance;
-    public bool IsGettingBallance
-    {
-        get => _isGettingBallance;
-        set => SetProperty(ref _isGettingBallance, value);
-    }
-
-    private void UpdateProxyAccessAsync()
-    {
-        IsGettingAccess = true;
-        DispatcherService.InvokeOnUiThreadAsync(UpdateProxyAccess,
-            null, () => IsGettingAccess = false);
-    }
-
-    private void UpdateProxyAccess()
-    {
-        var request = new ProxyAccessRequestDto
+        get => _balanceAmount;
+        set
         {
-            HostType = ProxyHostType.Hostname,
-            IpType = ProxyIpType.Sticky,
-            ProtocolType = ProxyProtocolType.Http,
-            Count = _proxyAccessViewModels.Count,
-        };
-
-        var urls = _proxyService
-            .GetAccess(request)
-            .Select(access => access.Url)
-            .ToList();
-
-        for (var i = 0; i < urls.Count; ++i)
-        {
-            _proxyAccessViewModels[i].Url = urls[i];
+            if (SetProperty(ref _balanceAmount, value))
+            {
+                OnPropertyChanged(nameof(Balance));
+            }
         }
     }
 }

@@ -521,19 +521,20 @@ namespace Chameleon.SystemBrowser.Firefox
                 ["network.proxy.type"] = 1,
             };
 
-            if (UserProfile.Proxy.CanUse)
-            {
-                var host = UserProfile.Proxy.Host;
-                var port = UserProfile.Proxy.Port;
-                prefs["network.proxy.http"] = host;
-                prefs["network.proxy.http_port"] = port;
-                prefs["network.proxy.backup.http"] = host;
-                prefs["network.proxy.backup.http_port"] = port;
-                prefs["network.proxy.ssl"] = host;
-                prefs["network.proxy.ssl_port"] = port;
-                prefs["network.proxy.backup.ssl"] = host;
-                prefs["network.proxy.backup.ssl_port"] = port;
-            }
+            //commented out this still sometimes causes firefox system login popup window
+            //if (UserProfile.Proxy.CanUse)
+            //{
+            //    var host = UserProfile.Proxy.Host;
+            //    var port = UserProfile.Proxy.Port;
+            //    prefs["network.proxy.http"] = host;
+            //    prefs["network.proxy.http_port"] = port;
+            //    prefs["network.proxy.backup.http"] = host;
+            //    prefs["network.proxy.backup.http_port"] = port;
+            //    prefs["network.proxy.ssl"] = host;
+            //    prefs["network.proxy.ssl_port"] = port;
+            //    prefs["network.proxy.backup.ssl"] = host;
+            //    prefs["network.proxy.backup.ssl_port"] = port;
+            //}
 
             // Define a regular expression pattern to extract key-value pairs
             Regex regex = UserPrefRegex();
@@ -590,7 +591,8 @@ namespace Chameleon.SystemBrowser.Firefox
                 "-wait-for-browser",
                 //$"-new-window",
                 "-new-instance",
-                $"-url {Starturl}",
+                $"-url about:blank",//added for now to work around proxy refresh issue
+                //$"-url {Starturl}",
                 //$"-url \"{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}\"",
                 $"-profile \"{_browserProfileFolderPath}\"",
                 //"-no-remote"

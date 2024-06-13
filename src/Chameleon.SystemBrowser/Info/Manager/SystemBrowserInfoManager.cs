@@ -127,7 +127,8 @@ namespace Chameleon.SystemBrowser
                 .Where(info => info.Name.Contains(browserName, StringComparison.InvariantCultureIgnoreCase))
                 .FirstOrDefault();
 
-            return inf ?? throw new NotSupportedException(browserName);
+            return inf ?? throw new NotSupportedException(
+                $"{char.ToUpper(browserName[0]) + browserName.Substring(1)} browser is not installed.");
         }
     }
 }

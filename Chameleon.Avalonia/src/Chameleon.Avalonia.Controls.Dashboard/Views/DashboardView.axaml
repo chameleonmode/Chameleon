@@ -113,7 +113,6 @@
 									   HorizontalAlignment="Right"
 									   ItemsSource="{Binding Sorts}"
 									   SelectedItem="{Binding FolderSortSelected}"
-									   
 									   IsEditable="False"/>
 					</afv:ChameleonContentControl.Options>
 
