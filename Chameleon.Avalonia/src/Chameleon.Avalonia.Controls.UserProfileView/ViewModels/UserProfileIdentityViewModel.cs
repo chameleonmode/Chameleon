@@ -23,6 +23,8 @@ using Chameleon.Common.Helpers;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.Interfaces.WebBrowser;
+using Avalonia.Collections;
+using Chameleon.Interfaces;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 
@@ -38,11 +40,18 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     private readonly IAuthSession _authSession;
     private readonly IToastNotificationService _toastNotificationService;
     private readonly ISystemBrowserManager _systemBrowserManager;
+    private readonly Dictionary<string, Action> commandMap = [];
 
-    public bool HasNoItems => Persons?.Items?.Count > 0;
-    public bool HasNoBusinessItems => Businesses?.Items?.Count > 0;
-    public bool HasNoAddressesItems => Addresses?.Items?.Count > 0;
-    public bool HasNoLoginsItems => Logins?.Items?.Count > 0;
+    public AvaloniaList<CountryBindable> Countries { get; } = [];       
+    public AvaloniaList<UserProfilePersonBindable> Persons { get; } = [];
+    public AvaloniaList<UserProfileBusinessBindable> Businesses { get; } = [];
+    public AvaloniaList<UserProfileLoginBindable> Logins { get; } = [];
+    public AvaloniaList<UserProfileAddressBindable> Addresses { get; } = [];
+
+    public bool HasNoItems => Persons?.Count > 0;
+    public bool HasNoBusinessItems => Businesses?.Count > 0;
+    public bool HasNoAddressesItems => Addresses?.Count > 0;
+    public bool HasNoLoginsItems => Logins?.Count > 0;
 
     public UserProfileIdentityViewModel(
         IMapper mapper,
@@ -63,23 +72,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         _applicationUser = applicationUser;
         _authSession = authSession;
         _toastNotificationService = toastNotificationService;
-
-        Countries = new AsyncCollectionViewModel<CountryBindable>(() 
-            => _userProfileAdditionalDataService.GetCountries());
-
-        Persons = new AsyncCollectionViewModel<UserProfilePersonBindable>(()
-             => _userProfileAdditionalDataService.GetPersons(UserProfileModel.Id));
-
-        Addresses = new AsyncCollectionViewModel<UserProfileAddressBindable>(()
-            => _userProfileAdditionalDataService.GetAddresses(UserProfileModel.Id));
-
-        Logins = new AsyncCollectionViewModel<UserProfileLoginBindable>(()
-            => _userProfileAdditionalDataService.GetLogins(UserProfileModel.Id));
-
-        Businesses = new AsyncCollectionViewModel<UserProfileBusinessBindable>(()
-            => _userProfileAdditionalDataService.GetBusinesses(UserProfileModel.Id));
-
-        Addresses.Binded += Addresses_Binded;
 
         EventAggregator
              .GetEvent<SavedUserProfileEvent>()
@@ -118,6 +110,11 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         if (!Loaded)
         {                     
             OnAuthenticated();
+
+            commandMap["AddPerson"] = AddPerson;   
+            commandMap["AddBusiness"] = OnAddBusiness;
+            commandMap["AddAddress"] = OnAddAddress;
+            commandMap["AddLogin"] = OnAddLogin;
         }
     }
     public override async Task OnNavigatedToAsync(object? param)
@@ -179,6 +176,49 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         UserProfileModel = _mapper.Map<UserProfileBindable>(_userProfile);
     }
 
+    private async void BindUi()
+    {
+        if (UserProfileModel == null)
+        {
+            Persons.Clear();
+            Businesses.Clear();
+            Addresses.Clear();
+            Logins.Clear();
+            return;
+        }
+
+        ProfileVM = new UserProfilesView.ViewModels.UserProfileViewModel(
+                       _userProfileService,
+                       UserProfile,
+                       _applicationUser,
+                       _systemBrowserManager,
+                       false);
+
+        Countries.AddRange(await Task.Run(_userProfileAdditionalDataService.GetCountries));
+        Addresses.AddRange(await Task.Run(() => _userProfileAdditionalDataService.GetAddresses(UserProfileModel.Id)));
+        Persons.AddRange(await Task.Run(() => _userProfileAdditionalDataService.GetPersons(UserProfileModel.Id)));
+        Logins.AddRange(await Task.Run(() => _userProfileAdditionalDataService.GetLogins(UserProfileModel.Id)));
+        Businesses.AddRange(await Task.Run(() => _userProfileAdditionalDataService.GetBusinesses(UserProfileModel.Id)));
+
+        foreach (var a in Addresses)
+            a.SelectedCountry = Countries.FirstOrDefault(x => a?.CountryId == x.Id);
+
+        CollectionChanged(this, null);
+
+        Logins.CollectionChanged += CollectionChanged;
+        Persons.CollectionChanged += CollectionChanged;
+        Addresses.CollectionChanged += CollectionChanged;
+        Businesses.CollectionChanged += CollectionChanged;
+    }
+
+    private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(HasNoItems));
+        OnPropertyChanged(nameof(HasNoLoginsItems));
+        OnPropertyChanged(nameof(HasNoAddressesItems));
+        OnPropertyChanged(nameof(HasNoBusinessItems));
+    }
+
     #region UserProfile
 
     [ObservableProperty]
@@ -198,51 +238,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     }
 
     public int UserProfileId => _userProfile?.Id ?? 0;
-
-    private async void BindUi()
-    {
-        if (UserProfileModel == null)
-        {
-            Persons.Clear();
-            Businesses.Clear();
-            Addresses.Clear();
-            Logins.Clear();
-            return;
-        }
-
-        ProfileVM = new UserProfilesView.ViewModels.UserProfileViewModel(
-                       _userProfileService,
-                       UserProfile,
-                       _applicationUser,
-                       _systemBrowserManager,
-                       false);
-
-        await Task.WhenAll(Countries.Load(), Logins.Reload(), Persons.Reload(), Addresses.Reload(), Businesses.Reload());
-        SetVisible(true);
-    }
-
-    private void SetVisible(bool isVisible)
-    {
-        Logins.IsVisible = isVisible;
-        Persons.IsVisible = isVisible;
-        Addresses.IsVisible = isVisible;
-        Businesses.IsVisible = isVisible;
-
-        CollectionChanged(this, null);
-
-        Logins.Items.CollectionChanged += CollectionChanged;
-        Persons.Items.CollectionChanged += CollectionChanged;
-        Addresses.Items.CollectionChanged += CollectionChanged;
-        Businesses.Items.CollectionChanged += CollectionChanged;
-    }
-
-    private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        OnPropertyChanged(nameof(HasNoItems));
-        OnPropertyChanged(nameof(HasNoLoginsItems));
-        OnPropertyChanged(nameof(HasNoAddressesItems));
-        OnPropertyChanged(nameof(HasNoBusinessItems));
-    }
 
     private UserProfileBindable _userProfileModel;
     public UserProfileBindable UserProfileModel
@@ -320,7 +315,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
     private void OnSaveLogins()
     {
-        foreach (var item in Logins.Items)
+        foreach (var item in Logins)
         {
             if (!item.IsPropertyChanged)
             {
@@ -332,7 +327,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
     private void OnSavePersons()
     {
-        foreach (var item in Persons.Items)
+        foreach (var item in Persons)
         {
             if (!item.IsPropertyChanged)
             {
@@ -344,7 +339,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
     private void OnSaveAddresses()
     {
-        foreach (var item in Addresses.Items)
+        foreach (var item in Addresses)
         {
             if (!item.IsPropertyChanged)
             {
@@ -356,7 +351,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
     private void OnSaveBusinesses()
     {
-        foreach (var item in Businesses.Items)
+        foreach (var item in Businesses)
         {
             if (!item.IsPropertyChanged)
             {
@@ -372,6 +367,11 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
     #region Commands
 
+    [RelayCommand]
+    private void CfromV(string what)
+    {
+        commandMap[what]?.Invoke();
+    }
     private bool UserProfilesCmdCanExecute()
     {
         return UserProfileModel != null;
@@ -383,10 +383,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     }
     #endregion
 
-    public AsyncCollectionViewModel<CountryBindable> Countries { get; private set; }
-
     #region Persons
-    public AsyncCollectionViewModel<UserProfilePersonBindable> Persons { get; private set; }
 
     [RelayCommand]
     private void AddPerson()
@@ -396,7 +393,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             IsOpenSearchParameters = true
         };
 
-        foreach (var item in Persons.Items)
+        foreach (var item in Persons)
         {
             item.IsOpenSearchParameters = false;
         }
@@ -431,8 +428,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     }
     #endregion
 
-    #region Business
-    public AsyncCollectionViewModel<UserProfileBusinessBindable> Businesses { get; private set; }
+    #region Business                                                              
 
     [RelayCommand]
     private void OnAddBusiness()
@@ -442,7 +438,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             IsOpenSearchParameters = true
         };
 
-        foreach (var item in Businesses.Items)
+        foreach (var item in Businesses)
         {
             item.IsOpenSearchParameters = false;
         }
@@ -478,13 +474,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     #endregion
 
     #region Addresses
-    public AsyncCollectionViewModel<UserProfileAddressBindable> Addresses { get; private set; }
-
-    private void Addresses_Binded(object sender, EventArgs e)
-    {
-        Countries.IsVisible = true;
-    }
-
     [RelayCommand]
     private void OnAddAddress()
     {
@@ -493,7 +482,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             IsOpenSearchParameters = true
         };
 
-        foreach (var item in Addresses.Items)
+        foreach (var item in Addresses)
         {
             item.IsOpenSearchParameters = false;
         }
@@ -528,8 +517,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     }
     #endregion
 
-    #region Logins
-    public AsyncCollectionViewModel<UserProfileLoginBindable> Logins { get; private set; }
+    #region Logins     
 
     [RelayCommand]
     private void OnAddLogin()
@@ -539,7 +527,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             IsOpenSearchParameters = true
         };
 
-        foreach (var item in Logins.Items)
+        foreach (var item in Logins)
         {
             item.IsOpenSearchParameters = false;
         }

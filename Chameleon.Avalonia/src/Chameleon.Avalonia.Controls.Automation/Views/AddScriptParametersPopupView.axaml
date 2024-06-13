@@ -25,10 +25,11 @@
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="Auto"/>
 							</Grid.RowDefinitions>
+							<!--No Hard Coded Colors-->
 							<TextBlock
 								Grid.Row="0"
 								Text="{Binding Name}"
-								Foreground="#8094AE"
+								Foreground="#8094AE" 
 								Padding="0 5"/>
 							<TextBox
 								Grid.Row="1"
