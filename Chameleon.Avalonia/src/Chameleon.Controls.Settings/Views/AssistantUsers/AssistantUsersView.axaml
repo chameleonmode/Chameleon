@@ -57,81 +57,86 @@
 			</afv:ChameleonContentControl.Options>
 
 			<afv:ChameleonContentControl.Content>
-				<!--BorderBrush="{StaticResource InsertProfilesLine}"-->
 				<ItemsControl ItemsSource="{Binding ViewModels}">
-					<!--<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<UniformGrid  Columns="1" />
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>-->	
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<Grid ColumnDefinitions="0.8*,1.2*,3*,Auto,Auto">
-								<TextBlock 
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1.5*" />
+									<ColumnDefinition Width="4*" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+								<TextBlock
 									Text="{Binding Username,FallbackValue=username}"
 									Theme="{StaticResource BodyStrongTextBlockStyle}"
-									VerticalAlignment="Center"
-									Margin="6" />
-								
+									Classes="NoWrap" />
+
 								<TextBlock
 									Grid.Column="1"
-									Margin="6"
 									Text="{Binding Email,FallbackValue=email@email.com}"
 									Theme="{StaticResource BodyStrongTextBlockStyle}"
-									VerticalAlignment="Center" />
-								
-									<!--https://github.com/chameleonmode/Chameleon/issues/51
+									Classes="NoWrap" />
+
+								<!--https://github.com/chameleonmode/Chameleon/issues/51
 								<ItemsControl ItemsSource="{Binding FolderViewModels}"
 											  Padding="{DynamicResource CheckBoxPadding}"
 											  ItemTemplate="{StaticResource SelectedItemTemplate}"
 											  ItemsPanel="{StaticResource StackPanelTemplate}"/>-->
-								<ItemsControl 
-									Grid.Column="2" 
+								<ItemsControl
+									Grid.Column="2"
 									Margin="6"
 								    ItemsSource="{Binding ProfileViewModels}"
 								    Padding="{DynamicResource CheckBoxPadding}"
 								    ItemTemplate="{StaticResource SelectedItemTemplate}"
 								    ItemsPanel="{StaticResource StackPanelTemplate}"/>
 
-								<CheckBox 
+								<!--<CheckBox
 									Grid.Column="3"
 									Margin="6"
 									Content="Can Create Profiles"
 									IsChecked="{Binding CanCreateProfiles}"
-									Command="{Binding SetCanCreateProfilesCommand}"/>
-									<Grid Grid.Column="4"
-										   Margin="6">
-										<Button ToolTip.Tip="Edit User"
-												Content="three-dots"
-												Theme="{StaticResource SvgIconButton}">
-											<Button.Flyout>
-												<ui:FAMenuFlyout Placement="Bottom">
-													<ui:MenuFlyoutItem Text="Edit profile access"
-																	   IconSource="Add"
-																	   Command="{Binding AddMoreProfilesCommand}"/>
-													<ui:MenuFlyoutItem Text="Copy licence key"
-																	   IconSource="Send"
-																	   Command="{Binding SendLicenceKeyCommand}" />
-													<ui:MenuFlyoutItem Text="Delete user"
-																	   IconSource="Delete"
-																	   Command="{Binding DeleteAssistantCommand}" />
-												</ui:FAMenuFlyout>
-											</Button.Flyout>
-										</Button>
-									</Grid>
+									Command="{Binding SetCanCreateProfilesCommand}"/>-->
+
+								<Button
+									Grid.Column="4"
+								    Margin="6"
+									ToolTip.Tip="Edit User"
+									Content="three-dots"
+									Theme="{StaticResource SvgIconButton}">
+									<Button.Flyout>
+										<ui:FAMenuFlyout Placement="Bottom">
+											<ui:MenuFlyoutItem
+												Text="Edit profile access"
+												IconSource="Add"
+												Command="{Binding AddMoreProfilesCommand}"/>
+											<ui:MenuFlyoutItem
+												Text="Copy licence key"
+												IconSource="Copy"
+												Command="{Binding SendLicenceKeyCommand}" />
+											<ui:MenuFlyoutItem
+												Text="Delete user"
+												IconSource="Delete"
+												Command="{Binding DeleteAssistantCommand}" />
+
+											<ui:MenuFlyoutSeparator />
+
+											<ui:MenuFlyoutSubItem Text="Options">
+												<ui:RadioMenuFlyoutItem
+													IconSource="Contact"
+													Text="Can Create Profiles"
+													GroupName="rpCreateProfiles"
+													IsChecked="{Binding CanCreateProfiles}"/>
+											</ui:MenuFlyoutSubItem>
+										</ui:FAMenuFlyout>
+									</Button.Flyout>
+								</Button>
 							</Grid>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 			</afv:ChameleonContentControl.Content>
-
-			<!--<afv:ChameleonContentControl.Footer>
-				<Border Grid.Row="1"
-						BorderThickness="1 0 1 1"
-						CornerRadius="0 0 2 2">
-					<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
-				</Border>
-			</afv:ChameleonContentControl.Footer>-->
 		</afv:ChameleonContentControl>
 	</Border>
 </UserControl>
