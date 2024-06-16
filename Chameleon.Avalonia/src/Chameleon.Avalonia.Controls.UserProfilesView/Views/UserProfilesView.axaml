@@ -21,7 +21,7 @@
 		<afv:ChameleonContentControl.TitleContent>
 			<Grid ColumnDefinitions="*,Auto">
 				<pagnator:PaginatorView
-	DataContext="{Binding PaginatorViewModel}" />
+					DataContext="{Binding PaginatorViewModel}" />
 				<!--<TextBox HorizontalAlignment="Center"
 						 Margin="0 0 0 12"
 						 Width="300"

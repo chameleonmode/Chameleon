@@ -4,6 +4,7 @@ using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
+using Chameleon.SystemBrowser.Addons;
 using Chameleon.SystemBrowser.Common;
 using Microsoft.Playwright;
 using System.Diagnostics;
@@ -13,38 +14,15 @@ using System.Text.RegularExpressions;
 
 namespace Chameleon.SystemBrowser.Firefox
 {
-    //public class FirefoxWithExtension : Microsoft.Playwright.Core.BrowserType
-    //{
-    //    public FirefoxWithExtension(ChannelOwner parent, string guid, BrowserTypeInitializer initializer) : base(parent, guid, initializer)
-    //    {
-    //    }
-    //}
-    public partial class FirefoxSystemBrowserInstance : SystemBrowserInstance
-    {
-        public const string FirefoxAutoProxyFolderName = "ChameleonAutoExt";
-        public const string FirefoxAutoProxyAddonName = "autoproxy.chameleon.zip";
-
-        public const string UrlSchemeEnd = "://";
-        public const string HTTPSScheme = "https://";
-        public const string DomainLevelDelimiter = ".";
-
-        private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
-        public FirefoxSystemBrowserInstance(
+    public partial class FirefoxSystemBrowserInstance(
             IEventAggregator eventAggregator,
             ISystemBrowserLaunchOptions options,
             IUserDefaultSettingsService userDefaultsSettingsService,
             string browserDataFolderPath,
             string browserExeFilePath
-            ) : base(eventAggregator, options, userDefaultsSettingsService, browserDataFolderPath, browserExeFilePath)
-        {
-        }
-
+            ) : SystemBrowserInstance(eventAggregator, options, userDefaultsSettingsService, browserDataFolderPath, browserExeFilePath)
+    {
         protected override SystemBrowserType BrowserType => SystemBrowserType.Firefox;
-        //protected override Task OnProfileFolderCreated()
-        //{
-        //   // CreateProfile();
-        //    return Task.CompletedTask;
-        //}
 
         private Task CreateProfileAsync()
         {
@@ -599,7 +577,7 @@ namespace Chameleon.SystemBrowser.Firefox
                 //"-no-remote"
             };
 
-            string startUrl = HasProxyLogin && Starturl.Contains(DomainLevelDelimiter)
+            string startUrl = HasProxyLogin && Starturl.Contains(ProxyAddonUtil.DomainLevelDelimiter)
                 ? "about:blank" //added for now to work around proxy refresh issue
                 : Starturl;
             
@@ -620,99 +598,36 @@ namespace Chameleon.SystemBrowser.Firefox
 
         protected override async Task InitializeExtensionPath()
         {
-            string proxyextdir = Path.Combine(_browserProfileFolderPath, FirefoxAutoProxyFolderName);
-            string pxoyextFile = Path.Combine(proxyextdir, FirefoxAutoProxyAddonName);
+            string proxyextdir = Path.Combine(_browserProfileFolderPath, ProxyAddonUtil.FirefoxAutoProxyFolderName);
+            string pxoyextFile = Path.Combine(proxyextdir, ProxyAddonUtil.FirefoxAutoProxyAddonName);
 
-            if (File.Exists(pxoyextFile))
-            {
-                File.Delete(pxoyextFile);
-            }
+            await IOtil.DeleteFExists(pxoyextFile);
+            await IOtil.DeleteDExists(proxyextdir);
+            Directory.CreateDirectory(proxyextdir);
 
             if (HasProxyLogin)
             {
-                bool needLoadUrl = Starturl.Contains(DomainLevelDelimiter);
+                string startUrl = 
+                    Starturl.Contains(ProxyAddonUtil.UrlSchemeEnd)
+                    ? Starturl : $"{ProxyAddonUtil.HTTPSScheme}{Starturl}";
 
-                string startUrl = Starturl.Contains(UrlSchemeEnd)
-                    ? Starturl
-                    : $"{HTTPSScheme}{Starturl}";
-
-                IProxySettings proxy = UserProfile.Proxy;
-                if (!Directory.Exists(proxyextdir))
-                {
-                    Directory.CreateDirectory(proxyextdir);
-                }
-
-                var manifestJson = """
-                {
-                    "manifest_version": 2,
-                    "name": "Chameleon Auto Proxy",
-                    "description": "A Chameleon addon to set proxy username and password.",
-                    "version": "1.0.0",
-                    "permissions": [
-                        "proxy",
-                        "storage",
-                        "webRequest",
-                        "webRequestBlocking",
-                        "webRequestAuthProvider",
-                        "<all_urls>"
-                    ],
-                    "background": {
-                        "scripts": ["background.js"]
-                    },
-                    "browser_specific_settings": {
-                        "gecko": {
-                            "id": "autoproxy@chameleonmode.com",
-                            "strict_min_version": "42.0"
-                        }
-                    }
-                }
-                """;
-
-                string loadUrl = needLoadUrl ?
-                $", () => {{ browser.tabs.update({{ url:\"{startUrl}\" }}); }});"
-                : ");" ;
-
-                var backgroundJs ="""
-                browser.webRequest.onAuthRequired.addListener((details) => {
-                    return {
-                        authCredentials: {
-                """
-                            + $"username: \"{proxy.UserName}\","
-                            + $"password: \"{proxy.Password}\"" +
-                """
-                            }
-                        };
-                    },
-                    { urls: ['<all_urls>'] },
-                    ['blocking']
-                );
-                const proxyConfig = {
-                        proxyType: "manual",
-                """
-                      + $"http: \"{proxy.Server}\"," +
-                """       
-                        httpProxyAll : true,
-                        autoLogin: false
-                    };
-                browser.proxy.settings.set(
-                    { value: proxyConfig, scope: 'regular' }
-                """
-                + loadUrl;
-
+                string loadUrl = 
+                    Starturl.Contains(ProxyAddonUtil.DomainLevelDelimiter)
+                    ? $", () => {{ browser.tabs.update({{ url:\"{startUrl}\" }}); }});" : ");" ;
                 
                 using (var fileStream = new FileStream(pxoyextFile, FileMode.CreateNew))
                 {
                     using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
                     {
-                        await AddFileToArchive("manifest.json", manifestJson, archive);
-                        await AddFileToArchive("background.js", backgroundJs, archive);
+                        await AddFileToArchive("manifest.json", ProxyAddonUtil.GetManifest(), archive);
+                        await AddFileToArchive("background.js", ProxyAddonUtil.GetBgJs(loadUrl, UserProfile.Proxy), archive); ;
                     }
                 }
 
                 var mf = Path.Combine(pxoyextFile, "manifest.json");
                 var bf = Path.Combine(pxoyextFile, "background.js");
-                IOUtil.DeleteFileIfExists(mf);
-                IOUtil.DeleteFileIfExists(bf);
+                await IOtil.DeleteFExists(mf);
+                await IOtil.DeleteFExists(bf);
             }
         }
 

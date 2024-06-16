@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using Chameleon.Interfaces.Settings;
 using System.Reflection;
 using Chameleon.Core.Util;
+using Chameleon.SystemBrowser.Addons;
 
 namespace Chameleon.SystemBrowser.Common
 {
@@ -123,14 +124,10 @@ namespace Chameleon.SystemBrowser.Common
         {
             //proxyext
             proxyextdir = Path.Combine(_browserProfileFolderPath, "ChameleonAutoExt");
-            await Task.Run(() => 
+            await Task.Run(async () => 
             {
-               var old_proxyextdir = Path.Combine(_browserProfileFolderPath, "proxyext");
-                if (Directory.Exists(old_proxyextdir))
-                    Directory.Delete(old_proxyextdir, true);
-
-                if (Directory.Exists(proxyextdir))
-                    Directory.Delete(proxyextdir, true);
+                await IOtil.DeleteDExists(Path.Combine(_browserProfileFolderPath, "proxyext"));
+                await IOtil.DeleteDExists(proxyextdir);
             });
 
             proxyextdir = Path.Combine(_browserProfileFolderPath, "ChameleonAutoExt", Guid.NewGuid().ToString());
@@ -138,7 +135,7 @@ namespace Chameleon.SystemBrowser.Common
             if (HasProxyLogin)
             {
                 //from：https://github.com/henices/Chrome-proxy-helper
-                var manifest_json = """
+                var manifestjson = """
                 {
                   "manifest_version": 3,
                   "name": "Chameleon Auto Proxy",
@@ -157,6 +154,7 @@ namespace Chameleon.SystemBrowser.Common
                   }
                 }
                 """;
+
                 //"background": {
                 //    "service_worker": "background.js"
                 //  }
@@ -178,10 +176,9 @@ namespace Chameleon.SystemBrowser.Common
                 //      ['asyncBlocking']
                 //    );
                 //    """;
-                var background_js = """
+                var backgroundjS = """
                           chrome.webRequest.onAuthRequired.addListener((details) => {
-                          return {
-                          authCredentials: {
+                          return { authCredentials: {
                           """
                             + "username:" + $"\"{UserProfile.Proxy.UserName}\","
                             + "password: " + $"\"{UserProfile.Proxy.Password}\"" +
@@ -189,16 +186,15 @@ namespace Chameleon.SystemBrowser.Common
                           }
                         };
                       },
-                      { urls: ['<all_urls>'] },
-                      ['blocking']
-                    );
+                      { urls: ['<all_urls>'] }, ['blocking']);
+                      chrome.tabs.reload();
                     """;
 
                 if (!Directory.Exists(proxyextdir))
                     Directory.CreateDirectory(proxyextdir);
 
-                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "manifest.json"), manifest_json);
-                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "background.js"), background_js);
+                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "manifest.json"), manifestjson);
+                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "background.js"), backgroundjS);
             }
 
             BrowserExtensionsFolderPath = Path.Combine(BrowserExtensionsRootFolderPath, BrowserType.ToString());
