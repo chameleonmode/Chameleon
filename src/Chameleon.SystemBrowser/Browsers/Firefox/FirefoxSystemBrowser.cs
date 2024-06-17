@@ -2,6 +2,7 @@
 public class FirefoxSystemBrowser(
         IEventAggregator eventAggregator,
         IApplicationEnvironment applicationEnvironment,
+        ISystemBrowserInfoManager systemBrowserInfoManager,
         IUserDefaultSettingsService userDefaultsSettingsService) : SystemBrowserBase, IFirefoxSystemBrowser
 {
 
@@ -34,7 +35,7 @@ public class FirefoxSystemBrowser(
         : Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory);
 
 
-        IOtil.DeleteDExists(directoryForCopy);
+        IOtil.DeleteDExistsAsync(directoryForCopy);
 
         CopyFolder(directory, directoryForCopy);
         AddAutoloadTemporaryAddon(Path.Combine(directoryForCopy));
@@ -236,7 +237,7 @@ public class FirefoxSystemBrowser(
 
     private string GetSystemBrowserExePath()
     {
-        return _systemBrowserInfoManager
+        return systemBrowserInfoManager
             .FindByName("firefox")
             .Path;
     }
@@ -244,9 +245,10 @@ public class FirefoxSystemBrowser(
     private string GetBrowserExePath()
     {
         string path = OperatingSystem.IsMacOS()
-            ? Path.Combine(_applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app", "Contents", "MacOS", "firefox")
-            : Path.Combine(_applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.exe");
+            ? Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app", "Contents", "MacOS", "firefox")
+            : Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.exe");
 
         return path;
     }
 }
+
