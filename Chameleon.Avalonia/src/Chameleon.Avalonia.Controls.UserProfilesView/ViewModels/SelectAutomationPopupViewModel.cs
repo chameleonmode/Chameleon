@@ -2,6 +2,7 @@
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.CT.Common.Base;
+using Chameleon.Domain.Entities.Automation;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
@@ -19,12 +20,15 @@ public partial class SelectAutomationPopupViewModel
 {
     private ObservableCollection<IAutomationScriptDescription, IAutomationScriptViewModel> _mapping;
     private readonly IAutomationService _automationService;
+    private readonly IAutomationBrowserService _automationBrowserService;
 
     public SelectAutomationPopupViewModel(
-        IAutomationService automationService
+        IAutomationService automationService,
+        IAutomationBrowserService automationBrowserService
         )
     {
         _automationService = automationService;
+        _automationBrowserService = automationBrowserService;
     }
 
     private ObservableCollectionView<IAutomationScriptViewModel> _viewModels;
@@ -108,11 +112,13 @@ public partial class SelectAutomationPopupViewModel
 
     public void OnDialogClosing(IContentDialogResult result)
     {
-        if (result == IContentDialogResult.Primary)
+        if (result != IContentDialogResult.Primary
+            || _selectedBrowser == SystemBrowserType.Unknown)
         {
-            var browser = SelectedBrowser;
-            var profiles = UserProfiles;
-            var selectedScript = SelectedScriptDescription;
+            return;
         }
+
+        IAutomationScriptDescription script = _selectedScriptDescription.ScriptDescription;
+        _ = _automationBrowserService.RunScript(script, _selectedBrowser, _userProfiles);
     }
 }

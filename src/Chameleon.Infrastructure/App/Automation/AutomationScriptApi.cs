@@ -39,4 +39,11 @@ public class AutomationScriptApi
         var scriptDtos = _apiClient.Get<AutomationScriptDescriptionDto[]>(GetEndpointUrl("GetAllScriptDescription"), query);
         return scriptDtos;
     }
+
+    public string GetScriptBody(int id)
+    {
+        var query = new { Id = id };
+        var scriptDtos = _apiClient.Get<AutomationScriptBodyDto>(GetEndpointUrl("GetScriptBody"), query);
+        return scriptDtos.Script;
+    }
 }

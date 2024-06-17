@@ -9,14 +9,14 @@
 			 x:DataType="vm:UserProfileFoldersViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfileFoldersView">
-	<UserControl.Resources>
-		<ControlTheme x:Key="OpenListViewItemButtonDataTemplate"
+  <UserControl.Resources>
+    <ControlTheme x:Key="OpenListViewItemButtonDataTemplate"
 					  x:DataType="vm:UserProfileFolderViewModel"
 					  TargetType="ContentControl">
-			<Setter Property="Template">
-				<ControlTemplate>
-					<Grid>
-						<Button
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Grid>
+            <Button
 							Theme="{StaticResource TransparentButton}"
 							HorizontalAlignment="Stretch"
 							BorderThickness="0"
@@ -24,15 +24,15 @@
 							Height="40"
 							HorizontalContentAlignment="Stretch"
 							Command="{Binding OpenCommand}">
-							<Grid IsVisible="{Binding !IsRenamed}">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
+              <Grid IsVisible="{Binding !IsRenamed}">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
 
-								<!--<Button IsVisible="{Binding IsFavoriteButtonVisible}"
+                <!--<Button IsVisible="{Binding IsFavoriteButtonVisible}"
 		Theme="{StaticResource TransparentButton}"
 		Margin="0 0 0 0"
 		Command="{Binding SetFavoriteCommand}">
@@ -47,144 +47,139 @@
 															  Height="12" />
 									</Panel>
 								</Button>-->
-																	
-								<Viewbox 
+
+                <Viewbox
 										 Width="20"
 										 Height="20"
 										 Margin="12 8"
 										 VerticalAlignment="Center"
 										 Name="IconHost"
 										 Tag="{Binding UserProfileFolder}">
-									<Grid
+                  <Grid
 										  VerticalAlignment="Center">
 
-										<!--<ui:SymbolIcon Symbol="Folder" 
+                    <!--<ui:SymbolIcon Symbol="Folder" 
 													   FontSize="18" />
 										<ui:SymbolIcon Symbol="FolderFilled" 
 													   FontSize="18" 
 													   IsVisible="{Binding IsSelected}" />-->
-										<afv:SvgIconControl IconName="folder"  />
-										<afv:SvgIconControl IconName="selected-folder"
+                    <afv:SvgIconControl IconName="folder"  />
+                    <afv:SvgIconControl IconName="selected-folder"
 																  IsVisible="{Binding IsSelected}" />
 
-										<Grid IsVisible="{Binding IsSharedFolder}"
+                    <Grid IsVisible="{Binding IsSharedFolder}"
 											  VerticalAlignment="Bottom"
 											  HorizontalAlignment="Right">
 
-											<Ellipse Fill="{StaticResource ControlOnImageFillColorDefaultBrush}"/>
+                      <Ellipse Fill="{StaticResource ControlOnImageFillColorDefaultBrush}"/>
 
-											<ui:SymbolIcon Symbol="Share" FontSize="8" />
-										</Grid>
-									</Grid>
-								</Viewbox>
+                      <ui:SymbolIcon Symbol="Share" FontSize="8" />
+                    </Grid>
+                  </Grid>
+                </Viewbox>
 
 
-								<TextBlock
+                <TextBlock
 									VerticalAlignment="Center"
 									Text="{Binding UserProfileFolder.Title}"
 									Grid.Column="1"/>
-							</Grid>
-						</Button>
+              </Grid>
+            </Button>
 
-						<Border BorderBrush="{StaticResource TextControlElevationBorderFocusedBrush}"
+            <Border BorderBrush="{StaticResource TextControlElevationBorderFocusedBrush}"
 								IsVisible="{Binding IsSelected}"
 								VerticalAlignment="Center"
 								Height="40"
 								BorderThickness="0 0 0 1"/>
-					</Grid>
-				</ControlTemplate>
-			</Setter>
-		</ControlTheme>
-		<!--materialDesign:ButtonAssist.CornerRadius="0"-->
-		<!--Style="{StaticResource OutlinedButton}"-->
-		<DataTemplate x:Key="FoldersListViewTemplate"
+          </Grid>
+        </ControlTemplate>
+      </Setter>
+    </ControlTheme>
+    <!--materialDesign:ButtonAssist.CornerRadius="0"-->
+    <!--Style="{StaticResource OutlinedButton}"-->
+    <DataTemplate x:Key="FoldersListViewTemplate"
 					  x:DataType="vm:UserProfileFolderViewModel">
-			<Grid>
-				<ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}" />
-					<Grid>
-						<Grid Grid.ColumnSpan="2"
-							ColumnDefinitions="*, Auto" 
-							   Grid.Column="1"
-							   IsVisible="{Binding IsRenamed}">
-							<TextBox 
-									 Name="RenameTextBox"
-									 Text="{Binding Title}"
-									 Margin="0 0 6 0"
-									 VerticalAlignment="Center" />
-							<Button
-								Content="Save"
-									Grid.Column="1"
-									Command="{Binding SaveRenameCommand}"/>
-						</Grid>
+      <Grid>
+        <ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}" />
+        <Grid>
+          <Grid Grid.ColumnSpan="2"
+            ColumnDefinitions="*, Auto"
+               Grid.Column="1"
+               IsVisible="{Binding IsRenamed}">
+            <TextBox
+                 Name="RenameTextBox"
+                 Text="{Binding Title}"
+                 Margin="0 0 6 0"
+                 VerticalAlignment="Center" />
+            <Button
+              Content="Save"
+                Grid.Column="1"
+                Command="{Binding SaveRenameCommand}"/>
+          </Grid>
 
-						<StackPanel Orientation="Horizontal"
-							IsVisible="{Binding !IsRenamed}"
-								HorizontalAlignment="Right">
-						<Button 
+          <StackPanel Orientation="Horizontal"
+            IsVisible="{Binding !IsRenamed}"
+              HorizontalAlignment="Right">
+            <Button
 								Grid.Column="1"
 								Content="three-dots"
 								ToolTip.Tip="Details"
 								Theme="{StaticResource SvgIconButton}">
-							<Button.Flyout>
-								<ui:FAMenuFlyout Placement="Bottom">
-									<ui:MenuFlyoutItem 
+              <Button.Flyout>
+                <ui:FAMenuFlyout Placement="Bottom">
+                  <ui:MenuFlyoutItem
 										Text="Change Proxies"
 										Tag="{Binding UserProfileFolder}"
 										IconSource="Wifi4"
 										Command="{Binding ChangeProxiesCommand}"
 										IsEnabled="{Binding IsContextMenuItemEnabled}"/>
-									<ui:MenuFlyoutItem 
-										Text="Run Automation"
-										IconSource="Play"
-										Command="{Binding OpenAutomationCommand}"
-										IsEnabled="{Binding IsFolderNotEmpty}"/>
-									<ui:MenuFlyoutItem 
+                  <ui:MenuFlyoutItem
 										Text="Rename folder"
 										IconSource="Rename"
 										Command="{Binding StartRenameCommand}"
 										IsEnabled="{Binding IsContextMenuItemEnabled}"
 										IsVisible="{Binding IsFavoriteButtonVisible}"/>
-									<ui:MenuFlyoutItem 
+                  <ui:MenuFlyoutItem
 										Text="Delete"
 										IconSource="Delete"
 										Command="{Binding DeleteCommand}"
 										IsEnabled="{Binding IsContextMenuItemEnabled}"
 										IsVisible="{Binding IsFavoriteButtonVisible}" />
-								</ui:FAMenuFlyout>
-							</Button.Flyout>
-						</Button>
-							<Button Grid.Column="2"
-										IsVisible="{Binding IsFavoriteButtonVisible}"
-										Command="{Binding SetFavoriteCommand}"
-										Theme="{StaticResource FavoriteButton}"/>
-						</StackPanel>
-					</Grid>
-			</Grid>
-		</DataTemplate>
-	</UserControl.Resources>
-	<afv:ChameleonContentControl Title="Folders"
+                </ui:FAMenuFlyout>
+              </Button.Flyout>
+            </Button>
+            <Button Grid.Column="2"
+                  IsVisible="{Binding IsFavoriteButtonVisible}"
+                  Command="{Binding SetFavoriteCommand}"
+                  Theme="{StaticResource FavoriteButton}"/>
+          </StackPanel>
+        </Grid>
+      </Grid>
+    </DataTemplate>
+  </UserControl.Resources>
+  <afv:ChameleonContentControl Title="Folders"
 									   Header=""
 									   TitleDescription="Select a folder to view profiles">
-		<afv:ChameleonContentControl.TitleContent>
-			<Grid HorizontalAlignment="Right">
-				<Button Tag="New"
+    <afv:ChameleonContentControl.TitleContent>
+      <Grid HorizontalAlignment="Right">
+        <Button Tag="New"
 						Margin="0 0 6 6"
 						Content="new-folder"
 						ToolTip.Tip="Create Folder"
 						Theme="{StaticResource SvgIconTextButton}"
 						Command="{Binding CreateCommand}"
 						IsEnabled="{Binding IsCreateBtnEnabled}"/>
-			</Grid>
-		</afv:ChameleonContentControl.TitleContent>
-		<Grid VerticalAlignment="Top">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
-			<!--<ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}"
+      </Grid>
+    </afv:ChameleonContentControl.TitleContent>
+    <Grid VerticalAlignment="Top">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      <!--<ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}"
 							DataContext="{Binding AllProfiles}"/>-->
-<!--SelectedItem="{Binding SelectedFolder}"-->
-			<ItemsControl
+      <!--SelectedItem="{Binding SelectedFolder}"-->
+      <ItemsControl
 				Grid.Row="1"
 				x:Name="itemsList"
 				ItemsSource="{Binding ViewModels}"
@@ -194,10 +189,10 @@
 				VerticalAlignment="Top"
 				HorizontalAlignment="Stretch"/>
 
-			<!--<wait:WaitIndicatorView
+      <!--<wait:WaitIndicatorView
             Grid.Row="2"
             DataContext="{Binding}"
             IsIndicatorVisible="{Binding IsWaiting}"/>-->
-		</Grid>
-	</afv:ChameleonContentControl>
+    </Grid>
+  </afv:ChameleonContentControl>
 </UserControl>

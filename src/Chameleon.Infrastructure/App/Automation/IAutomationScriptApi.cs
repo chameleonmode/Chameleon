@@ -14,4 +14,5 @@ public interface IAutomationScriptApi
     void UpdateParameter(IAutomationScriptParameter param);
     void SetParametersValue(IList<AutomationScriptParameterValueDto> valueDtos);
     IList<AutomationScriptDescriptionDto> GetAllScriptDescription(object query = null);
+    string GetScriptBody(int id);
 }

@@ -88,7 +88,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Common",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Automation", "Automation", "{A30ED78C-321D-43EE-AF57-5F1ED4FDC230}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Controls.Automation", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.Automation\Chameleon.Avalonia.Controls.Automation.csproj", "{76F749B1-C63C-412C-9056-4CB9DECEE70A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Controls.Automation", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.Automation\Chameleon.Avalonia.Controls.Automation.csproj", "{76F749B1-C63C-412C-9056-4CB9DECEE70A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Playwright.Automation", "src\Chameleon.Playwright.Automation\Chameleon.Playwright.Automation.csproj", "{F04D8FD1-BCB6-43F3-AB76-DE69049E38F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -188,6 +190,10 @@ Global
 		{76F749B1-C63C-412C-9056-4CB9DECEE70A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76F749B1-C63C-412C-9056-4CB9DECEE70A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76F749B1-C63C-412C-9056-4CB9DECEE70A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F04D8FD1-BCB6-43F3-AB76-DE69049E38F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F04D8FD1-BCB6-43F3-AB76-DE69049E38F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F04D8FD1-BCB6-43F3-AB76-DE69049E38F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F04D8FD1-BCB6-43F3-AB76-DE69049E38F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -228,6 +234,7 @@ Global
 		{87EF0DE8-2435-413F-88F2-B9321DFB2DCA} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
 		{A30ED78C-321D-43EE-AF57-5F1ED4FDC230} = {7F983C03-0888-41EA-887A-39AC02BF97D6}
 		{76F749B1-C63C-412C-9056-4CB9DECEE70A} = {A30ED78C-321D-43EE-AF57-5F1ED4FDC230}
+		{F04D8FD1-BCB6-43F3-AB76-DE69049E38F9} = {DD2E432A-BC2B-432B-BC89-0777702DB877}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

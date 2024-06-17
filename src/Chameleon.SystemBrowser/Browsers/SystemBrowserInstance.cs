@@ -1,25 +1,13 @@
-﻿using Chameleon.Core.Extensions;
+﻿using Chameleon.Common.WinApiBridge;
+using Chameleon.Core.Extensions;
+using Chameleon.Core.Util;
+using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
-using Chameleon.SystemBrowser.Proxy;
 using Chameleon.Prism.Events;
-using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.NetworkInformation;
 using System.Net;
-using System.Threading.Tasks;
-using Chameleon.SystemBrowser.Automation;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Chameleon.Common.WinApiBridge;
-using System.Reflection.Metadata;
-using Microsoft.Playwright;
-using System.Security;
-using Newtonsoft.Json.Linq;
-using Chameleon.Interfaces.Settings;
-using System.Reflection;
-using Chameleon.Core.Util;
+using System.Net.NetworkInformation;
 
 namespace Chameleon.SystemBrowser.Common
 {
@@ -41,7 +29,7 @@ namespace Chameleon.SystemBrowser.Common
         public ISystemBrowserLaunchOptions Options => _options;
         public IUserProfile UserProfile => _options.UserProfile;
 
-        private string proxyextdir;
+        private string _proxyextdir;
         public bool IsMao => OperatingSystem.IsMacOS();
 
         public string Starturl { get; private set; } = "https://www.duckduckgo.com/";
@@ -51,8 +39,6 @@ namespace Chameleon.SystemBrowser.Common
 
         public Process? Brocess { get; private set; } = null;
         public IntPtr Handle { get; private set; } = IntPtr.Zero;
-
-        public IBrowserContext BrowserContext { get; set; }
 
         public int Port { get; private set; }
 
@@ -77,7 +63,7 @@ namespace Chameleon.SystemBrowser.Common
                 BrowserExtensionsRootFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "BrowserExtensions");
         }
 
-        public async Task Open()
+        public virtual async Task Open()
         {
             if (Brocess is null || Handle == IntPtr.Zero || (!IsMao && !User32.IsWindow(Handle)))
             {
@@ -122,18 +108,18 @@ namespace Chameleon.SystemBrowser.Common
         protected virtual async Task InitializeExtensionPath()
         {
             //proxyext
-            proxyextdir = Path.Combine(_browserProfileFolderPath, "ChameleonAutoExt");
+            _proxyextdir = Path.Combine(_browserProfileFolderPath, "ChameleonAutoExt");
             await Task.Run(() => 
             {
                var old_proxyextdir = Path.Combine(_browserProfileFolderPath, "proxyext");
                 if (Directory.Exists(old_proxyextdir))
                     Directory.Delete(old_proxyextdir, true);
 
-                if (Directory.Exists(proxyextdir))
-                    Directory.Delete(proxyextdir, true);
+                if (Directory.Exists(_proxyextdir))
+                    Directory.Delete(_proxyextdir, true);
             });
 
-            proxyextdir = Path.Combine(_browserProfileFolderPath, "ChameleonAutoExt", Guid.NewGuid().ToString());
+            _proxyextdir = Path.Combine(_browserProfileFolderPath, "ChameleonAutoExt", Guid.NewGuid().ToString());
 
             if (HasProxyLogin)
             {
@@ -194,11 +180,11 @@ namespace Chameleon.SystemBrowser.Common
                     );
                     """;
 
-                if (!Directory.Exists(proxyextdir))
-                    Directory.CreateDirectory(proxyextdir);
+                if (!Directory.Exists(_proxyextdir))
+                    Directory.CreateDirectory(_proxyextdir);
 
-                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "manifest.json"), manifest_json);
-                await File.WriteAllTextAsync(Path.Combine(proxyextdir, "background.js"), background_js);
+                await File.WriteAllTextAsync(Path.Combine(_proxyextdir, "manifest.json"), manifest_json);
+                await File.WriteAllTextAsync(Path.Combine(_proxyextdir, "background.js"), background_js);
             }
 
             BrowserExtensionsFolderPath = Path.Combine(BrowserExtensionsRootFolderPath, BrowserType.ToString());
@@ -409,7 +395,7 @@ namespace Chameleon.SystemBrowser.Common
                 .Publish(GetArgs(process));
         }
 
-        private Task EnsureProfileFolderCreated()
+        protected Task EnsureProfileFolderCreated()
         {
             if(BrowserType != SystemBrowserType.Firefox)
             if (!Directory.Exists(_browserProfileFolderPath))
@@ -431,12 +417,10 @@ namespace Chameleon.SystemBrowser.Common
             return Task.CompletedTask;
         }
 
-        protected virtual string GetCommandLineArguments()
+        protected virtual List<string> GetClearCommandLineArgumentsList()
         {
-            var exts = GetLoadExtensionsArgument();
             List<string> args =
                 [
-                    $"--user-data-dir=\"{_browserProfileFolderPath}\"",
                     "--restore-last-session",
                     "--new-window",
                     $"--window-name=\"{UserProfile.Title}\"",
@@ -449,20 +433,14 @@ namespace Chameleon.SystemBrowser.Common
                     "--disable-field-trial-config",
                     "--disable-software-rasterizer",
                     //"--disable-blink-features=\"BlockCredentialedSubresources\"",
-                    $"--remote-debugging-port={Port}",
-                    Starturl
+                    $"--remote-debugging-port={Port}"
                 ];
 
             if (UserProfile.Proxy?.CanUse == true && UserProfile.Proxy.Host.HasAny())
             {
                 args.Add($"--proxy-server=http://{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}");
                 //args.Add($"--proxy-auth={UserProfile.Proxy.UserName}:{UserProfile.Proxy.Password}");
-
-                if (Directory.Exists(proxyextdir))
-                    exts = exts.HasAny() ? $"{exts},{proxyextdir}" : proxyextdir;
             }
-            if (exts.HasAny())
-                args.Add($"--load-extension=\"{exts}\"");
 
             if (!UserProfile.WebBrowser.WebRTC)
             {
@@ -487,16 +465,46 @@ namespace Chameleon.SystemBrowser.Common
                 args.Add("--disable-hyperlink-auditing");
             }
 
+            return args;
+        }
+
+        protected virtual List<string> GetCommandLineArgumentsList()
+        {
+            var args = GetClearCommandLineArgumentsList();
+            var exts = GetLoadExtensionsArgument();
+            
+            if (exts.HasAny())
+            {
+                args.Add($"--load-extension=\"{exts}\"");
+            }
+
+            args.Add($"--user-data-dir=\"{_browserProfileFolderPath}\"");
+            args.Add(Starturl);
+
+            return args;
+        }
+
+        protected virtual string GetCommandLineArguments()
+        {
+            IEnumerable<string> args = GetCommandLineArgumentsList();
             return string.Join(" ", args);
         }
+
         public virtual string GetLoadExtensionsArgument()
         {
-            if (!Directory.Exists(BrowserExtensionsFolderPath))
-                return "";
+            string exts = Directory.Exists(BrowserExtensionsFolderPath) 
+                ? Directory
+                    .GetDirectories(BrowserExtensionsFolderPath)
+                    .ToCommaSeparatedString()
+                : string.Empty;
 
-            return Directory
-                 .GetDirectories(BrowserExtensionsFolderPath)
-                 .ToCommaSeparatedString();
+            if (UserProfile.Proxy?.CanUse == true
+                && Directory.Exists(_proxyextdir))
+            {
+                return exts.HasAny() ? $"{exts},{_proxyextdir}" : _proxyextdir;
+            }
+
+            return exts;
         }
 
         public static bool IsFree(int port)

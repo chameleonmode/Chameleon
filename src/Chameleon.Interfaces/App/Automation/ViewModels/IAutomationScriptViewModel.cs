@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.Ioc;
+﻿using Chameleon.Interfaces.App.Automation.Entities;
+using Chameleon.Interfaces.Ioc;
 
 namespace Chameleon.Interfaces.App.Automation.ViewModels;
 public interface IAutomationScriptViewModel
@@ -8,7 +9,8 @@ public interface IAutomationScriptViewModel
     int Id { get; set; }
     string Title { get; set; }
     string Description { get; set; }
-    string ScriptBody { get; set; }
     bool IsHasParameter { get; }
     IList<IAutomationScriptParameterViewModel> Parameters { get; set; }
+
+    IAutomationScriptDescription ScriptDescription { get; }
 }

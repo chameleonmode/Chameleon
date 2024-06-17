@@ -12,28 +12,44 @@
 			 x:DataType="vm:UserProfilesViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfilesView">
-	<UserControl.Resources>
-		<converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
-	</UserControl.Resources>
-		<afv:ChameleonContentControl Title="{Binding SelectedFolderTitle}"
-										TitleDescription="{Binding TotalCount,
-											StringFormat='You have {0} profiles.'}">
-		<afv:ChameleonContentControl.TitleContent>
-			<Grid ColumnDefinitions="*,Auto">
-				<pagnator:PaginatorView
-	DataContext="{Binding PaginatorViewModel}" />
-				<!--<TextBox HorizontalAlignment="Center"
+
+  <UserControl.Resources>
+    <converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+    <Style Selector="ui|SymbolIcon.spinner">
+      <Style.Animations>
+        <Animation Duration="0:0:1" IterationCount="INFINITE">
+          <KeyFrame Cue="0%">
+            <Setter Property="RotateTransform.Angle" Value="0.0"/>
+          </KeyFrame>
+          <KeyFrame Cue="100%">
+            <Setter Property="RotateTransform.Angle" Value="360.0"/>
+          </KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+  </UserControl.Styles>
+
+  <afv:ChameleonContentControl
+		Title="{Binding SelectedFolderTitle}"
+		TitleDescription="{Binding TotalCount, StringFormat='You have {0} profiles.'}">
+    <afv:ChameleonContentControl.TitleContent>
+      <Grid ColumnDefinitions="*,Auto">
+        <pagnator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
+        <!--<TextBox HorizontalAlignment="Center"
 						 Margin="0 0 0 12"
 						 Width="300"
 						 Text="{Binding SearchText}" />-->
 
-			</Grid>
-		</afv:ChameleonContentControl.TitleContent>
+      </Grid>
+    </afv:ChameleonContentControl.TitleContent>
 
-		<afv:ChameleonContentControl.Header>
-			<StackPanel IsVisible="{Binding !HasNoItems}">
-				<Panel VerticalAlignment="Center">
-					<!--<StackPanel Orientation="Horizontal">
+    <afv:ChameleonContentControl.Header>
+      <StackPanel>
+        <Panel VerticalAlignment="Center">
+          <!--<StackPanel Orientation="Horizontal">
 						<Button Content="select-all"
 								Tag="Select all"
 								Theme="{StaticResource SvgIconTextButton}"
@@ -58,178 +74,267 @@
 						</StackPanel>
 					</StackPanel>-->
 
-					<TextBox HorizontalAlignment="Left"
-						 Margin="0 0 -6 6"
-						 Width="300"
-						 Text="{Binding SearchText}" />
-				</Panel>
+          <TextBox
+						HorizontalAlignment="Left"
+						Margin="0 0 -6 6"
+						Width="300"
+						Text="{Binding SearchText}" />
+        </Panel>
 
 
-				<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
-					<HeaderedContentControl.Header>
-						<StackPanel Orientation="Horizontal">
+        <HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
+          <HeaderedContentControl.Header>
+            <StackPanel Orientation="Horizontal">
 
-							<Button
-								Content="play"
-								Tag="Automate"
-								ToolTip.Tip="Run Automate"
-								Command="{Binding OpenAutomationCommand}"
-								Theme="{StaticResource SvgIconTextButton}"
-								Margin="4 0 0 0"/>
-							
-							<Button
+              <Button
 								Content="chrome"
 								ToolTip.Tip="Open In System Chrome"
 								Theme="{StaticResource SvgIconButton}"
 								Command="{Binding OpenChromeCommand}"/>
-							<Button
+              <Button
 								Content="firefox"
 								Margin="3 0 0 0"
 								ToolTip.Tip="Open In System Firefox"
 								Theme="{StaticResource SvgIconButton}"
 								Command="{Binding OpenFirefoxCommand}"/>
-							<Button
+              <Button
 								Content="brave"
 								Margin="3 0 0 0"
 								ToolTip.Tip="Open In System Brave"
 								Theme="{StaticResource SvgIconButton}"
 								Command="{Binding OpenBraveCommand}"/>
-							<Button
+              <Button
 								Content="chameleon-logo"
 								Margin="3 0 0 0"
 								ToolTip.Tip="Open In Chameleon Browser"
 								Theme="{StaticResource SvgIconButton}"
 								Command="{Binding OpenChameleonBrowserCommand}"/>
 
-							<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-									Margin="18 6"
-									BorderThickness="1 0 0 0" />
+              <Border
+								BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+								Margin="18 6"
+								BorderThickness="1 0 0 0" />
 
-							<Button Content="up-folder"
+              <Button
+								Content="up-folder"
 								Tag="Move"
 								Command="{Binding MoveProfilesToFolderCommand}"
 								Theme="{StaticResource SvgIconTextButton}" />
-							<Button Content="minus-in-circle"
+
+              <Button Content="minus-in-circle"
 									Tag="Remove profile"
-									Command="{Binding RemoveProfilesFromFolderCommand}" 
+									Command="{Binding RemoveProfilesFromFolderCommand}"
 									Theme="{StaticResource SvgIconTextButton}"
-									Margin="4 0 0 0"/>
-							<Button
+									Margin="4 0 0 0"
+									IsVisible="{Binding HasFolder}"/>
+
+              <Button
 								Theme="{StaticResource SvgIconTextButton}"
 								Content="delete"
 								Tag="Delete"
 								Margin="3 0 0 0"
 								Command="{Binding DeleteCommand}" />
-						</StackPanel>
-					</HeaderedContentControl.Header>
-				</HeaderedContentControl>
-			</StackPanel>
-		</afv:ChameleonContentControl.Header>
+            </StackPanel>
+          </HeaderedContentControl.Header>
+        </HeaderedContentControl>
+      </StackPanel>
+    </afv:ChameleonContentControl.Header>
 
-		<afv:ChameleonContentControl.Options>
-			<StackPanel 
+    <afv:ChameleonContentControl.Options>
+      <StackPanel
 				IsVisible="{Binding IsProfilesExist}"
 				Spacing="12">
-				<Button 
+        <Button
 					Content="select-all"
 					Tag="Select all"
 					Theme="{StaticResource SvgIconTextButton}"
 					Command="{Binding SelectAllCommand}" />
-				<Button 
+        <Button
 					Content="select-all"
 					Tag="Select all in folder"
 					Theme="{StaticResource SvgIconTextButton}"
 					Command="{Binding SelectAllProfilesFromFolderCommand}" />
-				<StackPanel
+        <StackPanel
 					Orientation="Horizontal"
 					Margin="2 0 0 0">
-					<StackPanel.IsVisible>
-						<MultiBinding  Converter="{x:Static BoolConverters.And}">
-							<Binding Path="HasFolder"/>
-							<Binding Path="IsProfilesExist"/>
-						</MultiBinding>
-					</StackPanel.IsVisible>
-					<Button Content="plus-in-circle"
-							Tag="Add profile"
-							Theme="{StaticResource SvgIconTextButton}"
-							Command="{Binding AddProfilesToFolderCommand}" />
-				</StackPanel>
+          <StackPanel.IsVisible>
+            <MultiBinding Converter="{x:Static BoolConverters.And}">
+              <Binding Path="HasFolder"/>
+              <Binding Path="IsProfilesExist"/>
+            </MultiBinding>
+          </StackPanel.IsVisible>
+          <Button
+						Content="plus-in-circle"
+						Tag="Add profile"
+						Theme="{StaticResource SvgIconTextButton}"
+						Command="{Binding AddProfilesToFolderCommand}" />
+        </StackPanel>
 
-				<ui:FAComboBox 
+        <ui:FAComboBox
 					Width="200"
 					IsEditable="False"
 					HorizontalAlignment="Right"
 					Header="Sort by:"
 					ItemsSource="{Binding Sorts}"
 					SelectedItem="{Binding SortSelected}" />
-			</StackPanel>
-		</afv:ChameleonContentControl.Options>
 
-		<afv:ChameleonContentControl.Content>
-			<Panel>
-				<Panel VerticalAlignment="Top">
-					<Panel.IsVisible>
-						<MultiBinding Converter="{x:Static BoolConverters.And}">
-							<Binding Path="!HasNoItems"/>
-							<Binding Path="IsProfilesExist"/>
-						</MultiBinding>
-					</Panel.IsVisible>
-					<!--<StackPanel>-->
-						<!--<pagnator:PaginatorView
-							DataContext="{Binding PaginatorViewModel}" />-->
-					<ListBox Name="lbProfiles"
-							 ItemsSource="{Binding ViewModels}"
-							 Theme="{StaticResource ListBoxNoScroller}"
-							 ItemContainerTheme="{StaticResource GridViewItem}">
-						<ListBox.ItemsPanel>
-							<ItemsPanelTemplate>
-								<UniformGrid Columns="1"/>
-							</ItemsPanelTemplate>
-						</ListBox.ItemsPanel>
-						<ListBox.ItemTemplate>
-							<DataTemplate>
-								<userProfiles:UserProfileView HorizontalAlignment="Stretch" />
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-					<!--</StackPanel>-->
-				</Panel>
-				<!--<Panel>
-					<Panel.IsVisible>
-						<MultiBinding Converter="{x:Static BoolConverters.Or}">
-							<Binding Path="HasNoItems" />
-							<Binding Path="!IsProfilesExist"/>
-						</MultiBinding>
-					</Panel.IsVisible>-->
-					<!--<Border
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center">
-						<TextBlock
-							Grid.Row="2"
-							Margin="0 25 0 0"
-							Text="Profiles not found"
-							Theme="{StaticResource SubtitleTextBlockStyle}"
-							HorizontalAlignment="Center"
-							IsVisible="{Binding !IsProfilesExist}"/>
-					</Border>-->
-				<Panel>
-					<Panel.IsVisible>
-						<MultiBinding Converter="{x:Static BoolConverters.Or}">
-							<Binding Path="HasNoItems" />
-							<Binding Path="!IsProfilesExist"/>
-						</MultiBinding>
-					</Panel.IsVisible>
-					<afv:SvgIconControl
+        <!--Automation Section in Options container-->
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+
+          <!--Scripts-->
+          <ui:FAComboBox
+						PlaceholderText="Select an automation..."
+						IsEditable="False"
+						HorizontalAlignment="Right"
+						Header="Automation"
+						ItemsSource="{Binding ScriptViewModels}"
+						SelectedItem="{Binding SelectedScriptDescription}"
+						Grid.Row="0"
+						Grid.Column="0"
+						Grid.ColumnSpan="2"
+						Width="200">
+            <ui:FAComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock
+									Text="{Binding Title}"
+									TextTrimming="CharacterEllipsis"
+									ToolTip.Tip="{Binding Title}" />
+              </DataTemplate>
+            </ui:FAComboBox.ItemTemplate>
+          </ui:FAComboBox>
+
+          <!--Select Browser-->
+          <ui:FAComboBox
+						MaxWidth="70"
+						Grid.Row="1"
+						Grid.Column="0"
+						Margin="0 20 0 0"
+						HorizontalAlignment="Left"
+						SelectedItem="{Binding SelectedBrowserItem}"
+						ItemsSource="{Binding BrowserItems}">
+            <ui:FAComboBox.ItemTemplate>
+              <DataTemplate>
+                <StackPanel
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center">
+                  <afv:SvgIconControl
+										IconName="{Binding IconName}"
+										Height="20"
+										Width="20"/>
+                </StackPanel>
+              </DataTemplate>
+            </ui:FAComboBox.ItemTemplate>
+          </ui:FAComboBox>
+
+          <!--Run Button-->
+          <Button
+						Grid.Row="1"
+						Grid.Column="1"
+						Margin="0 20 0 0"
+						Classes="accent"
+						Width="90"
+						HorizontalAlignment="Right"
+						Command="{Binding RunAutomationCommand}"
+						IsVisible="{Binding IsVisibleRunButton}">
+            <StackPanel Orientation="Horizontal" >
+              <ui:SymbolIcon
+								Symbol="Play"
+								Margin="0 0 5 0"/>
+              <TextBlock
+								Text="Run"/>
+            </StackPanel>
+          </Button>
+
+          <!--Stop Button-->
+          <Button
+						Grid.Row="1"
+						Grid.Column="1"
+						Margin="0 20 0 0"
+						Classes="accent"
+						Width="90"
+						IsEnabled="True"
+						HorizontalAlignment="Right"
+						Command="{Binding StopAutomationCommand}"
+						IsVisible="{Binding IsVisibleStopButton}">
+            <StackPanel Orientation="Horizontal">
+              <ui:SymbolIcon
+								Symbol="Stop"
+								Margin="0 0 5 0"/>
+              <TextBlock Text="Stop"/>
+            </StackPanel>
+          </Button>
+
+          <!--Wait Buttom-->
+          <Button
+						Grid.Row="1"
+						Grid.Column="1"
+						Margin="0 20 0 0"
+						Classes="accent"
+						Width="90"
+						HorizontalAlignment="Right"
+						IsVisible="{Binding IsVisibleWaitButton}">
+            <ui:SymbolIcon
+							Symbol="Refresh"
+							Height="20"
+							Classes="spinner"/>
+          </Button>
+        </Grid>
+
+      </StackPanel>
+    </afv:ChameleonContentControl.Options>
+
+    <afv:ChameleonContentControl.Content>
+      <Panel>
+        <Panel VerticalAlignment="Top">
+          <Panel.IsVisible>
+            <MultiBinding Converter="{x:Static BoolConverters.And}">
+              <Binding Path="!HasNoItems"/>
+              <Binding Path="IsProfilesExist"/>
+            </MultiBinding>
+          </Panel.IsVisible>
+          <ListBox
+						Name="lbProfiles"
+						ItemsSource="{Binding ViewModels}"
+						Theme="{StaticResource ListBoxNoScroller}"
+						ItemContainerTheme="{StaticResource GridViewItem}">
+            <ListBox.ItemsPanel>
+              <ItemsPanelTemplate>
+                <UniformGrid Columns="1"/>
+              </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <userProfiles:UserProfileView HorizontalAlignment="Stretch" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Panel>
+        <Panel>
+          <Panel.IsVisible>
+            <MultiBinding Converter="{x:Static BoolConverters.Or}">
+              <Binding Path="HasNoItems" />
+              <Binding Path="!IsProfilesExist"/>
+            </MultiBinding>
+          </Panel.IsVisible>
+          <afv:SvgIconControl
 						IconName="not-profiles"
-						  Width="128"
+						Width="128"
 						Margin="0 0 0 178" />
-					<!--<TextBlock
+          <!--<TextBlock
 							Margin="0 35 0 0"
 							Text="No Profiles yet created"
 							Theme="{StaticResource SubtitleTextBlockStyle}"
 							HorizontalAlignment="Center"
 							IsVisible="{Binding !HasFolder}"/>-->
-					<!--<TextBlock
+          <!--<TextBlock
 							Margin="0 12 0 12"
 							Text="No Profiles yet in this folder"
 							Theme="{StaticResource SubtitleTextBlockStyle}"
@@ -241,25 +346,25 @@
 								</MultiBinding>
 							</TextBlock.IsVisible>
 						</TextBlock>-->
-					<!--<Button
+          <!--<Button
 						Theme="{StaticResource SvgIconTextButton}"
 						HorizontalAlignment="Center"
 						Content="plus-in-circle"
 						Tag="Add profile"
 						Command="{Binding AddProfilesToFolderCommand}" />-->
-				</Panel>
-				<!--</Panel>-->
+        </Panel>
+        <!--</Panel>-->
 
-				<!--<wait:WaitIndicatorView
+        <!--<wait:WaitIndicatorView
 					Grid.Row="1"
 					DataContext="{Binding}"
 					IsIndicatorVisible="{Binding IsWaiting}"/>-->
-			</Panel>
-		</afv:ChameleonContentControl.Content>
+      </Panel>
+    </afv:ChameleonContentControl.Content>
 
-		<!--<afv:ChameleonContentControl.Footer>
+    <!--<afv:ChameleonContentControl.Footer>
 			<pagnator:PaginatorView
 				DataContext="{Binding PaginatorViewModel}" />
 		</afv:ChameleonContentControl.Footer>-->
-	</afv:ChameleonContentControl>
+  </afv:ChameleonContentControl>
 </UserControl>

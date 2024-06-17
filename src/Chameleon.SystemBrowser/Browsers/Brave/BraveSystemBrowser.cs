@@ -1,18 +1,17 @@
-﻿using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Interfaces.Environments;
-using Chameleon.Prism.Events;
-using Chameleon.SystemBrowser.Chrome;
+﻿using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.Settings;
+using Chameleon.Interfaces.WebBrowser;
+using Chameleon.Prism.Events;
 
 namespace Chameleon.SystemBrowser.Browsers.Brave
 {
     public class BraveSystemBrowser : SystemBrowserBase, IBraveSystemBrowser
     {
-        private readonly IEventAggregator _eventAggregator;
-        private readonly IApplicationEnvironment _applicationEnvironment;
-        private readonly ISystemBrowserInfoManager _systemBrowserInfoManager;
-        private readonly ISetPreferencesService _setPreferencesService;
-        private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
+        protected readonly IEventAggregator _eventAggregator;
+        protected readonly IApplicationEnvironment _applicationEnvironment;
+        protected readonly ISystemBrowserInfoManager _systemBrowserInfoManager;
+        protected readonly ISetPreferencesService _setPreferencesService;
+        protected readonly IUserDefaultSettingsService _userDefaultsSettingsService;
 
         public BraveSystemBrowser(
             IEventAggregator eventAggregator,
@@ -40,7 +39,7 @@ namespace Chameleon.SystemBrowser.Browsers.Brave
                  GetBrowserExePath());
         }
 
-        private string GetBrowserExePath()
+        protected string GetBrowserExePath()
         {
             return _systemBrowserInfoManager
                 .FindByName("brave")
