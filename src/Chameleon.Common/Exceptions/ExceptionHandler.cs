@@ -359,7 +359,7 @@ namespace Chameleon.Common.Exceptions
             if (assembly != null)
             {
                 result.Append("EntryAssembly: ");
-                result.Append(assembly.Location);
+                result.Append(AppContext.BaseDirectory);
                 result.AppendLine();
             }
             result.AppendLine("UnhandledException:");

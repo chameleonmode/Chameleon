@@ -380,7 +380,7 @@ public partial class InviteUserOrAddProfilesViewModel : ObservableObjectBase,
             if (_profileViewModels != null && _sharedProfileIds != null && !_showInviteinfo)
             {
                 _profileViewModels.Filter = (profileViewModel) =>
-                    !_sharedProfileIds.Contains(profileViewModel.ProfileId.Value);
+                    profileViewModel.ProfileId != null && !_sharedProfileIds.Contains(profileViewModel.ProfileId.Value);
             }
 
             return _profileViewModels;
@@ -438,7 +438,7 @@ public partial class InviteUserOrAddProfilesViewModel : ObservableObjectBase,
             if (_folderViewModels != null && _sharedFolderIds != null && !_showInviteinfo)
             {
                 _folderViewModels.Filter = (folderViewModel) =>
-                    !_sharedFolderIds.Contains(folderViewModel.FolderId.Value);
+                    folderViewModel.FolderId != null && !_sharedFolderIds.Contains(folderViewModel.FolderId.Value);
             }
 
             return _folderViewModels;

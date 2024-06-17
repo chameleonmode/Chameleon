@@ -31,7 +31,6 @@ namespace Chameleon.Infrastructure.Profiles
         private readonly IWebBrowserUserAgentRepository _webBrowserUserAgentRepository;
         private readonly IUserProfileOutReachRssRepository _outReachRssRepository;
         private readonly IAuthSession _authSession;
-        private readonly IDialogWindowsService _dialogWindowsService;
         //private readonly IUpgradePlanPopupView _upgradePlanPopupView;
         private readonly IApplicationUser _applicationUser;
         private readonly IShareFoldersService _shareFoldersService;

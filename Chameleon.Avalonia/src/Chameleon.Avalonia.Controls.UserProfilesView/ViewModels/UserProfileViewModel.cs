@@ -183,7 +183,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
         Open();
     }
     [RelayCommand]
-    public async Task OpenUserBrowser()
+    public void OpenUserBrowser()
     {
         ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<ITopMostSidePanelView, ITopMostSidePanelViewModel>(
             vm =>

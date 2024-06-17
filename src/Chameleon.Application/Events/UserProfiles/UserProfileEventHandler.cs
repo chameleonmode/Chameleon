@@ -27,43 +27,20 @@ namespace Chameleon.Application.Events
 {
     public class UserProfileEventHandler : IUserProfileEventHandler
     {
-        //private readonly IMainWindow _mainWindow;
-        //private readonly IUserProfileView _userProfileView;
         private readonly IEventAggregator _eventAggregator;
-        //private readonly IDispatcherService _dispatcherService;
         private readonly IUserProfileService _userProfileService;
         private readonly ISystemBrowserManager _systemBrowserManager;
-        //private readonly IOutReachTemplateView _outReachView;
-        private readonly IAuthSession _authSession;
-       // private readonly IDialogWindowsService _dialogWindowsService;
-        private readonly IErrorContentDialogView _userFriendlyExceptionView;
         private readonly INavigationService _navigationSrvice;
-        readonly IToastNotificationService _toaster;
         public UserProfileEventHandler(
-            //IMainWindow mainWindow,
             IUserProfileService userProfileService,
-            //IUserProfileView userProfileView,
             IEventAggregator eventAggregator,
             ISystemBrowserManager systemBrowserManager,
-            //IOutReachTemplateView outReachView,
-            IAuthSession authSession,
-            INavigationService navigationService,
-            IToastNotificationService toaster
-            // IDialogWindowsService dialogWindowsService
-            //TODO: IErrorContentDialogView userFriendlyExceptionView
+            INavigationService navigationService
             )
         {
-            _toaster = toaster;
-            //_outReachView = outReachView;
-            //_messageBoxService = messageBoxService;
-            //_mainWindow = mainWindow;
-            //_userProfileView = userProfileView;
             _eventAggregator = eventAggregator;
             _userProfileService = userProfileService;
             _systemBrowserManager = systemBrowserManager;
-            _authSession = authSession;
-            //_dialogWindowsService = dialogWindowsService;
-            //_userFriendlyExceptionView = userFriendlyExceptionView;
             _navigationSrvice = navigationService;
 
             _eventAggregator
@@ -73,10 +50,6 @@ namespace Chameleon.Application.Events
             _eventAggregator
                 .GetEvent<OpenUserBrowserEvent>()
                 .Subscribe(args => OnOpenUserBrowser(args.UserProfile));
-
-            //_eventAggregator
-            //    .GetEvent<CreateUserProfileEvent>()
-            //    .Subscribe(CreateUserProfile);
 
             _eventAggregator
                 .GetEvent<DeleteUserProfileEvent>()
@@ -190,31 +163,6 @@ namespace Chameleon.Application.Events
             _userProfileService.Delete(userProfile);
         }
 
-        private void CreateUserProfile(CreateUserProfileEventArgs? args)
-        {
-            
-            //_toaster.ShowInformation("Creating New Profile...");
-            IUserProfile profile;
-            try
-            {
-                //TODO: ? _userProfileService.Sync();
-                //profile = await Task.Run(() => _userProfileService.Create(args?.FolderId)); 
-                //profile =  _userProfileService.Create(args?.FolderId); 
-            }
-            catch (Exception ex)
-            {
-                if (ex.Message == "limit_ex")
-                    _userProfileService.ShowOutOfLimitPopup();
-                else throw;
-                return;
-            }                                                                                                                                                               
-            //var e = new ChangeProfilesInFavoriteFolderEventArgs(args == null || args.FolderId == null ? 0 : args.FolderId.Value, true, profile);
-
-            //_eventAggregator.Publish<OnCreatedCreateUserProfileEvent, ChangeProfilesInFavoriteFolderEventArgs>(e);
-            //_eventAggregator
-            //    .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-            //    .Publish(e);
-        }
 
         private void OnOpenUserDetails(IUserProfileInfo profileInfo)
         {

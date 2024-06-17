@@ -150,9 +150,10 @@ public class MWHandleTrackerUtility
         StartTracking();
     }
 
-    private void StartTracking()
+    private async void StartTracking()
     {
         new Thread(() => TrackMainWindowHandle(_cts.Token)) { IsBackground = true }.Start();
+        await Task.Delay(1500);
         new Thread(() => MonitorChildProcesses(_cts.Token)) { IsBackground = true }.Start();
     }
 
@@ -174,7 +175,7 @@ public class MWHandleTrackerUtility
             }
 
             IntPtr handle = U32til.FindMainWindowHandle(_process.Id);
-            if (handle != _mainWindowHandle)
+            if (handle != _mainWindowHandle && U32.IsWindow(handle))
             {
                 _mainWindowHandle = handle;
                 var tcs = _tcs;
@@ -189,7 +190,7 @@ public class MWHandleTrackerUtility
     {
         while (!token.IsCancellationRequested)
         {
-            var currentProcesses = Process.GetProcesses().Where(p=>p.Id !=0);
+            var currentProcesses = Process.GetProcessesByName("firefox").Where(p=>p.Id !=0);
             foreach (var process in currentProcesses)
             {
                 try
@@ -211,10 +212,6 @@ public class MWHandleTrackerUtility
     } 
     
     public Task<Tuple<IntPtr, Process>> WaitForMainWindowHandleChangeAsync() => _tcs.Task;
-
-
-    public IntPtr MainWindowHandle => _mainWindowHandle;
-    public Process Brocess => _process;
 }
 
 /*

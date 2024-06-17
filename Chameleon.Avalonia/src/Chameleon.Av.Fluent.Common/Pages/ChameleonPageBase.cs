@@ -7,16 +7,12 @@ using Avalonia.Media;
 using Avalonia.Rendering.Composition;
 using Avalonia.Styling;
 using Chameleon.Av.Fluent.Common.Controls;
-using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces;
-using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Services;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
-using System;
-using System.Runtime.Intrinsics.X86;
 
 namespace Chameleon.Av.Fluent.Common.Pages;
 
@@ -26,7 +22,6 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
     private bool _isSmallWidth2;
     private bool _hasLoaded;
 
-    private Button? _toggleThemeButton;
     private Panel? _detailsPanel;
     //private StackPanel? _optionsHost;
     private IconSourceElement? _previewImageHost;

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace Chameleon.SystemBrowser.Common;
 
@@ -75,6 +76,8 @@ public abstract class SystemBrowserInstance(
             EnableRaisingEvents = true,
         };
         Brocess.Start();
+        Brocess.Exited += new EventHandler(Process_Exited);
+
 
 
         if (IsMao)
@@ -92,8 +95,6 @@ public abstract class SystemBrowserInstance(
 
             SetWin32Events();
         }
-
-        Brocess.Exited += new EventHandler(Process_Exited);
 
         eventAggregator
             .GetEvent<ForegroundUserSystemBrowserEvent>()
@@ -122,7 +123,7 @@ public abstract class SystemBrowserInstance(
 
             if (BrowserType == SystemBrowserType.Firefox)
             {
-                // capture window close
+                //capture window close
                 this.winEventHooks.Add(U32.SetWinEventHook(
                     User32Events.EVENT_OBJECT_DESTROY,
                     User32Events.EVENT_OBJECT_DESTROY,
@@ -165,7 +166,7 @@ public abstract class SystemBrowserInstance(
                 break;
 
             case User32Events.EVENT_OBJECT_DESTROY:
-                if (Handle == IntPtr.Zero || hwnd == Handle || Brocess == null || Brocess.HasExited)
+                if (Handle == IntPtr.Zero || Brocess == null || Brocess.HasExited)
                     Cleanup();
                 break;
 

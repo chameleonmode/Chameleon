@@ -41,6 +41,8 @@ public class FirefoxSystemBrowser(
 
         IOtil.CopyFolder(directory, directoryForCopy);
         AddAutoloadTemporaryAddon(Path.Combine(directoryForCopy));
+
+        Task.Delay(1000);
     }
 
     private void AddAutoloadTemporaryAddon(string directory)

@@ -20,7 +20,6 @@ namespace Chameleon.Av.Fluent.Dialogs;
 
 public partial class LoginTaskDialog : UserControl, ILoginTaskDialog
 {
-    bool _loaded = false;
     TaskDialog _apiInActionTD;
     //LoginTaskDialogContent _content;
 
@@ -44,7 +43,6 @@ public partial class LoginTaskDialog : UserControl, ILoginTaskDialog
         base.OnLoaded(e);
         if (!Design.IsDesignMode)
         {
-            _loaded = true;
            // Show();
         }
         //  td.XamlRoot = this as Visual;

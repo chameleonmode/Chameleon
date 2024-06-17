@@ -19,33 +19,19 @@ public partial class UserProfileFoldersViewModel
         , IUserProfileFoldersViewModel
 {
     private readonly IApplicationUser _currentUser;
-    private readonly IAuthSession _authSession;
     private readonly IUserProfileFolderService _userProfileFolderService;
-    private readonly IDialogWindowsService _dialogWindowsService;
     private readonly IUserProfileService _userProfileService;
 
     private ObservableCollection<IUserProfileFolder, UserProfileFolderViewModel> _mapping;
 
     public UserProfileFoldersViewModel(
-        IAuthSession authSession,
         IUserProfileFolderService userProfileFolderService,
-        IDialogWindowsService dialogWindowsService,
         IApplicationUser currentUser,
         IUserProfileService userProfileService)
     {
         _currentUser = currentUser;
-        _authSession = authSession;
         _userProfileFolderService = userProfileFolderService;
-        _dialogWindowsService = dialogWindowsService;
         _userProfileService = userProfileService;
-
-        //EventAggregator
-        //    .GetEvent<LoginSuccessEvent>()
-        //    .SubscribeOnce(OnAuthenticated);
-
-        //EventAggregator
-        //  .GetEvent<DeleteUserProfileFolderEvent>()
-        //  .Subscribe(OnDeleteFolder);
 
         EventAggregator
            .GetEvent<UpdateStaleDataEvent>()

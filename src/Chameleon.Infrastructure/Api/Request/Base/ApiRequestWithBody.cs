@@ -2,6 +2,8 @@
 using Chameleon.Interfaces.Environments;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 
 namespace Chameleon.Infrastructure.Api
@@ -11,7 +13,7 @@ namespace Chameleon.Infrastructure.Api
     {
         private object _requestBody;
         private string _requestJson;
-        private readonly string _httpMethod;
+        private readonly HttpMethod _httpMethod;
         private readonly JsonSerializerOptions _settings = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -20,7 +22,7 @@ namespace Chameleon.Infrastructure.Api
         public ApiRequestWithBody(
             IAuthSession session,
             IApplicationConfiguration configuration,
-            string httpMethod
+            HttpMethod httpMethod
             ) : base(session, configuration)
         {
             _httpMethod = httpMethod;
@@ -32,22 +34,15 @@ namespace Chameleon.Infrastructure.Api
             return (TApiRequest)this;
         }
 
-        protected override void InitializeRequest(HttpWebRequest request)
+        protected override void InitializeRequest(HttpRequestMessage request)
         {
             request.Method = _httpMethod;
-            if (_requestBody == null)
-            {
-                return;
-            }
 
-            request.ContentType = "application/json";
-            using (var requestStream = request.GetRequestStream())
-            {
-                using (var streamWriter = new StreamWriter(requestStream))
-                {
-                    streamWriter.Write(GetRequestBodyAsJson());
-                }
-            }
+            if (_requestBody == null)
+                return;
+
+            // Set the Content-Type header
+            request.Content = new StringContent(GetRequestBodyAsJson(), Encoding.UTF8, "application/json");
         }
 
         private string GetRequestBodyAsJson()

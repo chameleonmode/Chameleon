@@ -96,7 +96,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
             {
                 svc.PrepareToAnimate("ForwardAnimation", _animationPage);
             }
-            catch (Exception ex)
+            catch 
             {
                 svc.GetAnimation("ForwardAnimation");
                 _animationPage = _animationPageParent = null;

@@ -9,35 +9,27 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.Text.Json;
+using System.Net.Http;
 
 namespace Chameleon.Infrastructure.Api
 {
-    public abstract class ApiRequest<TApiRequest>
+    public abstract class ApiRequest<TApiRequest>(IAuthSession session, IApplicationConfiguration configuration)
         where TApiRequest : ApiRequest<TApiRequest>
     {
-        protected readonly IAuthSession _session;
-        protected readonly IApplicationConfiguration _configuration;
+        private readonly HttpClient _httpClient = new HttpClient(new HttpClientHandler
+        {
+            AutomaticDecompression = DecompressionMethods.GZip,
+            ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+        });
+                             
+        private HttpRequestMessage _request;
 
         private string _requestUrl;
         private string _requestQuery;
         private string _responseBody;
-        private HttpWebRequest _request;
+        private int _retryIndex = 0;
+        private int _retryCount = 3;
 
-        public ApiRequest(
-            IAuthSession session,
-            IApplicationConfiguration configuration
-            )
-        {
-            _session = session;
-            _configuration = configuration;
-        }
-
-        public string GetResponseBody()
-        {
-            return _responseBody;
-        }
-
-        protected HttpWebRequest Request => _request;
 
         public TApiRequest ForUrl(string requestUrl)
         {
@@ -45,18 +37,14 @@ namespace Chameleon.Infrastructure.Api
             return (TApiRequest)this;
         }
 
-        private int _retryCount = 3;
         public TApiRequest WithRetryCount(int retryCount)
         {
-            if (retryCount <= 0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(retryCount);
+
             _retryCount = retryCount;
             return (TApiRequest)this;
         }
 
-        private int _retryIndex = 0;
         public TApiRequest Send()
         {
             try
@@ -77,12 +65,6 @@ namespace Chameleon.Infrastructure.Api
             }
         }
 
-        public virtual TResult GetResult<TResult>()
-        {
-            return new ApiResult<TResult>(_responseBody)
-                .Deserialize();
-        }
-
         public void GetResult()
         {
             if (string.IsNullOrEmpty(_responseBody))
@@ -99,16 +81,8 @@ namespace Chameleon.Infrastructure.Api
         private void CreateRequest()
         {
             var requestUrl = GetRequestUrl();
-            _request = (HttpWebRequest)WebRequest.Create(requestUrl);//TODO: update
-            _request.AutomaticDecompression = DecompressionMethods.GZip;
-            _request.ServerCertificateValidationCallback += RemoteCertificateValidationCallback;
-        }
-
-        private static bool RemoteCertificateValidationCallback(
-            object sender, X509Certificate certificate, X509Chain chain, 
-            SslPolicyErrors sslPolicyErrors)
-        {
-            return true;
+            // Configure the request
+            _request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
         }
 
         public TApiRequest WithQuery(object query)
@@ -121,8 +95,7 @@ namespace Chameleon.Infrastructure.Api
 
             var properties = query
                 .GetType()
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                ;
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             var builder = new StringBuilder();
             foreach (var property in properties)
@@ -166,17 +139,17 @@ namespace Chameleon.Infrastructure.Api
             return $"{_requestUrl}?{_requestQuery}";
         }
 
-        protected virtual void InitializeRequest(HttpWebRequest request)
-        {
-        }
-
         private void ReadResponse()
         {
             try
             {
-                using (var httpResponse = (HttpWebResponse)_request.GetResponse())
+                // You can send the request and get the response synchronously if needed
+                var response = _httpClient.SendAsync(_request).GetAwaiter().GetResult();
+
+                // Process the response if needed (e.g., check status code, read content)
+                if (response.IsSuccessStatusCode)
                 {
-                    _responseBody = ReadResponse(httpResponse);
+                    _responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 }
             }
             catch (WebException ex)
@@ -199,16 +172,10 @@ namespace Chameleon.Infrastructure.Api
                 ThrowUnauthorizedException(ex);
             }
 
-            var responseBody = ReadResponse(httpResponse);
-            HandleResponseException(ex, responseBody);
-        }
-
-        private void HandleResponseException(WebException ex, string responseBody)
-        {
             ApiResponseDto responseDto;
             try
             {
-                responseDto = JsonSerializer.Deserialize<ApiResponseDto>(responseBody);
+                responseDto = JsonSerializer.Deserialize<ApiResponseDto>(_responseBody);
             }
             catch
             {
@@ -243,15 +210,12 @@ namespace Chameleon.Infrastructure.Api
             throw new InvalidOperationException(message, ex);
         }
 
-        private string ReadResponse(HttpWebResponse httpResponse)
+        protected virtual string BaseUrl => configuration.ApiBaseUrl;
+
+        public virtual TResult GetResult<TResult>()
         {
-            using (var responseStream = httpResponse.GetResponseStream())
-            using (var streamReader = new StreamReader(responseStream))
-            {
-                return streamReader
-                    .ReadToEnd()
-                    .Trim();
-            }
+            return new ApiResult<TResult>(_responseBody)
+                .Deserialize();
         }
 
         protected virtual string GetUrl(string url)
@@ -273,16 +237,17 @@ namespace Chameleon.Infrastructure.Api
             }
             return baseUrl + url;
         }
-
-        protected virtual string BaseUrl 
-            => _configuration.ApiBaseUrl;
         
         protected virtual void SetAuthHeader()
         {
-            if (_session.HasAuthToken)
+            if (session.HasAuthToken)
             {
-                _request.Headers["Authorization"] = $"Bearer {_session.AuthToken}";
+                _request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", session.AuthToken);
             }
+        }
+
+        protected virtual void InitializeRequest(HttpRequestMessage request)
+        {
         }
     }
 }

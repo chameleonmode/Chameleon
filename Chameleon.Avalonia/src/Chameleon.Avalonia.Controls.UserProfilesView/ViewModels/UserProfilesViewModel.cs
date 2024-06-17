@@ -473,8 +473,8 @@ public partial class UserProfilesViewModel
         var folderId = HasFolder ? (int?)Folder.Id : null;
 
         var profile = await _userProfileService.CreateAsync(folderId);
-        if (folderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == profile.Id)) ;
-        OnHandleUserEvent();
+        if (folderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == profile.Id)) 
+            OnHandleUserEvent();
 
         return profile;
         //EventAggregator
@@ -552,9 +552,9 @@ public partial class UserProfilesViewModel
     {
         var profiles = GetSelectedProfiles();
 
-        profiles.ForEach(async profile =>
+        profiles.ForEach( profile =>
         {
-            await profile.OpenUserBrowser();
+             profile.OpenUserBrowser();
         });
 
         //TODO: ? EventAggregator
