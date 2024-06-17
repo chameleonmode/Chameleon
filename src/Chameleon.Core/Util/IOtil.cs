@@ -39,13 +39,20 @@ public static class IOtil
         }
     }
 
-    public static async Task DeleteDExists(string filePath, bool recuersive = true)
+    public static Task DeleteDExistsAsync(string filePath, bool recuersive = true)
+    {
+        return  Task.Run(() => {
+            DeleteDExists(filePath, recuersive);
+        });
+    }
+
+    public static void DeleteDExists(string filePath, bool recuersive = true)
     {
         if (Directory.Exists(filePath))
         {
             try
             {
-                await Task.Run(() => Directory.Delete(filePath, recuersive));
+                Directory.Delete(filePath, recuersive);
             }
             catch (IOException ex)
             {

@@ -1,127 +1,91 @@
-﻿using Chameleon.Interfaces.Environments;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Prism.Events;
-using Chameleon.SystemBrowser.Browsers;
-using System.Diagnostics;
-using System.Drawing;
-
-namespace Chameleon.SystemBrowser.Firefox
+﻿namespace Chameleon.SystemBrowser.Firefox;
+public class FirefoxSystemBrowser(
+        IEventAggregator eventAggregator,
+        IApplicationEnvironment applicationEnvironment,
+        IUserDefaultSettingsService userDefaultsSettingsService) : SystemBrowserBase, IFirefoxSystemBrowser
 {
-    public class FirefoxSystemBrowser : SystemBrowserBase, IFirefoxSystemBrowser
+
+    public const string FirefoxChameleonDirectory = "FirefoxChameleon";
+
+    public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
     {
-        public bool IsMao => OperatingSystem.IsMacOS();
+        CreateChameleonFirefoxCopy();
 
-        public const string FirefoxChameleonDirectory = "FirefoxChameleon";
+        return new FirefoxSystemBrowserInstance(
+            eventAggregator,
+            o,
+            userDefaultsSettingsService,
+            applicationEnvironment.ApplicationDataFolderPath,
+            GetBrowserExePath());
+    }
 
+    private void CreateChameleonFirefoxCopy()
+    {
+        string path = GetSystemBrowserExePath();
+        string chamelonPath = GetBrowserExePath();
 
-        private readonly IEventAggregator _eventAggregator;
-        private readonly IApplicationEnvironment _applicationEnvironment;
-        private readonly ISystemBrowserInfoManager _systemBrowserInfoManager;
-        private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
-
-        public FirefoxSystemBrowser(
-            IEventAggregator eventAggregator,
-            IApplicationEnvironment applicationEnvironment,
-            ISystemBrowserInfoManager systemBrowserInfoManager,
-             IUserDefaultSettingsService userDefaultsSettingsService
-            )
+        if (!IsNeedUpdate(path, chamelonPath))
         {
-            _eventAggregator = eventAggregator;
-            _applicationEnvironment = applicationEnvironment;
-            _systemBrowserInfoManager = systemBrowserInfoManager;
-            _userDefaultsSettingsService = userDefaultsSettingsService;
+            return;
         }
 
-        public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
-        {
-            CreateChameleonFirefoxCopy();
+        string directory = IsMao ? "Applications/firefox.app" : Path.GetDirectoryName(path);
+        string directoryForCopy = IsMao ? Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app")
+        : Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory);
 
-            return new FirefoxSystemBrowserInstance(
-                _eventAggregator,
-                o,
-                _userDefaultsSettingsService,
-                _applicationEnvironment.ApplicationDataFolderPath,
-                GetBrowserExePath());
+
+        IOtil.DeleteDExists(directoryForCopy);
+
+        CopyFolder(directory, directoryForCopy);
+        AddAutoloadTemporaryAddon(Path.Combine(directoryForCopy));
+    }
+
+    private bool IsNeedUpdate(string systemFirefox, string chamelonFirefox)
+    {
+        if (!Path.Exists(chamelonFirefox))
+        {
+            return true;
         }
 
-        private void CreateChameleonFirefoxCopy()
+        FileVersionInfo systemFirefoxInfo = FileVersionInfo.GetVersionInfo(systemFirefox);
+        FileVersionInfo chamelonFirefoxInfo = FileVersionInfo.GetVersionInfo(chamelonFirefox);
+
+        bool isEqual = chamelonFirefoxInfo.ProductMajorPart == systemFirefoxInfo.ProductMajorPart
+            && chamelonFirefoxInfo.ProductMinorPart == systemFirefoxInfo.ProductMinorPart;
+
+        return !isEqual;
+    }
+
+    private void CopyFolder(string directory, string directoryForCopy)
+    {
+        Directory.CreateDirectory(directoryForCopy);
+
+        string[] filePaths = Directory.GetFiles(directory);
+        foreach (string filePath in filePaths)
         {
-            string path = GetSystemBrowserExePath();
-            string chamelonPath = GetBrowserExePath();
+            string fileName = Path.GetFileName(filePath);
+            string newFile = Path.Combine(directoryForCopy, fileName);
 
-            if (!IsNeedUpdate(path, chamelonPath))
-            {
-                return;
-            }
-
-            string directory = IsMao ? "Applications/firefox.app" : Path.GetDirectoryName(path);
-            string directoryForCopy = IsMao ? Path.Combine(_applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app")
-            : Path.Combine(_applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory);
-
-
-            //
-
-            if (Directory.Exists(directoryForCopy))
-            {
-                Directory.Delete(directoryForCopy, true);
-            }
-
-            //Directory.CreateDirectory(directoryForCopy);
-
-            //File.Copy(directory,directoryForCopy,true);
-
-            CopyFolder(directory, directoryForCopy);
-            //if(!IsMao)
-            AddAutoloadTemporaryAddon(Path.Combine(directoryForCopy));
+            File.Copy(filePath, newFile);
         }
 
-        private bool IsNeedUpdate(string systemFirefox, string chamelonFirefox)
+        string[] subdirectoryPaths = Directory.GetDirectories(directory);
+        foreach (string subdirectory in subdirectoryPaths)
         {
-            if (!Path.Exists(chamelonFirefox))
-            {
-                return true;
-            }
+            string subdirectoryName = Path.GetFileName(subdirectory);
+            string newSubdirectory = Path.Combine(directoryForCopy, subdirectoryName);
 
-            FileVersionInfo systemFirefoxInfo = FileVersionInfo.GetVersionInfo(systemFirefox);
-            FileVersionInfo chamelonFirefoxInfo = FileVersionInfo.GetVersionInfo(chamelonFirefox);
-
-            bool isEqual = chamelonFirefoxInfo.ProductMajorPart == systemFirefoxInfo.ProductMajorPart
-                && chamelonFirefoxInfo.ProductMinorPart == systemFirefoxInfo.ProductMinorPart;
-
-            return !isEqual;
+            CopyFolder(subdirectory, newSubdirectory);
         }
+    }
 
-        private void CopyFolder(string directory, string directoryForCopy)
-        {
-            Directory.CreateDirectory(directoryForCopy);
-
-            string[] filePaths = Directory.GetFiles(directory);
-            foreach (string filePath in filePaths)
-            {
-                string fileName = Path.GetFileName(filePath);
-                string newFile = Path.Combine(directoryForCopy, fileName);
-
-                File.Copy(filePath, newFile);
-            }
-
-            string[] subdirectoryPaths = Directory.GetDirectories(directory);
-            foreach (string subdirectory in subdirectoryPaths)
-            {
-                string subdirectoryName = Path.GetFileName(subdirectory);
-                string newSubdirectory = Path.Combine(directoryForCopy, subdirectoryName);
-
-                CopyFolder(subdirectory, newSubdirectory);
-            }
-        }
-
-        private void AddAutoloadTemporaryAddon(string directory)
-        {
-            var GetinstallExtension = IsMao ? 
-            "await installExtension(`${folder}/ChameleonAutoExt/autoproxy.chameleon.zip`, true);"
-            : "await installExtension(`${folder}\\\\ChameleonAutoExt\\\\autoproxy.chameleon.zip`, true);"
+    private void AddAutoloadTemporaryAddon(string directory)
+    {
+        var GetinstallExtension = IsMao ?
+        "await installExtension(`${folder}/ChameleonAutoExt/autoproxy.chameleon.zip`, true);"
+        : "await installExtension(`${folder}\\\\ChameleonAutoExt\\\\autoproxy.chameleon.zip`, true);"
 ;
-            string userChrome = """ 
+        string userChrome = """ 
                     // First line is always a comment
                     lockPref("a.b.c.d", "1.2.3.4"); // Debugging Firefox AutoConfig Problems
 
@@ -186,8 +150,8 @@ namespace Chameleon.SystemBrowser.Firefox
                         var folder = Services.dirsvc.get("ProfD", Ci.nsIFile).path; 
 
                     """ +
-                    $"{GetinstallExtension}"
-                    + """
+                $"{GetinstallExtension}"
+                + """
                     
                     await setPermission("autoproxy@chameleonmode.com");
                 }
@@ -248,7 +212,7 @@ namespace Chameleon.SystemBrowser.Firefox
                 lockPref("e.f.g.h", "5.6.7.8"); // Debugging Firefox AutoConfig Problems
                 """;
 
-            string configPrefs = """
+        string configPrefs = """
                 // config-prefs.js file for [Firefox program folder]\defaults\pref
                 pref("general.config.obscure_value", 0);
                 // the file named in the following line must be in [Firefox program folder]
@@ -257,33 +221,32 @@ namespace Chameleon.SystemBrowser.Firefox
                 pref("general.config.sandbox_enabled", false);
                 """;
 
-            var ucp = Path.Combine(directory, "Contents", "Resources",
-            "userChrome.js");
-            var cpp = Path.Combine(directory, "Contents", "Resources", "defaults", "pref",
-            "config-prefs.js");
-            if (!IsMao)
-            {
-                ucp = Path.Combine(directory, "userChrome.js");
-                cpp = Path.Combine(directory, "defaults", "pref", "config-prefs.js");
-            }
-            File.WriteAllText(ucp, userChrome);
-            File.WriteAllText(cpp, configPrefs);
-        }
-
-        private string GetSystemBrowserExePath()
+        var ucp = Path.Combine(directory, "Contents", "Resources",
+        "userChrome.js");
+        var cpp = Path.Combine(directory, "Contents", "Resources", "defaults", "pref",
+        "config-prefs.js");
+        if (!IsMao)
         {
-            return _systemBrowserInfoManager
-                .FindByName("firefox")
-                .Path;
+            ucp = Path.Combine(directory, "userChrome.js");
+            cpp = Path.Combine(directory, "defaults", "pref", "config-prefs.js");
         }
+        File.WriteAllText(ucp, userChrome);
+        File.WriteAllText(cpp, configPrefs);
+    }
 
-        private string GetBrowserExePath()
-        {
-            string path = OperatingSystem.IsMacOS()
-                ? Path.Combine(_applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app", "Contents", "MacOS", "firefox")
-                : Path.Combine(_applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.exe");
+    private string GetSystemBrowserExePath()
+    {
+        return _systemBrowserInfoManager
+            .FindByName("firefox")
+            .Path;
+    }
 
-            return path;
-        }
+    private string GetBrowserExePath()
+    {
+        string path = OperatingSystem.IsMacOS()
+            ? Path.Combine(_applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app", "Contents", "MacOS", "firefox")
+            : Path.Combine(_applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.exe");
+
+        return path;
     }
 }

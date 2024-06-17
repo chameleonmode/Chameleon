@@ -10,7 +10,7 @@ namespace Chameleon.SystemBrowser
 {
     public class SystemBrowserInfoManager : ISystemBrowserInfoManager
     {
-        private string[] IgnoreStartMenuInternetKeys = new[]
+        private string[] IgnoreStartMenuInternetKeys = 
         {
             "VMWAREHOSTOPEN.EXE"
         };

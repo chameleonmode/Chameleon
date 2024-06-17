@@ -176,7 +176,7 @@ public partial class ProxyCreditViewModel
             IsLoadingIndicatorVisible = false;
         }
 
-        Core.Util.ProcessesUtil.GoToUrlDefault(proxyCreditOrder.Url);
+        Core.Util.ProUtil.GoToUrlDefault(proxyCreditOrder.Url);
     }
 
     private async Task UpdateBalanceAsync()

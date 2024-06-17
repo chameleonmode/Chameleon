@@ -230,7 +230,7 @@ namespace Chameleon.Infrastructure.Profiles
             //_dialogWindowsService.ShowDialogWindow(_upgradePlanPopupView, "PROFILES LIMIT REACHED", initialize);
 
             if (await MesageBoxHelper.ShowAsync("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
-                ProcessesUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
+                ProUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
         }
 
         public void Import(IUserProfile userProfile)

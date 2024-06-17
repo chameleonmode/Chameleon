@@ -173,12 +173,12 @@ public partial class AssistantUsersViewModel
     private async void ShowOutOfLimitPopup()
     {
         if(await MesageBoxHelper.ShowAsync("USERS LIMIT REACHED", "You have reached the maximum number of users."))
-            ProcessesUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
+            ProUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
     }
     private void SendLicenceKey(string emailAddress, string password)
     {
         var url = $"mailto:{emailAddress}?subject=Chameleon invitation&body=You’ve been invited to Chameleon. Your credentials:%0DEmail: {emailAddress}%0DKey: {password}%0D";
-        ProcessesUtil.GoToUrlDefault(url);
+        ProUtil.GoToUrlDefault(url);
     }
     private void OnUserAssistantDeleted(DeletedUserAssistantEventArgs args)
     {

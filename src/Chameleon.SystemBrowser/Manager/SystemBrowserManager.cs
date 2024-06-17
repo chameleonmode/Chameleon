@@ -1,46 +1,29 @@
-﻿using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.Ioc;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.SystemBrowser.Browsers.Brave;
-using Chameleon.SystemBrowser.Chrome;
-using Chameleon.SystemBrowser.Firefox;
-using Microsoft.Playwright;
-
-namespace Chameleon.SystemBrowser
+﻿namespace Chameleon.SystemBrowser;
+public class SystemBrowserManager(IHaveContainerProvider containerProvider) : ISystemBrowserManager
 {
-    public class SystemBrowserManager : ISystemBrowserManager
-    {
-        private readonly Dictionary<SystemBrowserType, Type> _mapping =
-            new Dictionary<SystemBrowserType, Type>()
-            {
+    private readonly Dictionary<SystemBrowserType, Type> _mapping =
+        new Dictionary<SystemBrowserType, Type>()
+        {
                 { SystemBrowserType.Chrome, typeof(IChromeSystemBrowser) },
                 { SystemBrowserType.Firefox, typeof(IFirefoxSystemBrowser) },
                 { SystemBrowserType.Brave, typeof(IBraveSystemBrowser) },
-            };
+        };
 
-        private readonly IHaveContainerProvider _containerProvider;
-        public static IPlaywright Blaywright { get; set; }
-
-        public SystemBrowserManager(IHaveContainerProvider containerProvider)
+    public static IPlaywright Blaywright { get; set; }
+    public ISystemBrowser Get(SystemBrowserType browserType)
+    {
+        if (_mapping.TryGetValue(browserType, out var type))
         {
-            _containerProvider = containerProvider;
+            return (ISystemBrowser)containerProvider.Resolve(type);
         }
+        throw new KeyNotFoundException(browserType.ToString());
+    }
 
-        public ISystemBrowser Get(SystemBrowserType browserType)
+    public static ContainerServiceHelper Current
+    {
+        get
         {
-            if (_mapping.TryGetValue(browserType, out var type))
-            {
-                return (ISystemBrowser)_containerProvider.Resolve(type);
-            }
-            throw new KeyNotFoundException(browserType.ToString());
-        }
-
-        public static ContainerServiceHelper Current
-        {
-            get
-            {
-                return (ContainerServiceHelper)ContainerServiceHelper.Current.ContainerProvider.Resolve<ISystemBrowserManager>();
-            }
+            return (ContainerServiceHelper)ContainerServiceHelper.Current.ContainerProvider.Resolve<ISystemBrowserManager>();
         }
     }
 }

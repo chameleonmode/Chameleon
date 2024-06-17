@@ -1,17 +1,9 @@
-﻿using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.WebBrowser;
-
-namespace Chameleon.SystemBrowser.Browsers;
+﻿namespace Chameleon.SystemBrowser.Browsers;
 
 public abstract class SystemBrowserBase : ISystemBrowser
 {
     private readonly Dictionary<int, ISystemBrowserInstance> instances = [];
-    public Dictionary<int, ISystemBrowserInstance> Instances => instances;
-
-
     private long _isBusy;
-    public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
-
 
     public virtual async Task<ISystemBrowserInstance> Open(ISystemBrowserLaunchOptions o)
     {
@@ -45,4 +37,8 @@ public abstract class SystemBrowserBase : ISystemBrowser
     {
         Instances.Remove(o.UserProfile.Id);
     }
+
+    public bool IsMao => OperatingSystem.IsMacOS();
+    public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
+    public Dictionary<int, ISystemBrowserInstance> Instances => instances;
 }

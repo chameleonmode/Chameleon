@@ -170,7 +170,7 @@ public partial class ProjectsViewModel : PageViewModelBase,
             if (ex.Message == "limit_ex")
             {
                 if (await MesageBoxHelper.ShowAsync("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
-                    ProcessesUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
+                    ProUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
             }
             else
             {
