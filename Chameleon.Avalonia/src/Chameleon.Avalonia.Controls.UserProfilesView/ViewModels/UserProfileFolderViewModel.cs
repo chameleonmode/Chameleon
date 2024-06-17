@@ -1,8 +1,6 @@
 ﻿using Chameleon.Application.Events;
 using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
-using Chameleon.Interfaces.App.Automation.ViewModels;
-using Chameleon.Interfaces.App.Automation.Views;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.Auth;
@@ -34,8 +32,6 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         set => SetProperty(ref _selectedUserProfiles, value);
     }
 
-    public bool IsFolderNotEmpty => GetProfilesByCurrentFolder().Any();
-
     public UserProfileFolderViewModel(
         IApplicationUser currentUser,
         IUserProfileFolder folder,
@@ -61,7 +57,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
 
     public IUserProfileFolder UserProfileFolder => _folder;
 
-   [RelayCommand]
+    [RelayCommand]
     public void Open()
     {
         foldervm.OnNavigatingTo(UserProfileFolder);
@@ -89,22 +85,9 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
 
         EventAggregator
             .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-            .Publish(new ChangeProfilesInFavoriteFolderEventArgs(UserProfileFolder.Id)); 
-        
+            .Publish(new ChangeProfilesInFavoriteFolderEventArgs(UserProfileFolder.Id));
+
         OnPropertyChanged(nameof(UserProfileFolder));
-    }
-
-    [RelayCommand]
-    private async Task OpenAutomation()
-    {
-        var userProfilesToApply = GetProfilesByCurrentFolder();
-
-        var result = await ContentDialogService
-           .ShowAsync<ISelectAutomationPopupView, ISelectAutomationPopupViewModel>(viewModel =>
-           {
-               viewModel.Title = "Select Automation";
-               viewModel.UserProfiles = userProfilesToApply;
-           });
     }
 
     private IList<IUserProfile> GetProfilesByCurrentFolder()
@@ -129,7 +112,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             return;
         }
     }
-    
+
     [RelayCommand]
     private async Task Delete()
     {
@@ -142,12 +125,12 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             await ContainerServiceHelper.Resolve<IUserProfileFolderEventHandler>().DeleteFolder(_folder);
             foldervm.AllProfiles.Open();
         }
-           // EventAggregator.Publish<DeleteUserProfileFolderEvent, UserProfileFolderEventArgs>(new UserProfileFolderEventArgs(_folder));
-                //.GetEvent<DeleteUserProfileFolderEvent>()
-                //.Publish(new UserProfileFolderEventArgs(_folder));
+        // EventAggregator.Publish<DeleteUserProfileFolderEvent, UserProfileFolderEventArgs>(new UserProfileFolderEventArgs(_folder));
+        //.GetEvent<DeleteUserProfileFolderEvent>()
+        //.Publish(new UserProfileFolderEventArgs(_folder));
     }
 
-   [RelayCommand]
+    [RelayCommand]
     private void StartRename()
     {
         Title = _folder.Title;
@@ -214,7 +197,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             }
         }
     }
-    
+
     [ObservableProperty]
     private bool _isRenamed;
 
@@ -224,5 +207,5 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     public IApplicationUser CurrentUser => _currentUser;
     public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(_folder);
     public bool IsContextMenuItemEnabled => !CurrentUser.IsAssistant;
-    
+
 }
