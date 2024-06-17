@@ -717,7 +717,7 @@ public partial class UserProfilesViewModel
             { 
                 Name = sp.Name,
                 Value = sp.Value,
-                Id = sp.Id
+                ParameterId = sp.Id
             }).ToList()
         };
         var profiles = _selectedProfiles.Select(p => (IUserProfile)p.UserProfile).ToList();
