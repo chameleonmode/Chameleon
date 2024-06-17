@@ -13,7 +13,7 @@ public class ChromeSystemBrowserInstance(
 
     protected override async Task InitializeProfileFolder()
     {
-        await Task.Run(() => setPreferencesService.SetPreferences(UserProfile.WebBrowser, _browserProfileFolderPath, BrowserType));
+        await Task.Run(() => setPreferencesService.SetPreferences(UserProfile.WebBrowser, BrowserProfileFolderPath, BrowserType));
     }
 }
 

@@ -137,7 +137,8 @@ public static class U32til
 [SupportedOSPlatform("windows")]
 public class MWHandleTrackerUtility
 {         
-    private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+    private readonly CancellationTokenSource _cts = new CancellationTokenSource();  
+    private readonly List<int> _childProcessIds = [];
 
     private IntPtr _mainWindowHandle = IntPtr.Zero;
     private Process _process;
@@ -152,6 +153,7 @@ public class MWHandleTrackerUtility
     private void StartTracking()
     {
         new Thread(() => TrackMainWindowHandle(_cts.Token)) { IsBackground = true }.Start();
+        new Thread(() => MonitorChildProcesses(_cts.Token)) { IsBackground = true }.Start();
     }
 
     private void TrackMainWindowHandle(CancellationToken token)
@@ -160,10 +162,14 @@ public class MWHandleTrackerUtility
         {
             if (_process.HasExited || _mainWindowHandle == IntPtr.Zero)
             {
-                var childProcess = ProUtil.GetChildProcess(_process.Id);
-                if (childProcess != null)
+                foreach (var childId in _childProcessIds)
                 {
-                    _process = childProcess;
+                    var childProcess = Process.GetProcessById(childId);
+                    if (childProcess != null && !childProcess.HasExited)
+                    {
+                        _process = childProcess;
+                        break;
+                    }
                 }
             }
 
@@ -172,11 +178,30 @@ public class MWHandleTrackerUtility
             {
                 _mainWindowHandle = handle;
                 var tcs = _tcs;
-                _tcs = new TaskCompletionSource<Tuple<IntPtr, Process>>();
+                _tcs = new ();
                 tcs.SetResult(new (_mainWindowHandle, _process));
             }
+            Thread.Sleep(1000);  // Poll every second
+        }
+    }
 
-            Thread.Sleep(500);  // Poll every second
+    private void MonitorChildProcesses(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
+        {
+            var currentProcesses = Process.GetProcesses().Where(p=>p.Id !=0);
+            foreach (var process in currentProcesses)
+            {
+                try
+                {
+                    if (!_childProcessIds.Contains(process.Id) && process.ParentProcessId() == _process.Id)
+                    {
+                        _childProcessIds.Add(process.Id);
+                    }
+                }
+                catch (Exception ex) { Console.WriteLine(ex.StackTrace); }
+            }
+            Thread.Sleep(2000);  // Poll every two seconds
         }
     }
 

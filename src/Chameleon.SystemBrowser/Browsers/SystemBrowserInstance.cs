@@ -1,69 +1,29 @@
-﻿namespace Chameleon.SystemBrowser.Common;
+﻿using System.Diagnostics;
 
-public abstract class SystemBrowserInstance : ISystemBrowserInstance
+namespace Chameleon.SystemBrowser.Common;
+
+public abstract class SystemBrowserInstance(
+    IEventAggregator eventAggregator,
+    ISystemBrowserLaunchOptions options,
+    IUserDefaultSettingsService userDefaultsSettingsService,
+    string browserDataFolderPath,
+    string browserExeFilePath) 
+    : ISystemBrowserInstance
 {
     public event Action<ISystemBrowserLaunchOptions> OnProcessClosed;
-
-    protected readonly string _browserExeFilePath;
-    protected readonly string _browserDataFolderPath;
-    protected readonly string _browserProfileFolderPath;
-
-    private readonly IEventAggregator _eventAggregator;
-    private readonly ISystemBrowserLaunchOptions _options;
-    private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
-
-    private readonly List<IntPtr> winEventHooks = new List<IntPtr>();
-    private U32.WinEventDelegate winEventsCaptureDelegate;
-
-    public ISystemBrowserLaunchOptions Options => _options;
-    public IUserProfile UserProfile => _options.UserProfile;
-
-    private string proxyextdir;
-    public bool IsMao => OperatingSystem.IsMacOS();
-
-    public string Starturl { get; private set; } = "https://www.duckduckgo.com/";
-
-    protected string BrowserExtensionsRootFolderPath { get; set; }
-    protected string BrowserExtensionsFolderPath { get; set; }
-
-    public Process? Brocess { get; private set; } = null;
-    public IntPtr Handle { get; private set; } = IntPtr.Zero;
-
-    public IBrowserContext BrowserContext { get; set; }
-
-    public int Port { get; private set; }
-
-    protected SystemBrowserInstance(
-        IEventAggregator eventAggregator,
-        ISystemBrowserLaunchOptions options,
-        IUserDefaultSettingsService userDefaultsSettingsService,
-        string browserDataFolderPath,
-        string browserExeFilePath
-        )
-    {
-        _eventAggregator = eventAggregator;
-        _options = options;
-        _userDefaultsSettingsService = userDefaultsSettingsService;
-        _browserExeFilePath = browserExeFilePath;
-        _browserDataFolderPath = browserDataFolderPath;
-        _browserProfileFolderPath = Path.Combine(_browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
-
-        if (IsMao)
-            BrowserExtensionsRootFolderPath = "/Applications/Chameleon.app/Contents/Resources/BrowserExtensions/mac";
-        else
-            BrowserExtensionsRootFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "BrowserExtensions");
-    }
+                                        
+    private readonly string pexdir = Guid.NewGuid().ToString();
+    private readonly List<IntPtr> winEventHooks = []; 
+                                                   
+    private U32.WinEventDelegate winEventsCaptureDelegate;  
 
     public async Task Open()
     {
-        if (Brocess is null || Handle == IntPtr.Zero || (!IsMao && !U32.IsWindow(Handle)))
+        if (Brocess is null || Handle == IntPtr.Zero)
         {
-            var userSettings = await Task.Run(() => _userDefaultsSettingsService.GetAll());
-            if (userSettings != null && userSettings.Any())
-            {
-                Starturl = userSettings[new Random().Next(userSettings.Count)].DefaultUrl;
-            }
-            Port = SystemBrowserInstance.NextFreePort(9613);
+            Starturl = await userDefaultsSettingsService.GetRandomUrlAsync();
+            Port = Netil.NextFreePort(9613);
+
             await EnsureProfileFolderCreated();
             await InitializeProfileFolder();
             await InitializeExtensionPath();
@@ -74,8 +34,11 @@ public abstract class SystemBrowserInstance : ISystemBrowserInstance
         {
             if (!IsMao)
             {
-                U32.SetForegroundWindow(Handle);
-                U32.SetActiveWindow(Handle);
+                if (U32.IsWindow(Handle))
+                {
+                    U32.SetForegroundWindow(Handle);
+                    U32.SetActiveWindow(Handle);
+                }
             }
             else
             {
@@ -87,90 +50,24 @@ public abstract class SystemBrowserInstance : ISystemBrowserInstance
 
     protected virtual async Task InitializeExtensionPath()
     {
-        //proxyext
-        proxyextdir = Path.Combine(_browserProfileFolderPath, "ChameleonAutoExt");
-        await Task.Run(async () =>
-        {
-            await IOtil.DeleteDExistsAsync(Path.Combine(_browserProfileFolderPath, "proxyext"));
-            await IOtil.DeleteDExistsAsync(proxyextdir);
-        });
-
-        proxyextdir = Path.Combine(_browserProfileFolderPath, "ChameleonAutoExt", Guid.NewGuid().ToString());
+        await IOtil.DeleteDExistsAsync(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath));
 
         if (HasProxyLogin)
         {
-            //from：https://github.com/henices/Chrome-proxy-helper
-            var manifestjson = """
-                {
-                  "manifest_version": 3,
-                  "name": "Chameleon Auto Proxy",
-                  "version": "1.0.0",
-                  "permissions": [
-                    "webRequest",
-                    "webRequestBlocking",
-                    "webRequestAuthProvider",
-                    "<all_urls>"
-                  ],
-                  "host_permissions": [
-                    "<all_urls>"
-                  ],
-                  "background": {
-                    "service_worker": "background.js"
-                  }
-                }
-                """;
+            await IOtil.CreateDirectory(ProxyExtDir);
 
-            //"background": {
-            //    "service_worker": "background.js"
-            //  }
-            //"background": {
-            //  "scripts": ["background.js"]
-            //}
-            //var background_js = """
-            //          chrome.webRequest.onAuthRequired.addListener((details, callback) => {
-            //              callback({
-            //                authCredentials: {
-            //          """
-            //            + "username:" + $"\"{UserProfile.Proxy.UserName}\","
-            //            + "password: " + $"\"{UserProfile.Proxy.Password}\"" +
-            //           """
-            //          }
-            //        });
-            //      },
-            //      { urls: ['<all_urls>'] },
-            //      ['asyncBlocking']
-            //    );
-            //    """;
-            var backgroundjS = """
-                          chrome.webRequest.onAuthRequired.addListener((details) => {
-                          return { authCredentials: {
-                          """
-                        + "username:" + $"\"{UserProfile.Proxy.UserName}\","
-                        + "password: " + $"\"{UserProfile.Proxy.Password}\"" +
-                       """
-                          }
-                        };
-                      },
-                      { urls: ['<all_urls>'] }, ['blocking']);
-                      chrome.tabs.reload();
-                    """;
-
-            if (!Directory.Exists(proxyextdir))
-                Directory.CreateDirectory(proxyextdir);
-
-            await File.WriteAllTextAsync(Path.Combine(proxyextdir, "manifest.json"), manifestjson);
-            await File.WriteAllTextAsync(Path.Combine(proxyextdir, "background.js"), backgroundjS);
+            await IOtil.WriteTextToFileAsync(Path.Combine(ProxyExtDir, "manifest.json"), ProxyAddonUtil.GetManifestv3());
+            await IOtil.WriteTextToFileAsync(Path.Combine(ProxyExtDir, "background.js"), ProxyAddonUtil.GetBgJsv3(UserProfile.Proxy));
         }
-
-        BrowserExtensionsFolderPath = Path.Combine(BrowserExtensionsRootFolderPath, BrowserType.ToString());
     }
+
     protected virtual async Task StartProcess()
     {
         Brocess = new Process
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = _browserExeFilePath,
+                FileName = browserExeFilePath,
                 Arguments = GetCommandLineArguments(),
                 UseShellExecute = true,
                 ErrorDialog = true,
@@ -178,93 +75,66 @@ public abstract class SystemBrowserInstance : ISystemBrowserInstance
             EnableRaisingEvents = true,
         };
         Brocess.Start();
-        await Task.Delay(500);
-        Brocess.Refresh();
 
-        if (!IsMao && BrowserType == SystemBrowserType.Firefox)
+
+        if (IsMao)
         {
+            Handle = Brocess.Handle;
+        }
+        else
+        {
+            await Task.Delay(500);
             MWHandleTrackerUtility tracker = new(Brocess);
             var newHandle = await tracker.WaitForMainWindowHandleChangeAsync();
             Brocess = newHandle.Item2;
             Handle = Brocess.MainWindowHandle;
             tracker.StopTracking();
-            //await GotMainFFHandle(Brocess, 0);
-        }
-        else
-        {
-            Brocess.Exited += new EventHandler(Process_Exited);
 
-            int waited = 0;
-            do
-            {
-                await Task.Delay(500);
-                if (!IsMao)
-                {
-                    Handle = Brocess.MainWindowHandle;
-
-                    if (U32.IsWindow(Handle))
-                        break;
-                }
-                else
-                {
-                    //Handle = Macops.GetMainWindow(Brocess.Id);TODO:?
-                    Handle = Brocess.Handle;
-                }
-            }
-            while (waited++ <= 9 && Handle == IntPtr.Zero);
+            SetWin32Events();
         }
 
-        SetWin32Events();
-        PublishOpendedEvent(Brocess);
+        Brocess.Exited += new EventHandler(Process_Exited);
+
+        eventAggregator
+            .GetEvent<ForegroundUserSystemBrowserEvent>()
+            .Publish(GetArgs(Brocess));
+        eventAggregator
+            .GetEvent<OpenedUserSystemBrowserEvent>()
+            .Publish(GetArgs(Brocess));
     }
+
 
     private void SetWin32Events()
     {
         if (Brocess != null && Handle != IntPtr.Zero)
         {
             winEventsCaptureDelegate = WinEventProc;
-            if (IsMao)
-            {
-                //TODO
-                //Macops.RegisterFocusObserver(Brocess.Id, (t) => 
-                //{
 
-                //});
-            }
-            else
+            // capture EVENT_OBJECT_FOCUS
+            this.winEventHooks.Add(U32.SetWinEventHook(
+                User32Events.EVENT_OBJECT_FOCUS,
+                User32Events.EVENT_OBJECT_FOCUS,
+                IntPtr.Zero,
+                winEventsCaptureDelegate,
+                (uint)Brocess.Id,
+                0,
+                (uint)User32Events.WINEVENT_OUTOFCONTEXT));
+
+            if (BrowserType == SystemBrowserType.Firefox)
             {
-                // capture EVENT_OBJECT_FOCUS
+                // capture window close
                 this.winEventHooks.Add(U32.SetWinEventHook(
-                    User32Events.EVENT_OBJECT_FOCUS,
-                    User32Events.EVENT_OBJECT_FOCUS,
+                    User32Events.EVENT_OBJECT_DESTROY,
+                    User32Events.EVENT_OBJECT_DESTROY,
                     IntPtr.Zero,
                     winEventsCaptureDelegate,
                     (uint)Brocess.Id,
                     0,
                     (uint)User32Events.WINEVENT_OUTOFCONTEXT));
-
-                if (BrowserType == SystemBrowserType.Firefox)
-                {
-                    // capture window close
-                    this.winEventHooks.Add(U32.SetWinEventHook(
-                        User32Events.EVENT_OBJECT_DESTROY,
-                        User32Events.EVENT_OBJECT_DESTROY,
-                        IntPtr.Zero,
-                        winEventsCaptureDelegate,
-                        (uint)Brocess.Id,
-                        0,
-                        (uint)User32Events.WINEVENT_OUTOFCONTEXT));
-                }
-
-                //TODO: User32.SendMessage((IntPtr)Handle, User32.WM_SETTEXT,0, new System.Text.StringBuilder(UserProfile.Title));
-
-                U32.SetForegroundWindow((IntPtr)Handle);
-                U32.SetActiveWindow((IntPtr)Handle);
             }
 
-            _eventAggregator
-                     .GetEvent<ForegroundUserSystemBrowserEvent>()
-                     .Publish(GetArgs(Brocess));
+            U32.SetForegroundWindow(Handle);
+            U32.SetActiveWindow(Handle);
         }
     }
     private void WinEventProc(IntPtr hWinEventHook, User32Events eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
@@ -274,7 +144,7 @@ public abstract class SystemBrowserInstance : ISystemBrowserInstance
             case User32Events.EVENT_OBJECT_FOCUS:
                 if (hwnd == Handle)
                 {
-                    _eventAggregator
+                    eventAggregator
                         .GetEvent<ForegroundUserSystemBrowserEvent>()
                         .Publish(GetArgs(Brocess));
                 }
@@ -307,41 +177,10 @@ public abstract class SystemBrowserInstance : ISystemBrowserInstance
 
     private void Process_Exited(object sender, EventArgs e)
     {
-        //if (BrowserType == SystemBrowserType.Firefox)
-        //{
-        //    if (await GotMainFFHandle(sender as Process, 0))
-        //        return;
-        //}
-
         Cleanup();
     }
 
-    private async Task<bool> GotMainFFHandle(Process? process, int trys)
-    {
-        Process[] firefoxInstances = Process.GetProcessesByName("firefox");
-
-        foreach (Process firefoxInstance in firefoxInstances)
-        {
-            if (!firefoxInstance.HasExited &&
-                firefoxInstance.StartTime > process.StartTime &&
-                firefoxInstance.MainWindowHandle != IntPtr.Zero)
-            {
-                Brocess = firefoxInstance;
-                Handle = Brocess.MainWindowHandle;
-                Brocess.Exited += new EventHandler(Process_Exited);
-                return true;
-            }
-        }
-        if (trys++ < 10)
-        {
-            await Task.Delay(500);
-            return await GotMainFFHandle(process, trys);
-        }
-        else
-            return false;
-    }
-
-    protected virtual async void Cleanup()
+    protected virtual void Cleanup()
     {
         ExUtil.TryCatch(() =>
         {
@@ -355,8 +194,9 @@ public abstract class SystemBrowserInstance : ISystemBrowserInstance
 
         Brocess = null;
         Handle = IntPtr.Zero;
-        OnProcessClosed?.Invoke(Options);
-        _eventAggregator
+        OnProcessClosed?.Invoke(options);
+
+        eventAggregator
            .GetEvent<ClosedUserSystemBrowserEvent>()
            .Publish(GetArgs(Brocess));
     }
@@ -365,26 +205,14 @@ public abstract class SystemBrowserInstance : ISystemBrowserInstance
                 UserProfile,
                 BrowserType,
                 process,
-                Options.Url,
-                Options.SignIn
+                options.Url,
+                options.SignIn
                 );
-    private void PublishOpendedEvent(Process process)
+
+    private async Task EnsureProfileFolderCreated()
     {
-        _eventAggregator
-            .GetEvent<OpenedUserSystemBrowserEvent>()
-            .Publish(GetArgs(process));
-    }
-
-    private Task EnsureProfileFolderCreated()
-    {
-        if (BrowserType != SystemBrowserType.Firefox)
-            if (!Directory.Exists(_browserProfileFolderPath))
-            {
-                Directory.CreateDirectory(_browserProfileFolderPath);
-
-            }
-
-        return OnProfileFolderCreated();
+        await IOtil.CreateDirectory(BrowserProfileFolderPath);
+        await OnProfileFolderCreated();
     }
 
     protected virtual Task OnProfileFolderCreated()
@@ -402,7 +230,7 @@ public abstract class SystemBrowserInstance : ISystemBrowserInstance
         var exts = GetLoadExtensionsArgument();
         List<string> args =
             [
-                $"--user-data-dir=\"{_browserProfileFolderPath}\"",
+                $"--user-data-dir=\"{BrowserProfileFolderPath}\"",
                 "--restore-last-session",
                 "--new-window",
                 $"--window-name=\"{UserProfile.Title}\"",
@@ -424,8 +252,8 @@ public abstract class SystemBrowserInstance : ISystemBrowserInstance
             args.Add($"--proxy-server=http://{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}");
             //args.Add($"--proxy-auth={UserProfile.Proxy.UserName}:{UserProfile.Proxy.Password}");
 
-            if (Directory.Exists(proxyextdir))
-                exts = exts.HasAny() ? $"{exts},{proxyextdir}" : proxyextdir;
+            if (Directory.Exists(ProxyExtDir))
+                exts = exts.HasAny() ? $"{exts},{ProxyExtDir}" : ProxyExtDir;
         }
         if (exts.HasAny())
             args.Add($"--load-extension=\"{exts}\"");
@@ -465,27 +293,35 @@ public abstract class SystemBrowserInstance : ISystemBrowserInstance
              .ToCommaSeparatedString();
     }
 
-    public static bool IsFree(int port)
-    {
-        IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
-        IPEndPoint[] listeners = properties.GetActiveTcpListeners();
-        int[] openPorts = listeners.Select(item => item.Port).ToArray<int>();
-        return openPorts.All(openPort => openPort != port);
-    }
+    public string BrowserProfileFolderPath =>
+    Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
 
-    public static int NextFreePort(int port = 0)
-    {
-        port = (port > 0) ? port : new Random().Next(1, 65535);
-        while (!IsFree(port))
-        {
-            port += 1;
-        }
-        return port;
-    }
-    protected abstract SystemBrowserType BrowserType { get; }
-    public bool HasProxyLogin => UserProfile.Proxy?.CanUse == true &&
+    protected string BrowserExtensionsFolderPath =>
+        Path.Combine(BrowserExtensionsRootFolderPath, BrowserType.ToString());
+
+    protected string BrowserExtensionsRootFolderPath => IsMao ?
+        "/Applications/Chameleon.app/Contents/Resources/BrowserExtensions/mac"
+        : Path.Combine(Directory.GetCurrentDirectory(), "BrowserExtensions");
+
+    public string ProxyExtDir =>
+        Path.Combine(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath), pexdir);
+
+    public IUserProfile UserProfile =>
+        options.UserProfile;
+
+    public bool IsMao =>
+        OperatingSystem.IsMacOS();
+
+    public bool HasProxyLogin =>
+        UserProfile.Proxy?.CanUse == true &&
         UserProfile.Proxy.Host.HasAny() &&
         UserProfile.Proxy.UserName.HasAny() &&
         UserProfile.Proxy.Password.HasAny();
+
+    public string Starturl { get; private set; }
+    public int Port { get; private set; }
+    public Process? Brocess { get; private set; }
+    public IntPtr Handle { get; private set; } = IntPtr.Zero;
+    protected abstract SystemBrowserType BrowserType { get; }
 }
 

@@ -5,7 +5,6 @@ public class FirefoxSystemBrowser(
         ISystemBrowserInfoManager systemBrowserInfoManager,
         IUserDefaultSettingsService userDefaultsSettingsService) : SystemBrowserBase, IFirefoxSystemBrowser
 {
-
     public const string FirefoxChameleonDirectory = "FirefoxChameleon";
 
     public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
@@ -25,59 +24,23 @@ public class FirefoxSystemBrowser(
         string path = GetSystemBrowserExePath();
         string chamelonPath = GetBrowserExePath();
 
-        if (!IsNeedUpdate(path, chamelonPath))
+        if (!IOtil.IsNeedUpdate(path, chamelonPath))
         {
             return;
         }
 
-        string directory = IsMao ? "Applications/firefox.app" : Path.GetDirectoryName(path);
-        string directoryForCopy = IsMao ? Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app")
-        : Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory);
+        string directory = IsMao ?
+            "Applications/firefox.app" 
+            : Path.GetDirectoryName(path);
+        string directoryForCopy = IsMao ?
+            Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app")
+            : Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory);
 
 
         IOtil.DeleteDExistsAsync(directoryForCopy);
 
-        CopyFolder(directory, directoryForCopy);
+        IOtil.CopyFolder(directory, directoryForCopy);
         AddAutoloadTemporaryAddon(Path.Combine(directoryForCopy));
-    }
-
-    private bool IsNeedUpdate(string systemFirefox, string chamelonFirefox)
-    {
-        if (!Path.Exists(chamelonFirefox))
-        {
-            return true;
-        }
-
-        FileVersionInfo systemFirefoxInfo = FileVersionInfo.GetVersionInfo(systemFirefox);
-        FileVersionInfo chamelonFirefoxInfo = FileVersionInfo.GetVersionInfo(chamelonFirefox);
-
-        bool isEqual = chamelonFirefoxInfo.ProductMajorPart == systemFirefoxInfo.ProductMajorPart
-            && chamelonFirefoxInfo.ProductMinorPart == systemFirefoxInfo.ProductMinorPart;
-
-        return !isEqual;
-    }
-
-    private void CopyFolder(string directory, string directoryForCopy)
-    {
-        Directory.CreateDirectory(directoryForCopy);
-
-        string[] filePaths = Directory.GetFiles(directory);
-        foreach (string filePath in filePaths)
-        {
-            string fileName = Path.GetFileName(filePath);
-            string newFile = Path.Combine(directoryForCopy, fileName);
-
-            File.Copy(filePath, newFile);
-        }
-
-        string[] subdirectoryPaths = Directory.GetDirectories(directory);
-        foreach (string subdirectory in subdirectoryPaths)
-        {
-            string subdirectoryName = Path.GetFileName(subdirectory);
-            string newSubdirectory = Path.Combine(directoryForCopy, subdirectoryName);
-
-            CopyFolder(subdirectory, newSubdirectory);
-        }
     }
 
     private void AddAutoloadTemporaryAddon(string directory)

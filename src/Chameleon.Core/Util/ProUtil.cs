@@ -35,11 +35,11 @@ public static class ProUtil
 
     public static Process GetChildProcess(int parentId)
     {
-        return Process.GetProcessesByName("firefox").FirstOrDefault(p =>
+        return Process.GetProcesses().FirstOrDefault(p =>
         {
             try
             {
-                return p.ParentProcessId() == parentId && p.MainWindowHandle != IntPtr.Zero;
+                return p.Id != 0 && p.ParentProcessId() == parentId;
             }
             catch
             {
@@ -47,23 +47,26 @@ public static class ProUtil
             }
         });
     }
-
-    public static int ParentProcessId(this Process process)
-    {
-        var pbi = new Procvoke.PROCESS_BASIC_INFORMATION();
-        int status = Procvoke.NtQueryInformationProcess(process.Handle, 0, ref pbi, (uint)Marshal.SizeOf(pbi), out _);
-        if (status != 0)
-        {
-            throw new Exception("NtQueryInformationProcess failed");
-        }
-        return pbi.InheritedFromUniqueProcessId.ToInt32();
-    }
 }
 
 // Extension method to get the parent process ID
 public static partial class Procvoke
 {
-    public struct PROCESS_BASIC_INFORMATION
+    [LibraryImport("ntdll.dll", SetLastError = true)]
+    private static partial int NtQueryInformationProcess(IntPtr processHandle, int processInformationClass, ref PROCESS_BASIC_INFORMATION processInformation, uint processInformationLength, out uint returnLength);
+
+    public static int ParentProcessId(this Process process)
+    {
+        var pbi = new PROCESS_BASIC_INFORMATION();
+        int status = NtQueryInformationProcess(process.Handle, 0, ref pbi, (uint)Marshal.SizeOf(pbi), out uint returnLength);
+        if (status != 0)
+        {
+            throw new Exception("NtQueryInformationProcess failed with status: " + status);
+        }
+        return pbi.InheritedFromUniqueProcessId.ToInt32();
+    }
+
+    private struct PROCESS_BASIC_INFORMATION
     {
         public IntPtr ExitStatus;
         public IntPtr PebBaseAddress;
@@ -72,7 +75,4 @@ public static partial class Procvoke
         public IntPtr UniqueProcessId;
         public IntPtr InheritedFromUniqueProcessId;
     }
-
-    [LibraryImport("ntdll.dll", SetLastError = true)]
-    public static partial int NtQueryInformationProcess(IntPtr processHandle, int processInformationClass, ref PROCESS_BASIC_INFORMATION processInformation, uint processInformationLength, out uint returnLength);
 }

@@ -10,85 +10,9 @@ public partial class FirefoxSystemBrowserInstance(
 {
     protected override SystemBrowserType BrowserType => SystemBrowserType.Firefox;
 
-    private Task CreateProfileAsync()
-    {
-        return Task.Run(async () =>
-        {
-            using var createProfileProcess = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    // $"firefox -CreateProfile \"{UserProfile.Id} {_browserProfileFolderPath}\"",
-                    Arguments = $"-headless -profile \"{_browserProfileFolderPath}\"",
-                    FileName = _browserExeFilePath,
-                }
-            };
-
-            createProfileProcess.Start();
-            Process[] firefoxInstances = Process.GetProcessesByName("firefox");
-
-            foreach (Process firefoxInstance in firefoxInstances)
-            {
-                if (!firefoxInstance.HasExited &&
-                    firefoxInstance.StartTime > createProfileProcess.StartTime &&
-                    firefoxInstance.MainWindowHandle != IntPtr.Zero)
-                {
-                    firefoxInstance.Close();
-                }
-            }
-            await Task.Delay(1000);
-            createProfileProcess.Close();
-        });
-    }
-
     protected override async Task InitializeProfileFolder()
     {
-        if (!Directory.Exists(_browserProfileFolderPath))
-        {
-            Directory.CreateDirectory(_browserProfileFolderPath);
-            //await Task.Delay(1000);
-            // await CreateProfileAsync();
-        }
-
-        var prefs = await InitializePrefsJs();
-
-        return;
-        if (SystemBrowserManager.Blaywright == null)
-            SystemBrowserManager.Blaywright = await Playwright.CreateAsync();
-
-        Microsoft.Playwright.Proxy? proxy = null;
-        if (HasProxyLogin)
-        {
-            proxy = new Microsoft.Playwright.Proxy()
-            {
-                Server = $"http://{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}",
-                Username = UserProfile.Proxy.UserName,
-                Password = UserProfile.Proxy.Password,
-            };
-        }
-
-        BrowserContext = await SystemBrowserManager.Blaywright.Firefox.LaunchPersistentContextAsync(
-            _browserProfileFolderPath,
-            new()
-            {
-                ExecutablePath = Path.Combine(Directory.GetCurrentDirectory(), @"firefox-1447\firefox\firefox.exe"), //@"C:\Program Files\Mozilla Firefox\firefox.exe",//Path.Combine(Directory.GetCurrentDirectory(), @"firefox-1447\firefox\firefox.exe"),// @"C:\dev\browsers\Firefox-124\firefox.exe",// Path.Combine(Directory.GetCurrentDirectory(), @"firefox-1447\firefox\firefox.exe"),
-                Args = new[]
-                {
-                        "--allow-downgrade",
-                        "--start-maximized",
-                        $"--start-debugger-server {Port}"
-                },
-                //IgnoreDefaultArgs = new[] { "-silent" },
-                Env = new Dictionary<string, string>()
-                {
-                    ["MOZ_REMOTE_SETTINGS_DEVTOOLS"] = "1"
-                },
-
-                Headless = false,
-                Proxy = proxy,
-                ViewportSize = ViewportSize.NoViewport,
-                FirefoxUserPrefs = prefs,
-            });
+         _ = await InitializePrefsJs();
     }
 
     // TODO: refactor next legacy code
@@ -507,7 +431,7 @@ public partial class FirefoxSystemBrowserInstance(
         // Define a regular expression pattern to extract key-value pairs
         Regex regex = UserPrefRegex();
 
-        var prefsFilePath = Path.Combine(_browserProfileFolderPath, "prefs.js");
+        var prefsFilePath = Path.Combine(BrowserProfileFolderPath, "prefs.js");
         if (File.Exists(prefsFilePath))
         {
             foreach (var userPref in await File.ReadAllLinesAsync(prefsFilePath))
@@ -559,7 +483,7 @@ public partial class FirefoxSystemBrowserInstance(
                 "-wait-for-browser",
                 //$"-new-window",
                 "-new-instance",
-                $"-profile \"{_browserProfileFolderPath}\"",
+                $"-profile \"{BrowserProfileFolderPath}\"",
                 //"-no-remote"
             };
 
@@ -582,9 +506,9 @@ public partial class FirefoxSystemBrowserInstance(
     [GeneratedRegex(@"user_pref\(""(.*?)"", (\""(.*?)\""|.*?)\);")]
     private static partial Regex UserPrefRegex();
 
-    protected override async Task InitializeExtensionPath()
+    protected override async Task<string> InitializeExtensionPath()
     {
-        string proxyextdir = Path.Combine(_browserProfileFolderPath, ProxyAddonUtil.FirefoxAutoProxyFolderName);
+        string proxyextdir = Path.Combine(BrowserProfileFolderPath, ProxyAddonUtil.AutoProxyFolderName);
         string pxoyextFile = Path.Combine(proxyextdir, ProxyAddonUtil.FirefoxAutoProxyAddonName);
 
         await IOtil.DeleteFExists(pxoyextFile);
@@ -615,6 +539,8 @@ public partial class FirefoxSystemBrowserInstance(
             await IOtil.DeleteFExists(mf);
             await IOtil.DeleteFExists(bf);
         }
+
+        return proxyextdir;
     }
 
     private static async Task AddFileToArchive(string fileName, string fileText, ZipArchive archive)

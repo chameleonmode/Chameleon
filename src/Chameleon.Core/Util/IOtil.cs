@@ -1,4 +1,6 @@
-﻿namespace Chameleon.Core.Util;
+﻿using System.Diagnostics;
+
+namespace Chameleon.Core.Util;
 
 public static class IOtil
 {
@@ -68,6 +70,91 @@ public static class IOtil
             {
                 // Handle any other exception, e.g., log it
                 Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+    }
+
+    public static bool IsNeedUpdate(string newer, string older)
+    {
+        if (!Path.Exists(older))
+        {
+            return true;
+        }
+
+        FileVersionInfo systemFirefoxInfo = FileVersionInfo.GetVersionInfo(newer);
+        FileVersionInfo chamelonFirefoxInfo = FileVersionInfo.GetVersionInfo(older);
+
+        bool isEqual = chamelonFirefoxInfo.ProductMajorPart == systemFirefoxInfo.ProductMajorPart
+            && chamelonFirefoxInfo.ProductMinorPart == systemFirefoxInfo.ProductMinorPart;
+
+        return !isEqual;
+    }
+
+    public static void CopyFolder(string directory, string directoryForCopy)
+    {
+        Directory.CreateDirectory(directoryForCopy);
+
+        string[] filePaths = Directory.GetFiles(directory);
+        foreach (string filePath in filePaths)
+        {
+            string fileName = Path.GetFileName(filePath);
+            string newFile = Path.Combine(directoryForCopy, fileName);
+
+            File.Copy(filePath, newFile);
+        }
+
+        string[] subdirectoryPaths = Directory.GetDirectories(directory);
+        foreach (string subdirectory in subdirectoryPaths)
+        {
+            string subdirectoryName = Path.GetFileName(subdirectory);
+            string newSubdirectory = Path.Combine(directoryForCopy, subdirectoryName);
+
+            CopyFolder(subdirectory, newSubdirectory);
+        }
+    }
+
+    public static async Task WriteTextToFileAsync(string filePath, string content, int maxRetries = 3, int delayMilliseconds = 1000)
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+            throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
+
+        if (content == null)
+            throw new ArgumentNullException(nameof(content), "Content cannot be null.");
+
+        int attempt = 0;
+
+        while (attempt < maxRetries)
+        {
+            try
+            {
+                await File.WriteAllTextAsync(filePath, content);
+                Console.WriteLine("File written successfully.");
+                return; // Exit if write is successful
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Access denied: {ex.Message}");
+                break; // Don't retry on access denied
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                Console.WriteLine($"Directory not found: {ex.Message}");
+                break; // Don't retry if the directory doesn't exist
+            }
+            catch (IOException ex)
+            {
+                attempt++;
+                Console.WriteLine($"IO error (attempt {attempt}): {ex.Message}");
+                if (attempt >= maxRetries)
+                {
+                    throw; // Re-throw the exception if maximum retries are reached
+                }
+                await Task.Delay(delayMilliseconds); // Wait before retrying
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+                throw; // Re-throw unexpected exceptions
             }
         }
     }

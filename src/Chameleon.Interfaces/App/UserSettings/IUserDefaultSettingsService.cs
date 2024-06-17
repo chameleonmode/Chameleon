@@ -10,5 +10,6 @@ namespace Chameleon.Interfaces.Settings
         IUserDefaultSetting Create();
         void Delete(IUserDefaultSetting userDefaultSettings);
         void Save(IUserDefaultSetting userDefaultSettings);
+        Task<string> GetRandomUrlAsync();
     }
 }
