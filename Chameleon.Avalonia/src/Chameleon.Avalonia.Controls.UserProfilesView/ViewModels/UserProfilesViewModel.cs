@@ -340,16 +340,6 @@ public partial class UserProfilesViewModel
             await Task.Run(() => _userProfileService.Delete(profile.UserProfile));
             profile.IsSelected = false;
             _mapping.Remove(profile);
-
-            //var userProfile = profile.UserProfile;
-            //EventAggregator.GetEvent<RemoveWebBrowserViewEvent>()
-            //    .Publish(new UserProfileEventArgs(userProfile));
-
-            //EventAggregator
-            //    .GetEvent<DeleteUserProfileEvent>()
-            //    .Publish(new UserProfileEventArgs(userProfile));
-
-
         }
         _viewModels = null;
         OnViewModelChange(this, EventArgs.Empty);
@@ -440,26 +430,7 @@ public partial class UserProfilesViewModel
             OnHandleUserEvent();
 
         return profile;
-        //EventAggregator
-        //    .GetEvent<CreateUserProfileEvent>()
-        //    .Publish(new CreateUserProfileEventArgs(folderId));
-
-        //EventAggregator.PublishPubSubEvent(new CreateUserProfileEventArgs(folderId));
-        //OnHandleUserEvent();
     }
-    //private void OnCreateUserProfileEvent(ChangeProfilesInFavoriteFolderEventArgs e)
-    //{
-    //    if (e.FolderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == e.Profile.Id))
-    //        OnHandleUserEvent();
-    //        //_viewModels = null;
-
-    //    //OnHandleUserEvent();
-
-    //    if (e.Navigate == true)
-    //        NavigationService.NavigateToType(typeof(IUserProfileIdentityView), e.Profile);
-
-    //    //IsDisabledCreateNewProfile = false;
-    //}
 
     private ObservableCollectionView<UserProfileViewModel> _viewModels;
     public ObservableCollectionView<UserProfileViewModel> ViewModels
@@ -533,12 +504,6 @@ public partial class UserProfilesViewModel
         profiles.ForEach(async (selectedProfile) =>
         {
             await selectedProfile.OpenSystemBrowser(browserType);
-            //var profile = selectedProfile.UserProfile;
-            //var args = new UserProfileSystemBrowserEventArgs(profile, browserType);
-
-            //EventAggregator
-            //    .GetEvent<OpenUserSystemBrowserEvent>()
-            //    .Publish(args);
         });
     }
 
@@ -598,11 +563,6 @@ public partial class UserProfilesViewModel
     public void OnAuthenticated()
     {
         IsWaiting = true;
-
-        //DispatcherService.InvokeOnUiThreadAsync(
-        //    () => LoadAsync(),
-        //    _ => IsWaiting = false
-        //    );
 
         LoadAsync();
 
@@ -672,8 +632,7 @@ public partial class UserProfilesViewModel
             if (p.FolderId is int fid && fid != 0)
                 ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().SetSelectedById(fid);
             else
-               //ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
-               //await ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null); 
+               await ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
             
             Filter = profile => p.Id == profile.Id;
         }
