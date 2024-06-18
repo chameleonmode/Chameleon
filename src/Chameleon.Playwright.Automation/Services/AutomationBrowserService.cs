@@ -1,11 +1,13 @@
 ﻿using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.App.Automation.Entities;
+using Chameleon.Interfaces.App.Automation.Events;
 using Chameleon.Interfaces.App.Automation.ExternalScript;
 using Chameleon.Interfaces.App.Automation.Manager;
 using Chameleon.Interfaces.App.Automation.Playwright;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
+using Chameleon.Prism.Events;
 
 namespace Chameleon.Playwright.Automation.Services;
 public class AutomationBrowserService 
@@ -14,22 +16,26 @@ public class AutomationBrowserService
     private readonly IPlaywrightBrowserManager _playwrightBrowserManager;
     private readonly ICompileScriptService _compileScriptService;
     private readonly IAutomationService _automationService;
+    private readonly IEventAggregator _eventAggregator;
 
     public AutomationBrowserService(
         IPlaywrightBrowserManager playwrightBrowserManager,
         ICompileScriptService compileScriptService,
-        IAutomationService automationService
+        IAutomationService automationService,
+        IEventAggregator eventAggregator
         )
     {
         _playwrightBrowserManager = playwrightBrowserManager;
         _compileScriptService = compileScriptService;
         _automationService = automationService;
+        _eventAggregator = eventAggregator;
     }
 
     public async Task RunScript(
         IAutomationScriptDescription script,
         SystemBrowserType browserType,
-        IList<IUserProfile> userProfiles)
+        IList<IUserProfile> userProfiles,
+        CancellationToken token)
     {
         try
         {
@@ -61,7 +67,16 @@ public class AutomationBrowserService
                     {
                         await MesageBoxHelper.ShowErrorAsync("Script error", ex.Message);
                     }
+
+                    // Stop loop if canceled
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
                 }
+                _eventAggregator
+                    .GetEvent<FinishScriptExecutionEvent>()
+                    .Publish();
             }
         }
 
