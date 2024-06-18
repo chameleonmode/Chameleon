@@ -82,13 +82,13 @@ public abstract class SystemBrowserInstance(
             EnableRaisingEvents = true,
         };
         Brocess.Start();
-        Brocess.Exited += new EventHandler(Process_Exited);
 
 
 
         if (IsMao)
         {
             Handle = Brocess.Handle;
+            Brocess.Exited += new EventHandler(Process_Exited);
         }
         else
         {
@@ -130,23 +130,21 @@ public abstract class SystemBrowserInstance(
                 0,
                 (uint)User32Events.WINEVENT_OUTOFCONTEXT));
 
-            if (BrowserType == SystemBrowserType.Firefox)
-            {
-                //capture window close
-                winEventHooks.Add(U32.SetWinEventHook(
-                    User32Events.EVENT_OBJECT_DESTROY,
-                    User32Events.EVENT_OBJECT_DESTROY,
-                    IntPtr.Zero,
-                    winEventsCaptureDelegate,
-                    0,
-                    0,
-                    (uint)User32Events.WINEVENT_OUTOFCONTEXT));
-            }
+            //capture window close
+            winEventHooks.Add(U32.SetWinEventHook(
+                User32Events.EVENT_OBJECT_DESTROY,
+                User32Events.EVENT_OBJECT_DESTROY,
+                IntPtr.Zero,
+                winEventsCaptureDelegate,
+                0,
+                0,
+                (uint)User32Events.WINEVENT_OUTOFCONTEXT));
 
             U32.SetForegroundWindow(Handle);
             U32.SetActiveWindow(Handle);
         }
     }
+
     private void WinEventProc(IntPtr hWinEventHook, User32Events eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
     {
         switch (eventType)
@@ -171,7 +169,6 @@ public abstract class SystemBrowserInstance(
             case User32Events.EVENT_SYSTEM_MINIMIZESTART:
             case User32Events.EVENT_SYSTEM_MOVESIZEEND:
                 // only care about child windows that are moved by user
-                //normalSessions.Add(curDisplayKey);
                 break;
 
             case User32Events.EVENT_OBJECT_DESTROY:
@@ -181,7 +178,6 @@ public abstract class SystemBrowserInstance(
 
             default:
                 break;
-                //return;
         }
     }
 
