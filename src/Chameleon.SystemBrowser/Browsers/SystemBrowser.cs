@@ -39,6 +39,8 @@ public abstract class SystemBrowserBase(IEventAggregator eventAggregator) : ISys
                 await MesageBoxHelper.ShowErrorAsync("Error", e.Message);
             }
             finally { Interlocked.Decrement(ref _isBusy); }
+        else
+            browser.MakeForeground();
 
         return browser;
     }

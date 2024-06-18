@@ -1,6 +1,5 @@
 ﻿namespace Chameleon.SystemBrowser.Common;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
 public abstract class SystemBrowserInstance(
     IEventAggregator eventAggregator,
     ISystemBrowserLaunchOptions options,
@@ -31,15 +30,22 @@ public abstract class SystemBrowserInstance(
             await StartProcess();
         }
 
+        MakeForeground();
+    }
+
+    public void MakeForeground()
+    {
         if (Handle != IntPtr.Zero)
         {
             if (!IsMao)
             {
+#pragma warning disable CA1416 // Validate platform compatibility
                 if (U32.IsWindow(Handle))
                 {
                     U32.SetForegroundWindow(Handle);
                     U32.SetActiveWindow(Handle);
                 }
+#pragma warning restore CA1416 // Validate platform compatibility
             }
             else
             {
@@ -86,6 +92,7 @@ public abstract class SystemBrowserInstance(
         }
         else
         {
+#pragma warning disable CA1416 // Validate platform compatibility
             MWHandleTrackerUtility tracker = new(Brocess);
             var newHandle = await tracker.WaitForMainWindowHandleChangeAsync();
             Brocess = newHandle.Item2;
@@ -98,13 +105,15 @@ public abstract class SystemBrowserInstance(
                 Handle = Brocess.MainWindowHandle;
                 tracker.StopTracking();
                 SetWin32Events();
-            }
+            }                                               
+#pragma warning restore CA1416 // Validate platform compatibility
         }
 
         OPtcs.TrySetResult(true);
     }
 
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
     private void SetWin32Events()
     {
         if (Brocess != null && Handle != IntPtr.Zero)
@@ -188,7 +197,9 @@ public abstract class SystemBrowserInstance(
             if (!IsMao)
                 foreach (var item in winEventHooks)
                 {
+#pragma warning disable CA1416 // Validate platform compatibility
                     U32.UnhookWinEvent(item);
+#pragma warning restore CA1416 // Validate platform compatibility
                 }
         });
 

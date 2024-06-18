@@ -9,4 +9,5 @@ public interface ISystemBrowserInstance
     TaskCompletionSource<bool> OPtcs { get; }
     UserProfileSystemBrowserProcessEventArgs GetArgs(Process process);
     void Open();
+    void MakeForeground();
 }
