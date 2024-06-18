@@ -67,11 +67,7 @@ namespace Chameleon.Infrastructure.UserProfileFolders
             }
 
             var folder = Folders.FirstOrDefault(item => item.Id == folderId);
-            if (folder == null)
-            {
-                throw new KeyNotFoundException(folderId.ToString());
-            }
-            return folder.Title;
+            return folder == null ? throw new KeyNotFoundException(folderId.ToString()) : folder.Title;
         }
 
         public IUserProfileFolder Create(string title = null)

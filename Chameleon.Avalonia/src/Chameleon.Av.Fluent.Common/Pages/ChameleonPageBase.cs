@@ -37,7 +37,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
     }
 
     #region dp
-    public static readonly StyledProperty<IconSource> PreviewImageProperty = 
+    public static readonly StyledProperty<IconSource> PreviewImageProperty =
         AvaloniaProperty.Register<ChameleonPageBase, IconSource>(nameof(PreviewImage));
     public IconSource PreviewImage
     {
@@ -93,7 +93,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
         //_optionsHost = e.NameScope.Find<StackPanel>("OptionsRegion");
         _detailsPanel = e.NameScope.Find<Panel>("PageDetails");
         _scroller = e.NameScope.Find<ScrollViewer>("PageScroller");
-    }                 
+    }
     private void SetDetailsAnimation()
     {
         var ec = ElementComposition.GetElementVisual(_detailsPanel);
@@ -139,16 +139,16 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
             if (!_hasLoaded)
                 await Task.Delay(250);
         }
-      
+
         if (!_hasLoaded)
             return;
 
-            _cts?.Cancel();
+        _cts?.Cancel();
 
         _cts = new CancellationTokenSource();
         double x = toSmall ? 70 : -70;
         double y = toSmall ? -30 : 30;
-        var ani = new Animation
+        _ = new Animation
         {
             Duration = TimeSpan.FromSeconds(0.25),
             Children =
@@ -191,18 +191,13 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
         //If TargetType is not set, we know we're currently on a CoreControls page since those
         // are grouped pages - whereas, FA controls only display one control per page and
         // set all the extra properties
-        //bool isFAControlPage = TargetType != null;
 
         // Only setup the ConnectedAnimation if it makes sense
-        //if ((!isFAControlPage && e.SourcePageType == typeof(CoreControlsPageViewModel)) ||
-        //    (isFAControlPage && e.SourcePageType == typeof(FAControlsOverviewPageViewModel)))
-        //{
         //    // Only setup the Back connected animation if we're going back to the
         //    // controls list pages
         var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-        svc.PrepareToAnimate("BackAnimation", AnimateVisual != null ? AnimateVisual : (Control)_previewImageHost.Parent);
+        svc.PrepareToAnimate("BackAnimation", AnimateVisual ?? (Control)_previewImageHost.Parent);
         ContainerServiceHelper.Resolve<INavigationService>().PreviousPage = this;
-        //}
     }
 
     private async void FrameNavigatedTo(object sender, NavigationEventArgs e)
@@ -222,16 +217,16 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
         {
             // PreviewImageHost is inside a Viewbox which can really mess with the Composition 
             // animation - use the viewbox directly for the animation to ensure it works correctly
-            if(AnimateVisual != null)
+            if (AnimateVisual != null)
             {
-                _detailsPanel.IsVisible = false; 
+                _detailsPanel.IsVisible = false;
                 animation.TryStart(AnimateVisual, [_scroller]);
             }
             else
-                animation.TryStart((Control)_previewImageHost.Parent, [_detailsHost,_scroller]);
+                animation.TryStart((Control)_previewImageHost.Parent, [_detailsHost, _scroller]);
 
         }
     }
 
-    public virtual Task FrameNavigatedTo()=>Task.CompletedTask;
+    public virtual Task FrameNavigatedTo() => Task.CompletedTask;
 }

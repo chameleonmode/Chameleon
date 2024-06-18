@@ -9,7 +9,6 @@ public class SystemBrowserManager(IHaveContainerProvider containerProvider) : IS
                 { SystemBrowserType.Brave, typeof(IBraveSystemBrowser) },
         };
 
-    public static IPlaywright Blaywright { get; set; }
     public ISystemBrowser Get(SystemBrowserType browserType)
     {
         if (_mapping.TryGetValue(browserType, out var type))
@@ -17,13 +16,5 @@ public class SystemBrowserManager(IHaveContainerProvider containerProvider) : IS
             return (ISystemBrowser)containerProvider.Resolve(type);
         }
         throw new KeyNotFoundException(browserType.ToString());
-    }
-
-    public static ContainerServiceHelper Current
-    {
-        get
-        {
-            return (ContainerServiceHelper)ContainerServiceHelper.Current.ContainerProvider.Resolve<ISystemBrowserManager>();
-        }
     }
 }

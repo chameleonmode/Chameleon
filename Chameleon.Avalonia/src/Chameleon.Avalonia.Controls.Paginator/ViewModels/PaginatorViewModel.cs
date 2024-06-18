@@ -35,7 +35,7 @@ public partial class PaginatorViewModel
         {
             if (_buttons == null)
             {
-                _buttons = new ObservableCollectionView<PaginatorButtonViewModel>();
+                _buttons = [];
 
                 for (int i = 0; i < PageCount; i++)
                 {

@@ -3,7 +3,7 @@ public class FirefoxSystemBrowser(
         IEventAggregator eventAggregator,
         IApplicationEnvironment applicationEnvironment,
         ISystemBrowserInfoManager systemBrowserInfoManager,
-        IUserDefaultSettingsService userDefaultsSettingsService) : SystemBrowserBase, IFirefoxSystemBrowser
+        IUserDefaultSettingsService userDefaultsSettingsService) : SystemBrowserBase(eventAggregator), IFirefoxSystemBrowser
 {
     public const string FirefoxChameleonDirectory = "FirefoxChameleon";
 
@@ -12,7 +12,7 @@ public class FirefoxSystemBrowser(
         CreateChameleonFirefoxCopy();
 
         return new FirefoxSystemBrowserInstance(
-            eventAggregator,
+            EventAggregator,
             o,
             userDefaultsSettingsService,
             applicationEnvironment.ApplicationDataFolderPath,
@@ -32,6 +32,7 @@ public class FirefoxSystemBrowser(
         string directory = IsMao ?
             "Applications/firefox.app" 
             : Path.GetDirectoryName(path);
+
         string directoryForCopy = IsMao ?
             Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app")
             : Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory);

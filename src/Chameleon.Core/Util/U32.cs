@@ -161,27 +161,38 @@ public class MWHandleTrackerUtility
     {
         while (!token.IsCancellationRequested)
         {
-            if (_process.HasExited || _mainWindowHandle == IntPtr.Zero)
+            try
             {
-                foreach (var childId in _childProcessIds)
+                if (_process.HasExited || _mainWindowHandle == IntPtr.Zero)
                 {
-                    var childProcess = Process.GetProcessById(childId);
-                    if (childProcess != null && !childProcess.HasExited)
+                    foreach (var childId in _childProcessIds)
                     {
-                        _process = childProcess;
-                        break;
+                        var childProcess = Process.GetProcessById(childId);
+                        if (childProcess != null && !childProcess.HasExited)
+                        {
+                            _process = childProcess;
+                            break;
+                        }
                     }
                 }
+
+                IntPtr handle = U32til.FindMainWindowHandle(_process.Id);
+                if (handle != _mainWindowHandle && U32.IsWindow(handle))
+                {
+                    _mainWindowHandle = handle;
+                    var tcs = _tcs;
+                    _tcs = new();
+                    tcs.SetResult(new(_mainWindowHandle, _process));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                _tcs.SetResult(new(0, null));
+                break;
             }
 
-            IntPtr handle = U32til.FindMainWindowHandle(_process.Id);
-            if (handle != _mainWindowHandle && U32.IsWindow(handle))
-            {
-                _mainWindowHandle = handle;
-                var tcs = _tcs;
-                _tcs = new ();
-                tcs.SetResult(new (_mainWindowHandle, _process));
-            }
             Thread.Sleep(1000);  // Poll every second
         }
     }
@@ -190,18 +201,22 @@ public class MWHandleTrackerUtility
     {
         while (!token.IsCancellationRequested)
         {
-            var currentProcesses = Process.GetProcessesByName("firefox").Where(p=>p.Id !=0);
-            foreach (var process in currentProcesses)
+            try
             {
-                try
+                var currentProcesses = Process.GetProcessesByName("firefox").Where(p => p.Id != 0);
+                foreach (var process in currentProcesses)
                 {
                     if (!_childProcessIds.Contains(process.Id) && process.ParentProcessId() == _process.Id)
                     {
                         _childProcessIds.Add(process.Id);
                     }
                 }
-                catch (Exception ex) { Console.WriteLine(ex.StackTrace); }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            
             Thread.Sleep(2000);  // Poll every two seconds
         }
     }
@@ -249,14 +264,14 @@ public struct RECT
     public int Right { get; set; }
     public int Bottom { get; set; }
 
-    public int Height
+    public readonly int Height
     {
         get
         {
             return Bottom - Top;
         }
     }
-    public int Width
+    public readonly int Width
     {
         get
         {
@@ -264,7 +279,7 @@ public struct RECT
         }
     }
 
-    public override string ToString()
+    public override readonly string ToString()
     {
         return string.Format("({0}, {1}), {2} x {3}", Left, Top, Width, Height);
     }

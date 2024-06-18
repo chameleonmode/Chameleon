@@ -527,11 +527,9 @@ public partial class FirefoxSystemBrowserInstance(
 
             using (var fileStream = new FileStream(pxoyextFile, FileMode.CreateNew))
             {
-                using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
-                {
-                    await AddFileToArchive("manifest.json", ProxyAddonUtil.GetManifest(), archive);
-                    await AddFileToArchive("background.js", ProxyAddonUtil.GetBgJs(loadUrl, UserProfile.Proxy), archive); ;
-                }
+                using var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true);
+                await AddFileToArchive("manifest.json", ProxyAddonUtil.GetManifest(), archive);
+                await AddFileToArchive("background.js", ProxyAddonUtil.GetBgJs(loadUrl, UserProfile.Proxy), archive); ;
             }
 
             var mf = Path.Combine(pxoyextFile, "manifest.json");
@@ -546,13 +544,9 @@ public partial class FirefoxSystemBrowserInstance(
     private static async Task AddFileToArchive(string fileName, string fileText, ZipArchive archive)
     {
         var zipArchiveManifest = archive.CreateEntry(fileName, CompressionLevel.Fastest);
-        using (var zipStream = zipArchiveManifest.Open())
-        {
-            using (var writer = new StreamWriter(zipStream))
-            {
-                await writer.WriteAsync(fileText);
-            }
-        }
+        using var zipStream = zipArchiveManifest.Open();
+        using var writer = new StreamWriter(zipStream);
+        await writer.WriteAsync(fileText);
     }
 }
 

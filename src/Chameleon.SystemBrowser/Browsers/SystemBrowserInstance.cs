@@ -1,8 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿namespace Chameleon.SystemBrowser.Common;
 
-namespace Chameleon.SystemBrowser.Common;
-
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
 public abstract class SystemBrowserInstance(
     IEventAggregator eventAggregator,
     ISystemBrowserLaunchOptions options,
@@ -16,9 +14,11 @@ public abstract class SystemBrowserInstance(
     private readonly string pexdir = Guid.NewGuid().ToString();
     private readonly List<IntPtr> winEventHooks = []; 
                                                    
-    private U32.WinEventDelegate winEventsCaptureDelegate;  
+    private U32.WinEventDelegate winEventsCaptureDelegate;
 
-    public async Task Open()
+    public TaskCompletionSource<bool> OPtcs { get; } = new();
+
+    public async void Open()
     {
         if (Brocess is null || Handle == IntPtr.Zero)
         {
@@ -86,22 +86,22 @@ public abstract class SystemBrowserInstance(
         }
         else
         {
-            await Task.Delay(500);
             MWHandleTrackerUtility tracker = new(Brocess);
             var newHandle = await tracker.WaitForMainWindowHandleChangeAsync();
             Brocess = newHandle.Item2;
-            Handle = Brocess.MainWindowHandle;
-            tracker.StopTracking();
-
-            SetWin32Events();
+            if (Brocess == null)
+            {
+                OPtcs.TrySetResult(false);
+            }
+            else
+            {
+                Handle = Brocess.MainWindowHandle;
+                tracker.StopTracking();
+                SetWin32Events();
+            }
         }
 
-        eventAggregator
-            .GetEvent<ForegroundUserSystemBrowserEvent>()
-            .Publish(GetArgs(Brocess));
-        eventAggregator
-            .GetEvent<OpenedUserSystemBrowserEvent>()
-            .Publish(GetArgs(Brocess));
+        OPtcs.TrySetResult(true);
     }
 
 
@@ -112,7 +112,7 @@ public abstract class SystemBrowserInstance(
             winEventsCaptureDelegate = WinEventProc;
 
             // capture EVENT_OBJECT_FOCUS
-            this.winEventHooks.Add(U32.SetWinEventHook(
+            winEventHooks.Add(U32.SetWinEventHook(
                 User32Events.EVENT_OBJECT_FOCUS,
                 User32Events.EVENT_OBJECT_FOCUS,
                 IntPtr.Zero,
@@ -124,12 +124,12 @@ public abstract class SystemBrowserInstance(
             if (BrowserType == SystemBrowserType.Firefox)
             {
                 //capture window close
-                this.winEventHooks.Add(U32.SetWinEventHook(
+                winEventHooks.Add(U32.SetWinEventHook(
                     User32Events.EVENT_OBJECT_DESTROY,
                     User32Events.EVENT_OBJECT_DESTROY,
                     IntPtr.Zero,
                     winEventsCaptureDelegate,
-                    (uint)Brocess.Id,
+                    0,
                     0,
                     (uint)User32Events.WINEVENT_OUTOFCONTEXT));
             }
@@ -192,17 +192,13 @@ public abstract class SystemBrowserInstance(
                 }
         });
 
-
+        var r = OPtcs.TrySetResult(false);
         Brocess = null;
         Handle = IntPtr.Zero;
         OnProcessClosed?.Invoke(options);
-
-        eventAggregator
-           .GetEvent<ClosedUserSystemBrowserEvent>()
-           .Publish(GetArgs(Brocess));
     }
 
-    UserProfileSystemBrowserProcessEventArgs GetArgs(Process process) => new UserProfileSystemBrowserProcessEventArgs(
+    public UserProfileSystemBrowserProcessEventArgs GetArgs(Process process) => new UserProfileSystemBrowserProcessEventArgs(
                 UserProfile,
                 BrowserType,
                 process,
@@ -300,7 +296,7 @@ public abstract class SystemBrowserInstance(
     protected string BrowserExtensionsFolderPath =>
         Path.Combine(BrowserExtensionsRootFolderPath, BrowserType.ToString());
 
-    protected string BrowserExtensionsRootFolderPath => IsMao ?
+    protected static string BrowserExtensionsRootFolderPath => IsMao ?
         "/Applications/Chameleon.app/Contents/Resources/BrowserExtensions/mac"
         : Path.Combine(Directory.GetCurrentDirectory(), "BrowserExtensions");
 
@@ -310,7 +306,7 @@ public abstract class SystemBrowserInstance(
     public IUserProfile UserProfile =>
         options.UserProfile;
 
-    public bool IsMao =>
+    public static bool IsMao =>
         OperatingSystem.IsMacOS();
 
     public bool HasProxyLogin =>

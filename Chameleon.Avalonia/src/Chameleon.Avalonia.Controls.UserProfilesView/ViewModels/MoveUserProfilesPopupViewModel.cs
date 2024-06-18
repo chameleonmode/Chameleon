@@ -54,7 +54,7 @@ public partial class MoveUserProfilesPopupViewModel : ObservableObjectBase,
         }
     }
 
-    private ObservableCollection<IUserProfileFolder> _folders = new ObservableCollection<IUserProfileFolder>();
+    private ObservableCollection<IUserProfileFolder> _folders = [];
     public ObservableCollection<IUserProfileFolder> Folders
     {
         get => _folders;

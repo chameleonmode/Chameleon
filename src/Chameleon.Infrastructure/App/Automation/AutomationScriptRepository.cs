@@ -16,8 +16,8 @@ public class AutomationScriptRepository
             GetAllRequestDto>
         , IAutomationScriptRepository
 {
-    private new IMapper _mapper;
-    private IAutomationScriptApi _client;
+    private new readonly IMapper _mapper;
+    private readonly IAutomationScriptApi _client;
 
     public AutomationScriptRepository(
         IMapper mapper,

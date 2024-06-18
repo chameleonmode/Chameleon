@@ -16,7 +16,7 @@ namespace Chameleon.Domain.Entities
 
         public ObservableEntities()
         {
-            Items = new ObservableCollection<TEntity>();
+            Items = [];
             Items.CollectionChanged += Observable_CollectionChanged;
         }
 

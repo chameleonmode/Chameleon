@@ -34,8 +34,6 @@ public partial class UserProfilesViewModel
 
     private ObservableCollection<IUserProfile, UserProfileViewModel> _mapping;
 
-    private const string TitlePage = "Profiles";
-
     public UserProfilesViewModel(
         IUserProfileService userProfileService,
         IUserProfileFolderService userProfileFolderService,
@@ -105,11 +103,6 @@ public partial class UserProfilesViewModel
         OnPropertyChanged(nameof(HasSelectedItems));
         OnPropertyChanged(nameof(HasProfileWithoutFolder));
         OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
-    }
-
-    private void OnHandleUserEvent(object obj)
-    {
-        OnHandleUserEvent();
     }
 
     public bool HasProfileWithoutFolder => _mapping != null && _mapping.Any(profile => !profile.UserProfile.FolderId.HasValue);
@@ -182,7 +175,6 @@ public partial class UserProfilesViewModel
             if (SetProperty(ref _folder, value))
             {
                 UpdateFolder();
-                UpdateBreadcrumbsViewModel();
             }
 
             OnPropertyChanged(nameof(ShowFavoriteIcon));
@@ -192,35 +184,6 @@ public partial class UserProfilesViewModel
     }
     public string SelectedFolderTitle => Folder?.Title ?? "All profiles";
 
-    private void UpdateBreadcrumbsViewModel()
-    {
-        //var root = BreadcrumbsViewModel.Root;
-
-        //if (root == null)
-        //{
-        //    return;
-        //}
-
-        //root.HasContinuation = HasFolder;
-        //root.IsBold = HasFolder;
-
-        //var breadcrumbs = BreadcrumbsViewModel.Breadcrumbs;
-
-        //if (breadcrumbs.Count > 1)
-        //{
-        //    breadcrumbs.Remove(breadcrumbs[1]);
-        //}
-
-        //if (HasFolder)
-        //{
-        //    var folderBreadcrumb = new BreadcrumbViewModel()
-        //    {
-        //        Title = Folder.Title
-        //    };
-
-        //    breadcrumbs.Add(folderBreadcrumb);
-        //}
-    }
     private void UpdateFolder()
     {
         SearchText = string.Empty;
@@ -263,7 +226,7 @@ public partial class UserProfilesViewModel
         }
     }
 
-    public bool HasSelectedItems => ViewModels != null && ViewModels.Count(v => v.IsSelected) > 0;
+    public bool HasSelectedItems => ViewModels != null && ViewModels.Any(v => v.IsSelected);
 
     private IEnumerable<UserProfileViewModel> _selectedProfiles;
     private void OnSelectedChanged(SelectedUserProfileEventArgs arr = null)
@@ -693,9 +656,9 @@ public partial class UserProfilesViewModel
         return true;
     }
 
-    private bool FilterByUserProfile(IUserProfile profile, string searchText)
+    private static bool FilterByUserProfile(IUserProfile profile, string searchText)
     {
-        return profile.Title.ToLower().Contains(searchText);
+        return profile.Title.Contains(searchText, StringComparison.CurrentCultureIgnoreCase);
     }
 
 

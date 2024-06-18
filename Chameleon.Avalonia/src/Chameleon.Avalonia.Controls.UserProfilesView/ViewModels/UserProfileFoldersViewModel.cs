@@ -39,13 +39,9 @@ public partial class UserProfileFoldersViewModel
 
         EventAggregator
             .GetEvent<OpenUserProfileFolderEvent>()
-            .Subscribe(args => OnOpenFolder(args.UserProfileFolder));
+            .Subscribe(async args => await OnNavigatingTo(args.UserProfileFolder));
     }
 
-    private void OnOpenFolder(IUserProfileFolder userProfileFolder)
-    {
-        OnNavigatingTo(userProfileFolder);
-    }
 
 
     public override async Task InitAsync(object? param)
@@ -75,11 +71,6 @@ public partial class UserProfileFoldersViewModel
 
     public IApplicationUser CurrentUser => _currentUser;
     public bool IsCreateBtnEnabled => !CurrentUser?.IsAssistant ?? false;
-
-    private void OnDeleteFolder(UserProfileFolderEventArgs args)
-    {
-        AllProfiles.Open();
-    }
 
     private UserProfileFolderViewModel _allProfiles;
     public UserProfileFolderViewModel AllProfiles
@@ -209,7 +200,7 @@ public partial class UserProfileFoldersViewModel
             if (!AllProfiles.UserProfileFolder.Navigated)
             {
                 AllProfiles.UserProfileFolder.Navigated = true;
-                AllProfiles.Open();
+                await AllProfiles.Open();
             }
         }
         //SearchText = p.Title;
@@ -220,6 +211,6 @@ public partial class UserProfileFoldersViewModel
         while (!Loaded)
             await Task.Delay(250);
 
-        OnNavigatingTo(_mapping.FirstOrDefault(m => m.UserProfileFolder.Id == id)?.UserProfileFolder);
+        await OnNavigatingTo(_mapping.FirstOrDefault(m => m.UserProfileFolder.Id == id)?.UserProfileFolder);
     }
 }

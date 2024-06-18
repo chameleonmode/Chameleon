@@ -156,12 +156,12 @@ public partial class DashboardViewModel
                     false
                 )
             );
-        _mapping.CollectionChanged += _mapping_CollectionChanged;
+        _mapping.CollectionChanged += Mapping_CollectionChanged;
 
         OnPropertyChanged(nameof(ViewModels));
     }
 
-    private void _mapping_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void Mapping_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         BuildSearchTerms();
     }
@@ -174,33 +174,27 @@ public partial class DashboardViewModel
 
         _folderMapping = new ObservableCollection<IUserProfileFolder, FolderViewModel>(
             folders, folder => new FolderViewModel(folder, _userProfileService, _userProfileFolderService, NavigationService));
-        _folderMapping.CollectionChanged += _folderMapping_CollectionChanged;
+        _folderMapping.CollectionChanged += FolderMapping_CollectionChanged;
 
         OnPropertyChanged(nameof(FolderViewModels));
     }
 
-    private void _folderMapping_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void FolderMapping_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         BuildSearchTerms();
     }
 
     private void OnUpdateFavoriteFolders()
     {
-        //await LoadUserProfileFolderViewModels();
         OnPropertyChanged(nameof(FolderViewModels));
     }
 
 
     private void OnUpdateViewModel(UserProfileEventArgs args)
     {
-        //await LoadUserProfileViewModels();
-        //await LoadUserProfileFolderViewModels();
-
         OnPropertyChanged(nameof(FolderViewModels));
         OnPropertyChanged(nameof(ViewModels));
         OnPropertyChanged(nameof(HasNoItems));
-
-        //BuildSearchTerms();
     }
 
     private bool _isWaiting = true;
@@ -220,7 +214,7 @@ public partial class DashboardViewModel
         return string.IsNullOrEmpty(_searchText) ? folder.IsFavorite : SearchResult(folder.Title, _searchText);
     }
 
-    private bool SearchResult(string? title, string searchText)
+    private static bool SearchResult(string? title, string searchText)
     {
         return title?.Contains(searchText, StringComparison.InvariantCultureIgnoreCase) ?? false;
     }

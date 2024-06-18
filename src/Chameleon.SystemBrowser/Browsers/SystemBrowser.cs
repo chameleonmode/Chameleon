@@ -1,7 +1,9 @@
 ﻿namespace Chameleon.SystemBrowser.Browsers;
 
-public abstract class SystemBrowserBase : ISystemBrowser
+public abstract class SystemBrowserBase(IEventAggregator eventAggregator) : ISystemBrowser
 {
+    protected IEventAggregator EventAggregator { get; } = eventAggregator;
+
     private readonly Dictionary<int, ISystemBrowserInstance> instances = [];
     private long _isBusy;
 
@@ -10,35 +12,61 @@ public abstract class SystemBrowserBase : ISystemBrowser
         while (IsBusy)
             await Task.Delay(500);
 
-        Interlocked.Increment(ref _isBusy);
-        ISystemBrowserInstance browser = null;
-        try
-        {
-            if (!Instances.TryGetValue(o.UserProfile.Id, out browser))
+        if (!Instances.TryGetValue(o.UserProfile.Id, out ISystemBrowserInstance browser))
+            try
             {
+                Interlocked.Increment(ref _isBusy);
                 browser = await Task.Run(() => InitializeBrowser(o));
                 browser.OnProcessClosed += Browser_OnProcessClosed;
                 Instances[o.UserProfile.Id] = browser;
-            }
 
-            await browser.Open();
-        }
-        catch(Exception e)
-        {
-            await MesageBoxHelper.ShowErrorAsync("Error", e.Message);
-        }
-        finally { Interlocked.Decrement(ref _isBusy); }
+
+                browser.Open();
+                var opened = await browser.OPtcs.Task;
+                if (opened)
+                {
+                    EventAggregator
+                        .GetEvent<ForegroundUserSystemBrowserEvent>()
+                        .Publish(browser.GetArgs(null));
+
+                    EventAggregator
+                        .GetEvent<OpenedUserSystemBrowserEvent>()
+                        .Publish(browser.GetArgs(null));
+                }
+            }
+            catch (Exception e)
+            {
+                await MesageBoxHelper.ShowErrorAsync("Error", e.Message);
+            }
+            finally { Interlocked.Decrement(ref _isBusy); }
 
         return browser;
     }
     public abstract ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o);
 
-    public void Browser_OnProcessClosed(ISystemBrowserLaunchOptions o)
+    public async void Browser_OnProcessClosed(ISystemBrowserLaunchOptions o)
     {
-        Instances.Remove(o.UserProfile.Id);
+        do
+        {
+            if (Instances.TryGetValue(o.UserProfile.Id, out ISystemBrowserInstance browser))
+            {
+                _ = await browser.OPtcs.Task;
+
+                EventAggregator
+                   .GetEvent<ClosedUserSystemBrowserEvent>()
+                   .Publish(browser.GetArgs(null));
+
+                Instances.Remove(o.UserProfile.Id);
+
+                break;
+            }
+
+            await Task.Delay(500);
+        }
+        while (IsBusy);
     }
 
-    public bool IsMao => OperatingSystem.IsMacOS();
+    public static bool IsMao => OperatingSystem.IsMacOS();
     public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
     public Dictionary<int, ISystemBrowserInstance> Instances => instances;
 }

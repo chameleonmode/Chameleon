@@ -58,7 +58,7 @@ public static partial class Procvoke
     public static int ParentProcessId(this Process process)
     {
         var pbi = new PROCESS_BASIC_INFORMATION();
-        int status = NtQueryInformationProcess(process.Handle, 0, ref pbi, (uint)Marshal.SizeOf(pbi), out uint returnLength);
+        int status = NtQueryInformationProcess(process.Handle, 0, ref pbi, (uint)Marshal.SizeOf(pbi), out _);
         if (status != 0)
         {
             throw new Exception("NtQueryInformationProcess failed with status: " + status);

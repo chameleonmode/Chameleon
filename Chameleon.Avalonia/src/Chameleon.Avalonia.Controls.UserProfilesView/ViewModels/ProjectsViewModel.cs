@@ -26,11 +26,7 @@ namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 public partial class ProjectsViewModel : PageViewModelBase,
     IProjectsViewModel
 {
-    //ObservableCollection<ProfileViewModel> ProfileViewModels { get; set; }
-    //ObservableCollection<DirectoryViewModel> DirectoryViewModels { get; set; }
-    private readonly IUserAssistantService _userAssistantService;
     private readonly IApplicationUser _applicationUser;
-    //TODO: private readonly IFeatureTourNavigator _featureTourNavigator;
     private readonly IAuthSession _authSession;
     private readonly IUserProfileFoldersViewModel folders;
     private readonly IUserProfilesViewModel profiles;
@@ -84,13 +80,11 @@ public partial class ProjectsViewModel : PageViewModelBase,
         set => SetProperty(ref _isCreateProfileBtnVisible, value);
     }
 
-    public ProjectsViewModel(IUserAssistantService userAssistantService,
-        IApplicationUser applicationUser,
+    public ProjectsViewModel(IApplicationUser applicationUser,
         IAuthSession authSession,
         IUserProfileFoldersViewModel folders,
         IUserProfilesViewModel profiles)
     {
-        _userAssistantService = userAssistantService;
         _applicationUser = applicationUser;
         _authSession = authSession;
         this.folders = folders;
@@ -116,7 +110,7 @@ public partial class ProjectsViewModel : PageViewModelBase,
 
             if (!folder.Navigated || folders is UserProfileFoldersViewModel f && f.SelectedFolder.UserProfileFolder.Id == folder.Id)
             {
-                folders.OnNavigatingTo(folder);
+                await folders.OnNavigatingTo(folder);
                 folder.Navigated = true;
             }
         }

@@ -5,13 +5,13 @@ public class BraveSystemBrowser(
         ISystemBrowserInfoManager systemBrowserInfoManager,
         ISetPreferencesService setPreferencesService,
         IUserDefaultSettingsService userDefaultsSettingsService) :
-SystemBrowserBase,
+SystemBrowserBase(eventAggregator),  //TODO: fix?
 IBraveSystemBrowser
 {
     public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
     {
         return new BraveSystemBrowserInstance(
-             eventAggregator,
+             EventAggregator,
              o,
              setPreferencesService,
              applicationEnvironment,

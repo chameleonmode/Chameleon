@@ -157,57 +157,30 @@ namespace Chameleon.Infrastructure.Api
                 HandleResponseException(ex);
                 throw;
             }
+            catch(Exception ex)
+            {
+                throw new InvalidOperationException(ex.Message, ex);
+            }
         }
 
         private void HandleResponseException(WebException ex)
         {
-            var httpResponse = (HttpWebResponse)ex.Response;
-            if (httpResponse == null)
-            {
-                ThrowInvalidOperationException(ex);
-            }
+            if(ex.Response is not HttpWebResponse httpResponse)
+                throw new InvalidOperationException(ex.Message, ex);
 
             if (httpResponse.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                ThrowUnauthorizedException(ex);
-            }
+                throw new AuthenticationException("Unauthorized", ex);
 
-            ApiResponseDto responseDto;
-            try
-            {
-                responseDto = JsonSerializer.Deserialize<ApiResponseDto>(_responseBody);
-            }
-            catch
-            {
+            if (JsonSerializer.Deserialize<ApiResponseDto>(_responseBody) is not ApiResponseDto responseDto)
                 return;
-            }
 
-            var responseError = responseDto?.Error;
-            if (responseError == null)
-            {
+            if (responseDto?.Error is not ApiResponseErrorDto responseError)
                 return;
-            }
 
             if (responseError.Code == (int)HttpStatusCode.Unauthorized)
-            {
-                ThrowUnauthorizedException(ex);
-            }
+                throw new AuthenticationException("Unauthorized", ex);
 
-            ThrowInvalidOperationException(ex, responseError.Message);
-        }
-
-        private void ThrowUnauthorizedException(Exception ex)
-        {
-            throw new AuthenticationException("Unauthorized", ex);
-        }
-
-        private void ThrowInvalidOperationException(Exception ex, string message = null)
-        {
-            if (string.IsNullOrEmpty(message))
-            {
-                message = ex.Message;
-            }
-            throw new InvalidOperationException(message, ex);
+            throw new InvalidOperationException(ex.Message, ex);
         }
 
         protected virtual string BaseUrl => configuration.ApiBaseUrl;
@@ -220,10 +193,7 @@ namespace Chameleon.Infrastructure.Api
 
         protected virtual string GetUrl(string url)
         {
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                throw new ArgumentException();
-            }
+            ArgumentException.ThrowIfNullOrWhiteSpace(url, nameof(url));
 
             if (url[0] != '/')
             {
@@ -231,9 +201,9 @@ namespace Chameleon.Infrastructure.Api
             }            
 
             var baseUrl = BaseUrl;
-            if (baseUrl.EndsWith("/"))
+            if (baseUrl.EndsWith('/'))
             {
-                baseUrl = baseUrl.Substring(0, baseUrl.Length - 1);
+                baseUrl = baseUrl[..^1];
             }
             return baseUrl + url;
         }

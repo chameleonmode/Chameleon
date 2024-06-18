@@ -81,8 +81,7 @@ public class ChameleonContentControl : HeaderedContentControl
 
     private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
-        var window = VisualRoot as Window;
-        if (window == null)
+        if (VisualRoot is not Window window)
         {
             return;
         }
