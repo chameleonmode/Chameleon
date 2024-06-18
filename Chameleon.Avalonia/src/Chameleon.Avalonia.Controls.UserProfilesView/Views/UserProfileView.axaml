@@ -83,7 +83,7 @@
 					   HorizontalAlignment="Left"
 					   Text="{Binding Title, FallbackValue=Cannot find name}"
 					   VerticalAlignment="Center"
-					   ToolTip.Tip="{Binding SubTitle}"
+					   ToolTip.Tip="{Binding Title}"
 					   Theme="{StaticResource BodyStrongTextBlockStyle}">
 			</TextBlock>
 

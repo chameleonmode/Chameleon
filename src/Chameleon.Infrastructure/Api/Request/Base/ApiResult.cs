@@ -9,6 +9,11 @@ namespace Chameleon.Infrastructure.Api
         private readonly Type ResultType = typeof(TResult);
         private bool IsResultArray => ResultType.IsArray;
 
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
         private string _json;
         public ApiResult(string json)
         {
@@ -38,17 +43,14 @@ namespace Chameleon.Infrastructure.Api
             }
 
             startIndex += prefix.Length;
-            _json = _json.Substring(startIndex, endIndex - startIndex);
+            _json = _json[startIndex..endIndex];
         }
 
         public TResult Deserialize()
         {
             ThrowIfInvalidJson();
 
-            return JsonSerializer.Deserialize<TResult>(_json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return JsonSerializer.Deserialize<TResult>(_json, options);
         }
 
         private void FixJson()
@@ -79,7 +81,7 @@ namespace Chameleon.Infrastructure.Api
                 return;
             }
 
-            if (!_json.StartsWith("["))
+            if (!_json.StartsWith('['))
             {
                 return;
             }
@@ -95,7 +97,7 @@ namespace Chameleon.Infrastructure.Api
                 return;
             }
 
-            if (_json.StartsWith("["))
+            if (_json.StartsWith('['))
             {
                 return;
             }
@@ -123,7 +125,7 @@ namespace Chameleon.Infrastructure.Api
 
         private void FixWrappingQuotes()
         {
-            if (!_json.StartsWith("\""))
+            if (!_json.StartsWith('\"'))
             {
                 return;
             }
@@ -159,9 +161,10 @@ namespace Chameleon.Infrastructure.Api
             }
         }
 
-        private void LogError(string message)
+        private static void LogError(string message)
         {
             // TODO: add log error
+            Console.WriteLine(message);
         }
     }
 }

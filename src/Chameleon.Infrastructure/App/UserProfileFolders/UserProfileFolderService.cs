@@ -38,7 +38,9 @@ namespace Chameleon.Infrastructure.UserProfileFolders
         {
             var entities = _repository.GetAll(ignoreCache);
 
+#pragma warning disable IDE0028 // Simplify collection initialization
             return new Domain.Entities.UserProfileFolders { entities };
+#pragma warning restore IDE0028 // Simplify collection initialization
         }
 
         public IUserProfileFolders GetAll()
@@ -67,11 +69,7 @@ namespace Chameleon.Infrastructure.UserProfileFolders
             }
 
             var folder = Folders.FirstOrDefault(item => item.Id == folderId);
-            if (folder == null)
-            {
-                throw new KeyNotFoundException(folderId.ToString());
-            }
-            return folder.Title;
+            return folder == null ? throw new KeyNotFoundException(folderId.ToString()) : folder.Title;
         }
 
         public IUserProfileFolder Create(string title = null)

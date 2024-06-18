@@ -51,48 +51,7 @@ using Chameleon.Domain.Entities.Automation;
 using Chameleon.Avalonia.Controls.Automation.Views.ViewModels;
 
 namespace Chameleon.Av.Fluent;
-public class tempinits : IDialogWindowsService  , IPopupDialogService
-{
-    public Task<int> ShowDialogWindow(IViewControl viewControl, string title)
-    {
-        throw new NotImplementedException();
-    }
 
-    public Task<int> ShowDialogWindow<TViewModel>(IViewControl viewControl, string title, Action<TViewModel> initialize) where TViewModel : class
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IPopupDialogResult?> Create<T>() where T : INotifyPropertyChanged
-    {
-        throw new NotImplementedException();
-    }
-
-    public IDialog Create(Type dialogType)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void ShowDialog(string name, string message, Action<int?> result)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Close(object? result = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task CloseAsync(object? result = null, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void ShowDialogInWindow<TDialog, TWindow>(string message, Action<int?> result)
-    {
-        throw new NotImplementedException();
-    }
-}
 public partial class App : PrismApplication
 {
     public static Action<MainWindow> OnFramworkInitComplete;
@@ -171,7 +130,6 @@ public partial class App : PrismApplication
 
         cr.RegisterSingleton<Prism.Events.IEventAggregator, Prism.Events.EventAggregator>();
         cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
-        cr.RegisterSingleton<IDialogWindowsService, tempinits>();
 
         containerRegistry.RegisterSingleton<IIocManager, IocManager>();
 

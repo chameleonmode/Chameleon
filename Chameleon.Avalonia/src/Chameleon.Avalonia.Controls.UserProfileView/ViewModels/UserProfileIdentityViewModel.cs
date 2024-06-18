@@ -372,15 +372,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     {
         commandMap[what]?.Invoke();
     }
-    private bool UserProfilesCmdCanExecute()
-    {
-        return UserProfileModel != null;
-    }
-
-    private bool UserProfilesCmdCanExecute<T>(T parameter)
-    {
-        return UserProfilesCmdCanExecute();
-    }
     #endregion
 
     #region Persons

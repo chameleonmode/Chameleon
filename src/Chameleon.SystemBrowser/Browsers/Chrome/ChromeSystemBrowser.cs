@@ -7,43 +7,29 @@ using Chameleon.SystemBrowser.Firefox;
 
 namespace Chameleon.SystemBrowser.Chrome
 {
-    public class ChromeSystemBrowser : SystemBrowserBase, IChromeSystemBrowser
-    {
-        private readonly IEventAggregator _eventAggregator;
-        private readonly IApplicationEnvironment _applicationEnvironment;
-        private readonly ISystemBrowserInfoManager _systemBrowserInfoManager;
-        private readonly ISetPreferencesService _setPreferencesService;
-        private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
-
-        public ChromeSystemBrowser(
+    public class ChromeSystemBrowser(
             IEventAggregator eventAggregator,
             IApplicationEnvironment applicationEnvironment,
             ISystemBrowserInfoManager systemBrowserInfoManager,
             ISetPreferencesService setPreferencesService,
-             IUserDefaultSettingsService userDefaultsSettingsService
-            )
-        {
-            _eventAggregator = eventAggregator;
-            _applicationEnvironment = applicationEnvironment;
-            _systemBrowserInfoManager = systemBrowserInfoManager;
-            _setPreferencesService = setPreferencesService;
-            _userDefaultsSettingsService = userDefaultsSettingsService;
-        }
+            IUserDefaultSettingsService userDefaultsSettingsService)
+        : SystemBrowserBase(eventAggregator), IChromeSystemBrowser
+    {
 
         public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
         {
             return new ChromeSystemBrowserInstance(
-                _eventAggregator,
+                EventAggregator,
                 o,
-                     _setPreferencesService,
-                 _applicationEnvironment,
-                 _userDefaultsSettingsService,
+                     setPreferencesService,
+                 applicationEnvironment,
+                 userDefaultsSettingsService,
                 GetBrowserExePath());
         }
 
         private string GetBrowserExePath()
         {
-            return _systemBrowserInfoManager
+            return systemBrowserInfoManager
                 .FindByName("chrome")
                 .Path;
         }

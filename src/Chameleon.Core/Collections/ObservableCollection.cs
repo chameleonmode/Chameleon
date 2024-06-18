@@ -9,7 +9,7 @@ public class ObservableCollection<TSource, TDestination> : ObservableCollection<
 {
     private readonly Func<TSource, TDestination> _mapper;
     private readonly Dictionary<TSource, TDestination> _map
-        = new Dictionary<TSource, TDestination>();
+        = [];
 
     public ObservableCollection(
         IEnumerable<TSource> collection,

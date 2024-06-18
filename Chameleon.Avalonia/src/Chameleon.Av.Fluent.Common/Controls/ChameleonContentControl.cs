@@ -81,8 +81,7 @@ public class ChameleonContentControl : HeaderedContentControl
 
     private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
-        var window = VisualRoot as Window;
-        if (window == null)
+        if (VisualRoot is not Window window)
         {
             return;
         }
@@ -119,7 +118,6 @@ public class ChameleonContentControl : HeaderedContentControl
 
         // Do this here rather than OnApplyTemplate, otherwise this will animate
         // on load and that isn't desired
-        AttachOptionsHostAnimation();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -143,38 +141,6 @@ public class ChameleonContentControl : HeaderedContentControl
         //}
     }
 
-    private void AttachOptionsHostAnimation()
-    {
-        if (_optionsHost == null)
-            return;
-
-        var host = _optionsHost;
-        var ec = ElementComposition.GetElementVisual(host);
-
-        if (_optionsHostAnimation == null)
-        {
-            var comp = ec.Compositor;
-
-            var offsetAni = comp.CreateVector3KeyFrameAnimation();
-            offsetAni.InsertExpressionKeyFrame(1f, "this.FinalValue");
-            offsetAni.Target = "Offset";
-            offsetAni.Duration = TimeSpan.FromMilliseconds(250);
-
-            var scaleAni = comp.CreateVector3KeyFrameAnimation();
-            scaleAni.InsertExpressionKeyFrame(1f, "this.FinalValue");
-            scaleAni.Target = "Scale";
-            scaleAni.Duration = offsetAni.Duration;
-
-            var group = comp.CreateAnimationGroup();
-            group.Add(offsetAni);
-            group.Add(scaleAni);
-
-            _optionsHostAnimation = comp.CreateImplicitAnimationCollection();
-            _optionsHostAnimation["Offset"] = group;
-        }
-
-        ec.ImplicitAnimations = _optionsHostAnimation;
-    }
 
     private void OnExpandOptionsClick(object sender, RoutedEventArgs e)
     {
@@ -189,6 +155,4 @@ public class ChameleonContentControl : HeaderedContentControl
     }
 
     private Button _expandOptionsButton;
-    private Border _optionsHost;
-    private static ImplicitAnimationCollection _optionsHostAnimation;
 }

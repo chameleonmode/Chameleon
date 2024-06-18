@@ -67,8 +67,7 @@ public partial class ImportViewModel : SubPageViewModelBase,
     {
         if (DisplayFolders == null)
         {
-            DisplayFolders = new ObservableCollection<IUserProfileFolder>();
-            DisplayFolders.Add(new UserProfileFolder { Title = "All Profiles" });
+            DisplayFolders = [new UserProfileFolder { Title = "All Profiles" }];
         }
         else
         {
@@ -134,7 +133,7 @@ public partial class ImportViewModel : SubPageViewModelBase,
         set => SetProperty(ref _filePath, value);
     }
 
-    private static char DefaultDelimiter = ',';
+    private static readonly char DefaultDelimiter = ',';
     private char _delimiter = DefaultDelimiter;
     public char Delimiter
     {

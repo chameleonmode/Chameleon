@@ -96,7 +96,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
             {
                 svc.PrepareToAnimate("ForwardAnimation", _animationPage);
             }
-            catch (Exception ex)
+            catch 
             {
                 svc.GetAnimation("ForwardAnimation");
                 _animationPage = _animationPageParent = null;
@@ -111,7 +111,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
         if (navParam is null) return;
         else if (navParam is not null and string command)
         {
-            _animationPageParent = this.GetVisualDescendants()?.Where(x => (x as ICommandSource)?.CommandParameter is string cmd && cmd == command)?.FirstOrDefault();
+            _animationPageParent = this.GetVisualDescendants()?.Where(x => x is ICommandSource { CommandParameter: string cmd } && cmd == command)?.FirstOrDefault();
             _animationPage = _animationPageParent?.GetVisualDescendants()?.Where(x => x.Name == "IconHost")?.FirstOrDefault();
         }
         else

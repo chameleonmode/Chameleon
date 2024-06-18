@@ -17,7 +17,7 @@ namespace Chameleon.Infrastructure.Modules
         /// </summary>
         private const string ModuleFileNamePattern = "Chameleon.*.dll";
         private readonly Regex ModuleFileNameRegex = new Regex(ModuleFileNamePattern);
-        private readonly List<Assembly> _assemblies = new List<Assembly>();
+        private readonly List<Assembly> _assemblies =[];
 
         public ModuleLoader()
         {
@@ -33,22 +33,6 @@ namespace Chameleon.Infrastructure.Modules
         private void EnsureAllAssembliesLoaded()
         {
             RetriveAlreadyLoadedAssemblies();
-            LoadAssebliesFromFileSystem();
-        }
-
-        private void LoadAssebliesFromFileSystem()
-        {
-            var asseblyFilePathsToLoad = Directory
-                .GetFiles(AppDomain.CurrentDomain.BaseDirectory, ModuleFileNamePattern)
-                .Where(filePath => !IsAssemblyLoaded(filePath))
-                .ToList();
-
-            var assebliesLoaded = asseblyFilePathsToLoad
-                .Select(LoadAssembly)
-                .ToList();
-
-            // register types as soon as possible
-            RegisterTypes(assebliesLoaded);
         }
 
         public abstract void RegisterTypes(IList<Assembly> assemblies);
@@ -62,7 +46,7 @@ namespace Chameleon.Infrastructure.Modules
                     {
                         // ignore exception like:
                         // The invoked member is not supported in a dynamic assembly.
-                        return assembly.Location.Length > 0;
+                        return AppContext.BaseDirectory.Length > 0;
                     }
                     catch
                     {
@@ -78,22 +62,8 @@ namespace Chameleon.Infrastructure.Modules
 
         private bool IsModuleAssembly(Assembly assembly)
         {
-            var fileName = Path.GetFileName(assembly.Location);
+            var fileName = Path.GetFileName(assembly.GetName().Name);
             return ModuleFileNameRegex.IsMatch(fileName);
-        }
-
-        private bool IsAssemblyLoaded(string filePath)
-        {
-            return _assemblies.Any(a =>
-                a.Location.Equals(filePath, StringComparison.OrdinalIgnoreCase)
-            );
-        }
-
-        private Assembly LoadAssembly(string filePath)
-        {
-            var assembly = Assembly.LoadFrom(filePath);
-            _assemblies.Add(assembly);
-            return assembly;
         }
     }
 }

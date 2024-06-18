@@ -5,13 +5,13 @@ namespace Chameleon.Interfaces.Repository
     public class UpsertItems<T>
     {
         public List<T> Inserted { get; }
-            = new List<T>();
+            = [];
 
         public List<T> Updated { get; }
-            = new List<T>();
+            = [];
 
         public List<T> Deleted { get; }
-            = new List<T>();
+            = [];
 
         public T[] Upserted
         {

@@ -23,28 +23,14 @@ namespace Chameleon.Application.Startup
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly IAuthService _authService;
-        private readonly IMainWindow _mainWindow;
-        private readonly ISystemBrowserManager _systemBrowserManager;
 
         public ApplicationStartup(
              IEventAggregator eventAggregator,
              IAuthService authService,
-            // injected just to create all event handlers to start them up
-            //ISettingsViewModel ___,
-            //IDashboardViewModel __,
-           // IProjectsView ____,
-            //IUserProfilesViewModel _____,
-            //IUserProfileFoldersViewModel ______,
-             //IUserProfileIdentityViewModel ______,
-             ISystemBrowserManager systemBrowserManager 
-            ,IEnumerable<IApplicationEventHandlers> _
-            )
+             IEnumerable<IApplicationEventHandlers> _)
         {
             _authService = authService;
-             _eventAggregator = eventAggregator;
-            //_mainWindow = mainWindow;
-
-            _systemBrowserManager = systemBrowserManager;
+            _eventAggregator = eventAggregator;
 
             _eventAggregator
                 .GetEvent<LoginCancelEvent>()
@@ -65,7 +51,7 @@ namespace Chameleon.Application.Startup
         }
         public async Task<bool> RunAsync(int trys)
         {
-            var success = false;
+            bool success;
             try
             {
                 success = await _authService.LoginAsync();

@@ -11,11 +11,29 @@
 			
 			<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
 				<HeaderedContentControl.Header>
-					<Button Theme="{StaticResource SvgIconTextButton}"
-							Content="delete"
-							Tag="Delete"
-							Margin="3 0 0 0"
-							Command="{Binding RemoveSelectedItemsCommand}" />
+					<StackPanel Orientation="Horizontal">
+						<ui:FAComboBox PlaceholderText="Proxy Country:"
+									   VerticalAlignment="Center"
+									   Width="150"
+									   IsEditable="False"
+									   IsTextSearchEnabled="True"
+									   ItemsSource="{Binding Countries}"
+									   SelectedItem="{Binding Country}">
+							<ui:FAComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Name}"/>
+								</DataTemplate>
+							</ui:FAComboBox.ItemTemplate>
+						</ui:FAComboBox>
+
+						<Button VerticalAlignment="Center"
+								ToolTip.Tip="Auto Update Proxies:"
+								Margin="4 0 0 0"
+								Theme="{StaticResource TransparentButton}"
+								Command="{Binding FillProxiesCommand}">
+							<ui:SymbolIcon Symbol="Refresh" FontSize="22" />
+						</Button>
+					</StackPanel>
 				</HeaderedContentControl.Header>
 			</HeaderedContentControl>
 
