@@ -705,6 +705,19 @@ public partial class UserProfilesViewModel
         IsVisibleStopButton = true;
     }
 
+    private CancellationTokenSource _cts;
+    private CancellationToken RecreateCancellationToken()
+    {
+        if (_cts != null)
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+        }
+
+        _cts = new CancellationTokenSource();
+        return _cts.Token;
+    }
+
     private async Task RunAutomationAsync()
     {
         var script = new AutomationScriptDescription 
@@ -721,12 +734,15 @@ public partial class UserProfilesViewModel
             }).ToList()
         };
         var profiles = _selectedProfiles.Select(p => (IUserProfile)p.UserProfile).ToList();
-        await _automationBrowserService.RunScript(script, SelectedBrowserItem.SystemBrowserType, profiles);
+
+        var token = RecreateCancellationToken();
+        await _automationBrowserService.RunScript(script, SelectedBrowserItem.SystemBrowserType, profiles, token);
     }
 
     [RelayCommand]
     private void StopAutomation()
     {
+        _cts.Cancel();
         Task.Run(StopAutomationAsync);
         IsVisibleStopButton = false;
         IsVisibleWaitButton = true;

@@ -29,7 +29,8 @@ public class AutomationBrowserService
     public async Task RunScript(
         IAutomationScriptDescription script,
         SystemBrowserType browserType,
-        IList<IUserProfile> userProfiles)
+        IList<IUserProfile> userProfiles,
+        CancellationToken token)
     {
         try
         {
@@ -60,6 +61,12 @@ public class AutomationBrowserService
                     catch (Exception ex)
                     {
                         await MesageBoxHelper.ShowErrorAsync("Script error", ex.Message);
+                    }
+
+                    // Stop loop if canceled
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
                     }
                 }
             }
