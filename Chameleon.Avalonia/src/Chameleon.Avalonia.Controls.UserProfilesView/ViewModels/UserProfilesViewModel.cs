@@ -10,6 +10,7 @@ using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Domain.Entities.Automation;
 using Chameleon.Interfaces.App.Automation.Entities;
+using Chameleon.Interfaces.App.Automation.Events;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
 using Chameleon.Interfaces.App.Synchronization.Events;
@@ -78,6 +79,9 @@ public partial class UserProfilesViewModel
 
         EventAggregator.GetEvent<UpdateStaleDataEvent>()
            .Subscribe(LoadAsync);
+
+        EventAggregator.GetEvent<FinishScriptExecutionEvent>()
+            .Subscribe(OnHandleFinishScriptExecutionEvent);
 
         _settings = new AppSettingsAutomation();
     }
@@ -743,15 +747,12 @@ public partial class UserProfilesViewModel
     private void StopAutomation()
     {
         _cts.Cancel();
-        Task.Run(StopAutomationAsync);
         IsVisibleStopButton = false;
         IsVisibleWaitButton = true;
     }
 
-    private async Task StopAutomationAsync()
+    private void OnHandleFinishScriptExecutionEvent()
     {
-        await Task.Delay(TimeSpan.FromSeconds(10));
-
         this.DispatcherService.InvokeOnUiThread(() =>
         {
             IsVisibleWaitButton = false;
