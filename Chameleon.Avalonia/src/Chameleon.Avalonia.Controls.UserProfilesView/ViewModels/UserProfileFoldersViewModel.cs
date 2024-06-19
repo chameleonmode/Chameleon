@@ -5,13 +5,10 @@ using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.UserProfileFolders;
-using Chameleon.Prism.Events;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.UserProfiles;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.Interfaces.UserProfiles;
-using Avalonia.Controls;
-using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.Common.Helpers;
 
@@ -22,31 +19,19 @@ public partial class UserProfileFoldersViewModel
         , IUserProfileFoldersViewModel
 {
     private readonly IApplicationUser _currentUser;
-    private readonly IAuthSession _authSession;
     private readonly IUserProfileFolderService _userProfileFolderService;
-    private readonly IDialogWindowsService _dialogWindowsService;
+    private readonly IUserProfileService _userProfileService;
 
     private ObservableCollection<IUserProfileFolder, UserProfileFolderViewModel> _mapping;
 
     public UserProfileFoldersViewModel(
-        IAuthSession authSession,
         IUserProfileFolderService userProfileFolderService,
-        IDialogWindowsService dialogWindowsService,
-        IApplicationUser currentUser
-        )
+        IApplicationUser currentUser,
+        IUserProfileService userProfileService)
     {
         _currentUser = currentUser;
-        _authSession = authSession;
         _userProfileFolderService = userProfileFolderService;
-        _dialogWindowsService = dialogWindowsService;
-
-        //EventAggregator
-        //    .GetEvent<LoginSuccessEvent>()
-        //    .SubscribeOnce(OnAuthenticated);
-
-        //EventAggregator
-        //  .GetEvent<DeleteUserProfileFolderEvent>()
-        //  .Subscribe(OnDeleteFolder);
+        _userProfileService = userProfileService;
 
         EventAggregator
            .GetEvent<UpdateStaleDataEvent>()
@@ -54,13 +39,9 @@ public partial class UserProfileFoldersViewModel
 
         EventAggregator
             .GetEvent<OpenUserProfileFolderEvent>()
-            .Subscribe(args => OnOpenFolder(args.UserProfileFolder));
+            .Subscribe(async args => await OnNavigatingTo(args.UserProfileFolder));
     }
 
-    private void OnOpenFolder(IUserProfileFolder userProfileFolder)
-    {
-        OnNavigatingTo(userProfileFolder);
-    }
 
 
     public override async Task InitAsync(object? param)
@@ -91,11 +72,6 @@ public partial class UserProfileFoldersViewModel
     public IApplicationUser CurrentUser => _currentUser;
     public bool IsCreateBtnEnabled => !CurrentUser?.IsAssistant ?? false;
 
-    private void OnDeleteFolder(UserProfileFolderEventArgs args)
-    {
-        AllProfiles.Open();
-    }
-
     private UserProfileFolderViewModel _allProfiles;
     public UserProfileFolderViewModel AllProfiles
     {
@@ -106,7 +82,7 @@ public partial class UserProfileFoldersViewModel
                 var folder = new UserProfileFolder { Title = "All profiles"};
                 _allProfiles = new UserProfileFolderViewModel(_currentUser,
                     folder,
-                    _userProfileFolderService,this
+                    _userProfileFolderService,this, _userProfileService
                     )
                 { IsFavoriteButtonVisible = false };
 
@@ -152,7 +128,8 @@ public partial class UserProfileFoldersViewModel
             folders, folder => new UserProfileFolderViewModel(_currentUser,
                 folder,
                 _userProfileFolderService,
-                this
+                this,
+                _userProfileService
                 )
             );
         _mapping.Insert(0, AllProfiles);
@@ -223,7 +200,7 @@ public partial class UserProfileFoldersViewModel
             if (!AllProfiles.UserProfileFolder.Navigated)
             {
                 AllProfiles.UserProfileFolder.Navigated = true;
-                AllProfiles.Open();
+                await AllProfiles.Open();
             }
         }
         //SearchText = p.Title;
@@ -234,6 +211,6 @@ public partial class UserProfileFoldersViewModel
         while (!Loaded)
             await Task.Delay(250);
 
-        OnNavigatingTo(_mapping.FirstOrDefault(m => m.UserProfileFolder.Id == id)?.UserProfileFolder);
+        await OnNavigatingTo(_mapping.FirstOrDefault(m => m.UserProfileFolder.Id == id)?.UserProfileFolder);
     }
 }

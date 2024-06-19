@@ -35,7 +35,7 @@ public partial class PaginatorViewModel
         {
             if (_buttons == null)
             {
-                _buttons = new ObservableCollectionView<PaginatorButtonViewModel>();
+                _buttons = [];
 
                 for (int i = 0; i < PageCount; i++)
                 {
@@ -128,8 +128,8 @@ public partial class PaginatorViewModel
     }
 
 
-    public int FirstVisibleElementNumber => Math.Min(Skip + 1, TotalCount);
-    public int LastVisibleElementNumber => Math.Min(Skip + OnPageItems, TotalCount);
+    public int FirstVisibleElementNumber => Math.Min(Math.Abs(Skip) + 1, TotalCount);
+    public int LastVisibleElementNumber => Math.Min(Math.Abs(Skip) + OnPageItems, TotalCount);
 
     private int _totalCount;
     public int TotalCount

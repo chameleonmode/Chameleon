@@ -41,8 +41,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
     [ObservableProperty]
     private bool _isForeground;
 
-    public string SubTitle => "Profiles";
-    public bool HasMultiOptions => true;
     public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
     public bool IsFavorite => UserProfile?.IsFavourite ?? false;
     public bool IsSharedProfile => _userProfileService.IsSharedProfile(UserProfile);
@@ -183,7 +181,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
         Open();
     }
     [RelayCommand]
-    public async Task OpenUserBrowser()
+    public void OpenUserBrowser()
     {
         ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<ITopMostSidePanelView, ITopMostSidePanelViewModel>(
             vm =>
@@ -196,7 +194,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
             vm => 
             { 
                 vm.RunningList.Clear();
-            },"C", 172);
+            },"SCP", 172);
         //EventAggregator
         //    .GetEvent<OpenUserBrowserEvent>()
         //    .Publish(new UserProfileEventArgs(UserProfile));
@@ -235,7 +233,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
         //    .Publish(args);
 
 
-        var browser = await _systemBrowserManager
+        _ = await _systemBrowserManager
                 .Get(browserType)
                 .Open(new SystemBrowserLaunchOptions
                 {

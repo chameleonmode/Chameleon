@@ -106,7 +106,7 @@
 		<Setter Property="Height" Value="296" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Panel>
+				<!--<Panel>-->
 					<!--<Border ClipToBounds="True"
 						Background="{DynamicResource PageHeaderBackgroundBrush}"
 						RenderOptions.BitmapInterpolationMode="HighQuality"
@@ -117,7 +117,7 @@
                             RenderOptions.BitmapInterpolationMode="HighQuality"
                             OpacityMask="{DynamicResource HeaderOpacityMaskBrush}" />-->
 
-					<Panel>
+					<Grid ColumnDefinitions="Auto,*,Auto">
 						
 						<Image Name="TitleTextImageHost"
                                VerticalAlignment="Top"
@@ -136,8 +136,7 @@
 							</Image.Transitions>
 						</Image>
 
-						<StackPanel Orientation="Horizontal"
-										 Margin="18 12 0 12">
+						<StackPanel Orientation="Horizontal" >
 							<ui:FontIcon Name="TitleTextFontHost"
 										 Glyph="Dashboard"
 										 FontSize="36"
@@ -163,7 +162,8 @@
 						</StackPanel>
 
 
-						<StackPanel Orientation="Horizontal"
+						<StackPanel Grid.Column="2"
+									Orientation="Horizontal"
 										  HorizontalAlignment="Right"
 										  VerticalAlignment="Center">
 							
@@ -172,8 +172,8 @@
 
 
 						</StackPanel>
-					</Panel>
-				</Panel>
+					</Grid>
+				<!--</Panel>-->
 			</ControlTemplate>
 		</Setter>
 

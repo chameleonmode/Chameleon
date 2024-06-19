@@ -128,7 +128,7 @@ public partial class UserProxySettingsViewModel
         item.Title = title;
     }
 
-    public ObservableCollection<IProxyCountry> Countries { get; private set; } = new(); 
+    public ObservableCollection<IProxyCountry> Countries { get; private set; } = []; 
     public IProxyCountry Country
     {
         get => _proxyService.CurrentCountry;
@@ -152,7 +152,7 @@ public partial class UserProxySettingsViewModel
         Country = Countries.FirstOrDefault();
     }
 
-    static SemaphoreSlim initializeViewModelsSlim = new SemaphoreSlim(1, 1);
+    static readonly SemaphoreSlim initializeViewModelsSlim = new SemaphoreSlim(1, 1);
     private async Task InitializeViewModels()
     {
         await initializeViewModelsSlim.WaitAsync();
@@ -171,7 +171,7 @@ public partial class UserProxySettingsViewModel
 
         initializeViewModelsSlim.Release();
     }
-    static SemaphoreSlim initializeFolderViewModelsSlim = new SemaphoreSlim(1, 1);
+    static readonly SemaphoreSlim initializeFolderViewModelsSlim = new SemaphoreSlim(1, 1);
     private async Task LoadUserProfileFolderViewModels()
     {
         await initializeFolderViewModelsSlim.WaitAsync();
@@ -187,14 +187,6 @@ public partial class UserProxySettingsViewModel
 
         initializeFolderViewModelsSlim.Release();
     }
-
-    private async void UpdateProfilesInFolder(ChangeProfilesInFavoriteFolderEventArgs args)
-    {
-        //TODO: throw new NotImplementedException();
-        await LoadUserProfileFolderViewModels();
-        await InitializeViewModels();
-    }
-
 
     private void UpdateProxyAccessAsync()
     {
@@ -386,7 +378,7 @@ public partial class UserProxySettingsViewModel
         return proxies;
     }
 
-    private List<IProxySettings> ParseProxiesSettings(string[] proxyList)
+    private static List<IProxySettings> ParseProxiesSettings(string[] proxyList)
     {
         var proxies = new List<IProxySettings>();
         foreach (var item in proxyList)
@@ -400,7 +392,7 @@ public partial class UserProxySettingsViewModel
         return proxies;
     }
 
-    private bool ParseProxySettings(string applingProxy, out ProxySettings proxy)
+    private static bool ParseProxySettings(string applingProxy, out ProxySettings proxy)
     {
         proxy = new ProxySettings();
 
@@ -457,7 +449,7 @@ public partial class UserProxySettingsViewModel
         return models;
     }
 
-    private async void ErrorMessage(string message)
+    private static async void ErrorMessage(string message)
     {
         await MesageBoxHelper.ShowErrorAsync("Warning", message);
     }

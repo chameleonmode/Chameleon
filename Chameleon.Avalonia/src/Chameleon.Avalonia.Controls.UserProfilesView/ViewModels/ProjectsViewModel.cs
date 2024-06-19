@@ -7,30 +7,20 @@ using Chameleon.Core.Util;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Users;
-using Chameleon.Interfaces.App.Assistants.Events;
-using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Common;
-using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
 public partial class ProjectsViewModel : PageViewModelBase,
     IProjectsViewModel
 {
-    //ObservableCollection<ProfileViewModel> ProfileViewModels { get; set; }
-    //ObservableCollection<DirectoryViewModel> DirectoryViewModels { get; set; }
-    private readonly IUserAssistantService _userAssistantService;
     private readonly IApplicationUser _applicationUser;
-    //TODO: private readonly IFeatureTourNavigator _featureTourNavigator;
     private readonly IAuthSession _authSession;
     private readonly IUserProfileFoldersViewModel folders;
     private readonly IUserProfilesViewModel profiles;
@@ -84,13 +74,11 @@ public partial class ProjectsViewModel : PageViewModelBase,
         set => SetProperty(ref _isCreateProfileBtnVisible, value);
     }
 
-    public ProjectsViewModel(IUserAssistantService userAssistantService,
-        IApplicationUser applicationUser,
+    public ProjectsViewModel(IApplicationUser applicationUser,
         IAuthSession authSession,
         IUserProfileFoldersViewModel folders,
         IUserProfilesViewModel profiles)
     {
-        _userAssistantService = userAssistantService;
         _applicationUser = applicationUser;
         _authSession = authSession;
         this.folders = folders;
@@ -116,7 +104,7 @@ public partial class ProjectsViewModel : PageViewModelBase,
 
             if (!folder.Navigated || folders is UserProfileFoldersViewModel f && f.SelectedFolder.UserProfileFolder.Id == folder.Id)
             {
-                folders.OnNavigatingTo(folder);
+                await folders.OnNavigatingTo(folder);
                 folder.Navigated = true;
             }
         }
@@ -170,7 +158,7 @@ public partial class ProjectsViewModel : PageViewModelBase,
             if (ex.Message == "limit_ex")
             {
                 if (await MesageBoxHelper.ShowAsync("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
-                    ProcessesUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
+                    ProUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
             }
             else
             {

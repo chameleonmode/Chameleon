@@ -1,5 +1,6 @@
 ﻿using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Environments;
+using System.Net.Http;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -8,7 +9,7 @@ namespace Chameleon.Infrastructure.Api
         public ApiPutRequest(
             IAuthSession session,
             IApplicationConfiguration configuration
-            ) : base(session, configuration, "PUT")
+            ) : base(session, configuration, HttpMethod.Put)
         {
         }
     }

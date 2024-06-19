@@ -31,7 +31,6 @@ namespace Chameleon.Infrastructure.Profiles
         private readonly IWebBrowserUserAgentRepository _webBrowserUserAgentRepository;
         private readonly IUserProfileOutReachRssRepository _outReachRssRepository;
         private readonly IAuthSession _authSession;
-        private readonly IDialogWindowsService _dialogWindowsService;
         //private readonly IUpgradePlanPopupView _upgradePlanPopupView;
         private readonly IApplicationUser _applicationUser;
         private readonly IShareFoldersService _shareFoldersService;
@@ -230,7 +229,7 @@ namespace Chameleon.Infrastructure.Profiles
             //_dialogWindowsService.ShowDialogWindow(_upgradePlanPopupView, "PROFILES LIMIT REACHED", initialize);
 
             if (await MesageBoxHelper.ShowAsync("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
-                ProcessesUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
+                ProUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
         }
 
         public void Import(IUserProfile userProfile)

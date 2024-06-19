@@ -1,6 +1,7 @@
 ﻿using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Environments;
 using System.Net;
+using System.Net.Http;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -13,9 +14,9 @@ namespace Chameleon.Infrastructure.Api
         {
         }
 
-        protected override void InitializeRequest(HttpWebRequest request)
+        protected override void InitializeRequest(HttpRequestMessage request)
         {
-            request.Method = "DELETE";
+            request.Method = HttpMethod.Delete;
         }
     }
 }

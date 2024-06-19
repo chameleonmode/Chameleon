@@ -12,7 +12,7 @@ namespace Chameleon.Infrastructure.CookiesExcluded
         private readonly IMapper _mapper;
         private readonly ICookiesExcludedDomainRepository _cookiesExcludedDomainRepository;
         private readonly Dictionary<int, CookiesExcludedDomains> _entities
-                   = new Dictionary<int, CookiesExcludedDomains>();
+                   = [];
 
         public CookiesExcludedDomainService(
           IMapper mapper,

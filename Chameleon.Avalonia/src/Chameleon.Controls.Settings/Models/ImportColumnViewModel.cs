@@ -34,7 +34,7 @@ namespace Chameleon.Controls.ImportExport.Models
         }
 
         public ObservableCollection<IImportColumnItemViewModel> Items { get; }
-            = new ObservableCollection<IImportColumnItemViewModel>();
+            = [];
 
 
         public void MapTo(IUserProfile profile, int itemIndex)

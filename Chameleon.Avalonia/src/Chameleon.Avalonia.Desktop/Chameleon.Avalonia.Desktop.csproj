@@ -58,6 +58,7 @@
     <ProjectReference Include="..\Chameleon.Av.Fluent.Dialogs\Chameleon.Avalonia.Fluent.Dialogs.csproj" />
     <ProjectReference Include="..\Chameleon.Av.Fluent\Chameleon.Avalonia.Fluent.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
+    <ProjectReference Include="..\Chameleon.Avalonia.Controls.Automation\Chameleon.Avalonia.Controls.Automation.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Dashboard\Chameleon.Avalonia.Controls.Dashboard.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfilesView\Chameleon.Avalonia.Controls.UserProfilesView.csproj" />

@@ -16,26 +16,23 @@
 	</UserControl.Resources>
 
 	<ScrollViewer> 
-		<StackPanel Spacing="-56">
-			<afv:PageHeaderControl TextType="Dashboard"
-										 Classes="smallest">
+		<StackPanel >
+			<afv:PageHeaderControl 
+				TextType="Dashboard" 
+				Margin="12 12 12 0"
+				Classes="smallest">
 				<afv:PageHeaderControl.ContentObject>
 					<Button Theme="{StaticResource SyncChangesButton}" Margin="6 -18 6 6"  />
 				</afv:PageHeaderControl.ContentObject>
 			</afv:PageHeaderControl>
 			
-			<Grid Margin="{StaticResource ChameleonAppPageMargin}">
+			<Grid Margin="12 0 12 12">
 				<Grid.RowDefinitions>
-					<RowDefinition Height="48" />
+					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
-						<!--<breadcrumbsView:BreadcrumbsView DataContext="{Binding BreadcrumbsViewModel}"
-														 VerticalAlignment="Center"
-														 Margin="23 0 0 0" />-->
-				<!--<Button Theme="{StaticResource SyncChangesButton}" />-->
-
 				<!--<TextBox Grid.Row="1"
 						 HorizontalAlignment="Center"
 								 Margin="0 0 0 12"
@@ -52,7 +49,6 @@
 							HorizontalAlignment="Right"
 							ItemsSource="{Binding Sorts}"
 							SelectedItem="{Binding SortSelected}"
-							Width="150"
 							IsEditable="False"/>
 					</afv:ChameleonContentControl.Options>
 
@@ -60,8 +56,8 @@
 						<Panel>
 							<ListBox 
 								Name="lbProfiles"
-								IsVisible="{Binding !HasNoItems}"
 								ItemsSource="{Binding ViewModels}"
+								VerticalAlignment="Top"
 								Theme="{StaticResource ListBoxNoScroller}"
 								ItemContainerTheme="{StaticResource GridViewItem}">
 								<ListBox.ItemsPanel>
@@ -75,31 +71,9 @@
 									</DataTemplate>
 								</ListBox.ItemTemplate>
 							</ListBox>
-
-							<StackPanel
-								IsVisible="{Binding HasNoItems}"
-								Height="280"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center">
-								<StackPanel IsVisible="{Binding NoSearchResultsInFavorite}">
-									<afv:SvgIconControl 
-										IconName="not-profiles"
-										Height="102"
-										Width="97"/>
-
-
-									<TextBlock 
-										Margin="0 25 0 0"
-									    Text="No favorite profiles selected yet"
-									    Theme="{StaticResource SubtitleTextBlockStyle}" />
-								</StackPanel>
-
-								<TextBlock 
-									Margin="0 25 0 0"
-									Text="Profiles not found"
-									Theme="{StaticResource SubtitleTextBlockStyle}"
-									IsVisible="{Binding !NoSearchResultsInFavorite}" />
-							</StackPanel>
+							
+							<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+													Header="No favorite profiles selected yet"/>
 						</Panel>
 					</afv:ChameleonContentControl.Content>
 				</afv:ChameleonContentControl>
@@ -113,7 +87,6 @@
 									   HorizontalAlignment="Right"
 									   ItemsSource="{Binding Sorts}"
 									   SelectedItem="{Binding FolderSortSelected}"
-									   Width="150"
 									   IsEditable="False"/>
 					</afv:ChameleonContentControl.Options>
 
@@ -124,6 +97,7 @@
 								Theme="{StaticResource ListBoxNoScroller}"
 								ItemContainerTheme="{StaticResource GridViewItem}"
 								Grid.Row="1"
+								VerticalAlignment="Top"
 								IsVisible="{Binding !HasNoFolderItems}">
 								<ListBox.ItemsPanel>
 									<ItemsPanelTemplate>
@@ -176,28 +150,10 @@
 									</DataTemplate>
 								</ListBox.ItemTemplate>
 							</ListBox>
-
-
-							<StackPanel IsVisible="{Binding HasNoFolderItems}"
-										Orientation="Vertical"
-										HorizontalAlignment="Center"
-										VerticalAlignment="Center">
-								
-								<StackPanel IsVisible="{Binding NoSearchResultsInFavorite}">
-									<afv:SvgIconControl  IconName="not-profiles"
-													   Height="102"
-													   Width="97" />
-
-									<TextBlock Margin="0 25 0 0"
-											   Text="No favorite folders selected yet"
-										   Theme="{StaticResource SubtitleTextBlockStyle}" />
-								</StackPanel>
-
-								<TextBlock Margin="0 25 0 0"
-										   Text="Folders not found"
-										   Theme="{StaticResource SubtitleTextBlockStyle}"
-										   IsVisible="{Binding !NoSearchResultsInFavorite}" />
-							</StackPanel>
+							
+							<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+													Header="No favorite folders selected yet"
+													IsVisible="{Binding HasNoFolderItems}" />
 						</Panel>
 					</afv:ChameleonContentControl.Content>
 				</afv:ChameleonContentControl>

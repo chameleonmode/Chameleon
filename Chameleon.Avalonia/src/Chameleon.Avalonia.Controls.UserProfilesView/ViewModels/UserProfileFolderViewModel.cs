@@ -1,15 +1,14 @@
-﻿using Avalonia.Controls;
-using Chameleon.Application.Events;
+﻿using Chameleon.Application.Events;
 using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
-using Chameleon.Domain.Entities;
+using Chameleon.Interfaces.App.Automation.ViewModels;
+using Chameleon.Interfaces.App.Automation.Views;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
-using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.UserProfileFolders;
+using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.UserSettings;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -21,19 +20,37 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     private readonly IApplicationUser _currentUser;
     private readonly IUserProfileFolder _folder;
     private readonly IUserProfileFolderService _userProfileFolderService;
+    private readonly IUserProfileService _userProfileService;
 
-    UserProfileFoldersViewModel foldervm;
+    readonly UserProfileFoldersViewModel foldervm;  
+    private bool _isSelected;
 
-   [ObservableProperty]
+    [ObservableProperty]
     private bool _isFavoriteButtonVisible = true;
+    [ObservableProperty]
+    private bool _isRenamed;
+
+    [ObservableProperty]
+    private bool _isFavorite;
+
+    private IList<IUserProfile> _selectedUserProfiles = new List<IUserProfile>();
+    public IList<IUserProfile> SelectedUserProfiles
+    {
+        get => _selectedUserProfiles;
+        set => SetProperty(ref _selectedUserProfiles, value);
+    }
+
+    public bool IsFolderNotEmpty => ProfilesByCurrentFolder.Any();
 
     public UserProfileFolderViewModel(
         IApplicationUser currentUser,
         IUserProfileFolder folder,
         IUserProfileFolderService userProfileFolderService,
-        UserProfileFoldersViewModel f)
+        UserProfileFoldersViewModel f,
+        IUserProfileService userProfileService)
     {
         _currentUser = currentUser;
+        _userProfileService = userProfileService;
         _folder = folder;
         _userProfileFolderService = userProfileFolderService;
         foldervm = f;
@@ -51,9 +68,9 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     public IUserProfileFolder UserProfileFolder => _folder;
 
    [RelayCommand]
-    public void Open()
+    public async Task Open()
     {
-        foldervm.OnNavigatingTo(UserProfileFolder);
+        await foldervm.OnNavigatingTo(UserProfileFolder);
         //foldervm.OnNavigatingTo(null);
         IsSelected = true;
         //IsSelected = true;
@@ -84,6 +101,32 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     }
 
     [RelayCommand]
+    private async Task OpenAutomation()
+    {
+        var userProfilesToApply = ProfilesByCurrentFolder;
+
+        var result = await ContentDialogService
+           .ShowAsync<ISelectAutomationPopupView, ISelectAutomationPopupViewModel>(viewModel =>
+           {
+               viewModel.Title = "Select Automation";
+               viewModel.UserProfiles = userProfilesToApply;
+           });
+    }
+
+    private IList<IUserProfile> ProfilesByCurrentFolder
+    {
+        get
+        {
+            var userProfilesFromCurrentFolder = _userProfileService
+                .GetAll()
+                .Where(profiles => profiles.FolderId == _folder.Id)
+                .ToList();
+
+            return userProfilesFromCurrentFolder;
+        }
+    }
+    
+    [RelayCommand]
     private async Task Delete()
     {
         if (await MesageBoxHelper.ShowAsync("Delete Folder",
@@ -93,11 +136,8 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         {
 
             await ContainerServiceHelper.Resolve<IUserProfileFolderEventHandler>().DeleteFolder(_folder);
-            foldervm.AllProfiles.Open();
+            await foldervm.AllProfiles.Open();
         }
-           // EventAggregator.Publish<DeleteUserProfileFolderEvent, UserProfileFolderEventArgs>(new UserProfileFolderEventArgs(_folder));
-                //.GetEvent<DeleteUserProfileFolderEvent>()
-                //.Publish(new UserProfileFolderEventArgs(_folder));
     }
 
    [RelayCommand]
@@ -110,10 +150,6 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     [RelayCommand]
     private void ChangeProxies()
     {
-        //EventAggregator
-        //    .GetEvent<OpenChangeProxiesEvent>()
-        //    .Publish(new OpenChangeProxiesEventArgs(_folder.Id));
-
         NavigationService.NavigateToType(typeof(IUserProxySettingsView), UserProfileFolder);
     }
 
@@ -149,8 +185,6 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
            .Publish();
     }
 
-
-    private bool _isSelected;
     public bool IsSelected
     {
         get => _isSelected;
@@ -167,12 +201,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             }
         }
     }
-    
-    [ObservableProperty]
-    private bool _isRenamed;
 
-    [ObservableProperty]
-    private bool _isFavorite;
 
     public IApplicationUser CurrentUser => _currentUser;
     public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(_folder);

@@ -11,6 +11,6 @@ namespace Chameleon.Domain.Entities.ShareFolders
         public int FolderId { get; set; }
         public string FolderName { get; set; }
    
-        public List<IShareFolderPermission> FolderPermissions { get; set; } = new List<IShareFolderPermission>();
+        public List<IShareFolderPermission> FolderPermissions { get; set; } = [];
     }
 }
