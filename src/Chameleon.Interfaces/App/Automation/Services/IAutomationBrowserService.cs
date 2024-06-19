@@ -7,5 +7,9 @@ namespace Chameleon.Interfaces.App.Automation.Services;
 public interface IAutomationBrowserService
     : ISingletonDependency
 {
-    Task RunScript(IAutomationScriptDescription script, SystemBrowserType browserType, IList<IUserProfile> userProfiles);
+    Task RunScript(
+        IAutomationScriptDescription script, 
+        SystemBrowserType browserType, 
+        IList<IUserProfile> userProfiles,
+        CancellationToken token);
 }

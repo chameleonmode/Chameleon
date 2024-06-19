@@ -10,6 +10,7 @@ using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Domain.Entities.Automation;
 using Chameleon.Interfaces.App.Automation.Entities;
+using Chameleon.Interfaces.App.Automation.Events;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
 using Chameleon.Interfaces.App.Synchronization.Events;
@@ -78,6 +79,9 @@ public partial class UserProfilesViewModel
 
         EventAggregator.GetEvent<UpdateStaleDataEvent>()
            .Subscribe(LoadAsync);
+
+        EventAggregator.GetEvent<FinishScriptExecutionEvent>()
+            .Subscribe(OnHandleFinishScriptExecutionEvent);
 
         _settings = new AppSettingsAutomation();
     }
@@ -700,6 +704,19 @@ public partial class UserProfilesViewModel
         IsVisibleStopButton = true;
     }
 
+    private CancellationTokenSource _cts;
+    private CancellationToken RecreateCancellationToken()
+    {
+        if (_cts != null)
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+        }
+
+        _cts = new CancellationTokenSource();
+        return _cts.Token;
+    }
+
     private async Task RunAutomationAsync()
     {
         var script = new AutomationScriptDescription
@@ -716,26 +733,23 @@ public partial class UserProfilesViewModel
             }).ToList()
         };
         var profiles = _selectedProfiles.Select(p => (IUserProfile)p.UserProfile).ToList();
-        await _automationBrowserService.RunScript(script, SelectedBrowserItem.SystemBrowserType, profiles);
+
+        var token = RecreateCancellationToken();
+        await _automationBrowserService.RunScript(script, SelectedBrowserItem.SystemBrowserType, profiles, token);
     }
 
     [RelayCommand]
     private void StopAutomation()
     {
-        Task.Run(StopAutomationAsync);
-        IsVisibleStopButton = false;
-        IsVisibleWaitButton = true;
+        _cts.Cancel();
     }
 
-    private async Task StopAutomationAsync()
+    private void OnHandleFinishScriptExecutionEvent()
     {
-        await Task.Delay(TimeSpan.FromSeconds(10));
-
-        this.DispatcherService.InvokeOnUiThread(() =>
-        {
-            IsVisibleWaitButton = false;
-            IsVisibleRunButton = true;
-        });
+        IsVisibleStopButton = false;
+        IsVisibleWaitButton = true;
+        IsVisibleWaitButton = false;
+        IsVisibleRunButton = true;
     }
 
     private void OpenSystemBrowser(SystemBrowserType browserType)

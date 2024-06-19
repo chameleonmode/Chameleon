@@ -119,6 +119,6 @@ public partial class SelectAutomationPopupViewModel
         }
 
         IAutomationScriptDescription script = _selectedScriptDescription.ScriptDescription;
-        _ = _automationBrowserService.RunScript(script, _selectedBrowser, _userProfiles);
+        //_ = _automationBrowserService.RunScript(script, _selectedBrowser, _userProfiles);
     }
 }
