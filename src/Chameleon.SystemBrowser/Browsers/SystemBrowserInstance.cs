@@ -14,6 +14,7 @@ public abstract class SystemBrowserInstance(
     private readonly List<IntPtr> winEventHooks = []; 
                                                    
     private U32.WinEventDelegate winEventsCaptureDelegate;
+    private MWHandleTrackerUtility windowTracker;
 
     public TaskCompletionSource<bool> OPtcs { get; } = new();
 
@@ -93,8 +94,8 @@ public abstract class SystemBrowserInstance(
         else
         {
 #pragma warning disable CA1416 // Validate platform compatibility
-            MWHandleTrackerUtility tracker = new(Brocess);
-            var newHandle = await tracker.WaitForMainWindowHandleChangeAsync();
+            windowTracker = new(Brocess);
+            var newHandle = await windowTracker.WaitForMainWindowHandleChangeAsync();
             Brocess = newHandle.Item2;
             if (Brocess == null)
             {
@@ -103,7 +104,7 @@ public abstract class SystemBrowserInstance(
             else
             {
                 Handle = Brocess.MainWindowHandle;
-                tracker.StopTracking();
+                windowTracker.StopTracking();
                 SetWin32Events();
             }                                               
 #pragma warning restore CA1416 // Validate platform compatibility
@@ -145,7 +146,7 @@ public abstract class SystemBrowserInstance(
         }
     }
 
-    private void WinEventProc(IntPtr hWinEventHook, User32Events eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+    private async void WinEventProc(IntPtr hWinEventHook, User32Events eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
     {
         switch (eventType)
         {
@@ -172,6 +173,8 @@ public abstract class SystemBrowserInstance(
                 break;
 
             case User32Events.EVENT_OBJECT_DESTROY:
+                _ = await OPtcs.Task;
+
                 if (Handle == IntPtr.Zero || Brocess == null || Brocess.HasExited)
                     Cleanup();
                 break;
