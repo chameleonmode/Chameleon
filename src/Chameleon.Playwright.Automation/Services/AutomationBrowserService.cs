@@ -5,6 +5,7 @@ using Chameleon.Interfaces.App.Automation.ExternalScript;
 using Chameleon.Interfaces.App.Automation.Manager;
 using Chameleon.Interfaces.App.Automation.Playwright;
 using Chameleon.Interfaces.App.Automation.Services;
+using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
@@ -17,18 +18,21 @@ public class AutomationBrowserService
     private readonly ICompileScriptService _compileScriptService;
     private readonly IAutomationService _automationService;
     private readonly IEventAggregator _eventAggregator;
+    private readonly IDispatcherService _dispatcherService;
 
     public AutomationBrowserService(
         IPlaywrightBrowserManager playwrightBrowserManager,
         ICompileScriptService compileScriptService,
         IAutomationService automationService,
-        IEventAggregator eventAggregator
+        IEventAggregator eventAggregator,
+        IDispatcherService dispatcherService
         )
     {
         _playwrightBrowserManager = playwrightBrowserManager;
         _compileScriptService = compileScriptService;
         _automationService = automationService;
         _eventAggregator = eventAggregator;
+        _dispatcherService = dispatcherService;
     }
 
     public async Task RunScript(
@@ -65,7 +69,10 @@ public class AutomationBrowserService
                     }
                     catch (Exception ex)
                     {
-                        await MesageBoxHelper.ShowErrorAsync("Script error", ex.Message);
+                        await _dispatcherService.InvokeOnUiThread(async () =>
+                        {
+                            await MesageBoxHelper.ShowErrorAsync("Script error", ex.Message);
+                        });
                     }
 
                     // Stop loop if canceled
@@ -74,15 +81,20 @@ public class AutomationBrowserService
                         break;
                     }
                 }
-                _eventAggregator
-                    .GetEvent<FinishScriptExecutionEvent>()
-                    .Publish();
             }
         }
-
         catch (Exception ex) 
         {
-            await MesageBoxHelper.ShowErrorAsync("Automation error", ex.Message);
+            await _dispatcherService.InvokeOnUiThread(async () =>
+            {
+                await MesageBoxHelper.ShowErrorAsync("Automation error", ex.Message);
+            });
+        }
+        finally
+        {
+            _dispatcherService.InvokeOnUiThread(() => _eventAggregator
+                    .GetEvent<FinishScriptExecutionEvent>()
+                    .Publish());
         }
     }
 }

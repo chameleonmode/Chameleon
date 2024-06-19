@@ -747,17 +747,14 @@ public partial class UserProfilesViewModel
     private void StopAutomation()
     {
         _cts.Cancel();
-        IsVisibleStopButton = false;
-        IsVisibleWaitButton = true;
     }
 
     private void OnHandleFinishScriptExecutionEvent()
     {
-        this.DispatcherService.InvokeOnUiThread(() =>
-        {
-            IsVisibleWaitButton = false;
-            IsVisibleRunButton = true;
-        });
+        IsVisibleStopButton = false;
+        IsVisibleWaitButton = true;
+        IsVisibleWaitButton = false;
+        IsVisibleRunButton = true;
     }
 
     private void OpenSystemBrowser(SystemBrowserType browserType)
