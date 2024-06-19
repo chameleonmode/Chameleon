@@ -194,7 +194,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
             vm => 
             { 
                 vm.RunningList.Clear();
-            },"C", 172);
+            },"SCP", 172);
         //EventAggregator
         //    .GetEvent<OpenUserBrowserEvent>()
         //    .Publish(new UserProfileEventArgs(UserProfile));
