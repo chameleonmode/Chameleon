@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.App.Automation.Playwright;
+﻿using Chameleon.Infrastructure.App.Automation;
+using Chameleon.Interfaces.App.Automation.Playwright;
 using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.WebBrowser;
@@ -12,25 +13,29 @@ public class ChromePlaywrightBrowserInstance
     , IPlaywrightBrowserInstance
 {
     private readonly IPlaywrightBrowserLaunchOptions _playwrightOptions;
+    private readonly IAutomationScriptHelper _automationScriptHelper;
 
     private IBrowserContext _browserContext;
     public IBrowserContext BrowserContext => _browserContext;
-   
+
     public ChromePlaywrightBrowserInstance(
         IEventAggregator eventAggregator,
-        IPlaywrightBrowserLaunchOptions options, 
-        ISetPreferencesService setPreferencesService, 
-        IApplicationEnvironment applicationEnvironment, 
-        IUserDefaultSettingsService userDefaultsSettingsService, 
-        string browserExeFilePath) 
-        : base(eventAggregator, 
-            options, 
-            setPreferencesService, 
-            applicationEnvironment, 
-            userDefaultsSettingsService, 
+        IPlaywrightBrowserLaunchOptions options,
+        ISetPreferencesService setPreferencesService,
+        IApplicationEnvironment applicationEnvironment,
+        IUserDefaultSettingsService userDefaultsSettingsService,
+        string browserExeFilePath,
+        IAutomationScriptHelper automationScriptHelper
+        )
+        : base(eventAggregator,
+            options,
+            setPreferencesService,
+            applicationEnvironment,
+            userDefaultsSettingsService,
             browserExeFilePath)
     {
         _playwrightOptions = options;
+        _automationScriptHelper = automationScriptHelper;
     }
 
     public override async Task Open()
@@ -46,19 +51,12 @@ public class ChromePlaywrightBrowserInstance
         List<string> args = GetClearCommandLineArgumentsList();
         string exts = GetLoadExtensionsArgument();
 
-        if (!string.IsNullOrEmpty(exts))
-        {
-            args.Add($"--disable-extensions-except={exts}");
-            args.Add($"--load-extension={exts}");
-        }
+        var options = _automationScriptHelper
+             .CreateOptions(args, exts, _browserExeFilePath);
 
-        _browserContext = await _playwrightOptions.Playwright.Chromium.LaunchPersistentContextAsync(
-            _browserProfileFolderPath,
-            new BrowserTypeLaunchPersistentContextOptions
-            {
-                Args = args,
-                ExecutablePath = _browserExeFilePath,
-                Headless = false,
-            });
+        _browserContext = await _playwrightOptions.Playwright.Chromium
+            .LaunchPersistentContextAsync(_browserProfileFolderPath, options);
+
+        await _automationScriptHelper.InitScriptAsync(_browserContext);
     }
 }

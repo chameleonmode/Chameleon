@@ -50,6 +50,7 @@ using DryIoc;
 using Prism.DryIoc;
 using System.ComponentModel;
 using System.Reflection;
+using Chameleon.Interfaces.App.Automation.Playwright;
 
 namespace Chameleon.Av.Fluent;
 public class tempinits : IDialogWindowsService  , IPopupDialogService
@@ -267,6 +268,7 @@ public partial class App : PrismApplication
         containerRegistry.Register<IAddScriptParametersPopupViewModel, AddScriptParametersPopupViewModel>();
         containerRegistry.Register<ISelectAutomationPopupViewModel, SelectAutomationPopupViewModel>();
         containerRegistry.Register<ISelectAutomationPopupView, SelectAutomationPopupView>();
+        containerRegistry.RegisterSingleton<IAutomationScriptHelper, AutomationScriptHelper>();
     }
 
     private void RegisterIocContainer(IContainerRegistry containerRegistry)

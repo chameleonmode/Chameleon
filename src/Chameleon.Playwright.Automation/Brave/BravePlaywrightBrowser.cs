@@ -12,18 +12,23 @@ public class BravePlaywrightBrowser
     : BraveSystemBrowser
     , IBravePlaywrightBrowser
 {
+    private readonly IAutomationScriptHelper _automationScriptHelper;
+
     public BravePlaywrightBrowser(
         IEventAggregator eventAggregator,
         IApplicationEnvironment applicationEnvironment,
         ISystemBrowserInfoManager systemBrowserInfoManager,
         ISetPreferencesService setPreferencesService,
-        IUserDefaultSettingsService userDefaultsSettingsService)
+        IUserDefaultSettingsService userDefaultsSettingsService,
+        IAutomationScriptHelper automationScriptHelper
+        )
         : base(eventAggregator,
             applicationEnvironment,
             systemBrowserInfoManager,
             setPreferencesService,
             userDefaultsSettingsService)
     {
+        _automationScriptHelper = automationScriptHelper;
     }
 
     public IPlaywrightBrowserInstance InitializeBrowser(IPlaywrightBrowserLaunchOptions o)
@@ -34,7 +39,8 @@ public class BravePlaywrightBrowser
             _setPreferencesService,
             _applicationEnvironment,
             _userDefaultsSettingsService,
-            GetBrowserExePath()
+            GetBrowserExePath(),
+            _automationScriptHelper
             );
     }
 

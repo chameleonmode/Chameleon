@@ -97,7 +97,6 @@ public partial class UserProfilesViewModel
         }
 
         OnHandleUserEvent();
-        SetStoredScript();
     }
 
     private void InitializeScripts()
@@ -133,7 +132,7 @@ public partial class UserProfilesViewModel
     private SystemBrovserItemViewModel _selectedBrowserItem;
     public SystemBrovserItemViewModel SelectedBrowserItem
     {
-        get 
+        get
         {
             if (_selectedBrowserItem == null)
             {
@@ -169,6 +168,8 @@ public partial class UserProfilesViewModel
             if (_scriptViewModels == null && _mapping != null)
             {
                 _scriptViewModels = new ObservableCollectionView<IAutomationScriptViewModel>(_scriptMapping);
+
+                SelectedAutomationScript = ScriptViewModels.FirstOrDefault(s => s.Id == _settings.LastRunScriptId);
             }
 
             return _scriptViewModels;
@@ -196,15 +197,15 @@ public partial class UserProfilesViewModel
         set => SetProperty(ref _isVisibleWaitButton, value);
     }
 
-    private IAutomationScriptViewModel _selectedScriptDescription;
-    public IAutomationScriptViewModel SelectedScriptDescription
+    private IAutomationScriptViewModel _selectedAutomationScript;
+    public IAutomationScriptViewModel SelectedAutomationScript
     {
-        get { return _selectedScriptDescription; }
+        get { return _selectedAutomationScript; }
         set
         {
-            if (_selectedScriptDescription != value)
+            if (_selectedAutomationScript != value)
             {
-                SetProperty(ref _selectedScriptDescription, value);
+                SetProperty(ref _selectedAutomationScript, value);
                 OnPropertyChanged(nameof(IsSelectedScript));
                 RunAutomationCommand.NotifyCanExecuteChanged();
                 _settings.LastRunScriptId = value.Id;
@@ -212,18 +213,7 @@ public partial class UserProfilesViewModel
         }
     }
 
-    public bool IsSelectedScript => SelectedScriptDescription != null;
-
-    private void SetStoredScript()
-    {
-        var lastRunScriptId = _settings.LastRunScriptId;
-        var script = ScriptViewModels.FirstOrDefault(s => s.Id == lastRunScriptId);
-
-        if (script != null)
-        {
-            SelectedScriptDescription = script;
-        }
-    }
+    public bool IsSelectedScript => SelectedAutomationScript != null;
 
     private string _searchText = string.Empty;
     public string SearchText
@@ -699,6 +689,11 @@ public partial class UserProfilesViewModel
             _toastNotificationService.ShowInformation("Select one or more profiles to run the automation.");
             return;
         }
+        if (SelectedAutomationScript == null)
+        {
+            _toastNotificationService.ShowInformation("Select an automation.");
+            return;
+        }
 
         Task.Run(RunAutomationAsync);
         IsVisibleRunButton = false;
@@ -707,14 +702,14 @@ public partial class UserProfilesViewModel
 
     private async Task RunAutomationAsync()
     {
-        var script = new AutomationScriptDescription 
+        var script = new AutomationScriptDescription
         {
-            Id = SelectedScriptDescription.Id,
-            Title = SelectedScriptDescription.Title,
-            Description = SelectedScriptDescription.Description,
-            Parameters = SelectedScriptDescription.Parameters
-            .Select(sp => (IAutomationParameterValue)new AutomationParameterValue 
-            { 
+            Id = SelectedAutomationScript.Id,
+            Title = SelectedAutomationScript.Title,
+            Description = SelectedAutomationScript.Description,
+            Parameters = SelectedAutomationScript.Parameters
+            .Select(sp => (IAutomationParameterValue)new AutomationParameterValue
+            {
                 Name = sp.Name,
                 Value = sp.Value,
                 ParameterId = sp.Id

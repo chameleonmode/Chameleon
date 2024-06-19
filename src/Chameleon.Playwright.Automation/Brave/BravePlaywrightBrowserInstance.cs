@@ -12,6 +12,7 @@ public class BravePlaywrightBrowserInstance
     , IPlaywrightBrowserInstance
 {
     private readonly IPlaywrightBrowserLaunchOptions _playwrightOptions;
+    private readonly IAutomationScriptHelper _automationScriptHelper;
 
     private IBrowserContext _browserContext;
     public IBrowserContext BrowserContext => _browserContext;
@@ -22,7 +23,9 @@ public class BravePlaywrightBrowserInstance
         ISetPreferencesService setPreferencesService,
         IApplicationEnvironment applicationEnvironment,
         IUserDefaultSettingsService userDefaultsSettingsService,
-        string browserExeFilePath)
+        string browserExeFilePath,
+        IAutomationScriptHelper automationScriptHelper
+        )
         : base(eventAggregator,
             options,
             setPreferencesService,
@@ -31,8 +34,8 @@ public class BravePlaywrightBrowserInstance
             browserExeFilePath)
     {
         _playwrightOptions = options;
+        _automationScriptHelper = automationScriptHelper;
     }
-
     public override async Task Open()
     {
         await EnsureProfileFolderCreated();
@@ -46,19 +49,12 @@ public class BravePlaywrightBrowserInstance
         List<string> args = GetClearCommandLineArgumentsList();
         string exts = GetLoadExtensionsArgument();
 
-        if (!string.IsNullOrEmpty(exts))
-        {
-            args.Add($"--disable-extensions-except={exts}");
-            args.Add($"--load-extension={exts}");
-        }
+        var options = _automationScriptHelper
+            .CreateOptions(args, exts, _browserExeFilePath);
 
-        _browserContext = await _playwrightOptions.Playwright.Chromium.LaunchPersistentContextAsync(
-            _browserProfileFolderPath,
-            new BrowserTypeLaunchPersistentContextOptions
-            {
-                Args = args,
-                ExecutablePath = _browserExeFilePath,
-                Headless = false,
-            });
+        _browserContext = await _playwrightOptions.Playwright.Chromium
+            .LaunchPersistentContextAsync(_browserProfileFolderPath, options);
+
+        await _automationScriptHelper.InitScriptAsync(_browserContext);
     }
 }

@@ -196,7 +196,7 @@
 						HorizontalAlignment="Right"
 						Header="Automation"
 						ItemsSource="{Binding ScriptViewModels}"
-						SelectedItem="{Binding SelectedScriptDescription}"
+						SelectedItem="{Binding SelectedAutomationScript}"
 						Grid.Row="0"
 						Grid.Column="0"
 						Grid.ColumnSpan="2"
