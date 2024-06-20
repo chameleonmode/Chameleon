@@ -36,10 +36,13 @@ public abstract class SystemBrowserInstance(
 
     public void MakeForeground()
     {
-        if (Handle != IntPtr.Zero)
+        if (Brocess != null)
         {
             if (!IsMao)
             {
+                if (Handle == IntPtr.Zero)
+                    return;
+
 #pragma warning disable CA1416 // Validate platform compatibility
                 if (U32.IsWindow(Handle))
                 {
@@ -50,8 +53,7 @@ public abstract class SystemBrowserInstance(
             }
             else
             {
-                //TODO:
-                //Macops.SetActiveWindow(Handle);
+                MacOSUtil.SetForegroundWindow(Brocess.Id);
             }
         }
     }

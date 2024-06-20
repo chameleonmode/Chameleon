@@ -84,33 +84,6 @@ public partial class App : PrismApplication
         base.Initialize();
     }
 
-    protected override void ConfigureViewModelLocator()
-    {
-        base.ConfigureViewModelLocator();
-
-        //ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType) =>
-        //{
-        //    var attr = viewType.GetCustomAttribute<ViewModelAttribute>();
-        //    if (attr != null)
-        //    {
-        //        return attr.Type;
-        //    }
-
-        //    var viewName = viewType.FullName;
-        //    viewName = viewName.Replace(".Views.", ".ViewModels.");
-        //    var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName;
-        //    var suffix = viewName.EndsWith("View") ? "Model" : "ViewModel";
-        //    var viewModelName = String.Format(CultureInfo.InvariantCulture, "{0}{1}, {2}", viewName, suffix, viewAssemblyName);
-        //    var viewModelType = Type.GetType(viewModelName);
-
-        //    if (viewModelType == null && viewType.Name != "MainWindow")
-        //    {
-        //        viewModelType = Type.GetType($"{viewType.FullName}Model");
-        //    }
-        //    return viewModelType;
-        //});
-    }
-
     /// <summary>Register Services and Views.</summary>
     /// <param name="containerRegistry"></param>
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -154,21 +127,14 @@ public partial class App : PrismApplication
 
         // Dialogs
         // //Chameleon.Av.Fluent.Dialogs
-        Container.RegisterTypesFrom(Chameleon.Av.Fluent.Dialogs.AssemblyResolver.GetAssembly());
-        //cr.RegisterSingleton<IContentDialogService, ContentDialogService>();
-        cr.Register<ILoginContentDialogContent, LoginContentDialogContent>();
+        Container.RegisterTypesFrom(typeof(Chameleon.Av.Fluent.Dialogs.AssemblyResolver).Assembly);
         cr.Register<IMoveUserProfilesPopupView, MoveUserProfilesPopupView>();
-        cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();     //      
+        cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();           
         cr.Register<IUserProfileSidePanelView, UserProfileSidePanelView>();
         cr.Register<IUserProfileSidePanelViewModel, UserProfileSidePanelViewModel>();
-        //cr.RegisterSingleton<IDefaultContentDialogTitle, DefaultContentDialogTitle>();
-        //cr.RegisterSingleton<IAuthTaskDialogViewModel, AuthTaskDialogViewModel>();
-        //cr.RegisterSingleton<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
-        //cr.RegisterSingleton<IBulkAddPagesPopupViewModel, BulkAddPagesPopupViewModel>();
 
         // Views - Viewmodels                                                     
         containerRegistry.RegisterSingleton<IMainWindow, MainWindow>();
-
         containerRegistry.RegisterSingleton<IMainViewViewModel, MainViewViewModel>();
 
         containerRegistry.RegisterSingleton<IDashboardViewModel, DashboardViewModel>();
@@ -186,27 +152,9 @@ public partial class App : PrismApplication
         cr.RegisterSingleton<IUserProfileFoldersView, UserProfileFoldersView>();
         cr.RegisterSingleton<IUserProfileFoldersViewModel, UserProfileFoldersViewModel>();
         cr.RegisterSingleton<IUserProfilesViewModel, UserProfilesViewModel>();
-        //containerRegistry.RegisterSingleton<ISettingsViewModel, SettingsViewModel>();
-        //containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
-        //containerRegistry.RegisterSingleton<IUserProxySettingsViewModel, UserProxySettingsViewModel>();
-        //containerRegistry.RegisterSingleton<IProxyCreditViewModel, ProxyCreditViewModel>();
-        //containerRegistry.RegisterSingleton<IPhoneVerificationViewModel, PhoneVerificationViewModel>();
-        //containerRegistry.RegisterSingleton<IAssistantUsersViewModel, AssistantUsersViewModel>();
-        //containerRegistry.RegisterSingleton<ImportViewModel>();
-        //containerRegistry.RegisterSingleton<IProxyAccessViewModels, ProxyAccessViewModels>();
 
 
-        // Views - Region Navigation 
-        //containerRegistry.RegisterSingleton<IUserDefaultSettingsViewModel, UserDefaultSettingsViewModel>();
-        //containerRegistry.RegisterSingleton<IUserDefaultSettingsView, UserDefaultSettingsView>();
-        //containerRegistry.RegisterForNavigation<DashboardView, IDashboardViewModel>();
-        //containerRegistry.RegisterForNavigation<SettingsView, ISettingsViewModel>();
-        //containerRegistry.RegisterForNavigation<UserDefaultSettingsView, IUserDefaultSettingsViewModel>();
-        //containerRegistry.RegisterForNavigation<UserProxySettingsView, IUserProxySettingsViewModel>();
-        //containerRegistry.RegisterForNavigation<ProxyCreditView, IProxyCreditViewModel>();
-        //containerRegistry.RegisterForNavigation<PhoneVerificationView, IPhoneVerificationViewModel>();
-        //containerRegistry.RegisterForNavigation<AssistantUsersView, IAssistantUsersViewModel>();
-        //containerRegistry.RegisterForNavigation<ImportView, ImportViewModel>();
+        // Views - Region Navigation
     }
 
     private static void RegisterAutomationTypes(IContainerRegistry containerRegistry)
