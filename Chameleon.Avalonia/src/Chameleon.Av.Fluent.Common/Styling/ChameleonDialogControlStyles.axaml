@@ -249,15 +249,15 @@
 							<Border ClipToBounds="True"
                                     CornerRadius="{TemplateBinding CornerRadius}">
 								<Grid Name="DialogSpace" ClipToBounds="True"
-                                  RowDefinitions="Auto,*,Auto">
+                                  RowDefinitions="*,Auto">
 									<ScrollViewer Name="ContentScrollViewer"
-												  MinHeight="128"
-                                                  HorizontalScrollBarVisibility="Disabled"
-                                                  VerticalScrollBarVisibility="Auto">
+                                MinHeight="128"																
+                                HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Auto">
 										<Border Background="{DynamicResource ContentDialogTopOverlay}"
-                                                Padding="{DynamicResource ContentDialogPadding}"
-                                                BorderThickness="{StaticResource ContentDialogSeparatorThickness}"
-                                                BorderBrush="{DynamicResource ContentDialogSeparatorBorderBrush}">
+                            Padding="{DynamicResource ContentDialogPadding}"
+                            BorderThickness="{StaticResource ContentDialogSeparatorThickness}"
+                            BorderBrush="{DynamicResource ContentDialogSeparatorBorderBrush}">
 											<Grid RowDefinitions="Auto,*" >
 												<Grid.Styles>
 													<!--Make sure text wrapping is on-->
@@ -266,34 +266,34 @@
 													</Style>
 												</Grid.Styles>
 												<ContentControl Name="Title"
-                                                                Margin="{StaticResource ContentDialogTitleMargin}"
-                                                                Content="{TemplateBinding Title}"
-                                                                ContentTemplate="{TemplateBinding TitleTemplate}"
-                                                                FontSize="20"
-                                                                FontFamily="Default"
-                                                                FontWeight="SemiBold"
-                                                                Foreground="{TemplateBinding Foreground}"
-                                                                HorizontalAlignment="Stretch"
-                                                                VerticalAlignment="Top">
+                                        Margin="{StaticResource ContentDialogTitleMargin}"
+                                        Content="{TemplateBinding Title}"
+                                        ContentTemplate="{TemplateBinding TitleTemplate}"
+                                        FontSize="20"
+                                        FontFamily="Default"
+                                        FontWeight="SemiBold"
+                                        Foreground="{TemplateBinding Foreground}"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Top">
 													<ContentControl.Template>
 														<ControlTemplate>
 															<ContentPresenter Content="{TemplateBinding Content}"
-                                                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                                              Margin="{TemplateBinding Padding}"
-                                                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                Margin="{TemplateBinding Padding}"
+                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
 														</ControlTemplate>
 													</ContentControl.Template>
 												</ContentControl>
 
 												<ContentPresenter Name="Content"
-                                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                                  Content="{TemplateBinding Content}"
-                                                                  FontSize="{StaticResource ControlContentThemeFontSize}"
-                                                                  FontFamily="{StaticResource ContentControlThemeFontFamily}"
-                                                                  Foreground="{TemplateBinding Foreground}"
-																  Margin="8"
-                                                                  Grid.Row="1"/>
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          FontSize="{StaticResource ControlContentThemeFontSize}"
+                                          FontFamily="{StaticResource ContentControlThemeFontFamily}"
+                                          Foreground="{TemplateBinding Foreground}"
+																					Margin="8"
+                                          Grid.Row="1"/>
 											</Grid>
 										</Border>
 									</ScrollViewer>
