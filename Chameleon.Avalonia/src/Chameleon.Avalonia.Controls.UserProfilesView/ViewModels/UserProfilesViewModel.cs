@@ -98,6 +98,7 @@ public partial class UserProfilesViewModel
             IsWaiting = false;
 
             InitializeScripts();
+            InintializeLastSelectedAutomation();
         }
 
         OnHandleUserEvent();
@@ -114,6 +115,23 @@ public partial class UserProfilesViewModel
         OnPropertyChanged(nameof(SelectedBrowserItem));
     }
 
+    private void InintializeLastSelectedAutomation()
+    {
+        var lastSelectedBrowserString = _settings.LastSelectedBrowser;
+
+        if (string.IsNullOrEmpty(lastSelectedBrowserString) ||
+            !Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum))
+        {
+            SelectedBrowserItem = BrowserItems[0];
+        }
+        else
+        {
+            SelectedBrowserItem = BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
+        }
+
+        SelectedAutomationScript = ScriptViewModels.FirstOrDefault(s => s.Id == _settings.LastRunScriptId);
+    }
+
     private ObservableCollection<SystemBrovserItemViewModel> _browserItems;
     public ObservableCollection<SystemBrovserItemViewModel> BrowserItems
     {
@@ -126,7 +144,6 @@ public partial class UserProfilesViewModel
                     new SystemBrovserItemViewModel(SystemBrowserType.Brave),
                     new SystemBrovserItemViewModel(SystemBrowserType.Chrome)
                 };
-                SelectedBrowserItem = _browserItems[0];
             }
 
             return _browserItems;
@@ -136,27 +153,8 @@ public partial class UserProfilesViewModel
     private SystemBrovserItemViewModel _selectedBrowserItem;
     public SystemBrovserItemViewModel SelectedBrowserItem
     {
-        get
-        {
-            if (_selectedBrowserItem == null)
-            {
-                var lastSelectedBrowserString = _settings.LastSelectedBrowser;
-                if (string.IsNullOrEmpty(lastSelectedBrowserString))
-                {
-                    return null;
-                }
-
-                if (Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum))
-                {
-                    _selectedBrowserItem = BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
-                }
-                else
-                {
-                    _selectedBrowserItem = BrowserItems[0];
-                }
-            }
-            return _selectedBrowserItem;
-        }
+        get => _selectedBrowserItem;
+        
         set
         {
             SetProperty(ref _selectedBrowserItem, value);
@@ -172,8 +170,6 @@ public partial class UserProfilesViewModel
             if (_scriptViewModels == null && _mapping != null)
             {
                 _scriptViewModels = new ObservableCollectionView<IAutomationScriptViewModel>(_scriptMapping);
-
-                SelectedAutomationScript = ScriptViewModels.FirstOrDefault(s => s.Id == _settings.LastRunScriptId);
             }
 
             return _scriptViewModels;
