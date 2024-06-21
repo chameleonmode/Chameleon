@@ -1,11 +1,4 @@
-﻿using Chameleon.Interfaces.Environments;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Prism.Events;
-using Chameleon.SystemBrowser.Browsers;
-using Chameleon.SystemBrowser.Firefox;
-
-namespace Chameleon.SystemBrowser.Chrome
+﻿namespace Chameleon.SystemBrowser.Chrome
 {
     public class ChromeSystemBrowser(
             IEventAggregator eventAggregator,
@@ -27,7 +20,7 @@ namespace Chameleon.SystemBrowser.Chrome
                 GetBrowserExePath());
         }
 
-        private string GetBrowserExePath()
+        protected string GetBrowserExePath()
         {
             return systemBrowserInfoManager
                 .FindByName("chrome")

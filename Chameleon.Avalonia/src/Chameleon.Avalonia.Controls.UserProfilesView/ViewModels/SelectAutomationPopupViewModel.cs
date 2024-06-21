@@ -15,15 +15,14 @@ using System.Windows.Input;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
-public partial class SelectAutomationPopupViewModel(IAutomationService automationService)
+public partial class SelectAutomationPopupViewModel(
+    IAutomationService _automationService, 
+    IAutomationBrowserService _automationBrowserService)
     : ContentDialogViewModelBase
     , ISelectAutomationPopupViewModel
 {
     private ObservableCollection<IAutomationScriptDescription, IAutomationScriptViewModel> _mapping;
     private ObservableCollectionView<IAutomationScriptViewModel> _viewModels;
-
-    private readonly IAutomationService _automationService;
-    private readonly IAutomationBrowserService _automationBrowserService;
 
     [ObservableProperty]
     private IList<IUserProfile> _userProfiles;
@@ -33,15 +32,6 @@ public partial class SelectAutomationPopupViewModel(IAutomationService automatio
 
     [ObservableProperty]
     private IAutomationScriptViewModel _selectedScriptDescription;
-
-    public SelectAutomationPopupViewModel(
-        IAutomationService automationService,
-        IAutomationBrowserService automationBrowserService
-        )
-    {
-        _automationService = automationService;
-        _automationBrowserService = automationBrowserService;
-    }
 
     public bool IsSelectedScript => SelectedScriptDescription != null;
     public ObservableCollectionView<IAutomationScriptViewModel> ViewModels => _viewModels ??= new ObservableCollectionView<IAutomationScriptViewModel>(_mapping);
@@ -53,17 +43,11 @@ public partial class SelectAutomationPopupViewModel(IAutomationService automatio
         if (!Loaded)
         {
             _mapping = new ObservableCollection<IAutomationScriptDescription, IAutomationScriptViewModel>(
-                    await Task.Run(automationService.GetAll), 
-                    script => new AutomationScriptViewModel(script, automationService));
+                    await Task.Run(_automationService.GetAll), 
+                    script => new AutomationScriptViewModel(script, _automationService));
 
             OnPropertyChanged(nameof(ViewModels));
         }
-    }
-
-    public SystemBrowserType SelectedBrowser
-    {
-        get => _selectedBrowser;
-        set => SetProperty(ref _selectedBrowser, value);
     }
 
     private ICommand _updateBrowserCommand;
@@ -77,41 +61,20 @@ public partial class SelectAutomationPopupViewModel(IAutomationService automatio
         }
     }
 
-    public override async Task InitAsync(object? param)
-    {
-        await base.InitAsync(param);
-
-        if (!Loaded)
-        {
-            _mapping = new ObservableCollection<IAutomationScriptDescription, IAutomationScriptViewModel>(
-                    await Task.Run(automationService.GetAll), 
-                    script => new AutomationScriptViewModel(script, automationService));
-
-            OnPropertyChanged(nameof(ViewModels));
-        }
-    }
-
     partial void OnSelectedScriptDescriptionChanged(IAutomationScriptViewModel? oldValue, IAutomationScriptViewModel newValue)
     {
         OnPropertyChanged(nameof(IsSelectedScript));
     }
 
-
-    [RelayCommand]
-    private void UpdateBrowser(string browser)
+    public void OnDialogClosing(IContentDialogResult result)
     {
-        if (Enum.TryParse(browser, true, out SystemBrowserType browserEnum))
-        {
-            SelectedBrowser = browserEnum;
-        }
-
         if (result != IContentDialogResult.Primary
-            || _selectedBrowser == SystemBrowserType.Unknown)
+            || SelectedBrowser == SystemBrowserType.Unknown)
         {
             return;
         }
-        
-        IAutomationScriptDescription script = _selectedScriptDescription.ScriptDescription;
-        _ = _automationBrowserService.RunScript(script, _selectedBrowser, _userProfiles);
+
+        IAutomationScriptDescription script = SelectedScriptDescription.ScriptDescription;
+        _ = _automationBrowserService.RunScript(script, SelectedBrowser, UserProfiles);
     }
 }

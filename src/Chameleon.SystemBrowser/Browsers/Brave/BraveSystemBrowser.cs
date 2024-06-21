@@ -19,7 +19,7 @@ IBraveSystemBrowser
              GetBrowserExePath());
     }
 
-    private string GetBrowserExePath()
+    protected string GetBrowserExePath()
     {
         return systemBrowserInfoManager
             .FindByName("brave")

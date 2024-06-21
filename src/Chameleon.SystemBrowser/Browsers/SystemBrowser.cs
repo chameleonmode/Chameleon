@@ -21,7 +21,8 @@ public abstract class SystemBrowserBase(IEventAggregator eventAggregator) : ISys
                 Instances[o.UserProfile.Id] = browser;
 
 
-                browser.Open();
+                _ = browser.Open();
+
                 var opened = await browser.OPtcs.Task;
                 if (opened)
                 {
