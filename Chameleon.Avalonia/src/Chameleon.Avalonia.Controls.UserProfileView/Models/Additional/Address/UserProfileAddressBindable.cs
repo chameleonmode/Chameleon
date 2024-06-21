@@ -1,14 +1,18 @@
-﻿using Chameleon.CT.Common.Base;
+﻿using Chameleon.Avalonia.Controls.UserProfileView.Models.Country;
+using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.UserProfiles.Additional;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.ComponentModel;
 
 namespace Chameleon.Controls.UserProfileView.Models.Additional
 {
-    public class UserProfileAddressBindable 
+    public partial class UserProfileAddressBindable 
         : ObservableObject
         , IUserProfileAddress
     {
+        [ObservableProperty]
+        private CountryBindable selectedCountry;
+
         public UserProfileAddressBindable()
         {
             PropertyChanged += UserProfilePersonBindablePropertyChanged;
@@ -108,16 +112,20 @@ namespace Chameleon.Controls.UserProfileView.Models.Additional
             set => SetProperty(ref _profileId, value);
         }
 
-        public override string ToString()
-        {
-            return Title;
-        }
-
         private bool _isOpenSearchParameters;
         public bool IsOpenSearchParameters
         {
             get => _isOpenSearchParameters;
             set => SetProperty(ref _isOpenSearchParameters, value);
+        }
+
+        partial void OnSelectedCountryChanged(CountryBindable? oldValue, CountryBindable newValue)
+        {
+            CountryId = newValue?.Id ?? 0;
+        }
+        public override string ToString()
+        {
+            return Title;
         }
     }
 }

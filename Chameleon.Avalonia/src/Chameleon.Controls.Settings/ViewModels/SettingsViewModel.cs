@@ -88,7 +88,7 @@ public partial class SettingsViewModel
     private readonly IApplicationSettingsService _settingsService;
                                            
     private IApplicationSettings _settings;
-    private FluentAvaloniaTheme _faTheme;
+    private readonly FluentAvaloniaTheme _faTheme;
 
     [ObservableProperty]
     private bool _hasProxySettingsView;

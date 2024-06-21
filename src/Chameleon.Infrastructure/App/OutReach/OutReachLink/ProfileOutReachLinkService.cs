@@ -13,7 +13,7 @@ namespace Chameleon.Infrastructure.OutReachLink
         private readonly IMapper _mapper;
         private readonly IProfileOutReachLinkRepository _outReachLinkRepository;
         private readonly Dictionary<int, ProfileOutReachLinks> _entities
-            = new Dictionary<int, ProfileOutReachLinks>();
+            = [];
 
         public ProfileOutReachLinkService(
            IMapper mapper,

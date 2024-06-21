@@ -48,7 +48,7 @@ namespace Chameleon.Infrastructure.Profiles
         where TEntityDto : IEntityDto<int>
         where TUpdateInput : IEntityDto<int>
     {
-        private readonly HashSet<int> _getAllRequested = new HashSet<int>();
+        private readonly HashSet<int> _getAllRequested = [];
         private readonly IUserProfileRepository _userProfileRepository;
 
         public UserProfileItemRepository(

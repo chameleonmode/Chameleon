@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Playwright" />
-    <PackageReference Include="Prism.Core" />
+    <!-- <PackageReference Include="Prism.Core" /> -->
     <PackageReference Include="System.Drawing.Common" />
   </ItemGroup>
 

@@ -4,7 +4,7 @@ namespace Chameleon.Controls.ImportExport.Models
 {
     public class UnselectedColumnOption : ImportColumnOption
     {
-        private static UnselectedColumnOption _instance = new UnselectedColumnOption();
+        private static readonly UnselectedColumnOption _instance = new UnselectedColumnOption();
         public static UnselectedColumnOption Instance => _instance;
 
         private UnselectedColumnOption()

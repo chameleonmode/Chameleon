@@ -20,8 +20,8 @@ namespace Chameleon.Infrastructure.Profiles
             >
         , IUserProfileRepository
     {
-        private new IMapper _mapper;
-        private IUserProfileApi _client;
+        private new readonly IMapper _mapper;
+        private readonly IUserProfileApi _client;
 
         public UserProfileRepository(
             IMapper mapper,
@@ -42,9 +42,11 @@ namespace Chameleon.Infrastructure.Profiles
 
                 foreach (var profile in r)
                 {
-                    var userProfile = new UserProfile();
-                    userProfile.Id = profile.Id;
-                    userProfile.Title = profile.Title;
+                    var userProfile = new UserProfile
+                    {
+                        Id = profile.Id,
+                        Title = profile.Title
+                    };
 
                     res.Add(userProfile);
                 }

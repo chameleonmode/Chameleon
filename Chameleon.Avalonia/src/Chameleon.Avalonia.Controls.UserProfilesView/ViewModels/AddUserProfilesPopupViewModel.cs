@@ -143,16 +143,6 @@ public class AddUserProfilesPopupViewModel : ObservableObjectBase, IAddUserProfi
         }
     }
 
-    //SaveChangesCommand
-    private void AddProfilesToFolderAsync()
-    {
-        //this.InvokeOnUiThreadAsync(AddProfilesToFolder);
-
-        //_eventAggregator
-        //    .GetEvent<CloseDialogWindowEvent>()
-        //    .Publish(ButtonResult.OK);
-    }
-
     private void AddProfilesToFolder()
     {
         if (_selectedViewModels is null || 

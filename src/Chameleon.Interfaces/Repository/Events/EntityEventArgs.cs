@@ -5,7 +5,7 @@ namespace Chameleon.Interfaces.Repository
 {
     public class EntityEventArgs : EventArgs
     {
-        private List<object> _entities;
+        private readonly List<object> _entities;
         public IReadOnlyList<object> Entities 
             => _entities.AsReadOnly();
 
@@ -15,7 +15,7 @@ namespace Chameleon.Interfaces.Repository
             {
                 throw new ArgumentNullException();
             }
-            _entities = new List<object>() { entity };
+            _entities = [entity];
         }
 
         public EntityEventArgs(ICollection<object> entities)

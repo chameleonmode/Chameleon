@@ -49,7 +49,7 @@ namespace Chameleon.Common.Exceptions
                 return;
             }
 
-            var exception = GetException(ex);
+            _ = GetException(ex);
             //TODO: _logger.Log.Error(exception.Message, exception);
         }
 
@@ -203,11 +203,11 @@ namespace Chameleon.Common.Exceptions
             var message = GetMessage(exception);
 
             Action<object, EventArgs>[] buttons =
-            {
+            [
                 CreateCopyButton(message),
                 CreateExitButton(),
                 CreateContinueButton()
-            };
+            ];
 
             ShowWindow(message, buttons);
         }
@@ -217,9 +217,9 @@ namespace Chameleon.Common.Exceptions
             var message = GetWebMessage(exeption);
 
             Action<object, EventArgs>[] buttons =
-            {
+            [
                 CreateReconnectButton()
-            };
+            ];
 
             ShowWindow(message, buttons, "Network error", 600d, 150d);
         }
@@ -227,10 +227,10 @@ namespace Chameleon.Common.Exceptions
         private static void ShowYouTubeQuotaExceptionWindow()
         {
             Action<object, EventArgs>[] buttons =
-            {
+            [
                 CreateCopyButton(_youTubeQuotaMessage, "Copy message"),
                 CreateContinueButton("OK")
-            };
+            ];
 
             ShowWindow(_youTubeQuotaMessage, buttons, "YouTube API Quota exceeded", 620d, 130d);
         }
@@ -238,9 +238,9 @@ namespace Chameleon.Common.Exceptions
         private static void ShowCurateExceptionWindow(Exception exception)
         {
             Action<object, EventArgs>[] buttons =
-            {
+            [
                 CreateContinueButton("OK")
-            };
+            ];
             var message = GetExceptionMessage(exception);
             ShowWindow(message, buttons, "Curate Exception", 620d, 130d);
         }
@@ -359,7 +359,7 @@ namespace Chameleon.Common.Exceptions
             if (assembly != null)
             {
                 result.Append("EntryAssembly: ");
-                result.Append(assembly.Location);
+                result.Append(AppContext.BaseDirectory);
                 result.AppendLine();
             }
             result.AppendLine("UnhandledException:");

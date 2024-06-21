@@ -44,7 +44,7 @@ public class AddScriptParametersPopupViewModel
 
     private void UpdateOriginalParameterValues()
     {
-        _originalParameterValues = new Dictionary<IAutomationParameterValue, object>();
+        _originalParameterValues = [];
         foreach (var parameter in ScriptDescription.Parameters)
         {
             _originalParameterValues.Add(parameter, parameter.Value);
