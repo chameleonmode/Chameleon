@@ -1,4 +1,4 @@
-﻿namespace Chameleon.SystemBrowser.Browsers.Brave;
+namespace Chameleon.SystemBrowser.Browsers.Brave;
 public class BraveSystemBrowser(
         IEventAggregator eventAggregator,
         IApplicationEnvironment applicationEnvironment,
@@ -19,7 +19,7 @@ IBraveSystemBrowser
              GetBrowserExePath());
     }
 
-    private string GetBrowserExePath()
+    protected string GetBrowserExePath()
     {
         return systemBrowserInfoManager
             .FindByName("brave")

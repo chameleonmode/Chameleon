@@ -18,7 +18,7 @@ public abstract class SystemBrowserInstance(
 
     public TaskCompletionSource<bool> OPtcs { get; } = new();
 
-    public async void Open()
+    public virtual async Task Open()
     {
         if (Brocess is null || Handle == IntPtr.Zero)
         {
@@ -218,7 +218,7 @@ public abstract class SystemBrowserInstance(
                 options.SignIn
                 );
 
-    private async Task EnsureProfileFolderCreated()
+    protected async Task EnsureProfileFolderCreated()
     {
         await IOtil.CreateDirectory(BrowserProfileFolderPath);
         await OnProfileFolderCreated();
@@ -234,38 +234,30 @@ public abstract class SystemBrowserInstance(
         return Task.CompletedTask;
     }
 
-    protected virtual string GetCommandLineArguments()
+    protected virtual List<string> GetClearCommandLineArgumentsList()
     {
-        var exts = GetLoadExtensionsArgument();
         List<string> args =
             [
-                $"--user-data-dir=\"{BrowserProfileFolderPath}\"",
                 "--restore-last-session",
-                "--new-window",
-                $"--window-name=\"{UserProfile.Title}\"",
-                "--profile-directory=Default",
-                "--ash-no-nudges",
-                "--disable-domain-reliability",
-                "--in-process-gpu",
-                "--no-default-browser-check",
-                "--no-first-run",
-                "--disable-field-trial-config",
-                "--disable-software-rasterizer",
-                //"--disable-blink-features=\"BlockCredentialedSubresources\"",
-                $"--remote-debugging-port={Port}",
-                Starturl
+                    "--new-window",
+                    $"--window-name=\"{UserProfile.Title}\"",
+                    "--profile-directory=Default",
+                    "--ash-no-nudges",
+                    "--disable-domain-reliability",
+                    "--in-process-gpu",
+                    "--no-default-browser-check",
+                    "--no-first-run",
+                    "--disable-field-trial-config",
+                    "--disable-software-rasterizer",
+                    //"--disable-blink-features=\"BlockCredentialedSubresources\"",
+                    $"--remote-debugging-port={Port}"
             ];
 
         if (UserProfile.Proxy?.CanUse == true && UserProfile.Proxy.Host.HasAny())
         {
             args.Add($"--proxy-server=http://{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}");
             //args.Add($"--proxy-auth={UserProfile.Proxy.UserName}:{UserProfile.Proxy.Password}");
-
-            if (Directory.Exists(ProxyExtDir))
-                exts = exts.HasAny() ? $"{exts},{ProxyExtDir}" : ProxyExtDir;
         }
-        if (exts.HasAny())
-            args.Add($"--load-extension=\"{exts}\"");
 
         if (!UserProfile.WebBrowser.WebRTC)
         {
@@ -290,8 +282,31 @@ public abstract class SystemBrowserInstance(
             args.Add("--disable-hyperlink-auditing");
         }
 
+        return args;
+    }
+
+    protected virtual List<string> GetCommandLineArgumentsList()
+    {
+        var args = GetClearCommandLineArgumentsList();
+        var exts = GetLoadExtensionsArgument();
+
+        if (exts.HasAny())
+        {
+            args.Add($"--load-extension=\"{exts}\"");
+        }
+
+        args.Add($"--user-data-dir=\"{BrowserProfileFolderPath}\"");
+        args.Add(Starturl);
+
+        return args;
+    }
+
+    protected virtual string GetCommandLineArguments()
+    {
+        IEnumerable<string> args = GetCommandLineArgumentsList();
         return string.Join(" ", args);
     }
+
     public virtual string GetLoadExtensionsArgument()
     {
         if (!Directory.Exists(BrowserExtensionsFolderPath))

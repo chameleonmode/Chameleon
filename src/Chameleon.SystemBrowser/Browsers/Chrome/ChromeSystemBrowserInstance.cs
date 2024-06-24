@@ -1,4 +1,4 @@
-﻿namespace Chameleon.SystemBrowser.Chrome;
+namespace Chameleon.SystemBrowser.Chrome;
 public class ChromeSystemBrowserInstance(
     IEventAggregator eventAggregator,
     ISystemBrowserLaunchOptions options,
@@ -16,4 +16,3 @@ public class ChromeSystemBrowserInstance(
         await Task.Run(() => setPreferencesService.SetPreferences(UserProfile.WebBrowser, BrowserProfileFolderPath, BrowserType));
     }
 }
-

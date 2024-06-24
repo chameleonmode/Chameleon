@@ -49,4 +49,11 @@ public class AutomationService
 
         return response;
     }
+
+    public string GetScriptBody(int id)
+    {
+        var entity = _automationRepository.GetScriptBody(id);
+
+        return entity;
+    }
 }

@@ -2,6 +2,7 @@
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.CT.Common.Base;
+using Chameleon.Domain.Entities.Automation;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
@@ -14,7 +15,9 @@ using System.Windows.Input;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
-public partial class SelectAutomationPopupViewModel(IAutomationService automationService)
+public partial class SelectAutomationPopupViewModel(
+    IAutomationService _automationService, 
+    IAutomationBrowserService _automationBrowserService)
     : ContentDialogViewModelBase
     , ISelectAutomationPopupViewModel
 {
@@ -40,10 +43,21 @@ public partial class SelectAutomationPopupViewModel(IAutomationService automatio
         if (!Loaded)
         {
             _mapping = new ObservableCollection<IAutomationScriptDescription, IAutomationScriptViewModel>(
-                    await Task.Run(automationService.GetAll), 
-                    script => new AutomationScriptViewModel(script, automationService));
+                    await Task.Run(_automationService.GetAll), 
+                    script => new AutomationScriptViewModel(script, _automationService));
 
             OnPropertyChanged(nameof(ViewModels));
+        }
+    }
+
+    private ICommand _updateBrowserCommand;
+    public ICommand UpdateBrowserCommand => _updateBrowserCommand ??= new RelayCommand<string>(UpdateBrowser);
+
+    private void UpdateBrowser(string browser)
+    {
+        if (Enum.TryParse(browser, true, out SystemBrowserType browserEnum))
+        {
+            SelectedBrowser = browserEnum;
         }
     }
 
@@ -52,13 +66,15 @@ public partial class SelectAutomationPopupViewModel(IAutomationService automatio
         OnPropertyChanged(nameof(IsSelectedScript));
     }
 
-
-    [RelayCommand]
-    private void UpdateBrowser(string browser)
+    public void OnDialogClosing(IContentDialogResult result)
     {
-        if (Enum.TryParse(browser, true, out SystemBrowserType browserEnum))
+        if (result != IContentDialogResult.Primary
+            || SelectedBrowser == SystemBrowserType.Unknown)
         {
-            SelectedBrowser = browserEnum;
+            return;
         }
+
+        IAutomationScriptDescription script = SelectedScriptDescription.ScriptDescription;
+        _ = _automationBrowserService.RunScript(script, SelectedBrowser, UserProfiles);
     }
 }
