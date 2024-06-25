@@ -36,13 +36,6 @@ public partial class AutomationScriptViewModel
         set => SetProperty(ref _id, value);
     }
 
-    private string _title;
-    public string Title
-    {
-        get => _title;
-        set => SetProperty(ref _title, value);
-    }
-
     private string _description;
     public string Description
     {

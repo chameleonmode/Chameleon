@@ -10,7 +10,7 @@ namespace Chameleon.Infrastructure.Ioc
     {
         //private readonly IUnityContainer _container;
         private readonly IHaveContainerRegistry _containerRegistry;
-        private readonly List<Assembly> _assemblies = new List<Assembly>();
+        private readonly List<Assembly> _assemblies = [];
 
         public IocManager(
             IHaveContainerRegistry containerRegistry
@@ -146,8 +146,8 @@ namespace Chameleon.Infrastructure.Ioc
                 || typeof(IScopedDependency) == type;
         }
 
-        private List<string> TypeNamePrefixToIgnore = new List<string>
-        {
+        private readonly List<string> TypeNamePrefixToIgnore =
+        [
             "System",
             "Micosoft",
             "Windows",
@@ -156,7 +156,7 @@ namespace Chameleon.Infrastructure.Ioc
             "netstandard",
             "mscorlib",
             "Unity"
-        };
+        ];
 
         public object StringComparsion { get; private set; }
 

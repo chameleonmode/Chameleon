@@ -187,15 +187,9 @@ public class NavigationFactory : INavigationPageFactory
 
     // Do this to avoid needing Activator.CreateInstance to create from type info
     // and to avoid a ridiculous amount of 'ifs'
-    private readonly Dictionary<string, Func<Control>> CorePages = new Dictionary<string, Func<Control>>
-    {
+    private readonly Dictionary<string, Func<Control>> CorePages = [];
 
-    };
-
-    private readonly Dictionary<string, Func<Control>> FAPages = new Dictionary<string, Func<Control>>
-    {
-
-    };
+    private readonly Dictionary<string, Func<Control>> FAPages = [];
 
     private readonly Dictionary<string, Func<Control?>> SettingsPages = new()
     {

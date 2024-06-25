@@ -34,13 +34,12 @@ public partial class UserProfileSidePanelViewModel : SubPageViewModelBase, IUser
         {
             await Logins.Load();
             _countries = await Task.Run(() => _userProfileAdditionalDataService.GetCountries());
-            CountryName = _countries.Where(x => SelectedAddress?.CountryId == x.Id).FirstOrDefault()?.Name;
             Loader();
         }
         OnPropertyChanged(nameof(string.Empty));
     }
 
-    public string CountryName { get; set; } 
+    public string CountryName => _countries.Where(x => SelectedAddress?.CountryId == x.Id).FirstOrDefault()?.Name;
 
     public bool HasNoItems => ProfilePersons?.Count > 0;
     public bool HasNoAddressesItems => ProfileAddresses?.Count > 0;

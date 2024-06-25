@@ -16,9 +16,9 @@ namespace Chameleon.Core.Collections.Views;
 public abstract class ObservableCollectionViewBase<TItem> : IList<TItem>, IDisposable, IList, INotifyCollectionChanged, INotifyPropertyChanged
 {
     private NotifyCollectionChangedEventHandler _itemsChangedHandler;
-    private MtObservableCollection<TItem> _internalCollection = new MtObservableCollection<TItem>();
+    private MtObservableCollection<TItem> _internalCollection = [];
     private readonly Dictionary<INotifyPropertyChanged, PropertyChangedEventHandler> _events =
-        new Dictionary<INotifyPropertyChanged, PropertyChangedEventHandler>();
+        [];
 
     private readonly object _syncRoot = new object();
     private bool _isTracking;

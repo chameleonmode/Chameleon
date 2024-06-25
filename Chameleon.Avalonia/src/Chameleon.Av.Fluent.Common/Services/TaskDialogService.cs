@@ -15,7 +15,7 @@ namespace Chameleon.Av.Fluent.Common.Services;
 public class DialogManager
 {
     private static readonly Dictionary<object, Visual> RegistrationMapper =
-        new Dictionary<object, Visual>();
+        [];
 
     static DialogManager()
     {

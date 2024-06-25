@@ -1,10 +1,13 @@
 ﻿using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.Settings;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Chameleon.Infrastructure.UserSettings
 {
-    public class UserDefaultSettingsService 
+    public class UserDefaultSettingsService
         : IUserDefaultSettingsService
     {
         private readonly IUserDefaultSettingsRepository _repository;
@@ -20,7 +23,7 @@ namespace Chameleon.Infrastructure.UserSettings
         private IUserDefaultSettings Settings
         {
             get
-            {               
+            {
                 if (_settings == null)
                 {
                     var entities = _repository.GetAll();
@@ -36,7 +39,7 @@ namespace Chameleon.Infrastructure.UserSettings
         public IUserDefaultSettings GetAll()
         {
             return Settings;
-        }      
+        }
 
         public IUserDefaultSetting Create()
         {
@@ -83,5 +86,19 @@ namespace Chameleon.Infrastructure.UserSettings
             }
             Settings.Remove(userDefaultSettings);
         }
+
+
+        public Task<string> GetRandomUrlAsync() =>
+            Task.Run(() =>
+            {
+                var all = GetAll();
+                if (all?.Any() == true)
+                {
+                    var random = new Random();
+                    return all[random.Next(all.Count)].DefaultUrl;
+                }
+
+                return "about:blank";
+            });
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System;
 using Avalonia;
+using Avalonia.Controls;
 using Svga = Avalonia.Svg.Skia.Svg;
 using SvgaImageExtension = Avalonia.Svg.Skia.SvgImageExtension;
-namespace Chameleon.Av.Desktop;
+namespace Chameleon;
 
 class Program
 {
@@ -20,6 +21,13 @@ class Program
         GC.KeepAlive(typeof(Svga).Assembly);
         return AppBuilder.Configure<Av.Fluent.App>()
             .UsePlatformDetect()
+#if DEBUG
+            .LogToTrace()
+#endif
+            //.With(new Win32PlatformOptions
+            //{
+            //    WinUICompositionBackdropCornerRadius = 20f
+            //})
             .With(new X11PlatformOptions
             {
             })
@@ -27,7 +35,6 @@ class Program
             {
                 DisableDefaultApplicationMenuItems = true,
             })
-            .UseSkia()
-            .LogToTrace();
+            .UseSkia();
     }
 }

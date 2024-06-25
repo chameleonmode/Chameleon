@@ -4,16 +4,12 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Rendering.Composition.Animations;
 using Avalonia.Rendering.Composition;
-using Avalonia.Controls.Templates;
-using FluentAvalonia.UI.Controls;
+using Chameleon.Avalonia.Fluent.Common.Base;
 
 namespace Chameleon.Av.Fluent.Common.Controls;
 
 public class ChameleonContentControl : HeaderedContentControl
 {
-    public static new readonly StyledProperty<string?> HeaderProperty =
-        AvaloniaProperty.Register<ChameleonContentControl, string?>(nameof(Header));
-
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<ChameleonContentControl, string?>(nameof(Title));
 
@@ -31,6 +27,15 @@ public class ChameleonContentControl : HeaderedContentControl
 
     public static readonly StyledProperty<object> TitleContentProperty =
         AvaloniaProperty.Register<ChameleonContentControl, object>(nameof(TitleContent));
+
+    public static readonly StyledProperty<string> IconShevronProperty =
+       AvaloniaProperty.Register<ChameleonContentControl, string>(nameof(IconShevron));
+
+    public string IconShevron
+    {
+        get => GetValue(IconShevronProperty);
+        set => SetValue(IconShevronProperty, value);
+    }
 
     public string? Title
     {
@@ -70,6 +75,19 @@ public class ChameleonContentControl : HeaderedContentControl
     public ChameleonContentControl()
     {
         PseudoClasses.Add(":optionsfull");
+
+        AttachedToVisualTree += OnAttachedToVisualTree;
+    }
+
+    private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (VisualRoot is not Window window)
+        {
+            return;
+        }
+        window
+            .GetObservable(Window.ClientSizeProperty)
+            .Subscribe(OnWindowSizeChanged);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -83,13 +101,23 @@ public class ChameleonContentControl : HeaderedContentControl
         _expandOptionsButton.Click += OnExpandOptionsClick;
     }
 
+    private void OnWindowSizeChanged(Size newSize)
+    {
+        bool isWindowChange = newSize.Width < ResponsiveConstants.MaxWindowWidth1060;
+
+        _expandOptionsButton?.SetValue(IsVisibleProperty, isWindowChange);
+
+        IsOptionsExpanded = !isWindowChange;
+
+        UpdateIcon();
+    }
+
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
 
         // Do this here rather than OnApplyTemplate, otherwise this will animate
         // on load and that isn't desired
-        AttachOptionsHostAnimation();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -113,45 +141,18 @@ public class ChameleonContentControl : HeaderedContentControl
         //}
     }
 
-    private void AttachOptionsHostAnimation()
-    {
-        if (_optionsHost == null)
-            return;
-
-        var host = _optionsHost;
-        var ec = ElementComposition.GetElementVisual(host);
-
-        if (_optionsHostAnimation == null)
-        {
-            var comp = ec.Compositor;
-
-            var offsetAni = comp.CreateVector3KeyFrameAnimation();
-            offsetAni.InsertExpressionKeyFrame(1f, "this.FinalValue");
-            offsetAni.Target = "Offset";
-            offsetAni.Duration = TimeSpan.FromMilliseconds(250);
-
-            var scaleAni = comp.CreateVector3KeyFrameAnimation();
-            scaleAni.InsertExpressionKeyFrame(1f, "this.FinalValue");
-            scaleAni.Target = "Scale";
-            scaleAni.Duration = offsetAni.Duration;
-
-            var group = comp.CreateAnimationGroup();
-            group.Add(offsetAni);
-            group.Add(scaleAni);
-
-            _optionsHostAnimation = comp.CreateImplicitAnimationCollection();
-            _optionsHostAnimation["Offset"] = group;
-        }
-
-        ec.ImplicitAnimations = _optionsHostAnimation;
-    }
 
     private void OnExpandOptionsClick(object sender, RoutedEventArgs e)
     {
         IsOptionsExpanded = !IsOptionsExpanded;
+
+        UpdateIcon();
+    }
+
+    private void UpdateIcon()
+    {
+        IconShevron = IsOptionsExpanded ? "ChevronUp" : "ChevronDown";
     }
 
     private Button _expandOptionsButton;
-    private Border _optionsHost;
-    private static ImplicitAnimationCollection _optionsHostAnimation;
 }

@@ -9,75 +9,46 @@ using Chameleon.Interfaces.App.Automation.ViewModels;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
-public partial class SelectAutomationPopupViewModel
-    : ObservableObjectBase
+public partial class SelectAutomationPopupViewModel(
+    IAutomationService _automationService, 
+    IAutomationBrowserService _automationBrowserService)
+    : ContentDialogViewModelBase
     , ISelectAutomationPopupViewModel
 {
     private ObservableCollection<IAutomationScriptDescription, IAutomationScriptViewModel> _mapping;
-    private readonly IAutomationService _automationService;
-    private readonly IAutomationBrowserService _automationBrowserService;
-
-    public SelectAutomationPopupViewModel(
-        IAutomationService automationService,
-        IAutomationBrowserService automationBrowserService
-        )
-    {
-        _automationService = automationService;
-        _automationBrowserService = automationBrowserService;
-    }
-
     private ObservableCollectionView<IAutomationScriptViewModel> _viewModels;
-    public ObservableCollectionView<IAutomationScriptViewModel> ViewModels
-    {
-        get
-        {
-            if (_viewModels == null && _mapping != null)
-            {
-                _viewModels = new ObservableCollectionView<IAutomationScriptViewModel>(_mapping);
-            }
 
-            return _viewModels;
-        }
-    }
-
+    [ObservableProperty]
     private IList<IUserProfile> _userProfiles;
-    public IList<IUserProfile> UserProfiles
-    {
-        get => _userProfiles;
-        set
-        {
-            SetProperty(ref _userProfiles, value);
-        }
-    }
 
-    private IAutomationScriptViewModel _selectedScriptDescription;
-    public IAutomationScriptViewModel SelectedScriptDescription
-    {
-        get { return _selectedScriptDescription; }
-        set
-        {
-            if (_selectedScriptDescription != value)
-            {
-                _selectedScriptDescription = value;
-                OnPropertyChanged(nameof(SelectedScriptDescription));
-                OnPropertyChanged(nameof(IsSelectedScript));
-            }
-        }
-    }
-
+    [ObservableProperty]
     private SystemBrowserType _selectedBrowser = SystemBrowserType.Brave;
-    public SystemBrowserType SelectedBrowser
-    {
-        get => _selectedBrowser;
-        set => SetProperty(ref _selectedBrowser, value);
-    }
+
+    [ObservableProperty]
+    private IAutomationScriptViewModel _selectedScriptDescription;
 
     public bool IsSelectedScript => SelectedScriptDescription != null;
+    public ObservableCollectionView<IAutomationScriptViewModel> ViewModels => _viewModels ??= new ObservableCollectionView<IAutomationScriptViewModel>(_mapping);
+
+    public override async Task InitAsync(object? param)
+    {
+        await base.InitAsync(param);
+
+        if (!Loaded)
+        {
+            _mapping = new ObservableCollection<IAutomationScriptDescription, IAutomationScriptViewModel>(
+                    await Task.Run(_automationService.GetAll), 
+                    script => new AutomationScriptViewModel(script, _automationService));
+
+            OnPropertyChanged(nameof(ViewModels));
+        }
+    }
 
     private ICommand _updateBrowserCommand;
     public ICommand UpdateBrowserCommand => _updateBrowserCommand ??= new RelayCommand<string>(UpdateBrowser);
@@ -90,35 +61,20 @@ public partial class SelectAutomationPopupViewModel
         }
     }
 
-    public override async Task InitAsync(object? param)
+    partial void OnSelectedScriptDescriptionChanged(IAutomationScriptViewModel? oldValue, IAutomationScriptViewModel newValue)
     {
-        await base.InitAsync(param);
-
-        if (!Loaded)
-        {
-            Initialize();
-        }
-    }
-
-    private void Initialize()
-    {
-        var scripts = _automationService.GetAll();
-
-        _mapping = new ObservableCollection<IAutomationScriptDescription,
-            IAutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script, _automationService));
-
-        OnPropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(IsSelectedScript));
     }
 
     public void OnDialogClosing(IContentDialogResult result)
     {
         if (result != IContentDialogResult.Primary
-            || _selectedBrowser == SystemBrowserType.Unknown)
+            || SelectedBrowser == SystemBrowserType.Unknown)
         {
             return;
         }
 
-        IAutomationScriptDescription script = _selectedScriptDescription.ScriptDescription;
-        _ = _automationBrowserService.RunScript(script, _selectedBrowser, _userProfiles);
+        IAutomationScriptDescription script = SelectedScriptDescription.ScriptDescription;
+        _ = _automationBrowserService.RunScript(script, SelectedBrowser, UserProfiles);
     }
 }

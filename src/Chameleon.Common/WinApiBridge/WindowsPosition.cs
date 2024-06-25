@@ -37,14 +37,14 @@ public struct RECT
     public int Right { get; set; }
     public int Bottom { get; set; }
 
-    public int Height
+    public readonly int Height
     {
         get
         {
             return Bottom - Top;
         }
     }
-    public int Width
+    public readonly int Width
     {
         get
         {
@@ -52,7 +52,7 @@ public struct RECT
         }
     }
 
-    public override string ToString()
+    public override readonly string ToString()
     {
         return string.Format("({0}, {1}), {2} x {3}", Left, Top, Width, Height);
     }

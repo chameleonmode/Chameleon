@@ -123,7 +123,7 @@ namespace Chameleon.Domain.Entities
         public IList<IUserProfileProspectorBlogsOfInterest> ProspectorBlogsOfInterest { get; }
             = new List<IUserProfileProspectorBlogsOfInterest>();
 
-        public string[] PermissionNames { get; set; } = new string[] { };
+        public string[] PermissionNames { get; set; } = [];
 
         public bool HasPermission(string permissionName)
         {

@@ -31,6 +31,5 @@ public partial class ProxyAccessViewModel
             return;
         }
         await ClipboardService.Instance.SetTextAsync( _url );
-        _toastNotificationService.ShowSuccess("Copied to clipboard");
     }
 }

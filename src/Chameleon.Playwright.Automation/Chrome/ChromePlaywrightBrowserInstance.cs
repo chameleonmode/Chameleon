@@ -8,35 +8,24 @@ using Chameleon.SystemBrowser.Chrome;
 using Microsoft.Playwright;
 
 namespace Chameleon.Playwright.Automation.Chrome;
-public class ChromePlaywrightBrowserInstance
-    : ChromeSystemBrowserInstance
-    , IPlaywrightBrowserInstance
-{
-    private readonly IPlaywrightBrowserLaunchOptions _playwrightOptions;
-    private readonly IAutomationScriptHelper _automationScriptHelper;
-
-    private IBrowserContext _browserContext;
-    public IBrowserContext BrowserContext => _browserContext;
-
-    public ChromePlaywrightBrowserInstance(
-        IEventAggregator eventAggregator,
-        IPlaywrightBrowserLaunchOptions options,
-        ISetPreferencesService setPreferencesService,
-        IApplicationEnvironment applicationEnvironment,
-        IUserDefaultSettingsService userDefaultsSettingsService,
-        string browserExeFilePath,
-        IAutomationScriptHelper automationScriptHelper
-        )
-        : base(eventAggregator,
+public class ChromePlaywrightBrowserInstance(
+    IEventAggregator eventAggregator,
+    IPlaywrightBrowserLaunchOptions options,
+    ISetPreferencesService setPreferencesService,
+    IApplicationEnvironment applicationEnvironment,
+    IUserDefaultSettingsService userDefaultsSettingsService,
+    string browserExeFilePath,
+    IAutomationScriptHelper automationScriptHelper) : 
+    ChromeSystemBrowserInstance(eventAggregator,
             options,
             setPreferencesService,
             applicationEnvironment,
             userDefaultsSettingsService,
             browserExeFilePath)
-    {
-        _playwrightOptions = options;
-        _automationScriptHelper = automationScriptHelper;
-    }
+    , IPlaywrightBrowserInstance
+{
+    private IBrowserContext _browserContext;
+    public IBrowserContext BrowserContext => _browserContext;
 
     public override async Task Open()
     {
@@ -51,12 +40,16 @@ public class ChromePlaywrightBrowserInstance
         List<string> args = GetClearCommandLineArgumentsList();
         string exts = GetLoadExtensionsArgument();
 
-        var options = _automationScriptHelper
+        var options = automationScriptHelper
              .CreateOptions(args, exts, _browserExeFilePath);
 
-        _browserContext = await _playwrightOptions.Playwright.Chromium
-            .LaunchPersistentContextAsync(_browserProfileFolderPath, options);
-
-        await _automationScriptHelper.InitScriptAsync(_browserContext);
+        _browserContext = await options.Playwright.Chromium.LaunchPersistentContextAsync(
+            BrowserProfileFolderPath,
+            new BrowserTypeLaunchPersistentContextOptions
+            {
+                Args = args,
+                ExecutablePath = browserExeFilePath,
+                Headless = false,
+            });
     }
 }

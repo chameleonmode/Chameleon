@@ -1,5 +1,7 @@
-﻿namespace Chameleon.Interfaces.Dialogs.Views;
+﻿using Chameleon.Interfaces.Ioc;
 
-public interface ILoginContentDialogContent : IContentDialogView
+namespace Chameleon.Interfaces.Dialogs.Views;
+
+public interface ILoginContentDialogContent : IContentDialogView , ITransientDependency
 {
 }

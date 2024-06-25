@@ -8,38 +8,31 @@ using Chameleon.SystemBrowser;
 using Chameleon.SystemBrowser.Chrome;
 
 namespace Chameleon.Playwright.Automation.Chrome;
-public class ChromePlaywrightBrowser
-    : ChromeSystemBrowser
-    , IChromePlaywrightBrowser
-{
-    private readonly IAutomationScriptHelper _automationScriptHelper;
-
-    public ChromePlaywrightBrowser(
+public class ChromePlaywrightBrowser(
         IEventAggregator eventAggregator,
         IApplicationEnvironment applicationEnvironment,
         ISystemBrowserInfoManager systemBrowserInfoManager,
         ISetPreferencesService setPreferencesService,
         IUserDefaultSettingsService userDefaultsSettingsService,
         IAutomationScriptHelper automationScriptHelper)
-        : base(eventAggregator,
+    : ChromeSystemBrowser(eventAggregator,
             applicationEnvironment,
             systemBrowserInfoManager,
             setPreferencesService,
             userDefaultsSettingsService)
-    {
-        _automationScriptHelper = automationScriptHelper;
-    }
+    , IChromePlaywrightBrowser
+{
 
     public IPlaywrightBrowserInstance InitializeBrowser(IPlaywrightBrowserLaunchOptions o)
     {
         return new ChromePlaywrightBrowserInstance(
-            _eventAggregator,
+            eventAggregator,
             o,
-            _setPreferencesService,
-            _applicationEnvironment,
-            _userDefaultsSettingsService,
+            setPreferencesService,
+            applicationEnvironment,
+            userDefaultsSettingsService,
             GetBrowserExePath(),
-            _automationScriptHelper
+            automationScriptHelper
             );
     }
 
