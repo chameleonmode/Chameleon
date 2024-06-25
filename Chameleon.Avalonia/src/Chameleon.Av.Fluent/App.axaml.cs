@@ -4,7 +4,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Chameleon.Auth.Services;
 using Chameleon.Av.Fluent.Common.Services;
-using Chameleon.Av.Fluent.Dialogs;
 using Chameleon.Av.Fluent.ViewModels;
 using Chameleon.Av.Fluent.Views;
 using Chameleon.Avalonia.Controls.Automation.ViewModels;
@@ -17,7 +16,6 @@ using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using Chameleon.Avalonia.Controls.UserProfileView;
 using Chameleon.Avalonia.Controls.UserProfileView.Services;
 using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
-using Chameleon.Playwright.Automation.Manager;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Domain.Entities.Automation;
@@ -35,22 +33,18 @@ using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Views.List;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.Dialogs.Views;
-using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Interfaces.Modules;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Interfaces.Views;
 using Chameleon.Interfaces.Windows;
+using Chameleon.Playwright.Automation.Manager;
 using Chameleon.SystemBrowser;
 using DryIoc;
 using Prism.DryIoc;
-using System.ComponentModel;
 using System.Reflection;
-using Chameleon.Interfaces.App.Automation.Playwright;
 
 namespace Chameleon.Av.Fluent;
 
@@ -174,7 +168,6 @@ public partial class App : PrismApplication
         containerRegistry.Register<IAddScriptParametersPopupViewModel, AddScriptParametersPopupViewModel>();
         containerRegistry.Register<ISelectAutomationPopupViewModel, SelectAutomationPopupViewModel>();
         containerRegistry.Register<ISelectAutomationPopupView, SelectAutomationPopupView>();
-        containerRegistry.RegisterSingleton<IAutomationScriptHelper, AutomationScriptHelper>();
     }
 
     private void RegisterIocContainer(IContainerRegistry containerRegistry)
