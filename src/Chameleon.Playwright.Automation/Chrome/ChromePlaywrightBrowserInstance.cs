@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.App.Automation.Playwright;
+﻿using Chameleon.Infrastructure.App.Automation;
+using Chameleon.Interfaces.App.Automation.Playwright;
 using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.WebBrowser;
@@ -13,7 +14,8 @@ public class ChromePlaywrightBrowserInstance(
     ISetPreferencesService setPreferencesService,
     IApplicationEnvironment applicationEnvironment,
     IUserDefaultSettingsService userDefaultsSettingsService,
-    string browserExeFilePath) : 
+    string browserExeFilePath,
+    IAutomationScriptHelper automationScriptHelper) : 
     ChromeSystemBrowserInstance(eventAggregator,
             options,
             setPreferencesService,
@@ -22,10 +24,9 @@ public class ChromePlaywrightBrowserInstance(
             browserExeFilePath)
     , IPlaywrightBrowserInstance
 {
-
     private IBrowserContext _browserContext;
     public IBrowserContext BrowserContext => _browserContext;
-   
+
     public override async Task Open()
     {
         await EnsureProfileFolderCreated();
@@ -39,19 +40,10 @@ public class ChromePlaywrightBrowserInstance(
         List<string> args = GetClearCommandLineArgumentsList();
         string exts = GetLoadExtensionsArgument();
 
-        if (!string.IsNullOrEmpty(exts))
-        {
-            args.Add($"--disable-extensions-except={exts}");
-            args.Add($"--load-extension={exts}");
-        }
+        var contexOptions = automationScriptHelper
+             .CreateOptions(args, exts, browserExeFilePath);
 
-        _browserContext = await options.Playwright.Chromium.LaunchPersistentContextAsync(
-            BrowserProfileFolderPath,
-            new BrowserTypeLaunchPersistentContextOptions
-            {
-                Args = args,
-                ExecutablePath = browserExeFilePath,
-                Headless = false,
-            });
+        _browserContext = await options.Playwright.Chromium
+            .LaunchPersistentContextAsync(BrowserProfileFolderPath, contexOptions);
     }
 }

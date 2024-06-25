@@ -8,17 +8,21 @@ using Chameleon.SystemBrowser;
 using Chameleon.SystemBrowser.Browsers.Brave;
 
 namespace Chameleon.Playwright.Automation.Brave;
+
 public class BravePlaywrightBrowser(
         IEventAggregator eventAggregator,
         IApplicationEnvironment applicationEnvironment,
         ISystemBrowserInfoManager systemBrowserInfoManager,
         ISetPreferencesService setPreferencesService,
-        IUserDefaultSettingsService userDefaultsSettingsService)
-    : BraveSystemBrowser(eventAggregator,
+        IUserDefaultSettingsService userDefaultsSettingsService,
+        IAutomationScriptHelper automationScriptHelper
+        )
+        : BraveSystemBrowser(eventAggregator,
             applicationEnvironment,
             systemBrowserInfoManager,
             setPreferencesService,
             userDefaultsSettingsService)
+
     , IBravePlaywrightBrowser
 {
     public IPlaywrightBrowserInstance InitializeBrowser(IPlaywrightBrowserLaunchOptions o)
@@ -29,7 +33,8 @@ public class BravePlaywrightBrowser(
             setPreferencesService,
             applicationEnvironment,
             userDefaultsSettingsService,
-            GetBrowserExePath()
+            GetBrowserExePath(),
+            automationScriptHelper
             );
     }
 

@@ -13,7 +13,8 @@ public class ChromePlaywrightBrowser(
         IApplicationEnvironment applicationEnvironment,
         ISystemBrowserInfoManager systemBrowserInfoManager,
         ISetPreferencesService setPreferencesService,
-        IUserDefaultSettingsService userDefaultsSettingsService)
+        IUserDefaultSettingsService userDefaultsSettingsService,
+        IAutomationScriptHelper automationScriptHelper)
     : ChromeSystemBrowser(eventAggregator,
             applicationEnvironment,
             systemBrowserInfoManager,
@@ -21,6 +22,7 @@ public class ChromePlaywrightBrowser(
             userDefaultsSettingsService)
     , IChromePlaywrightBrowser
 {
+
     public IPlaywrightBrowserInstance InitializeBrowser(IPlaywrightBrowserLaunchOptions o)
     {
         return new ChromePlaywrightBrowserInstance(
@@ -29,7 +31,8 @@ public class ChromePlaywrightBrowser(
             setPreferencesService,
             applicationEnvironment,
             userDefaultsSettingsService,
-            GetBrowserExePath()
+            GetBrowserExePath(),
+            automationScriptHelper
             );
     }
 
