@@ -21,8 +21,7 @@ public class BravePlaywrightBrowser(
             applicationEnvironment,
             systemBrowserInfoManager,
             setPreferencesService,
-            userDefaultsSettingsService,
-            automationScriptHelper)
+            userDefaultsSettingsService)
 
     , IBravePlaywrightBrowser
 {

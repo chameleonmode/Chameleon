@@ -41,16 +41,10 @@ public class BravePlaywrightBrowserInstance(IEventAggregator eventAggregator,
         List<string> args = GetClearCommandLineArgumentsList();
         string exts = GetLoadExtensionsArgument();
 
-        var options = automationScriptHelper
-            .CreateOptions(args, exts, _browserExeFilePath);
+        var contexOptions = automationScriptHelper
+            .CreateOptions(args, exts, browserExeFilePath);
 
-        _browserContext = await options.Playwright.Chromium.LaunchPersistentContextAsync(
-            BrowserProfileFolderPath,
-            new BrowserTypeLaunchPersistentContextOptions
-            {
-                Args = args,
-                ExecutablePath = browserExeFilePath,
-                Headless = false,
-            });
+        _browserContext = await options.Playwright.Chromium
+            .LaunchPersistentContextAsync(BrowserProfileFolderPath, contexOptions);
     }
 }
