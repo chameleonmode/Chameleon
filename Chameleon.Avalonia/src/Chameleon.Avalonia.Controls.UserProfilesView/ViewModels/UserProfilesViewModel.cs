@@ -672,13 +672,14 @@ public partial class UserProfilesViewModel
     [RelayCommand]
     private void StopAutomation()
     {
+        IsVisibleStopButton = false;
+        IsVisibleWaitButton = true;
         _cts.Cancel();
     }
 
     private void OnHandleFinishScriptExecutionEvent()
     {
         IsVisibleStopButton = false;
-        IsVisibleWaitButton = true;
         IsVisibleWaitButton = false;
         IsVisibleRunButton = true;
     }
