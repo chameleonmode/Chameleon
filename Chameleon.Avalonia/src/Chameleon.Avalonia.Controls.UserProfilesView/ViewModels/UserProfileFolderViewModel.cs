@@ -98,19 +98,6 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         OnPropertyChanged(nameof(UserProfileFolder));
     }
 
-    [RelayCommand]
-    private async Task OpenAutomation()
-    {
-        var userProfilesToApply = ProfilesByCurrentFolder;
-
-        var result = await ContentDialogService
-           .ShowAsync<ISelectAutomationPopupView, ISelectAutomationPopupViewModel>(viewModel =>
-           {
-               viewModel.Title = "Select Automation";
-               viewModel.UserProfiles = userProfilesToApply;
-           });
-    }
-
     private IList<IUserProfile> ProfilesByCurrentFolder
     {
         get
