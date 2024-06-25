@@ -874,7 +874,7 @@ public class EventAggregator : IEventAggregator
         }
     }
 
-    private readonly Dictionary<Type, EventBase> events = new Dictionary<Type, EventBase>();
+    private readonly Dictionary<Type, EventBase> events = [];
     // Captures the sync context for the UI thread when constructed on the UI thread
     // in a platform agnostic way so it can be used for UI thread dispatching
     private readonly SynchronizationContext syncContext = SynchronizationContext.Current;
@@ -893,8 +893,10 @@ public class EventAggregator : IEventAggregator
 
             if (!events.TryGetValue(typeof(TEventType), out existingEvent))
             {
-                TEventType newEvent = new TEventType();
-                newEvent.SynchronizationContext = syncContext;
+                TEventType newEvent = new TEventType
+                {
+                    SynchronizationContext = syncContext
+                };
                 events[typeof(TEventType)] = newEvent;
 
                 return newEvent;
@@ -950,7 +952,7 @@ public class EventAggregator : IEventAggregator
 ///</summary>
 public abstract class EventBase
 {
-    private readonly List<IEventSubscription> _subscriptions = new List<IEventSubscription>();
+    private readonly List<IEventSubscription> _subscriptions = [];
 
     /// <summary>
     /// Allows the SynchronizationContext to be set by the EventAggregator for UI Thread Dispatching
@@ -1035,7 +1037,7 @@ public abstract class EventBase
 
     private List<Action<object[]>> PruneAndReturnStrategies()
     {
-        List<Action<object[]>> returnList = new List<Action<object[]>>();
+        List<Action<object[]>> returnList = [];
 
         lock (Subscriptions)
         {

@@ -11,24 +11,29 @@ mkdir -p "App/Chameleon.app/Contents/Resources/BrowserExtensions"
 
 #Build app
 #dotnet publish Chameleon.Avalonia.Desktop.csproj -c release -f net8.0 -r osx-x64 --self-contained true -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false 
-
-#Move app
-cp -a bin/release/net8.0/osx-x64/publish/* App/Chameleon.app/Contents/MacOS/
+#dotnet publish Chameleon.Avalonia.Desktop.csproj -r osx-x64  -c Release -f net8.0 -p:DebugType=None -p:DebugSymbols=false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true --self-contained true
 
 APP_ENTITLEMENTS="chameleonApp.entitlements"
 APP_SIGNING_IDENTITY="Simon Dadia"
 INSTALLER_SIGNING_IDENTITY="Simon Dadia"
 APP_NAME="App/Chameleon.app"
-PUBLISH_EXTENSTIONS="BrowserExtensions/."
+PUBLISH_EXTENSTIONS="bin/release/net8.0/osx-x64/publish/BrowserExtensions/."
 INFO_PLIST="Info.plist"
 ICON_FILE="logo-symbol.icns"
+
+#Move app
+cp -a bin/release/net8.0/osx-x64/publish/Chameleon $APP_NAME/Contents/MacOS/
+cp -a bin/release/net8.0/osx-x64/publish/libAvaloniaNative.dylib $APP_NAME/Contents/MacOS/
+cp -a bin/release/net8.0/osx-x64/publish/libHarfBuzzSharp.dylib $APP_NAME/Contents/MacOS/
+cp -a bin/release/net8.0/osx-x64/publish/libSkiaSharp.dylib $APP_NAME/Contents/MacOS/
 
 cp "$INFO_PLIST" "$APP_NAME/Contents/Info.plist"
 
 #<here is moving your app resources to Resources folder using relative symlinks>
 cp "$ICON_FILE" "$APP_NAME/Contents/Resources/$ICON_FILE"
 cp -a "$PUBLISH_EXTENSTIONS" "$APP_NAME/Contents/Resources/BrowserExtensions"
-mv "$APP_NAME/Contents/MacOS/playwright.ps1" "$APP_NAME/Contents/Resources/playwright.ps1" 
+cp -a bin/release/net8.0/osx-x64/publish/playwright.ps1 $APP_NAME/Contents/Resources/
+#mv "$APP_NAME/Contents/MacOS/playwright.ps1" "$APP_NAME/Contents/Resources/playwright.ps1" 
 
 #<here is moving your .dylib files to Frameworks folder using relative symlinks>
 find "$APP_NAME/Contents/MacOS" -name '*.dylib' | while read fname; do

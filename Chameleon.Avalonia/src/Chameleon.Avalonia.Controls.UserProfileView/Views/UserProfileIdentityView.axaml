@@ -7,44 +7,14 @@
              mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="800"
 			 xmlns:vm="using:Chameleon.Avalonia.Controls.UserProfileView.ViewModels"
 			 x:DataType="vm:UserProfileIdentityViewModel"
-			 x:CompileBindings="False"
+			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.UserProfileView.UserProfileIdentityView"
 			 Name="UC">
 	<UserControl.Resources>
-
-	</UserControl.Resources>
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<ups:UserProfileView Name="UPView" DataContext="{Binding ProfileVM}" />
-		<Panel Grid.Row="1"
-			   HorizontalAlignment="Right"
-			   Margin="0 6 12 0">
-			<!--<Button Theme="{StaticResource SyncChangesButton}" Margin="6 -5 6 6" />-->
-
-			<StackPanel Orientation="Horizontal"
-						Spacing="12">
-				<Button Content="Discard changes"
-						Command="{Binding DiscardCommand}" />
-				<Button Content="Save changes"
-						Classes="accent"
-						Command="{Binding SaveChangesCommand}"/>
-				<!-- featureTouring:TourHelper.ElementID="{x:Static guidedTour:ElementID.SaveChangesBtn}" featureTouring:TourHelper.Placement="BottomRight" -->
-
-			</StackPanel>
-		</Panel>
-		<!--{Binding SelectedTadIndex}-->
-		<TabControl Grid.Row="2"
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"
-					Padding="108 18"
-					BorderThickness="0"
-					SelectedIndex="{Binding SelectedTadIndex}">
-			<TabItem>
-				<TabItem.Header>
+		<ControlTheme x:Key="TheseTabHeaderPanels"
+					  TargetType="HeaderedContentControl">
+			<Setter Property="Template">
+				<ControlTemplate>
 					<Panel Width="144"
 						   Height="36">
 						<StackPanel
@@ -53,22 +23,97 @@
 							VerticalAlignment="Center">
 							<afv:SvgIconControl
 								Height="18"
-								IconName="profile-main" />
+								IconName="{TemplateBinding Content}" />
 							<TextBlock
-								Text="Main"
+								Text="{TemplateBinding Header}"
 								VerticalAlignment="Center"
 								Theme="{StaticResource SubtitleTextBlockStyle}"
 								Margin="6 0 0 0"/>
 						</StackPanel>
 					</Panel>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+
+		<ControlTheme x:Key="TheseOptionsHeaderPanels"
+					  TargetType="HeaderedContentControl">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid VerticalAlignment="Center">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<TextBlock Text="{TemplateBinding Header}"
+								   VerticalAlignment="Center"
+								   Theme="{StaticResource SubtitleTextBlockStyle}"/>
+						<Button
+							Grid.Column="1"
+							Content="plus-in-circle"
+							Theme="{StaticResource SvgIconTextButton}"
+							Tag="{TemplateBinding Content}"
+							CommandParameter="{TemplateBinding Tag}"
+							Command="{Binding CfromVCommand}" />
+					</Grid>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+	</UserControl.Resources>
+	<UserControl.Styles>
+		<Style Selector="Button.TheseDeleteBtns">
+			<Setter Property="HorizontalAlignment" Value="Right" />
+			<Setter Property="Tag" Value="Delete" />
+			<Setter Property="Content" Value="delete" />
+			<Setter Property="Theme" Value="{StaticResource SvgIconTextButton}" />
+			<Setter Property="CommandParameter" Value="{Binding}" />
+		</Style>
+		<Style Selector="Expander.TheseExpanders">
+			<Setter Property="IsExpanded" Value="{ReflectionBinding IsOpenSearchParameters, FallbackValue=True}" />
+			<Setter Property="Header" Value="{ReflectionBinding Title}" />
+			<Setter Property="Margin" Value="0 0 0 6" />
+			<Setter Property="Background" Value="{StaticResource CardBackgroundFillColorDefaultBrush}" />
+		</Style>
+		<Style Selector="ItemsControl.TheseItemControls">
+			<Setter Property="Grid.Row" Value="1" />
+			<Setter Property="Margin" Value="0 20 0 0" />
+		</Style>
+	</UserControl.Styles>
+	<Grid RowDefinitions="Auto,Auto,*">
+		<ups:UserProfileView Name="UPView" DataContext="{Binding ProfileVM}" />
+
+		<Panel Grid.Row="1"
+			   HorizontalAlignment="Right"
+			   Margin="0 6 12 0">
+			<StackPanel Orientation="Horizontal"
+						Spacing="12">
+				<Button Content="Discard changes"
+						Command="{Binding DiscardCommand}" />
+				<Button Content="Save changes"
+						Classes="accent"
+						Command="{Binding SaveChangesCommand}"/>
+			</StackPanel>
+		</Panel>
+
+		<TabControl Grid.Row="2"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch"
+					Padding="108 18"
+					BorderThickness="0"
+					SelectedIndex="{Binding SelectedTadIndex}">
+			<TabItem>
+				<TabItem.Header>
+					<HeaderedContentControl
+						Content="profile-main"
+						Header="Main"
+						Theme="{StaticResource TheseTabHeaderPanels}"/>
 				</TabItem.Header>
 				<TabItem.Content>
 					<StackPanel Spacing="18">
 						<afv:HeaderdInputFieldsControl Title="PROFILE NAME"
-															 Text="{Binding UserProfileModel.Title, FallbackValue=NAME}" />
+													   Text="{Binding UserProfileModel.Title, FallbackValue=NAME}" />
 
 						<afv:HeaderdInputFieldsControl Title="PROXY CONFIGURATION"
-															 Header="False">
+													   Header="False">
 							<afv:HeaderdInputFieldsControl.TextBoxes>
 								<TextBox Text="{Binding Path=UserProfileModel.Proxy.Host}" />
 								<TextBox Text="{Binding Path=UserProfileModel.Proxy.PortString}"  />
@@ -81,7 +126,7 @@
 													   Text="{Binding UserProfileModel.Notes, FallbackValue=Notes}" />
 
 						<afv:HeaderdInputFieldsControl Title="CANVAS VALUE"
-											 Text="{Binding UserProfileModel.WebBrowser.Canvas, FallbackValue=Canvas}" />
+													   Text="{Binding UserProfileModel.WebBrowser.Canvas, FallbackValue=Canvas}" />
 
 
 						<TextBlock Text="PROFILE ITEM" />
@@ -96,67 +141,39 @@
 									  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.Flash}" />
 						</UniformGrid>
 
+						<!--
+						TODO: theres no current setting for this so its confusing
 						<TextBlock Text="USER AGENT" />
 						<StackPanel>
 							<TextBlock Text="User Agent"  />
 							<TextBlock Text="Firefox/90.0 Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"/>
-						</StackPanel>
+						</StackPanel>-->
 					</StackPanel>
 				</TabItem.Content>
 			</TabItem>
 			<TabItem>
 				<TabItem.Header>
-					<Panel Width="144"
-						   Height="18">
-						<StackPanel
-							Orientation="Horizontal"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center">
-							<afv:SvgIconControl
-								IconName="profile-persons" />
-							<TextBlock
-								Text="Persons"
-								VerticalAlignment="Center"
-								Theme="{StaticResource SubtitleTextBlockStyle}"
-								Margin="6 0 0 0"/>
-						</StackPanel>
-					</Panel>
+					<HeaderedContentControl
+						Content="profile-persons"
+						Header="Persons"
+						Theme="{StaticResource TheseTabHeaderPanels}"/>
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<afv:SvgIconControl IconName="no-peresons"
-												  Width="210" 
-												  Margin="0 0 0 126"
-												  IsVisible="{Binding Path=!HasNoItems}"/>
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="*" />
-							</Grid.RowDefinitions>
-							<Grid VerticalAlignment="Center">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
-								<TextBlock Text="{Binding Persons.Items.Count,
-											   StringFormat='You have {0} persons added.'}"
-										   VerticalAlignment="Center"
-										   Theme="{StaticResource SubtitleTextBlockStyle}" />
-								<Button Content="plus-in-circle"
-										Tag="Add Person"
-										Command="{Binding Path=AddPersonCommand}"
-										Grid.Column="1"
-										HorizontalAlignment="Center"
-										Theme="{StaticResource SvgIconTextButton}" />
-							</Grid>
-							<ItemsControl Grid.Row="1"
-										  Margin="0 20 0 0"
-										  ItemsSource="{Binding Path=Persons.Items}">
+						<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+												IsVisible="{Binding !HasNoItems}" />
+						<Grid RowDefinitions="Auto,*">
+							<HeaderedContentControl
+								Theme="{StaticResource TheseOptionsHeaderPanels}"
+								Header="{Binding Persons.Count, StringFormat='You have {0} persons added.'}"
+								Content="Add Person"
+								Tag="AddPerson" />
+
+							<ItemsControl Classes="TheseItemControls"
+										  ItemsSource="{Binding Path=Persons}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Expander IsExpanded="{Binding IsOpenSearchParameters, FallbackValue=True}"
-												  Header="{Binding Title}"
-												  Margin="0 0 0 6">
+										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
 																					 Text="{Binding Title, FallbackValue=Title}" />
@@ -171,17 +188,17 @@
 												</afv:HeaderdInputFieldsControl>
 
 												<afv:HeaderdInputFieldsControl Title="Job Title"
-																					 Text="{Binding JobTitle, FallbackValue=JobTitle}" />
+																			   Text="{Binding JobTitle, FallbackValue=JobTitle}" />
 
 												<afv:HeaderdInputFieldsControl Title="Phone Number"
-																					 Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
+																			   Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
 
 												<UniformGrid Rows="1">
 													<!--todo https://github.com/AvaloniaUI/Avalonia/issues/3016-->
 													<Border HorizontalAlignment="Stretch" Padding="15 0 22 0">
-														<RadioButton 
+														<RadioButton
 															GroupName="rbgGender"
-															IsChecked="{Binding GenderMale}">		
+															IsChecked="{Binding GenderMale}">
 															<RadioButton.Content>
 																<TextBlock Text="Male"  />
 															</RadioButton.Content>
@@ -204,14 +221,10 @@
 																					 Text="{Binding BirthPlace, FallbackValue=BirthPlace}" />
 
 												<afv:HeaderdInputFieldsControl Title="Notes"
-																					 Text="{Binding Notes, FallbackValue=Notes}" />
+																			   Text="{Binding Notes, FallbackValue=Notes}" />
 
-												<Button Content="delete"
-														Tag="Delete"
-														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeletePersonCommand}"
-														CommandParameter="{Binding}"
-														HorizontalAlignment="Right"
-														Theme="{StaticResource SvgIconTextButton}" />
+												<Button Classes="TheseDeleteBtns"
+														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeletePersonCommand}" />
 											</StackPanel>
 										</Expander>
 									</DataTemplate>
@@ -223,83 +236,48 @@
 			</TabItem>
 			<TabItem>
 				<TabItem.Header>
-					<Panel Width="144"
-						   Height="36">
-						<StackPanel
-							Orientation="Horizontal"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center">
-							<afv:SvgIconControl
-								Height="18"
-								IconName="profile-businesses" />
-							<TextBlock
-								Text="Businesses"
-								VerticalAlignment="Center"
-								Theme="{StaticResource SubtitleTextBlockStyle}"
-								Margin="6 0 0 0"/>
-						</StackPanel>
-					</Panel>
+					<HeaderedContentControl
+						Content="profile-businesses"
+						Header="Businesses"
+						Theme="{StaticResource TheseTabHeaderPanels}"/>
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<afv:SvgIconControl IconName="no-business"
-						  Width="210"
-						  Margin="0 0 0 126"
-						  IsVisible="{Binding Path=!HasNoBusinessItems}"/>
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="*"/>
-							</Grid.RowDefinitions>
-							<Grid VerticalAlignment="Center">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
-								<TextBlock Text="{Binding Businesses.Items.Count,
-											   StringFormat='You have {0} businesses added.'}"
-										   VerticalAlignment="Center"
-										   Theme="{StaticResource SubtitleTextBlockStyle}"/>
-								<Button Content="plus-in-circle"
-										Tag="Add Business"
-										Command="{Binding Path=AddBusinessCommand}"
-										Grid.Column="1"
-										HorizontalAlignment="Center"
-										Theme="{StaticResource SvgIconTextButton}" />
-							</Grid>
-							<ItemsControl Grid.Row="1"
-										  Margin="0 20 0 0"
-										  ItemsSource="{Binding Path=Businesses.Items}">
+						<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+												IsVisible="{Binding !HasNoBusinessItems}" />
+						<Grid RowDefinitions="Auto,*">
+							<HeaderedContentControl
+								Theme="{StaticResource TheseOptionsHeaderPanels}"
+								Header="{Binding Businesses.Count, StringFormat='You have {0} businesses added.'}"
+								Content="Add Business"
+								Tag="AddBusiness" />
+
+							<ItemsControl Classes="TheseItemControls"
+										  ItemsSource="{Binding Path=Businesses}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Expander IsExpanded="{Binding IsOpenSearchParameters, FallbackValue=True}"
-												  Header="{Binding Title}"
-												  Margin="0 0 0 6">
+										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																					 Text="{Binding Title, FallbackValue=Title}" />
+																			   Text="{Binding Title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="Company Name"
-																		 Text="{Binding CompanyName, FallbackValue=CompanyName}" />
+																			   Text="{Binding CompanyName, FallbackValue=CompanyName}" />
 
 												<afv:HeaderdInputFieldsControl Title="Department"
-																		 Text="{Binding Department, FallbackValue=Department}" />
+																			   Text="{Binding Department, FallbackValue=Department}" />
 
 												<afv:HeaderdInputFieldsControl Title="Phone Number"
-																		 Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
+																			   Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
 
 												<afv:HeaderdInputFieldsControl Title="Web Site"
-																		 Text="{Binding WebSite, FallbackValue=WebSite}" />
+																			   Text="{Binding WebSite, FallbackValue=WebSite}" />
 
 												<afv:HeaderdInputFieldsControl Title="Notes"
-																		 Text="{Binding Notes, FallbackValue=Notes}" />
+																			   Text="{Binding Notes, FallbackValue=Notes}" />
 
-												<Button Content="delete"
-														Tag="Delete"
-														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteBusinessCommand}"
-														CommandParameter="{Binding}"
-														HorizontalAlignment="Right"
-														Theme="{StaticResource SvgIconTextButton}" />
+												<Button Classes="TheseDeleteBtns"
+														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteBusinessCommand}" />
 											</StackPanel>
 										</Expander>
 									</DataTemplate>
@@ -311,103 +289,63 @@
 			</TabItem>
 			<TabItem>
 				<TabItem.Header>
-					<Panel Width="144"
-						   Height="36">
-						<StackPanel
-							Orientation="Horizontal"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center">
-							<afv:SvgIconControl
-								Height="18"
-								IconName="profile-addresses" />
-							<TextBlock
-								Text="Addresses"
-								VerticalAlignment="Center"
-								Theme="{StaticResource SubtitleTextBlockStyle}"
-								Margin="6 0 0 0"/>
-						</StackPanel>
-					</Panel>
+					<HeaderedContentControl
+						Content="profile-addresses"
+						Header="Addresses"
+						Theme="{StaticResource TheseTabHeaderPanels}"/>
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<afv:SvgIconControl IconName="no-address"
-						  Width="210"
-						  Margin="0 0 0 126"
-						  IsVisible="{Binding Path=!HasNoAddressesItems}"/>
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="*"/>
-							</Grid.RowDefinitions>
-							<Grid VerticalAlignment="Center">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
-								<TextBlock Text="{Binding Addresses.Items.Count,
-											   StringFormat='You have {0} addresses added.'}"
-										   VerticalAlignment="Center"
-										   Theme="{StaticResource SubtitleTextBlockStyle}"/>
-								<Button Content="plus-in-circle"
-										Tag="Add Address"
-										Command="{Binding Path=AddAddressCommand}"
-										Grid.Column="1"
-										HorizontalAlignment="Center"
-										Theme="{StaticResource SvgIconTextButton}" />
-							</Grid>
-							<ItemsControl Grid.Row="1"
-										  Margin="0 20 0 0"
-										  ItemsSource="{Binding Path=Addresses.Items}">
+						<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+												IsVisible="{Binding !HasNoAddressesItems}" />
+						<Grid RowDefinitions="Auto,*">
+							<HeaderedContentControl
+								Theme="{StaticResource TheseOptionsHeaderPanels}"
+								Header="{Binding Addresses.Count, StringFormat='You have {0} addresses added.'}"
+								Content="Add Address"
+								Tag="AddAddress" />
+
+							<ItemsControl Classes="TheseItemControls"
+										  ItemsSource="{Binding Path=Addresses}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Expander IsExpanded="{Binding IsOpenSearchParameters, FallbackValue=True}"
-												  Header="{Binding Title}"
-												  Margin="0 0 0 6">
+										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																					 Text="{Binding Title, FallbackValue=Title}" />
+																			   Text="{Binding Title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="AddressLine1"
-																					 Text="{Binding AddressLine1, FallbackValue=AddressLine1}" />
+																			   Text="{Binding AddressLine1, FallbackValue=AddressLine1}" />
 
 												<afv:HeaderdInputFieldsControl Title="AddressLine2"
-																					 Text="{Binding AddressLine2, FallbackValue=AddressLine2}" />
+																			   Text="{Binding AddressLine2, FallbackValue=AddressLine2}" />
 
 												<afv:HeaderdInputFieldsControl Title="City"
-																					 Text="{Binding City, FallbackValue=City}" />
+																			   Text="{Binding City, FallbackValue=City}" />
 
 												<afv:HeaderdInputFieldsControl Title="State"
-																					 Text="{Binding State, FallbackValue=State}" />
+																			   Text="{Binding State, FallbackValue=State}" />
 
 												<afv:HeaderdInputFieldsControl Title="Zip"
-																					 Text="{Binding Zip, FallbackValue=Zip}" />
+																			   Text="{Binding Zip, FallbackValue=Zip}" />
 
-												<ComboBox ItemsSource="{ReflectionBinding Path=Countries.Items}"
-														  PlaceholderText="Country"
+												<ComboBox ItemsSource="{ReflectionBinding Path=$parent[ItemsControl].DataContext.Countries}"
+														  SelectedItem="{ReflectionBinding SelectedCountry}"
 														  Margin="0 0 6 0"
+														  PlaceholderText="Country"
 														  HorizontalAlignment="Stretch">
-													<ComboBox.SelectedItem>
-														<MultiBinding>
-															<ReflectionBinding Path="CountryId"/>
-															<ReflectionBinding Path="DataContext.Countries.Items" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" Mode="OneWay"/>
-														</MultiBinding>
-													</ComboBox.SelectedItem>
 													<ComboBox.ItemTemplate>
 														<DataTemplate>
-															<Label Content="{ReflectionBinding Name}"/>
-														</DataTemplate>
+															<TextBlock Text="{ReflectionBinding Name}" />
+ 														</DataTemplate>
 													</ComboBox.ItemTemplate>
 												</ComboBox>
 
 												<afv:HeaderdInputFieldsControl Title="Notes"
-																					 Text="{Binding Notes, FallbackValue=Notes}" />
+																			   Text="{Binding Notes, FallbackValue=Notes}" />
 
-												<Button Content="delete"
-														Tag="Delete"
-														Command="{ReflectionBinding  Path=$parent[ItemsControl].DataContext.DeleteAddressCommand}"
-														CommandParameter="{Binding}"
-														HorizontalAlignment="Right"
-														Theme="{StaticResource SvgIconTextButton}" />
+												<Button Classes="TheseDeleteBtns"
+														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteAddressCommand}" />
 											</StackPanel>
 										</Expander>
 									</DataTemplate>
@@ -419,82 +357,48 @@
 			</TabItem>
 			<TabItem>
 				<TabItem.Header>
-					<Panel Width="144"
-						   Height="36">
-						<StackPanel
-							Orientation="Horizontal"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center">
-							<afv:SvgIconControl
-								Height="18"
-								IconName="profile-logins" />
-							<TextBlock
-								Text="Logins"
-								VerticalAlignment="Center"
-								Theme="{StaticResource SubtitleTextBlockStyle}"
-								Margin="6 0 0 0"/>
-						</StackPanel>
-					</Panel>
+					<HeaderedContentControl
+						Content="profile-logins"
+						Header="Logins"
+						Theme="{StaticResource TheseTabHeaderPanels}"/>
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel>
-						<afv:SvgIconControl IconName="no-logins"
-						  Width="210"
-						  Margin="0 0 0 126"
-						  IsVisible="{Binding Path=!HasNoLoginsItems}"/>
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="*"/>
-							</Grid.RowDefinitions>
-							<Grid VerticalAlignment="Center">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
-								<TextBlock Text="{Binding Logins.Items.Count,
-											   StringFormat='You have {0} logins added.'}"
-										   VerticalAlignment="Center"
-										   Theme="{StaticResource SubtitleTextBlockStyle}"/>
-								<Button Content="plus-in-circle"
-										Tag="Add Login"
-										Command="{Binding Path=AddLoginCommand}"
-										Grid.Column="1"
-										HorizontalAlignment="Center"
-										Theme="{StaticResource SvgIconTextButton}" />
-							</Grid>
-							<ItemsControl Grid.Row="1"
-										  Margin="0 20 0 0"
-										  ItemsSource="{Binding Path=Logins.Items}">
+						<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+												IsVisible="{Binding !HasNoLoginsItems}" />
+						<Grid RowDefinitions="Auto,*">
+							<HeaderedContentControl
+								Theme="{StaticResource TheseOptionsHeaderPanels}"
+								Header="{Binding Logins.Count, StringFormat='You have {0} logins added.'}"
+								Content="Add Login"
+								Tag="AddLogin" />
+
+							<ItemsControl Classes="TheseItemControls"
+										  ItemsSource="{Binding Path=Logins}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Expander IsExpanded="{Binding IsOpenSearchParameters, FallbackValue=True}"
-												  Header="{Binding Title}"
-												  Margin="0 0 0 6">
+										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																					 Text="{Binding Title, FallbackValue=Title}" />
+																			   Text="{Binding Title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="WebSite"
-																					 Text="{Binding WebSite, FallbackValue=WebSite}" />
+																			   Text="{Binding WebSite, FallbackValue=WebSite}" />
 
 												<afv:HeaderdInputFieldsControl Title="Email"
-																					 Text="{Binding Email, FallbackValue=Email}" />
+																			   Text="{Binding Email, FallbackValue=Email}" />
 
 												<afv:HeaderdInputFieldsControl Title="UserName"
-																					 Text="{Binding UserName, FallbackValue=UserName}" />
+																			   Text="{Binding UserName, FallbackValue=UserName}" />
 
 												<afv:HeaderdInputFieldsControl Title="Password"
-																					 Text="{Binding Password, FallbackValue=Password}" />
+																			   Text="{Binding Password, FallbackValue=Password}" />
 
 												<afv:HeaderdInputFieldsControl Title="Notes"
-																					 Text="{Binding Notes, FallbackValue=Notes}" />
-												<Button Content="delete"
-														Tag="Delete"
-														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteLoginCommand}"
-														CommandParameter="{Binding}"
-														HorizontalAlignment="Right"
-														Theme="{StaticResource SvgIconTextButton}" />
+																			   Text="{Binding Notes, FallbackValue=Notes}" />
+
+												<Button Classes="TheseDeleteBtns"
+														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteLoginCommand}" />
 											</StackPanel>
 										</Expander>
 									</DataTemplate>
@@ -505,8 +409,5 @@
 				</TabItem.Content>
 			</TabItem>
 		</TabControl>
-
-		<!--<wait:WaitIndicatorView Grid.Row="0" Grid.RowSpan="2"
-                IsIndicatorVisible="{Binding IsSaving}"/>-->
 	</Grid>
 </UserControl>

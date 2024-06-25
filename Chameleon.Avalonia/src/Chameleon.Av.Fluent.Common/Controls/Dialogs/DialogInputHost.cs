@@ -38,6 +38,5 @@ public class DialogInputHost : TemplatedControl
         set => SetValue(TextProperty, value);
     }
 
-    private string _text;
     private string _textLabel;
 }

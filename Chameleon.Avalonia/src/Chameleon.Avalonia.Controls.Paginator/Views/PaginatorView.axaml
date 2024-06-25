@@ -40,23 +40,25 @@
 
 		<Button
 			Grid.Column="1"
-Theme="{DynamicResource TransparentButton}"
-x:Name="BtnPrev"
-IsEnabled="{Binding PrevButtonIsEnabled}"
-Command="{Binding PrevPageCommand}">
-			<StackPanel Orientation="Horizontal">
-				<ui:SymbolIcon Symbol="Previous"
-							   Margin="3"/>
+			Theme="{DynamicResource TransparentButton}"
+			x:Name="BtnPrev"
+			IsEnabled="{Binding PrevButtonIsEnabled}"
+			Command="{Binding PrevPageCommand}">
+			<StackPanel
+				Orientation="Horizontal">
+				<ui:SymbolIcon 
+					Symbol="Previous"
+					Margin="3"/>
 				<TextBlock Text="Prev" />
 			</StackPanel>
 		</Button>
 
 		<ListBox
-Grid.Column="2"
-x:Name="LbPaginationButtons"
-ItemsSource="{Binding Buttons}"
-SelectedIndex="{Binding PageIndex}"
-Margin="5 0">
+			Grid.Column="2"
+			x:Name="LbPaginationButtons"
+			ItemsSource="{Binding Buttons}"
+			SelectedIndex="{Binding PageIndex}"
+			Margin="5 0">
 			<!--<ListBox.Items>
 				<ListBoxItem>
 					<Border>

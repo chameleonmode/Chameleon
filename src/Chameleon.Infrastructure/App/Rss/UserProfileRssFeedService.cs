@@ -10,7 +10,7 @@ namespace Chameleon.Infrastructure.Rss
     {
         private readonly IUserProfileRssFeedRepository _repository;
         private readonly Dictionary<int, UserProfileRssFeeds> _entities 
-            = new Dictionary<int, UserProfileRssFeeds>();
+            = [];
 
         public UserProfileRssFeedService(
             IUserProfileRssFeedRepository repository

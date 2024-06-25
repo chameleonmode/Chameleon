@@ -184,15 +184,16 @@ namespace Chameleon.Controls.ImportExport.Services
             dynamic jObjects = ReadArray(file);
             foreach (var jObject in jObjects)
             {
-                var item = new UserProfilePerson();
-
-                item.Title = jObject.Title?.ToString();
-                item.FirstName = jObject.FirstName?.ToString();
-                item.LastName = jObject.LastName?.ToString();
-                item.MiddleName = jObject.MiddleName?.ToString();
-                item.JobTitle = jObject.JobTitle?.ToString();
-                item.PhoneNumber = jObject.PhoneNumber?.ToString();
-                item.Email = jObject.Email?.ToString();
+                var item = new UserProfilePerson
+                {
+                    Title = jObject.Title?.ToString(),
+                    FirstName = jObject.FirstName?.ToString(),
+                    LastName = jObject.LastName?.ToString(),
+                    MiddleName = jObject.MiddleName?.ToString(),
+                    JobTitle = jObject.JobTitle?.ToString(),
+                    PhoneNumber = jObject.PhoneNumber?.ToString(),
+                    Email = jObject.Email?.ToString()
+                };
 
                 if (bool.TryParse(jObject.IsMale?.ToString(), out bool isMale) && isMale)
                 {
@@ -228,15 +229,16 @@ namespace Chameleon.Controls.ImportExport.Services
             dynamic jObjects = ReadArray(file);
             foreach (var jObject in jObjects)
             {
-                var item = new UserProfileAddress();
-
-                item.Title = jObject.Title?.ToString();
-                item.AddressLine1 = jObject.AddressLine1?.ToString();
-                item.AddressLine2 = jObject.AddressLine2?.ToString();
-                item.City = jObject.City?.ToString();
-                item.State = jObject.State?.ToString();
-                item.Zip = jObject.Zip?.ToString();
-                item.Notes = jObject.Note?.ToString();
+                var item = new UserProfileAddress
+                {
+                    Title = jObject.Title?.ToString(),
+                    AddressLine1 = jObject.AddressLine1?.ToString(),
+                    AddressLine2 = jObject.AddressLine2?.ToString(),
+                    City = jObject.City?.ToString(),
+                    State = jObject.State?.ToString(),
+                    Zip = jObject.Zip?.ToString(),
+                    Notes = jObject.Note?.ToString()
+                };
 
                 var countryName = jObject.Country?.ToString();
                 if (!string.IsNullOrEmpty(countryName))
@@ -269,14 +271,15 @@ namespace Chameleon.Controls.ImportExport.Services
             dynamic jObjects = ReadArray(file);
             foreach (var jObject in jObjects)
             {
-                var item = new UserProfileBusiness();
-
-                item.Title = jObject.Title?.ToString();
-                item.CompanyName = jObject.CompanyName?.ToString();
-                item.Department = jObject.Department?.ToString();
-                item.PhoneNumber = jObject.PhoneNumber?.ToString();
-                item.WebSite = jObject.WebSite?.ToString();
-                item.Notes = jObject.Note?.ToString();
+                var item = new UserProfileBusiness
+                {
+                    Title = jObject.Title?.ToString(),
+                    CompanyName = jObject.CompanyName?.ToString(),
+                    Department = jObject.Department?.ToString(),
+                    PhoneNumber = jObject.PhoneNumber?.ToString(),
+                    WebSite = jObject.WebSite?.ToString(),
+                    Notes = jObject.Note?.ToString()
+                };
 
                 items.Add(item);
             }
@@ -297,13 +300,14 @@ namespace Chameleon.Controls.ImportExport.Services
             dynamic jObjects = ReadArray(file);
             foreach (var jObject in jObjects)
             {
-                var item = new UserProfileLogin();
-
-                item.Title = jObject.Title?.ToString();
-                item.WebSite = jObject.Website?.ToString();
-                item.UserName = jObject.Email?.ToString();
-                item.Password = jObject.Password?.ToString();
-                item.Notes = jObject.Note?.ToString();
+                var item = new UserProfileLogin
+                {
+                    Title = jObject.Title?.ToString(),
+                    WebSite = jObject.Website?.ToString(),
+                    UserName = jObject.Email?.ToString(),
+                    Password = jObject.Password?.ToString(),
+                    Notes = jObject.Note?.ToString()
+                };
 
                 items.Add(item);
             }

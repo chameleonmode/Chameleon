@@ -7,7 +7,7 @@ namespace Chameleon.Interfaces.Auth
     {
         bool IsAuthenticated { get; }
         void Logout();
-        Task<IAuthRefreshTokenResponse?> RefreshToken(string acessToken, string refreshToken, long delayInSeconds);
+        Task RefreshTokenAsync(string acessToken, string refreshToken, long delayInSeconds);
 
         Task<bool> IsLicenseActive(string license);
 

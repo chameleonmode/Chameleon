@@ -4,7 +4,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Chameleon.Auth.Services;
 using Chameleon.Av.Fluent.Common.Services;
-using Chameleon.Av.Fluent.Dialogs;
 using Chameleon.Av.Fluent.ViewModels;
 using Chameleon.Av.Fluent.Views;
 using Chameleon.Avalonia.Controls.Automation.ViewModels;
@@ -17,7 +16,6 @@ using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using Chameleon.Avalonia.Controls.UserProfileView;
 using Chameleon.Avalonia.Controls.UserProfileView.Services;
 using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
-using Chameleon.Playwright.Automation.Manager;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Domain.Entities.Automation;
@@ -35,66 +33,21 @@ using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Views.List;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.Dialogs.Views;
-using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Interfaces.Modules;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Interfaces.Views;
 using Chameleon.Interfaces.Windows;
+using Chameleon.Playwright.Automation.Manager;
 using Chameleon.SystemBrowser;
 using DryIoc;
 using Prism.DryIoc;
-using System.ComponentModel;
 using System.Reflection;
-using Chameleon.Interfaces.App.Automation.Playwright;
 
 namespace Chameleon.Av.Fluent;
-public class tempinits : IDialogWindowsService  , IPopupDialogService
-{
-    public Task<int> ShowDialogWindow(IViewControl viewControl, string title)
-    {
-        throw new NotImplementedException();
-    }
 
-    public Task<int> ShowDialogWindow<TViewModel>(IViewControl viewControl, string title, Action<TViewModel> initialize) where TViewModel : class
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IPopupDialogResult?> Create<T>() where T : INotifyPropertyChanged
-    {
-        throw new NotImplementedException();
-    }
-
-    public IDialog Create(Type dialogType)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void ShowDialog(string name, string message, Action<int?> result)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Close(object? result = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task CloseAsync(object? result = null, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void ShowDialogInWindow<TDialog, TWindow>(string message, Action<int?> result)
-    {
-        throw new NotImplementedException();
-    }
-}
 public partial class App : PrismApplication
 {
     public static Action<MainWindow> OnFramworkInitComplete;
@@ -127,33 +80,6 @@ public partial class App : PrismApplication
         base.Initialize();
     }
 
-    protected override void ConfigureViewModelLocator()
-    {
-        base.ConfigureViewModelLocator();
-
-        //ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType) =>
-        //{
-        //    var attr = viewType.GetCustomAttribute<ViewModelAttribute>();
-        //    if (attr != null)
-        //    {
-        //        return attr.Type;
-        //    }
-
-        //    var viewName = viewType.FullName;
-        //    viewName = viewName.Replace(".Views.", ".ViewModels.");
-        //    var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName;
-        //    var suffix = viewName.EndsWith("View") ? "Model" : "ViewModel";
-        //    var viewModelName = String.Format(CultureInfo.InvariantCulture, "{0}{1}, {2}", viewName, suffix, viewAssemblyName);
-        //    var viewModelType = Type.GetType(viewModelName);
-
-        //    if (viewModelType == null && viewType.Name != "MainWindow")
-        //    {
-        //        viewModelType = Type.GetType($"{viewType.FullName}Model");
-        //    }
-        //    return viewModelType;
-        //});
-    }
-
     /// <summary>Register Services and Views.</summary>
     /// <param name="containerRegistry"></param>
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -173,7 +99,6 @@ public partial class App : PrismApplication
 
         cr.RegisterSingleton<Prism.Events.IEventAggregator, Prism.Events.EventAggregator>();
         cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
-        cr.RegisterSingleton<IDialogWindowsService, tempinits>();
 
         containerRegistry.RegisterSingleton<IIocManager, IocManager>();
 
@@ -199,21 +124,14 @@ public partial class App : PrismApplication
 
         // Dialogs
         // //Chameleon.Av.Fluent.Dialogs
-        Container.RegisterTypesFrom(Chameleon.Av.Fluent.Dialogs.AssemblyResolver.GetAssembly());
-        //cr.RegisterSingleton<IContentDialogService, ContentDialogService>();
-        cr.Register<ILoginContentDialogContent, LoginContentDialogContent>();
+        Container.RegisterTypesFrom(typeof(Chameleon.Av.Fluent.Dialogs.AssemblyResolver).Assembly);
         cr.Register<IMoveUserProfilesPopupView, MoveUserProfilesPopupView>();
-        cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();     //      
+        cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();           
         cr.Register<IUserProfileSidePanelView, UserProfileSidePanelView>();
         cr.Register<IUserProfileSidePanelViewModel, UserProfileSidePanelViewModel>();
-        //cr.RegisterSingleton<IDefaultContentDialogTitle, DefaultContentDialogTitle>();
-        //cr.RegisterSingleton<IAuthTaskDialogViewModel, AuthTaskDialogViewModel>();
-        //cr.RegisterSingleton<IBulkAddPagesPopupView, BulkAddPagesPopupView>();
-        //cr.RegisterSingleton<IBulkAddPagesPopupViewModel, BulkAddPagesPopupViewModel>();
 
         // Views - Viewmodels                                                     
         containerRegistry.RegisterSingleton<IMainWindow, MainWindow>();
-
         containerRegistry.RegisterSingleton<IMainViewViewModel, MainViewViewModel>();
 
         containerRegistry.RegisterSingleton<IDashboardViewModel, DashboardViewModel>();
@@ -231,27 +149,9 @@ public partial class App : PrismApplication
         cr.RegisterSingleton<IUserProfileFoldersView, UserProfileFoldersView>();
         cr.RegisterSingleton<IUserProfileFoldersViewModel, UserProfileFoldersViewModel>();
         cr.RegisterSingleton<IUserProfilesViewModel, UserProfilesViewModel>();
-        //containerRegistry.RegisterSingleton<ISettingsViewModel, SettingsViewModel>();
-        //containerRegistry.RegisterSingleton<ISettingsView, SettingsView>();
-        //containerRegistry.RegisterSingleton<IUserProxySettingsViewModel, UserProxySettingsViewModel>();
-        //containerRegistry.RegisterSingleton<IProxyCreditViewModel, ProxyCreditViewModel>();
-        //containerRegistry.RegisterSingleton<IPhoneVerificationViewModel, PhoneVerificationViewModel>();
-        //containerRegistry.RegisterSingleton<IAssistantUsersViewModel, AssistantUsersViewModel>();
-        //containerRegistry.RegisterSingleton<ImportViewModel>();
-        //containerRegistry.RegisterSingleton<IProxyAccessViewModels, ProxyAccessViewModels>();
 
 
-        // Views - Region Navigation 
-        //containerRegistry.RegisterSingleton<IUserDefaultSettingsViewModel, UserDefaultSettingsViewModel>();
-        //containerRegistry.RegisterSingleton<IUserDefaultSettingsView, UserDefaultSettingsView>();
-        //containerRegistry.RegisterForNavigation<DashboardView, IDashboardViewModel>();
-        //containerRegistry.RegisterForNavigation<SettingsView, ISettingsViewModel>();
-        //containerRegistry.RegisterForNavigation<UserDefaultSettingsView, IUserDefaultSettingsViewModel>();
-        //containerRegistry.RegisterForNavigation<UserProxySettingsView, IUserProxySettingsViewModel>();
-        //containerRegistry.RegisterForNavigation<ProxyCreditView, IProxyCreditViewModel>();
-        //containerRegistry.RegisterForNavigation<PhoneVerificationView, IPhoneVerificationViewModel>();
-        //containerRegistry.RegisterForNavigation<AssistantUsersView, IAssistantUsersViewModel>();
-        //containerRegistry.RegisterForNavigation<ImportView, ImportViewModel>();
+        // Views - Region Navigation
     }
 
     private static void RegisterAutomationTypes(IContainerRegistry containerRegistry)
@@ -268,7 +168,6 @@ public partial class App : PrismApplication
         containerRegistry.Register<IAddScriptParametersPopupViewModel, AddScriptParametersPopupViewModel>();
         containerRegistry.Register<ISelectAutomationPopupViewModel, SelectAutomationPopupViewModel>();
         containerRegistry.Register<ISelectAutomationPopupView, SelectAutomationPopupView>();
-        containerRegistry.RegisterSingleton<IAutomationScriptHelper, AutomationScriptHelper>();
     }
 
     private void RegisterIocContainer(IContainerRegistry containerRegistry)

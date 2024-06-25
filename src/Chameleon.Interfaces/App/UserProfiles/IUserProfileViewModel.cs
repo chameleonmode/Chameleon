@@ -4,7 +4,7 @@ namespace Chameleon.Interfaces.App.UserProfiles;
 
 public interface IUserProfileViewModelBase
 {
-    IUserProfile UserProfile { get; set; }
+    IUserProfile UserProfile { get; }
     void Open();
 }
 public interface IUserProfileActionsViewModel : IUserProfileViewModelBase, IPageViewModel

@@ -1,49 +1,28 @@
-﻿using Chameleon.Interfaces.Environments;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Prism.Events;
-
-namespace Chameleon.SystemBrowser.Browsers.Brave
+namespace Chameleon.SystemBrowser.Browsers.Brave;
+public class BraveSystemBrowser(
+        IEventAggregator eventAggregator,
+        IApplicationEnvironment applicationEnvironment,
+        ISystemBrowserInfoManager systemBrowserInfoManager,
+        ISetPreferencesService setPreferencesService,
+        IUserDefaultSettingsService userDefaultsSettingsService) :
+SystemBrowserBase(eventAggregator),  //TODO: fix?
+IBraveSystemBrowser
 {
-    public class BraveSystemBrowser : SystemBrowserBase, IBraveSystemBrowser
+    public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
     {
-        protected readonly IEventAggregator _eventAggregator;
-        protected readonly IApplicationEnvironment _applicationEnvironment;
-        protected readonly ISystemBrowserInfoManager _systemBrowserInfoManager;
-        protected readonly ISetPreferencesService _setPreferencesService;
-        protected readonly IUserDefaultSettingsService _userDefaultsSettingsService;
+        return new BraveSystemBrowserInstance(
+             EventAggregator,
+             o,
+             setPreferencesService,
+             applicationEnvironment,
+             userDefaultsSettingsService,
+             GetBrowserExePath());
+    }
 
-        public BraveSystemBrowser(
-            IEventAggregator eventAggregator,
-            IApplicationEnvironment applicationEnvironment,
-            ISystemBrowserInfoManager systemBrowserInfoManager,
-            ISetPreferencesService setPreferencesService,
-             IUserDefaultSettingsService userDefaultsSettingsService
-            )
-        {
-            _eventAggregator = eventAggregator;
-            _applicationEnvironment = applicationEnvironment;
-            _systemBrowserInfoManager = systemBrowserInfoManager;
-            _setPreferencesService = setPreferencesService;
-            _userDefaultsSettingsService = userDefaultsSettingsService;
-        }
-
-        public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
-        {
-            return new BraveSystemBrowserInstance(
-                 _eventAggregator,
-                 o,
-                 _setPreferencesService,
-                 _applicationEnvironment,
-                 _userDefaultsSettingsService,
-                 GetBrowserExePath());
-        }
-
-        protected string GetBrowserExePath()
-        {
-            return _systemBrowserInfoManager
-                .FindByName("brave")
-                .Path;
-        }
+    protected string GetBrowserExePath()
+    {
+        return systemBrowserInfoManager
+            .FindByName("brave")
+            .Path;
     }
 }

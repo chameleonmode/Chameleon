@@ -7,5 +7,5 @@ public interface IUserProfileFoldersViewModel
     void SetSelectedById(int id);
     Func<IUserProfileFolder, bool> Filter { get; set; }
     void Refresh();
-    void OnNavigatingTo(IUserProfileFolder p = null);
+    Task OnNavigatingTo(IUserProfileFolder p = null);
 }
