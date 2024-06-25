@@ -74,7 +74,7 @@ public partial class SelectAutomationPopupViewModel(
             return;
         }
 
-        IAutomationScriptDescription script = SelectedScriptDescription.ScriptDescription;
-        _ = _automationBrowserService.RunScript(script, SelectedBrowser, UserProfiles);
+        IAutomationScriptDescription script = _selectedScriptDescription.ScriptDescription;
+        // _ = _automationBrowserService.RunScript(script, SelectedBrowser, UserProfiles);
     }
 }
