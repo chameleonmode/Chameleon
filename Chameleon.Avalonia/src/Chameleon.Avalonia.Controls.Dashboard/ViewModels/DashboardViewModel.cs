@@ -32,11 +32,8 @@ public partial class DashboardViewModel
 {
     private const string _pageTitle = "Dashboard";
 
-    //private readonly IAuthSession _authSession;
-    //private readonly IEventAggregator EventAggregator;
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfileFolderService _userProfileFolderService;
-    private readonly IShareUserProfilePopupService _shareUserProfilePopupService;
     private readonly IApplicationUser _applicationUser;
     private readonly IUserAssistantService _userAssistantService;
     private readonly ISystemBrowserManager _systemBrowserManager;
@@ -47,11 +44,10 @@ public partial class DashboardViewModel
 
     [ObservableProperty]
     private bool isSyncChangesBtnVisible;
-    //public bool IsSyncChangesBtnVisible => _applicationUser.IsAssistant || HasAssistants();
+
     public DashboardViewModel(
         IUserProfileService userProfileService,
         IUserProfileFolderService userProfileFolderService,
-        IShareUserProfilePopupService shareUserProfilePopupService,
         IApplicationUser applicationUser,
         IUserAssistantService userAssistantService,
         ISystemBrowserManager systemBrowserManager)
@@ -60,18 +56,9 @@ public partial class DashboardViewModel
 
         _userProfileService = userProfileService;
         _userProfileFolderService = userProfileFolderService;
-        _shareUserProfilePopupService = shareUserProfilePopupService;
         _applicationUser = applicationUser;
         _userAssistantService = userAssistantService;
         _systemBrowserManager = systemBrowserManager;
-
-        //EventAggregator
-        //    .GetEvent<LoginSuccessEvent>()
-        //    .SubscribeOnce(OnAuthenticated);
-
-        //EventAggregator
-        //       .GetEvent<OpenUserProfilesViewEvent>()
-        //       .Subscribe(() => NavigateToProfiles);
 
         EventAggregator
            .GetEvent<DeleteUserProfileEvent>()
@@ -104,32 +91,6 @@ public partial class DashboardViewModel
         EventAggregator
             .GetEvent<UpdateStaleDataEvent>()
             .Subscribe(LoadAsync);
-
-        //EventAggregator
-        //    .GetEvent<AfterCreateOrRemoveFolderEvent>()
-        //    .Subscribe(async () =>
-        //    {
-        //        await LoadUserProfileFolderViewModels();
-        //        OnPropertyChanged(nameof(FolderViewModels));
-        //        BuildSearchTerms();
-        //    });
-        //EventAggregator
-        //    .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-        //    .Subscribe((arg) =>
-        //    {
-        //        //if(ViewModels.Count == 0)
-        //        //{
-
-        //        //}
-        //        //await LoadUserProfileViewModels();
-        //        //await LoadUserProfileFolderViewModels();
-
-        //        //OnPropertyChanged(nameof(FolderViewModels));
-        //        //OnPropertyChanged(nameof(ViewModels));
-        //        //OnPropertyChanged(nameof(HasNoItems));
-
-        //        BuildSearchTerms();
-        //    });
     }
     public override async Task InitAsync(object? param)
     {
@@ -195,12 +156,12 @@ public partial class DashboardViewModel
                     false
                 )
             );
-        _mapping.CollectionChanged += _mapping_CollectionChanged;
+        _mapping.CollectionChanged += Mapping_CollectionChanged;
 
         OnPropertyChanged(nameof(ViewModels));
     }
 
-    private void _mapping_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void Mapping_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         BuildSearchTerms();
     }
@@ -213,33 +174,27 @@ public partial class DashboardViewModel
 
         _folderMapping = new ObservableCollection<IUserProfileFolder, FolderViewModel>(
             folders, folder => new FolderViewModel(folder, _userProfileService, _userProfileFolderService, NavigationService));
-        _folderMapping.CollectionChanged += _folderMapping_CollectionChanged;
+        _folderMapping.CollectionChanged += FolderMapping_CollectionChanged;
 
         OnPropertyChanged(nameof(FolderViewModels));
     }
 
-    private void _folderMapping_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void FolderMapping_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         BuildSearchTerms();
     }
 
     private void OnUpdateFavoriteFolders()
     {
-        //await LoadUserProfileFolderViewModels();
         OnPropertyChanged(nameof(FolderViewModels));
     }
 
 
     private void OnUpdateViewModel(UserProfileEventArgs args)
     {
-        //await LoadUserProfileViewModels();
-        //await LoadUserProfileFolderViewModels();
-
         OnPropertyChanged(nameof(FolderViewModels));
         OnPropertyChanged(nameof(ViewModels));
         OnPropertyChanged(nameof(HasNoItems));
-
-        //BuildSearchTerms();
     }
 
     private bool _isWaiting = true;
@@ -259,7 +214,7 @@ public partial class DashboardViewModel
         return string.IsNullOrEmpty(_searchText) ? folder.IsFavorite : SearchResult(folder.Title, _searchText);
     }
 
-    private bool SearchResult(string? title, string searchText)
+    private static bool SearchResult(string? title, string searchText)
     {
         return title?.Contains(searchText, StringComparison.InvariantCultureIgnoreCase) ?? false;
     }
@@ -303,26 +258,6 @@ public partial class DashboardViewModel
         }
     }
 
-    //private BreadcrumbsViewModel _breadcrumbsViewModel;
-    //public BreadcrumbsViewModel BreadcrumbsViewModel
-    //{
-    //    get
-    //    {
-    //        if (_breadcrumbsViewModel == null)
-    //        {
-    //            _breadcrumbsViewModel = new BreadcrumbsViewModel();
-    //
-    //            var root = new BreadcrumbViewModel
-    //            {
-    //                Title = _pageTitle
-    //            };
-    //
-    //            _breadcrumbsViewModel.Breadcrumbs.Add(root);
-    //        }
-    //
-    //        return _breadcrumbsViewModel;
-    //    }
-    //}
 
     public bool HasNoItems => _viewModels?.Count == 0;
 
@@ -380,11 +315,6 @@ public partial class DashboardViewModel
             .GetEvent<SyncChangesEvent>()
             .Publish();
     }
-
-    //private void SyncBtnVisibilityChange()
-    //{
-    //    OnPropertyChanged(nameof(IsSyncChangesBtnVisible));
-    //}
 
     private async Task CheckHasAssistantsAsync()
     {

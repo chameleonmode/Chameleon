@@ -7,32 +7,25 @@ using Chameleon.SystemBrowser.Chrome;
 using Microsoft.Playwright;
 
 namespace Chameleon.Playwright.Automation.Chrome;
-public class ChromePlaywrightBrowserInstance
-    : ChromeSystemBrowserInstance
+public class ChromePlaywrightBrowserInstance(
+    IEventAggregator eventAggregator,
+    IPlaywrightBrowserLaunchOptions options,
+    ISetPreferencesService setPreferencesService,
+    IApplicationEnvironment applicationEnvironment,
+    IUserDefaultSettingsService userDefaultsSettingsService,
+    string browserExeFilePath) : 
+    ChromeSystemBrowserInstance(eventAggregator,
+            options,
+            setPreferencesService,
+            applicationEnvironment,
+            userDefaultsSettingsService,
+            browserExeFilePath)
     , IPlaywrightBrowserInstance
 {
-    private readonly IPlaywrightBrowserLaunchOptions _playwrightOptions;
 
     private IBrowserContext _browserContext;
     public IBrowserContext BrowserContext => _browserContext;
    
-    public ChromePlaywrightBrowserInstance(
-        IEventAggregator eventAggregator,
-        IPlaywrightBrowserLaunchOptions options, 
-        ISetPreferencesService setPreferencesService, 
-        IApplicationEnvironment applicationEnvironment, 
-        IUserDefaultSettingsService userDefaultsSettingsService, 
-        string browserExeFilePath) 
-        : base(eventAggregator, 
-            options, 
-            setPreferencesService, 
-            applicationEnvironment, 
-            userDefaultsSettingsService, 
-            browserExeFilePath)
-    {
-        _playwrightOptions = options;
-    }
-
     public override async Task Open()
     {
         await EnsureProfileFolderCreated();
@@ -52,12 +45,12 @@ public class ChromePlaywrightBrowserInstance
             args.Add($"--load-extension={exts}");
         }
 
-        _browserContext = await _playwrightOptions.Playwright.Chromium.LaunchPersistentContextAsync(
-            _browserProfileFolderPath,
+        _browserContext = await options.Playwright.Chromium.LaunchPersistentContextAsync(
+            BrowserProfileFolderPath,
             new BrowserTypeLaunchPersistentContextOptions
             {
                 Args = args,
-                ExecutablePath = _browserExeFilePath,
+                ExecutablePath = browserExeFilePath,
                 Headless = false,
             });
     }

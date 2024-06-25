@@ -7,31 +7,24 @@ using Chameleon.SystemBrowser.Browsers.Brave;
 using Microsoft.Playwright;
 
 namespace Chameleon.Playwright.Automation.Brave;
-public class BravePlaywrightBrowserInstance
-    : BraveSystemBrowserInstance
+public class BravePlaywrightBrowserInstance(IEventAggregator eventAggregator,
+        IPlaywrightBrowserLaunchOptions options,
+        ISetPreferencesService setPreferencesService,
+        IApplicationEnvironment applicationEnvironment,
+        IUserDefaultSettingsService userDefaultsSettingsService,
+        string browserExeFilePath)
+    : BraveSystemBrowserInstance(eventAggregator,
+            options,
+            setPreferencesService,
+            applicationEnvironment,
+            userDefaultsSettingsService,
+            browserExeFilePath)
     , IPlaywrightBrowserInstance
 {
     private readonly IPlaywrightBrowserLaunchOptions _playwrightOptions;
 
     private IBrowserContext _browserContext;
     public IBrowserContext BrowserContext => _browserContext;
-
-    public BravePlaywrightBrowserInstance(
-        IEventAggregator eventAggregator,
-        IPlaywrightBrowserLaunchOptions options,
-        ISetPreferencesService setPreferencesService,
-        IApplicationEnvironment applicationEnvironment,
-        IUserDefaultSettingsService userDefaultsSettingsService,
-        string browserExeFilePath)
-        : base(eventAggregator,
-            options,
-            setPreferencesService,
-            applicationEnvironment,
-            userDefaultsSettingsService,
-            browserExeFilePath)
-    {
-        _playwrightOptions = options;
-    }
 
     public override async Task Open()
     {
@@ -52,12 +45,12 @@ public class BravePlaywrightBrowserInstance
             args.Add($"--load-extension={exts}");
         }
 
-        _browserContext = await _playwrightOptions.Playwright.Chromium.LaunchPersistentContextAsync(
-            _browserProfileFolderPath,
+        _browserContext = await options.Playwright.Chromium.LaunchPersistentContextAsync(
+            BrowserProfileFolderPath,
             new BrowserTypeLaunchPersistentContextOptions
             {
                 Args = args,
-                ExecutablePath = _browserExeFilePath,
+                ExecutablePath = browserExeFilePath,
                 Headless = false,
             });
     }

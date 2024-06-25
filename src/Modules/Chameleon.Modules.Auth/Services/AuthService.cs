@@ -46,7 +46,6 @@ namespace Chameleon.Auth.Services
         public async Task<bool> LoginAsync()
         {
             IAuthResult? loginResult = null;
-            IAuthRefreshTokenResponse? refreshTokenResponse = null;
             try
             {
                 _appSettings = await _settingsService.GetAsync();
@@ -64,29 +63,17 @@ namespace Chameleon.Auth.Services
             }
             finally
             {
-                try
+                if (loginResult is not null)
                 {
-                    if (loginResult is not null)
-                    {
-                        OnAuthenticateSuccess(loginResult);
+                    OnAuthenticateSuccess(loginResult);
 
-                        refreshTokenResponse = loginResult.HasAuthToken ? new AuthRefreshTokenResponse()
-                        {
-                            ExpireInSeconds = loginResult.ExpireInSeconds, 
-                            NewAccessToken = loginResult.AuthToken, 
-                            NewRefreshToken = loginResult.AuthRefreshToken 
-                        } : await RefreshToken(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
-                    }
-                }
-                catch
-                {
-                    refreshTokenResponse = null;
+                    _ = RefreshTokenAsync(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
                 }
             }
             //if (loginResult is null || refreshTokenResponse is null)
             //    _eventAggregator.GetEvent<LoginFailEvent>().Publish();
 
-            return loginResult is not null && refreshTokenResponse is not null;
+            return loginResult is not null && loginResult.HasAuthToken;
         }
         public async Task<bool> ShowLoginDialogAsync()
         {
@@ -166,23 +153,26 @@ namespace Chameleon.Auth.Services
         }
 
 
-        public async Task<IAuthRefreshTokenResponse?> RefreshToken(string acessToken, string refreshToken, long delayInSeconds)
+        public async Task RefreshTokenAsync(string acessToken, string refreshToken, long delayInSeconds)
         {
-            var response = await _apiClient.RefreshTokenAsync(acessToken, refreshToken);
+            var response = await _apiClient.RefreshTokenAsync(acessToken, refreshToken, delayInSeconds);
             if (response == null)
             {
-                //await ShowLoginDialogAsync();
-                return null;
-            }
-            else
-            {
-                _authSession.AuthToken = response.NewAccessToken;
-                _authSession.AuthRefreshToken = response.NewRefreshToken;
-                _authSession.ExpireInSeconds = response.ExpireInSeconds;
+                bool relogin = await ShowLoginDialogAsync();
 
-               // return await RefreshToken(_authSession.AuthToken, _authSession.AuthRefreshToken, _authSession.ExpireInSeconds);
+                if (!relogin)
+                {
+                    _eventAggregator.GetEvent<LoginCancelEvent>().Publish();
+                }
+
+                return;
             }
-            return response;
+
+            _authSession.AuthToken = response.NewAccessToken;
+            _authSession.AuthRefreshToken = response.NewRefreshToken;
+            _authSession.ExpireInSeconds = response.ExpireInSeconds;
+
+            await RefreshTokenAsync(_authSession.AuthToken, _authSession.AuthRefreshToken, _authSession.ExpireInSeconds);
         }
 
         public void Logout()

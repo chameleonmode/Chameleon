@@ -1,49 +1,28 @@
-﻿using Chameleon.Interfaces.Environments;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Prism.Events;
-using Chameleon.SystemBrowser.Browsers;
-using Chameleon.SystemBrowser.Firefox;
-
-namespace Chameleon.SystemBrowser.Chrome
+﻿namespace Chameleon.SystemBrowser.Chrome
 {
-    public class ChromeSystemBrowser : SystemBrowserBase, IChromeSystemBrowser
-    {
-        protected readonly IEventAggregator _eventAggregator;
-        protected readonly IApplicationEnvironment _applicationEnvironment;
-        protected readonly ISystemBrowserInfoManager _systemBrowserInfoManager;
-        protected readonly ISetPreferencesService _setPreferencesService;
-        protected readonly IUserDefaultSettingsService _userDefaultsSettingsService;
-
-        public ChromeSystemBrowser(
+    public class ChromeSystemBrowser(
             IEventAggregator eventAggregator,
             IApplicationEnvironment applicationEnvironment,
             ISystemBrowserInfoManager systemBrowserInfoManager,
             ISetPreferencesService setPreferencesService,
-             IUserDefaultSettingsService userDefaultsSettingsService
-            )
-        {
-            _eventAggregator = eventAggregator;
-            _applicationEnvironment = applicationEnvironment;
-            _systemBrowserInfoManager = systemBrowserInfoManager;
-            _setPreferencesService = setPreferencesService;
-            _userDefaultsSettingsService = userDefaultsSettingsService;
-        }
+            IUserDefaultSettingsService userDefaultsSettingsService)
+        : SystemBrowserBase(eventAggregator), IChromeSystemBrowser
+    {
 
         public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
         {
             return new ChromeSystemBrowserInstance(
-                _eventAggregator,
+                EventAggregator,
                 o,
-                     _setPreferencesService,
-                 _applicationEnvironment,
-                 _userDefaultsSettingsService,
+                     setPreferencesService,
+                 applicationEnvironment,
+                 userDefaultsSettingsService,
                 GetBrowserExePath());
         }
 
         protected string GetBrowserExePath()
         {
-            return _systemBrowserInfoManager
+            return systemBrowserInfoManager
                 .FindByName("chrome")
                 .Path;
         }

@@ -12,7 +12,7 @@ namespace Chameleon.Infrastructure.Bookmarks
         private readonly IMapper _mapper;
         private readonly IProfileBookmarkRepository _bookmarkRepository;
         private readonly Dictionary<int, ProfileBookmarks> _entities
-            = new Dictionary<int, ProfileBookmarks>();
+            = [];
 
         public ProfileBookmarkService(
           IMapper mapper,

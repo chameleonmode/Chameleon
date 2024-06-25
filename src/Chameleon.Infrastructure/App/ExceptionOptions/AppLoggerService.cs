@@ -20,7 +20,7 @@ namespace Chameleon.Infrastructure.ExceptionOptions
             _repository = repository;
         }
 
-        private IAppLoggers _loggs = new AppLoggers();
+        private readonly IAppLoggers _loggs = new AppLoggers();
         public IAppLoggers Loggs => _loggs;
 
         public void Create(IAppLogger appLogger)

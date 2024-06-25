@@ -10,7 +10,7 @@ namespace Chameleon.Av.Fluent.Dialogs.Services;
 
 public class WindowDialogService : IWindowDialogService
 {
-    private Dictionary<object, AcrylicWindow> windows = [];
+    private readonly Dictionary<object, AcrylicWindow> windows = [];
     public Task ShowDialogAsync(Action<object, EventArgs>[] events)
     {
         return Task.CompletedTask;

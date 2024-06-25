@@ -8,32 +8,27 @@ using Chameleon.SystemBrowser;
 using Chameleon.SystemBrowser.Chrome;
 
 namespace Chameleon.Playwright.Automation.Chrome;
-public class ChromePlaywrightBrowser
-    : ChromeSystemBrowser
+public class ChromePlaywrightBrowser(
+        IEventAggregator eventAggregator,
+        IApplicationEnvironment applicationEnvironment,
+        ISystemBrowserInfoManager systemBrowserInfoManager,
+        ISetPreferencesService setPreferencesService,
+        IUserDefaultSettingsService userDefaultsSettingsService)
+    : ChromeSystemBrowser(eventAggregator,
+            applicationEnvironment,
+            systemBrowserInfoManager,
+            setPreferencesService,
+            userDefaultsSettingsService)
     , IChromePlaywrightBrowser
 {
-    public ChromePlaywrightBrowser(
-        IEventAggregator eventAggregator, 
-        IApplicationEnvironment applicationEnvironment, 
-        ISystemBrowserInfoManager systemBrowserInfoManager, 
-        ISetPreferencesService setPreferencesService, 
-        IUserDefaultSettingsService userDefaultsSettingsService) 
-        : base(eventAggregator, 
-            applicationEnvironment, 
-            systemBrowserInfoManager, 
-            setPreferencesService, 
-            userDefaultsSettingsService)
-    {
-    }
-
     public IPlaywrightBrowserInstance InitializeBrowser(IPlaywrightBrowserLaunchOptions o)
     {
         return new ChromePlaywrightBrowserInstance(
-            _eventAggregator,
+            eventAggregator,
             o,
-            _setPreferencesService,
-            _applicationEnvironment,
-            _userDefaultsSettingsService,
+            setPreferencesService,
+            applicationEnvironment,
+            userDefaultsSettingsService,
             GetBrowserExePath()
             );
     }

@@ -51,7 +51,7 @@
 				<AutoCompleteBox Name="SearchBox"
                                  MaxWidth="500"
                                  Watermark="Search"
-                                 Classes="SampleApp"
+                                 Classes="MainSearchBox"
                                  ValueMemberBinding="{Binding Header, DataType=i:MainAppSearchItem}"
 								 SelectedItem="{Binding SelectedSearchTerm}"
                                  ItemsSource="{Binding SearchTerms}">

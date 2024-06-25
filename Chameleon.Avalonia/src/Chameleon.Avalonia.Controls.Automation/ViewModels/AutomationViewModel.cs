@@ -5,12 +5,6 @@ using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
-using Chameleon.Interfaces.App.Synchronization.Events;
-using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Prism.Events;
-using CommunityToolkit.Mvvm.Input;
-using Prism.Commands;
 
 namespace Chameleon.Avalonia.Controls.Automation.ViewModels
 {
@@ -114,7 +108,7 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
         {
             var scripts = _automationService.GetAll();
 
-            _mapping = new ObservableCollection<IAutomationScriptDescription, 
+            _mapping = new ObservableCollection<IAutomationScriptDescription,
                 AutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script, _automationService));
 
             OnPropertyChanged(nameof(ViewModels));

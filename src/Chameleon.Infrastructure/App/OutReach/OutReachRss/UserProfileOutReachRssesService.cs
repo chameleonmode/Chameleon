@@ -15,7 +15,7 @@ public class UserProfileOutReachRssesService
     private readonly IUserProfileOutReachRssRepository _outReachRssRepository;
     private readonly IDispatcherService _dipatcherService;
     private readonly Dictionary<int, UserProfileOutReachRsses> _entities
-        = new Dictionary<int, UserProfileOutReachRsses>();
+        = [];
 
     public UserProfileOutReachRssesService(
         IMapper mapper

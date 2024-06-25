@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Chameleon.Auth.Services;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Common.Helpers;
+using Chameleon.Core.Extensions;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.App;
@@ -17,64 +18,38 @@ using System.Diagnostics;
 
 namespace Chameleon.Av.Fluent.ViewModels;
 
-public partial class MainViewViewModel:ObservableObjectBase, IMainViewViewModel
+public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewModel
 {
-    public AvaloniaList<MainAppSearchItem> SearchTerms { get; } = new AvaloniaList<MainAppSearchItem>();
-
     [ObservableProperty]
     private MainAppSearchItem _selectedSearchTerm;
 
     [ObservableProperty]
     private bool isSplashVisible = true;
 
+    public AvaloniaList<MainAppSearchItem> SearchTerms { get; } = [];
 
     public MainViewViewModel()
     {
-        //EventAggregator
-        //    .GetEvent<LoginFailEvent>()
-        //    .SubscribeOnce(LoginFailEventMethod);
-
         EventAggregator
             .GetEvent<LoginSuccessEvent>()
-            .SubscribeOnce(LoginSuccessEventMethod);
+            .SubscribeOnce(() => IsSplashVisible = false);
     }
 
-    private void LoginSuccessEventMethod()
-    {
-        IsSplashVisible = false;
-    }
-
-    //private async void LoginFailEventMethod()
-    //{
-    //    if (!Design.IsDesignMode)
-    //    {
-    //        IsSplashVisible = true;
-    //        await _authService.ShowLoginDialogAsync();
-    //    }
-    //}
 
     public void BuildSearchTerms(List<MainAppSearchItem> items)
     {
         SearchTerms.Clear();
         SearchTerms.AddRange(items);
-        //foreach (var item in items)
-        //{
-        //    SearchTerms.Add(item);
-        //}
-
-        //OnPropertyChanged(nameof(SearchTerms));
     }
 
     partial void OnSelectedSearchTermChanged(MainAppSearchItem? oldValue, MainAppSearchItem newValue)
     {
-        //var pvm = ContainerServiceHelper.Resolve<IUserProfilesViewModel>();
-        //var pvm2 = ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>();
-        if (newValue != null)
-        {
-            if (newValue.ViewModel is INavigateFromSearch nfs)
-                nfs.Navigated = false;
-            ContainerServiceHelper.Resolve<INavigationService>().NavigateToType(typeof(IProjectsView), newValue.ViewModel);
-        }
+        if (newValue is null) return;
+
+        if (newValue.ViewModel is INavigateFromSearch nfs)
+            nfs.Navigated = false;
+
+        ContainerServiceHelper.Resolve<INavigationService>().NavigateToType(typeof(IProjectsView), newValue.ViewModel);
     }
 
     [RelayCommand]
@@ -82,6 +57,15 @@ public partial class MainViewViewModel:ObservableObjectBase, IMainViewViewModel
     {
         SelectedSearchTerm = null;
         ContainerServiceHelper.Resolve<IUserProfilesViewModel>().OnFilterTo();
+    }
+
+    [RelayCommand]
+    private void ClickSearch(string p)
+    {
+        if (!p.HasAny())
+            ClearSearch();
+        else
+            ContainerServiceHelper.Resolve<INavigationService>().NavigateToType(typeof(IProjectsView), p);
     }
 }
 

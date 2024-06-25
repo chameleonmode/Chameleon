@@ -20,10 +20,16 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IUserProfileService _userProfileService;
 
-    UserProfileFoldersViewModel foldervm;
+    readonly UserProfileFoldersViewModel foldervm;  
+    private bool _isSelected;
 
     [ObservableProperty]
     private bool _isFavoriteButtonVisible = true;
+    [ObservableProperty]
+    private bool _isRenamed;
+
+    [ObservableProperty]
+    private bool _isFavorite;
 
     private IList<IUserProfile> _selectedUserProfiles = new List<IUserProfile>();
     public IList<IUserProfile> SelectedUserProfiles
@@ -31,6 +37,8 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         get => _selectedUserProfiles;
         set => SetProperty(ref _selectedUserProfiles, value);
     }
+
+    public bool IsFolderNotEmpty => ProfilesByCurrentFolder.Any();
 
     public UserProfileFolderViewModel(
         IApplicationUser currentUser,
@@ -57,10 +65,10 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
 
     public IUserProfileFolder UserProfileFolder => _folder;
 
-    [RelayCommand]
-    public void Open()
+   [RelayCommand]
+    public async Task Open()
     {
-        foldervm.OnNavigatingTo(UserProfileFolder);
+        await foldervm.OnNavigatingTo(UserProfileFolder);
         //foldervm.OnNavigatingTo(null);
         IsSelected = true;
         //IsSelected = true;
@@ -90,26 +98,29 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         OnPropertyChanged(nameof(UserProfileFolder));
     }
 
-    private IList<IUserProfile> GetProfilesByCurrentFolder()
+    [RelayCommand]
+    private async Task OpenAutomation()
     {
-        var userProfilesFromCurrentFolder = _userProfileService
-            .GetAll()
-            .Where(profiles => profiles.FolderId == _folder.Id)
-            .ToList();
+        var userProfilesToApply = ProfilesByCurrentFolder;
 
-        return userProfilesFromCurrentFolder;
+        var result = await ContentDialogService
+           .ShowAsync<ISelectAutomationPopupView, ISelectAutomationPopupViewModel>(viewModel =>
+           {
+               viewModel.Title = "Select Automation";
+               viewModel.UserProfiles = userProfilesToApply;
+           });
     }
 
-    private void SetSelected(UserProfileFolderEventArgs args)
+    private IList<IUserProfile> ProfilesByCurrentFolder
     {
-        IsSelected = args.UserProfileFolder.Id == _folder.Id;
-    }
-
-    private void OnFolderSaved(UserProfileFolderEventArgs args)
-    {
-        if (args.UserProfileFolder != _folder)
+        get
         {
-            return;
+            var userProfilesFromCurrentFolder = _userProfileService
+                .GetAll()
+                .Where(profiles => profiles.FolderId == _folder.Id)
+                .ToList();
+
+            return userProfilesFromCurrentFolder;
         }
     }
 
@@ -123,11 +134,8 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         {
 
             await ContainerServiceHelper.Resolve<IUserProfileFolderEventHandler>().DeleteFolder(_folder);
-            foldervm.AllProfiles.Open();
+            await foldervm.AllProfiles.Open();
         }
-        // EventAggregator.Publish<DeleteUserProfileFolderEvent, UserProfileFolderEventArgs>(new UserProfileFolderEventArgs(_folder));
-        //.GetEvent<DeleteUserProfileFolderEvent>()
-        //.Publish(new UserProfileFolderEventArgs(_folder));
     }
 
     [RelayCommand]
@@ -140,10 +148,6 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     [RelayCommand]
     private void ChangeProxies()
     {
-        //EventAggregator
-        //    .GetEvent<OpenChangeProxiesEvent>()
-        //    .Publish(new OpenChangeProxiesEventArgs(_folder.Id));
-
         NavigationService.NavigateToType(typeof(IUserProxySettingsView), UserProfileFolder);
     }
 
@@ -179,8 +183,6 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
            .Publish();
     }
 
-
-    private bool _isSelected;
     public bool IsSelected
     {
         get => _isSelected;
@@ -197,12 +199,6 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             }
         }
     }
-
-    [ObservableProperty]
-    private bool _isRenamed;
-
-    [ObservableProperty]
-    private bool _isFavorite;
 
     public IApplicationUser CurrentUser => _currentUser;
     public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(_folder);

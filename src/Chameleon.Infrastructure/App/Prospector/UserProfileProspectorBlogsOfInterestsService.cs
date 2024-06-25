@@ -13,7 +13,7 @@ public class UserProfileProspectorBlogsOfInterestsService
     private readonly IMapper _mapper;
     private readonly IUserProfileProspectorBlogsOfInterestRepository _prospectorBlogsOfInterestRepository;
     private readonly Dictionary<int, UserProfileProspectorBlogsOfInterests> _entities
-        = new Dictionary<int, UserProfileProspectorBlogsOfInterests>();
+        = [];
 
     public UserProfileProspectorBlogsOfInterestsService(
         IMapper mapper

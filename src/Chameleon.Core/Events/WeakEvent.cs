@@ -16,7 +16,7 @@ public static class WeakEvent
                 lock (typeof(WeakEvent))
                 {
                     if (_registeredWeakEvents == null)
-                        _registeredWeakEvents = new List<WeakEventRegistration>();
+                        _registeredWeakEvents = [];
                 }
             }
             return _registeredWeakEvents;

@@ -28,12 +28,30 @@
 
 					<afv:ChameleonContentControl.Header>
 							<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
-								<HeaderedContentControl.Header><!--TextElement.Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"-->
-									<Button Theme="{StaticResource TransparentButton}"
-											
-											Content="Change proxies"
-											Grid.Column="2"
-											Command="{Binding ChangeProxiesCommand}"/>
+								<HeaderedContentControl.Header>
+									<StackPanel Orientation="Horizontal">
+										<ui:FAComboBox PlaceholderText="Proxy Country:"
+													   VerticalAlignment="Center"
+													   Width="180"
+													   IsEditable="False"
+													   IsTextSearchEnabled="True"
+													   ItemsSource="{Binding Countries}"
+													   SelectedItem="{Binding Country}">
+											<ui:FAComboBox.ItemTemplate>
+												<DataTemplate>
+													<TextBlock Text="{Binding Name}"/>
+												</DataTemplate>
+											</ui:FAComboBox.ItemTemplate>
+										</ui:FAComboBox>
+
+										<Button VerticalAlignment="Center"
+												ToolTip.Tip="Auto Update Proxies:"
+												Margin="4 0 0 0"
+												Theme="{StaticResource TransparentButton}"
+												Command="{Binding FillProxiesCommand}">
+											<ui:SymbolIcon Symbol="Refresh" FontSize="22" />
+										</Button>
+									</StackPanel>
 								</HeaderedContentControl.Header>
 							</HeaderedContentControl>
 					</afv:ChameleonContentControl.Header>
@@ -62,57 +80,6 @@
 										   SelectedItem="{Binding SelectedFolder}"
 										   ItemsSource="{Binding FolderViewModels.Items}"
 										   DisplayMemberBinding="{Binding Title}" />
-							
-							<StackPanel Orientation="Horizontal">
-								<ui:FAComboBox Header="Auto Update Proxies:"
-											   PlaceholderText="Proxy Country:"
-											   Width="150"
-											   IsEditable="False"
-											   IsTextSearchEnabled="True"
-											   ItemsSource="{Binding Countries}"
-											   SelectedItem="{Binding Country}">
-									<ui:FAComboBox.ItemTemplate>
-										<DataTemplate>
-											<TextBlock Text="{Binding Name}"/>
-										</DataTemplate>
-									</ui:FAComboBox.ItemTemplate>
-								</ui:FAComboBox>
-
-								<Button VerticalAlignment="Bottom"
-										Margin="4 0 0 0"
-										Theme="{StaticResource TransparentButton}"
-										Command="{Binding FillProxiesCommand}">
-									<ui:SymbolIcon Symbol="Refresh" FontSize="22" />
-								</Button>
-							</StackPanel>
-
-
-							<!--<ui:CommandBar HorizontalAlignment="Right" 
-										   DefaultLabelPosition="Right">
-								<ui:CommandBar.PrimaryCommands>
-									<ui:CommandBarElementContainer>
-										<ui:FAComboBox PlaceholderText="Proxy Country:"
-													   Header="Proxy Country:"
-													   ItemsSource="{Binding Countries.Items}"
-													SelectedItem="{Binding Country}"
-													 IsEditable="False"
-													 IsTextSearchEnabled="True"
-														VerticalAlignment="Center">
-											<ui:FAComboBox.ItemTemplate>
-												<DataTemplate>
-													<Label Content="{Binding Name}"/>
-												</DataTemplate>
-											</ui:FAComboBox.ItemTemplate>
-										</ui:FAComboBox>
-									</ui:CommandBarElementContainer>
-								</ui:CommandBar.PrimaryCommands>
-								<ui:CommandBar.SecondaryCommands>
-									<ui:CommandBarButton IconSource="Refresh"
-														 Label="Auto Update Proxies"
-														 Command="{Binding FillProxiesCommand}"
-														 IsEnabled="{Binding FillProxiesIsEnabled}"/>
-								</ui:CommandBar.SecondaryCommands>
-							</ui:CommandBar>-->
 						</StackPanel>
 					</afv:ChameleonContentControl.Options>
 					
@@ -166,12 +133,12 @@
 														</afv:HeaderdInputFieldsControl>
 													</Grid>
 
-													<Button Grid.Column="4"
+													<!--<Button Grid.Column="4"
 															Margin="0 0 6 0"
 															Theme="{StaticResource TransparentButton}"
 															Command="{Binding ClickIconChangeProxiesCommand}">
 														<ui:SymbolIcon Symbol="Add" />
-													</Button>
+													</Button>-->
 												</Grid>
 										</DataTemplate>
 									</ListBox.ItemTemplate>

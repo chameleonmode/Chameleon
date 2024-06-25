@@ -46,10 +46,10 @@
       </Grid>
     </afv:ChameleonContentControl.TitleContent>
 
-    <afv:ChameleonContentControl.Header>
-      <StackPanel>
-        <Panel VerticalAlignment="Center">
-          <!--<StackPanel Orientation="Horizontal">
+		<afv:ChameleonContentControl.Header>
+			<StackPanel>
+				<Panel VerticalAlignment="Center">
+					<!--<StackPanel Orientation="Horizontal">
 						<Button Content="select-all"
 								Tag="Select all"
 								Theme="{StaticResource SvgIconTextButton}"
@@ -127,8 +127,8 @@
 									Theme="{StaticResource SvgIconTextButton}"
 									Margin="4 0 0 0"
 									IsVisible="{Binding HasFolder}"/>
-
-              <Button
+							
+							<Button
 								Theme="{StaticResource SvgIconTextButton}"
 								Content="delete"
 								Tag="Delete"

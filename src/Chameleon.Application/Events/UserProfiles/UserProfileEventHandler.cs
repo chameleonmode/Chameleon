@@ -27,72 +27,22 @@ namespace Chameleon.Application.Events
 {
     public class UserProfileEventHandler : IUserProfileEventHandler
     {
-        //private readonly IMainWindow _mainWindow;
-        //private readonly IUserProfileView _userProfileView;
         private readonly IEventAggregator _eventAggregator;
-        //private readonly IDispatcherService _dispatcherService;
         private readonly IUserProfileService _userProfileService;
         private readonly ISystemBrowserManager _systemBrowserManager;
-        //private readonly IOutReachTemplateView _outReachView;
-        private readonly IAuthSession _authSession;
-       // private readonly IDialogWindowsService _dialogWindowsService;
-        private readonly IErrorContentDialogView _userFriendlyExceptionView;
-        private readonly INavigationService _navigationSrvice;
-        readonly IToastNotificationService _toaster;
         public UserProfileEventHandler(
-            //IMainWindow mainWindow,
             IUserProfileService userProfileService,
-            //IUserProfileView userProfileView,
             IEventAggregator eventAggregator,
-            ISystemBrowserManager systemBrowserManager,
-            //IOutReachTemplateView outReachView,
-            IAuthSession authSession,
-            INavigationService navigationService,
-            IToastNotificationService toaster
-            // IDialogWindowsService dialogWindowsService
-            //TODO: IErrorContentDialogView userFriendlyExceptionView
+            ISystemBrowserManager systemBrowserManager
             )
         {
-            _toaster = toaster;
-            //_outReachView = outReachView;
-            //_messageBoxService = messageBoxService;
-            //_mainWindow = mainWindow;
-            //_userProfileView = userProfileView;
             _eventAggregator = eventAggregator;
             _userProfileService = userProfileService;
             _systemBrowserManager = systemBrowserManager;
-            _authSession = authSession;
-            //_dialogWindowsService = dialogWindowsService;
-            //_userFriendlyExceptionView = userFriendlyExceptionView;
-            _navigationSrvice = navigationService;
-
-            _eventAggregator
-                .GetEvent<OpenUserProfileEvent>()
-                .Subscribe(args => OnOpenUserDetails(args.UserProfile));
-
-            _eventAggregator
-                .GetEvent<OpenUserBrowserEvent>()
-                .Subscribe(args => OnOpenUserBrowser(args.UserProfile));
-
-            //_eventAggregator
-            //    .GetEvent<CreateUserProfileEvent>()
-            //    .Subscribe(CreateUserProfile);
 
             _eventAggregator
                 .GetEvent<DeleteUserProfileEvent>()
                 .Subscribe(args => DeleteUserProfileEvent(args.UserProfile));
-
-            _eventAggregator
-                .GetEvent<OpenUserRssEvent>()
-                .Subscribe(args => OnOpenUserRss(args.UserProfile));
-
-            _eventAggregator
-                .GetEvent<OpenUserContentDiscovereyEvent>()
-                .Subscribe(args => OnOpenUserContentDiscoverey(args.UserProfile));
-
-            _eventAggregator
-                .GetEvent<OpenUserOutReachEvent>()
-                .Subscribe(args => OnOpenUserOutReach(args.UserProfile));
 
             _eventAggregator
                 .GetEvent<OpenUserSystemBrowserEvent>()
@@ -113,40 +63,6 @@ namespace Chameleon.Application.Events
             _eventAggregator
                 .GetEvent<RemoveUserProfileFromFolderEvent>()
                 .Subscribe(args => RemoveFromFolder(args.UserProfile));
-
-            _eventAggregator
-                .GetEvent<OpenOutReachTemplateEvent>()
-                .Subscribe(args => OpenOutReachTemplate(args.OutReachTemplate));
-
-            _eventAggregator
-                .GetEvent<OutReachOpenEvent>()
-                .Subscribe(args => OpenOutReach(args.UserProfile));
-
-            _eventAggregator
-                .GetEvent<OutReachLinksOpenEvent>()
-                .Subscribe(args => OpenOutReachLink(args.UserProfile));
-        }
-
-        private void OnOpenUserContentDiscoverey(IUserProfileInfo profileInfo)
-        {
-            OpenUserDetails(profileInfo, UserProfileViewTab.ContentDiscoverey, OutReachViewTab.Rss);
-        }
-
-        private void OpenOutReachLink(IUserProfileInfo profileInfo)
-        {
-            OpenUserDetails(profileInfo, UserProfileViewTab.OutReach, OutReachViewTab.Link);
-        }
-
-        private void OpenOutReach(IUserProfileInfo profileInfo)
-        {
-            OpenUserDetails(profileInfo, UserProfileViewTab.OutReach, OutReachViewTab.Rss);
-        }
-
-        private void OpenOutReachTemplate(IOutReachTemplate template)
-        {
-            //_outReachView.SetOutReachTemplate(template, _userProfileView.UserProfile);
-            //_mainWindow.ShowWaitIndicator();
-            //_mainWindow.SetContent(_outReachView, "");
         }
 
         private void RemoveFromFolder(IUserProfile userProfile)
@@ -190,80 +106,9 @@ namespace Chameleon.Application.Events
             _userProfileService.Delete(userProfile);
         }
 
-        private void CreateUserProfile(CreateUserProfileEventArgs? args)
-        {
-            
-            //_toaster.ShowInformation("Creating New Profile...");
-            IUserProfile profile;
-            try
-            {
-                //TODO: ? _userProfileService.Sync();
-                //profile = await Task.Run(() => _userProfileService.Create(args?.FolderId)); 
-                //profile =  _userProfileService.Create(args?.FolderId); 
-            }
-            catch (Exception ex)
-            {
-                if (ex.Message == "limit_ex")
-                    _userProfileService.ShowOutOfLimitPopup();
-                else throw;
-                return;
-            }                                                                                                                                                               
-            //var e = new ChangeProfilesInFavoriteFolderEventArgs(args == null || args.FolderId == null ? 0 : args.FolderId.Value, true, profile);
-
-            //_eventAggregator.Publish<OnCreatedCreateUserProfileEvent, ChangeProfilesInFavoriteFolderEventArgs>(e);
-            //_eventAggregator
-            //    .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-            //    .Publish(e);
-        }
-
-        private void OnOpenUserDetails(IUserProfileInfo profileInfo)
-        {
-            OpenUserDetails(profileInfo, UserProfileViewTab.Details);
-        }
-
-        private void OnOpenUserBrowser(IUserProfileInfo profileInfo)
-        {
-            OpenUserDetails(profileInfo, UserProfileViewTab.Browser);
-        }
-
-        private void OnOpenUserRss(IUserProfileInfo profileInfo)
-        {
-            OpenUserDetails(profileInfo, UserProfileViewTab.Rss);
-        }
-
-        private void OnOpenUserOutReach(IUserProfileInfo profileInfo)
-        {
-            OpenUserDetails(profileInfo, UserProfileViewTab.OutReach);
-        }
-
-        private void OpenUserDetails(IUserProfileInfo profileInfo, UserProfileViewTab tab, OutReachViewTab outReachTab = OutReachViewTab.Rss)
-        {
-            try
-            {
-                var profile = GetProfile(profileInfo);
-
-                _eventAggregator
-                    .GetEvent<UpdateStaleDataEvent>()
-                    .Publish();
-
-                OpenUserDetails(profile, tab, outReachTab);
-            }
-            catch (UserFriendlyException ex)
-            {
-                ShowErrorDialog(ex.Title, ex.Message);
-            }
-        }
-
         private IUserProfile GetProfile(IUserProfileInfo profileInfo)
         {
             return _userProfileService.Get(profileInfo.Id, true);
-        }
-
-        private void OpenUserDetails(IUserProfile profile, UserProfileViewTab tab, OutReachViewTab outReachTab = OutReachViewTab.Rss)
-        {
-            //_userProfileView.SetUserProfile(profile, tab, outReachTab);
-            //_mainWindow.SetContent(_userProfileView, profile.Title);
-            _navigationSrvice.NavigateToType(typeof(IUserProfileIdentityView), profile);
         }
 
         private void OnOpenUserSystemBrowser(UserProfileSystemBrowserEventArgs args)
@@ -295,7 +140,7 @@ namespace Chameleon.Application.Events
             }
         }
 
-        private void ShowErrorDialog(string title, string text)
+        private static void ShowErrorDialog(string title, string text)
         {
             MesageBoxHelper.ShowErrorAsync(
                 title,

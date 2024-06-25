@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Chameleon.Core.Extensions;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.UserProfiles;
@@ -101,16 +102,23 @@ public partial class UserProxySettingViewModel
         {
             if (string.IsNullOrEmpty(_code))
             {
-                var list = UserProfileTitle.Split(" ")
-                    .Select(a => a.Trim().ToUpper()[0])
-                    .ToList();
-
-                if (list.Count > 2)
+                if (UserProfileTitle.HasAny())
                 {
-                    list = list.Take(2).ToList();
-                }
+                    var list = UserProfileTitle.Split(" ")
+                        .Select(a => a.Trim().ToUpper()[0])
+                        .ToList();
 
-                _code = string.Join("", list);
+                    if (list.Count > 2)
+                    {
+                        list = list.Take(2).ToList();
+                    }
+
+                    _code = string.Join("", list);
+                }
+                else
+                {
+                    _code = "XX";
+                }   
             }
 
             return _code;

@@ -9,9 +9,9 @@ namespace Chameleon.Infrastructure.AutoMapper
 {
     public class AutoMapper : IAutoMapper
     {              
-        private AutoMapperProxy _mapper = new AutoMapperProxy();
-        private MapperConfigurationExpression _config = new MapperConfigurationExpression();
-        private readonly List<Assembly> _assemblies = new List<Assembly>();
+        private readonly AutoMapperProxy _mapper = new AutoMapperProxy();
+        private readonly MapperConfigurationExpression _config = new MapperConfigurationExpression();
+        private readonly List<Assembly> _assemblies = [];
 
         public AutoMapper(
            IHaveContainerRegistry _iHaveContainerRegistry

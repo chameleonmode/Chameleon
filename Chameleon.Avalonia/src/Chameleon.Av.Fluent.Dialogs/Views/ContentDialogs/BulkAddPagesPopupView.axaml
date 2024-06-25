@@ -20,7 +20,7 @@
                    FontWeight="DemiBold"
                    FontFamily="Open Sans"/>
 		<TextBlock Grid.Row="1"
-                   Text="Seperate each URL with comma to keep the following format: [URL],[URL]"
+                   Text="Seperate each URL in this format: [URL],[URL]"
                    FontSize="14"
                    FontWeight="DemiBold"
                    FontFamily="Open Sans"
