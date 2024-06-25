@@ -25,7 +25,7 @@ public class AutomationScriptHelper
             Args = args,
             ExecutablePath = browserExeFilePath,
             Headless = false,
-            IgnoreDefaultArgs = new[] { "--enable-automation" }
+            IgnoreDefaultArgs = new[] { "--enable-automation", "--no-sandbox", "--disable-extensions", "--disable-default-apps", "--disable-component-extensions-with-background-pages" }
         };
 
         return options;
