@@ -321,11 +321,7 @@ public abstract class SystemBrowserInstance(
     Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
 
     protected string BrowserExtensionsFolderPath =>
-        Path.Combine(BrowserExtensionsRootFolderPath, BrowserType.ToString());
-
-    protected static string BrowserExtensionsRootFolderPath => IsMao ?
-        "/Applications/Chameleon.app/Contents/Resources/BrowserExtensions/mac"
-        : Path.Combine(Directory.GetCurrentDirectory(), "BrowserExtensions");
+        Path.Combine(AddonsUtil.BrowserExtensionsRootFolderPath, BrowserType.ToString());
 
     public string ProxyExtDir =>
         Path.Combine(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath), pexdir);

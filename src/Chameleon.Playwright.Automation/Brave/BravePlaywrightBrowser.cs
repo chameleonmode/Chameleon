@@ -28,11 +28,11 @@ public class BravePlaywrightBrowser(
     public IPlaywrightBrowserInstance InitializeBrowser(IPlaywrightBrowserLaunchOptions o)
     {
         return new BravePlaywrightBrowserInstance(
-            eventAggregator,
+            EventAggregator,
             o,
-            setPreferencesService,
-            applicationEnvironment,
-            userDefaultsSettingsService,
+            SetPreferencesService,
+            ApplicationEnvironment,
+            UserDefaultSettingsService,
             GetBrowserExePath(),
             automationScriptHelper
             );

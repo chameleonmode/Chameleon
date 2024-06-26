@@ -15,7 +15,7 @@ public partial class FirefoxSystemBrowserInstance(
          _ = await InitializePrefsJs();
     }
 
-    // TODO: refactor next legacy code
+    // TODO:
     private async Task<Dictionary<string, object>> InitializePrefsJs()
     {
         var prefs = new Dictionary<string, object>()
@@ -475,14 +475,13 @@ public partial class FirefoxSystemBrowserInstance(
         return $"\"{value}\"";
     }
 
-    protected List<string> GetCommandLineArgumentsList()
+    protected override List<string> GetCommandLineArgumentsList()
     {
         var arguments = new List<string>()
             {
                 "-new-instance",
                 "-wait-for-browser",
                 //$"-new-window",
-                "-new-instance",
                 $"-profile \"{BrowserProfileFolderPath}\"",
                 //"-no-remote"
             };
