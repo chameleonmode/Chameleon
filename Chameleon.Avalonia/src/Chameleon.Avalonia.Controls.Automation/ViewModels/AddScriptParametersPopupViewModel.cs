@@ -35,9 +35,9 @@ public class AddScriptParametersPopupViewModel
     {
         foreach (var parameter in parameters)
         {
-            if (_originalParameterValues.ContainsKey(parameter))
+            if (_originalParameterValues.TryGetValue(parameter, out object? value))
             {
-                parameter.Value = (string)_originalParameterValues[parameter];
+                parameter.Value = (string)value;
             }
         }
     }

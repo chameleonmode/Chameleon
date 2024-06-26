@@ -5,20 +5,20 @@ public abstract class SystemBrowserInstance(
     ISystemBrowserLaunchOptions options,
     IUserDefaultSettingsService userDefaultsSettingsService,
     string browserDataFolderPath,
-    string browserExeFilePath) 
+    string browserExeFilePath)
     : ISystemBrowserInstance
 {
     public event Action<ISystemBrowserLaunchOptions> OnProcessClosed;
-                                        
+
     private readonly string pexdir = Guid.NewGuid().ToString();
-    private readonly List<IntPtr> winEventHooks = []; 
-                                                   
+    private readonly List<IntPtr> winEventHooks = [];
+
     private U32.WinEventDelegate winEventsCaptureDelegate;
     private MWHandleTrackerUtility windowTracker;
 
     public TaskCompletionSource<bool> OPtcs { get; } = new();
 
-    public async void Open()
+    public virtual async Task Open()
     {
         if (Brocess is null || Handle == IntPtr.Zero)
         {
@@ -108,7 +108,7 @@ public abstract class SystemBrowserInstance(
                 Handle = Brocess.MainWindowHandle;
                 windowTracker.StopTracking();
                 SetWin32Events();
-            }                                               
+            }
 #pragma warning restore CA1416 // Validate platform compatibility
         }
 
@@ -218,7 +218,7 @@ public abstract class SystemBrowserInstance(
                 options.SignIn
                 );
 
-    private async Task EnsureProfileFolderCreated()
+    protected async Task EnsureProfileFolderCreated()
     {
         await IOtil.CreateDirectory(BrowserProfileFolderPath);
         await OnProfileFolderCreated();
@@ -234,12 +234,10 @@ public abstract class SystemBrowserInstance(
         return Task.CompletedTask;
     }
 
-    protected virtual string GetCommandLineArguments()
+    protected virtual List<string> GetClearCommandLineArgumentsList()
     {
-        var exts = GetLoadExtensionsArgument();
         List<string> args =
             [
-                $"--user-data-dir=\"{BrowserProfileFolderPath}\"",
                 "--restore-last-session",
                 "--new-window",
                 $"--window-name=\"{UserProfile.Title}\"",
@@ -252,20 +250,14 @@ public abstract class SystemBrowserInstance(
                 "--disable-field-trial-config",
                 "--disable-software-rasterizer",
                 //"--disable-blink-features=\"BlockCredentialedSubresources\"",
-                $"--remote-debugging-port={Port}",
-                Starturl
+                $"--remote-debugging-port={Port}"
             ];
 
         if (UserProfile.Proxy?.CanUse == true && UserProfile.Proxy.Host.HasAny())
         {
             args.Add($"--proxy-server=http://{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}");
             //args.Add($"--proxy-auth={UserProfile.Proxy.UserName}:{UserProfile.Proxy.Password}");
-
-            if (Directory.Exists(ProxyExtDir))
-                exts = exts.HasAny() ? $"{exts},{ProxyExtDir}" : ProxyExtDir;
         }
-        if (exts.HasAny())
-            args.Add($"--load-extension=\"{exts}\"");
 
         if (!UserProfile.WebBrowser.WebRTC)
         {
@@ -290,8 +282,31 @@ public abstract class SystemBrowserInstance(
             args.Add("--disable-hyperlink-auditing");
         }
 
+        return args;
+    }
+
+    protected virtual List<string> GetCommandLineArgumentsList()
+    {
+        var args = GetClearCommandLineArgumentsList();
+        var exts = GetLoadExtensionsArgument();
+
+        if (exts.HasAny())
+        {
+            args.Add($"--load-extension=\"{exts}\"");
+        }
+
+        args.Add($"--user-data-dir=\"{BrowserProfileFolderPath}\"");
+        args.Add(Starturl);
+
+        return args;
+    }
+
+    protected virtual string GetCommandLineArguments()
+    {
+        IEnumerable<string> args = GetCommandLineArgumentsList();
         return string.Join(" ", args);
     }
+
     public virtual string GetLoadExtensionsArgument()
     {
         if (!Directory.Exists(BrowserExtensionsFolderPath))
@@ -306,11 +321,7 @@ public abstract class SystemBrowserInstance(
     Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
 
     protected string BrowserExtensionsFolderPath =>
-        Path.Combine(BrowserExtensionsRootFolderPath, BrowserType.ToString());
-
-    protected static string BrowserExtensionsRootFolderPath => IsMao ?
-        "/Applications/Chameleon.app/Contents/Resources/BrowserExtensions/mac"
-        : Path.Combine(Directory.GetCurrentDirectory(), "BrowserExtensions");
+        Path.Combine(AddonsUtil.BrowserExtensionsRootFolderPath, BrowserType.ToString());
 
     public string ProxyExtDir =>
         Path.Combine(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath), pexdir);

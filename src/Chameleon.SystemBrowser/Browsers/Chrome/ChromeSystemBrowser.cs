@@ -1,11 +1,4 @@
-﻿using Chameleon.Interfaces.Environments;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Prism.Events;
-using Chameleon.SystemBrowser.Browsers;
-using Chameleon.SystemBrowser.Firefox;
-
-namespace Chameleon.SystemBrowser.Chrome
+﻿namespace Chameleon.SystemBrowser.Chrome
 {
     public class ChromeSystemBrowser(
             IEventAggregator eventAggregator,
@@ -13,7 +6,8 @@ namespace Chameleon.SystemBrowser.Chrome
             ISystemBrowserInfoManager systemBrowserInfoManager,
             ISetPreferencesService setPreferencesService,
             IUserDefaultSettingsService userDefaultsSettingsService)
-        : SystemBrowserBase(eventAggregator), IChromeSystemBrowser
+    : SystemBrowserBase(eventAggregator, applicationEnvironment, setPreferencesService, userDefaultsSettingsService),
+        IChromeSystemBrowser
     {
 
         public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
@@ -21,17 +15,27 @@ namespace Chameleon.SystemBrowser.Chrome
             return new ChromeSystemBrowserInstance(
                 EventAggregator,
                 o,
-                     setPreferencesService,
-                 applicationEnvironment,
-                 userDefaultsSettingsService,
+                SetPreferencesService,
+                ApplicationEnvironment,
+                UserDefaultSettingsService,
                 GetBrowserExePath());
         }
 
-        private string GetBrowserExePath()
+        protected override string GetBrowserExePath()
         {
             return systemBrowserInfoManager
                 .FindByName("chrome")
                 .Path;
+        }
+
+        protected override string GetSystemBrowserExePath()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string GetDirectoryPath()
+        {
+            throw new NotImplementedException();
         }
     }
 }

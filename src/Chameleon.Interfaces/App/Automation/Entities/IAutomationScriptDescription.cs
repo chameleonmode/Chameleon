@@ -9,6 +9,5 @@ public interface IAutomationScriptDescription
 {
     string Title { get; set; }
     string Description { get; set; }
-    string Script { get; set; }
     IList<IAutomationParameterValue> Parameters { get; set; }
 }

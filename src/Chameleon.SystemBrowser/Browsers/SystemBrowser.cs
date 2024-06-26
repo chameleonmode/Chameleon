@@ -1,8 +1,23 @@
 ﻿namespace Chameleon.SystemBrowser.Browsers;
 
-public abstract class SystemBrowserBase(IEventAggregator eventAggregator) : ISystemBrowser
+public abstract class SystemBrowserBase(
+    IEventAggregator eventAggregator,
+    IApplicationEnvironment applicationEnvironment,
+    ISetPreferencesService setPreferencesService,
+    IUserDefaultSettingsService userDefaultsSettingsService)
+    : ISystemBrowser
 {
     protected IEventAggregator EventAggregator { get; } = eventAggregator;
+    protected IApplicationEnvironment ApplicationEnvironment { get; } = applicationEnvironment;
+    protected ISetPreferencesService SetPreferencesService { get; } = setPreferencesService;
+    protected IUserDefaultSettingsService UserDefaultSettingsService { get; } = userDefaultsSettingsService;
+
+    public string Path => GetSystemBrowserExePath();
+    public string ChamelonPath => GetBrowserExePath();
+    public string Directory => GetDirectoryPath();
+    public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
+    public Dictionary<int, ISystemBrowserInstance> Instances => instances;
+
 
     private readonly Dictionary<int, ISystemBrowserInstance> instances = [];
     private long _isBusy;
@@ -16,12 +31,13 @@ public abstract class SystemBrowserBase(IEventAggregator eventAggregator) : ISys
             try
             {
                 Interlocked.Increment(ref _isBusy);
-                browser = await Task.Run(() => InitializeBrowser(o));
+                browser = await InitializeBrowserAsync(o);
                 browser.OnProcessClosed += Browser_OnProcessClosed;
                 Instances[o.UserProfile.Id] = browser;
 
 
-                browser.Open();
+                _ = browser.Open();
+
                 var opened = await browser.OPtcs.Task;
                 if (opened)
                 {
@@ -44,7 +60,8 @@ public abstract class SystemBrowserBase(IEventAggregator eventAggregator) : ISys
 
         return browser;
     }
-    public abstract ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o);
+    public virtual Task<ISystemBrowserInstance> InitializeBrowserAsync(ISystemBrowserLaunchOptions o) =>
+        Task.Run(() => InitializeBrowser(o));
 
     public async void Browser_OnProcessClosed(ISystemBrowserLaunchOptions o)
     {
@@ -68,7 +85,9 @@ public abstract class SystemBrowserBase(IEventAggregator eventAggregator) : ISys
         while (IsBusy);
     }
 
-    public static bool IsMao => OperatingSystem.IsMacOS();
-    public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
-    public Dictionary<int, ISystemBrowserInstance> Instances => instances;
+
+    protected abstract string GetBrowserExePath();
+    protected abstract string GetSystemBrowserExePath();
+    protected abstract string GetDirectoryPath();
+    public abstract ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o);
 }

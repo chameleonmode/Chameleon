@@ -1,8 +1,6 @@
 ﻿using Chameleon.Application.Events;
 using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
-using Chameleon.Interfaces.App.Automation.ViewModels;
-using Chameleon.Interfaces.App.Automation.Views;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.Auth;
@@ -95,22 +93,9 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
 
         EventAggregator
             .GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-            .Publish(new ChangeProfilesInFavoriteFolderEventArgs(UserProfileFolder.Id)); 
-        
+            .Publish(new ChangeProfilesInFavoriteFolderEventArgs(UserProfileFolder.Id));
+
         OnPropertyChanged(nameof(UserProfileFolder));
-    }
-
-    [RelayCommand]
-    private async Task OpenAutomation()
-    {
-        var userProfilesToApply = ProfilesByCurrentFolder;
-
-        var result = await ContentDialogService
-           .ShowAsync<ISelectAutomationPopupView, ISelectAutomationPopupViewModel>(viewModel =>
-           {
-               viewModel.Title = "Select Automation";
-               viewModel.UserProfiles = userProfilesToApply;
-           });
     }
 
     private IList<IUserProfile> ProfilesByCurrentFolder
@@ -125,7 +110,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             return userProfilesFromCurrentFolder;
         }
     }
-    
+
     [RelayCommand]
     private async Task Delete()
     {
@@ -140,7 +125,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         }
     }
 
-   [RelayCommand]
+    [RelayCommand]
     private void StartRename()
     {
         Title = _folder.Title;
@@ -202,9 +187,8 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         }
     }
 
-
     public IApplicationUser CurrentUser => _currentUser;
     public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(_folder);
     public bool IsContextMenuItemEnabled => !CurrentUser.IsAssistant;
-    
+
 }
