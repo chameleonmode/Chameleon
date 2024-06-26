@@ -1,4 +1,6 @@
-﻿namespace Chameleon.SystemBrowser.Firefox;
+﻿using System.IO;
+
+namespace Chameleon.SystemBrowser.Firefox;
 public class FirefoxSystemBrowser(
         IEventAggregator eventAggregator,
         IApplicationEnvironment applicationEnvironment,
@@ -7,10 +9,20 @@ public class FirefoxSystemBrowser(
 {
     public const string FirefoxChameleonDirectory = "FirefoxChameleon";
 
+    readonly string directoryForCopy = IsMao ?
+    System.IO.Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app")
+    : System.IO.Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory);
+
+    string Path => GetSystemBrowserExePath();
+    string ChamelonPath => GetBrowserExePath();
+
+    string Directory => IsMao ?
+    "Applications/firefox.app"
+    : System.IO.Path.GetDirectoryName(Path);
+
+
     public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
     {
-        CreateChameleonFirefoxCopy();
-
         return new FirefoxSystemBrowserInstance(
             EventAggregator,
             o,
@@ -19,186 +31,188 @@ public class FirefoxSystemBrowser(
             GetBrowserExePath());
     }
 
-    private void CreateChameleonFirefoxCopy()
+    public override async Task<ISystemBrowserInstance> InitializeBrowserAsync(ISystemBrowserLaunchOptions o)
     {
-        string path = GetSystemBrowserExePath();
-        string chamelonPath = GetBrowserExePath();
+        await CreateChameleonFirefoxCopy();
 
-        if (!IOtil.IsNeedUpdate(path, chamelonPath))
-        {
-            return;
-        }
-
-        string directory = IsMao ?
-            "Applications/firefox.app" 
-            : Path.GetDirectoryName(path);
-
-        string directoryForCopy = IsMao ?
-            Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app")
-            : Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory);
-
-
-        IOtil.DeleteDExistsAsync(directoryForCopy);
-
-        IOtil.CopyFolder(directory, directoryForCopy);
-        AddAutoloadTemporaryAddon(Path.Combine(directoryForCopy));
-
-        Task.Delay(1000);
+        return InitializeBrowser(o);
     }
 
-    private void AddAutoloadTemporaryAddon(string directory)
+    private async Task CreateChameleonFirefoxCopy()
     {
-        var GetinstallExtension = IsMao ?
-        "await installExtension(`${folder}/ChameleonAutoExt/autoproxy.chameleon.zip`, true);"
-        : "await installExtension(`${folder}\\\\ChameleonAutoExt\\\\autoproxy.chameleon.zip`, true);"
-;
-        string userChrome = """ 
-                    // First line is always a comment
-                    lockPref("a.b.c.d", "1.2.3.4"); // Debugging Firefox AutoConfig Problems
+        if (IOtil.IsNeedUpdate(Path, ChamelonPath))
+        {
+            await IOtil.DeleteDExistsAsync(directoryForCopy);
 
-                    function reportError(ex) {
-                        Components.utils.reportError("userChrome.js Ex(" + ex + ")");
-                    }
+            await IOtil.CopyFolderAsync(Directory, directoryForCopy);
 
-                    function printDebut(text) {
-                    	Components.utils.reportError("userChrome.js " + text);
-                    }
-
-                    // Based on class Addon { static async install(path, temporary = false) ... }
-                    // d:\Files\Firefox102.2.0esr\omni_ja\chrome\remote\content\marionette\addon.js
-                    // from https://developer.mozilla.org/en-US/Add-ons/Add-on_Manager/AddonManager#AddonInstall_errors
-                    const ERRORS = {
-                      [-1]: "ERROR_NETWORK_FAILURE: A network error occured.",
-                      [-2]: "ERROR_INCORECT_HASH: The downloaded file did not match the expected hash.",
-                      [-3]: "ERROR_CORRUPT_FILE: The file appears to be corrupt.",
-                      [-4]: "ERROR_FILE_ACCESS: There was an error accessing the filesystem.",
-                      [-5]: "ERROR_SIGNEDSTATE_REQUIRED: The addon must be signed and isn't.",
-                    };
-
-                    // Untested...
-                    async function installAddon(file) {
-                    	let install = await AddonManager.getInstallForFile(file, null,
-                    		{ source: "internal", });
-                    	if (install.error) {
-                    		reportError(ERRORS[install.error]);
-                    	}
-                    	return install.install().catch(err => {
-                    		reportError(ERRORS[install.error]);
-                    	});
-                    }
-
-                    async function installExtension(path, temporary) {
-                        let addon;
-                        let file;
-
-                    	printDebut("installTemporaryExtension(" + path + ")");
-                        try {
-                          file = new FileUtils.File(path);
-                        } catch (ex) {
-                    		reportError(`Expected absolute path: ${ex}`, ex);
-                        }
-
-                        if (!file.exists()) {
-                    		reportError(`No such file or directory: ${path}`);
-                        }
-
-                        try {
-                    		if (temporary) {
-                    			addon = await AddonManager.installTemporaryAddon(file);
-                    		} else {
-                    			addon = installAddon(file);
-                    		}
-                        } catch (ex) {
-                    		reportError(`Could not install add-on: ${path}: ${ex.message}`, ex);
-                        }
-                    }
-
-                    async function installUnpackedExtensions() {
-                        var folder = Services.dirsvc.get("ProfD", Ci.nsIFile).path; 
-
-                    """ +
-                $"{GetinstallExtension}"
-                + """
-                    
-                    await setPermission("autoproxy@chameleonmode.com");
-                }
-
-                async function setPermission(addonId) {
-                    const PRIVATE_BROWSING_PERMS = {
-                        permissions: ["internal:privateBrowsingAllowed"],
-                        origins: [],
-                    };
-
-                    const {ExtensionPermissions} = ChromeUtils.import("resource://gre/modules/ExtensionPermissions.jsm");
-
-                	const myaddons = await AddonManager.getAddonsByTypes(["extension"]);
-                    for(let addon of myaddons){
-                		if (addon.id !== addonId){
-                			continue;
-                		}
-
-                        await ExtensionPermissions.add(addon.id, PRIVATE_BROWSING_PERMS);
-                        if (addon.isActive)
-                            addon.reload();
-                    }
-                }
-
-                try {
-                  let { classes: Cc, interfaces: Ci, manager: Cm  } = Components;
-
-                  function ConfigJS() {
-                	  Services.obs.addObserver(this, 'final-ui-startup', false);
-                  }
-
-                  const { AddonManager } =
-                	  Components.utils.import("resource://gre/modules/AddonManager.jsm");
-
-                  const { FileUtils } =
-                	  Components.utils.import("resource://gre/modules/FileUtils.jsm");
-
-                  ConfigJS.prototype = {
-
-                	  observe: async function observe(subject, topic, data) {
-                		  switch (topic) {
-                			  case 'final-ui-startup':
-                			  installUnpackedExtensions(); 
-                			  break;
-                		  }
-                	  }
-                };
+            await Task.Delay(1000);
+        }
 
 
-                  if (!Services.appinfo.inSafeMode) {
-                	  new ConfigJS();
-                  }
+        await AddAutoloadTemporaryAddon(System.IO.Path.Combine(directoryForCopy));
+    }
 
-                } catch(ex) {
-                	reportError(ex);
-                };
+    private async Task AddAutoloadTemporaryAddon(string directory)
+    {
+        var browserExtensionsFolderPath = AddonsUtil.BERFFF;
 
-                lockPref("e.f.g.h", "5.6.7.8"); // Debugging Firefox AutoConfig Problems
-                """;
+        var userChrome = $@"
+ // First line is always a comment
+ lockPref(""a.b.c.d"", ""1.2.3.4""); // Debugging Firefox AutoConfig Problems
 
-        string configPrefs = """
-                // config-prefs.js file for [Firefox program folder]\defaults\pref
-                pref("general.config.obscure_value", 0);
-                // the file named in the following line must be in [Firefox program folder]
-                pref("general.config.filename", "userChrome.js");
-                // disable the sandbox to run unsafe code
-                pref("general.config.sandbox_enabled", false);
-                """;
+ function reportError(ex) {{
+     Components.utils.reportError(""userChrome.js Ex("" + ex + "")"");
+ }}
 
-        var ucp = Path.Combine(directory, "Contents", "Resources",
-        "userChrome.js");
-        var cpp = Path.Combine(directory, "Contents", "Resources", "defaults", "pref",
-        "config-prefs.js");
+ function printDebug(text) {{
+     Components.utils.reportError(""userChrome.js "" + text);
+ }}
+
+ // Based on class Addon {{ static async install(path, temporary = false) ... }}
+ // d:\Files\Firefox102.2.0esr\omni_ja\chrome\remote\content\marionette\addon.js
+ // from https://developer.mozilla.org/en-US/Add-ons/Add-on_Manager/AddonManager#AddonInstall_errors
+ const ERRORS = {{
+   [-1]: ""ERROR_NETWORK_FAILURE: A network error occurred."",
+   [-2]: ""ERROR_INCORRECT_HASH: The downloaded file did not match the expected hash."",
+   [-3]: ""ERROR_CORRUPT_FILE: The file appears to be corrupt."",
+   [-4]: ""ERROR_FILE_ACCESS: There was an error accessing the filesystem."",
+   [-5]: ""ERROR_SIGNEDSTATE_REQUIRED: The addon must be signed and isn't."",
+ }};
+
+ async function installAddon(file) {{
+     let install = await AddonManager.getInstallForFile(file, null, {{ source: ""internal"", }});
+     if (install.error) {{
+         reportError(ERRORS[install.error]);
+     }}
+     return install.install().catch(err => {{
+         reportError(ERRORS[install.error]);
+     }});
+ }}
+
+ async function installExtension(path, temporary) {{
+     let addon;
+     let file;
+
+     printDebug(""installTemporaryExtension("" + path + "")"");
+     try {{
+       file = new FileUtils.File(path);
+     }} catch (ex) {{
+         reportError(`Expected absolute path: ${{ex}}`, ex);
+     }}
+
+     if (!file.exists()) {{
+         reportError(`No such file or directory: ${{path}}`);
+     }}
+
+     try {{
+         if (temporary) {{
+             addon = await AddonManager.installTemporaryAddon(file);
+         }} else {{
+             addon = await installAddon(file);
+         }}
+     }} catch (ex) {{
+         reportError(`Could not install add-on: ${{path}}: ${{ex.message}}`, ex);
+     }}
+ }}
+
+ async function installUnpackedExtensions() {{
+     var folder = Services.dirsvc.get(""ProfD"", Ci.nsIFile).path;
+     const BrowserExtensionsFolderPath = ""{browserExtensionsFolderPath}"";
+
+     const GetinstallExtension = {(IsMao ?
+              "await installExtension(`${folder}/ChameleonAutoExt/autoproxy.chameleon.zip`, true);" :
+              "await installExtension(`${folder}\\\\ChameleonAutoExt\\\\autoproxy.chameleon.zip`, true);")}
+
+     await GetinstallExtension;
+
+     let iterator = new OS.File.DirectoryIterator(BrowserExtensionsFolderPath);
+     try {{
+         await iterator.forEach(async function(entry) {{
+             if (entry.name.endsWith('.xpi')) {{
+                 printDebug(`Attempting to install: ${{entry.name}}`);
+                 await installExtension(entry.path, true);
+             }}
+         }});
+     }} finally {{
+         iterator.close();
+     }}
+
+     await setPermission(""autoproxy@chameleonmode.com"");
+ }}
+
+ async function setPermission(addonId) {{
+     const PRIVATE_BROWSING_PERMS = {{
+         permissions: [""internal:privateBrowsingAllowed""],
+         origins: [],
+     }};
+
+     const {{ExtensionPermissions}} = ChromeUtils.import(""resource://gre/modules/ExtensionPermissions.jsm"");
+
+     const myaddons = await AddonManager.getAddonsByTypes([""extension""]);
+     for(let addon of myaddons){{
+         if (addon.id !== addonId){{
+             continue;
+         }}
+
+         await ExtensionPermissions.add(addon.id, PRIVATE_BROWSING_PERMS);
+         if (addon.isActive)
+             addon.reload();
+     }}
+ }}
+
+ try {{
+   let {{ classes: Cc, interfaces: Ci, manager: Cm  }} = Components;
+
+   function ConfigJS() {{
+       Services.obs.addObserver(this, 'final-ui-startup', false);
+   }}
+
+   const {{ AddonManager }} =
+       Components.utils.import(""resource://gre/modules/AddonManager.jsm"");
+
+   const {{ FileUtils }} =
+       Components.utils.import(""resource://gre/modules/FileUtils.jsm"");
+
+   ConfigJS.prototype = {{
+       observe: async function observe(subject, topic, data) {{
+           switch (topic) {{
+               case 'final-ui-startup':
+                   await installUnpackedExtensions();
+                   break;
+           }}
+       }}
+   }};
+
+   if (!Services.appinfo.inSafeMode) {{
+       new ConfigJS();
+   }}
+
+ }} catch(ex) {{
+     reportError(ex);
+ }};
+
+ lockPref(""e.f.g.h"", ""5.6.7.8""); // Debugging Firefox AutoConfig Problems
+ ";
+
+        var configPrefs = @"
+// config-prefs.js file for [Firefox program folder]\defaults\pref
+pref(""general.config.obscure_value"", 0);
+// the file named in the following line must be in [Firefox program folder]
+pref(""general.config.filename"", ""userChrome.js"");
+// disable the sandbox to run unsafe code
+pref(""general.config.sandbox_enabled"", false);
+";
+
+        var ucp = System.IO.Path.Combine(directory, "Contents", "Resources", "userChrome.js");
+        var cpp = System.IO.Path.Combine(directory, "Contents", "Resources", "defaults", "pref", "config-prefs.js");
         if (!IsMao)
         {
-            ucp = Path.Combine(directory, "userChrome.js");
-            cpp = Path.Combine(directory, "defaults", "pref", "config-prefs.js");
+            ucp = System.IO.Path.Combine(directory, "userChrome.js");
+            cpp = System.IO.Path.Combine(directory, "defaults", "pref", "config-prefs.js");
         }
-        File.WriteAllText(ucp, userChrome);
-        File.WriteAllText(cpp, configPrefs);
+        await File.WriteAllTextAsync(ucp, userChrome);
+        await File.WriteAllTextAsync(cpp, configPrefs);
     }
 
     private string GetSystemBrowserExePath()
@@ -211,8 +225,8 @@ public class FirefoxSystemBrowser(
     private string GetBrowserExePath()
     {
         string path = OperatingSystem.IsMacOS()
-            ? Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app", "Contents", "MacOS", "firefox")
-            : Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.exe");
+            ? System.IO.Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app", "Contents", "MacOS", "firefox")
+            : System.IO.Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.exe");
 
         return path;
     }
