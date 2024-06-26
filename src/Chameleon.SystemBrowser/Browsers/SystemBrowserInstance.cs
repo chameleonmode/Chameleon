@@ -91,7 +91,7 @@ public abstract class SystemBrowserInstance(
         if (IsMao)
         {
             Handle = Brocess.Handle;
-            Brocess.Exited += new EventHandler(Process_Exited);
+            Brocess.Exited += (s,e)=> { Cleanup(); };
         }
         else
         {
@@ -184,11 +184,6 @@ public abstract class SystemBrowserInstance(
             default:
                 break;
         }
-    }
-
-    private void Process_Exited(object sender, EventArgs e)
-    {
-        Cleanup();
     }
 
     protected virtual void Cleanup()
@@ -309,12 +304,14 @@ public abstract class SystemBrowserInstance(
 
     public virtual string GetLoadExtensionsArgument()
     {
-        if (!Directory.Exists(BrowserExtensionsFolderPath))
-            return "";
+        List<string> exts = [];
+        if (Directory.Exists(ProxyExtDir))
+            exts.Add(ProxyExtDir);
 
-        return Directory
-             .GetDirectories(BrowserExtensionsFolderPath)
-             .ToCommaSeparatedString();
+        if (Directory.Exists(BrowserExtensionsFolderPath))
+            exts.AddRange(Directory.GetDirectories(BrowserExtensionsFolderPath));
+
+        return exts.ToCommaSeparatedString();
     }
 
     public string BrowserProfileFolderPath =>
