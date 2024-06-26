@@ -14,13 +14,15 @@ public class ChromePlaywrightBrowserInstance(
     ISetPreferencesService setPreferencesService,
     IApplicationEnvironment applicationEnvironment,
     IUserDefaultSettingsService userDefaultsSettingsService,
+    string browserExeFilePath,
     IAutomationScriptHelper automationScriptHelper)
     : ChromeSystemBrowserInstance(
         eventAggregator,
         options,
         setPreferencesService,
         applicationEnvironment,
-        userDefaultsSettingsService)
+        userDefaultsSettingsService,
+        browserExeFilePath)
     , IPlaywrightBrowserInstance
 {
     private IBrowserContext _browserContext;
@@ -40,7 +42,7 @@ public class ChromePlaywrightBrowserInstance(
         string exts = GetLoadExtensionsArgument();
 
         var contexOptions = automationScriptHelper
-            .CreateOptions(args, exts, BrowserExePath, UserProfile.Proxy);
+            .CreateOptions(args, exts, browserExeFilePath, UserProfile.Proxy);
 
         _browserContext = await options.Playwright.Chromium
             .LaunchPersistentContextAsync(BrowserProfileFolderPath, contexOptions);

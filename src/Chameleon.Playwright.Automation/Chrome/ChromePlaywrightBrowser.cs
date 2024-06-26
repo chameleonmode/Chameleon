@@ -14,6 +14,7 @@ public class ChromePlaywrightBrowser(
         ISystemBrowserInfoManager systemBrowserInfoManager,
         ISetPreferencesService setPreferencesService,
         IUserDefaultSettingsService userDefaultsSettingsService,
+        string browserExeFilePath,
         IAutomationScriptHelper automationScriptHelper)
     : ChromeSystemBrowser(eventAggregator,
             applicationEnvironment,
@@ -31,6 +32,7 @@ public class ChromePlaywrightBrowser(
             SetPreferencesService,
             ApplicationEnvironment,
             UserDefaultSettingsService,
+            browserExeFilePath,
             automationScriptHelper
             );
     }

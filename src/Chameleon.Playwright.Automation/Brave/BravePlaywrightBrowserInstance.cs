@@ -37,7 +37,7 @@ public class BravePlaywrightBrowserInstance(IEventAggregator eventAggregator,
         string exts = GetLoadExtensionsArgument();
 
         var contexOptions = automationScriptHelper
-            .CreateOptions(args, exts, BrowserExePath, UserProfile.Proxy);
+            .CreateOptions(args, exts, browserExeFilePath, UserProfile.Proxy);
 
         _browserContext = await options.Playwright.Chromium
             .LaunchPersistentContextAsync(BrowserProfileFolderPath, contexOptions);

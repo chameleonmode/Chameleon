@@ -15,6 +15,7 @@ public class BravePlaywrightBrowser(
         ISystemBrowserInfoManager systemBrowserInfoManager,
         ISetPreferencesService setPreferencesService,
         IUserDefaultSettingsService userDefaultsSettingsService,
+        string browserExeFilePath,
         IAutomationScriptHelper automationScriptHelper)
         : BraveSystemBrowser(eventAggregator,
             applicationEnvironment,
@@ -32,6 +33,7 @@ public class BravePlaywrightBrowser(
             SetPreferencesService,
             ApplicationEnvironment,
             UserDefaultSettingsService,
+            browserExeFilePath,
             automationScriptHelper
             );
     }
