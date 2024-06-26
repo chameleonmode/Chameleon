@@ -69,10 +69,7 @@ public class AutomationBrowserService
                     }
                     catch (Exception ex)
                     {
-                        await _dispatcherService.InvokeOnUiThread(async () =>
-                        {
-                            await MesageBoxHelper.ShowErrorAsync("Script error", ex.Message);
-                        });
+                        await MesageBoxHelper.ShowErrorAsync("Script error", ex.Message);
                     }
 
                     // Stop loop if canceled
@@ -85,10 +82,7 @@ public class AutomationBrowserService
         }
         catch (Exception ex) 
         {
-            await _dispatcherService.InvokeOnUiThread(async () =>
-            {
-                await MesageBoxHelper.ShowErrorAsync("Automation error", ex.Message);
-            });
+            await MesageBoxHelper.ShowErrorAsync("Automation error", ex.Message);
         }
         finally
         {
