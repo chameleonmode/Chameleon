@@ -13,7 +13,6 @@ public abstract class SystemBrowserBase(
     protected IUserDefaultSettingsService UserDefaultSettingsService { get; } = userDefaultsSettingsService;
 
     public string Path => GetSystemBrowserExePath();
-    public string ChamelonPath => GetBrowserExePath();
     public string Directory => GetDirectoryPath();
     public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
     public Dictionary<int, ISystemBrowserInstance> Instances => instances;

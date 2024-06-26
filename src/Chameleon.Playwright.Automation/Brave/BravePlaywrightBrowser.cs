@@ -56,7 +56,7 @@ public class BravePlaywrightBrowser(
     }
 
     // use BraveSystemBrowser for call this method
-    public override async Task<ISystemBrowserInstance> Open(ISystemBrowserLaunchOptions o)
+    public override Task<ISystemBrowserInstance> Open(ISystemBrowserLaunchOptions o)
     {
         throw new NotImplementedException();
     }
