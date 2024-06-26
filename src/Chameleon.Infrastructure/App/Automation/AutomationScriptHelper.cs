@@ -1,4 +1,6 @@
-﻿using Chameleon.Interfaces.App.Automation.Playwright;
+﻿using Chameleon.Core.Extensions;
+using Chameleon.Interfaces.App.Automation.Playwright;
+using Chameleon.Interfaces.UserProfiles;
 using Microsoft.Playwright;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,7 +9,7 @@ namespace Chameleon.Infrastructure.App.Automation;
 public class AutomationScriptHelper
     : IAutomationScriptHelper
 {
-    private List<string> AddExtensionsArguments(List<string> args, string exts)
+    public BrowserTypeLaunchPersistentContextOptions CreateOptions(List<string> args, string exts, string browserExeFilePath, IProxySettings? proxy)
     {
         if (!string.IsNullOrEmpty(exts))
         {
@@ -15,11 +17,6 @@ public class AutomationScriptHelper
             args.Add($"--load-extension={exts}");
         }
 
-        return args;
-    }
-
-    private BrowserTypeLaunchPersistentContextOptions CreateOptions(List<string> args, string browserExeFilePath)
-    {
         var options = new BrowserTypeLaunchPersistentContextOptions
         {
             Args = args,
@@ -28,12 +25,17 @@ public class AutomationScriptHelper
             IgnoreDefaultArgs = new[] { "--enable-automation", "--no-sandbox", "--disable-extensions", "--disable-default-apps", "--disable-component-extensions-with-background-pages" }
         };
 
+        if(proxy?.CanUse == true && proxy.Host.HasAny())
+        {
+            options.Proxy = new Proxy()
+            {
+                Server = $"http://{proxy.Host}:{proxy.Port}",
+                Username = proxy.UserName,
+                Password = proxy.Password,
+            };
+        }
+
         return options;
-    } 
-    
-    public BrowserTypeLaunchPersistentContextOptions CreateOptions(List<string> args, string exts, string browserExeFilePath)
-    {
-        return CreateOptions(AddExtensionsArguments(args, exts), browserExeFilePath);
     }
 
     public async Task InitScriptAsync(IBrowserContext browserContext)

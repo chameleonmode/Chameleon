@@ -12,19 +12,14 @@ public class BravePlaywrightBrowserInstance(IEventAggregator eventAggregator,
         ISetPreferencesService setPreferencesService,
         IApplicationEnvironment applicationEnvironment,
         IUserDefaultSettingsService userDefaultsSettingsService,
-        string browserExeFilePath,
         IAutomationScriptHelper automationScriptHelper)
     : BraveSystemBrowserInstance(eventAggregator,
             options,
             setPreferencesService,
             applicationEnvironment,
-            userDefaultsSettingsService,
-            browserExeFilePath)
+            userDefaultsSettingsService)
     , IPlaywrightBrowserInstance
 {
-    private readonly IPlaywrightBrowserLaunchOptions _playwrightOptions;
-    private readonly IAutomationScriptHelper _automationScriptHelper;
-
     private IBrowserContext _browserContext;
     public IBrowserContext BrowserContext => _browserContext;
 
@@ -42,7 +37,7 @@ public class BravePlaywrightBrowserInstance(IEventAggregator eventAggregator,
         string exts = GetLoadExtensionsArgument();
 
         var contexOptions = automationScriptHelper
-            .CreateOptions(args, exts, browserExeFilePath);
+            .CreateOptions(args, exts, BrowserExePath, UserProfile.Proxy);
 
         _browserContext = await options.Playwright.Chromium
             .LaunchPersistentContextAsync(BrowserProfileFolderPath, contexOptions);

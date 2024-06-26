@@ -4,8 +4,7 @@ public abstract class SystemBrowserInstance(
     IEventAggregator eventAggregator,
     ISystemBrowserLaunchOptions options,
     IUserDefaultSettingsService userDefaultsSettingsService,
-    string browserDataFolderPath,
-    string browserExeFilePath) 
+    string browserDataFolderPath) 
     : ISystemBrowserInstance
 {
     public event Action<ISystemBrowserLaunchOptions> OnProcessClosed;
@@ -77,7 +76,7 @@ public abstract class SystemBrowserInstance(
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = browserExeFilePath,
+                FileName = BrowserExePath,
                 Arguments = GetCommandLineArguments(),
                 UseShellExecute = true,
                 ErrorDialog = true,
@@ -114,7 +113,6 @@ public abstract class SystemBrowserInstance(
 
         OPtcs.TrySetResult(true);
     }
-
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
     private void SetWin32Events()
@@ -316,6 +314,9 @@ public abstract class SystemBrowserInstance(
              .GetDirectories(BrowserExtensionsFolderPath)
              .ToCommaSeparatedString();
     }
+
+    public virtual string BrowserExePath =>
+        SystemBrowserInfoManager.Instance.FindByType(BrowserType).Path;
 
     public string BrowserProfileFolderPath =>
     Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());

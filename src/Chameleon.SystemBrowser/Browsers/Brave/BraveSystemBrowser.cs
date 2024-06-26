@@ -15,8 +15,7 @@ public class BraveSystemBrowser(
              o,
              SetPreferencesService,
              ApplicationEnvironment,
-             UserDefaultSettingsService,
-             GetBrowserExePath());
+             UserDefaultSettingsService);
     }
 
     protected override string GetBrowserExePath()
@@ -26,13 +25,11 @@ public class BraveSystemBrowser(
             .Path;
     }
 
-    protected override string GetSystemBrowserExePath()
-    {
-        throw new NotImplementedException();
-    }
-
     protected override string GetDirectoryPath()
     {
         throw new NotImplementedException();
     }
+
+    protected override string GetSystemBrowserExePath() =>
+        GetBrowserExePath();
 }
