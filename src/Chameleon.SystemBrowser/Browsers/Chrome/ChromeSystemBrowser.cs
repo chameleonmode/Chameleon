@@ -6,7 +6,8 @@
             ISystemBrowserInfoManager systemBrowserInfoManager,
             ISetPreferencesService setPreferencesService,
             IUserDefaultSettingsService userDefaultsSettingsService)
-        : SystemBrowserBase(eventAggregator), IChromeSystemBrowser
+    : SystemBrowserBase(eventAggregator, applicationEnvironment, setPreferencesService, userDefaultsSettingsService),
+        IChromeSystemBrowser
     {
 
         public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
@@ -14,17 +15,27 @@
             return new ChromeSystemBrowserInstance(
                 EventAggregator,
                 o,
-                     setPreferencesService,
-                 applicationEnvironment,
-                 userDefaultsSettingsService,
+                SetPreferencesService,
+                ApplicationEnvironment,
+                UserDefaultSettingsService,
                 GetBrowserExePath());
         }
 
-        protected string GetBrowserExePath()
+        protected override string GetBrowserExePath()
         {
             return systemBrowserInfoManager
                 .FindByName("chrome")
                 .Path;
+        }
+
+        protected override string GetSystemBrowserExePath()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string GetDirectoryPath()
+        {
+            throw new NotImplementedException();
         }
     }
 }

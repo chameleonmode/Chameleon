@@ -63,21 +63,19 @@ public static class ProxyAddonUtil
     """;
 
     public static string GetBgJsv3(IProxySettings proxy) => """
-    chrome.webRequest.onAuthRequired.addListener((details) => 
-    {
-        return { 
-            authCredentials: {
-    """
-                + "username:" + $"\"{proxy.UserName}\","
-                + "password: " + $"\"{proxy.Password}\"" +
-   """
-            }
-        };
-    }, 
-    { urls: ['<all_urls>'] }, ['blocking']);
-    
-    chrome.tabs.reload();
-    """;
+         chrome.webRequest.onAuthRequired.addListener((details) => {
+             return { 
+                 authCredentials: {
+         """
+                    + "username:" + $"\"{proxy.UserName}\","
+                    + "password: " + $"\"{proxy.Password}\"" +
+         """
+                 }
+             };
+         }, { urls: ['<all_urls>'] }, ['blocking']);
+         
+         chrome.tabs.reload();
+         """;
 
     public static string GetBgJs(string loadUrl, IProxySettings proxy) => """
         browser.webRequest.onAuthRequired.addListener((details) => {
