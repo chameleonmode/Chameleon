@@ -17,8 +17,8 @@
                 o,
                 SetPreferencesService,
                 ApplicationEnvironment,
-                UserDefaultSettingsService
-                );
+                UserDefaultSettingsService,
+                GetBrowserExePath());
         }
 
         protected override string GetBrowserExePath()
@@ -28,8 +28,10 @@
                 .Path;
         }
 
-        protected override string GetSystemBrowserExePath() =>
-            GetBrowserExePath();
+        protected override string GetSystemBrowserExePath()
+        {
+            throw new NotImplementedException();
+        }
 
         protected override string GetDirectoryPath()
         {

@@ -4,14 +4,15 @@ public partial class FirefoxSystemBrowserInstance(
         IEventAggregator eventAggregator,
         ISystemBrowserLaunchOptions options,
         IUserDefaultSettingsService userDefaultsSettingsService,
-        string browserDataFolderPath) 
-    : SystemBrowserInstance(eventAggregator, options, userDefaultsSettingsService, browserDataFolderPath)
+        string browserDataFolderPath,
+        string browserExeFilePath
+        ) : SystemBrowserInstance(eventAggregator, options, userDefaultsSettingsService, browserDataFolderPath, browserExeFilePath)
 {
     protected override SystemBrowserType BrowserType => SystemBrowserType.Firefox;
 
     protected override async Task InitializeProfileFolder()
     {
-         _ = await InitializePrefsJs();
+        _ = await InitializePrefsJs();
     }
 
     // TODO:

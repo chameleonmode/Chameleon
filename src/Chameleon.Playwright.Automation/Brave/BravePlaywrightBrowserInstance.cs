@@ -12,12 +12,14 @@ public class BravePlaywrightBrowserInstance(IEventAggregator eventAggregator,
         ISetPreferencesService setPreferencesService,
         IApplicationEnvironment applicationEnvironment,
         IUserDefaultSettingsService userDefaultsSettingsService,
+        string browserExeFilePath,
         IAutomationScriptHelper automationScriptHelper)
     : BraveSystemBrowserInstance(eventAggregator,
             options,
             setPreferencesService,
             applicationEnvironment,
-            userDefaultsSettingsService)
+            userDefaultsSettingsService,
+            browserExeFilePath)
     , IPlaywrightBrowserInstance
 {
     private IBrowserContext _browserContext;

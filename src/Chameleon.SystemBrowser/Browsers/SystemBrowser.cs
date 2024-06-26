@@ -4,15 +4,16 @@ public abstract class SystemBrowserBase(
     IEventAggregator eventAggregator,
     IApplicationEnvironment applicationEnvironment,
     ISetPreferencesService setPreferencesService,
-    IUserDefaultSettingsService userDefaultsSettingsService) 
+    IUserDefaultSettingsService userDefaultsSettingsService)
     : ISystemBrowser
 {
-    protected IEventAggregator EventAggregator { get; } = eventAggregator;     
-    protected IApplicationEnvironment ApplicationEnvironment { get; } = applicationEnvironment;     
+    protected IEventAggregator EventAggregator { get; } = eventAggregator;
+    protected IApplicationEnvironment ApplicationEnvironment { get; } = applicationEnvironment;
     protected ISetPreferencesService SetPreferencesService { get; } = setPreferencesService;
     protected IUserDefaultSettingsService UserDefaultSettingsService { get; } = userDefaultsSettingsService;
 
     public string Path => GetSystemBrowserExePath();
+    public string ChamelonPath => GetBrowserExePath();
     public string Directory => GetDirectoryPath();
     public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
     public Dictionary<int, ISystemBrowserInstance> Instances => instances;
@@ -59,7 +60,7 @@ public abstract class SystemBrowserBase(
 
         return browser;
     }
-    public virtual Task<ISystemBrowserInstance> InitializeBrowserAsync(ISystemBrowserLaunchOptions o)  =>
+    public virtual Task<ISystemBrowserInstance> InitializeBrowserAsync(ISystemBrowserLaunchOptions o) =>
         Task.Run(() => InitializeBrowser(o));
 
     public async void Browser_OnProcessClosed(ISystemBrowserLaunchOptions o)

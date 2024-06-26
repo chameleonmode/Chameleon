@@ -5,7 +5,7 @@ public class BraveSystemBrowser(
         ISystemBrowserInfoManager systemBrowserInfoManager,
         ISetPreferencesService setPreferencesService,
         IUserDefaultSettingsService userDefaultsSettingsService)
-    : SystemBrowserBase(eventAggregator, applicationEnvironment,setPreferencesService,userDefaultsSettingsService), 
+    : SystemBrowserBase(eventAggregator, applicationEnvironment, setPreferencesService, userDefaultsSettingsService),
     IBraveSystemBrowser
 {
     public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
@@ -15,7 +15,8 @@ public class BraveSystemBrowser(
              o,
              SetPreferencesService,
              ApplicationEnvironment,
-             UserDefaultSettingsService);
+             UserDefaultSettingsService,
+             GetBrowserExePath());
     }
 
     protected override string GetBrowserExePath()
@@ -25,11 +26,13 @@ public class BraveSystemBrowser(
             .Path;
     }
 
-    protected override string GetDirectoryPath()
+    protected override string GetSystemBrowserExePath()
     {
         throw new NotImplementedException();
     }
 
-    protected override string GetSystemBrowserExePath() =>
-        GetBrowserExePath();
+    protected override string GetDirectoryPath()
+    {
+        throw new NotImplementedException();
+    }
 }

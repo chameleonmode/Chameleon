@@ -1,13 +1,12 @@
-﻿using Chameleon.Interfaces.Services;
-
-namespace Chameleon.SystemBrowser.Browsers.Brave;
+﻿namespace Chameleon.SystemBrowser.Browsers.Brave;
 public class BraveSystemBrowserInstance(
         IEventAggregator eventAggregator,
         ISystemBrowserLaunchOptions options,
         ISetPreferencesService setPreferencesService,
         IApplicationEnvironment applicationEnvironment,
-        IUserDefaultSettingsService userDefaultsSettingsService) :
-    SystemBrowserInstance(eventAggregator, options, userDefaultsSettingsService, applicationEnvironment.ApplicationDataFolderPath)
+        IUserDefaultSettingsService userDefaultsSettingsService,
+        string browserExeFilePath) :
+    SystemBrowserInstance(eventAggregator, options, userDefaultsSettingsService, applicationEnvironment.ApplicationDataFolderPath, browserExeFilePath)
 {
     protected override SystemBrowserType BrowserType => SystemBrowserType.Brave;
 

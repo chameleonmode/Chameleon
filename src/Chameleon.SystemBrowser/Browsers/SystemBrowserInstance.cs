@@ -4,14 +4,15 @@ public abstract class SystemBrowserInstance(
     IEventAggregator eventAggregator,
     ISystemBrowserLaunchOptions options,
     IUserDefaultSettingsService userDefaultsSettingsService,
-    string browserDataFolderPath) 
+    string browserDataFolderPath,
+    string browserExeFilePath)
     : ISystemBrowserInstance
 {
     public event Action<ISystemBrowserLaunchOptions> OnProcessClosed;
-                                        
+
     private readonly string pexdir = Guid.NewGuid().ToString();
-    private readonly List<IntPtr> winEventHooks = []; 
-                                                   
+    private readonly List<IntPtr> winEventHooks = [];
+
     private U32.WinEventDelegate winEventsCaptureDelegate;
     private MWHandleTrackerUtility windowTracker;
 
@@ -76,7 +77,7 @@ public abstract class SystemBrowserInstance(
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = BrowserExePath,
+                FileName = browserExeFilePath,
                 Arguments = GetCommandLineArguments(),
                 UseShellExecute = true,
                 ErrorDialog = true,
@@ -107,12 +108,13 @@ public abstract class SystemBrowserInstance(
                 Handle = Brocess.MainWindowHandle;
                 windowTracker.StopTracking();
                 SetWin32Events();
-            }                                               
+            }
 #pragma warning restore CA1416 // Validate platform compatibility
         }
 
         OPtcs.TrySetResult(true);
     }
+
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
     private void SetWin32Events()
@@ -237,18 +239,18 @@ public abstract class SystemBrowserInstance(
         List<string> args =
             [
                 "--restore-last-session",
-                    "--new-window",
-                    $"--window-name=\"{UserProfile.Title}\"",
-                    "--profile-directory=Default",
-                    "--ash-no-nudges",
-                    "--disable-domain-reliability",
-                    "--in-process-gpu",
-                    "--no-default-browser-check",
-                    "--no-first-run",
-                    "--disable-field-trial-config",
-                    "--disable-software-rasterizer",
-                    //"--disable-blink-features=\"BlockCredentialedSubresources\"",
-                    $"--remote-debugging-port={Port}"
+                "--new-window",
+                $"--window-name=\"{UserProfile.Title}\"",
+                "--profile-directory=Default",
+                "--ash-no-nudges",
+                "--disable-domain-reliability",
+                "--in-process-gpu",
+                "--no-default-browser-check",
+                "--no-first-run",
+                "--disable-field-trial-config",
+                "--disable-software-rasterizer",
+                //"--disable-blink-features=\"BlockCredentialedSubresources\"",
+                $"--remote-debugging-port={Port}"
             ];
 
         if (UserProfile.Proxy?.CanUse == true && UserProfile.Proxy.Host.HasAny())
@@ -314,9 +316,6 @@ public abstract class SystemBrowserInstance(
              .GetDirectories(BrowserExtensionsFolderPath)
              .ToCommaSeparatedString();
     }
-
-    public virtual string BrowserExePath =>
-        SystemBrowserInfoManager.Instance.FindByType(BrowserType).Path;
 
     public string BrowserProfileFolderPath =>
     Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
