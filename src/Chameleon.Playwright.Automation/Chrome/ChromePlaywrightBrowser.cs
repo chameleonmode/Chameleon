@@ -26,12 +26,11 @@ public class ChromePlaywrightBrowser(
     public IPlaywrightBrowserInstance InitializeBrowser(IPlaywrightBrowserLaunchOptions o)
     {
         return new ChromePlaywrightBrowserInstance(
-            eventAggregator,
+            EventAggregator,
             o,
-            setPreferencesService,
-            applicationEnvironment,
-            userDefaultsSettingsService,
-            GetBrowserExePath(),
+            SetPreferencesService,
+            ApplicationEnvironment,
+            UserDefaultSettingsService,
             automationScriptHelper
             );
     }

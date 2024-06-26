@@ -4,9 +4,8 @@ public partial class FirefoxSystemBrowserInstance(
         IEventAggregator eventAggregator,
         ISystemBrowserLaunchOptions options,
         IUserDefaultSettingsService userDefaultsSettingsService,
-        string browserDataFolderPath,
-        string browserExeFilePath
-        ) : SystemBrowserInstance(eventAggregator, options, userDefaultsSettingsService, browserDataFolderPath, browserExeFilePath)
+        string browserDataFolderPath) 
+    : SystemBrowserInstance(eventAggregator, options, userDefaultsSettingsService, browserDataFolderPath)
 {
     protected override SystemBrowserType BrowserType => SystemBrowserType.Firefox;
 

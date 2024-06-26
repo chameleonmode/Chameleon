@@ -21,8 +21,7 @@ public class FirefoxSystemBrowser(
             EventAggregator,
             o,
             UserDefaultSettingsService,
-            ApplicationEnvironment.ApplicationDataFolderPath,
-            GetBrowserExePath());
+            ApplicationEnvironment.ApplicationDataFolderPath);
     }
 
     public override async Task<ISystemBrowserInstance> InitializeBrowserAsync(ISystemBrowserLaunchOptions o)
@@ -34,7 +33,7 @@ public class FirefoxSystemBrowser(
 
     private async Task CreateChameleonFirefoxCopy()
     {
-        if (IOtil.IsNeedUpdate(Path, ChamelonPath))
+        if (IOtil.IsNeedUpdate(Path, GetBrowserExePath()))
         {
             await IOtil.DeleteDExistsAsync(DirectoryForCopy);
 
@@ -56,8 +55,8 @@ public class FirefoxSystemBrowser(
     protected override string GetBrowserExePath()
     {
         string path = OperatingSystem.IsMacOS()
-            ? System.IO.Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app", "Contents", "MacOS", "firefox")
-            : System.IO.Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.exe");
+            ? System.IO.Path.Combine(ApplicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app", "Contents", "MacOS", "firefox")
+            : System.IO.Path.Combine(ApplicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.exe");
 
         return path;
     }
