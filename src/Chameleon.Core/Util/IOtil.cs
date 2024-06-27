@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Chameleon.Interfaces.WebBrowser;
+using System.Diagnostics;
 
 namespace Chameleon.Core.Util;
 
@@ -12,6 +13,19 @@ public static class IOtil
             {
                 Directory.CreateDirectory(path);
             }
+        });
+    }
+
+    public static Task<string[]> ReadDirectory(string path)
+    {
+        return Task.Run(() =>
+        {
+            if (Directory.Exists(path))
+            {
+                return Directory.GetFiles(path);
+            }
+
+            return [];
         });
     }
 
@@ -89,7 +103,8 @@ public static class IOtil
 
         return !isEqual;
     }
-
+    public static Task CopyFolderAsync(string directory, string directoryForCopy) =>
+        Task.Run(() => CopyFolder(directory, directoryForCopy));
     public static void CopyFolder(string directory, string directoryForCopy)
     {
         Directory.CreateDirectory(directoryForCopy);

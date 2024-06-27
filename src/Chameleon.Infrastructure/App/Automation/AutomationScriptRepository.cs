@@ -85,4 +85,11 @@ public class AutomationScriptRepository
 
         return map;
     }
+
+    public string GetScriptBody(int id)
+    {
+        var scriptBodyDto = _client.GetScriptBody(id);
+
+        return scriptBodyDto;
+    }
 }
