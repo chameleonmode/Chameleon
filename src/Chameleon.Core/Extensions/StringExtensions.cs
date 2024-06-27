@@ -94,6 +94,11 @@ public static class StringExtensions
         return string.Join(",", self);
     }
 
+    public static string ToCommaSeparatedString<T>(this List<T> self)
+    {
+        return string.Join(",", self);
+    }
+
     public static string[] AddQuotesToEachElement(this IList<string> self)
     {
         return self.Select(x => $"\"{x}\"").ToArray();

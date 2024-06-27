@@ -24,7 +24,6 @@ public class AutomationScriptMapProfile
             .ForMember(model => model.Id, options => options.MapFrom(dto => dto.Id))
             .ForMember(model => model.Title, options => options.MapFrom(dto => dto.Title))
             .ForMember(model => model.Description, options => options.MapFrom(dto => dto.Description))
-            .ForMember(model => model.Script, options => options.MapFrom(dto => dto.Script))
             .ForMember(model => model.Parameters, options => options.MapFrom(dto => dto.Parameters));
 
         map.ForAllOtherMembers(options => options.Ignore());

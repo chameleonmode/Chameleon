@@ -1,6 +1,8 @@
 ﻿namespace Chameleon.SystemBrowser;
 public class SystemBrowserInfoManager : ISystemBrowserInfoManager
 {
+    public static SystemBrowserInfoManager Instance => ContainerServiceHelper.Resolve<ISystemBrowserInfoManager>() as SystemBrowserInfoManager;
+
     private readonly string[] IgnoreStartMenuInternetKeys =
     [
         "VMWAREHOSTOPEN.EXE"
@@ -123,5 +125,13 @@ public class SystemBrowserInfoManager : ISystemBrowserInfoManager
         return inf ?? throw new NotSupportedException(
             $"{char.ToUpper(browserName[0]) + browserName[1..]} browser is not installed.");
     }
+
+    public ISystemBrowserInfo FindByType(SystemBrowserType BrowserType) => BrowserType switch
+    {
+        SystemBrowserType.Chrome => FindByName("chrome"),
+        SystemBrowserType.Brave => FindByName("brave"),
+        SystemBrowserType.Firefox => FindByName("firefox"),
+        _ => null
+    };
 }
 
