@@ -1,21 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+		<PackageReference Include="Microsoft.Playwright" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
-    <PackageReference Include="Microsoft.Playwright" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Chameleon.Common\Chameleon.Common.csproj" />
-    <ProjectReference Include="..\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
-    <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
-    <ProjectReference Include="..\Chameleon.SystemBrowser\Chameleon.SystemBrowser.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Chameleon.Common\Chameleon.Common.csproj" />
+		<ProjectReference Include="..\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
+		<ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
+		<ProjectReference Include="..\Chameleon.SystemBrowser\Chameleon.SystemBrowser.csproj" />
+	</ItemGroup>
 
 </Project>

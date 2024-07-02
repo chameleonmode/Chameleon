@@ -1,48 +1,29 @@
-﻿using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.App.Automation.Playwright;
-using Chameleon.Interfaces.Environments;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Prism.Events;
-using Chameleon.SystemBrowser;
-using Chameleon.SystemBrowser.Browsers.Brave;
-
-namespace Chameleon.Playwright.Automation.Brave;
-
+﻿namespace Chameleon.Playwright.Automation.Brave;
 public class BravePlaywrightBrowser(
         IEventAggregator eventAggregator,
         IApplicationEnvironment applicationEnvironment,
         ISystemBrowserInfoManager systemBrowserInfoManager,
         ISetPreferencesService setPreferencesService,
-        IUserDefaultSettingsService userDefaultsSettingsService,
-        IAutomationScriptHelper automationScriptHelper)
+        IUserDefaultSettingsService userDefaultsSettingsService)
         : BraveSystemBrowser(eventAggregator,
             applicationEnvironment,
             systemBrowserInfoManager,
             setPreferencesService,
-            userDefaultsSettingsService)
-
-    , IBravePlaywrightBrowser
+            userDefaultsSettingsService),
+    IBravePlaywrightBrowser
 {
-    public IPlaywrightBrowserInstance InitializeBrowser(IPlaywrightBrowserLaunchOptions o)
+    public virtual async Task<IPlaywrightBrowserInstance> Open(IPlaywrightBrowserLaunchOptions o)
     {
-        return new BravePlaywrightBrowserInstance(
+        BravePlaywrightBrowserInstance browser = null;
+        try
+        {
+            browser = new BravePlaywrightBrowserInstance(
             EventAggregator,
             o,
             SetPreferencesService,
             ApplicationEnvironment,
             UserDefaultSettingsService,
-            GetBrowserExePath(),
-            automationScriptHelper
-            );
-    }
-
-    public virtual async Task<IPlaywrightBrowserInstance> Open(IPlaywrightBrowserLaunchOptions o)
-    {
-        IPlaywrightBrowserInstance browser = null;
-        try
-        {
-            browser = InitializeBrowser(o);
+            GetBrowserExePath());
 
             await browser.Open();
         }

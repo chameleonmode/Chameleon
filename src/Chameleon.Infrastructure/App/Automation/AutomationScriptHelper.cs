@@ -38,9 +38,8 @@ public class AutomationScriptHelper
         return options;
     }
 
-    public async Task InitScriptAsync(IBrowserContext browserContext)
-    {
-        await browserContext.AddInitScriptAsync(
+    public Task InitScriptAsync(IBrowserContext browserContext)
+        => browserContext.AddInitScriptAsync(
                @"const defaultGetter = Object.getOwnPropertyDescriptor(
               Navigator.prototype,
               ""webdriver""
@@ -64,5 +63,4 @@ public class AutomationScriptHelper
             ).get;
             patchedGetter.apply(navigator);
             patchedGetter.toString();");
-    }
 }

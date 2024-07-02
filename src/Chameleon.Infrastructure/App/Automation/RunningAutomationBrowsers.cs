@@ -1,5 +1,4 @@
 ﻿using Chameleon.Interfaces.App.Automation.Playwright;
-using System.Collections.Generic;
 
 namespace Chameleon.Infrastructure.App.Automation;
 public class RunningAutomationBrowsers : IRunningAutomationBrowsers

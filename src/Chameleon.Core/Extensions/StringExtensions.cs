@@ -6,6 +6,10 @@ public static class StringExtensions
     {
         return self != string.Empty && !string.IsNullOrEmpty(self) && !string.IsNullOrWhiteSpace(self);
     }
+    public static string? Get(this string self)
+    {
+        return self != string.Empty && !string.IsNullOrEmpty(self) && !string.IsNullOrWhiteSpace(self) ? self : null;
+    }
     public static string StripPrefix(this string self, string prefix)
     {
         return self.StartsWith(prefix) ? self.Substring(prefix.Length) : self;

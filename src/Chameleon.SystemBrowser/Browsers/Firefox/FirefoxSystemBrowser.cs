@@ -56,8 +56,8 @@ public class FirefoxSystemBrowser(
     protected override string GetBrowserExePath()
     {
         string path = OperatingSystem.IsMacOS()
-            ? System.IO.Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app", "Contents", "MacOS", "firefox")
-            : System.IO.Path.Combine(applicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.exe");
+            ? System.IO.Path.Combine(ApplicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.app", "Contents", "MacOS", "firefox")
+            : System.IO.Path.Combine(ApplicationEnvironment.ApplicationDataFolderPath, FirefoxChameleonDirectory, "firefox.exe");
 
         return path;
     }

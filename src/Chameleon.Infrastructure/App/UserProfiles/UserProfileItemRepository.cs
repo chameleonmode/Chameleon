@@ -108,8 +108,9 @@ namespace Chameleon.Infrastructure.Profiles
             {
                 _entities = new ConcurrentDictionary<int, TEntityInterface>();
             }
-
-            var profileId = request.ProfileId.Value;
+                                                         
+            ArgumentNullException.ThrowIfNull(request.ProfileId);
+            var profileId = request.ProfileId.Value;        
 
             if (ignoreCache)
             {

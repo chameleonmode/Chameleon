@@ -36,12 +36,6 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
                 v.FindAncestorOfType<ListBoxItem>(true) is ListBoxItem lbi && 
                 lbi.DataContext is IUserProfileViewModelBase up)
             {
-                //var item = lbi.GetVisualDescendants()
-                //    .Where(x => x is Viewbox && x.Name == "IconHost")
-                //    .FirstOrDefault();
-                //_animationPage = fci;
-
-                //NavigationService.Instance.NavigateFromContext(fci);
                 up.Open();
             }
         }

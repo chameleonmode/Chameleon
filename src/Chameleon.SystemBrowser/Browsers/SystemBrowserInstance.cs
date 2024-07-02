@@ -13,6 +13,8 @@ public abstract class SystemBrowserInstance(
     private readonly string pexdir = Guid.NewGuid().ToString();
     private readonly List<IntPtr> winEventHooks = [];
 
+    public string BrowserExeFilePath => browserExeFilePath;
+
     private U32.WinEventDelegate winEventsCaptureDelegate;
     private MWHandleTrackerUtility windowTracker;
 
@@ -77,7 +79,7 @@ public abstract class SystemBrowserInstance(
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = browserExeFilePath,
+                FileName = BrowserExeFilePath,
                 Arguments = GetCommandLineArguments(),
                 UseShellExecute = true,
                 ErrorDialog = true,
@@ -234,8 +236,6 @@ public abstract class SystemBrowserInstance(
         List<string> args =
             [
                 "--restore-last-session",
-                "--new-window",
-                $"--window-name=\"{UserProfile.Title}\"",
                 "--profile-directory=Default",
                 "--ash-no-nudges",
                 "--disable-domain-reliability",
@@ -244,14 +244,13 @@ public abstract class SystemBrowserInstance(
                 "--no-first-run",
                 "--disable-field-trial-config",
                 "--disable-software-rasterizer",
-                //"--disable-blink-features=\"BlockCredentialedSubresources\"",
-                $"--remote-debugging-port={Port}"
+                $"--remote-debugging-port={Port}",
+                $"--window-name=\"{UserProfile.Title}\"", 
             ];
 
         if (UserProfile.Proxy?.CanUse == true && UserProfile.Proxy.Host.HasAny())
         {
             args.Add($"--proxy-server=http://{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}");
-            //args.Add($"--proxy-auth={UserProfile.Proxy.UserName}:{UserProfile.Proxy.Password}");
         }
 
         if (!UserProfile.WebBrowser.WebRTC)
@@ -283,12 +282,9 @@ public abstract class SystemBrowserInstance(
     protected virtual List<string> GetCommandLineArgumentsList()
     {
         var args = GetClearCommandLineArgumentsList();
-        var exts = GetLoadExtensionsArgument();
 
-        if (exts.HasAny())
-        {
+        if (GetLoadExtensionsArgument().Get() is string exts)
             args.Add($"--load-extension=\"{exts}\"");
-        }
 
         args.Add($"--user-data-dir=\"{BrowserProfileFolderPath}\"");
         args.Add(Starturl);

@@ -5,8 +5,8 @@ namespace Chameleon.Interfaces.App.Automation.Services;
 public interface IAutomationService
     : ISingletonDependency
 {
-    IList<IAutomationScriptDescription> GetAll();
+    Task<IList<IAutomationScriptDescription>> GetAll();
     void UpdateParameter(IAutomationScriptParameter param);
     void SetParametersValue(IList<IAutomationParameterValue> values);
-    string GetScriptBody(int id);
+    Task<string> GetScriptBody(int id);
 }
