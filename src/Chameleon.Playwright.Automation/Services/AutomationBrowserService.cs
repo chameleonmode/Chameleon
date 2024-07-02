@@ -19,13 +19,15 @@ public class AutomationBrowserService
     private readonly IAutomationService _automationService;
     private readonly IEventAggregator _eventAggregator;
     private readonly IDispatcherService _dispatcherService;
+    private readonly IRunningAutomationBrowsers _runningAutomationBrowsers;
 
     public AutomationBrowserService(
         IPlaywrightBrowserManager playwrightBrowserManager,
         ICompileScriptService compileScriptService,
         IAutomationService automationService,
         IEventAggregator eventAggregator,
-        IDispatcherService dispatcherService
+        IDispatcherService dispatcherService,
+        IRunningAutomationBrowsers runningAutomationBrowsers
         )
     {
         _playwrightBrowserManager = playwrightBrowserManager;
@@ -33,6 +35,7 @@ public class AutomationBrowserService
         _automationService = automationService;
         _eventAggregator = eventAggregator;
         _dispatcherService = dispatcherService;
+        _runningAutomationBrowsers = runningAutomationBrowsers;
     }
 
     public async Task RunScript(
@@ -51,6 +54,8 @@ public class AutomationBrowserService
                 .Select(x => KeyValuePair.Create(x.Name, x.Value))
                 .ToDictionary();
 
+            _runningAutomationBrowsers.RefreshBrowsers();
+
             using (var playwright = await Microsoft.Playwright.Playwright.CreateAsync())
             {
                 foreach (IUserProfile profile in userProfiles)
@@ -62,6 +67,20 @@ public class AutomationBrowserService
                     };
 
                     var browserInstance = await browser.Open(options);
+
+                    _runningAutomationBrowsers.AddBrowser(browserInstance);
+
+                    var ctx = browserInstance.BrowserContext;
+
+                    ctx.Close += (_, __) =>
+                    {
+                        _runningAutomationBrowsers.RemoveBrowser(browserInstance);
+
+                        if (_runningAutomationBrowsers.IsAllClosed)
+                        {
+                            RiseFinishScriptExecutionEvent();
+                        }
+                    };
 
                     try
                     {
@@ -86,9 +105,14 @@ public class AutomationBrowserService
         }
         finally
         {
-            _dispatcherService.InvokeOnUiThread(() => _eventAggregator
+            RiseFinishScriptExecutionEvent();
+        }
+    }
+
+    private void RiseFinishScriptExecutionEvent()
+    {
+        _dispatcherService.InvokeOnUiThread(() => _eventAggregator
                     .GetEvent<FinishScriptExecutionEvent>()
                     .Publish());
-        }
     }
 }
