@@ -98,7 +98,7 @@ namespace Chameleon.Infrastructure.UserSettings
                     return all[random.Next(all.Count)].DefaultUrl;
                 }
 
-                return "about:blank";
+                return "https://duckduckgo.com/";
             });
     }
 }

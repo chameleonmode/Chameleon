@@ -65,5 +65,7 @@ public class FirefoxSystemBrowser(
     protected override string GetDirectoryPath() => OperatingSystem.IsMacOS() ?
     "Applications/firefox.app"
     : System.IO.Path.GetDirectoryName(Path);
+
+    public override SystemBrowserType BrowserType => SystemBrowserType.Firefox;
 }
 

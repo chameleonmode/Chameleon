@@ -90,4 +90,5 @@ public abstract class SystemBrowserBase(
     protected abstract string GetSystemBrowserExePath();
     protected abstract string GetDirectoryPath();
     public abstract ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o);
+    public abstract SystemBrowserType BrowserType { get; }
 }

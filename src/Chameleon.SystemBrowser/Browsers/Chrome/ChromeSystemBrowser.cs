@@ -9,6 +9,7 @@
     : SystemBrowserBase(eventAggregator, applicationEnvironment, setPreferencesService, userDefaultsSettingsService),
         IChromeSystemBrowser
     {
+        public override SystemBrowserType BrowserType => SystemBrowserType.Chrome;
 
         public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
         {

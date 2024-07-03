@@ -47,6 +47,8 @@ public partial class UserProfilesViewModel
 
     private IEnumerable<UserProfileViewModel> _selectedProfiles;
 
+    private SystemBrovserItemViewModel _selectedBrowserItem;
+
     [ObservableProperty]
     private bool _isWaiting = true;
 
@@ -134,7 +136,7 @@ public partial class UserProfilesViewModel
     {
         var lastSelectedBrowserString = _settings.LastSelectedBrowser;
 
-        if (string.IsNullOrEmpty(lastSelectedBrowserString) ||
+        if (!lastSelectedBrowserString.HasAny() ||
             !Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum))
         {
             SelectedBrowserItem = BrowserItems[0];
@@ -145,6 +147,8 @@ public partial class UserProfilesViewModel
         }
 
         SelectedAutomationScript = ScriptViewModels.FirstOrDefault(s => s.Id == _settings.LastRunScriptId);
+        if (SelectedAutomationScript is null && ScriptViewModels.Count > 0)
+            SelectedAutomationScript = ScriptViewModels[0];
     }
 
     private ObservableCollection<SystemBrovserItemViewModel> _browserItems;
@@ -164,8 +168,6 @@ public partial class UserProfilesViewModel
             return _browserItems;
         }
     }
-
-    private SystemBrovserItemViewModel _selectedBrowserItem;
     public SystemBrovserItemViewModel SelectedBrowserItem
     {
         get => _selectedBrowserItem;
@@ -619,7 +621,7 @@ public partial class UserProfilesViewModel
                 "Select an automation.");
             return;
         }
-                               
+
         IsVisibleRunButton = false;
         IsVisibleStopButton = true;
         await RunAutomationAsync();

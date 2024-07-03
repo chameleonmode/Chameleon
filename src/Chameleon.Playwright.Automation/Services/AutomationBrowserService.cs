@@ -57,7 +57,7 @@ public class AutomationBrowserService(
 
                 try
                 {
-                    await instance.Run(browserInstance.BrowserContext, parameters);
+                    await instance.Run(browserInstance.BrowserContext, parameters).WaitAsync(token);
                 }
                 catch (Exception ex)
                 {

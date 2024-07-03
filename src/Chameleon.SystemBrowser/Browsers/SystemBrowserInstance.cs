@@ -69,7 +69,7 @@ public abstract class SystemBrowserInstance(
             await IOtil.CreateDirectory(ProxyExtDir);
 
             await IOtil.WriteTextToFileAsync(Path.Combine(ProxyExtDir, "manifest.json"), ProxyAddonUtil.GetManifestv3());
-            await IOtil.WriteTextToFileAsync(Path.Combine(ProxyExtDir, "background.js"), ProxyAddonUtil.GetBgJsv3(UserProfile.Proxy));
+            await IOtil.WriteTextToFileAsync(Path.Combine(ProxyExtDir, "background.js"), ProxyAddonUtil.GetBgJsv3(Starturl, UserProfile.Proxy));
         }
     }
 
@@ -287,7 +287,6 @@ public abstract class SystemBrowserInstance(
             args.Add($"--load-extension=\"{exts}\"");
 
         args.Add($"--user-data-dir=\"{BrowserProfileFolderPath}\"");
-        args.Add(Starturl);
 
         return args;
     }

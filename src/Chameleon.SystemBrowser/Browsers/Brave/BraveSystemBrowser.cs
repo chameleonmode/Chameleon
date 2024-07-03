@@ -8,6 +8,8 @@ public class BraveSystemBrowser(
     : SystemBrowserBase(eventAggregator, applicationEnvironment, setPreferencesService, userDefaultsSettingsService),
     IBraveSystemBrowser
 {
+    public override SystemBrowserType BrowserType => SystemBrowserType.Brave;
+
     public override ISystemBrowserInstance InitializeBrowser(ISystemBrowserLaunchOptions o)
     {
         return new BraveSystemBrowserInstance(
