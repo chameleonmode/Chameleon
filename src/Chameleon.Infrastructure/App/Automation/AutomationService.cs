@@ -1,59 +1,33 @@
-﻿using Chameleon.Interfaces.App.Automation.Entities;
-using Chameleon.Interfaces.App.Automation.Repositories;
-using Chameleon.Interfaces.App.Automation.Services;
-using System;
-using System.Collections.Generic;
-
-namespace Chameleon.Infrastructure.App.Automation;
-public class AutomationService
+﻿namespace Chameleon.Infrastructure.App.Automation;
+public class AutomationService(IAutomationScriptRepository repository)
     : IAutomationService
 {
-    private readonly IAutomationScriptRepository _automationRepository;
-
-    public AutomationService(
-        IAutomationScriptRepository repository
-        )
+    private IList<IAutomationScriptDescription> _scripts;
+    private Task<List<IAutomationScriptDescription>> ThesesScripts => Task.Run(
+    () =>
     {
-        _automationRepository = repository;
+        var entities = repository.GetAllScriptDescription();
+        var response = new List<IAutomationScriptDescription>(entities);
 
-        InitScripts();
-    }
+        return response;
+    });
 
-    private Lazy<IList<IAutomationScriptDescription>> _scripts;
-    private IList<IAutomationScriptDescription> Scripts => _scripts.Value;
 
-    public IList<IAutomationScriptDescription> GetAll()
+    public async Task<IList<IAutomationScriptDescription>> GetAll()
     {
-        return Scripts;
+        return _scripts ??= await ThesesScripts;
     }
 
     public void UpdateParameter(IAutomationScriptParameter param)
     {
-        _automationRepository.UpdateParameter(param);
+        repository.UpdateParameter(param);
     }
 
     public void SetParametersValue(IList<IAutomationParameterValue> values)
     {
-        _automationRepository.SetParametersValue(values);
+        repository.SetParametersValue(values);
     }
 
-    private void InitScripts()
-    {
-        _scripts = new Lazy<IList<IAutomationScriptDescription>>(() => GetScripts(), true);
-    }
-
-    private IList<IAutomationScriptDescription> GetScripts()
-    {
-        var entities = _automationRepository.GetAllScriptDescription();
-        var response = new List<IAutomationScriptDescription>(entities);
-
-        return response;
-    }
-
-    public string GetScriptBody(int id)
-    {
-        var entity = _automationRepository.GetScriptBody(id);
-
-        return entity;
-    }
+    public Task<string> GetScriptBody(int id)
+        => Task.Run(() => repository.GetScriptBody(id));
 }

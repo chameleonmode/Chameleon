@@ -16,8 +16,7 @@ using System.Windows.Input;
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
 public partial class SelectAutomationPopupViewModel(
-    IAutomationService _automationService, 
-    IAutomationBrowserService _automationBrowserService)
+    IAutomationService _automationService)
     : ContentDialogViewModelBase
     , ISelectAutomationPopupViewModel
 {
@@ -43,7 +42,7 @@ public partial class SelectAutomationPopupViewModel(
         if (!Loaded)
         {
             _mapping = new ObservableCollection<IAutomationScriptDescription, IAutomationScriptViewModel>(
-                    await Task.Run(_automationService.GetAll), 
+                    await _automationService.GetAll(), 
                     script => new AutomationScriptViewModel(script, _automationService));
 
             OnPropertyChanged(nameof(ViewModels));

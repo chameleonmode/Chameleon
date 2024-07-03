@@ -1,47 +1,23 @@
-﻿using Chameleon.Interfaces.App.Automation.Playwright;
-using Chameleon.Interfaces.Environments;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Prism.Events;
-using Chameleon.SystemBrowser.Browsers.Brave;
-using Microsoft.Playwright;
-
-namespace Chameleon.Playwright.Automation.Brave;
+﻿namespace Chameleon.Playwright.Automation.Brave;
 public class BravePlaywrightBrowserInstance(IEventAggregator eventAggregator,
         IPlaywrightBrowserLaunchOptions options,
         ISetPreferencesService setPreferencesService,
         IApplicationEnvironment applicationEnvironment,
         IUserDefaultSettingsService userDefaultsSettingsService,
-        string browserExeFilePath,
-        IAutomationScriptHelper automationScriptHelper)
+        string browserExeFilePath)
     : BraveSystemBrowserInstance(eventAggregator,
             options,
             setPreferencesService,
             applicationEnvironment,
             userDefaultsSettingsService,
-            browserExeFilePath)
-    , IPlaywrightBrowserInstance
+            browserExeFilePath),
+    IPlaywrightBrowserInstance
 {
-    private IBrowserContext _browserContext;
-    public IBrowserContext BrowserContext => _browserContext;
+    private IBrowser _browser;
+    public IBrowserContext BrowserContext => _browser.Contexts[0];
 
     public override async Task Open()
     {
-        await EnsureProfileFolderCreated();
-        await InitializeProfileFolder();
-        await InitializeExtensionPath();
-        await StartProcess();
-    }
-
-    protected override async Task StartProcess()
-    {
-        List<string> args = GetClearCommandLineArgumentsList();
-        string exts = GetLoadExtensionsArgument();
-
-        var contexOptions = automationScriptHelper
-            .CreateOptions(args, exts, browserExeFilePath, UserProfile.Proxy);
-
-        _browserContext = await options.Playwright.Chromium
-            .LaunchPersistentContextAsync(BrowserProfileFolderPath, contexOptions);
+        _browser = await options.Playwright.Chromium.ConnectOverCDPAsync($"http://localhost:{options.UserProfileVM.SBI.Port}");
     }
 }

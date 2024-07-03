@@ -31,8 +31,7 @@ namespace Chameleon.Infrastructure.OutReachLink
         public List<IProfileOutReachLink> GetAll(DateTime reminderDate)
         {
             var entities = GetEntities()
-                .Where(a => a.ReminderDatetime != null)
-                .Where(a => a.ReminderDatetime.Value.Date == reminderDate)
+                .Where(a => a.ReminderDatetime != null && a.ReminderDatetime.Value.Date == reminderDate)
                 .ToList();
 
             return entities;

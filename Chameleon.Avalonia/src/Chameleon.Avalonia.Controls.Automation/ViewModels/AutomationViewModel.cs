@@ -73,14 +73,10 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
 
             if (!Loaded)
             {
-                OnAuthenticated();
+                await Initialize();
             }
         }
 
-        private void OnAuthenticated()
-        {
-            Initialize();
-        }
 
         private void InitPaginator()
         {
@@ -104,9 +100,9 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
             ViewModels.Offset = PaginatorViewModel.Skip;
         }
 
-        private void Initialize()
+        private async Task Initialize()
         {
-            var scripts = _automationService.GetAll();
+            var scripts = await _automationService.GetAll();
 
             _mapping = new ObservableCollection<IAutomationScriptDescription,
                 AutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script, _automationService));

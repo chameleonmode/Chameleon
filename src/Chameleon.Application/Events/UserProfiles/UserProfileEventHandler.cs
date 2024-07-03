@@ -1,27 +1,9 @@
-﻿using Chameleon.Core.Extensions;
-using Chameleon.Common.Exceptions;
-using Chameleon.Interfaces.App.ContentDiscoverey;
-using Chameleon.Interfaces.App.Synchronization.Events;
-using Chameleon.Interfaces.App.UserProfileFolders.Events;
-using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.DialogWindows;
-using Chameleon.Interfaces.MessageBox;
-using Chameleon.Interfaces.OutReach;
+﻿using Chameleon.Common.Exceptions;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Interfaces.Windows;
 using Chameleon.Prism.Events;
-using System;
-using System.Drawing;
-using System.Windows;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.Dialogs.ViewModels;
-using Chameleon.Common.Icons;
 using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.Services;
-//using Chameleon.Avalonia.Prism.Interfaces.MessageBox;
-//using MessageBoxOptions = Chameleon.MessageBox.Services.MessageBoxOptions;
 
 namespace Chameleon.Application.Events
 {

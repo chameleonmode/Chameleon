@@ -5,5 +5,5 @@ namespace Chameleon.Interfaces.App.Automation.Services;
 public interface ICompileScriptService
     : ISingletonDependency
 {
-    IExternalScript CompileScript(string script);
+    Task<IExternalScript?> CompileScript(string script);
 }
