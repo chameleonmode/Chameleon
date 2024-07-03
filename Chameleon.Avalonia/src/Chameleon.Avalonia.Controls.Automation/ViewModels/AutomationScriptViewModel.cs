@@ -10,14 +10,10 @@ public partial class AutomationScriptViewModel
     : SubPageViewModelBase
     , IAutomationScriptViewModel
 {
-    private readonly IAutomationService _automationService;
-
     public AutomationScriptViewModel(
-        IAutomationScriptDescription automationScriptDescription,
-        IAutomationService automationService
+        IAutomationScriptDescription automationScriptDescription
         )
     {
-        _automationService = automationService;
 
         Id = automationScriptDescription.Id;
         Title = automationScriptDescription.Title;

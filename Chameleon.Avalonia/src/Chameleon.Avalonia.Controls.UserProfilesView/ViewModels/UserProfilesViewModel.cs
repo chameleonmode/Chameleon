@@ -126,7 +126,7 @@ public partial class UserProfilesViewModel
         var scripts = await _automationService.GetAll();
 
         _scriptMapping = new ObservableCollection<IAutomationScriptDescription,
-            IAutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script, _automationService));
+            IAutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script));
 
         OnPropertyChanged(nameof(ScriptViewModels));
         OnPropertyChanged(nameof(SelectedBrowserItem));

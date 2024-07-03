@@ -43,7 +43,7 @@ public partial class SelectAutomationPopupViewModel(
         {
             _mapping = new ObservableCollection<IAutomationScriptDescription, IAutomationScriptViewModel>(
                     await _automationService.GetAll(), 
-                    script => new AutomationScriptViewModel(script, _automationService));
+                    script => new AutomationScriptViewModel(script));
 
             OnPropertyChanged(nameof(ViewModels));
         }
