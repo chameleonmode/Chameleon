@@ -30,7 +30,11 @@ public class AutomationBrowserService(
             foreach (IUserProfileActionsViewModel profile in userProfiles)
             {
                 if (profile.SBI == null)
+                {
                     await profile.OpenSystemBrowser(browserType);
+                    if(!await profile.SBI.OPtcs.Task)
+                        throw new Exception($"Failed to open system browser {profile.Title}");
+                }
 
                 var options = new PlaywrightBrowserLaunchOptions
                 {

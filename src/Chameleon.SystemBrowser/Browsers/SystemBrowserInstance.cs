@@ -69,7 +69,9 @@ public abstract class SystemBrowserInstance(
             await IOtil.CreateDirectory(ProxyExtDir);
 
             await IOtil.WriteTextToFileAsync(Path.Combine(ProxyExtDir, "manifest.json"), ProxyAddonUtil.GetManifestv3());
-            await IOtil.WriteTextToFileAsync(Path.Combine(ProxyExtDir, "background.js"), ProxyAddonUtil.GetBgJsv3(Starturl, UserProfile.Proxy));
+            await IOtil.WriteTextToFileAsync(
+                Path.Combine(ProxyExtDir, "background.js"),
+                ProxyAddonUtil.GetBgJsv3(Starturl, UserProfile.Proxy));
         }
     }
 
@@ -88,12 +90,21 @@ public abstract class SystemBrowserInstance(
         };
         Brocess.Start();
 
+        await Task.Run(() =>
+        {
+            int i = 0;
+            while (Netil.IsFree(Port) && i < 500)
+            {
+                Task.Delay(100);
+            }
+        });
+
 
 
         if (IsMao)
         {
             Handle = Brocess.Handle;
-            Brocess.Exited += (s,e)=> { Cleanup(); };
+            Brocess.Exited += (s, e) => { Cleanup(); };
         }
         else
         {
@@ -245,7 +256,7 @@ public abstract class SystemBrowserInstance(
                 "--disable-field-trial-config",
                 "--disable-software-rasterizer",
                 $"--remote-debugging-port={Port}",
-                $"--window-name=\"{UserProfile.Title}\"", 
+                $"--window-name=\"{UserProfile.Title}\"",
             ];
 
         if (UserProfile.Proxy?.CanUse == true && UserProfile.Proxy.Host.HasAny())
@@ -287,6 +298,7 @@ public abstract class SystemBrowserInstance(
             args.Add($"--load-extension=\"{exts}\"");
 
         args.Add($"--user-data-dir=\"{BrowserProfileFolderPath}\"");
+        args.Add($"{Starturl}");
 
         return args;
     }
