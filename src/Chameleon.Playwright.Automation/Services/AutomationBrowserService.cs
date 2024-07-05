@@ -47,19 +47,6 @@ public class AutomationBrowserService(
                 var browserInstance = await browser.Open(options);
 
                 runningAutomationBrowsers.AddBrowser(browserInstance);
-
-                var ctx = browserInstance.BrowserContext;
-
-                ctx.Close += (_, __) =>
-                {
-                    runningAutomationBrowsers.RemoveBrowser(browserInstance);
-
-                    if (runningAutomationBrowsers.IsAllClosed)
-                    {
-                        RiseFinishScriptExecutionEvent();
-                    }
-                };
-
                 try
                 {
                     await instance.Run(browserInstance.BrowserContext, parameters).WaitAsync(token);
@@ -104,7 +91,7 @@ if (browserWasNotOpened &&
         //profile.SBI.Cleanup();
     }
 }
-
+runningAutomationBrowsers.RemoveBrowser(browserInstance);
                 // Stop loop if canceled
                 if (token.IsCancellationRequested)
                 {
@@ -119,7 +106,7 @@ if (browserWasNotOpened &&
         }
         finally
         {
-            RiseFinishScriptExecutionEvent();
+           // RiseFinishScriptExecutionEvent();
         }
     }
 

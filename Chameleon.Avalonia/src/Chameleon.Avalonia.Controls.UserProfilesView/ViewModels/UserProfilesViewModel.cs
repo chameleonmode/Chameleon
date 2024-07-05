@@ -625,11 +625,15 @@ public partial class UserProfilesViewModel
         IsVisibleRunButton = false;
         IsVisibleStopButton = true;
         await RunAutomationAsync();
+        IsVisibleRunButton = true;
+        IsVisibleStopButton = false;
+        IsVisibleWaitButton = false;
     }
 
     private CancellationTokenSource _cts;
-    private CancellationToken RecreateCancellationToken()
+    private CancellationToken RecreateCancellationToken
     {
+       get{
         if (_cts != null)
         {
             _cts.Cancel();
@@ -638,6 +642,7 @@ public partial class UserProfilesViewModel
 
         _cts = new CancellationTokenSource();
         return _cts.Token;
+       }
     }
 
     private async Task RunAutomationAsync()
@@ -657,7 +662,7 @@ public partial class UserProfilesViewModel
         };
        // var profiles = _selectedProfiles.Select(p => (IUserProfile)p.UserProfile).ToList();
 
-        var token = RecreateCancellationToken();
+        var token = RecreateCancellationToken;
         await _automationBrowserService.RunScript(script, SelectedBrowserItem.SystemBrowserType, GetSelectedProfiles, token);
     }
 
