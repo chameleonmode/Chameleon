@@ -69,12 +69,16 @@ public abstract class SystemBrowserInstance(
             await IOtil.CreateDirectory(ProxyExtDir);
 
             await IOtil.WriteTextToFileAsync(Path.Combine(ProxyExtDir, "manifest.json"), ProxyAddonUtil.GetManifestv3());
-            await IOtil.WriteTextToFileAsync(Path.Combine(ProxyExtDir, "background.js"), ProxyAddonUtil.GetBgJsv3(Starturl, UserProfile.Proxy));
+            await IOtil.WriteTextToFileAsync(
+                Path.Combine(ProxyExtDir, "background.js"),
+                ProxyAddonUtil.GetBgJsv3(Starturl, UserProfile.Proxy));
         }
     }
 
     protected virtual async Task StartProcess()
     {
+        // var tcs = new TaskCompletionSource<string>();
+
         Brocess = new Process
         {
             StartInfo = new ProcessStartInfo
@@ -83,17 +87,17 @@ public abstract class SystemBrowserInstance(
                 Arguments = GetCommandLineArguments(),
                 UseShellExecute = true,
                 ErrorDialog = true,
+                //RedirectStandardOutput = true,
+                CreateNoWindow = true,
             },
             EnableRaisingEvents = true,
         };
         Brocess.Start();
 
-
-
         if (IsMao)
         {
             Handle = Brocess.Handle;
-            Brocess.Exited += (s,e)=> { Cleanup(); };
+            Brocess.Exited += (s, e) => { Cleanup(); };
         }
         else
         {
@@ -115,6 +119,28 @@ public abstract class SystemBrowserInstance(
         }
 
         OPtcs.TrySetResult(true);
+    }
+
+    public static async Task<string> GetWebSocketDebuggerUrlAsync(int port)
+    {
+        string url = $"http://localhost:{port}/json";
+        using (HttpClient client = new HttpClient())
+        {
+            string jsonResponse = await client.GetStringAsync(url);
+            Newtonsoft.Json.Linq.JArray targets = Newtonsoft.Json.Linq.JArray.Parse(jsonResponse);
+
+            foreach (Newtonsoft.Json.Linq.JObject target in targets)
+            {
+                if (target["type"].ToString() == "page") // Assuming you want to debug a page
+                {
+                    string webSocketDebuggerUrl = target["webSocketDebuggerUrl"].ToString();
+                    Console.WriteLine($"Found WebSocket Debugger URL: {webSocketDebuggerUrl}");
+                    return webSocketDebuggerUrl; // Return the first found URL
+                }
+            }
+        }
+
+        return null; // No suitable debugger URL found
     }
 
 
@@ -188,7 +214,7 @@ public abstract class SystemBrowserInstance(
         }
     }
 
-    protected virtual void Cleanup()
+    public void Cleanup()
     {
         ExUtil.TryCatch(() =>
         {
@@ -235,6 +261,8 @@ public abstract class SystemBrowserInstance(
     {
         List<string> args =
             [
+                "--disable-session-crashed-bubble",
+                "--hide-crash-restore-bubble",
                 "--restore-last-session",
                 "--profile-directory=Default",
                 "--ash-no-nudges",
@@ -245,7 +273,7 @@ public abstract class SystemBrowserInstance(
                 "--disable-field-trial-config",
                 "--disable-software-rasterizer",
                 $"--remote-debugging-port={Port}",
-                $"--window-name=\"{UserProfile.Title}\"", 
+                $"--window-name=\"{UserProfile.Title}\"",
             ];
 
         if (UserProfile.Proxy?.CanUse == true && UserProfile.Proxy.Host.HasAny())
@@ -287,9 +315,11 @@ public abstract class SystemBrowserInstance(
             args.Add($"--load-extension=\"{exts}\"");
 
         args.Add($"--user-data-dir=\"{BrowserProfileFolderPath}\"");
+        args.Add($"{Starturl}");
 
         return args;
     }
+
 
     protected virtual string GetCommandLineArguments()
     {
@@ -332,7 +362,7 @@ public abstract class SystemBrowserInstance(
 
     public string Starturl { get; private set; }
     public int Port { get; private set; }
-    public Process? Brocess { get; private set; }
+    public Process? Brocess { get; set; }
     public IntPtr Handle { get; private set; } = IntPtr.Zero;
     protected abstract SystemBrowserType BrowserType { get; }
 }

@@ -113,10 +113,10 @@ public partial class UserProfilesViewModel
             LoadAsync();
 
             IsWaiting = false;
-
-            await InitializeScripts();
-            InintializeLastSelectedAutomation();
         }
+
+        await InitializeScripts();
+        InintializeLastSelectedAutomation();
 
         OnHandleUserEvent();
     }
@@ -125,6 +125,7 @@ public partial class UserProfilesViewModel
     {
         var scripts = await _automationService.GetAll();
 
+        _scriptViewModels = null;
         _scriptMapping = new ObservableCollection<IAutomationScriptDescription,
             IAutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script, _automationService));
 
@@ -184,7 +185,7 @@ public partial class UserProfilesViewModel
     {
         get
         {
-            if (_scriptViewModels == null && _mapping != null)
+            if (_scriptViewModels == null && _scriptMapping != null)
             {
                 _scriptViewModels = new ObservableCollectionView<IAutomationScriptViewModel>(_scriptMapping);
             }
@@ -220,7 +221,7 @@ public partial class UserProfilesViewModel
         get { return _selectedAutomationScript; }
         set
         {
-            if (_selectedAutomationScript != value)
+            if (value != null && _selectedAutomationScript != value)
             {
                 SetProperty(ref _selectedAutomationScript, value);
                 OnPropertyChanged(nameof(IsSelectedScript));
@@ -625,11 +626,15 @@ public partial class UserProfilesViewModel
         IsVisibleRunButton = false;
         IsVisibleStopButton = true;
         await RunAutomationAsync();
+        IsVisibleRunButton = true;
+        IsVisibleStopButton = false;
+        IsVisibleWaitButton = false;
     }
 
     private CancellationTokenSource _cts;
-    private CancellationToken RecreateCancellationToken()
+    private CancellationToken RecreateCancellationToken
     {
+       get{
         if (_cts != null)
         {
             _cts.Cancel();
@@ -638,6 +643,7 @@ public partial class UserProfilesViewModel
 
         _cts = new CancellationTokenSource();
         return _cts.Token;
+       }
     }
 
     private async Task RunAutomationAsync()
@@ -657,7 +663,7 @@ public partial class UserProfilesViewModel
         };
        // var profiles = _selectedProfiles.Select(p => (IUserProfile)p.UserProfile).ToList();
 
-        var token = RecreateCancellationToken();
+        var token = RecreateCancellationToken;
         await _automationBrowserService.RunScript(script, SelectedBrowserItem.SystemBrowserType, GetSelectedProfiles, token);
     }
 

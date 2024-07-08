@@ -65,16 +65,16 @@
 
                   <!-- Title -->
                   <TextBlock
-										Grid.Column="0"
-										Text="{Binding Title}"
-										ToolTip.Tip="{Binding Title}"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Left"
-										FontSize="14"
-									    Theme="{StaticResource BodyStrongTextBlockStyle}"
-										TextTrimming="CharacterEllipsis"
-										TextWrapping="NoWrap"
-										Margin="5 5 10 5"/>
+					Grid.Column="0"
+					Text="{Binding Title, StringFormat='Demo {0}.'}"
+					ToolTip.Tip="Demo"
+					VerticalAlignment="Center"
+					HorizontalAlignment="Left"
+					FontSize="14"
+					Theme="{StaticResource BodyStrongTextBlockStyle}"
+					TextTrimming="CharacterEllipsis"
+					TextWrapping="NoWrap"
+					Margin="5 5 10 5"/>
 
 									<!-- Description -->
 									<!--No Hard Coded Colors-->
