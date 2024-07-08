@@ -75,18 +75,17 @@ public class CompileScriptService
 
     private HashSet<MetadataReference> GetReferences()
     {    
-        var domainAssemblys = AppDomain.CurrentDomain.GetAssemblies().Union(new Assembly[]
-            {
-                typeof(object).Assembly,
+        var domainAssemblys = AppDomain.CurrentDomain.GetAssemblies()
+        .Union(typeof(Microsoft.Playwright.Playwright).Assembly.GetReferencedAssemblies().Select(Assembly.Load))
+        .Union([typeof(object).Assembly,
                 typeof(Console).Assembly,
                 typeof(Regex).Assembly,
                 typeof(Microsoft.Playwright.Playwright).Assembly,
                 typeof(IExternalScript).Assembly,
                 typeof(System.Linq.Expressions.Expression).Assembly,
-                typeof(TaskExtensions).Assembly
-            });
-        var metadataReferenceList = new HashSet<MetadataReference>();
+                typeof(TaskExtensions).Assembly]);
 
+        var metadataReferenceList = new HashSet<MetadataReference>();
         foreach (var assembl in domainAssemblys)
         {
             unsafe
@@ -100,8 +99,6 @@ public class CompileScriptService
                 metadataReferenceList.Add(metadataReference);
             }
         }
-
-
         return metadataReferenceList;
     }
 }

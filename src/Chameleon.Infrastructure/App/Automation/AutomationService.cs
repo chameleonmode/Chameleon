@@ -15,7 +15,7 @@ public class AutomationService(IAutomationScriptRepository repository)
 
     public async Task<IList<IAutomationScriptDescription>> GetAll()
     {
-        return _scripts ??= await ThesesScripts;
+        return await ThesesScripts;
     }
 
     public void UpdateParameter(IAutomationScriptParameter param)
