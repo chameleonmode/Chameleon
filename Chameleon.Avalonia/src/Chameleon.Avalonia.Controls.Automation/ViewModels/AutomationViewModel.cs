@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
+using Chameleon.Common.Helpers;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
 using Chameleon.Core.Extensions;
@@ -115,20 +116,13 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
             var selected = await dialog.OpenFolderPickerAsync(new() { AllowMultiple = false });
 
 
-            UserScriptsDirectory = selected?[0]?.Path.AbsolutePath;
-            if (UserScriptsDirectory.HasAny())
-            {
-                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                config.AppSettings.Settings["UserScriptsDirectory"].Value = UserScriptsDirectory;
-                config.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection("appSettings");
-            }
+            ConfigHelper.UserScriptsDirectory = UserScriptsDirectory = selected?[0]?.Path.AbsolutePath;
             await InitializeUserScripts();
         }
 
         private async Task InitializeUserScripts()
         {
-            UserScriptsDirectory = ConfigurationManager.AppSettings["UserScriptsDirectory"];
+            UserScriptsDirectory = ConfigHelper.UserScriptsDirectory;
             foreach (IAutomationScriptDescription item in await automationService.GetAll(UserScriptsDirectory))
             {
                 UserScripts.Add(new(item));
