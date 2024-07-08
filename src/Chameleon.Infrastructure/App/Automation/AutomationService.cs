@@ -19,7 +19,7 @@ public class AutomationService(IAutomationScriptRepository repository)
 
     public async Task<IList<IAutomationScriptDescription>> GetAll()
     {
-        return _scripts ??= await ThesesScripts;
+        return await ThesesScripts;
     }
 
     public async Task<IList<IAutomationScriptDescription>> GetAll(string filepath)

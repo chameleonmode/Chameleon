@@ -78,14 +78,15 @@ public static class ProxyAddonUtil
          
          """
          + $@"
-    let queryOptions = {{ active: true, lastFocusedWindow: true }};
-    chrome.tabs.query(queryOptions, ([tab]) => {{
-      if (chrome.runtime.lastError)
-      console.error(chrome.runtime.lastError);
-      // `tab` will either be a `tabs.Tab` instance or `undefined`.
-      chrome.tabs.update(tab.id, {{active: true, url: ""{url}"" }});
-    }});
+         chrome.tabs.reload();
 ";
+    //let queryOptions = {{ active: true, lastFocusedWindow: true }};
+    //chrome.tabs.query(queryOptions, ([tab]) => {{
+    //  if (chrome.runtime.lastError)
+    //  console.error(chrome.runtime.lastError);
+    //  // `tab` will either be a `tabs.Tab` instance or `undefined`.
+    //  chrome.tabs.update(tab.id, {{active: true, url: ""{url}"" }});
+    //}});
 
     public static string GetBgJs(string loadUrl, IProxySettings proxy) => """
         browser.webRequest.onAuthRequired.addListener((details) => {

@@ -1,4 +1,5 @@
 ﻿
+
 namespace Chameleon.Playwright.Automation.Chrome;
 public class ChromeiumPlaywrightBrowserInstance(IPlaywrightBrowserLaunchOptions options)
     : IPlaywrightBrowserInstance
@@ -7,8 +8,42 @@ public class ChromeiumPlaywrightBrowserInstance(IPlaywrightBrowserLaunchOptions 
 
     public IBrowserContext BrowserContext => _browser?.Contexts?[0];
 
-    public async Task Open()
+    public  async Task Close()
     {
-        _browser = await options.Playwright.Chromium.ConnectOverCDPAsync($"http://localhost:{options.UserProfileVM.SBI.Port}");
+        if (BrowserContext != null)
+        {
+            await BrowserContext.CloseAsync();
+        }
+
+        if (_browser != null)
+        {
+            await _browser.CloseAsync();
+            _browser = null;
+        }
     }
+
+
+    public Task Open()
+        => TryOpenByCDP(0);
+
+    private async Task TryOpenByCDP(int v)
+    {
+        try
+        {
+            _browser = await options.Playwright.Chromium.ConnectOverCDPAsync($"http://localhost:{options.UserProfileVM.SBI.Port}");
+        }
+        catch
+        {
+            if (v < 6)
+            {
+                await Task.Delay(1000);
+                await TryOpenByCDP(v + 1);
+            }
+            else
+            {
+                throw;
+            }
+        }
+    }
+
 }

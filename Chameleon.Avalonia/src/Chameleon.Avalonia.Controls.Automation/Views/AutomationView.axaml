@@ -59,26 +59,28 @@
                   </Grid.ColumnDefinitions>
 
                   <!-- Title -->
-					<TextBlock
-						Grid.Column="0"
-						Text="{Binding Title}"
-						ToolTip.Tip="{Binding Title}"
-						VerticalAlignment="Center"
-						HorizontalAlignment="Left"
-						Theme="{StaticResource BodyStrongTextBlockStyle}"
-						TextWrapping="NoWrap"
-						Margin="5 5 10 5"/>
+           <TextBlock
+					    Grid.Column="0"
+					    Text="{Binding Title, StringFormat='Demo {0}.'}"
+					    ToolTip.Tip="Demo"
+					    VerticalAlignment="Center"
+					    HorizontalAlignment="Left"
+					    FontSize="14"
+					    Theme="{StaticResource BodyStrongTextBlockStyle}"
+					    TextTrimming="CharacterEllipsis"
+					    TextWrapping="NoWrap"
+					    Margin="5 5 10 5"/>
 					<!-- Description -->
 					<TextBlock
 						Grid.Column="1"
 						Text="{Binding Description}"
 						ToolTip.Tip="{Binding Description}"
 						VerticalAlignment="Center"
-					    Theme="{StaticResource CaptionTextBlockStyle}"
+					  Theme="{StaticResource CaptionTextBlockStyle}"
 						Margin="10 5 5 5"
 						TextWrapping="NoWrap"/>
-
-                  <!-- PopUp Buttom -->
+                  
+           <!-- PopUp Buttom -->
 					 <Button
 						Grid.Column="2"
 						Command="{Binding OpenParamsPopupCommand}"
