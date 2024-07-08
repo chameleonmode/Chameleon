@@ -1,16 +1,13 @@
-﻿namespace Chameleon.Playwright.Automation.Brave;
+﻿using Microsoft.Extensions.Options;
+
+namespace Chameleon.Playwright.Automation.Brave;
 public class BravePlaywrightBrowserInstance(IEventAggregator eventAggregator,
         IPlaywrightBrowserLaunchOptions options,
         ISetPreferencesService setPreferencesService,
         IApplicationEnvironment applicationEnvironment,
         IUserDefaultSettingsService userDefaultsSettingsService,
-        string browserExeFilePath)
-    : BraveSystemBrowserInstance(eventAggregator,
-            options,
-            setPreferencesService,
-            applicationEnvironment,
-            userDefaultsSettingsService,
-            browserExeFilePath),
+string browserExeFilePath)
+    : ChromeiumPlaywrightBrowserInstance(options),
     IPlaywrightBrowserInstance
 {
     private IBrowser _browser;
@@ -22,8 +19,8 @@ public class BravePlaywrightBrowserInstance(IEventAggregator eventAggregator,
     }
 
 
-    public override async Task Open()
-    {
-        _browser = await options.Playwright.Chromium.ConnectOverCDPAsync($"http://localhost:{options.UserProfileVM.SBI.Port}");
-    }
+    //public override async Task Open()
+    //{
+    //    _browser = await options.Playwright.Chromium.ConnectOverCDPAsync($"http://localhost:{options.UserProfileVM.SBI.Port}");
+    //}
 }

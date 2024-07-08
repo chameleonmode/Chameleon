@@ -8,10 +8,9 @@ public class ExternalScript : IExternalScript
 {
     public async Task Run(IBrowserContext context, IDictionary<string, string> args)
     {
-        IPage page = context.Pages[0];
+        IPage page = await context.NewPageAsync(); // or context.Pages[0];
 
-        await page.GotoAsync(args["param 1-1"]);
-        // other actions 
+        // once satisfied with recording copy the recorded content for pages create a new file and paste under here you can remove the pause 
         await page.PauseAsync();
     }
 }

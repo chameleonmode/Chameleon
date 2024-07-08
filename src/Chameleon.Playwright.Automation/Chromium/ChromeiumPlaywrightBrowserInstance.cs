@@ -46,4 +46,9 @@ public class ChromeiumPlaywrightBrowserInstance(IPlaywrightBrowserLaunchOptions 
         }
     }
 
+    public async Task Record()
+    {
+        var page = await BrowserContext.NewPageAsync();
+        await page?.PauseAsync();
+    }
 }

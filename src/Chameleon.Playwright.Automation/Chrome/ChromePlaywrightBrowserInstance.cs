@@ -6,13 +6,7 @@ public class ChromePlaywrightBrowserInstance(
     IApplicationEnvironment applicationEnvironment,
     IUserDefaultSettingsService userDefaultsSettingsService,
     string browserExeFilePath)
-    : ChromeSystemBrowserInstance(
-        eventAggregator,
-        options,
-        setPreferencesService,
-        applicationEnvironment,
-        userDefaultsSettingsService,
-        browserExeFilePath),
+    : ChromeiumPlaywrightBrowserInstance(options),
     IPlaywrightBrowserInstance
 {
     private IBrowser _browser;
@@ -24,8 +18,8 @@ public class ChromePlaywrightBrowserInstance(
     }
 
 
-    public override async Task Open()
-    {
-        _browser = await options.Playwright.Chromium.ConnectOverCDPAsync($"http://localhost:{options.UserProfileVM.SBI.Port}");
-    }
+    //public override async Task Open()
+    //{
+    //    _browser = await options.Playwright.Chromium.ConnectOverCDPAsync($"http://localhost:{options.UserProfileVM.SBI.Port}");
+    //}
 }
