@@ -18,6 +18,7 @@
 
 				<Button Content="SyncChangesButton" Theme="{StaticResource SyncChangesButton}" />
 				<Button Content="three-dots" Theme="{StaticResource SvgIconButton}" />
+				<Button Content="Folder" Theme="{StaticResource SymbleIconButton}" />
 				<Button Content="three-dots" Theme="{StaticResource FavoriteButton}" />
 				<Button Content="select-all" 
 						Tag="Select All Yo"
@@ -141,6 +142,41 @@
 					<local:SvgIconControl IconName="{TemplateBinding Content}"
 										  Width="18"
 										  Height="18"/>
+					</Border>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^:pointerover /template/ Border#Pnl">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ Border#Pnl">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector="^:disabled /template/ Border#Pnl">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="SymbleIconButton" TargetType="Button">
+		<!--<Setter Property="Background" Value="Orange" />-->
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="180" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Root"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}">
+					<Border Name="Pnl"
+							Background="Transparent"
+							CornerRadius="{TemplateBinding CornerRadius}">
+						<ui:SymbolIcon
+							Symbol="{TemplateBinding Content}"
+							Margin="0 0 0 0"/>
 					</Border>
 				</Border>
 			</ControlTemplate>

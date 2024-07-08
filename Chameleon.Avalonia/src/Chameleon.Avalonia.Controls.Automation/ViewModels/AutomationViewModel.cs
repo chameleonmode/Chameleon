@@ -1,31 +1,39 @@
-﻿using Chameleon.Avalonia.Controls.Paginator.ViewModels;
+﻿using Avalonia.Collections;
+using Avalonia.Controls;
+using Chameleon.Avalonia.Common.Helpers;
+using Chameleon.Avalonia.Controls.Paginator.ViewModels;
+using Chameleon.Common.Helpers;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
+using Chameleon.Core.Extensions;
+using Chameleon.Core.Util;
 using Chameleon.CT.Common.Base;
+using Chameleon.Domain.Entities.Automation;
+using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System.Configuration;
 
 namespace Chameleon.Avalonia.Controls.Automation.ViewModels
 {
-    public partial class AutomationViewModel
+    public partial class AutomationViewModel(IAutomationService automationService)
        : PageViewModelBase
        , IAutomationViewModel
     {
         private const string _pageTitle = "Pre-installed automations";
 
         private ObservableCollection<IAutomationScriptDescription, AutomationScriptViewModel> _mapping;
+        public AvaloniaList<AutomationScriptViewModel> UserScripts { get; } = [];
 
-        private readonly IAutomationService _automationService;
 
-        public AutomationViewModel(
-            IAutomationService automationService
-            )
-        {
-            Title = _pageTitle;
+        [ObservableProperty]
+        private int _totalCount;
 
-            _automationService = automationService;
-        }
+        [ObservableProperty]
+        private string userScriptsDirectory = "";
 
         private ObservableCollectionView<AutomationScriptViewModel> _viewModels;
         public ObservableCollectionView<AutomationScriptViewModel> ViewModels
@@ -57,26 +65,17 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
             }
         }
 
-        private int _totalCount;
-        public int TotalCount
-        {
-            get => _totalCount;
-            set
-            {
-                SetProperty(ref _totalCount, value);
-            }
-        }
-
         public override async Task InitAsync(object? param)
         {
             await base.InitAsync(param);
 
             if (!Loaded)
             {
+                Title = _pageTitle;
                 await Initialize();
+                await InitializeUserScripts();
             }
         }
-
 
         private void InitPaginator()
         {
@@ -102,12 +101,32 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
 
         private async Task Initialize()
         {
-            var scripts = await _automationService.GetAll();
+            var scripts = await automationService.GetAll();
 
             _mapping = new ObservableCollection<IAutomationScriptDescription,
-                AutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script, _automationService));
+                AutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script));
 
             OnPropertyChanged(nameof(ViewModels));
+        }
+
+        [RelayCommand]
+        private async Task SelectUserScriptFolder()
+        {
+            var dialog = ApplicationHelper.GetMainWindow().StorageProvider;
+            var selected = await dialog.OpenFolderPickerAsync(new() { AllowMultiple = false });
+
+
+            ConfigHelper.UserScriptsDirectory = UserScriptsDirectory = selected?[0]?.Path.AbsolutePath;
+            await InitializeUserScripts();
+        }
+
+        private async Task InitializeUserScripts()
+        {
+            UserScriptsDirectory = ConfigHelper.UserScriptsDirectory;
+            foreach (IAutomationScriptDescription item in await automationService.GetAll(UserScriptsDirectory))
+            {
+                UserScripts.Add(new(item));
+            }
         }
     }
 }

@@ -39,7 +39,6 @@ public partial class UserProfilesViewModel
     private readonly IApplicationUser _currentUser;
     private readonly ISystemBrowserManager _systemBrowserManager;
     private readonly IAutomationService _automationService;
-    private readonly AppSettingsAutomation _settings;
     private readonly IAutomationBrowserService _automationBrowserService;
 
     private ObservableCollection<IUserProfile, UserProfileViewModel> _mapping;
@@ -99,8 +98,6 @@ public partial class UserProfilesViewModel
 
         EventAggregator.GetEvent<FinishScriptExecutionEvent>()
             .Subscribe(OnHandleFinishScriptExecutionEvent);
-
-        _settings = new AppSettingsAutomation();
     }
 
     public override async Task InitAsync(object? param)
@@ -127,7 +124,7 @@ public partial class UserProfilesViewModel
 
         _scriptViewModels = null;
         _scriptMapping = new ObservableCollection<IAutomationScriptDescription,
-            IAutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script, _automationService));
+            IAutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script));
 
         OnPropertyChanged(nameof(ScriptViewModels));
         OnPropertyChanged(nameof(SelectedBrowserItem));
@@ -135,7 +132,7 @@ public partial class UserProfilesViewModel
 
     private void InintializeLastSelectedAutomation()
     {
-        var lastSelectedBrowserString = _settings.LastSelectedBrowser;
+        var lastSelectedBrowserString = ConfigHelper.LastSelectedBrowser;
 
         if (!lastSelectedBrowserString.HasAny() ||
             !Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum))
@@ -147,7 +144,7 @@ public partial class UserProfilesViewModel
             SelectedBrowserItem = BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
         }
 
-        SelectedAutomationScript = ScriptViewModels.FirstOrDefault(s => s.Id == _settings.LastRunScriptId);
+        SelectedAutomationScript = ScriptViewModels.FirstOrDefault(s => s.Id == ConfigHelper.LastRunScriptId);
         if (SelectedAutomationScript is null && ScriptViewModels.Count > 0)
             SelectedAutomationScript = ScriptViewModels[0];
     }
@@ -176,7 +173,7 @@ public partial class UserProfilesViewModel
         set
         {
             SetProperty(ref _selectedBrowserItem, value);
-            _settings.LastSelectedBrowser = value.SystemBrowserType.ToString();
+            ConfigHelper.LastSelectedBrowser = value.SystemBrowserType.ToString();
         }
     }
 
@@ -226,7 +223,7 @@ public partial class UserProfilesViewModel
                 SetProperty(ref _selectedAutomationScript, value);
                 OnPropertyChanged(nameof(IsSelectedScript));
                 RunAutomationCommand.NotifyCanExecuteChanged();
-                _settings.LastRunScriptId = value.Id;
+                ConfigHelper.LastRunScriptId = value.Id;
             }
         }
     }
