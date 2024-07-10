@@ -8,9 +8,18 @@ public class ExternalScript : IExternalScript
 {
     public async Task Run(IBrowserContext context, IDictionary<string, string> args)
     {
-        IPage page = await context.NewPageAsync(); // or context.Pages[0];
+        // use to run script in a new tab 
+        // IPage page = await context.NewPageAsync(); 
+        // use to run script in the first tab 
+        IPage page = context.Pages[0];
 
-        // once satisfied with recording copy the recorded content for pages create a new file and paste under here you can remove the pause 
-        await page.PauseAsync();
+        // __________paste the recorded content under here____________________
+
+        // __________paste the recorded content above here____________________
+
+        // use this anywhere in the script to pause the script 
+        await page.PauseAsync(); 
+        // use this anywhere in the script to add delay
+        // await Task.Delay(1000); 
     }
 }

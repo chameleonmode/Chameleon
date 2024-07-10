@@ -17,3 +17,4 @@ global using Chameleon.SystemBrowser.Chrome;
 global using Chameleon.SystemBrowser.Firefox;
 global using Chameleon.SystemBrowser.Browsers;
 global using Microsoft.Win32;
+global using System.Threading.Tasks;

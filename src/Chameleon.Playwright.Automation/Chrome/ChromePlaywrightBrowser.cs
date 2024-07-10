@@ -12,27 +12,28 @@ public class ChromePlaywrightBrowser(
             userDefaultsSettingsService), 
     IChromePlaywrightBrowser
 {
-    public virtual async Task<IPlaywrightBrowserInstance> Open(IPlaywrightBrowserLaunchOptions o)
+    public virtual Task<IPlaywrightBrowserInstance> Open(IPlaywrightBrowserLaunchOptions o)
     {
-        ChromePlaywrightBrowserInstance browser = null;
-        try
-        {
-            browser = new ChromePlaywrightBrowserInstance(
-            EventAggregator,
-            o,
-            SetPreferencesService,
-            ApplicationEnvironment,
-            UserDefaultSettingsService,
-            GetBrowserExePath());
+        throw new NotImplementedException();
+        // ChromePlaywrightBrowserInstance browser = null;
+        // try
+        // {
+        //     browser = new ChromePlaywrightBrowserInstance(
+        //     EventAggregator,
+        //     o,
+        //     SetPreferencesService,
+        //     ApplicationEnvironment,
+        //     UserDefaultSettingsService,
+        //     GetBrowserExePath());
 
-            await browser.Open();
-        }
-        catch (Exception e)
-        {
-            await MesageBoxHelper.ShowErrorAsync("Error", e.Message);
-        }
+        //     await browser.Open();
+        // }
+        // catch (Exception e)
+        // {
+        //     await MesageBoxHelper.ShowErrorAsync("Error", e.Message);
+        // }
 
-        return browser;
+        // return browser;
     }
 
     // use ChromeSystemBrowser for call this method

@@ -127,15 +127,21 @@
 			</afv:ChameleonContentControl.TitleContent>-->
 
 				<afv:ChameleonContentControl.Header>
-					<Grid Margin="6"
-						  ColumnDefinitions="*,Auto">
-						<TextBox IsReadOnly="True"
-								 Text="{Binding UserScriptsDirectory, FallbackValue=Select A Directory}" />
-						<Button Content="Folder"
-								Grid.Column="1"
-								Theme="{StaticResource SymbleIconButton}"
-								Classes="accent"
-								Command="{Binding SelectUserScriptFolderCommand}"/>
+					<Grid 
+						Margin="6"
+						ColumnDefinitions="*,Auto">
+
+						<TextBox 
+							IsReadOnly="True"
+							Text="{Binding UserScriptsDirectory, FallbackValue=Select A Directory}" />
+
+						<Button 
+							Grid.Column="1"
+							Content="Folder"
+							Margin="6 0 0 0"
+							Classes="accent"
+							Theme="{StaticResource SymbleIconButton}"
+							Command="{Binding SelectUserScriptFolderCommand}"/>
 					</Grid>
 				</afv:ChameleonContentControl.Header>
 
