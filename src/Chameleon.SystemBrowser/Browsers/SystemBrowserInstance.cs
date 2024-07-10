@@ -1,4 +1,6 @@
-﻿namespace Chameleon.SystemBrowser.Common;
+﻿using Chameleon.Interfaces.Services;
+
+namespace Chameleon.SystemBrowser.Common;
 
 public abstract class SystemBrowserInstance(
     IEventAggregator eventAggregator,
@@ -82,7 +84,10 @@ public abstract class SystemBrowserInstance(
             }
             else
             {
-                MacOSUtil.SetForegroundWindow(Brocess.Id);
+                if(MacOSUtil.SetForegroundWindow(Brocess.Id))
+                 eventAggregator
+                        .GetEvent<ForegroundUserSystemBrowserEvent>()
+                        .Publish(GetArgs(Brocess));
             }
         }
     }
@@ -124,7 +129,13 @@ public abstract class SystemBrowserInstance(
         if (IsMao)
         {
             Handle = Brocess.Handle;
+            // ContainerServiceHelper.Resolve<IDispatcherService>().InvokeOnUiThread(() =>
+            // {
+                 //MacOSUtil.SetupWindowChangeNotification(Brocess.Id);
+            // });
+
             Brocess.Exited += (s, e) => { Cleanup(); };
+            //MacOSUtil.SetForegroundWindow(Brocess.Id);
         }
         else
         {
@@ -169,7 +180,6 @@ public abstract class SystemBrowserInstance(
 
         return null; // No suitable debugger URL found
     }
-
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
     private void SetWin32Events()
@@ -271,12 +281,6 @@ public abstract class SystemBrowserInstance(
     protected async Task EnsureProfileFolderCreated()
     {
         await IOtil.CreateDirectory(BrowserProfileFolderPath);
-        await OnProfileFolderCreated();
-    }
-
-    protected virtual Task OnProfileFolderCreated()
-    {
-        return Task.CompletedTask;
     }
 
     protected virtual Task InitializeProfileFolder()
@@ -346,7 +350,6 @@ public abstract class SystemBrowserInstance(
 
         return args;
     }
-
 
     protected virtual string GetCommandLineArguments()
     {
