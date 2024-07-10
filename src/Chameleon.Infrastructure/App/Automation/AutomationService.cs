@@ -20,6 +20,8 @@ public class AutomationService(IAutomationScriptRepository repository)
         foreach (var item in IOtil.ReadDirectory(filepath))
         {
             FileInfo inf = new FileInfo(item);
+            if(inf.Extension != ".cs")
+                continue;
             returned.Add(new AutomationScriptDescription()
             {
                 Id = -1,

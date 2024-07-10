@@ -12,27 +12,28 @@ public class BravePlaywrightBrowser(
             userDefaultsSettingsService),
     IBravePlaywrightBrowser
 {
-    public virtual async Task<IPlaywrightBrowserInstance> Open(IPlaywrightBrowserLaunchOptions o)
+    public virtual Task<IPlaywrightBrowserInstance> Open(IPlaywrightBrowserLaunchOptions o)
     {
-        BravePlaywrightBrowserInstance browser = null;
-        try
-        {
-            browser = new BravePlaywrightBrowserInstance(
-            EventAggregator,
-            o,
-            SetPreferencesService,
-            ApplicationEnvironment,
-            UserDefaultSettingsService,
-            GetBrowserExePath());
-
-            await browser.Open();
-        }
-        catch (Exception e)
-        {
-            await MesageBoxHelper.ShowErrorAsync("Error", e.Message);
-        }
-
-        return browser;
+        throw new NotImplementedException();
+        //BravePlaywrightBrowserInstance browser = null;
+        //try
+        //{
+        //    browser = new BravePlaywrightBrowserInstance(
+        //    EventAggregator,
+        //    o,
+        //    SetPreferencesService,
+        //    ApplicationEnvironment,
+        //    UserDefaultSettingsService,
+        //    GetBrowserExePath());
+//
+        //    await browser.Open();
+        //}
+        //catch (Exception e)
+        //{
+        //    await MesageBoxHelper.ShowErrorAsync("Error", e.Message);
+        //}
+//
+        //return browser;
     }
 
     // use BraveSystemBrowser for call this method
