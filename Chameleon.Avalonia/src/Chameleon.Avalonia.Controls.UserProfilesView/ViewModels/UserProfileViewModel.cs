@@ -13,7 +13,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
-public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileActionsViewModel
+public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileActionsViewModel
 {
     private readonly IUserProfileService _userProfileService;
     private readonly IApplicationUser _applicationUser;
@@ -21,14 +21,12 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
 
     [ObservableProperty]
     private UserProfile _userProfile;
-
     [ObservableProperty]
     private bool _isChromeRunning;
     [ObservableProperty]
     private bool _isBraveRunning;
     [ObservableProperty]
     private bool _isFFRunning;
-
     [ObservableProperty]
     private bool _isShowGlyph;
     [ObservableProperty]
@@ -37,9 +35,10 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
     private bool _isShowD;
     [ObservableProperty]
     private bool _isShowF;
-
     [ObservableProperty]
     private bool _isForeground;
+
+    private ISystemBrowserInstance _systemBrowserInstance;
 
     public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
     public bool IsFavorite => UserProfile?.IsFavourite ?? false;
@@ -50,7 +49,9 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
     public bool IsOutreachBtnEnabled => !IsSharedProfile || UserProfile.HasPermission(PermissionNames.Pages_Outreach);
     public bool IsRssBtnEnabled => !IsSharedProfile || UserProfile.HasPermission(PermissionNames.Pages_RSS);
 
-    IUserProfile IUserProfileViewModelBase.UserProfile => UserProfile; 
+    public ISystemBrowserInstance SBI => _systemBrowserInstance;
+
+    IUserProfile IUserProfileViewModelBase.UserProfile => UserProfile;
 
     public UserProfileViewModel(
         IUserProfileService userProfileService,
@@ -60,13 +61,13 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
         bool isShowCheckboxColumn = true,
         bool isShowGlyph = true,
         bool isShowC = true,
-        bool isShowD = true ,
+        bool isShowD = true,
         bool isShowF = true
         )
     {
         _systemBrowserManager = systemBrowserManager;
-        _userProfileService = userProfileService;  
-        _applicationUser = applicationUser;   
+        _userProfileService = userProfileService;
+        _applicationUser = applicationUser;
         _userProfile = userProfile;
 
         Title = _userProfile.Title;
@@ -87,11 +88,19 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
 
         EventAggregator
             .GetEvent<ClosedUserSystemBrowserEvent>()
-            .Subscribe(a => { IsForeground = SetRunning(a, false); });
+            .Subscribe(a =>
+            {
+                _systemBrowserInstance = null;
+                IsForeground = SetRunning(a, false);
+            });
 
-        EventAggregator
-            .GetEvent<ForegroundUserSystemBrowserEvent>()
-            .Subscribe(a => SetForgroung(a));
+        EventAggregator.GetEvent<ForegroundUserSystemBrowserEvent>().Subscribe(a =>
+            {
+                if (a.UserProfile.Id == UserProfile.Id)
+                    IsForeground = true;
+                else
+                    IsForeground = false;
+            });
 
         EventAggregator.GetEvent<SavedUserProfileEvent>().Subscribe(a =>
         {
@@ -106,10 +115,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
 
     void SetForgroung(UserProfileSystemBrowserProcessEventArgs args)
     {
-        if (args.UserProfile.Id == UserProfile.Id)
-            IsForeground = true;
-        else
-            IsForeground = false;
+
     }
     bool SetRunning(UserProfileSystemBrowserProcessEventArgs args, bool running) => args.UserProfile.Id == UserProfile.Id && args.BrowserType switch
     {
@@ -125,38 +131,34 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
         ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<IUserProfileSidePanelView, IUserProfileSidePanelViewModel>(vm =>
         {
             vm.UserProfile = UserProfile;
-        }, null,"Copy Pasta",156);
+        }, null, "Copy Pasta", 156);
     }
 
     [RelayCommand]
     private void Favorite()
     {
         if (!IsFavorite)
-            FavoriteUserProfile();
+        {
+            UserProfile.IsFavourite = true;
+            EventAggregator
+                .GetEvent<FavoriteUserProfileEvent>()
+                .Publish(new UserProfileEventArgs(UserProfile));
+
+        }
         else
-            UnfavoriteUserProfile();
+        {
+            UserProfile.IsFavourite = false;
+            EventAggregator
+                .GetEvent<UnfavoriteUserProfileEvent>()
+                .Publish(new UserProfileEventArgs(UserProfile));
+
+        }
 
         EventAggregator
             .GetEvent<UpdateFavoriteFolderEvent>()
             .Publish();
 
         OnPropertyChanged(nameof(IsFavorite));
-    }
-
-   
-    private void FavoriteUserProfile()
-    {
-        UserProfile.IsFavourite = true;
-        EventAggregator
-            .GetEvent<FavoriteUserProfileEvent>()
-            .Publish(new UserProfileEventArgs(UserProfile));
-    }
-    private void UnfavoriteUserProfile()
-    {
-        UserProfile.IsFavourite = false;
-        EventAggregator
-            .GetEvent<UnfavoriteUserProfileEvent>()
-            .Publish(new UserProfileEventArgs(UserProfile));
     }
     [RelayCommand]
     private async Task DeleteUserProfile()
@@ -186,18 +188,15 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
         ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<ITopMostSidePanelView, ITopMostSidePanelViewModel>(
             vm =>
             {
-                if(!vm.RunningList.Contains(this))
+                if (!vm.RunningList.Contains(this))
                     vm.RunningList.Add(this);
 
                 vm.Update();
             },
-            vm => 
-            { 
+            vm =>
+            {
                 vm.RunningList.Clear();
-            },"SCP", 172);
-        //EventAggregator
-        //    .GetEvent<OpenUserBrowserEvent>()
-        //    .Publish(new UserProfileEventArgs(UserProfile));
+            }, "SCP", 172);
     }
     [RelayCommand]
     private async Task OpenFirefox()
@@ -217,31 +216,15 @@ public partial class UserProfileViewModel : SubPageViewModelBase , IUserProfileA
     [RelayCommand]
     public async Task OpenSystemBrowser(SystemBrowserType browserType)
     {
-        //await MesageBoxHelper.ShowAsync("",Directory.GetCurrentDirectory());
-        string? uri = null;
-        //TODO:
-        //IUserDefaultSettingsService userDefaultsSettingsService = ContainerServiceHelper.Resolve<IUserDefaultSettingsService>();
-        //var defaults = await Task.Run(()=>userDefaultsSettingsService.GetAll());
-        //if (defaults.Any())
-        //    uri = defaults[new Random().Next(defaults.Count)].DefaultUrl;
-
-        //var args = new UserProfileSystemBrowserEventArgs(
-        //      UserProfile, browserType, uri);
-
-        //EventAggregator
-        //    .GetEvent<OpenUserSystemBrowserEvent>()
-        //    .Publish(args);
-
-
-        _ = await _systemBrowserManager
-                .Get(browserType)
-                .Open(new SystemBrowserLaunchOptions
-                {
-                    Url = uri,
-                    SignIn = false,
-                    UserProfile = UserProfile,
-                    BrowserType = browserType,
-                });
+        _systemBrowserInstance =
+             await _systemBrowserManager.Get(browserType)
+                 .Open(new SystemBrowserLaunchOptions
+                 {
+                     Url = null,
+                     SignIn = false,
+                     UserProfile = UserProfile,
+                     BrowserType = browserType,
+                 });
     }
 
     private bool _isSelected;

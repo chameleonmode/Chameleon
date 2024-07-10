@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.UserProfiles;
+﻿using Chameleon.Interfaces.App.UserProfiles;
+using Chameleon.Interfaces.UserProfiles;
 using System;
 
 namespace Chameleon.Interfaces.WebBrowser
@@ -7,7 +8,9 @@ namespace Chameleon.Interfaces.WebBrowser
     {
         string Url { get; }
         bool SignIn { get; }
-        IUserProfile UserProfile { get; }
+
+        public IUserProfile UserProfile { get; }
+        public IUserProfileActionsViewModel UserProfileVM { get; }
         SystemBrowserType BrowserType { get; }
     }
 }

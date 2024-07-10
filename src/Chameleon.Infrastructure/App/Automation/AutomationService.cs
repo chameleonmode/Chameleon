@@ -1,59 +1,47 @@
-﻿using Chameleon.Interfaces.App.Automation.Entities;
-using Chameleon.Interfaces.App.Automation.Repositories;
-using Chameleon.Interfaces.App.Automation.Services;
-using System;
-using System.Collections.Generic;
+﻿using Chameleon.Core.Util;
+using Chameleon.Domain.Entities.Automation;
+using System.IO;
 
 namespace Chameleon.Infrastructure.App.Automation;
-public class AutomationService
+public class AutomationService(IAutomationScriptRepository repository)
     : IAutomationService
 {
-    private readonly IAutomationScriptRepository _automationRepository;
-
-    public AutomationService(
-        IAutomationScriptRepository repository
-        )
+    public Task<List<IAutomationScriptDescription>> GetAll() => Task.Run(() =>
     {
-        _automationRepository = repository;
-
-        InitScripts();
-    }
-
-    private Lazy<IList<IAutomationScriptDescription>> _scripts;
-    private IList<IAutomationScriptDescription> Scripts => _scripts.Value;
-
-    public IList<IAutomationScriptDescription> GetAll()
-    {
-        return Scripts;
-    }
-
-    public void UpdateParameter(IAutomationScriptParameter param)
-    {
-        _automationRepository.UpdateParameter(param);
-    }
-
-    public void SetParametersValue(IList<IAutomationParameterValue> values)
-    {
-        _automationRepository.SetParametersValue(values);
-    }
-
-    private void InitScripts()
-    {
-        _scripts = new Lazy<IList<IAutomationScriptDescription>>(() => GetScripts(), true);
-    }
-
-    private IList<IAutomationScriptDescription> GetScripts()
-    {
-        var entities = _automationRepository.GetAllScriptDescription();
+        var entities = repository.GetAllScriptDescription();
         var response = new List<IAutomationScriptDescription>(entities);
 
         return response;
-    }
+    });
 
-    public string GetScriptBody(int id)
+    public Task<List<IAutomationScriptDescription>> GetAll(string filepath) => Task.Run(() =>
     {
-        var entity = _automationRepository.GetScriptBody(id);
+        var returned = new List<IAutomationScriptDescription>();
+        foreach (var item in IOtil.ReadDirectory(filepath))
+        {
+            FileInfo inf = new FileInfo(item);
+            if(inf.Extension != ".cs")
+                continue;
+            returned.Add(new AutomationScriptDescription()
+            {
+                Id = -1,
+                Title = inf.Name,
+                Description = inf.Directory.Name,
+                FilePath = inf.FullName,
+            });
+        }
+        return returned;
+    });
 
-        return entity;
-    }
+    public Task UpdateParameter(IAutomationScriptParameter param) => Task.Run(() =>
+        repository.UpdateParameter(param));
+
+
+    public Task SetParametersValue(IList<IAutomationParameterValue> values) => Task.Run(() => 
+        repository.SetParametersValue(values));
+
+    public Task<string> GetScriptBody(int id) => Task.Run(() =>
+        repository.GetScriptBody(id));
+
+    public Task<string> GetScriptBody(string filepath) => File.Exists(filepath) ? File.ReadAllTextAsync(filepath) : Task.FromResult(string.Empty);
 }

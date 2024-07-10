@@ -9,6 +9,7 @@ public interface IAutomationScriptViewModel
     int Id { get; set; }
     string Title { get; set; }
     string Description { get; set; }
+    string Filepath { get; set; }
     bool IsHasParameter { get; }
     IList<IAutomationScriptParameterViewModel> Parameters { get; set; }
 

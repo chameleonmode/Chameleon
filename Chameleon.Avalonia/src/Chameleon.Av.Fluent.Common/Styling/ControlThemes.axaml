@@ -104,6 +104,7 @@
 	<ControlTheme TargetType="local:PageHeaderControl"
 					x:Key="{x:Type local:PageHeaderControl}">
 		<Setter Property="Height" Value="296" />
+		<Setter Property="Margin" Value="12 12 12 0" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<!--<Panel>-->

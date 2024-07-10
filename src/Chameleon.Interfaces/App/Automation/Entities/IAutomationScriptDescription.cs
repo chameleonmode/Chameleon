@@ -9,5 +9,6 @@ public interface IAutomationScriptDescription
 {
     string Title { get; set; }
     string Description { get; set; }
+    string FilePath { get; set; }
     IList<IAutomationParameterValue> Parameters { get; set; }
 }

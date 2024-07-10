@@ -1,1 +1,0 @@
-﻿global using Chameleon.Prism.Events;

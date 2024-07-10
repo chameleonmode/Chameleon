@@ -10,4 +10,7 @@ public interface ISystemBrowserInstance
     UserProfileSystemBrowserProcessEventArgs GetArgs(Process process);
     Task Open();
     void MakeForeground();
+    int Port { get; }
+    Process? Brocess { get; set; }
+    void Cleanup();
 }

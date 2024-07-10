@@ -1,6 +1,4 @@
-﻿using Avalonia;
-using Chameleon.Application.Events;
-using Chameleon.Avalonia.Controls.Automation.ViewModels;
+﻿using Chameleon.Avalonia.Controls.Automation.ViewModels;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Collections;
@@ -19,10 +17,10 @@ using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Views.List;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -38,125 +36,78 @@ public partial class UserProfilesViewModel
     private readonly IApplicationUser _currentUser;
     private readonly ISystemBrowserManager _systemBrowserManager;
     private readonly IAutomationService _automationService;
-    private readonly IToastNotificationService _toastNotificationService;
-    private readonly AppSettingsAutomation _settings;
     private readonly IAutomationBrowserService _automationBrowserService;
+
+    private readonly ObservableCollection<SystemBrovserItemViewModel> _browserItems =
+    [
+        new SystemBrovserItemViewModel(SystemBrowserType.Brave),
+        new SystemBrovserItemViewModel(SystemBrowserType.Chrome)
+    ];
 
     private ObservableCollection<IUserProfile, UserProfileViewModel> _mapping;
     private ObservableCollection<IAutomationScriptDescription, IAutomationScriptViewModel> _scriptMapping;
 
-    public UserProfilesViewModel(
-        IUserProfileService userProfileService,
-        IUserProfileFolderService userProfileFolderService,
-        ISystemBrowserManager systemBrowserManager,
-        IApplicationUser currentUser,
-        IAutomationService automationService,
-        IToastNotificationService toastNotificationService,
-        IAutomationBrowserService automationBrowserService
-        )
-    {
-        _systemBrowserManager = systemBrowserManager;
-        _userProfileService = userProfileService;
-        _userProfileFolderService = userProfileFolderService;
-        _currentUser = currentUser;
-        _automationService = automationService;
-        _toastNotificationService = toastNotificationService;
-        _automationBrowserService = automationBrowserService;
+    private IEnumerable<UserProfileViewModel> _selectedProfiles;
 
-        EventAggregator.GetEvent<DeleteUserProfileEvent>()
-           .Subscribe(OnDeleteUserProfileEvent);
+    private SystemBrovserItemViewModel _selectedBrowserItem;
+    private CancellationTokenSource _cts;
 
-        EventAggregator.GetEvent<AfterCreateOrRemoveFolderEvent>()
-            .Subscribe(OnHandleUserEvent);
+    [ObservableProperty]
+    private int _totalCount;
 
-        EventAggregator.GetEvent<SelectedChangeUserProfileEvent>()
-            .Subscribe(OnSelectedChanged);
+    [ObservableProperty]
+    private bool _isWaiting = true;
 
-        EventAggregator.GetEvent<SavedUserProfileFolderEvent>()
-            .Subscribe(OnSaveFolder);
+    [ObservableProperty]
+    private bool _hasFolder;
 
-        EventAggregator.GetEvent<UpdateStaleDataEvent>()
-           .Subscribe(LoadAsync);
+    [ObservableProperty]
+    private bool _isVisibleRunButton = true;
 
-        EventAggregator.GetEvent<FinishScriptExecutionEvent>()
-            .Subscribe(OnHandleFinishScriptExecutionEvent);
+    [ObservableProperty]
+    private bool _isVisibleStopButton;
 
-        _settings = new AppSettingsAutomation();
-    }
+    [ObservableProperty]
+    private bool _isVisibleWaitButton;
 
-    public override async Task InitAsync(object? param)
-    {
-        await base.InitAsync(param);
+    [ObservableProperty]
+    private bool _isRecordSelected;
 
-        if (!Loaded)
-        {
-            IsWaiting = true;
-            LoadAsync();
+    private List<IUserProfileActionsViewModel> GetSelectedProfiles => _selectedProfiles.Cast<IUserProfileActionsViewModel>().ToList();
+    public bool HasSelectedItems => ViewModels != null && ViewModels.Any(v => v.IsSelected);
+    public bool IsProfilesExist => _mapping?.Any() == true;
+    public bool HasNoItems => !SearchText.HasAny() && ViewModels == null || ViewModels.Count == 0;
+    public bool IsSelectedScript => SelectedAutomationScript != null;
+    public bool ShowFavoriteIcon => Folder?.Id > 0;
+    public bool HasProfileWithoutFolder => _mapping != null && _mapping.Any(profile => !profile.UserProfile.FolderId.HasValue);
+    public IApplicationUser CurrentUser => _currentUser;
+    public bool IsAddProfilesToFolderCommandEnabled => HasProfileWithoutFolder && !CurrentUser.IsAssistant && Folder?.Id != 0;
+    public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(Folder);
+    public string SelectedFolderTitle => Folder?.Title ?? "All profiles";
+    public ObservableCollection<SystemBrovserItemViewModel> BrowserItems => _browserItems;
 
-            IsWaiting = false;
-
-            InitializeScripts();
-            InintializeLastSelectedAutomation();
-        }
-
-        OnHandleUserEvent();
-    }
-
-    private void InitializeScripts()
-    {
-        var scripts = _automationService.GetAll();
-
-        _scriptMapping = new ObservableCollection<IAutomationScriptDescription,
-            IAutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script, _automationService));
-
-        OnPropertyChanged(nameof(ScriptViewModels));
-        OnPropertyChanged(nameof(SelectedBrowserItem));
-    }
-
-    private void InintializeLastSelectedAutomation()
-    {
-        var lastSelectedBrowserString = _settings.LastSelectedBrowser;
-
-        if (string.IsNullOrEmpty(lastSelectedBrowserString) ||
-            !Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum))
-        {
-            SelectedBrowserItem = BrowserItems[0];
-        }
-        else
-        {
-            SelectedBrowserItem = BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
-        }
-
-        SelectedAutomationScript = ScriptViewModels.FirstOrDefault(s => s.Id == _settings.LastRunScriptId);
-    }
-
-    private ObservableCollection<SystemBrovserItemViewModel> _browserItems;
-    public ObservableCollection<SystemBrovserItemViewModel> BrowserItems
+    private CancellationToken RecreateCancellationToken
     {
         get
         {
-            if (_browserItems == null)
+            if (_cts != null)
             {
-                _browserItems = new ObservableCollection<SystemBrovserItemViewModel>
-                {
-                    new SystemBrovserItemViewModel(SystemBrowserType.Brave),
-                    new SystemBrovserItemViewModel(SystemBrowserType.Chrome)
-                };
+                _cts.Cancel();
+                _cts.Dispose();
             }
 
-            return _browserItems;
+            _cts = new CancellationTokenSource();
+            return _cts.Token;
         }
     }
 
-    private SystemBrovserItemViewModel _selectedBrowserItem;
     public SystemBrovserItemViewModel SelectedBrowserItem
     {
         get => _selectedBrowserItem;
-        
         set
         {
             SetProperty(ref _selectedBrowserItem, value);
-            _settings.LastSelectedBrowser = value.SystemBrowserType.ToString();
+            ConfigHelper.LastSelectedBrowser = value.SystemBrowserType.ToString();
         }
     }
 
@@ -165,7 +116,7 @@ public partial class UserProfilesViewModel
     {
         get
         {
-            if (_scriptViewModels == null && _mapping != null)
+            if (_scriptViewModels == null && _scriptMapping != null)
             {
                 _scriptViewModels = new ObservableCollectionView<IAutomationScriptViewModel>(_scriptMapping);
             }
@@ -174,26 +125,6 @@ public partial class UserProfilesViewModel
         }
     }
 
-    private bool _isVisibleRunButton = true;
-    public bool IsVisibleRunButton
-    {
-        get => _isVisibleRunButton;
-        set => SetProperty(ref _isVisibleRunButton, value);
-    }
-
-    private bool _isVisibleStopButton;
-    public bool IsVisibleStopButton
-    {
-        get => _isVisibleStopButton;
-        set => SetProperty(ref _isVisibleStopButton, value);
-    }
-
-    private bool _isVisibleWaitButton;
-    public bool IsVisibleWaitButton
-    {
-        get => _isVisibleWaitButton;
-        set => SetProperty(ref _isVisibleWaitButton, value);
-    }
 
     private IAutomationScriptViewModel _selectedAutomationScript;
     public IAutomationScriptViewModel SelectedAutomationScript
@@ -201,17 +132,15 @@ public partial class UserProfilesViewModel
         get { return _selectedAutomationScript; }
         set
         {
-            if (_selectedAutomationScript != value)
+            if (value != null && _selectedAutomationScript != value)
             {
                 SetProperty(ref _selectedAutomationScript, value);
                 OnPropertyChanged(nameof(IsSelectedScript));
                 RunAutomationCommand.NotifyCanExecuteChanged();
-                _settings.LastRunScriptId = value.Id;
+                ConfigHelper.LastRunScriptId = value.Id;
             }
         }
     }
-
-    public bool IsSelectedScript => SelectedAutomationScript != null;
 
     private string _searchText = string.Empty;
     public string SearchText
@@ -221,80 +150,37 @@ public partial class UserProfilesViewModel
         {
             if (SetProperty(ref _searchText, value))
             {
-                //TODO:?_debounceTimer.Debounce(2000, ApplySearchFilter);
                 ApplySearchFilter();
             }
         }
     }
 
-    public bool ShowFavoriteIcon => Folder?.Id > 0;
-
-    private void OnHandleUserEvent()
+    private Func<IUserProfile, bool> _filter;
+    public Func<IUserProfile, bool> Filter
     {
-        OnPropertyChanged(nameof(ViewModels));
-        OnPropertyChanged(nameof(HasNoItems));
-        OnPropertyChanged(nameof(IsProfilesExist));
-        OnPropertyChanged(nameof(HasSelectedItems));
-        OnPropertyChanged(nameof(HasProfileWithoutFolder));
-        OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
-    }
-
-    public bool HasProfileWithoutFolder => _mapping != null && _mapping.Any(profile => !profile.UserProfile.FolderId.HasValue);
-    public IApplicationUser CurrentUser => _currentUser;
-    public bool IsAddProfilesToFolderCommandEnabled => HasProfileWithoutFolder && !CurrentUser.IsAssistant && Folder?.Id != 0;
-    public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(Folder);
-
-    private PaginatorViewModel _paginatorViewModel;
-    public PaginatorViewModel PaginatorViewModel
-    {
-        get => _paginatorViewModel;
+        get => _filter;
         set
         {
-            if (SetProperty(ref _paginatorViewModel, value))
+            if (SetProperty(ref _filter, value))
             {
-                _paginatorViewModel.ChangePageIndex += OnChangePage;
+                SetViewModelsFilter();
             }
         }
     }
+    public ListSortDirection[] Sorts { get; } = (ListSortDirection[])Enum.GetValues(typeof(ListSortDirection));
 
-    private void OnSaveFolder(UserProfileFolderEventArgs args)
+    private ListSortDirection _sortSelected = ListSortDirection.Ascending;
+    public ListSortDirection SortSelected
     {
-        OnPropertyChanged(nameof(Folder));
-
-        if (HasFolder)
+        get => _sortSelected;
+        set
         {
-            //var lastCrumbs = BreadcrumbsViewModel.Breadcrumbs.Last();
-            //lastCrumbs.Title = Folder.Title;
+            if (SetProperty(ref _sortSelected, value))
+            {
+                ViewModels.Ascending = value == ListSortDirection.Ascending;
+                PaginatorViewModel.PageIndex = 0;
+            }
         }
-    }
-
-    private void OnChangePage(object sender, EventArgs args)
-    {
-        ViewModels.Offset = PaginatorViewModel.Skip;
-    }
-
-    private void OnViewModelChange(object sender, EventArgs args)
-    {
-        var items = ViewModels.Filter == null ? _mapping.ToList() : _mapping.Where(ViewModels.Filter).ToList();
-        int count = items.Count;
-
-        PaginatorViewModel.TotalCount = count;
-        TotalCount = count;
-    }
-
-    private void OnOpenFolder(IUserProfileFolder userProfileFolder)
-    {
-        Folder = userProfileFolder;
-
-        UnselectItems();
-        OnHandleUserEvent();
-    }
-    public void Open(IUserProfileFolder? folder)
-    {
-        OnOpenFolder(folder);
-        //_viewModels.Refresh();
-        //Folder = folder;
-        //OnPropertyChanged(nameof(Folder));
     }
 
     private IUserProfileFolder? _folder;
@@ -308,7 +194,21 @@ public partial class UserProfilesViewModel
         {
             if (SetProperty(ref _folder, value))
             {
-                UpdateFolder();
+                //UpdateFolder();
+                SearchText = string.Empty;
+
+                int folderId = Folder.Id;
+
+                if (folderId == default)
+                {
+                    HasFolder = false;
+                    Filter = null;
+
+                    return;
+                }
+
+                HasFolder = true;
+                Filter = profile => profile.FolderId == folderId;
             }
 
             OnPropertyChanged(nameof(ShowFavoriteIcon));
@@ -316,34 +216,45 @@ public partial class UserProfilesViewModel
             OnPropertyChanged(nameof(SelectedFolderTitle));
         }
     }
-    public string SelectedFolderTitle => Folder?.Title ?? "All profiles";
 
-    private void UpdateFolder()
+    private ObservableCollectionView<UserProfileViewModel> _viewModels;
+    public ObservableCollectionView<UserProfileViewModel> ViewModels
     {
-        SearchText = string.Empty;
-
-        int folderId = Folder.Id;
-
-        if (folderId == default)
+        get
         {
-            HasFolder = false;
-            Filter = null;
+            if (_viewModels == null && _mapping != null)
+            {
+                _viewModels = new ObservableCollectionView<UserProfileViewModel>(_mapping)
+                {
+                    TrackItemChanges = true,
+                    TrackCollectionChanges = true,
+                    Order = profile => profile.Title
+                };
 
-            return;
+                //InitPaginator();
+                PaginatorViewModel = new PaginatorViewModel(_viewModels.Count);
+                ViewModels.Offset = PaginatorViewModel.Skip;
+                ViewModels.Limit = PaginatorViewModel.OnPageItems;
+                TotalCount = PaginatorViewModel.TotalCount;
+                SetViewModelsFilter();
+                OnPropertyChanged(nameof(HasNoItems));
+                OnPropertyChanged(nameof(HasSelectedItems));
+            }
+
+            return _viewModels;
         }
-
-        HasFolder = true;
-        Filter = profile => profile.FolderId == folderId;
     }
 
-
-    private int _totalCount;
-    public int TotalCount
+    private PaginatorViewModel _paginatorViewModel;
+    public PaginatorViewModel PaginatorViewModel
     {
-        get => _totalCount;
+        get => _paginatorViewModel;
         set
         {
-            SetProperty(ref _totalCount, value);
+            if (SetProperty(ref _paginatorViewModel, value))
+            {
+                _paginatorViewModel.ChangePageIndex += (s, a) => { ViewModels.Offset = PaginatorViewModel.Skip; };
+            }
         }
     }
 
@@ -360,9 +271,117 @@ public partial class UserProfilesViewModel
         }
     }
 
-    public bool HasSelectedItems => ViewModels != null && ViewModels.Any(v => v.IsSelected);
+    public UserProfilesViewModel(
+        IUserProfileService userProfileService,
+        IUserProfileFolderService userProfileFolderService,
+        ISystemBrowserManager systemBrowserManager,
+        IApplicationUser currentUser,
+        IAutomationService automationService,
+        IAutomationBrowserService automationBrowserService
+        )
+    {
+        _systemBrowserManager = systemBrowserManager;
+        _userProfileService = userProfileService;
+        _userProfileFolderService = userProfileFolderService;
+        _currentUser = currentUser;
+        _automationService = automationService;
+        _automationBrowserService = automationBrowserService;
 
-    private IEnumerable<UserProfileViewModel> _selectedProfiles;
+        EventAggregator.GetEvent<DeleteUserProfileEvent>()
+           .Subscribe(OnDeleteUserProfileEvent);
+
+        EventAggregator.GetEvent<AfterCreateOrRemoveFolderEvent>()
+            .Subscribe(OnHandleUserEvent);
+
+        EventAggregator.GetEvent<SelectedChangeUserProfileEvent>()
+            .Subscribe(OnSelectedChanged);
+
+        EventAggregator.GetEvent<SavedUserProfileFolderEvent>()
+            .Subscribe((e) => OnPropertyChanged(nameof(Folder)));
+
+        EventAggregator.GetEvent<UpdateStaleDataEvent>()
+           .Subscribe(LoadAsync);
+    }
+
+    public override async Task InitAsync(object? param)
+    {      
+        IsWaiting = true;
+
+        await base.InitAsync(param);
+
+        if (!Loaded)
+        {
+            LoadAsync();
+        }
+
+        await InitializeScripts();
+        InintializeLastSelectedAutomation();
+
+        OnHandleUserEvent();  
+
+        IsWaiting = false;
+    }
+
+    private async Task InitializeScripts()
+    {
+        var scripts = await _automationService.GetAll();
+        scripts.AddRange(await _automationService.GetAll(ConfigHelper.UserScriptsDirectory));
+
+        _scriptViewModels = null;
+        _scriptMapping = new ObservableCollection<IAutomationScriptDescription,
+            IAutomationScriptViewModel>(scripts, script => new AutomationScriptViewModel(script));
+
+        OnPropertyChanged(nameof(ScriptViewModels));
+        OnPropertyChanged(nameof(SelectedBrowserItem));
+    }
+
+    private void InintializeLastSelectedAutomation()
+    {
+        var lastSelectedBrowserString = ConfigHelper.LastSelectedBrowser;
+
+        if (!lastSelectedBrowserString.HasAny() ||
+            !Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum))
+        {
+            SelectedBrowserItem = BrowserItems[0];
+        }
+        else
+        {
+            SelectedBrowserItem = BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
+        }
+
+        SelectedAutomationScript = ScriptViewModels.FirstOrDefault(s => s.Id == ConfigHelper.LastRunScriptId);
+        if (SelectedAutomationScript is null && ScriptViewModels.Count > 0)
+            SelectedAutomationScript = ScriptViewModels[0];
+    }
+
+    private void OnHandleUserEvent()
+    {
+        OnPropertyChanged(nameof(ViewModels));
+        OnPropertyChanged(nameof(HasNoItems));
+        OnPropertyChanged(nameof(IsProfilesExist));
+        OnPropertyChanged(nameof(HasSelectedItems));
+        OnPropertyChanged(nameof(HasProfileWithoutFolder));
+        OnPropertyChanged(nameof(IsAddProfilesToFolderCommandEnabled));
+    }
+
+    private void OnViewModelChange(object sender, EventArgs args)
+    {
+        var items = ViewModels.Filter == null ? _mapping.ToList() : _mapping.Where(ViewModels.Filter).ToList();
+        int count = items.Count;
+
+        PaginatorViewModel.TotalCount = count;
+        TotalCount = count;
+    }
+
+    public void Open(IUserProfileFolder? folder)
+    {
+        Folder = folder;
+
+        UnselectItems();
+        OnHandleUserEvent();
+    }
+
+
     private void OnSelectedChanged(SelectedUserProfileEventArgs arr = null)
     {
         _selectedProfiles = _mapping.Where(profile => profile.IsSelected);
@@ -371,15 +390,6 @@ public partial class UserProfilesViewModel
         RunAutomationCommand.NotifyCanExecuteChanged();
     }
 
-    private bool _hasFolder;
-    public bool HasFolder
-    {
-        get => _hasFolder;
-        set
-        {
-            SetProperty(ref _hasFolder, value);
-        }
-    }
 
     [RelayCommand]
     private void SelectAll()
@@ -434,7 +444,21 @@ public partial class UserProfilesViewModel
             $"Are you sure you want to delete {SelectedCount} profiles?",
             ContentDialogButtons.YesNo,
             "DeleteLines"))
-            await DeleteProfiles();
+        {
+            var profiles = _selectedProfiles.ToList();
+
+            foreach (var profile in profiles)
+            {
+                await Task.Run(() => _userProfileService.Delete(profile.UserProfile));
+                profile.IsSelected = false;
+                _mapping.Remove(profile);
+            }
+            _viewModels = null;
+            OnViewModelChange(this, EventArgs.Empty);
+            ChangeProfilesInFavoriteFolder();
+            OnSelectedChanged();
+            OnHandleUserEvent();
+        }
     }
 
     private void OnDeleteUserProfileEvent(UserProfileEventArgs obj)
@@ -449,25 +473,7 @@ public partial class UserProfilesViewModel
         OnSelectedChanged();
         OnHandleUserEvent();
     }
-    private async Task DeleteProfiles()
-    {
-        var profiles = _selectedProfiles.ToList();
 
-        foreach (var profile in profiles)
-        {
-
-            await Task.Run(() => _userProfileService.Delete(profile.UserProfile));
-            profile.IsSelected = false;
-            _mapping.Remove(profile);
-        }
-        _viewModels = null;
-        OnViewModelChange(this, EventArgs.Empty);
-        ChangeProfilesInFavoriteFolder();
-        OnSelectedChanged();
-        OnHandleUserEvent();
-    }
-
-    
     [RelayCommand]
     private void RemoveProfilesFromFolder()
     {
@@ -493,8 +499,6 @@ public partial class UserProfilesViewModel
     {
         if (_folder.Id == 0)
             return;
-
-        //_userProfilesPopupService.ShowPopup(_folder);
 
         if (await ContentDialogService.ShowAsync<IAddUserProfilesPopupView, IAddUserProfilesPopupViewModel>(
             viewModel =>
@@ -545,41 +549,20 @@ public partial class UserProfilesViewModel
         var folderId = HasFolder ? (int?)Folder.Id : null;
 
         var profile = await _userProfileService.CreateAsync(folderId);
-        if (folderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == profile.Id)) 
+        if (folderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == profile.Id))
             OnHandleUserEvent();
 
         return profile;
     }
 
-    private ObservableCollectionView<UserProfileViewModel> _viewModels;
-    public ObservableCollectionView<UserProfileViewModel> ViewModels
+
+    [RelayCommand]
+    private void OpenChameleonBrowser()
     {
-        get
+        GetSelectedProfiles.ForEach(profile =>
         {
-            if (_viewModels == null && _mapping != null)
-            {
-                _viewModels = new ObservableCollectionView<UserProfileViewModel>(_mapping)
-                {
-                    TrackItemChanges = true,
-                    TrackCollectionChanges = true,
-                    Order = profile => profile.Title
-                };
-
-                InitPaginator();
-                SetViewModelsFilter();
-                OnPropertyChanged(nameof(HasNoItems));
-                OnPropertyChanged(nameof(HasSelectedItems));
-            }
-
-            return _viewModels;
-        }
-    }
-    private void InitPaginator()
-    {
-        PaginatorViewModel = new PaginatorViewModel(_viewModels.Count);
-        ViewModels.Offset = PaginatorViewModel.Skip;
-        ViewModels.Limit = PaginatorViewModel.OnPageItems;
-        TotalCount = PaginatorViewModel.TotalCount;
+            profile.OpenUserBrowser();
+        });
     }
 
     [RelayCommand]
@@ -600,74 +583,61 @@ public partial class UserProfilesViewModel
         OpenSystemBrowser(SystemBrowserType.Brave);
     }
 
-    [RelayCommand]
-    private void OpenChameleonBrowser()
+    private void OpenSystemBrowser(SystemBrowserType browserType)
     {
-        var profiles = GetSelectedProfiles();
-
-        profiles.ForEach( profile =>
+        GetSelectedProfiles.ForEach(async (selectedProfile) =>
         {
-             profile.OpenUserBrowser();
+            await selectedProfile.OpenSystemBrowser(browserType);
         });
-
-        //TODO: ? EventAggregator
-        //    .GetEvent<OpenMainWindowByIndexEvent>()
-        //    .Publish(new OpenMainWindowByIndexEventArgs(2));
-
     }
 
     [RelayCommand]
-    private void RunAutomation()
+    private async Task RunAutomation()
     {
         if (!ViewModels.Any(p => p.IsSelected == true))
         {
-            _toastNotificationService.ShowInformation("Select one or more profiles to run the automation.");
+            //_toastNotificationService.ShowInformation("Select one or more profiles to run the automation.");
+            await MesageBoxHelper.ShowErrorAsync(
+                "Select",
+                "Select one or more profiles to run the automation.");
             return;
         }
         if (SelectedAutomationScript == null)
         {
-            _toastNotificationService.ShowInformation("Select an automation.");
+            //_toastNotificationService.ShowInformation("Select an automation.");
+            await MesageBoxHelper.ShowErrorAsync(
+                "Select",
+                "Select an automation.");
             return;
         }
 
-        Task.Run(RunAutomationAsync);
         IsVisibleRunButton = false;
         IsVisibleStopButton = true;
-    }
 
-    private CancellationTokenSource _cts;
-    private CancellationToken RecreateCancellationToken()
-    {
-        if (_cts != null)
-        {
-            _cts.Cancel();
-            _cts.Dispose();
-        }
-
-        _cts = new CancellationTokenSource();
-        return _cts.Token;
-    }
-
-    private async Task RunAutomationAsync()
-    {
+        //await RunAutomationAsync();
         var script = new AutomationScriptDescription
         {
             Id = SelectedAutomationScript.Id,
             Title = SelectedAutomationScript.Title,
             Description = SelectedAutomationScript.Description,
-            Parameters = SelectedAutomationScript.Parameters
-            .Select(sp => (IAutomationParameterValue)new AutomationParameterValue
-            {
-                Name = sp.Name,
-                Value = sp.Value,
-                ParameterId = sp.Id
-            }).ToList()
+            FilePath = SelectedAutomationScript.Filepath,
+            Parameters = SelectedAutomationScript.Parameters.Select(
+                sp => (IAutomationParameterValue)new AutomationParameterValue
+                {
+                    Name = sp.Name,
+                    Value = sp.Value,
+                    ParameterId = sp.Id
+                }).ToList()
         };
-        var profiles = _selectedProfiles.Select(p => (IUserProfile)p.UserProfile).ToList();
 
-        var token = RecreateCancellationToken();
-        await _automationBrowserService.RunScript(script, SelectedBrowserItem.SystemBrowserType, profiles, token);
+        //var token = RecreateCancellationToken;
+        await _automationBrowserService.RunScript(script, SelectedBrowserItem.SystemBrowserType, GetSelectedProfiles, RecreateCancellationToken, IsRecordSelected);
+
+        IsVisibleRunButton = true;
+        IsVisibleStopButton = false;
+        IsVisibleWaitButton = false;
     }
+
 
     [RelayCommand]
     private void StopAutomation()
@@ -675,41 +645,6 @@ public partial class UserProfilesViewModel
         IsVisibleStopButton = false;
         IsVisibleWaitButton = true;
         _cts.Cancel();
-    }
-
-    private void OnHandleFinishScriptExecutionEvent()
-    {
-        IsVisibleStopButton = false;
-        IsVisibleWaitButton = false;
-        IsVisibleRunButton = true;
-    }
-
-    private void OpenSystemBrowser(SystemBrowserType browserType)
-    {
-        var profiles = GetSelectedProfiles();
-
-        profiles.ForEach(async (selectedProfile) =>
-        {
-            await selectedProfile.OpenSystemBrowser(browserType);
-        });
-    }
-
-    private List<UserProfileViewModel> GetSelectedProfiles()
-    {
-        return _selectedProfiles.ToList();
-    }
-
-    private Func<IUserProfile, bool> _filter;
-    public Func<IUserProfile, bool> Filter
-    {
-        get => _filter;
-        set
-        {
-            if (SetProperty(ref _filter, value))
-            {
-                SetViewModelsFilter();
-            }
-        }
     }
 
     private void SetViewModelsFilter()
@@ -730,31 +665,6 @@ public partial class UserProfilesViewModel
 
         OnViewModelChange(this, EventArgs.Empty);
     }
-
-    public ListSortDirection[] Sorts { get; } = (ListSortDirection[])Enum.GetValues(typeof(ListSortDirection));
-
-    private ListSortDirection _sortSelected = ListSortDirection.Ascending;
-    public ListSortDirection SortSelected
-    {
-        get => _sortSelected;
-        set
-        {
-            if (SetProperty(ref _sortSelected, value))
-            {
-                ViewModels.Ascending = value == ListSortDirection.Ascending;
-                PaginatorViewModel.PageIndex = 0;
-            }
-        }
-    }
-
-    public void OnAuthenticated()
-    {
-        IsWaiting = true;
-
-        LoadAsync();
-
-        IsWaiting = false;
-    } 
 
     private void LoadAsync()
     {
@@ -818,8 +728,8 @@ public partial class UserProfilesViewModel
             if (p.FolderId is int fid && fid != 0)
                 ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().SetSelectedById(fid);
             else
-               await ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
-            
+                await ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
+
             Filter = profile => p.Id == profile.Id;
         }
         else
@@ -832,17 +742,4 @@ public partial class UserProfilesViewModel
 
         OnHandleUserEvent();
     }
-    private bool _isWaiting = true;
-    public bool IsWaiting
-    {
-        get => _isWaiting;
-        set => SetProperty(ref _isWaiting, value);
-    }
-
-    public bool IsProfilesExist => _mapping?.Any() == true;
-    
-    public bool HasNoItems => 
-        !SearchText.HasAny() &&
-        ViewModels == null ||
-        ViewModels.Count == 0;
 }

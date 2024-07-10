@@ -16,18 +16,17 @@ public static class IOtil
         });
     }
 
-    public static Task<string[]> ReadDirectory(string path)
+    public static string[] ReadDirectory(string path)
     {
-        return Task.Run(() =>
+        if (Directory.Exists(path))
         {
-            if (Directory.Exists(path))
-            {
-                return Directory.GetFiles(path);
-            }
+            return Directory.GetFiles(path);
+        }
 
-            return [];
-        });
+        return [];
     }
+    public static Task<string[]> ReadDirectoryAsync(string path)
+        => Task.Run(() => ReadDirectory(path));
 
     public static async Task DeleteFExists(string filePath)
     {
@@ -57,7 +56,8 @@ public static class IOtil
 
     public static Task DeleteDExistsAsync(string filePath, bool recuersive = true)
     {
-        return  Task.Run(() => {
+        return Task.Run(() =>
+        {
             DeleteDExists(filePath, recuersive);
         });
     }

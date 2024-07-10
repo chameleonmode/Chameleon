@@ -1,5 +1,6 @@
 ﻿using Chameleon.Interfaces.UserProfiles;
 using Microsoft.Playwright;
+using System;
 
 namespace Chameleon.SystemBrowser.Addons;
 
@@ -48,6 +49,7 @@ public static class ProxyAddonUtil
       "name": "Chameleon Auto Proxy",
       "version": "1.0.0",
       "permissions": [
+        "tabs",
         "webRequest",
         "webRequestBlocking",
         "webRequestAuthProvider",
@@ -62,7 +64,7 @@ public static class ProxyAddonUtil
     }
     """;
 
-    public static string GetBgJsv3(IProxySettings proxy) => """
+    public static string GetBgJsv3(string url, IProxySettings proxy) => """
          chrome.webRequest.onAuthRequired.addListener((details) => {
              return { 
                  authCredentials: {
@@ -74,8 +76,17 @@ public static class ProxyAddonUtil
              };
          }, { urls: ['<all_urls>'] }, ['blocking']);
          
+         """
+         + $@"
          chrome.tabs.reload();
-         """;
+";
+    //let queryOptions = {{ active: true, lastFocusedWindow: true }};
+    //chrome.tabs.query(queryOptions, ([tab]) => {{
+    //  if (chrome.runtime.lastError)
+    //  console.error(chrome.runtime.lastError);
+    //  // `tab` will either be a `tabs.Tab` instance or `undefined`.
+    //  chrome.tabs.update(tab.id, {{active: true, url: ""{url}"" }});
+    //}});
 
     public static string GetBgJs(string loadUrl, IProxySettings proxy) => """
         browser.webRequest.onAuthRequired.addListener((details) => {

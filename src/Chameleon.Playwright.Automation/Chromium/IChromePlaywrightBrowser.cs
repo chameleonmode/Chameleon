@@ -1,5 +1,5 @@
 ﻿namespace Chameleon.Playwright.Automation.Chrome;
-public interface IChromePlaywrightBrowser 
+public interface IChromeiumPlaywrightBrowser
     : IPlaywrightBrowser
 {
 }
