@@ -19,6 +19,33 @@ public abstract class SystemBrowserInstance(
     private MWHandleTrackerUtility windowTracker;
 
     public TaskCompletionSource<bool> OPtcs { get; } = new();
+    protected abstract SystemBrowserType BrowserType { get; }
+
+    public string Starturl { get; private set; }
+    public int Port { get; private set; }
+    public Process? Brocess { get; set; }
+    public IntPtr Handle { get; private set; } = IntPtr.Zero;
+
+    public string BrowserProfileFolderPath =>
+    Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
+
+    protected string BrowserExtensionsFolderPath =>
+        Path.Combine(AddonsUtil.BrowserExtensionsRootFolderPath, BrowserType.ToString());
+
+    public string ProxyExtDir =>
+        Path.Combine(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath), pexdir);
+
+    public IUserProfile UserProfile =>
+        options.UserProfile;
+
+    public static bool IsMao =>
+        OperatingSystem.IsMacOS();
+
+    public bool HasProxyLogin =>
+        UserProfile.Proxy?.CanUse == true &&
+        UserProfile.Proxy.Host.HasAny() &&
+        UserProfile.Proxy.UserName.HasAny() &&
+        UserProfile.Proxy.Password.HasAny();
 
     public virtual async Task Open()
     {
@@ -338,32 +365,5 @@ public abstract class SystemBrowserInstance(
 
         return exts.ToCommaSeparatedString();
     }
-
-    public string BrowserProfileFolderPath =>
-    Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
-
-    protected string BrowserExtensionsFolderPath =>
-        Path.Combine(AddonsUtil.BrowserExtensionsRootFolderPath, BrowserType.ToString());
-
-    public string ProxyExtDir =>
-        Path.Combine(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath), pexdir);
-
-    public IUserProfile UserProfile =>
-        options.UserProfile;
-
-    public static bool IsMao =>
-        OperatingSystem.IsMacOS();
-
-    public bool HasProxyLogin =>
-        UserProfile.Proxy?.CanUse == true &&
-        UserProfile.Proxy.Host.HasAny() &&
-        UserProfile.Proxy.UserName.HasAny() &&
-        UserProfile.Proxy.Password.HasAny();
-
-    public string Starturl { get; private set; }
-    public int Port { get; private set; }
-    public Process? Brocess { get; set; }
-    public IntPtr Handle { get; private set; } = IntPtr.Zero;
-    protected abstract SystemBrowserType BrowserType { get; }
 }
 

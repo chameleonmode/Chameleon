@@ -1,21 +1,8 @@
 ﻿using Chameleon.Application.Events;
 using Chameleon.Common.Helpers;
-using Chameleon.Common.Regions;
-using Chameleon.Domain.Entities;
-using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.Dashboard;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.Services;
-using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.Startup;
-using Chameleon.Interfaces.UserProfileFolders;
-using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Interfaces.Views;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Interfaces.Windows;
 using Chameleon.Prism.Events;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Chameleon.Application.Startup
 {

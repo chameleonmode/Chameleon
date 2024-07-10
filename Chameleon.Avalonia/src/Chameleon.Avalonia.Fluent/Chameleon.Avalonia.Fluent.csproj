@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Desktop" />
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
+		<PackageReference Include="FluentAvaloniaUI" />
+		<PackageReference Include="Prism.Avalonia" />
+		<PackageReference Include="Prism.DryIoc.Avalonia" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj" />
+	  <ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
+	  <ProjectReference Include="..\..\..\src\Chameleon.Application\Chameleon.Application.csproj" />
+	  <ProjectReference Include="..\..\..\src\Chameleon.Core\Chameleon.Core.csproj" />
+	  <ProjectReference Include="..\..\..\src\Chameleon.Domain\Chameleon.Domain.csproj" />
+	  <ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
+	  <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
+	  <ProjectReference Include="..\..\..\src\Chameleon.Playwright.Automation\Chameleon.Playwright.Automation.csproj" />
+	  <ProjectReference Include="..\..\..\src\Chameleon.SystemBrowser\Chameleon.SystemBrowser.csproj" />
+	  <ProjectReference Include="..\..\..\src\Modules\Chameleon.Modules.Auth\Chameleon.Modules.Auth.csproj" />
+	  <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
+	  <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Dialogs\Chameleon.Avalonia.Fluent.Dialogs.csproj" />
+	  <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
+	  <ProjectReference Include="..\Chameleon.Avalonia.Controls.Automation\Chameleon.Avalonia.Controls.Automation.csproj" />
+	  <ProjectReference Include="..\Chameleon.Avalonia.Controls.Dashboard\Chameleon.Avalonia.Controls.Dashboard.csproj" />
+	  <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfilesView\Chameleon.Avalonia.Controls.UserProfilesView.csproj" />
+	  <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj" />
+	  <ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
+	  <ProjectReference Include="..\Chameleon.Avalonia.Controls.Settings\Chameleon.Avalonia.Controls.Settings.csproj" />
+	</ItemGroup>
+</Project>

@@ -58,7 +58,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Controls
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Settings", "Settings", "{9E366904-BF6B-4E48-88AC-AA8FE97659AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Controls.Settings", "Chameleon.Avalonia\src\Chameleon.Controls.Settings\Chameleon.Avalonia.Controls.Settings.csproj", "{D886DD62-5802-4DB8-B9B7-4AE8D365AE86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Controls.Settings", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.Settings\Chameleon.Avalonia.Controls.Settings.csproj", "{D886DD62-5802-4DB8-B9B7-4AE8D365AE86}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dashboard", "Dashboard", "{7CED07BF-8BD1-4D2F-94FB-0615C7321E82}"
 EndProject
@@ -72,13 +72,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Controls
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Desktop", "Chameleon.Avalonia\src\Chameleon.Avalonia.Desktop\Chameleon.Avalonia.Desktop.csproj", "{ABEAB877-7688-494A-84DF-7B44989A2F3E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Fluent", "Chameleon.Avalonia\src\Chameleon.Av.Fluent\Chameleon.Avalonia.Fluent.csproj", "{AD9B695F-B074-4788-9D4C-645719EA0716}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Fluent", "Chameleon.Avalonia\src\Chameleon.Avalonia.Fluent\Chameleon.Avalonia.Fluent.csproj", "{AD9B695F-B074-4788-9D4C-645719EA0716}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Fluent.Common", "Chameleon.Avalonia\src\Chameleon.Av.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj", "{332C26D1-5E70-4486-B5E4-653BF586F3F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Fluent.Common", "Chameleon.Avalonia\src\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj", "{332C26D1-5E70-4486-B5E4-653BF586F3F9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dialogs", "Dialogs", "{3C9BA5F3-8C8F-4451-A521-38179E5256C2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Fluent.Dialogs", "Chameleon.Avalonia\src\Chameleon.Av.Fluent.Dialogs\Chameleon.Avalonia.Fluent.Dialogs.csproj", "{089453ED-4D62-438C-ABED-2EA7DFDA197D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Fluent.Dialogs", "Chameleon.Avalonia\src\Chameleon.Avalonia.Fluent.Dialogs\Chameleon.Avalonia.Fluent.Dialogs.csproj", "{089453ED-4D62-438C-ABED-2EA7DFDA197D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommunityToolkit", "CommunityToolkit", "{31D09692-9476-4B2B-A3D0-04C8F71BA830}"
 EndProject
