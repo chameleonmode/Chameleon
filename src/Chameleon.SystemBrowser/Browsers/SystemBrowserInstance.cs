@@ -1,6 +1,4 @@
-﻿using Chameleon.Interfaces.Services;
-
-namespace Chameleon.SystemBrowser.Common;
+﻿namespace Chameleon.SystemBrowser.Common;
 
 public abstract class SystemBrowserInstance(
     IEventAggregator eventAggregator,
@@ -15,7 +13,6 @@ public abstract class SystemBrowserInstance(
     private readonly string pexdir = Guid.NewGuid().ToString();
     private readonly List<IntPtr> winEventHooks = [];
 
-    public string BrowserExeFilePath => browserExeFilePath;
 
     private U32.WinEventDelegate winEventsCaptureDelegate;
     private MWHandleTrackerUtility windowTracker;
@@ -28,8 +25,11 @@ public abstract class SystemBrowserInstance(
     public Process? Brocess { get; set; }
     public IntPtr Handle { get; private set; } = IntPtr.Zero;
 
+    public string BrowserExeFilePath => 
+        browserExeFilePath;
+
     public string BrowserProfileFolderPath =>
-    Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
+        Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
 
     protected string BrowserExtensionsFolderPath =>
         Path.Combine(AddonsUtil.BrowserExtensionsRootFolderPath, BrowserType.ToString());
@@ -62,17 +62,17 @@ public abstract class SystemBrowserInstance(
             await StartProcess();
         }
 
-        MakeForeground();
+        await MakeForeground();
     }
 
-    public void MakeForeground()
+    public Task MakeForeground()
     {
         if (Brocess != null)
         {
             if (!IsMao)
             {
                 if (Handle == IntPtr.Zero)
-                    return;
+                    return Task.CompletedTask;
 
 #pragma warning disable CA1416 // Validate platform compatibility
                 if (U32.IsWindow(Handle))
@@ -85,11 +85,19 @@ public abstract class SystemBrowserInstance(
             else
             {
                 if(MacOSUtil.SetForegroundWindow(Brocess.Id))
-                 eventAggregator
-                        .GetEvent<ForegroundUserSystemBrowserEvent>()
-                        .Publish(GetArgs(Brocess));
+                {
+                    //Brocess.EnableRaisingEvents = false;
+                    //Brocess.Exited -= OnProcessExited; 
+                    Brocess.Refresh();
+                    //Brocess.Exited += OnProcessExited; 
+                    //Brocess.EnableRaisingEvents = true;
+                    //await Process.Start(BrowserExeFilePath, GetCommandLineArgumentsList()).WaitForExitAsync();
+                    eventAggregator.Blish<ForegroundUserSystemBrowserEvent>(GetArgs(Brocess));
+                }
             }
         }
+        
+        return Task.CompletedTask;
     }
 
     protected virtual async Task InitializeExtensionPath()
@@ -111,31 +119,22 @@ public abstract class SystemBrowserInstance(
     {
         // var tcs = new TaskCompletionSource<string>();
 
-        Brocess = new Process
-        {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = BrowserExeFilePath,
-                Arguments = GetCommandLineArguments(),
-                UseShellExecute = true,
-                ErrorDialog = true,
-                //RedirectStandardOutput = true,
-                CreateNoWindow = true,
-            },
-            EnableRaisingEvents = true,
-        };
+        Brocess = ProUtil.Createa(BrowserExeFilePath, GetCommandLineArguments());
         Brocess.Start();
 
         if (IsMao)
         {
             Handle = Brocess.Handle;
-            // ContainerServiceHelper.Resolve<IDispatcherService>().InvokeOnUiThread(() =>
-            // {
-                 //MacOSUtil.SetupWindowChangeNotification(Brocess.Id);
-            // });
+            Brocess.Exited += OnProcessExited; //(s, e) => { Cleanup(); };
+            int tryCount = 0;
+            while(Brocess?.HasExited == false && 
+                    MacOSUtil.FindWindowByPID(Brocess.Id) == null &&
+                    tryCount++ < 10)
+                await Task.Delay(1500);
+            
+            MacOSWindowListener.Instance.AddPid(Brocess.Id);
 
-            Brocess.Exited += (s, e) => { Cleanup(); };
-            //MacOSUtil.SetForegroundWindow(Brocess.Id);
+            MacOSWindowListener.Instance.WindowForegroundChanged += OnWindowForeground;
         }
         else
         {
@@ -157,6 +156,12 @@ public abstract class SystemBrowserInstance(
         }
 
         OPtcs.TrySetResult(true);
+    }
+
+    void OnWindowForeground(int i) 
+    {
+        if (i == Brocess.Id)
+            eventAggregator.Blish<ForegroundUserSystemBrowserEvent>(GetArgs(Brocess));
     }
 
     public static async Task<string> GetWebSocketDebuggerUrlAsync(int port)
@@ -253,6 +258,8 @@ public abstract class SystemBrowserInstance(
 
     public void Cleanup()
     {
+        MacOSWindowListener.Instance.WindowForegroundChanged -= OnWindowForeground;
+        MacOSWindowListener.Instance.RemPid(Brocess.Id);
         ExUtil.TryCatch(() =>
         {
             if (!IsMao)
@@ -269,6 +276,12 @@ public abstract class SystemBrowserInstance(
         Handle = IntPtr.Zero;
         OnProcessClosed?.Invoke(options);
     }
+
+    void OnProcessExited(object sender, EventArgs e)
+        {
+           Cleanup();
+        }
+    
 
     public UserProfileSystemBrowserProcessEventArgs GetArgs(Process process) => new UserProfileSystemBrowserProcessEventArgs(
                 UserProfile,
@@ -342,18 +355,20 @@ public abstract class SystemBrowserInstance(
     {
         var args = GetClearCommandLineArgumentsList();
 
-        if (GetLoadExtensionsArgument().Get() is string exts)
-            args.Add($"--load-extension=\"{exts}\"");
-
         args.Add($"--user-data-dir=\"{BrowserProfileFolderPath}\"");
-        args.Add($"{Starturl}");
 
         return args;
     }
 
     protected virtual string GetCommandLineArguments()
     {
-        IEnumerable<string> args = GetCommandLineArgumentsList();
+        List<string> args = GetCommandLineArgumentsList();
+        
+        if (GetLoadExtensionsArgument().Get() is string exts)
+            args.Add($"--load-extension=\"{exts}\"");
+        
+        args.Add($"{Starturl}");
+        
         return string.Join(" ", args);
     }
 

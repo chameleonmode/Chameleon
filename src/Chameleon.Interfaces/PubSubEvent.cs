@@ -845,6 +845,8 @@ public interface IEventAggregator
         where TPayload : EventArgs;
     void Push<TEventType, TPayload>(TPayload load)
         where TEventType : PubSubEvent<TPayload>, new();
+
+     void Blish<TEventType>(params object[] args) where TEventType : EventBase, new();
 }
 
 /// <summary>
@@ -862,6 +864,11 @@ public class EventAggregator : IEventAggregator
         get => _current ??= new EventAggregator();
         set => _current = value;
     }
+
+     public void Blish<TEventType>(params object[] args) where TEventType : EventBase, new()
+        => GetEvent<TEventType>().InternalPublish(args);
+
+
 
     /// <summary>
     /// Creates a new instance of the <see cref="EventAggregator"/>
@@ -996,7 +1003,7 @@ public abstract class EventBase
     /// <remarks>Before executing the strategies, this class will prune all the subscribers from the
     /// list that return a <see langword="null" /> <see cref="Action{T}"/> when calling the
     /// <see cref="IEventSubscription.GetExecutionStrategy"/> method.</remarks>
-    protected virtual void InternalPublish(params object[] arguments)
+    public virtual void InternalPublish(params object[] arguments)
     {
         List<Action<object[]>> executionStrategies = PruneAndReturnStrategies();
         foreach (var executionStrategy in executionStrategies)

@@ -47,6 +47,21 @@ public static class ProUtil
             }
         });
     }
+
+    public static Process Createa(string fileName, string arguments) =>
+        new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = fileName,
+                Arguments = arguments,
+                UseShellExecute = true,
+                ErrorDialog = true,
+                //RedirectStandardOutput = true,
+                CreateNoWindow = true,
+            },
+            EnableRaisingEvents = true,
+        };
 }
 
 // Extension method to get the parent process ID

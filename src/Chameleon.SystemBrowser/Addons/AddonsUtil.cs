@@ -3,9 +3,11 @@
 public static class AddonsUtil
 {
     public static bool IMac => OperatingSystem.IsMacOS();
-    public static string BrowserExtensionsRootFolderPath => IMac ?
-    "/Applications/Chameleon.app/Contents/Resources/BrowserExtensions/mac"
-    : Path.Combine(Directory.GetCurrentDirectory(), "BrowserExtensions");
+    // public static string BrowserExtensionsRootFolderPath => IMac ?
+    // "/Applications/Chameleon.app/Contents/Resources/BrowserExtensions/mac"
+    // : Path.Combine(Directory.GetCurrentDirectory(), "BrowserExtensions");
+    public static string BrowserExtensionsRootFolderPath =>
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "BrowserExtensions");
 
     public static string BERFFF => 
         Path.Combine(BrowserExtensionsRootFolderPath, "firefox");

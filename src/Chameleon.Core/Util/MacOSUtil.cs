@@ -1,7 +1,55 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace Chameleon.Core.Util;
+
+public class MacOSWindowListener
+{
+    public static MacOSWindowListener Instance { get; } = new MacOSWindowListener();      
+
+    public event Action<int> WindowForegroundChanged;
+    private readonly System.Timers.Timer _pollingTimer;
+    private readonly List<int> _targetPids = [];
+
+    public MacOSWindowListener()
+    {
+        _pollingTimer = new System.Timers.Timer(1000); // Poll every second
+        _pollingTimer.Elapsed += OnPollingTimerElapsed;
+    }
+
+    private async void OnPollingTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+    {
+        var fgPid = await Task.Run(() => MacOSUtil.GetWindowForeground());
+        if(fgPid.HasValue && _targetPids.Contains(fgPid.Value))
+            WindowForegroundChanged?.Invoke(fgPid.Value);
+    }
+
+    public void Start()
+    {
+        _pollingTimer.Start();
+    }
+
+    public void Stop()
+    {
+        _pollingTimer.Stop();
+    }
+    
+    public void AddPid(int pid)
+    { 
+        if(!_targetPids.Contains(pid)) 
+            _targetPids.Add(pid);
+
+        if(_targetPids.Count == 1)
+            Start();
+    }
+
+    public void RemPid(int pid)
+    { 
+        _targetPids.Remove(pid);
+
+        if(_targetPids.Count == 0)
+            Stop();
+    }
+}
 
 enum NSApplicationActivateOptions : uint
 {
@@ -14,64 +62,85 @@ public static class MacOSUtil
     {
         try
         {
-            // Get the list of all windows
-            IntPtr windowListInfo = MacOSInterop.CGWindowListCopyWindowInfo(0x00000001, 0);
-            if (windowListInfo == IntPtr.Zero)
-            {
-                Console.WriteLine("Failed to get window list.");
+            int? windowId = FindWindowByPID(pid);
+            if (windowId.HasValue)
+                return BringWindowToForeground(pid);
+            else
                 return false;
-            }
-
-            // Here you would filter windowListInfo by the PID to find your application's window
-            // This step is simplified and would require additional implementation to parse windowListInfo
-            // For demonstration, assume we have the window and its owner application's PID
-            using (var windowList = new CFArray(windowListInfo))
-            {
-                for (int i = 0; i < windowList.Count; i++)
-                {
-                    var dict = new CFDictionary(windowList[i]);
-                    if (dict.ContainsKey("kCGWindowOwnerPID"))
-                    {
-                        int windowProcessId = dict.GetInt32Value("kCGWindowOwnerPID");
-                        if (windowProcessId == pid)
-                        {
-                            int windowId = dict.GetInt32Value("kCGWindowNumber");
-                            // Set the window to the foreground
-                            // Use NSRunningApplication to bring the application to the foreground
-                            IntPtr nsRunningApplicationClass = 
-                                    ObjectiveCRuntime.ObjCGetClass("NSRunningApplication");
-
-                            IntPtr runningApp = 
-                                ObjectiveCRuntime.ObjCMsgSend(
-                                    nsRunningApplicationClass, 
-                                    ObjectiveCRuntime.SelRegisterName("runningApplicationWithProcessIdentifier:"), 
-                                    new IntPtr(pid));
-
-                            if (runningApp != IntPtr.Zero)
-                            {
-                                ObjectiveCRuntime.ObjCMsgSend(runningApp, ObjectiveCRuntime.SelRegisterName("activateWithOptions:"), new IntPtr((int)NSApplicationActivateOptions.ActivatingIgnoringOtherApps));
-                            }
-                            else
-                            {
-                                Console.WriteLine("Failed to find running application with specified PID.");
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-
-
-            // Release the window list info object
-            //MacOSInterop.CFRelease(windowListInfo);
-            return true;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Failed to set foreground window: {ex.Message}");
+            return false;
         }
+    }
 
-        return false;
+    private static IntPtr GetWindowList()
+    {
+        return MacOSInterop.CGWindowListCopyWindowInfo(0x00000001, 0);
+    }
+
+    public static int? FindWindowByPID(int pid)
+    {
+        IntPtr windowListInfo = GetWindowList();
+        if (windowListInfo == IntPtr.Zero)
+            return null;
+
+        using var windowList = new CFArray(windowListInfo);
+        for (int i = 0; i < windowList.Count; i++)
+        {
+            var dict = new CFDictionary(windowList[i]);
+            if (dict.ContainsKey("kCGWindowOwnerPID") && dict.GetInt32Value("kCGWindowOwnerPID") == pid)
+            {
+                return dict.GetInt32Value("kCGWindowNumber");
+            }
+
+        }
+        
+        return null;
+    }
+
+    private static bool BringWindowToForeground(int pid)
+    {
+        IntPtr nsRunningApplicationClass = ObjectiveCRuntime.ObjCGetClass("NSRunningApplication");
+        IntPtr runningApp = ObjectiveCRuntime.ObjCMsgSend(nsRunningApplicationClass, ObjectiveCRuntime.SelRegisterName("runningApplicationWithProcessIdentifier:"), new IntPtr(pid));
+
+        if (runningApp != IntPtr.Zero)
+        {
+            ObjectiveCRuntime.ObjCMsgSend(runningApp, 
+                ObjectiveCRuntime.SelRegisterName("activateWithOptions:"), 
+                new IntPtr((int)NSApplicationActivateOptions.ActivatingIgnoringOtherApps));
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("Failed to find running application with specified PID.");
+            return false;
+        }
+    }
+
+    public static int? GetWindowForeground()
+    {
+        IntPtr windowListInfo = GetWindowList(); // Get list of all windows
+        if (windowListInfo == IntPtr.Zero)
+            return null;
+
+        using var windowList = new CFArray(windowListInfo);
+        for (int i = 0; i < windowList.Count; i++)
+        {
+            var dict = new CFDictionary(windowList[i]);
+            if (dict.ContainsKey("kCGWindowOwnerPID"))
+            {
+                // Check if the window's layer is 0, indicating it is the frontmost window
+                int layer = dict.GetInt32Value("kCGWindowLayer");
+                if (layer == 0)
+                {
+                    return dict.GetInt32Value("kCGWindowOwnerPID"); // Window is in the foreground
+                }
+            }
+        }
+        
+        return null; // Window is not in the foreground
     }
     // public static bool SetForegroundWindow(Process process)
     // {
@@ -138,65 +207,65 @@ public static class MacOSUtil
     // }
 
     // Define necessary macOS constants and types
-    public const int kAXErrorSuccess = 0;
-    public delegate void AXObserverCallback(IntPtr observer, IntPtr element, string notification, IntPtr refcon);
+//     public const int kAXErrorSuccess = 0;
+//     public delegate void AXObserverCallback(IntPtr observer, IntPtr element, string notification, IntPtr refcon);
 
-    // AX API functions
-    [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
-    public static extern int AXObserverCreate(int application, AXObserverCallback callback, out IntPtr observer);
+//     // AX API functions
+//     [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
+//     public static extern int AXObserverCreate(int application, AXObserverCallback callback, out IntPtr observer);
 
-    [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
-    public static extern int AXObserverAddNotification(IntPtr observer, IntPtr element, string notificationName, IntPtr refcon);
+//     [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
+//     public static extern int AXObserverAddNotification(IntPtr observer, IntPtr element, string notificationName, IntPtr refcon);
 
-    [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
-    public static extern IntPtr CFRunLoopGetCurrent();
+//     [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
+//     public static extern IntPtr CFRunLoopGetCurrent();
 
-    [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
-    public static extern void CFRunLoopAddSource(IntPtr rl, IntPtr source, IntPtr mode);
+//     [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
+//     public static extern void CFRunLoopAddSource(IntPtr rl, IntPtr source, IntPtr mode);
 
-    [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
-    public static extern IntPtr AXObserverGetRunLoopSource(IntPtr observer);
+//     [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
+//     public static extern IntPtr AXObserverGetRunLoopSource(IntPtr observer);
 
-public static void SetupWindowChangeNotification(int pid)
-{
-    AXObserverCallback callback = WindowChangeCallback; // Ensure the callback delegate is kept alive
-    IntPtr observer;
-    int result = AXObserverCreate(pid, callback, out observer);
+//     public static void SetupWindowChangeNotification(int pid)
+//     {
+//     AXObserverCallback callback = WindowChangeCallback; // Ensure the callback delegate is kept alive
+//     IntPtr observer;
+//     int result = AXObserverCreate(pid, callback, out observer);
 
-    if (result != kAXErrorSuccess)
-    {
-        Console.WriteLine($"Failed to create AXObserver: {result}");
-        return;
-    }
+//     if (result != kAXErrorSuccess)
+//     {
+//         Console.WriteLine($"Failed to create AXObserver: {result}");
+//         return;
+//     }
 
-    IntPtr appElement = AXUIElementCreateApplication(pid);
-    if (appElement == IntPtr.Zero)
-    {
-        Console.WriteLine("Failed to create AXUIElementRef for application");
-        return;
-    }
+//     IntPtr appElement = AXUIElementCreateApplication(pid);
+//     if (appElement == IntPtr.Zero)
+//     {
+//         Console.WriteLine("Failed to create AXUIElementRef for application");
+//         return;
+//     }
 
-    result = AXObserverAddNotification(observer, appElement, "AXMainWindowChanged", IntPtr.Zero);
-    if (result != kAXErrorSuccess)
-    {
-        Console.WriteLine($"Failed to add notification: {result}");
-        return;
-    }
+//     result = AXObserverAddNotification(observer, appElement, "AXMainWindowChanged", IntPtr.Zero);
+//     if (result != kAXErrorSuccess)
+//     {
+//         Console.WriteLine($"Failed to add notification: {result}");
+//         return;
+//     }
 
-   IntPtr runLoopSource = AXObserverGetRunLoopSource(observer);
-    CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, IntPtr.Zero);
-}
+//    IntPtr runLoopSource = AXObserverGetRunLoopSource(observer);
+//     CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, IntPtr.Zero);
+//     }
 
-    private static void WindowChangeCallback(IntPtr observer, IntPtr element, string notification, IntPtr refcon)
-    {
-        // This method is called when the main window changes
-        Console.WriteLine("Window change detected");
+//     private static void WindowChangeCallback(IntPtr observer, IntPtr element, string notification, IntPtr refcon)
+//     {
+//         // This method is called when the main window changes
+//         Console.WriteLine("Window change detected");
 
-        // Implement further logic here, e.g., checking the window ID
-    }
+//         // Implement further logic here, e.g., checking the window ID
+//     }
 
-    [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
-    private static extern IntPtr AXUIElementCreateApplication(int pid);
+//     [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
+//     private static extern IntPtr AXUIElementCreateApplication(int pid);
 }
 
 
