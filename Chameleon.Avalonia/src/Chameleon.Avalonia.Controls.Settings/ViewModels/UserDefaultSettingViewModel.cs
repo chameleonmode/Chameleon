@@ -1,5 +1,4 @@
-﻿using Chameleon.Avalonia.Common.Util;
-using Chameleon.CT.Common.Base;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Core.Util;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserProfiles;

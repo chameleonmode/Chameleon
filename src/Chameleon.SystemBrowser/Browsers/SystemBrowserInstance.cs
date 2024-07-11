@@ -92,7 +92,7 @@ public abstract class SystemBrowserInstance(
                     //Brocess.Exited += OnProcessExited; 
                     //Brocess.EnableRaisingEvents = true;
                     //await Process.Start(BrowserExeFilePath, GetCommandLineArgumentsList()).WaitForExitAsync();
-                    eventAggregator.Blish<ForegroundUserSystemBrowserEvent>(GetArgs(Brocess));
+                    eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs(Brocess));
                 }
             }
         }
@@ -161,7 +161,7 @@ public abstract class SystemBrowserInstance(
     void OnWindowForeground(int i) 
     {
         if (i == Brocess.Id)
-            eventAggregator.Blish<ForegroundUserSystemBrowserEvent>(GetArgs(Brocess));
+            eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs(Brocess));
     }
 
     public static async Task<string> GetWebSocketDebuggerUrlAsync(int port)

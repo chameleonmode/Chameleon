@@ -834,8 +834,14 @@ public interface IEventAggregator
     TEventType GetEvent<TEventType>()
         where TEventType : EventBase, new();
 
+    void Pub<TEventType>(params object[] args) 
+        where TEventType : EventBase, new();
+    
     void Sub<TEventType, TPayload>(Action<TPayload> action)
         where TEventType : PubSubEvent<TPayload>, new();
+
+    void Sub<TEventType>(Action subscription)   
+        where TEventType : PubSubEvent, new();
 
     void Push<TEventType, TPayload, T>(T param)
         where TEventType : PubSubEvent<TPayload>, new()
@@ -845,8 +851,6 @@ public interface IEventAggregator
         where TPayload : EventArgs;
     void Push<TEventType, TPayload>(TPayload load)
         where TEventType : PubSubEvent<TPayload>, new();
-
-     void Blish<TEventType>(params object[] args) where TEventType : EventBase, new();
 }
 
 /// <summary>
@@ -865,9 +869,15 @@ public class EventAggregator : IEventAggregator
         set => _current = value;
     }
 
-     public void Blish<TEventType>(params object[] args) where TEventType : EventBase, new()
+    public void Pub<TEventType>(params object[] args) where TEventType : EventBase, new()
         => GetEvent<TEventType>().InternalPublish(args);
+    
+    public void Sub<TEventType>(Action subscription)   where TEventType : PubSubEvent, new()
+        => GetEvent<TEventType>().Subscribe(subscription);
 
+    public void Sub<TEventType, TPayload>(Action<TPayload> action) 
+        where TEventType : PubSubEvent<TPayload>, new()
+       => GetEvent<TEventType>().Subscribe(action);
 
 
     /// <summary>
@@ -915,11 +925,7 @@ public class EventAggregator : IEventAggregator
         }
     }
 
-    public void Sub<TEventType, TPayload>(Action<TPayload> action) 
-        where TEventType : PubSubEvent<TPayload>, new()
-    {
-        GetEvent<TEventType>().Subscribe(action);
-    }
+
 
     public void Publish<TEventType, TPayload>(TPayload action) where TEventType : PubSubEvent<TPayload>, new()
     {
@@ -983,7 +989,7 @@ public abstract class EventBase
     /// <remarks>
     /// Adds the subscription to the internal list and assigns it a new <see cref="SubscriptionToken"/>.
     /// </remarks>
-    protected virtual SubscriptionToken InternalSubscribe(IEventSubscription eventSubscription)
+    public virtual SubscriptionToken InternalSubscribe(IEventSubscription eventSubscription)
     {
         if (eventSubscription == null) throw new ArgumentNullException(nameof(eventSubscription));
 

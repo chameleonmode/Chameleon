@@ -287,11 +287,9 @@ public partial class UserProfilesViewModel
         _automationService = automationService;
         _automationBrowserService = automationBrowserService;
 
-        EventAggregator.GetEvent<DeleteUserProfileEvent>()
-           .Subscribe(OnDeleteUserProfileEvent);
+        EventAggregator.Sub<DeleteUserProfileEvent, UserProfileEventArgs>(OnDeleteUserProfileEvent);
 
-        EventAggregator.GetEvent<AfterCreateOrRemoveFolderEvent>()
-            .Subscribe(OnHandleUserEvent);
+        EventAggregator.Sub<AfterCreateOrRemoveFolderEvent>(OnHandleUserEvent);
 
         EventAggregator.GetEvent<SelectedChangeUserProfileEvent>()
             .Subscribe(OnSelectedChanged);

@@ -1,22 +1,16 @@
-﻿using Avalonia.Collections;
-using Avalonia.Controls;
+﻿using System.Collections.ObjectModel;
+using Chameleon.Avalonia.Common.Collections;
 using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
-using Chameleon.Core.Extensions;
-using Chameleon.Core.Util;
 using Chameleon.CT.Common.Base;
-using Chameleon.Domain.Entities.Automation;
-using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Configuration;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Chameleon.Avalonia.Controls.Automation.ViewModels
 {
@@ -26,8 +20,12 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
     {
         private const string _pageTitle = "Pre-installed automations";
 
+        private FileSystemWatcher? watcher;
+        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
         private ObservableCollection<IAutomationScriptDescription, AutomationScriptViewModel> _mapping;
-        public AvaloniaList<AutomationScriptViewModel> UserScripts { get; } = [];
+        
+        public AvList<AutomationScriptViewModel> UserScripts { get; } = [];
 
 
         [ObservableProperty]
@@ -66,6 +64,20 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
             }
         }
 
+        [RelayCommand]
+        private async Task SelectUserScriptFolder()
+        {
+            var dialog = ApplicationHelper.GetMainWindow().StorageProvider;
+            var selected = await dialog.OpenFolderPickerAsync(new() { AllowMultiple = false });
+            if(selected == null || selected.Count == 0)
+            {
+                return;
+            }
+
+            ConfigHelper.UserScriptsDirectory = selected[0]?.Path?.AbsolutePath;
+            await InitializeUserScripts();
+        }
+
         public override async Task InitAsync(object? param)
         {
             await base.InitAsync(param);
@@ -75,30 +87,6 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
                 Title = _pageTitle;
                 await Initialize();
                 await InitializeUserScripts();
-
-                if (Directory.Exists(UserScriptsDirectory))
-                {
-                    using var watcher = new FileSystemWatcher(@"C:\path\to\folder");
-
-                    watcher.NotifyFilter = NotifyFilters.Attributes
-                                         | NotifyFilters.CreationTime
-                                         | NotifyFilters.DirectoryName
-                                         | NotifyFilters.FileName
-                                         | NotifyFilters.LastAccess
-                                         | NotifyFilters.LastWrite
-                                         | NotifyFilters.Security
-                                         | NotifyFilters.Size;
-
-                    watcher.Changed += OnChanged;
-                    watcher.Created += OnCreated;
-                    watcher.Deleted += OnDeleted;
-                    watcher.Renamed += OnRenamed;
-                    watcher.Error += OnError;
-
-                    watcher.Filter = "*.cs";
-                    watcher.IncludeSubdirectories = false;
-                    watcher.EnableRaisingEvents = true;
-                }
             }
         }
 
@@ -134,69 +122,60 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
             OnPropertyChanged(nameof(ViewModels));
         }
 
-        [RelayCommand]
-        private async Task SelectUserScriptFolder()
-        {
-            var dialog = ApplicationHelper.GetMainWindow().StorageProvider;
-            var selected = await dialog.OpenFolderPickerAsync(new() { AllowMultiple = false });
-
-
-            ConfigHelper.UserScriptsDirectory = UserScriptsDirectory = selected?[0]?.Path.AbsolutePath;
-            await InitializeUserScripts();
-        }
-
         private async Task InitializeUserScripts()
         {
-            UserScriptsDirectory = ConfigHelper.UserScriptsDirectory;
-            UserScripts.Clear();
-            foreach (IAutomationScriptDescription item in await automationService.GetAll(UserScriptsDirectory))
+            await semaphore.WaitAsync();
+            try
             {
-                UserScripts.Add(new(item));
+                UserScriptsDirectory = ConfigHelper.UserScriptsDirectory;
+    
+                if (!Directory.Exists(UserScriptsDirectory))
+                    return;
+    
+                if (watcher == null)
+                {
+                    watcher = new(UserScriptsDirectory)
+                    {
+                        NotifyFilter = NotifyFilters.Attributes
+                                     | NotifyFilters.CreationTime
+                                     | NotifyFilters.DirectoryName
+                                     | NotifyFilters.FileName
+                                     | NotifyFilters.LastAccess
+                                     | NotifyFilters.LastWrite
+                                     | NotifyFilters.Security
+                                     | NotifyFilters.Size,
+                        Filter = "*.cs",
+                        EnableRaisingEvents = true
+                    };
+                    
+                    watcher.Changed += OnChanged;
+                    watcher.Deleted += OnChanged;
+                    watcher.Renamed += OnRenamed;
+                    watcher.Created += OnChanged;
+                } 
+    
+                //UserScripts.Clear();
+                //await Task.Delay(50);
+                UserScripts.UpdateMapped(await automationService.GetAll(UserScriptsDirectory), s => new(s), (x, y) => x.Filepath == y.FilePath);
+                await Task.Delay(250);
+            }
+            finally
+            {
+                semaphore.Release();
             }
         }
 
         private async void OnChanged(object sender, FileSystemEventArgs e)
         {
-            if (e.ChangeType != WatcherChangeTypes.Changed)
-            {
-                return;
-            }
+            Console.WriteLine($"OnChanged: {e.ChangeType}");
             await InitializeUserScripts();
         }
-
-        private async void OnCreated(object sender, FileSystemEventArgs e)
-        {
-            string value = $"Created: {e.FullPath}";
-            await InitializeUserScripts();
-        }
-
-        private async void OnDeleted(object sender, FileSystemEventArgs e)
-        {
-            Console.WriteLine($"Deleted: {e.FullPath}");
-            await InitializeUserScripts(); 
-        }
-
         private async void OnRenamed(object sender, RenamedEventArgs e)
         {
             Console.WriteLine($"Renamed:");
             Console.WriteLine($"    Old: {e.OldFullPath}");
             Console.WriteLine($"    New: {e.FullPath}");
             await InitializeUserScripts();
-        }
-
-        private static void OnError(object sender, ErrorEventArgs e) =>
-            PrintException(e.GetException());
-
-        private static void PrintException(Exception? ex)
-        {
-            if (ex != null)
-            {
-                Console.WriteLine($"Message: {ex.Message}");
-                Console.WriteLine("Stacktrace:");
-                Console.WriteLine(ex.StackTrace);
-                Console.WriteLine();
-                PrintException(ex.InnerException);
-            }
         }
     }
 }
