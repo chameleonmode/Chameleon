@@ -834,8 +834,14 @@ public interface IEventAggregator
     TEventType GetEvent<TEventType>()
         where TEventType : EventBase, new();
 
+    void Pub<TEventType>(params object[] args) 
+        where TEventType : EventBase, new();
+    
     void Sub<TEventType, TPayload>(Action<TPayload> action)
         where TEventType : PubSubEvent<TPayload>, new();
+
+    void Sub<TEventType>(Action subscription)   
+        where TEventType : PubSubEvent, new();
 
     void Push<TEventType, TPayload, T>(T param)
         where TEventType : PubSubEvent<TPayload>, new()
@@ -862,6 +868,17 @@ public class EventAggregator : IEventAggregator
         get => _current ??= new EventAggregator();
         set => _current = value;
     }
+
+    public void Pub<TEventType>(params object[] args) where TEventType : EventBase, new()
+        => GetEvent<TEventType>().InternalPublish(args);
+    
+    public void Sub<TEventType>(Action subscription)   where TEventType : PubSubEvent, new()
+        => GetEvent<TEventType>().Subscribe(subscription);
+
+    public void Sub<TEventType, TPayload>(Action<TPayload> action) 
+        where TEventType : PubSubEvent<TPayload>, new()
+       => GetEvent<TEventType>().Subscribe(action);
+
 
     /// <summary>
     /// Creates a new instance of the <see cref="EventAggregator"/>
@@ -908,11 +925,7 @@ public class EventAggregator : IEventAggregator
         }
     }
 
-    public void Sub<TEventType, TPayload>(Action<TPayload> action) 
-        where TEventType : PubSubEvent<TPayload>, new()
-    {
-        GetEvent<TEventType>().Subscribe(action);
-    }
+
 
     public void Publish<TEventType, TPayload>(TPayload action) where TEventType : PubSubEvent<TPayload>, new()
     {
@@ -976,7 +989,7 @@ public abstract class EventBase
     /// <remarks>
     /// Adds the subscription to the internal list and assigns it a new <see cref="SubscriptionToken"/>.
     /// </remarks>
-    protected virtual SubscriptionToken InternalSubscribe(IEventSubscription eventSubscription)
+    public virtual SubscriptionToken InternalSubscribe(IEventSubscription eventSubscription)
     {
         if (eventSubscription == null) throw new ArgumentNullException(nameof(eventSubscription));
 
@@ -996,7 +1009,7 @@ public abstract class EventBase
     /// <remarks>Before executing the strategies, this class will prune all the subscribers from the
     /// list that return a <see langword="null" /> <see cref="Action{T}"/> when calling the
     /// <see cref="IEventSubscription.GetExecutionStrategy"/> method.</remarks>
-    protected virtual void InternalPublish(params object[] arguments)
+    public virtual void InternalPublish(params object[] arguments)
     {
         List<Action<object[]>> executionStrategies = PruneAndReturnStrategies();
         foreach (var executionStrategy in executionStrategies)

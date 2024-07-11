@@ -165,6 +165,7 @@
   <ItemGroup>
     <Folder Include="Controls\" />
     <Folder Include="Converters\ValueConverters\Visibility\" />
+    <Folder Include="Util/" />
   </ItemGroup>
 
 </Project>

@@ -16,177 +16,185 @@
 	x:CompileBindings="True"
 	x:Class="Chameleon.Avalonia.Controls.Automation.Views.AutomationView">
 
-  <ScrollViewer>
-    <StackPanel>
+	<ScrollViewer>
+		<StackPanel>
 
-      <!-- Header -->
-      <afv:PageHeaderControl
-				TextType="Automation"
-				Classes="smallest">
-      </afv:PageHeaderControl>
+			<!-- Header -->
+			<afv:PageHeaderControl
+					  TextType="Automation"
+					  Classes="smallest">
+			</afv:PageHeaderControl>
 
-      <!-- chameleon scripts -->
-      <afv:ChameleonContentControl
-				Grid.Row="1"
-				Title="{Binding Title}"
-				TitleDescription="{Binding TotalCount, StringFormat='You have {0} scripts.'}">
+			<!-- chameleon scripts -->
+			<afv:ChameleonContentControl
+					  Grid.Row="1"
+					  Title="{Binding Title}"
+					  TitleDescription="{Binding TotalCount, StringFormat='You have {0} scripts.'}">
 
-        <afv:ChameleonContentControl.TitleContent>
-          <paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
-        </afv:ChameleonContentControl.TitleContent>
+				<afv:ChameleonContentControl.TitleContent>
+					<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
+				</afv:ChameleonContentControl.TitleContent>
 
-        <afv:ChameleonContentControl.Content>
+				<afv:ChameleonContentControl.Content>
 
-          <!-- ListBox with ViewModel items -->
-          <ListBox
-						Name="lbProfiles"
-						ItemsSource="{Binding ViewModels}"
-						Theme="{StaticResource ListBoxNoScroller}"
-						ItemContainerTheme="{StaticResource GridViewItem}"
-						Grid.Row="1">
-            <ListBox.ItemsPanel>
-              <ItemsPanelTemplate>
-                <UniformGrid Columns="1"/>
-              </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="50"/>
-                  </Grid.ColumnDefinitions>
+					<!-- ListBox with ViewModel items -->
+					<ListBox
+								  Name="lbProfiles"
+								  ItemsSource="{Binding ViewModels}"
+								  Theme="{StaticResource ListBoxNoScroller}"
+								  ItemContainerTheme="{StaticResource GridViewItem}"
+								  Grid.Row="1">
+						<ListBox.ItemsPanel>
+							<ItemsPanelTemplate>
+								<UniformGrid Columns="1"/>
+							</ItemsPanelTemplate>
+						</ListBox.ItemsPanel>
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto"/>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="50"/>
+									</Grid.ColumnDefinitions>
 
-                  <!-- Title -->
-           <TextBlock
-					    Grid.Column="0"
-					    Text="{Binding Title, StringFormat='Demo {0}.'}"
-					    ToolTip.Tip="Demo"
-					    VerticalAlignment="Center"
-					    HorizontalAlignment="Left"
-					    FontSize="14"
-					    Theme="{StaticResource BodyStrongTextBlockStyle}"
-					    TextTrimming="CharacterEllipsis"
-					    TextWrapping="NoWrap"
-					    Margin="5 5 10 5"/>
-					<!-- Description -->
-					<TextBlock
-						Grid.Column="1"
-						Text="{Binding Description}"
-						ToolTip.Tip="{Binding Description}"
-						VerticalAlignment="Center"
-					  Theme="{StaticResource CaptionTextBlockStyle}"
-						Margin="10 5 5 5"
-						TextWrapping="NoWrap"/>
-                  
-           <!-- PopUp Buttom -->
-					 <Button
-						Grid.Column="2"
-						Command="{Binding OpenParamsPopupCommand}"
-						CommandParameter="{Binding Id}"
-						IsVisible="{Binding IsHasParameter}"
-						ToolTip.Tip="Set Parameters"
-						Content="three-dots"
-						Theme="{DynamicResource SvgIconButton}">
-					 </Button>
+									<!-- Title -->
+									<TextBlock
+										Grid.Column="0"
+										Text="{Binding Title, StringFormat='Demo {0}.'}"
+										ToolTip.Tip="{Binding Description}"
+										VerticalAlignment="Center"
+										HorizontalAlignment="Left"
+										Theme="{StaticResource BodyStrongTextBlockStyle}"
+										TextTrimming="CharacterEllipsis"
+										TextWrapping="NoWrap"
+										Margin="5 5 10 5"/>
+									
+									<!-- Description -->
+									<!--<TextBlock
+										Grid.Column="1"
+										Text="{Binding Description}"
+										ToolTip.Tip="{Binding Description}"
+										VerticalAlignment="Center"
+										Theme="{StaticResource CaptionTextBlockStyle}"
+										Margin="10 5 5 5"
+										TextWrapping="NoWrap"/>-->
 
-                </Grid>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
+									<!-- PopUp Buttom -->
+									<Button
+									   Grid.Column="2"
+									   Command="{Binding OpenParamsPopupCommand}"
+									   CommandParameter="{Binding Id}"
+									   IsVisible="{Binding IsHasParameter}"
+									   ToolTip.Tip="Set Parameters"
+									   Content="three-dots"
+									   Theme="{DynamicResource SvgIconButton}">
+									</Button>
 
-        </afv:ChameleonContentControl.Content>
+								</Grid>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
 
-	
-		  <afv:ChameleonContentControl.Footer>
-			  <StackPanel
-				  Grid.Row="2"
-				  HorizontalAlignment="Center"
-				  VerticalAlignment="Center">
-				  <TextBlock
-							  Theme="{StaticResource BodyStrongTextBlockStyle}"
-							  TextAlignment="Center"
-							  HorizontalAlignment="Center">
-					  More pre-installed and custom
-					  <LineBreak/>
-					  automations coming soon
-				  </TextBlock>
-			  </StackPanel>
-		  </afv:ChameleonContentControl.Footer>
-      </afv:ChameleonContentControl>
-		
-	  <!-- User Scripts -->
-		<afv:ChameleonContentControl
-		  Grid.Row="1"
-		  Title="Your Scripts">
+				</afv:ChameleonContentControl.Content>
 
-			<!--<afv:ChameleonContentControl.TitleContent>
+
+				<afv:ChameleonContentControl.Footer>
+					<StackPanel
+						Grid.Row="2"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center">
+						<TextBlock
+									Theme="{StaticResource BodyStrongTextBlockStyle}"
+									TextAlignment="Center"
+									HorizontalAlignment="Center">
+							More pre-installed and custom
+							<LineBreak/>
+							automations coming soon
+						</TextBlock>
+					</StackPanel>
+				</afv:ChameleonContentControl.Footer>
+			</afv:ChameleonContentControl>
+
+			<!-- User Scripts -->
+			<afv:ChameleonContentControl
+			  Grid.Row="1"
+			  Title="Your Scripts"
+			  TitleDescription="Directory path to load your local scripts from.">
+
+				<!--<afv:ChameleonContentControl.TitleContent>
 				<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
 			</afv:ChameleonContentControl.TitleContent>-->
 
-			<afv:ChameleonContentControl.Header>
-				<Grid Margin="6"
-					  ColumnDefinitions="*,Auto">
-					<TextBox IsReadOnly="True"
-							 Text="{Binding UserScriptsDirectory, FallbackValue=Select A Directory}" />
-					<Button Content="Folder"
+				<afv:ChameleonContentControl.Header>
+					<Grid 
+						Margin="6"
+						ColumnDefinitions="*,Auto">
+
+						<TextBox 
+							IsReadOnly="True"
+							Text="{Binding UserScriptsDirectory, FallbackValue=Select A Directory}" />
+
+						<Button 
 							Grid.Column="1"
-							Theme="{StaticResource SymbleIconButton}" 
+							Content="Folder"
+							Margin="6 0 0 0"
+							Classes="accent"
+							Theme="{StaticResource SymbleIconButton}"
 							Command="{Binding SelectUserScriptFolderCommand}"/>
-				</Grid>
-			</afv:ChameleonContentControl.Header>
+					</Grid>
+				</afv:ChameleonContentControl.Header>
 
-			<afv:ChameleonContentControl.Content>
+				<afv:ChameleonContentControl.Content>
 
-				<!-- ListBox with ViewModel items -->
-				<ListBox
-					ItemsSource="{Binding UserScripts}"
-					Theme="{StaticResource ListBoxNoScroller}"
-					ItemContainerTheme="{StaticResource GridViewItem}">
-					<ListBox.ItemsPanel>
-						<ItemsPanelTemplate>
-							<UniformGrid Columns="1"/>
-						</ItemsPanelTemplate>
-					</ListBox.ItemsPanel>
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="0.5*"/>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="50"/>
-								</Grid.ColumnDefinitions>
+					<!-- ListBox with ViewModel items -->
+					<ListBox
+						ItemsSource="{Binding UserScripts}"
+						Theme="{StaticResource ListBoxNoScroller}"
+						ItemContainerTheme="{StaticResource GridViewItem}">
+						<ListBox.ItemsPanel>
+							<ItemsPanelTemplate>
+								<UniformGrid Columns="1"/>
+							</ItemsPanelTemplate>
+						</ListBox.ItemsPanel>
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="0.5*"/>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="50"/>
+									</Grid.ColumnDefinitions>
 
-								<!-- Title -->
-								<TextBlock
-									Grid.Column="0"
-									Text="{Binding Title}"
-									ToolTip.Tip="{Binding Title}"
-									VerticalAlignment="Center"
-									HorizontalAlignment="Left"
-									Theme="{StaticResource BodyStrongTextBlockStyle}"
-									TextTrimming="CharacterEllipsis"
-									TextWrapping="NoWrap"
-									Margin="5 5 10 5"/>
+									<!-- Title -->
+									<TextBlock
+										Grid.Column="0"
+										Text="{Binding Title}"
+										ToolTip.Tip="{Binding Title}"
+										VerticalAlignment="Center"
+										HorizontalAlignment="Left"
+										Theme="{StaticResource BodyStrongTextBlockStyle}"
+										TextTrimming="CharacterEllipsis"
+										TextWrapping="NoWrap"
+										Margin="5 5 10 5"/>
 
-								<!-- Description -->
-								<TextBlock
-									Grid.Column="1"
-									Text="{Binding Description}"
-									ToolTip.Tip="{Binding Description}"
-									VerticalAlignment="Center"
-									Theme="{StaticResource CaptionTextBlockStyle}"
-									Margin="10 5 5 5"
-									TextTrimming="CharacterEllipsis"
-									TextWrapping="NoWrap"/>
-							</Grid>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
+									<!-- Description -->
+									<TextBlock
+										Grid.Column="1"
+										Text="{Binding Description}"
+										ToolTip.Tip="{Binding Description}"
+										VerticalAlignment="Center"
+										Theme="{StaticResource CaptionTextBlockStyle}"
+										Margin="10 5 5 5"
+										TextTrimming="CharacterEllipsis"
+										TextWrapping="NoWrap"/>
+								</Grid>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
 
-			</afv:ChameleonContentControl.Content>
-		</afv:ChameleonContentControl>
-    </StackPanel>
-  </ScrollViewer>
+				</afv:ChameleonContentControl.Content>
+			</afv:ChameleonContentControl>
+		</StackPanel>
+	</ScrollViewer>
 </UserControl>

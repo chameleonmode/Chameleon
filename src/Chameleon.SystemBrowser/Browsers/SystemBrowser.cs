@@ -56,7 +56,7 @@ public abstract class SystemBrowserBase(
             }
             finally { Interlocked.Decrement(ref _isBusy); }
         else
-            browser.MakeForeground();
+            await browser.MakeForeground();
 
         return browser;
     }

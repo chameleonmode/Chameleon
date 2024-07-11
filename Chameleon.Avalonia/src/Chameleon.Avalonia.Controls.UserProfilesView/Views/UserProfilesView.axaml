@@ -137,12 +137,12 @@
 				</StackPanel>
 
 				<ui:FAComboBox
-							Width="200"
-							IsEditable="False"
-							HorizontalAlignment="Right"
-							Header="Sort by:"
-							ItemsSource="{Binding Sorts}"
-							SelectedItem="{Binding SortSelected}" />
+					Width="200"
+					IsEditable="False"
+					HorizontalAlignment="Right"
+					Header="Sort by:"
+					ItemsSource="{Binding Sorts}"
+					SelectedItem="{Binding SortSelected}" />
 
 				<!--<ToggleSplitButton 
 					Width="200"
@@ -179,80 +179,104 @@
 						</Flyout>
 					</ToggleSplitButton.Flyout>
 				</ToggleSplitButton>-->
+				
 				<!--Automation Section in Options container-->
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-					</Grid.RowDefinitions>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition Width="Auto"/>
-					</Grid.ColumnDefinitions>
-
-					<!--Scripts-->
-					<ui:FAComboBox
-								  PlaceholderText="Select an automation..."
-								  IsEditable="False"
-								  HorizontalAlignment="Right"
-								  Header="Automation"
-								  ItemsSource="{Binding ScriptViewModels}"
-								  SelectedItem="{Binding SelectedAutomationScript}"
-								  Grid.Row="0"
-								  Grid.Column="0"
-								  Grid.ColumnSpan="2"
-								  Width="200">
-						<ui:FAComboBox.ItemTemplate>
-							<DataTemplate>
-								<TextBlock
-									Text="{Binding Title}"
-									TextTrimming="CharacterEllipsis"
-									ToolTip.Tip="{Binding Title}" />
-							</DataTemplate>
-						</ui:FAComboBox.ItemTemplate>
-					</ui:FAComboBox>
-
+				<!--Scripts-->
+				<ui:FAComboBox
+							  PlaceholderText="Select an automation..."
+							  IsEditable="False"
+							  HorizontalAlignment="Right"
+							  Header="Automation"
+							  ItemsSource="{Binding ScriptViewModels}"
+							  SelectedItem="{Binding SelectedAutomationScript}"
+							  Grid.Row="0"
+							  Grid.Column="0"
+							  Grid.ColumnSpan="3"
+							  Width="200">
+					<ui:FAComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock
+								Text="{Binding Title}"
+								TextTrimming="CharacterEllipsis"
+								ToolTip.Tip="{Binding Title}" />
+						</DataTemplate>
+					</ui:FAComboBox.ItemTemplate>
+				</ui:FAComboBox>
+				
+				<Grid ColumnDefinitions="Auto,Auto,Auto">
 					<!--Select Browser-->
 					<ui:FAComboBox
-								  MaxWidth="70"
-								  Grid.Row="1"
-								  Grid.Column="0"
-								  Margin="0 20 0 0"
-								  HorizontalAlignment="Left"
-								  SelectedItem="{Binding SelectedBrowserItem}"
-								  ItemsSource="{Binding BrowserItems}">
+						MaxWidth="66"
+						HorizontalAlignment="Left"
+						SelectedItem="{Binding SelectedBrowserItem}"
+						ItemsSource="{Binding BrowserItems}">
 						<ui:FAComboBox.ItemTemplate>
 							<DataTemplate>
 								<StackPanel
-													HorizontalAlignment="Center"
-													VerticalAlignment="Center">
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center">
 									<afv:SvgIconControl
-														  IconName="{Binding IconName}"
-														  Height="20"
-														  Width="20"/>
+										IconName="{Binding IconName}"
+										Height="20"
+										Width="20"/>
 								</StackPanel>
 							</DataTemplate>
 						</ui:FAComboBox.ItemTemplate>
 					</ui:FAComboBox>
 
-					<!--Run Button-->
-					<Button
-								  Grid.Row="1"
-								  Grid.Column="1"
-								  Margin="0 20 0 0"
-								  Classes="accent"
-								  Width="90"
-								  HorizontalAlignment="Right"
-								  Command="{Binding RunAutomationCommand}"
-								  IsVisible="{Binding IsVisibleRunButton}">
-						<StackPanel Orientation="Horizontal" >
+					<ToggleButton 
+						Margin="20 0 6 0"
+						Grid.Column="1"
+						IsChecked="{Binding IsRecordSelected}"
+						ToolTip.Tip="Record">
+						<ui:SymbolIcon
+							Symbol="RadioButtonFilled"
+							Height="20" />
+					</ToggleButton>
+
+					<Panel 
+						Grid.Column="2"
+						HorizontalAlignment="Right">
+						<!--Run Button-->
+						<Button
+							Classes="accent"
+							Width="72"
+							Command="{Binding RunAutomationCommand}"
+							IsVisible="{Binding IsVisibleRunButton}">
+							<StackPanel Orientation="Horizontal" >
+								<ui:SymbolIcon
+									Symbol="Play"
+									Margin="0 0 5 0"/>
+								<TextBlock
+									Text="Run"/>
+							</StackPanel>
+						</Button>
+						<!--Stop Button-->
+						<Button
+							Classes="accent"
+							Width="72"
+							Command="{Binding StopAutomationCommand}"
+							IsVisible="{Binding IsVisibleStopButton}">
+							<StackPanel Orientation="Horizontal">
+								<ui:SymbolIcon
+									Symbol="Stop"
+									Margin="0 0 5 0"/>
+								<TextBlock Text="Stop"/>
+							</StackPanel>
+						</Button>
+
+						<!--Wait Buttom-->
+						<Button
+							Classes="accent"
+							Width="72"
+							IsVisible="{Binding IsVisibleWaitButton}">
 							<ui:SymbolIcon
-											  Symbol="Play"
-											  Margin="0 0 5 0"/>
-							<TextBlock
-											  Text="Run"/>
-						</StackPanel>
-					</Button>
+								Symbol="Refresh"
+								Height="20"
+								Classes="spinner"/>
+						</Button>
+					</Panel>
+
 					<!--<DropDownButton
 						HorizontalAlignment="Right"
 						Grid.Row="1"
@@ -299,40 +323,6 @@
 							</Flyout>
 						</DropDownButton.Flyout>
 					</DropDownButton>-->
-
-					<!--Stop Button-->
-					<Button
-								  Grid.Row="1"
-								  Grid.Column="1"
-								  Margin="0 20 0 0"
-								  Classes="accent"
-								  Width="90"
-								  IsEnabled="True"
-								  HorizontalAlignment="Right"
-								  Command="{Binding StopAutomationCommand}"
-								  IsVisible="{Binding IsVisibleStopButton}">
-						<StackPanel Orientation="Horizontal">
-							<ui:SymbolIcon
-											  Symbol="Stop"
-											  Margin="0 0 5 0"/>
-							<TextBlock Text="Stop"/>
-						</StackPanel>
-					</Button>
-
-					<!--Wait Buttom-->
-					<Button
-								  Grid.Row="1"
-								  Grid.Column="1"
-								  Margin="0 20 0 0"
-								  Classes="accent"
-								  Width="90"
-								  HorizontalAlignment="Right"
-								  IsVisible="{Binding IsVisibleWaitButton}">
-						<ui:SymbolIcon
-										Symbol="Refresh"
-										Height="20"
-										Classes="spinner"/>
-					</Button>
 				</Grid>
 
 			</StackPanel>

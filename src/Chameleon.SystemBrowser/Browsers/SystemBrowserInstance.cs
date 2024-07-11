@@ -13,12 +13,41 @@ public abstract class SystemBrowserInstance(
     private readonly string pexdir = Guid.NewGuid().ToString();
     private readonly List<IntPtr> winEventHooks = [];
 
-    public string BrowserExeFilePath => browserExeFilePath;
 
     private U32.WinEventDelegate winEventsCaptureDelegate;
     private MWHandleTrackerUtility windowTracker;
 
     public TaskCompletionSource<bool> OPtcs { get; } = new();
+    protected abstract SystemBrowserType BrowserType { get; }
+
+    public string Starturl { get; private set; }
+    public int Port { get; private set; }
+    public Process? Brocess { get; set; }
+    public IntPtr Handle { get; private set; } = IntPtr.Zero;
+
+    public string BrowserExeFilePath => 
+        browserExeFilePath;
+
+    public string BrowserProfileFolderPath =>
+        Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
+
+    protected string BrowserExtensionsFolderPath =>
+        Path.Combine(AddonsUtil.BrowserExtensionsRootFolderPath, BrowserType.ToString());
+
+    public string ProxyExtDir =>
+        Path.Combine(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath), pexdir);
+
+    public IUserProfile UserProfile =>
+        options.UserProfile;
+
+    public static bool IsMao =>
+        OperatingSystem.IsMacOS();
+
+    public bool HasProxyLogin =>
+        UserProfile.Proxy?.CanUse == true &&
+        UserProfile.Proxy.Host.HasAny() &&
+        UserProfile.Proxy.UserName.HasAny() &&
+        UserProfile.Proxy.Password.HasAny();
 
     public virtual async Task Open()
     {
@@ -33,17 +62,17 @@ public abstract class SystemBrowserInstance(
             await StartProcess();
         }
 
-        MakeForeground();
+        await MakeForeground();
     }
 
-    public void MakeForeground()
+    public Task MakeForeground()
     {
         if (Brocess != null)
         {
             if (!IsMao)
             {
                 if (Handle == IntPtr.Zero)
-                    return;
+                    return Task.CompletedTask;
 
 #pragma warning disable CA1416 // Validate platform compatibility
                 if (U32.IsWindow(Handle))
@@ -55,9 +84,20 @@ public abstract class SystemBrowserInstance(
             }
             else
             {
-                MacOSUtil.SetForegroundWindow(Brocess.Id);
+                if(MacOSUtil.SetForegroundWindow(Brocess.Id))
+                {
+                    //Brocess.EnableRaisingEvents = false;
+                    //Brocess.Exited -= OnProcessExited; 
+                    Brocess.Refresh();
+                    //Brocess.Exited += OnProcessExited; 
+                    //Brocess.EnableRaisingEvents = true;
+                    //await Process.Start(BrowserExeFilePath, GetCommandLineArgumentsList()).WaitForExitAsync();
+                    eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs(Brocess));
+                }
             }
         }
+        
+        return Task.CompletedTask;
     }
 
     protected virtual async Task InitializeExtensionPath()
@@ -79,25 +119,22 @@ public abstract class SystemBrowserInstance(
     {
         // var tcs = new TaskCompletionSource<string>();
 
-        Brocess = new Process
-        {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = BrowserExeFilePath,
-                Arguments = GetCommandLineArguments(),
-                UseShellExecute = true,
-                ErrorDialog = true,
-                //RedirectStandardOutput = true,
-                CreateNoWindow = true,
-            },
-            EnableRaisingEvents = true,
-        };
+        Brocess = ProUtil.Createa(BrowserExeFilePath, GetCommandLineArguments());
         Brocess.Start();
 
         if (IsMao)
         {
             Handle = Brocess.Handle;
-            Brocess.Exited += (s, e) => { Cleanup(); };
+            Brocess.Exited += OnProcessExited; //(s, e) => { Cleanup(); };
+            int tryCount = 0;
+            while(Brocess?.HasExited == false && 
+                    MacOSUtil.FindWindowByPID(Brocess.Id) == null &&
+                    tryCount++ < 10)
+                await Task.Delay(1500);
+            
+            MacOSWindowListener.Instance.AddPid(Brocess.Id);
+
+            MacOSWindowListener.Instance.WindowForegroundChanged += OnWindowForeground;
         }
         else
         {
@@ -121,6 +158,12 @@ public abstract class SystemBrowserInstance(
         OPtcs.TrySetResult(true);
     }
 
+    void OnWindowForeground(int i) 
+    {
+        if (i == Brocess.Id)
+            eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs(Brocess));
+    }
+
     public static async Task<string> GetWebSocketDebuggerUrlAsync(int port)
     {
         string url = $"http://localhost:{port}/json";
@@ -142,7 +185,6 @@ public abstract class SystemBrowserInstance(
 
         return null; // No suitable debugger URL found
     }
-
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
     private void SetWin32Events()
@@ -216,6 +258,8 @@ public abstract class SystemBrowserInstance(
 
     public void Cleanup()
     {
+        MacOSWindowListener.Instance.WindowForegroundChanged -= OnWindowForeground;
+        MacOSWindowListener.Instance.RemPid(Brocess.Id);
         ExUtil.TryCatch(() =>
         {
             if (!IsMao)
@@ -233,6 +277,12 @@ public abstract class SystemBrowserInstance(
         OnProcessClosed?.Invoke(options);
     }
 
+    void OnProcessExited(object sender, EventArgs e)
+        {
+           Cleanup();
+        }
+    
+
     public UserProfileSystemBrowserProcessEventArgs GetArgs(Process process) => new UserProfileSystemBrowserProcessEventArgs(
                 UserProfile,
                 BrowserType,
@@ -244,12 +294,6 @@ public abstract class SystemBrowserInstance(
     protected async Task EnsureProfileFolderCreated()
     {
         await IOtil.CreateDirectory(BrowserProfileFolderPath);
-        await OnProfileFolderCreated();
-    }
-
-    protected virtual Task OnProfileFolderCreated()
-    {
-        return Task.CompletedTask;
     }
 
     protected virtual Task InitializeProfileFolder()
@@ -293,10 +337,10 @@ public abstract class SystemBrowserInstance(
             args.Add("--enforce-webrtc-ip-permission-check");
         }
 
-        if (!UserProfile.WebBrowser.WebGL)
-        {
-            args.Add("--disable-webgl");
-        }
+        //if (!UserProfile.WebBrowser.WebGL)
+        //{
+            //args.Add("--disable-webgl");
+        //}
 
         if (!UserProfile.WebBrowser.Tracking)
         {
@@ -311,19 +355,20 @@ public abstract class SystemBrowserInstance(
     {
         var args = GetClearCommandLineArgumentsList();
 
-        if (GetLoadExtensionsArgument().Get() is string exts)
-            args.Add($"--load-extension=\"{exts}\"");
-
         args.Add($"--user-data-dir=\"{BrowserProfileFolderPath}\"");
-        args.Add($"{Starturl}");
 
         return args;
     }
 
-
     protected virtual string GetCommandLineArguments()
     {
-        IEnumerable<string> args = GetCommandLineArgumentsList();
+        List<string> args = GetCommandLineArgumentsList();
+        
+        if (GetLoadExtensionsArgument().Get() is string exts)
+            args.Add($"--load-extension=\"{exts}\"");
+        
+        args.Add($"{Starturl}");
+        
         return string.Join(" ", args);
     }
 
@@ -338,32 +383,5 @@ public abstract class SystemBrowserInstance(
 
         return exts.ToCommaSeparatedString();
     }
-
-    public string BrowserProfileFolderPath =>
-    Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
-
-    protected string BrowserExtensionsFolderPath =>
-        Path.Combine(AddonsUtil.BrowserExtensionsRootFolderPath, BrowserType.ToString());
-
-    public string ProxyExtDir =>
-        Path.Combine(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath), pexdir);
-
-    public IUserProfile UserProfile =>
-        options.UserProfile;
-
-    public static bool IsMao =>
-        OperatingSystem.IsMacOS();
-
-    public bool HasProxyLogin =>
-        UserProfile.Proxy?.CanUse == true &&
-        UserProfile.Proxy.Host.HasAny() &&
-        UserProfile.Proxy.UserName.HasAny() &&
-        UserProfile.Proxy.Password.HasAny();
-
-    public string Starturl { get; private set; }
-    public int Port { get; private set; }
-    public Process? Brocess { get; set; }
-    public IntPtr Handle { get; private set; } = IntPtr.Zero;
-    protected abstract SystemBrowserType BrowserType { get; }
 }
 

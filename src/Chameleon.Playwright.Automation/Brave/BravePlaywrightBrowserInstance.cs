@@ -4,17 +4,18 @@ public class BravePlaywrightBrowserInstance(IEventAggregator eventAggregator,
         ISetPreferencesService setPreferencesService,
         IApplicationEnvironment applicationEnvironment,
         IUserDefaultSettingsService userDefaultsSettingsService,
-        string browserExeFilePath)
+        string browserExeFilePath,
+        IAutomationScriptHelper automationScriptHelper)
     : BraveSystemBrowserInstance(eventAggregator,
             options,
             setPreferencesService,
             applicationEnvironment,
             userDefaultsSettingsService,
-            browserExeFilePath),
-    IPlaywrightBrowserInstance
+            browserExeFilePath)
+    , IPlaywrightBrowserInstance
 {
-    private IBrowser _browser;
-    public IBrowserContext BrowserContext => _browser.Contexts[0];
+    private IBrowserContext _browserContext;
+    public IBrowserContext BrowserContext => _browserContext;
 
     public Task Close()
     {
@@ -24,6 +25,27 @@ public class BravePlaywrightBrowserInstance(IEventAggregator eventAggregator,
 
     public override async Task Open()
     {
-        _browser = await options.Playwright.Chromium.ConnectOverCDPAsync($"http://localhost:{options.UserProfileVM.SBI.Port}");
+        await EnsureProfileFolderCreated();
+        await InitializeProfileFolder();
+        await InitializeExtensionPath();
+        await StartProcess();
+    }
+
+    public Task Record()
+    {
+        throw new NotImplementedException();
+    }
+
+
+    protected override async Task StartProcess()
+    {
+        List<string> args = GetClearCommandLineArgumentsList();
+        string exts = GetLoadExtensionsArgument();
+
+        var contexOptions = automationScriptHelper
+            .CreateOptions(args, exts, BrowserExeFilePath, UserProfile.Proxy);
+
+        _browserContext = await options.Playwright.Chromium
+            .LaunchPersistentContextAsync(BrowserProfileFolderPath, contexOptions);
     }
 }

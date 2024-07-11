@@ -11,5 +11,6 @@ public interface IAutomationBrowserService
         IAutomationScriptDescription script, 
         SystemBrowserType browserType,
         IList<IUserProfileActionsViewModel> userProfiles,
-        CancellationToken token);
+        CancellationToken token,
+        bool record);
 }

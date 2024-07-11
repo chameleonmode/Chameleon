@@ -3,55 +3,34 @@ using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
 using Chameleon.Interfaces.App.Automation.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Automation.ViewModels;
-public partial class AutomationScriptViewModel
+public partial class AutomationScriptViewModel(IAutomationScriptDescription automationScriptDescription)
     : SubPageViewModelBase
     , IAutomationScriptViewModel
 {
-    public AutomationScriptViewModel(
-        IAutomationScriptDescription automationScriptDescription
-        )
-    {
+    [ObservableProperty]
+    private int _id = automationScriptDescription.Id;
 
-        Id = automationScriptDescription.Id;
-        Title = automationScriptDescription.Title;
-        Description = automationScriptDescription.Description;
-        Parameters = automationScriptDescription.Parameters
+    [ObservableProperty]
+    private string _description = automationScriptDescription.Description;
+
+    [ObservableProperty]
+    private string _filepath = automationScriptDescription.FilePath;
+
+    [ObservableProperty]
+    private IList<IAutomationScriptParameterViewModel> _parameters = 
+        automationScriptDescription.Parameters
             .Select(param => new AutomationScriptParameterViewModel(param))
             .ToList<IAutomationScriptParameterViewModel>();
 
-        ScriptDescription = automationScriptDescription;
-    }
+    [ObservableProperty]
+    private IAutomationScriptDescription _scriptDescription = automationScriptDescription;
 
-    private int _id;
-    public int Id
-    {
-        get => _id;
-        set => SetProperty(ref _id, value);
-    }
-
-    private string _description;
-    public string Description
-    {
-        get => _description;
-        set => SetProperty(ref _description, value);
-    }
-
-    private IList<IAutomationScriptParameterViewModel> _parameters;
-    public IList<IAutomationScriptParameterViewModel> Parameters
-    {
-        get => _parameters;
-        set => SetProperty(ref _parameters, value);
-    }
-
-    private IAutomationScriptDescription _selectedScriptDescription;
-    public IAutomationScriptDescription ScriptDescription
-    {
-        get => _selectedScriptDescription;
-        set => SetProperty(ref _selectedScriptDescription, value);
-    }
+    [ObservableProperty]
+    private new string title = automationScriptDescription.Title;
 
     public bool IsHasParameter => Parameters.Count != 0;
 

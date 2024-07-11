@@ -1,0 +1,277 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:svg="using:Avalonia.Controls.Skia"				
+					xmlns:ui="using:FluentAvalonia.UI.Controls"
+					xmlns:local="using:Chameleon.Av.Fluent.Common.Controls">
+	<Design.PreviewWith>
+		<Border Padding="50">
+			<StackPanel Spacing="5"
+						Background="Gray">
+				<Button Content="Button" />
+				<Button Content="Button" Classes="accent" />
+				<Button Content="Button" IsEnabled="False" />
+				<Border Background="Gray" Height="1" />
+
+				<!-- NOTE: Designer bug, using StaticResource here requires a rebuild for
+                the changes to display. DynamicResource will respond without rebuilding -->
+				<Button Content="TransparentButton" Theme="{DynamicResource TransparentButton}" />
+
+				<Button Content="SyncChangesButton" Theme="{StaticResource SyncChangesButton}" />
+				<Button Content="three-dots" Theme="{StaticResource SvgIconButton}" />
+				<Button Content="Folder" Theme="{StaticResource SymbleIconButton}" />
+				<Button Content="Folder"
+						Classes="accent"
+						Tag="Folder"
+						Theme="{StaticResource SymbleIconTextButton}" />
+				<Button Content="three-dots" Theme="{StaticResource FavoriteButton}" />
+				<Button Content="select-all" 
+						Tag="Select All Yo"
+						Theme="{StaticResource SvgIconTextButton}" />
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+	<ControlTheme x:Key="SyncChangesButton" TargetType="Button">
+		<Setter Property="ToolTip.Tip" Value="Sync changes" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="HorizontalAlignment" Value="Right" />
+		<Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+		<Setter Property="Margin" Value="6" />
+		<Setter Property="Width" Value="36" />
+		<Setter Property="Height" Value="36" />
+		<Setter Property="IsVisible" Value="{Binding IsSyncChangesBtnVisible}" />
+		<Setter Property="Command" Value="{Binding SyncChangesCommand}" />
+		
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Root"
+                             Background="Transparent"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}">
+						<StackPanel Orientation="Horizontal"
+									 HorizontalAlignment="Center">
+							<ui:SymbolIcon Symbol="Sync"
+										   Foreground="{StaticResource AccentFillColorDefaultBrush}"
+										   FontSize="18" />
+							<!--<TextBlock Name="SyncText"
+									   VerticalAlignment="Center"
+									   Foreground="{StaticResource AccentFillColorDefaultBrush}"
+									   Text=" Sync changes" />-->
+						</StackPanel>
+
+				</Border>
+			</ControlTemplate>
+		</Setter>
+
+
+		<Style Selector="^:pointerover /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="^:pointerover /template/ TextBlock#SyncText">
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+		</Style>
+
+		<Style Selector="^:pressed /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ TextBlock#SyncText">
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+		</Style>
+
+		<Style Selector="^:disabled /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
+		</Style>
+		<Style Selector="^:disabled /template/ TextBlock#SyncText">
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorDisabledBrush}" />
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="FavoriteButton" TargetType="Button">
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="CornerRadius" Value="180" />
+		<Setter Property="Width" Value="34" />
+		<Setter Property="Height" Value="34" />
+		<Setter Property="ToolTip.Tip" Value="Toggle Favorite" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Root"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}">
+					<Panel Background="Transparent">
+						<local:SvgIconControl IconName="not-favorites"
+											  IsVisible="{Binding !IsFavorite}"
+											  Width="15"
+											  Height="15" />
+						<local:SvgIconControl IconName="in-favorites"
+											  IsVisible="{Binding IsFavorite}"
+											  Width="12"
+											  Height="12" />
+					</Panel>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^:pointerover /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector="^:disabled /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="SvgIconButton" TargetType="Button">
+		<!--<Setter Property="Background" Value="Orange" />-->
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="180" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Root"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}">
+					<Border Name="Pnl"
+							Background="Transparent"
+							CornerRadius="{TemplateBinding CornerRadius}">
+					<local:SvgIconControl IconName="{TemplateBinding Content}"
+										  Width="18"
+										  Height="18"/>
+					</Border>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^:pointerover /template/ Border#Pnl">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ Border#Pnl">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector="^:disabled /template/ Border#Pnl">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="SvgIconTextButton" TargetType="Button">
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Root"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}">
+					<StackPanel Orientation="Horizontal"
+								Margin="6">
+						<local:SvgIconControl IconName="{TemplateBinding Content}"
+											  Margin="0 0 10 0"
+											  Width="16"
+											  Height="16"/>
+						<TextBlock Text="{TemplateBinding Tag}"
+								   Margin="0 0 12 0"
+								   VerticalAlignment="Center"/>
+						</StackPanel> 		  
+				</Border>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^:pointerover /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector="^:disabled /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="SymbleIconButton" TargetType="Button">
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="180" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Root"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}">
+					<Border Name="Pnl"
+							Background="Transparent"
+							CornerRadius="{TemplateBinding CornerRadius}">
+						<ui:SymbolIcon
+							Foreground="{StaticResource AccentFillColorDefaultBrush}"
+							Symbol="{TemplateBinding Content}"
+							Margin="0 0 0 0"/>
+					</Border>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^:pointerover /template/ Border#Pnl">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ Border#Pnl">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector="^:disabled /template/ Border#Pnl">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="SymbleIconTextButton" TargetType="Button">
+		<!--<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />-->
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Root"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}">
+					<StackPanel Orientation="Horizontal" >
+						<ui:SymbolIcon
+							Symbol="{TemplateBinding Content}"
+							Margin="0 0 5 0"/>
+						<TextBlock
+							Text="{TemplateBinding Tag}"/>
+					</StackPanel>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^:pointerover /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector="^:disabled /template/ Border#Root">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
+		</Style>
+	</ControlTheme>
+	
+</ResourceDictionary>
+<!--<StackPanel Orientation="Horizontal">
+	<afv:SvgIconControl
+		IconName="select-all"
+		Margin="0 0 10 0"
+		Width="16"
+		Height="16"/>
+	<TextBlock
+		Text="{Binding $parent[Button].Tag}"
+		Margin="0 0 12 0"
+		VerticalAlignment="Center"/>
+</StackPanel>-->

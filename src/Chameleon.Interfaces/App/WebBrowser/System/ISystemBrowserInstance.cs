@@ -9,7 +9,7 @@ public interface ISystemBrowserInstance
     TaskCompletionSource<bool> OPtcs { get; }
     UserProfileSystemBrowserProcessEventArgs GetArgs(Process process);
     Task Open();
-    void MakeForeground();
+    Task MakeForeground();
     int Port { get; }
     Process? Brocess { get; set; }
     void Cleanup();

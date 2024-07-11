@@ -54,7 +54,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         foldervm = f;
         IsFavorite = folder.IsFavorite;
 
-        EventAggregator.Sub<UpdateUserProfileFolderEvent, UserProfileFolderEventArgs>((a) =>
+        EventAggregator.Sub<UpdateUserProfileFolderEvent, UserProfileFolderEventArgs>(a =>
         {
             if (a.UserProfileFolder.Id == _folder.Id)
             {
@@ -62,6 +62,11 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             }
         });
     }
+
+    private void OnUpdateUserProfileEvent(UserProfileFolderEventArgs a) 
+        {
+           
+        }
 
     public IUserProfileFolder UserProfileFolder => _folder;
 
