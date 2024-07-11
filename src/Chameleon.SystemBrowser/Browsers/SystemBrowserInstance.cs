@@ -337,10 +337,10 @@ public abstract class SystemBrowserInstance(
             args.Add("--enforce-webrtc-ip-permission-check");
         }
 
-        if (!UserProfile.WebBrowser.WebGL)
-        {
-            args.Add("--disable-webgl");
-        }
+        //if (!UserProfile.WebBrowser.WebGL)
+        //{
+            //args.Add("--disable-webgl");
+        //}
 
         if (!UserProfile.WebBrowser.Tracking)
         {
