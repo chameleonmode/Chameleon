@@ -1,8 +1,4 @@
-﻿using Chameleon.Interfaces.UserProfiles;
-using Microsoft.Playwright;
-using System;
-
-namespace Chameleon.SystemBrowser.Addons;
+﻿namespace Chameleon.SystemBrowser.Addons;
 
 public static class ProxyAddonUtil
 {

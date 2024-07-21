@@ -524,18 +524,21 @@ public partial class FirefoxSystemBrowserInstance(
                 startUrl.Contains(ProxyAddonUtil.DomainLevelDelimiter)
                 ? $", () => {{ browser.tabs.update({{ url:\"{startUrl}\" }}); }});" : ");";
 
-            using (var fileStream = new FileStream(pxoyextFile, FileMode.CreateNew))
+            await IOtil.CreateZipAsync(pxoyextFile, new Dictionary<string, string>
             {
-                using var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true);
-                await AddFileToArchive("manifest.json", ProxyAddonUtil.GetManifest(), archive);
-                await AddFileToArchive("background.js", ProxyAddonUtil.GetBgJs(loadUrl, UserProfile.Proxy), archive); ;
-            }
-
-            var mf = Path.Combine(pxoyextFile, "manifest.json");
-            var bf = Path.Combine(pxoyextFile, "background.js");
-            await IOtil.DeleteFExists(mf);
-            await IOtil.DeleteFExists(bf);
+                { "manifest.json", ProxyAddonUtil.GetManifest() },
+                { "background.js", ProxyAddonUtil.GetBgJs(loadUrl, UserProfile.Proxy) }
+            });
         }
+
+       // string extNavDir = Path.Combine(BrowserProfileFolderPath, ProxyAddonUtil.AutoProxyFolderName);
+       // string extNavFile = Path.Combine(NavigatorExtDir, "Chameleonavigator.xpi");
+        
+        //    await IOtil.CreateZipAsync(extNavFile, new Dictionary<string, string>
+         //   {
+          //      { "manifest.json",NavigatorAddon.GetManifestv2 },
+           //     { "background.js", NavigatorAddon.SetNavigato() }
+            //});
 
         return proxyextdir;
     }

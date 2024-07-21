@@ -1,10 +1,17 @@
 ﻿using Chameleon.Interfaces.WebBrowser;
 using System.Diagnostics;
+using System.IO.Compression;
 
 namespace Chameleon.Core.Util;
 
 public static class IOtil
 {
+    public static async Task DC(string directoryPath)
+    {
+        await DeleteDExistsAsync(directoryPath);
+        await CreateDirectory(directoryPath);
+    }
+
     public static Task CreateDirectory(string path)
     {
         return Task.Run(() =>
@@ -16,6 +23,25 @@ public static class IOtil
         });
     }
 
+    public static Task CreateZipAsync(string filePath, Dictionary<string,string> files)
+        => Task.Run(async () => 
+        {
+            using (var fileStream = new FileStream(filePath, FileMode.CreateNew))
+            {
+                using var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true);
+                foreach (var file in files)
+                {
+                    var zipArchiveManifest = archive.CreateEntry(file.Key, CompressionLevel.Fastest);
+                    using var zipStream = zipArchiveManifest.Open();
+                    using var writer = new StreamWriter(zipStream);
+                    await writer.WriteAsync(file.Value);
+                    writer.Close();
+                    zipStream.Close();
+
+                    await DeleteFExists(Path.Combine(filePath, file.Key));
+                }
+            }
+        });
     public static string[] ReadDirectory(string path)
     {
         if (Directory.Exists(path))

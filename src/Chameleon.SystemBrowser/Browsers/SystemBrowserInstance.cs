@@ -10,7 +10,8 @@ public abstract class SystemBrowserInstance(
 {
     public event Action<ISystemBrowserLaunchOptions> OnProcessClosed;
 
-    private readonly string pexdir = Guid.NewGuid().ToString();
+    private readonly string exdir_prox = Guid.NewGuid().ToString();
+    private readonly string exdir_nav = Guid.NewGuid().ToString();
     private readonly List<IntPtr> winEventHooks = [];
 
 
@@ -35,7 +36,13 @@ public abstract class SystemBrowserInstance(
         Path.Combine(AddonsUtil.BrowserExtensionsRootFolderPath, BrowserType.ToString());
 
     public string ProxyExtDir =>
-        Path.Combine(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath), pexdir);
+        Path.Combine(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath), exdir_prox);
+
+    public string NavigatorExtDir =>
+        Path.Combine(NavigatorExtMainDir, exdir_nav);
+
+    public string NavigatorExtMainDir =>
+        Path.Combine(BrowserProfileFolderPath, "Chameleonavigator");
 
     public IUserProfile UserProfile =>
         options.UserProfile;
@@ -113,6 +120,9 @@ public abstract class SystemBrowserInstance(
                 Path.Combine(ProxyExtDir, "background.js"),
                 ProxyAddonUtil.GetBgJsv3(Starturl, UserProfile.Proxy));
         }
+
+        await IOtil.DC(NavigatorExtMainDir);
+        await NavigatorAddon.InitializeExtension(NavigatorExtDir);
     }
 
     protected virtual async Task StartProcess()
@@ -317,7 +327,7 @@ public abstract class SystemBrowserInstance(
                 "--disable-field-trial-config",
                 "--disable-software-rasterizer",
                 $"--remote-debugging-port={Port}",
-                $"--window-name=\"{UserProfile.Title}\"",
+                //$"--window-name=\"{UserProfile.Title}\"",
             ];
 
         if (UserProfile.Proxy?.CanUse == true && UserProfile.Proxy.Host.HasAny())
@@ -377,6 +387,9 @@ public abstract class SystemBrowserInstance(
         List<string> exts = [];
         if (Directory.Exists(ProxyExtDir))
             exts.Add(ProxyExtDir);
+
+        if (Directory.Exists(NavigatorExtDir))
+            exts.Add(NavigatorExtDir);
 
         if (Directory.Exists(BrowserExtensionsFolderPath))
             exts.AddRange(Directory.GetDirectories(BrowserExtensionsFolderPath));
