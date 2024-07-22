@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace Chameleon.SystemBrowser.Addons;
 
-public static class NavigatorAddon
+public static partial class NavigatorAddon
 {
     public static async Task InitializeExtension(string dir)
     {
@@ -59,24 +59,60 @@ public static class NavigatorAddon
     """;
 
     public static string SetContnto()
-    { //chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {{
-            //if (request.greeting === ""hello"") {{
-            //    console.log(""Hello from background script!"");
-            //    console.log('navigator spoofed');
-            //    const chameleonInjector = new Injector();
-            //    chameleonInjector.injectIntoPage();
-            //    console.log('navigator spoofed2');
-            //    sendResponse({{ farewell: ""goodbye"" }});
-            //}}
-        //}});"
+    { 
         return $@"
         // content.js
         chrome.runtime.sendMessage({{message: ""contentScriptLoaded""}});
         ";
     }
 
+//CHAMELEON_SPOOF
+//timezone: {{ zone: {{ name: 'America/New_York' }} }},
+//language: 'en-US',
+//userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+//cpuClass: 'x86',
+//hardwareConcurrency: 8,
+//deviceMemory: 16,
+//maxTouchPoints: 0,
+//vendor: 'Google Inc.',
+//appVersion: '5.0 (Windows)'
+
+//injectionProperties
+//{{ obj: 'window.navigator', prop: 'appCodeName', value: 'Mozilla' }},
+//{{ obj: 'window.navigator', prop: 'appName', value: 'Netscape' }},
+//{{ obj: 'window.navigator', prop: 'appVersion', value: '5.0 (Windows)' }},
+//{{ obj: 'window.navigator', prop: 'userAgent', value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36' }},
+//{{ obj: 'window.navigator', prop: 'productSub', value: '20030107' }},
+//{{ obj: 'window.navigator', prop: 'vendor', value: 'Google Inc.' }},
+//{{ obj: 'window.navigator', prop: 'hardwareConcurrency', value: 8 }},
+//{{ obj: 'window.navigator', prop: 'deviceMemory', value: 16 }},
+//{{ obj: 'window.navigator', prop: 'maxTouchPoints', value: 0 }},
+//{{ obj: 'window.navigator', prop: 'language', value: 'en-US' }},
+//{{ obj: 'window.navigator', prop: 'languages', value: ['en-US', 'en'] }},
+//{{ obj: 'window.navigator', prop: 'cpuClass', value: 'x86' }},
+//{{ obj: 'window.navigator', prop: 'mimeTypes', value: [
+//    {{ type: 'application/pdf', suffixes: 'pdf', description: 'Portable Document Format' }}
+//] }},
+//{{ obj: 'window.navigator', prop: 'plugins', value: [
+//    {{ name: 'Chrome PDF Plugin', filename: 'internal-pdf-viewer', description: 'Portable Document Format' }}
+//] }},
+//{{ 
+//    obj: 'window.navigator', 
+//    prop: 'userAgentData', 
+//    value: {{
+//        brands: [
+//            {{ brand: 'Not/A)Brand','version':'8.0.0.0'}},
+//            {{ brand: 'Chromium', version: '126' }},
+//            {{ brand: 'Google Chrome', version: '126' }}
+//        ],
+//        mobile: false,
+//        platform: '{(AddonsUtil.IMac ? "macOS" : "Windows")}'
+//    }} 
+//}}
     public static string SetInjecto() 
-    { 
+    {
+        string randObjName = RemoveNumbersRegex().Replace(Guid.NewGuid().ToString().Replace("-", ""), "");
+        
         return $@"
         // injector.js
         class Injector {{
@@ -87,7 +123,7 @@ public static class NavigatorAddon
                         metadata: {{}},
                     }};
                     this.enabled = true;
-                    this.randObjName = ""randObjName"";
+                    this.randObjName = ""{randObjName}"";
                 }}
 
                 injectIntoPage() {{
@@ -110,21 +146,12 @@ public static class NavigatorAddon
 
                 finalOutput() {{
                     return `(function() {{
-                        const inject = (spoofContext) => {{
+                        const inject = async (spoofContext) => {{
                             if (spoofContext.CHAMELEON_SPOOF) return;
                             spoofContext.CHAMELEON_SPOOF = ""CHAMELEON_SPOOF"";
                             let CHAMELEON_SPOOF = new WeakMap();
                             CHAMELEON_SPOOF.set(spoofContext, {{
-                                timezone: {{ zone: {{ name: 'America/New_York' }} }},
-                                language: 'en-US',
-                                platform: 'Win32',
-                                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                                cpuClass: 'x86',
-                                hardwareConcurrency: 8,
-                                deviceMemory: 16,
-                                maxTouchPoints: 0,
-                                vendor: 'Google Inc.',
-                                appVersion: '5.0 (Windows)'
+                                platform: '{(!AddonsUtil.IMac ? "Win32" : "MacIntel")}',
                             }});
 
                             let ORIGINAL_INTL = spoofContext.Intl.DateTimeFormat;
@@ -142,38 +169,56 @@ public static class NavigatorAddon
                                 _enumerateDevices = spoofContext.navigator.mediaDevices.enumerateDevices.bind(spoofContext.navigator.mediaDevices);
                             }}
 
+let uad;
+  if (navigator.userAgentData && typeof navigator.userAgentData.getHighEntropyValues === 'function') {{
+        try {{
+            uad = await navigator.userAgentData.getHighEntropyValues([
+                'platform', 'platformVersion', 'architecture', 'model', 'uaFullVersion', 'bitness', 'wow64', 'fullVersionList'
+            ]);
+            console.log(uad);
+        }} catch (error) {{
+            console.error('Error fetching high entropy values:', error);
+        }}
+    }} else {{
+        console.warn('User-Agent Client Hints API is not supported');
+        // Fallback logic
+        console.log(navigator.userAgent);
+    }}
+
                             let modifiedAPIs = [];
                             let injectionProperties = 
                             [
-                                {{ obj: 'window.navigator', prop: 'appCodeName', value: 'Mozilla' }},
-                                {{ obj: 'window.navigator', prop: 'appName', value: 'Netscape' }},
-                                {{ obj: 'window.navigator', prop: 'appVersion', value: '5.0 (Windows)' }},
-                                {{ obj: 'window.navigator', prop: 'platform', value: 'Win32' }},
-                                {{ obj: 'window.navigator', prop: 'userAgent', value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36' }},
-                                {{ obj: 'window.navigator', prop: 'productSub', value: '20030107' }},
-                                {{ obj: 'window.navigator', prop: 'vendor', value: 'Google Inc.' }},
-                                {{ obj: 'window.navigator', prop: 'vendorSub', value: '' }},
-                                {{ obj: 'window.navigator', prop: 'hardwareConcurrency', value: 8 }},
-                                {{ obj: 'window.navigator', prop: 'deviceMemory', value: 16 }},
-                                {{ obj: 'window.navigator', prop: 'maxTouchPoints', value: 0 }},
-                                {{ obj: 'window.navigator', prop: 'language', value: 'en-US' }},
-                                {{ obj: 'window.navigator', prop: 'languages', value: ['en-US', 'en'] }},
-                                {{ obj: 'window.navigator', prop: 'cpuClass', value: 'x86' }},
-                                {{ obj: 'window.navigator', prop: 'oscpu', value: 'Windows NT 10.0' }},
-                                {{ obj: 'window.navigator', prop: 'mimeTypes', value: [
-                                    {{ type: 'application/pdf', suffixes: 'pdf', description: 'Portable Document Format' }}
-                                ] }},
-                                {{ obj: 'window.navigator', prop: 'plugins', value: [
-                                    {{ name: 'Chrome PDF Plugin', filename: 'internal-pdf-viewer', description: 'Portable Document Format' }}
-                                ] }},
-                                {{ obj: 'window.navigator', prop: 'userAgentData', value: {{
-                                    brands: [
-                                        {{ brand: 'Chromium', version: '92' }},
-                                        {{ brand: 'Google Chrome', version: '92' }}
-                                    ],
-                                    mobile: false,
-                                    platform: 'Windows'
-                                }} }}
+                                {{ 
+                                    obj: 'window.navigator', 
+                                    prop: 'platform', 
+                                    value: '{(!AddonsUtil.IMac ? "Win32" : "MacIntel"  )}' 
+                                }},
+                                {{ 
+                                    obj: 'window.navigator', 
+                                    prop: 'vendorSub', 
+                                    value: '' 
+                                }},
+                                {{ 
+                                    obj: 'window.navigator', 
+                                    prop: 'oscpu', 
+                                    value: 'undefined'
+                                }},
+                                {{ 
+                                    obj: 'window.navigator', 
+                                    prop: 'userAgentData', 
+                                    value: {{
+                                        brands: window.navigator.userAgentData.brands,
+                                        mobile: window.navigator.userAgentData.mobile,
+                                        platformVersion: uad && uad.platformVersion,
+                                        architecture: uad && uad.architecture,
+                                        bitness: uad && uad.bitness,
+                                        wow64: uad && uad.wow64,
+                                        model: uad && uad.model,
+                                        uaFullVersion: uad && uad.uaFullVersion,
+                                        fullVersionList: uad && uad.fullVersionList,
+                                        platform: '{(!AddonsUtil.IMac ? "Windows" : "macOS")}'
+                                    }} 
+                                }}
                             ];
 
                             injectionProperties.forEach(injProp => {{
@@ -504,15 +549,34 @@ public static class NavigatorAddon
         ";
     }
 
-    public static string SetBackgroundo() 
-    { 
-        return $@"
-        // background.js
-        chrome.runtime.onInstalled.addListener(() => {{
-            console.log('Background script running');
-        }});
-        ";
-    }
+public static string SetBackgroundo() 
+{ 
+    return $@"
+    // background.js
+    chrome.runtime.onInstalled.addListener(() => {{
+        console.log('Background script running');
+    }});
+
+    chrome.webRequest.onBeforeSendHeaders.addListener(
+      function(details) {{
+        let headerFound = false;
+        for (var i = 0; i < details.requestHeaders.length; ++i) {{
+          if (details.requestHeaders[i].name === 'Sec-CH-UA-Platform') {{
+            details.requestHeaders[i].value = '{(!AddonsUtil.IMac ? "Windows" : "macOS")}'; // change this to the desired value
+            headerFound = true;
+            break;
+          }}
+        }}
+        if (!headerFound) {{
+          details.requestHeaders.push({{name: 'Sec-CH-UA-Platform', value: '{(!AddonsUtil.IMac ? "Windows" : "macOS")}'}}); // add header if not found
+        }}
+        return {{requestHeaders: details.requestHeaders}};
+      }},
+      {{urls: [""<all_urls>""]}},
+      [""blocking"", ""requestHeaders""]
+    );
+    ";
+}
 
 
     public static string GetNavigator(string navigator) => @$"
@@ -893,7 +957,8 @@ public static class NavigatorAddon
         set: function (a) {{}}
     }});
 ";
-
+    [GeneratedRegex("[0-9]")]
+    private static partial Regex RemoveNumbersRegex();
 }
 //using System.IO;
 //using System.Threading.Tasks;
