@@ -6,7 +6,8 @@ public static class AddonsUtil
     // public static string BrowserExtensionsRootFolderPath => IMac ?
     // "/Applications/Chameleon.app/Contents/Resources/BrowserExtensions/mac"
     // : Path.Combine(Directory.GetCurrentDirectory(), "BrowserExtensions");
-    public static string BrowserExtensionsRootFolderPath =>
+    public static string BrowserExtensionsRootFolderPath => IMac ?
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../Resources/BrowserExtensions") : 
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "BrowserExtensions");
 
     public static string BERFFF => 

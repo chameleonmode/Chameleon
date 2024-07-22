@@ -13,34 +13,20 @@
 		<ScrollViewer>
 			<StackPanel>
 				<contrls:PageHeaderControl 
-				TextType="Settings"
-				Classes="smallest"
-				Margin="7 12 12 0"/>
-
-				<!--<TextBlock Text="Settings"
-                        Margin="30 -30 0 0"
-						   Theme="{StaticResource TitleLargeTextBlockStyle}"/>-->
+					TextType="Settings"
+					Classes="smallest"
+					Margin="7 12 12 0"/>
 			<StackPanel Spacing="15"
                         Margin="30 0 30 30">
-				
-				<ui:SettingsExpander Header="Web"
-									 Name="Default"
-					 IconSource="{StaticResource DefaultSettingsPageIcon}"
-					 Description="Default home pages"
-					 IsClickEnabled="True"
-					 ActionIconSource="{StaticResource GoIcon}"
-					 Command="{Binding CmdNavigateToChildCommand}"
-					 CommandParameter="DEFAULTS">
-					
-				</ui:SettingsExpander>
-				<!--<ui:SettingsExpander Header="Default"
-					 IconSource="{StaticResource DefaultSettingsPageIcon}"
-					 Description="Default home pages"
-					 IsExpanded="True">
-					<ui:SettingsExpanderItem>
-						<local:UserDefaultSettingsView />
-					</ui:SettingsExpanderItem>
-					</ui:SettingsExpander>-->
+				<ui:SettingsExpander 
+					Header="Web"
+					Name="Default"
+					IconSource="{StaticResource DefaultSettingsPageIcon}"
+					Description="Default home pages"
+					IsClickEnabled="True"
+					ActionIconSource="{StaticResource GoIcon}"
+					Command="{Binding CmdNavigateToChildCommand}"
+					CommandParameter="DEFAULTS" />
 				<ui:SettingsExpander 
 					Header="Proxy"
 					Name="PROXY"
@@ -69,14 +55,14 @@
 					 Command="{Binding CmdNavigateToChildCommand}"
 					 CommandParameter="USERS"/>
 				
-				<ui:SettingsExpander Header="Phone Verification"
+				<!--<ui:SettingsExpander Header="Phone Verification"
 					 Description="PVA key settings"
 					 IconSource="{StaticResource CellPhone}"
 					 ActionIconSource="{StaticResource GoIcon}">
 					<ui:SettingsExpanderItem>
 						<local:PhoneVerificationView />
 					</ui:SettingsExpanderItem>
-				</ui:SettingsExpander>
+				</ui:SettingsExpander>-->
 				
 				<ui:SettingsExpander Header="App Accent Color"
 					 IconSource="ColorLine"
