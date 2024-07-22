@@ -43,11 +43,11 @@ public abstract class SystemBrowserBase(
                 {
                     EventAggregator
                         .GetEvent<ForegroundUserSystemBrowserEvent>()
-                        .Publish(browser.GetArgs(null));
+                        .Publish(browser.GetArgs);
 
                     EventAggregator
                         .GetEvent<OpenedUserSystemBrowserEvent>()
-                        .Publish(browser.GetArgs(null));
+                        .Publish(browser.GetArgs);
                 }
             }
             catch (Exception e)
@@ -73,7 +73,7 @@ public abstract class SystemBrowserBase(
 
                 EventAggregator
                    .GetEvent<ClosedUserSystemBrowserEvent>()
-                   .Publish(browser.GetArgs(null));
+                   .Publish(browser.GetArgs);
 
                 Instances.Remove(o.UserProfile.Id);
 

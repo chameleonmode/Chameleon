@@ -50,6 +50,13 @@ public abstract class SystemBrowserInstance(
     public static bool IsMao =>
         OperatingSystem.IsMacOS();
 
+    public UserProfileSystemBrowserProcessEventArgs GetArgs => 
+        new (UserProfile,
+            BrowserType,
+            Brocess,
+            options.Url,
+            options.SignIn);
+
     public bool HasProxyLogin =>
         UserProfile.Proxy?.CanUse == true &&
         UserProfile.Proxy.Host.HasAny() &&
@@ -99,7 +106,7 @@ public abstract class SystemBrowserInstance(
                     //Brocess.Exited += OnProcessExited; 
                     //Brocess.EnableRaisingEvents = true;
                     //await Process.Start(BrowserExeFilePath, GetCommandLineArgumentsList()).WaitForExitAsync();
-                    eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs(Brocess));
+                    eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs);
                 }
             }
         }
@@ -135,12 +142,12 @@ public abstract class SystemBrowserInstance(
         if (IsMao)
         {
             Handle = Brocess.Handle;
-            Brocess.Exited += OnProcessExited; //(s, e) => { Cleanup(); };
+            Brocess.Exited += (s, e) => { Cleanup(); };
             int tryCount = 0;
             while(Brocess?.HasExited == false && 
                     MacOSUtil.FindWindowByPID(Brocess.Id) == null &&
-                    tryCount++ < 10)
-                await Task.Delay(1500);
+                    tryCount++ < 36)
+                await Task.Delay(1000);
             
             MacOSWindowListener.Instance.AddPid(Brocess.Id);
 
@@ -164,6 +171,8 @@ public abstract class SystemBrowserInstance(
             }
 #pragma warning restore CA1416 // Validate platform compatibility
         }
+        if(Brocess?.HasExited == false)
+            Brocess.Refresh();
 
         OPtcs.TrySetResult(true);
     }
@@ -171,29 +180,7 @@ public abstract class SystemBrowserInstance(
     void OnWindowForeground(int i) 
     {
         if (i == Brocess.Id)
-            eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs(Brocess));
-    }
-
-    public static async Task<string> GetWebSocketDebuggerUrlAsync(int port)
-    {
-        string url = $"http://localhost:{port}/json";
-        using (HttpClient client = new HttpClient())
-        {
-            string jsonResponse = await client.GetStringAsync(url);
-            Newtonsoft.Json.Linq.JArray targets = Newtonsoft.Json.Linq.JArray.Parse(jsonResponse);
-
-            foreach (Newtonsoft.Json.Linq.JObject target in targets)
-            {
-                if (target["type"].ToString() == "page") // Assuming you want to debug a page
-                {
-                    string webSocketDebuggerUrl = target["webSocketDebuggerUrl"].ToString();
-                    Console.WriteLine($"Found WebSocket Debugger URL: {webSocketDebuggerUrl}");
-                    return webSocketDebuggerUrl; // Return the first found URL
-                }
-            }
-        }
-
-        return null; // No suitable debugger URL found
+            eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs);
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
@@ -237,7 +224,7 @@ public abstract class SystemBrowserInstance(
                 {
                     eventAggregator
                         .GetEvent<ForegroundUserSystemBrowserEvent>()
-                        .Publish(GetArgs(Brocess));
+                        .Publish(GetArgs);
                 }
                 break;
             case User32Events.EVENT_SYSTEM_MENUSTART:
@@ -286,20 +273,7 @@ public abstract class SystemBrowserInstance(
         Handle = IntPtr.Zero;
         OnProcessClosed?.Invoke(options);
     }
-
-    void OnProcessExited(object sender, EventArgs e)
-        {
-           Cleanup();
-        }
     
-
-    public UserProfileSystemBrowserProcessEventArgs GetArgs(Process process) => new UserProfileSystemBrowserProcessEventArgs(
-                UserProfile,
-                BrowserType,
-                process,
-                options.Url,
-                options.SignIn
-                );
 
     protected async Task EnsureProfileFolderCreated()
     {
@@ -377,7 +351,7 @@ public abstract class SystemBrowserInstance(
         if (GetLoadExtensionsArgument().Get() is string exts)
             args.Add($"--load-extension=\"{exts}\"");
         
-        args.Add($"{Starturl}");
+        //args.Add($"{Starturl}");
         
         return string.Join(" ", args);
     }
@@ -398,3 +372,24 @@ public abstract class SystemBrowserInstance(
     }
 }
 
+ // public static async Task<string> GetWebSocketDebuggerUrlAsync(int port)
+ // {
+ //     string url = $"http://localhost:{port}/json";
+ //     using (HttpClient client = new HttpClient())
+ //     {
+ //         string jsonResponse = await client.GetStringAsync(url);
+ //         Newtonsoft.Json.Linq.JArray targets = Newtonsoft.Json.Linq.JArray.Parse(jsonResponse);
+
+ //         foreach (Newtonsoft.Json.Linq.JObject target in targets)
+ //         {
+ //             if (target["type"].ToString() == "page") // Assuming you want to debug a page
+ //             {
+ //                 string webSocketDebuggerUrl = target["webSocketDebuggerUrl"].ToString();
+ //                 Console.WriteLine($"Found WebSocket Debugger URL: {webSocketDebuggerUrl}");
+ //                 return webSocketDebuggerUrl; // Return the first found URL
+ //             }
+ //         }
+ //     }
+
+ //     return null; // No suitable debugger URL found
+ // }

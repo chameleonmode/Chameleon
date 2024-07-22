@@ -7,7 +7,7 @@ public interface ISystemBrowserInstance
 {
     public event Action<ISystemBrowserLaunchOptions> OnProcessClosed;
     TaskCompletionSource<bool> OPtcs { get; }
-    UserProfileSystemBrowserProcessEventArgs GetArgs(Process process);
+    UserProfileSystemBrowserProcessEventArgs GetArgs{get;}
     Task Open();
     Task MakeForeground();
     int Port { get; }
