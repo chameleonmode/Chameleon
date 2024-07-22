@@ -35,10 +35,12 @@ public partial class FirefoxSystemBrowserInstance(
             //[SECTION 0200]: GEOLOCATION 
             ["geo.provider.network.url"] = "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%",
             ["geo.provider.network.logging.enabled"] = true,
-            ["geo.provider.ms-windows-location"] = false,
+            ["geo.provider.ms-windows-location"] = true,
             ["geo.provider.use_corelocation"] = false,
             ["geo.provider.use_gpsd"] = false,
             ["geo.provider.use_geoclue"] = false,
+
+            ["geo.enabled"] = true,
             //[SECTION 0300]: QUIETER FOX
             //  RECOMMENDATIONS
             ["extensions.getAddons.showPane"] = false,
@@ -124,12 +126,13 @@ public partial class FirefoxSystemBrowserInstance(
             // =================================================================
             // THESE ARE THE PROPERTIES FROM https://mullvad.net/en/browser/hard-facts
             // =================================================================
-            ["privacy.resistFingerprinting"] = true,
-            ["privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts"] = true,
-            ["privacy.resistFingerprinting.block_mozAddonManager"] = true,
+            ["privacy.fingerprintingProtection"] = false,
+            ["privacy.resistFingerprinting"] = false,//true,
+            ["privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts"] = false,//true,
+            ["privacy.resistFingerprinting.block_mozAddonManager"] = false,//true,
             ["privacy.resistFingerprinting.exemptedDomains"] = "*.example.invalid",
             ["privacy.resistFingerprinting.jsmloglevel"] = "Warn",
-            ["privacy.resistFingerprinting.letterboxing"] = true,
+            ["privacy.resistFingerprinting.letterboxing"] = false,//true,
             ["privacy.resistFingerprinting.randomDataOnCanvasExtract"] = true,
             ["privacy.resistFingerprinting.reduceTimerPrecision.jitter"] = true,
             ["privacy.resistFingerprinting.reduceTimerPrecision.microseconds"] = 1000,
@@ -447,7 +450,10 @@ public partial class FirefoxSystemBrowserInstance(
                     string value = match.Groups[2].Value.Trim('"');
 
                     // Add key-value pair to the dictionary
-                    if (!prefs.ContainsKey(key) && !key.Contains(".proxy."))
+                    if (!prefs.ContainsKey(key) && 
+                        !key.Contains(".proxy.") &&
+                        !key.Contains("privacy.resistFingerprinting.") && 
+                        !key.Contains("geo.provider"))
                         prefs[key] = value;
                 }
 
