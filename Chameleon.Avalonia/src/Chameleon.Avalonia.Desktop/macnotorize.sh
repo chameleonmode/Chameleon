@@ -2,6 +2,7 @@
 #Build app
 dotnet publish -r osx-x64 -c Release -f net8.0 --self-contained true -p:DebugType=None -p:DebugSymbols=false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true 
 bash pacamac.sh
+codesign --verify --verbose App/Chameleon.app/Contents/MacOS/Chameleon
 ditto -c -k --sequesterRsrc --keepParent App/Chameleon.app App/Chameleon.zip
 xcrun notarytool submit App/Chameleon.zip --keychain-profile "DEV"
 xcrun notarytool info ... --keychain-profile "DEV"
@@ -28,3 +29,9 @@ xcrun notarytool log 526aca37-1d03-455c-86a1-df9d0bfd1e29 --keychain-profile "DE
 xcrun notarytool info d583a9d8-525a-4ac2-a118-4a3e471e1075 --keychain-profile "DEV"
 xcrun notarytool log d583a9d8-525a-4ac2-a118-4a3e471e1075 --keychain-profile "DEV"
 xcrun notarytool info a5679336-0f1c-45dc-adb6-24f0f4514407 --keychain-profile "DEV"
+xcrun notarytool info 90e7f4f7-afa9-4fe9-9142-78ad9520e303 --keychain-profile "DEV"
+xcrun notarytool log 90e7f4f7-afa9-4fe9-9142-78ad9520e303 --keychain-profile "DEV"
+xcrun notarytool info 59ae4bbe-48c3-4652-a23a-3d1a4ada1b03 --keychain-profile "DEV"
+xcrun notarytool info 9d773d3d-a3dc-447f-8dbe-2cb390446648 --keychain-profile "DEV"
+xcrun notarytool info 7830c155-31a6-4470-8f52-5be2eaa8f5ba --keychain-profile "DEV"
+xcrun notarytool info 6a65044d-3b4d-421c-a58b-017aee6dc218 --keychain-profile "DEV"

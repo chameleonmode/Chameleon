@@ -11,7 +11,7 @@ mkdir -p "App/Chameleon.app/Contents/Resources/BrowserExtensions"
 
 APP_ENTITLEMENTS="chameleonApp.entitlements"
 APP_SIGNING_IDENTITY="Developer ID Application: Simon Dadia (5K732WRGK2)"
-INSTALLER_SIGNING_IDENTITY="Developer ID Installer: Simon Dadia (5K732WRGK2)"
+INSTALLER_SIGNING_IDENTITY="3rd Party Mac Developer Installer: Simon Dadia (5K732WRGK2)"
 APP_NAME="App/Chameleon.app"
 PUBLISH_EXTENSTIONS="bin/Debug/Resources/BrowserExtensions/."
 PUBLISH_PLAYWRIGHT="bin/release/net8.0/osx-x64/publish/.playwright/."
@@ -22,9 +22,9 @@ ICON_FILE="logo-symbol.icns"
 cp -a bin/release/net8.0/osx-x64/publish/Chameleon $APP_NAME/Contents/MacOS/
 
 #Move app dependencies
-cp -a bin/release/net8.0/osx-x64/publish/libAvaloniaNative.dylib $APP_NAME/Contents/Frameworks/
-cp -a bin/release/net8.0/osx-x64/publish/libHarfBuzzSharp.dylib $APP_NAME/Contents/Frameworks/
-cp -a bin/release/net8.0/osx-x64/publish/libSkiaSharp.dylib $APP_NAME/Contents/Frameworks/
+cp -a bin/release/net8.0/osx-x64/publish/libAvaloniaNative.dylib $APP_NAME/Contents/MacOS/
+cp -a bin/release/net8.0/osx-x64/publish/libHarfBuzzSharp.dylib $APP_NAME/Contents/MacOS/
+cp -a bin/release/net8.0/osx-x64/publish/libSkiaSharp.dylib $APP_NAME/Contents/MacOS/
 
 cp "$INFO_PLIST" "$APP_NAME/Contents/Info.plist"
 
@@ -33,7 +33,7 @@ cp -a bin/release/net8.0/osx-x64/publish/playwright.ps1 $APP_NAME/Contents/Resou
 cp "$ICON_FILE" "$APP_NAME/Contents/Resources/$ICON_FILE"
 cp -a "$PUBLISH_EXTENSTIONS" "$APP_NAME/Contents/Resources/BrowserExtensions"
 cp -a $PUBLISH_PLAYWRIGHT $APP_NAME/Contents/Resources/.playwright
-ln -s /Users/dev/Projects/Chameleon/Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/App/Chameleon.app/Contents/Resources/.playwright /Users/dev/Projects/Chameleon/Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/App/Chameleon.app/Contents/MacOS/.playwright
+chflags nohidden /Users/dev/Projects/Chameleon/Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/App/Chameleon.app/Contents/Resources/.playwright
 
 #<here is moving your .dylib files to Frameworks folder using relative symlinks>
 find "$APP_NAME/Contents/MacOS" -name '*.dylib' | while read fname; do
@@ -46,11 +46,12 @@ cd App/Chameleon.app/Contents/MacOS/
 for dylib in ../Frameworks/*.dylib; do
     ln -s "../Frameworks/$(basename "$dylib")" "$(basename "$dylib")"
 done
+ln -s ../Resources/.playwright .playwright
 
 cd "/Users/dev/Projects/Chameleon/Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop"
 
 echo "[INFO] Switch provisionprofile to AppStore"
-cp -R -f chamelionairbundlepp.provisionprofile "App/Chameleon.app/Contents/embedded.provisionprofile"
+cp -R -f Chameleonmodes.provisionprofile "App/Chameleon.app/Contents/embedded.provisionprofile"
 
 #echo "[INFO] Fix libuv.dylib architectures"
 #lipo -remove i386 "App/Chameleon.app/Contents/MacOS/libuv.dylib" -output "App/Chameleon.app/Contents/MacOS/libuv.dylib"
@@ -69,6 +70,6 @@ echo "[INFO] Signing app bundle"
 codesign --force --timestamp --options=runtime --entitlements "$APP_ENTITLEMENTS" --sign "$APP_SIGNING_IDENTITY" "$APP_NAME"
 
 #echo "[INFO] Creating Chameleon.pkg"
-productbuild --component App/Chameleon.app /Applications --sign "$INSTALLER_SIGNING_IDENTITY" Chameleon.pkg
+#productbuild --component App/Chameleon.app /Applications --sign "$INSTALLER_SIGNING_IDENTITY" Chameleon.pkg
 
 echo "[INFO] done"
