@@ -19,9 +19,5 @@ public partial class UserProfileIdentityView : SubPageViewControl, IUserProfileI
         //PreviewImage = ApplicationHelper.TryGetResource<IconSource>("ProfilePageIcon");
     }
 
-    public override Task FrameNavigatedTo()
-    {
-        AnimateVisual = UPView;
-        return base.FrameNavigatedTo();
-    }
+    public override Visual? AnimateVisual { get => UPView; set => base.AnimateVisual = value; }
 }

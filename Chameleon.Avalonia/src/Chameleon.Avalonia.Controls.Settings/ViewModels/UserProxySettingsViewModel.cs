@@ -114,12 +114,11 @@ public partial class UserProxySettingsViewModel
         await base.OnNavigatedToAsync(param);
         if (param is IUserProfileFolder folderId)
         {
-            while(!Loaded)
-                await Task.Delay(100);
+            await LoadedTCS.Task;
+
             _folderId = 0;
             _selectedFolder = null;
             FolderId = folderId.Id;
-            //await InitializeViewModels();
         }
     }
     private void OnRenameFolder(int folderId, string title)

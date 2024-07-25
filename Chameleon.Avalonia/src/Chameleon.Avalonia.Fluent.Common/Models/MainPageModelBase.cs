@@ -20,7 +20,7 @@ public class MainPageModelBase
             Tag = this,
             IconSource = (IconSource)c.FindResource(IconKey),
         };
-        nvi.Classes.Add("SampleAppNav");
+        nvi.Classes.Add("MainAppNav");
         return nvi;
     }
 }

@@ -73,7 +73,7 @@ public partial class App : PrismApplication
         // to stop light mode, force here
         if (Design.IsDesignMode)
         {
-            RequestedThemeVariant = ThemeVariant.Dark;
+            RequestedThemeVariant = ThemeVariant.Light;
         }
 
         // Initializes Prism.Avalonia - DO NOT REMOVE
@@ -84,8 +84,6 @@ public partial class App : PrismApplication
     /// <param name="containerRegistry"></param>
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
-        Console.WriteLine("RegisterTypes()");
-
         containerRegistry.RegisterInstance(containerRegistry);
         RegisterIocContainer(containerRegistry);
 

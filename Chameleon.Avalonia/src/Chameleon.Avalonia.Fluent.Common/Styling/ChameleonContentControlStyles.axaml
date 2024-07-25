@@ -654,7 +654,7 @@
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border
-					Background="{StaticResource ControlFillColorDefaultBrush}"
+					Background="{StaticResource SmokeFillColorDefaultBrush}"
 					HorizontalAlignment="Center"
 					Height="50"
 					CornerRadius="{StaticResource ControlCornerRadius}"
