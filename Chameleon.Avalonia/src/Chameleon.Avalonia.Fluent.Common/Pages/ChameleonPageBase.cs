@@ -8,6 +8,7 @@ using Avalonia.Rendering.Composition;
 using Avalonia.Styling;
 using Chameleon.Av.Fluent.Common.Controls;
 using Chameleon.Common.Helpers;
+using Chameleon.Core.Util;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.Services;
 using FluentAvalonia.UI.Controls;
@@ -18,16 +19,16 @@ namespace Chameleon.Av.Fluent.Common.Pages;
 
 public class ChameleonPageBase : AutoViewModelLocatorControl
 {
-    private CancellationTokenSource? _cts;
+    //private CancellationTokenSource? _cts;
     private bool _isSmallWidth2;
     private bool _hasLoaded;
 
     private Panel? _detailsPanel;
-    //private StackPanel? _optionsHost;
     private IconSourceElement? _previewImageHost;
     private StackPanel? _detailsHost;
     private ScrollViewer? _scroller;
 
+    public virtual Visual? AnimateVisual { get; set; }
 
     public ChameleonPageBase()
     {
@@ -61,10 +62,6 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
         set => SetValue(DescriptionProperty, value);
     }
     #endregion
-
-    public Visual? AnimateVisual { get; set; }
-
-    //protected ThemeVariantScope? ThemeScopeProvider { get; private set; }
 
     #region overrides
     protected override Type StyleKeyOverride => typeof(ChameleonPageBase);
@@ -111,8 +108,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
     }
     #endregion
 
-
-    private void ControlsPageBaseSizeChanged(object sender, SizeChangedEventArgs e)
+    private async void ControlsPageBaseSizeChanged(object sender, SizeChangedEventArgs e)
     {
         var sz = e.NewSize.Width;
 
@@ -121,103 +117,88 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
         PseudoClasses.Set(":smallWidth", sz < 710);
         PseudoClasses.Set(":smallWidth2", isSmallWidth2);
 
+        async Task AnimateOptions(bool toSmall)
+        {
+            if (!await TaskUtil.AwaitFor(() => _hasLoaded))
+                return;
+
+            double x = toSmall ? 70 : -70;
+            double y = toSmall ? -30 : 30;
+            _ = new Animation
+            {
+                Duration = TimeSpan.FromSeconds(0.25),
+                Children =
+                {
+                    new KeyFrame
+                    {
+                        Cue = new Cue(0d),
+                        Setters =
+                        {
+                            new Setter(TranslateTransform.XProperty, x),
+                            new Setter(TranslateTransform.YProperty, y),
+                            new Setter(OpacityProperty, 0d)
+                        }
+                    },
+                    new KeyFrame
+                    {
+                        Cue = new Cue(1d),
+                        Setters =
+                        {
+                            new Setter(TranslateTransform.XProperty, 0d),
+                            new Setter(TranslateTransform.YProperty, 0d),
+                            new Setter(OpacityProperty, 1d)
+                        },
+                        KeySpline = new KeySpline(0, 0, 0, 1)
+                    }
+                }
+            };
+        }
+
         if (isSmallWidth2 && !_isSmallWidth2)
         {
-            AnimateOptions(true);
+            await AnimateOptions(true);
             _isSmallWidth2 = true;
         }
         else if (!isSmallWidth2 && _isSmallWidth2)
         {
-            AnimateOptions(false);
+            await AnimateOptions(false);
             _isSmallWidth2 = false;
         }
     }
-    private async void AnimateOptions(bool toSmall)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            if (!_hasLoaded)
-                await Task.Delay(250);
-        }
 
-        if (!_hasLoaded)
-            return;
-
-        _cts?.Cancel();
-
-        _cts = new CancellationTokenSource();
-        double x = toSmall ? 70 : -70;
-        double y = toSmall ? -30 : 30;
-        _ = new Animation
-        {
-            Duration = TimeSpan.FromSeconds(0.25),
-            Children =
-            {
-                new KeyFrame
-                {
-                    Cue = new Cue(0d),
-                    Setters =
-                    {
-                        new Setter(TranslateTransform.XProperty, x),
-                        new Setter(TranslateTransform.YProperty, y),
-                        new Setter(OpacityProperty, 0d)
-                    }
-                },
-                new KeyFrame
-                {
-                    Cue = new Cue(1d),
-                    Setters =
-                    {
-                        new Setter(TranslateTransform.XProperty, 0d),
-                        new Setter(TranslateTransform.YProperty, 0d),
-                        new Setter(OpacityProperty, 1d)
-                    },
-                    KeySpline = new KeySpline(0, 0, 0, 1)
-                }
-            }
-        };
-
-        //if(_optionsHost != null)
-        //    await ani.RunAsync(_optionsHost, _cts.Token);
-
-        _cts = null;
-    }
-
-    private void FrameNavigatingFrom(object sender, NavigatingCancelEventArgs e)
+    private async void FrameNavigatingFrom(object sender, NavigatingCancelEventArgs e)
     {
         if (_previewImageHost == null)
             return;
 
-        //If TargetType is not set, we know we're currently on a CoreControls page since those
-        // are grouped pages - whereas, FA controls only display one control per page and
-        // set all the extra properties
-
         // Only setup the ConnectedAnimation if it makes sense
-        //    // Only setup the Back connected animation if we're going back to the
-        //    // controls list pages
-        var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-        svc.PrepareToAnimate("BackAnimation", AnimateVisual ?? (Control)_previewImageHost.Parent);
+        await TaskUtil.TryAwaitFor(async () =>
+        {
+            var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
+            svc.PrepareToAnimate("BackAnimation", await TaskUtil.AwaitFor(() => AnimateVisual != null, 1) ? AnimateVisual : (Control)_previewImageHost.Parent);
+        }, 2);
         ContainerServiceHelper.Resolve<INavigationService>().PreviousPage = this;
     }
 
     private async void FrameNavigatedTo(object sender, NavigationEventArgs e)
     {
-        await FrameNavigatedTo();
-
         if (DataContext is ISubPageViewModel pageViewModel)
         {
             await pageViewModel.OnNavigatedToAsync(e.Parameter);
             ControlName = pageViewModel.Title;
         }
 
-        var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));   //TODO: might crash if wrong page
+        var svc = await TaskUtil.TryAwaitFor(() => ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this)), 2);   //TODO: might crash if wrong page
+        if (svc is null)
+            return;
+
         var animation = svc.GetAnimation("ForwardAnimation");
 
         if (animation != null)
         {
             // PreviewImageHost is inside a Viewbox which can really mess with the Composition 
             // animation - use the viewbox directly for the animation to ensure it works correctly
-            if (AnimateVisual != null)
+            if (await TaskUtil.AwaitFor(() => AnimateVisual != null, 1))
             {
                 _detailsPanel.IsVisible = false;
                 animation.TryStart(AnimateVisual, [_scroller]);
@@ -227,6 +208,4 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
 
         }
     }
-
-    public virtual Task FrameNavigatedTo() => Task.CompletedTask;
 }

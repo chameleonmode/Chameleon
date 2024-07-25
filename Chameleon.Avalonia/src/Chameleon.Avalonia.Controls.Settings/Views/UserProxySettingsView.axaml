@@ -31,6 +31,7 @@
 								<HeaderedContentControl.Header>
 									<StackPanel Orientation="Horizontal">
 										<ui:FAComboBox PlaceholderText="Proxy Country:"
+													   BorderThickness="0"
 													   VerticalAlignment="Center"
 													   Width="180"
 													   IsEditable="False"

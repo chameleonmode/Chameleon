@@ -22,6 +22,9 @@ using FluentAvalonia.UI.Navigation;
 using FluentAvalonia.UI.Windowing;
 using System.Xml.Linq;
 using System.Linq;
+using Chameleon.Avalonia.Common.Helpers;
+using static System.Net.Mime.MediaTypeNames;
+using Avpplication = Avalonia.Application;
 
 namespace Chameleon.Av.Fluent.Views;
 
@@ -62,6 +65,8 @@ public partial class MainView : UserControl
     public async void OnFrameworkInit(AppWindow aw)
     {
         App.OnFramworkInitComplete -= OnFrameworkInit;
+
+        TooltipManager.Attach(Avpplication.Current, NavView);
 
         // Initialize the WindowNotificationManager with the "TopLevel". Previously (v0.10), MainWindow
         var notifyService = ContainerServiceHelper.Resolve<IToastNotificationService>();

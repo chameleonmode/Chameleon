@@ -23,6 +23,8 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     [ObservableProperty]
     public string glyph = FontIcons.FontIconsInfos[0].Glyph;
 
+    public TaskCompletionSource LoadedTCS { get; } = new();
+
     public ObservableObjectBase()
     {
         _dispatcherService = ContainerServiceHelper.Resolve<IDispatcherService>();// ?? new DispatcherService();
@@ -35,6 +37,7 @@ public abstract partial class ObservableObjectBase : ObservableObject,
         {
             await IsBusyFor(()=>InitAsync(p));
             Loaded = true;
+            LoadedTCS.TrySetResult();
         },
         AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
     }

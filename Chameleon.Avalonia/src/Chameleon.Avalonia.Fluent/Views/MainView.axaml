@@ -78,7 +78,7 @@
                            Name="NavView"
                            IsSettingsVisible="False"
                            IsBackEnabled="{Binding #FrameView.CanGoBack}"
-						   Classes="SampleAppNav">
+						   Classes="MainAppNav">
 			<ui:Frame Name="FrameView" />
 		</ui:NavigationView>
 

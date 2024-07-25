@@ -19,8 +19,8 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     private readonly IUserProfileFolder _folder;
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IUserProfileService _userProfileService;
+    private readonly UserProfileFoldersViewModel foldervm;  
 
-    readonly UserProfileFoldersViewModel foldervm;  
     private bool _isSelected;
 
     [ObservableProperty]
@@ -31,14 +31,41 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     [ObservableProperty]
     private bool _isFavorite;
 
-    private IList<IUserProfile> _selectedUserProfiles = new List<IUserProfile>();
-    public IList<IUserProfile> SelectedUserProfiles
+    private IList<IUserProfile> ProfilesByCurrentFolder
     {
-        get => _selectedUserProfiles;
-        set => SetProperty(ref _selectedUserProfiles, value);
+        get
+        {
+            var userProfilesFromCurrentFolder = _userProfileService
+                .GetAll()
+                .Where(profiles => profiles.FolderId == _folder.Id)
+                .ToList();
+
+            return userProfilesFromCurrentFolder;
+        }
+    }
+
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set
+        {
+            SetProperty(ref _isSelected, value);
+            if (value == false)
+            {
+                IsRenamed = false;
+            }
+            else
+            {
+                foldervm.SelectedFolder = this;
+            }
+        }
     }
 
     public bool IsFolderNotEmpty => ProfilesByCurrentFolder.Any();
+    public IUserProfileFolder UserProfileFolder => _folder;
+    public IApplicationUser CurrentUser => _currentUser;
+    public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(_folder);
+    public bool IsContextMenuItemEnabled => !CurrentUser.IsAssistant;
 
     public UserProfileFolderViewModel(
         IApplicationUser currentUser,
@@ -63,24 +90,11 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
         });
     }
 
-    private void OnUpdateUserProfileEvent(UserProfileFolderEventArgs a) 
-        {
-           
-        }
-
-    public IUserProfileFolder UserProfileFolder => _folder;
-
    [RelayCommand]
     public async Task Open()
     {
         await foldervm.OnNavigatingTo(UserProfileFolder);
-        //foldervm.OnNavigatingTo(null);
         IsSelected = true;
-        //IsSelected = true;
-        //ContainerServiceHelper.Resolve<IUserProfilesViewModel>().Open(UserProfileFolder);
-        //EventAggregator
-        //    .GetEvent<OpenUserProfileFolderEvent>()
-        //    .Publish(new UserProfileFolderEventArgs(_folder));
     }
 
     [RelayCommand]
@@ -101,19 +115,6 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
             .Publish(new ChangeProfilesInFavoriteFolderEventArgs(UserProfileFolder.Id));
 
         OnPropertyChanged(nameof(UserProfileFolder));
-    }
-
-    private IList<IUserProfile> ProfilesByCurrentFolder
-    {
-        get
-        {
-            var userProfilesFromCurrentFolder = _userProfileService
-                .GetAll()
-                .Where(profiles => profiles.FolderId == _folder.Id)
-                .ToList();
-
-            return userProfilesFromCurrentFolder;
-        }
     }
 
     [RelayCommand]
@@ -174,26 +175,4 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
            .GetEvent<SyncChangesEvent>()
            .Publish();
     }
-
-    public bool IsSelected
-    {
-        get => _isSelected;
-        set
-        {
-            SetProperty(ref _isSelected, value);
-            if (value == false)
-            {
-                IsRenamed = false;
-            }
-            else
-            {
-                foldervm.SelectedFolder = this;
-            }
-        }
-    }
-
-    public IApplicationUser CurrentUser => _currentUser;
-    public bool IsSharedFolder => _userProfileFolderService.IsSharedFolder(_folder);
-    public bool IsContextMenuItemEnabled => !CurrentUser.IsAssistant;
-
 }
