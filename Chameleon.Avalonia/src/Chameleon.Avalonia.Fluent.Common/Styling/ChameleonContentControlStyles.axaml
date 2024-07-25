@@ -13,6 +13,7 @@
 				<HeaderedContentControl.Header>
 					<StackPanel Orientation="Horizontal">
 						<ui:FAComboBox PlaceholderText="Proxy Country:"
+									   BorderThickness="0"
 									   VerticalAlignment="Center"
 									   Width="150"
 									   IsEditable="False"
@@ -654,7 +655,7 @@
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border
-					Background="{StaticResource SmokeFillColorDefaultBrush}"
+					Background="{StaticResource LayerFillColorDefaultBrush}"
 					HorizontalAlignment="Center"
 					Height="50"
 					CornerRadius="{StaticResource ControlCornerRadius}"

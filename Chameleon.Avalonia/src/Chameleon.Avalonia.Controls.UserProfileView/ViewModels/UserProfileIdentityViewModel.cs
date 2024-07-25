@@ -25,6 +25,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.Interfaces.WebBrowser;
 using Avalonia.Collections;
 using Chameleon.Interfaces;
+using Chameleon.Avalonia.Common.Extensions;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 
@@ -179,13 +180,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     private async void BindUi()
     {
         if (UserProfileModel == null)
-        {
-            Persons.Clear();
-            Businesses.Clear();
-            Addresses.Clear();
-            Logins.Clear();
             return;
-        }
 
         ProfileVM = new UserProfilesView.ViewModels.UserProfileViewModel(
                        _userProfileService,
@@ -194,20 +189,27 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
                        _systemBrowserManager,
                        false);
 
-        Countries.AddRange(await Task.Run(_userProfileAdditionalDataService.GetCountries));
-        Addresses.AddRange(await Task.Run(() => _userProfileAdditionalDataService.GetAddresses(UserProfileModel.Id)));
-        Persons.AddRange(await Task.Run(() => _userProfileAdditionalDataService.GetPersons(UserProfileModel.Id)));
-        Logins.AddRange(await Task.Run(() => _userProfileAdditionalDataService.GetLogins(UserProfileModel.Id)));
-        Businesses.AddRange(await Task.Run(() => _userProfileAdditionalDataService.GetBusinesses(UserProfileModel.Id)));
+        if(Countries.Count == 0)
+            Countries.AddRange(await Task.Run(_userProfileAdditionalDataService.GetCountries));
+
+        Addresses.AddNewRangeAsync(_userProfileAdditionalDataService.GetAddressesAsync(UserProfileModel.Id));
+        Persons.AddNewRangeAsync(_userProfileAdditionalDataService.GetPersonsAsync(UserProfileModel.Id));
+        Logins.AddNewRangeAsync(_userProfileAdditionalDataService.GetLoginsAsync(UserProfileModel.Id));
+        Businesses.AddNewRangeAsync(_userProfileAdditionalDataService.GetBusinessesAsync(UserProfileModel.Id));
 
         foreach (var a in Addresses)
             a.SelectedCountry = Countries.FirstOrDefault(x => a?.CountryId == x.Id);
 
         CollectionChanged(this, null);
 
+        Addresses.CollectionChanged -= CollectionChanged;
+        Logins.CollectionChanged -= CollectionChanged;
+        Persons.CollectionChanged -= CollectionChanged;
+        Businesses.CollectionChanged -= CollectionChanged;
+
+        Addresses.CollectionChanged += CollectionChanged;
         Logins.CollectionChanged += CollectionChanged;
         Persons.CollectionChanged += CollectionChanged;
-        Addresses.CollectionChanged += CollectionChanged;
         Businesses.CollectionChanged += CollectionChanged;
     }
 

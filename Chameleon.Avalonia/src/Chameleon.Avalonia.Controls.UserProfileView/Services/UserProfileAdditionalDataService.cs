@@ -79,14 +79,15 @@ public class UserProfileAdditionalDataService : IUserProfileAdditionalDataServic
         Task.Run(() => _personRepository.Delete(personBindable.Id));
     }
 
-    public IReadOnlyList<UserProfilePersonBindable> GetPersons(int profileId, bool ignoreCache = true)
+    public IEnumerable<UserProfilePersonBindable> GetPersons(int profileId, bool ignoreCache = true)
     {
         var request = new UserProfileGetAllRequestDto(profileId);
         var persons = _personRepository.GetAll(ignoreCache, request);
-        return _mapper.Map<UserProfilePersonBindable[]>(persons)
-            .ToReadOnlyList();
+        return _mapper.Map<UserProfilePersonBindable[]>(persons);
     }
 
+    public Task<IEnumerable<UserProfilePersonBindable>> GetPersonsAsync(int profileId, bool ignoreCache = true)
+           => Task.Run(() => GetPersons(profileId, ignoreCache));
     public int AddBusiness(UserProfileBusinessBindable businessBindable)
     {
         var business = _mapper.Map<UserProfileBusiness>(businessBindable);
@@ -104,13 +105,14 @@ public class UserProfileAdditionalDataService : IUserProfileAdditionalDataServic
         Task.Run(() => _businessRepository.Delete(businessBindable.Id));
     }
 
-    public IReadOnlyList<UserProfileBusinessBindable> GetBusinesses(int profileId)
+    public IEnumerable<UserProfileBusinessBindable> GetBusinesses(int profileId)
     {
         var request = new UserProfileGetAllRequestDto(profileId);
         var businesses = _businessRepository.GetAll(true, request);
-        return _mapper.Map<UserProfileBusinessBindable[]>(businesses)
-             .ToReadOnlyList();
+        return _mapper.Map<UserProfileBusinessBindable[]>(businesses);
     }
+    public Task<IEnumerable<UserProfileBusinessBindable>> GetBusinessesAsync(int profileId)
+       => Task.Run(() => GetBusinesses(profileId));
 
     public int AddAddress(UserProfileAddressBindable addressBindable)
     {
@@ -129,13 +131,14 @@ public class UserProfileAdditionalDataService : IUserProfileAdditionalDataServic
         Task.Run(() => _addressRepository.Delete(addressBindable.Id));
     }
 
-    public IReadOnlyList<UserProfileAddressBindable> GetAddresses(int profileId, bool ignoreCache = true)
+    public IEnumerable<UserProfileAddressBindable> GetAddresses(int profileId, bool ignoreCache = true)
     {
         var request = new UserProfileGetAllRequestDto(profileId);
         var addresses = _addressRepository.GetAll(ignoreCache, request);
-        return _mapper.Map<UserProfileAddressBindable[]>(addresses)
-            .ToReadOnlyList();
+        return _mapper.Map<UserProfileAddressBindable[]>(addresses);
     }
+    public Task<IEnumerable<UserProfileAddressBindable>> GetAddressesAsync(int profileId, bool ignoreCache = true)
+        => Task.Run(()=> GetAddresses(profileId, ignoreCache));
 
     public int AddLogin(UserProfileLoginBindable loginBindable)
     {
@@ -154,13 +157,14 @@ public class UserProfileAdditionalDataService : IUserProfileAdditionalDataServic
         Task.Run(() => _loginRepository.Delete(loginBindable.Id));
     }
 
-    public IReadOnlyList<UserProfileLoginBindable> GetLogins(int profileId, bool ignoreCache = true)
+    public IEnumerable<UserProfileLoginBindable> GetLogins(int profileId, bool ignoreCache = true)
     {
         var request = new UserProfileGetAllRequestDto(profileId);
         var logins = _loginRepository.GetAll(ignoreCache, request);
-        return _mapper.Map<UserProfileLoginBindable[]>(logins)
-            .ToReadOnlyList();
+        return _mapper.Map<UserProfileLoginBindable[]>(logins);
     }
+    public Task<IEnumerable<UserProfileLoginBindable>> GetLoginsAsync(int profileId, bool ignoreCache = true)
+        => Task.Run(() => GetLogins(profileId, ignoreCache));
 
     public IReadOnlyList<CountryBindable> GetCountries()
     {
