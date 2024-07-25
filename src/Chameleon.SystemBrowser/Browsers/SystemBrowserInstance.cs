@@ -255,18 +255,23 @@ public abstract class SystemBrowserInstance(
 
     public void Cleanup()
     {
-        MacOSWindowListener.Instance.WindowForegroundChanged -= OnWindowForeground;
-        MacOSWindowListener.Instance.RemPid(Brocess.Id);
-        ExUtil.TryCatch(() =>
+        if (IsMao)
         {
-            if (!IsMao)
+            MacOSWindowListener.Instance.WindowForegroundChanged -= OnWindowForeground;
+            MacOSWindowListener.Instance.RemPid(Brocess.Id);
+        }
+        else
+        {
+#pragma warning disable CA1416 // Validate platform compatibility
+            ExUtil.TryCatch(() =>
+            {
                 foreach (var item in winEventHooks)
                 {
-#pragma warning disable CA1416 // Validate platform compatibility
                     U32.UnhookWinEvent(item);
-#pragma warning restore CA1416 // Validate platform compatibility
                 }
-        });
+            });
+#pragma warning restore CA1416 // Validate platform compatibility
+        }
 
         var r = OPtcs.TrySetResult(false);
         Brocess = null;
