@@ -355,8 +355,9 @@ public abstract class SystemBrowserInstance(
         
         if (GetLoadExtensionsArgument().Get() is string exts)
             args.Add($"--load-extension=\"{exts}\"");
-        
-        //args.Add($"{Starturl}");
+       
+        if(!IsMao)
+            args.Add($"{Starturl}");
         
         return string.Join(" ", args);
     }
