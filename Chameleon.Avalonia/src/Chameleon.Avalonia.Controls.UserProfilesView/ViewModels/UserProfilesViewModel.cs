@@ -547,7 +547,7 @@ public partial class UserProfilesViewModel
         var folderId = HasFolder ? (int?)Folder.Id : null;
 
         var profile = await _userProfileService.CreateAsync(folderId);
-        if (folderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == profile.Id))
+        if (ViewModels.Count == 1 || folderId != 0 && !ViewModels.Any(p => p.UserProfile.Id == profile.Id))
             OnHandleUserEvent();
 
         return profile;

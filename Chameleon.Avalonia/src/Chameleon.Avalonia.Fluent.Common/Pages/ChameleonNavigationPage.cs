@@ -5,6 +5,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Chameleon.Av.Fluent.Common.Controls;
+using Chameleon.Core.Util;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.UserProfileFolders;
@@ -50,31 +51,34 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
         if (_animationPage == null || _animationPageParent == null)
             return;
 
-        var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-        var anim = svc.GetAnimation("BackAnimation");
-
-        if (anim == null)
-            return;
-
-        GetNavAnimationVisuals(_navParam);
-
-        if (_animationPage == null) return;
-
-        // In WinUI, ConnectedAnimation is somehow exempt from all clipping behaviors
-        // Here, we are not, so disable ClipToBounds on all elements in the SettingsExpander
-        // The rest are taken care of in the xaml.
-        // NOTE: The ScrollViewer is not changed here as that's important for scrolling - thus
-        // the animation will be cut off, but the back animation is pretty fast and mostly is
-        // only visible closer to the element so we're ok, I think
-        var x = _animationPage.GetVisualParent();
-        while (x is not ScrollContentPresenter && x != null)
+        ExUtil.TryCatch(() =>
         {
-            x.ClipToBounds = false;
-            x = x.GetVisualParent();
-        }
+            var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
+            var anim = svc.GetAnimation("BackAnimation");
 
-        anim.Configuration = new DirectConnectedAnimationConfiguration();
-        anim.TryStart(_animationPage);
+            if (anim == null)
+                return;
+
+            GetNavAnimationVisuals(_navParam);
+
+            if (_animationPage == null) return;
+
+            // In WinUI, ConnectedAnimation is somehow exempt from all clipping behaviors
+            // Here, we are not, so disable ClipToBounds on all elements in the SettingsExpander
+            // The rest are taken care of in the xaml.
+            // NOTE: The ScrollViewer is not changed here as that's important for scrolling - thus
+            // the animation will be cut off, but the back animation is pretty fast and mostly is
+            // only visible closer to the element so we're ok, I think
+            var x = _animationPage.GetVisualParent();
+            while (x is not ScrollContentPresenter && x != null)
+            {
+                x.ClipToBounds = false;
+                x = x.GetVisualParent();
+            }
+
+            anim.Configuration = new DirectConnectedAnimationConfiguration();
+            anim.TryStart(_animationPage);
+        });
     }
 
     private void OnNavigatingFrom(object sender, NavigatingCancelEventArgs e)

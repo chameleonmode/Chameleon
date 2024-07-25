@@ -10,11 +10,11 @@
     <AvaloniaVersion>11.1.0-beta1</AvaloniaVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Avalonia" Version="11.1.0-beta2" />
-    <PackageVersion Include="Avalonia.Desktop" Version="11.1.0-beta2" />
+    <PackageVersion Include="Avalonia" Version="11.1.0" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.1.0" />
     <PackageVersion Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Skia" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Diagnostics" Version="11.1.0-beta2" />
+    <PackageVersion Include="Avalonia.Diagnostics" Version="11.1.0" />
     <PackageVersion Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Browser" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Android" Version="$(AvaloniaVersion)" />
@@ -27,29 +27,25 @@
     <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Controls.ItemsRepeater" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.1.0-beta2.1" />
-    <PackageVersion Include="Avalonia.Svg" Version="11.1.0-beta1" />
-    <PackageVersion Include="Avalonia.Svg.Skia" Version="11.1.0-beta1" />
-	  
-    <PackageVersion Include="FluentAvaloniaUI" Version="2.1.0-preview5" />
-	  
+    <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.1.0" />
+    <PackageVersion Include="Avalonia.Svg" Version="11.1.0" />
+    <PackageVersion Include="Avalonia.Svg.Skia" Version="11.1.0" />
+    <PackageVersion Include="FluentAvaloniaUI" Version="2.1.0-preview6" />
     <PackageVersion Include="Prism.Avalonia" Version="9.0.401.11000-pre" />
     <PackageVersion Include="Prism.DryIoc.Avalonia" Version="9.0.401.11000-pre" />
-	  
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0-2.final" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.44.0" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.45.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-	  
     <PackageVersion Include="AutoMapper" Version="13.0.1" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageVersion Include="Dotnet.Bundle" Version="0.9.13" />
     <PackageVersion Include="Fluxzy.Core" Version="1.22.12" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="Moq" Version="4.16.1" />
-    <PackageVersion Include="System.Configuration.ConfigurationManager" Version="9.0.0-preview.5.24306.7" />
+    <PackageVersion Include="System.Configuration.ConfigurationManager" Version="9.0.0-preview.6.24327.7" />
     <PackageVersion Include="System.Text.Json" Version="6.0.5" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
     <PackageVersion Include="System.Text.Json" Version="6.0.5" Condition="'$(TargetFramework)' == 'netstandard2.1'" />
     <PackageVersion Include="xunit" Version="2.4.1" />
