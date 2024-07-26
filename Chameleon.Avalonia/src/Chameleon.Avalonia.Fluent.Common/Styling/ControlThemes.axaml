@@ -217,4 +217,31 @@
 		<Setter Property="BorderBrush"
 				Value="{StaticResource ControlElevationBorderBrush}" />
 	</ControlTheme>
+
+	<ControlTheme x:Key="CopyPasta"
+	  TargetType="HeaderedContentControl">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Panel>
+					<Panel VerticalAlignment="Center">
+						<TextBox Text="{TemplateBinding Tag}"
+								 Width="420"
+								 Height="36"
+								 Margin="0 6 0 0"
+								 HorizontalAlignment="Left"
+								 IsReadOnly="True"/>
+						<TextBlock Margin="0 0 0 2"
+								   Theme="{StaticResource CaptionTextBlockStyle}"
+									Text="{TemplateBinding Header}" />
+					</Panel>
+					<Button Margin="0 6 0 0"
+							HorizontalAlignment="Right"
+							Content="copy"
+							Command="{Binding CopyCommand}"
+							CommandParameter="{TemplateBinding Tag}"
+							Theme="{StaticResource SvgIconButton}" />
+				</Panel>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
 </ResourceDictionary>

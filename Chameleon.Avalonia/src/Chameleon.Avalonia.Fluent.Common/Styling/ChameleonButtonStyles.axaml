@@ -309,6 +309,7 @@
 								Background="Transparent"
 								CornerRadius="{TemplateBinding CornerRadius}">
 							<ui:SymbolIcon
+								Name="SmblIcon"
 								Symbol="{TemplateBinding Content}"
 								Margin="0 0 0 0"/>
 						</Border>
@@ -346,11 +347,15 @@
 		</Style>
 
 
-		<!--Accent Button-->
+		<!--Accent Button Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"-->
 		<Style Selector="^.accent">
 			<Style Selector="^ /template/ Border#Pnl">
 				<Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" />
 				<Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrush}" />
+			</Style>
+
+			<Style Selector="^ /template/ ui|SymbolIcon#SmblIcon">
+				<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
 			</Style>
 
 			<Style Selector="^:pointerover /template/ Border#Pnl">

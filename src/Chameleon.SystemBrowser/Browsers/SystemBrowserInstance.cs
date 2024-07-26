@@ -169,15 +169,19 @@ public abstract class SystemBrowserInstance(
                 Handle = Brocess.MainWindowHandle;
                 windowTracker.StopTracking();
                 SetWin32Events();
-                Brocess.Exited += (s, e) => 
-                { Cleanup(); };
             }
 #pragma warning restore CA1416 // Validate platform compatibility
         }
-        if(Brocess?.HasExited == false)
-            Brocess.Refresh();
 
         OPtcs.TrySetResult(true);
+
+        await Task.Delay(1500);
+
+        if (Brocess?.HasExited == false)
+        {
+            Brocess.Refresh();
+            Brocess.Exited += (s, e) => { Cleanup(); };
+        }
     }
 
     void OnWindowForeground(int i) 

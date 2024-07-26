@@ -26,7 +26,6 @@ public static class ExUtil
         {
             caught?.Invoke();
             Console.WriteLine(ex.ToString());
-
         }
     }
 
