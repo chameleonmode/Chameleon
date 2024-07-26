@@ -3,7 +3,7 @@ using Chameleon.Interfaces.UserProfiles;
 
 namespace Chameleon.Interfaces.App.UserProfiles;
 
-public interface IUserProfileIdentityViewModel 
+public interface IUserProfileIdentityViewModel : ISingletonDependency
 {
     //IUserProfile UserProfile { set; }
 }

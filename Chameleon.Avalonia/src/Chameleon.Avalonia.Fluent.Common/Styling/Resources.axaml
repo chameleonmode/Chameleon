@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ui="using:FluentAvalonia.UI.Controls" >
 	<Design.PreviewWith>
-		<ui:IconSourceElement IconSource="{StaticResource User}"
+		<ui:IconSourceElement IconSource="{StaticResource ProxyCred}"
 						  Width="50" Height="50"/>
 	</Design.PreviewWith>
     <!-- Override this so content doesn't appear in title bar area -->
@@ -24,7 +24,8 @@
 
 	<ui:SymbolIconSource Symbol="Play" x:Key="AutomationIcon" />
 	<ui:SymbolIconSource Symbol="PlayFilled" x:Key="AutomationIconFilled" />
-	
+
+
 	<ui:SymbolIconSource Symbol="StarFilled" x:Key="StarFilledIcon" />
 	<ui:SymbolIconSource Symbol="Settings" x:Key="SettingsIcon" />
 	<ui:SymbolIconSource Symbol="SettingsFilled" x:Key="SettingsIconFilled" />
@@ -90,8 +91,8 @@
 	<!-- SubPageIcons -->
 	<ui:SymbolIconSource x:Key="DefaultSettingsPageIcon" Symbol="TwoPage" />
 	<ui:SymbolIconSource x:Key="ProfilePageIcon" Symbol="Contact" />
-	<ui:SymbolIconSource x:Key="Proxy" Symbol="WifiProtected" />
-	<ui:SymbolIconSource x:Key="ProxyCred" Symbol="WifiWarning" />
+	<ui:SymbolIconSource x:Key="Proxy" Symbol="Globe" />
+	<ui:SymbolIconSource x:Key="ProxyCred" Symbol="CloudSync" />
 	<ui:SymbolIconSource x:Key="CellPhone" Symbol="CellPhone" />
 	<ui:SymbolIconSource x:Key="User" Symbol="OtherUser" />
 	<ui:SymbolIconSource x:Key="Import" Symbol="Import" />

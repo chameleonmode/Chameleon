@@ -1,4 +1,6 @@
-﻿namespace Chameleon.Interfaces;
+﻿using Chameleon.Interfaces.Ioc;
+
+namespace Chameleon.Interfaces;
 
 public class MainAppSearchItem
 {
@@ -19,7 +21,7 @@ public class MainAppSearchItem
     public Type PageType { get; set; }
 }
 
-public interface IMainViewViewModel
+public interface IMainViewViewModel : ISingletonDependency
 {
     void BuildSearchTerms(List<MainAppSearchItem> items);
 }

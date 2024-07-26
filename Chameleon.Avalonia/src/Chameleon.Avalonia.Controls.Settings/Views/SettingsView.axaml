@@ -18,7 +18,7 @@
 					Margin="7 12 12 0"/>
 			<StackPanel Spacing="15"
                         Margin="30 0 30 30">
-				<ui:SettingsExpander 
+				<!--<ui:SettingsExpander 
 					Header="Web"
 					Name="Default"
 					IconSource="{StaticResource DefaultSettingsPageIcon}"
@@ -26,8 +26,8 @@
 					IsClickEnabled="True"
 					ActionIconSource="{StaticResource GoIcon}"
 					Command="{Binding CmdNavigateToChildCommand}"
-					CommandParameter="DEFAULTS" />
-				<ui:SettingsExpander 
+					CommandParameter="DEFAULTS" />-->
+				<!--<ui:SettingsExpander 
 					Header="Proxy"
 					Name="PROXY"
 					IconSource="{StaticResource Proxy}"
@@ -35,34 +35,36 @@
 					IsClickEnabled="True"
 					ActionIconSource="{StaticResource GoIcon}"
 					Command="{Binding CmdNavigateToChildCommand}"
-					CommandParameter="PROXY"/>
+					CommandParameter="PROXY"/>-->
 				
-				<ui:SettingsExpander Header="Proxy Credit"
+				<!--<ui:SettingsExpander Header="Proxy Credit"
 									 Name="PROXYCREDIT"
 					 IconSource="{StaticResource ProxyCred}"
 					 Description="Proxy credit settings"
 					 IsClickEnabled="True"
 					 ActionIconSource="{StaticResource GoIcon}"
 					 Command="{Binding CmdNavigateToChildCommand}"
-					 CommandParameter="PROXYCREDIT"/>
+					 CommandParameter="PROXYCREDIT"/>-->
 				
-				<ui:SettingsExpander Header="Virtual Taskforce"
+				<!--<ui:SettingsExpander Header="Virtual Taskforce"
 									 Name="USERS"
 					 IconSource="{StaticResource User}"
 					 Description="VA settings"
 					 IsClickEnabled="True"
 					 ActionIconSource="{StaticResource GoIcon}"
 					 Command="{Binding CmdNavigateToChildCommand}"
-					 CommandParameter="USERS"/>
-				
-				<!--<ui:SettingsExpander Header="Phone Verification"
-					 Description="PVA key settings"
-					 IconSource="{StaticResource CellPhone}"
-					 ActionIconSource="{StaticResource GoIcon}">
-					<ui:SettingsExpanderItem>
-						<local:PhoneVerificationView />
-					</ui:SettingsExpanderItem>
-				</ui:SettingsExpander>-->
+					 CommandParameter="USERS"/>-->
+
+				<ui:SettingsExpander
+					Header="App Theme"
+					IconSource="DarkTheme"
+					Description="Change the current app theme">
+					<ui:SettingsExpander.Footer>
+						<ComboBox SelectedItem="{Binding CurrentAppTheme}"
+								  ItemsSource="{Binding AppThemes}"
+								  MinWidth="150" />
+					</ui:SettingsExpander.Footer>
+				</ui:SettingsExpander>
 				
 				<ui:SettingsExpander Header="App Accent Color"
 					 IconSource="ColorLine"
@@ -217,16 +219,6 @@
 						</ui:SettingsExpanderItem.Footer>
 					</ui:SettingsExpanderItem>
 
-				</ui:SettingsExpander>
-
-				<ui:SettingsExpander Header="App Theme"
-					 IconSource="DarkTheme"
-					 Description="Change the current app theme">
-					<ui:SettingsExpander.Footer>
-						<ComboBox SelectedItem="{Binding CurrentAppTheme}"
-								  ItemsSource="{Binding AppThemes}"
-								  MinWidth="150" />
-					</ui:SettingsExpander.Footer>
 				</ui:SettingsExpander>
 
 				<ui:SettingsExpander Header="Account"

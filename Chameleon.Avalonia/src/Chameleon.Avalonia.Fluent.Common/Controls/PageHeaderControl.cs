@@ -14,16 +14,15 @@ public enum PageHeaderTextType
     Profiles,
     Automation,
     Main,
-    CoreControls,
-    FAControls,
-    Settings
+    Settings,
+    FunctionalSettings
 }
 
 public class PageHeaderControl : TemplatedControl
 {
     public PageHeaderControl()
     {
-        SizeChanged += OnSizeChanged;
+        //SizeChanged += OnSizeChanged;
         ActualThemeVariantChanged += OnActualThemeVariantChanged;
     }
 
@@ -65,9 +64,9 @@ public class PageHeaderControl : TemplatedControl
         UpdateTitleText();
     }
 
-    private void OnSizeChanged(object? sender, SizeChangedEventArgs e)
-    {
-        var wid = e.NewSize.Width;
+    //private void OnSizeChanged(object? sender, SizeChangedEventArgs e)
+    //{
+        //var wid = e.NewSize.Width;
         //if (wid < 630)
         //{
         //    var delta = 630 - wid;
@@ -82,7 +81,7 @@ public class PageHeaderControl : TemplatedControl
         //
 
         //_text1.Width = 180;
-    }
+    //}
 
     private void UpdateTitleText()
     {
@@ -99,6 +98,7 @@ public class PageHeaderControl : TemplatedControl
             PageHeaderTextType.Automation => "Automation",
             PageHeaderTextType.Profiles => "Profiles & Folders",   //removeing  & Folders might feel better should test out in future
             PageHeaderTextType.Settings => "Settings",
+            PageHeaderTextType.FunctionalSettings => "General",
             _ => "Chameleon"
         };
 

@@ -1,6 +1,8 @@
-﻿namespace Chameleon.Interfaces.UserProfileFolders
+﻿using Chameleon.Interfaces.Ioc;
+
+namespace Chameleon.Interfaces.UserProfileFolders
 {
-    public interface IUserProfileFoldersView
+    public interface IUserProfileFoldersView : ISingletonDependency
     {
        
     }

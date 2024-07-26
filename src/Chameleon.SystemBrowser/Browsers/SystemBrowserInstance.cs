@@ -157,6 +157,7 @@ public abstract class SystemBrowserInstance(
         {
 #pragma warning disable CA1416 // Validate platform compatibility
             windowTracker = new(Brocess);
+            await windowTracker.StartTracking(BrowserType == SystemBrowserType.Firefox);
             var newHandle = await windowTracker.WaitForMainWindowHandleChangeAsync();
             Brocess = newHandle.Item2;
             if (Brocess == null)
@@ -171,10 +172,16 @@ public abstract class SystemBrowserInstance(
             }
 #pragma warning restore CA1416 // Validate platform compatibility
         }
-        if(Brocess?.HasExited == false)
-            Brocess.Refresh();
 
         OPtcs.TrySetResult(true);
+
+        await Task.Delay(1500);
+
+        if (Brocess?.HasExited == false)
+        {
+            Brocess.Refresh();
+            Brocess.Exited += (s, e) => { Cleanup(); };
+        }
     }
 
     void OnWindowForeground(int i) 
@@ -242,9 +249,9 @@ public abstract class SystemBrowserInstance(
                 break;
 
             case User32Events.EVENT_OBJECT_DESTROY:
-                _ = await OPtcs.Task;
+                var r = await OPtcs.Task;
 
-                if (Handle == IntPtr.Zero || Brocess == null || Brocess.HasExited)
+                if (!r || Handle == IntPtr.Zero || Brocess == null || Brocess.HasExited)
                     Cleanup();
                 break;
 

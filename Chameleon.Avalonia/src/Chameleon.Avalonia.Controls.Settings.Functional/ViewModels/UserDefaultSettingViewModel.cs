@@ -1,12 +1,4 @@
-﻿using Chameleon.CT.Common.Base;
-using Chameleon.Core.Util;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Interfaces.UserSettings;
-using Chameleon.Prism.Events;
-using CommunityToolkit.Mvvm.Input;
-
-namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
+﻿namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
 public partial class UserDefaultSettingViewModel : SubPageViewModelBase
 {

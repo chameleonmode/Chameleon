@@ -18,6 +18,10 @@ namespace Chameleon.Av.Fluent.Common.Pages;
 
 public class ChameleonNavigationPage : AutoViewModelLocatorControl
 {
+    private Visual? _animationPageParent;
+    private Visual? _animationPage;
+    private object? _navParam;
+
     public ChameleonNavigationPage()
     {
         // Use the frame events here to ensure ConnectedAnimations still work with
@@ -42,11 +46,13 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
         }
     }
 
+    public virtual void OnAfterNavigatedToViewModel(object param) { }
     private async void OnNavigatedTo(object sender, NavigationEventArgs e)
     {
         if (DataContext is IPageViewModel pageViewModel)
         {
             await pageViewModel.OnNavigatedToAsync(e.Parameter);
+            OnAfterNavigatedToViewModel(e.Parameter);
         }
         if (_animationPage == null || _animationPageParent == null)
             return;
@@ -147,9 +153,4 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl
             }
         }
     }
-
-    private Visual? _animationPageParent;
-    private Visual? _animationPage;
-    private object? _navParam;
-
 }

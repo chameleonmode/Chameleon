@@ -1,8 +1,9 @@
-﻿using Chameleon.Interfaces.UserProfileFolders;
+﻿using Chameleon.Interfaces.Ioc;
+using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 
 namespace Chameleon.Interfaces.App.UserProfiles;
-public interface IUserProfileFoldersViewModel
+public interface IUserProfileFoldersViewModel:ISingletonDependency
 {
     void SetSelectedById(int id);
     Func<IUserProfileFolder, bool> Filter { get; set; }

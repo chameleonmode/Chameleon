@@ -28,7 +28,8 @@ public class AutoViewModelLocatorControl : UserControl
 
         Type? vmt =
             viewType.GetCustomAttribute<ViewModelAttribute>()?.Type ?? 
-            Type.GetType($"{viewType.Namespace}.ViewModels.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}");
+            Type.GetType($"{viewType.Namespace}.ViewModels.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}") ??
+            Type.GetType($"{viewType.Namespace.Replace(".Views", ".ViewModels")}.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}");
         
 
         return ContainerServiceHelper.Resolve(vmt);

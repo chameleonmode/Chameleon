@@ -147,14 +147,17 @@ public class MWHandleTrackerUtility
     public MWHandleTrackerUtility(Process process)
     {
         _process = process ?? throw new ArgumentNullException(nameof(process));
-        StartTracking();
+        //StartTracking();
     }
 
-    private async void StartTracking()
+    public async Task StartTracking(bool moniterChild)
     {
         new Thread(() => TrackMainWindowHandle(_cts.Token)) { IsBackground = true }.Start();
-        await Task.Delay(1500);
-        new Thread(() => MonitorChildProcesses(_cts.Token)) { IsBackground = true }.Start();
+        if (moniterChild)
+        {
+            await Task.Delay(250);
+            new Thread(() => MonitorChildProcesses(_cts.Token)) { IsBackground = true }.Start();
+        }
     }
 
     private void TrackMainWindowHandle(CancellationToken token)
@@ -183,6 +186,7 @@ public class MWHandleTrackerUtility
                     var tcs = _tcs;
                     _tcs = new();
                     tcs.SetResult(new(_mainWindowHandle, _process));
+                    break;
                 }
 
             }
@@ -217,7 +221,7 @@ public class MWHandleTrackerUtility
                 Console.WriteLine(ex.StackTrace);
             }
             
-            Thread.Sleep(2000);  // Poll every two seconds
+            Thread.Sleep(500);  // Poll every half seconds
         }
     }
 
