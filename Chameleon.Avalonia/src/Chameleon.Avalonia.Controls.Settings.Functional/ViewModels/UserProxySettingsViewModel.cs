@@ -1,27 +1,28 @@
-﻿using AutoMapper;
-using Chameleon.App.Shared.Proxies;
-using Chameleon.Avalonia.Controls.Paginator.ViewModels;
-using Chameleon.Core.Collections;
-using Chameleon.Core.Collections.Views;
-using Chameleon.Domain.Entities;
-using Chameleon.Interfaces.App.Settings;
-using Chameleon.Interfaces.App.Synchronization.Events;
-using Chameleon.Interfaces.Proxies;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.UserProfileFolders;
-using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Core.Extensions;
-using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
-using Chameleon.CT.Common.Base;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.CT.Common.Collections;
-using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
-using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.App.UserProfileFolders.Events;
-using System.Threading;
+﻿namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
-namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
+public class ProfileFolderViewModel
+    : ObservableObject
+{
+    public ProfileFolderViewModel(int id, string title)
+    {
+        Id = id;
+        Title = title;
+    }
+
+    private int _id;
+    public int Id
+    {
+        get => _id;
+        set => SetProperty(ref _id, value);
+    }
+
+    private string _title;
+    public string Title
+    {
+        get => _title;
+        set => SetProperty(ref _title, value);
+    }
+}
 
 public partial class UserProxySettingsViewModel
        : SubPageViewModelBase

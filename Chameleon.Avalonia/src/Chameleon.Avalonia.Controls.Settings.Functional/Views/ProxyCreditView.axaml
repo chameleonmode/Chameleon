@@ -5,7 +5,7 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
-             x:Class="Chameleon.Avalonia.Controls.Settings.ProxyCreditView">
+             x:Class="Chameleon.Avalonia.Controls.Settings.Functional.Views.ProxyCreditView">
 	<ScrollViewer Padding="{StaticResource ChameleonAppPageMargin}">
 		<StackPanel Spacing="8">
 			<afv:ChameleonContentControl Title="Residential Proxies"

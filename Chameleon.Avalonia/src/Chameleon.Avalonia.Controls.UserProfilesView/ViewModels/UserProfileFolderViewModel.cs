@@ -5,6 +5,7 @@ using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
+using Chameleon.Interfaces.FunctionalSettings;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.UserSettings;
@@ -141,7 +142,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase
     [RelayCommand]
     private void ChangeProxies()
     {
-        NavigationService.NavigateToType(typeof(IUserProxySettingsView), UserProfileFolder);
+        NavigationService.NavigateToType(typeof(IFunctionalSettingsView), UserProfileFolder);
     }
 
     [RelayCommand]

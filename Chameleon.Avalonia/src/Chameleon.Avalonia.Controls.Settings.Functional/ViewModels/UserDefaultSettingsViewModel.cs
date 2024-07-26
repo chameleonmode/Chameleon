@@ -1,23 +1,4 @@
-﻿using Chameleon.CT.Common.Base;
-using Chameleon.Core.Collections.Views;
-using Chameleon.Core.Collections;
-using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.DialogWindows;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Interfaces.UserSettings;
-using Chameleon.Interfaces.Ioc;
-using Chameleon.Prism.Events;
-using Chameleon.Interfaces.App.Settings;
-using Chameleon.Interfaces.Dialogs.Views;
-using Chameleon.Interfaces.App.UserSettings;
-using Chameleon.Interfaces.Dialogs.ViewModels;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Common.Icons;
-using CommunityToolkit.Mvvm.Input;
-using Chameleon.Infrastructure.UserSettings;
-
-namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
+﻿namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
 public partial class UserDefaultSettingsViewModel
        : SubPageViewModelBase

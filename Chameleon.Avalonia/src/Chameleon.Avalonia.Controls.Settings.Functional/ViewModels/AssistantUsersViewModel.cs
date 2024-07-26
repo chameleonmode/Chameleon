@@ -1,9 +1,6 @@
 ﻿using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
-using Chameleon.CT.Common.Base;
 using Chameleon.Controls.AssistantUsers.Interfaces;
-using Chameleon.Core.Collections;
-using Chameleon.Core.Collections.Views;
 using Chameleon.Core.Util;
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Users;
@@ -11,15 +8,9 @@ using Chameleon.Interfaces.App.Assistants;
 using Chameleon.Interfaces.App.Assistants.Events;
 using Chameleon.Interfaces.App.ShareFolders;
 using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.DialogWindows;
-using Chameleon.Interfaces.UpgradePlan;
-using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
-using CommunityToolkit.Mvvm.Input;
 using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.MessageBox;
 using Chameleon.Core.Settings;
+using System;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 

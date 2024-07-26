@@ -9,6 +9,6 @@ public partial class UserProfileView : UserControl
     public UserProfileView()
     {
         InitializeComponent();
-        TooltipManager.Attach(Avpplication.Current, this);
+        //TooltipManager.Attach(Avpplication.Current, this);
     }
 }

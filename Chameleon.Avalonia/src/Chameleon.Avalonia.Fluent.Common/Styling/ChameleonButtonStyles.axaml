@@ -25,15 +25,22 @@
 					Content="SyncChangesButton" Theme="{StaticResource SyncChangesButton}" />
 				<Button 
 					Content="three-dots" Theme="{StaticResource SvgIconButton}" />
+				
 				<Button
 					Content="Folder"
 					Classes="accent"
 					Theme="{StaticResource AccentSymbleIconButton}" />
-				<Button Content="Folder"
+				
+				<Button 
+					Content="Folder"
 						Classes="accent"
 						Tag="Folder"
 						Theme="{StaticResource SymbleIconTextButton}" />
-				<Button Content="three-dots" Theme="{StaticResource FavoriteButton}" />
+				
+				<Button 
+					Content="three-dots" 
+					Theme="{StaticResource FavoriteButton}" />
+				
 				<Button Content="select-all" 
 						Tag="Select All Yo"
 						Theme="{StaticResource SvgIconTextButton}" />
@@ -302,7 +309,6 @@
 								Background="Transparent"
 								CornerRadius="{TemplateBinding CornerRadius}">
 							<ui:SymbolIcon
-								Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
 								Symbol="{TemplateBinding Content}"
 								Margin="0 0 0 0"/>
 						</Border>

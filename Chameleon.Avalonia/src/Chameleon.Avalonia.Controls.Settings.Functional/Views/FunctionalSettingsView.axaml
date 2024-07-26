@@ -1,0 +1,130 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"		
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.Functional.ViewModels"
+             xmlns:local="using:Chameleon.Avalonia.Controls.Settings.Functional.Views"
+             xmlns:contrls="using:Chameleon.Av.Fluent.Common.Controls"
+			 x:DataType="vm:FunctionalSettingsViewModel"
+			 x:CompileBindings="True"
+             x:Class="Chameleon.Avalonia.Controls.Settings.Functional.Views.FunctionalSettingsView">
+	<UserControl.Resources>
+		<ControlTheme x:Key="TabItemStyle"
+                      TargetType="TabStripItem">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="Padding" Value="{StaticResource TabItemHeaderMargin}" />
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Name="PART_LayoutRoot"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            ToolTip.Tip="{TemplateBinding Content}">
+						<Panel>
+							<Viewbox Width="28"
+                                     Height="28"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center"
+                                     Margin="12 6">
+								<ui:IconSourceElement IconSource="{TemplateBinding Tag}" />
+							</Viewbox>
+							<!--<ContentPresenter Name="PART_ContentPresenter"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              FontFamily="{TemplateBinding FontFamily}"
+                                              FontSize="{TemplateBinding FontSize}"
+                                              FontWeight="{TemplateBinding FontWeight}"
+                                              Margin="48 0 0 0"/>-->
+							<Rectangle Name="PART_SelectedPipe"
+                                       Fill="{DynamicResource AccentFillColorDefaultBrush}"
+                                       RadiusX="2"
+                                       RadiusY="2"
+                                       VerticalAlignment="Bottom"
+                                       Opacity="0"
+                                       Height="{DynamicResource TabItemPipeThickness}"
+                                       Margin="0 0 0 2"
+                                       HorizontalAlignment="Stretch"/>
+						</Panel>
+					</Border>
+				</ControlTemplate>
+			</Setter>
+
+			<Style Selector="^:pointerover /template/ Rectangle#PART_SelectedPipe">
+				<Setter Property="Opacity" Value="0.2" />
+				<Setter Property="Fill" Value="{DynamicResource ControlStrongFillColorDefaultBrush}" />
+			</Style>
+
+			<Style Selector="^:selected">
+				<Style Selector="^ /template/ Rectangle#PART_SelectedPipe">
+					<Setter Property="Opacity" Value="1" />
+				</Style>
+
+				<Style Selector="^:pointerover /template/ Rectangle#PART_SelectedPipe">
+					<Setter Property="Opacity" Value="0.75" />
+					<Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+				</Style>
+			</Style>
+		</ControlTheme>
+
+		<ItemsPanelTemplate x:Key="DefaultPanel">
+			<StackPanel Orientation="Horizontal" />
+		</ItemsPanelTemplate>
+	</UserControl.Resources>
+	<Panel>
+		<TabStrip ItemContainerTheme="{StaticResource TabItemStyle}"
+                  Background="{DynamicResource ControlOnImageFillColorDefaultBrush}"
+                  CornerRadius="{StaticResource ControlCornerRadius}"
+                  Margin="4"
+                  Name="TabStrip1"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Top"
+                  ZIndex="100">
+			<TabStrip.ItemsPanel>
+				<OnFormFactor Default="{StaticResource DefaultPanel}">
+					<On Options="Mobile">
+						<ItemsPanelTemplate>
+							<StackPanel />
+						</ItemsPanelTemplate>
+					</On>
+				</OnFormFactor>
+			</TabStrip.ItemsPanel>
+			<TabStripItem 
+				Content="Proxy"
+				Tag="{StaticResource Proxy}"/>
+			<TabStripItem
+				Content="Default Home Pages"
+				Tag="{StaticResource DefaultSettingsPageIcon}"/>
+			<TabStripItem 
+				Content="Phone Verification"
+				Tag="{StaticResource CellPhone}"/>
+			<TabStripItem 
+				Content="Proxy Credit"
+				Tag="{StaticResource ProxyCred}"/>
+			<TabStripItem 
+				Content="Virtual Taskforce"
+				Tag="{StaticResource User}">
+				<!--<TabStripItem.Tag>
+                    <ui:SymbolIconSource Symbol="ColorFillFilled" />
+                </TabStripItem.Tag>-->
+			</TabStripItem>
+		</TabStrip>
+
+		<ui:Frame Name="InnerNavFrame"
+                  IsNavigationStackEnabled="False"/>
+	</Panel>
+</UserControl>
+
+<!--<ui:SettingsExpander Header="Phone Verification"
+	 Description="PVA key settings"
+	 IconSource="{StaticResource CellPhone}"
+	 ActionIconSource="{StaticResource GoIcon}">
+	<ui:SettingsExpanderItem>
+		<local:PhoneVerificationView />
+	</ui:SettingsExpanderItem>
+</ui:SettingsExpander>-->

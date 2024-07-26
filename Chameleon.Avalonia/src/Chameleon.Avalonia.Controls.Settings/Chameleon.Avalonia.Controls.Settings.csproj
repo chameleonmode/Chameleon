@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AvaloniaXaml Remove="ViewModels\ImportExport\**" />
+    <Compile Remove="ViewModels\ImportExport\**" />
+    <EmbeddedResource Remove="ViewModels\ImportExport\**" />
+    <None Remove="ViewModels\ImportExport\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Newtonsoft.Json" />
@@ -21,10 +28,6 @@
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ViewModels\ImportExport\" />
   </ItemGroup>
 
 </Project>

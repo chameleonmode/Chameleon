@@ -1,10 +1,4 @@
-﻿using Chameleon.CT.Common.Base;
-using Chameleon.Interfaces.App.Settings;
-using Chameleon.Interfaces.Settings;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-
-namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
+﻿namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
 public partial class PhoneVerificationViewModel
        : SubPageViewModelBase

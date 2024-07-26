@@ -25,11 +25,63 @@ using System.Linq;
 using Chameleon.Avalonia.Common.Helpers;
 using static System.Net.Mime.MediaTypeNames;
 using Avpplication = Avalonia.Application;
+using Chameleon.Interfaces.FunctionalSettings;
 
 namespace Chameleon.Av.Fluent.Views;
 
 public partial class MainView : UserControl
 {
+    readonly Dictionary<string, MainPageModelBase> pages = new Dictionary<string, MainPageModelBase>()
+    {
+        {
+            "Dashboard",
+            new()
+            {
+                NavHeader = "Dashboard",
+                IconKey = "HomeIcon",
+                Tag = typeof(IDashboardView)
+            }
+        },
+        {
+            "Profiles",
+            new()
+            {
+                NavHeader = "Profiles",
+                IconKey = "ContactIcon",
+                Tag = typeof(IProjectsView)
+            }
+        },
+        {
+            "Automation",
+            new()
+            {
+                 NavHeader = "Automation",
+                IconKey = "AutomationIcon",
+                Tag = typeof(IAutomationView)
+            }
+        },
+        {
+            "General",
+            new()
+            {
+                NavHeader = "General",
+                IconKey = "CoreControlsIcon",
+                ShowsInFooter = true,
+                Tag = typeof(IFunctionalSettingsView)
+            }
+        },
+        {
+            "Settings",
+            new()
+            {
+                NavHeader = "Settings",
+                IconKey = "SettingsIcon",
+                ShowsInFooter = true,
+                Tag = typeof(ISettingsView)
+            }
+        }
+    };
+
     public MainView()
     {
         InitializeComponent();
@@ -80,32 +132,28 @@ public partial class MainView : UserControl
             await ContainerServiceHelper.Resolve<IApplicationStartup>().RunAsync();
         }
 
-        InitializeNavigationPages();
-
-        FrameView.Navigated += OnFrameViewNavigated;
-        NavView.ItemInvoked += OnNavigationViewItemInvoked;
-        NavView.BackRequested += OnNavigationViewBackRequested;
-    }
-    private void InitializeNavigationPages()
-    {
+        //InitializeNavigationPages();
         FrameView.NavigationPageFactory = NavigationService.Instance.NavigationFactory;
         NavigationService.Instance.SetFrame(FrameView);
 
         Dispatcher.UIThread.Post(() =>
         {
-            NavView.MenuItemsSource = pages.Where(p=> !p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList(); 
-            NavView.FooterMenuItemsSource = pages.Where(p => p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList(); 
+            NavView.MenuItemsSource = pages.Where(p => !p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
+            NavView.FooterMenuItemsSource = pages.Where(p => p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
 
             FrameView.NavigateToType(pages["Dashboard"].Tag, null, null);
             //FrameView.NavigateFromObject((NavView.MenuItemsSource.ElementAt(0) as Control).Tag);
         });
+
+        FrameView.Navigated += OnFrameViewNavigated;
+        NavView.ItemInvoked += OnNavigationViewItemInvoked;
+        NavView.BackRequested += OnNavigationViewBackRequested;
     }
 
     private void OnNavigationViewBackRequested(object? sender, NavigationViewBackRequestedEventArgs e)
     {
         FrameView.GoBack();
     }
-
     private void OnNavigationViewItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
     {
         // Change the current selected item back to normal
@@ -126,8 +174,6 @@ public partial class MainView : UserControl
             //(ContainerServiceHelper.Resolve<INavigationService>() as NavigationService).NavigateFromContext(nvi.Tag, info);
         }
     }
-
-
     private void OnFrameViewNavigated(object sender, NavigationEventArgs e)
     {
         var page = pages.SingleOrDefault(
@@ -155,6 +201,7 @@ public partial class MainView : UserControl
             AnimateContentForBackButton(false);
         }
     }
+    
     private void SetNVIIcon(NavigationViewItem item, bool selected)
     {
         // Technically, yes you could set up binding and converters and whatnot to let the icon change
@@ -172,7 +219,6 @@ public partial class MainView : UserControl
            //TODO: :P
         }
     }
-
     private async void AnimateContentForBackButton(bool show)
     {
         if (!WindowIcon.IsVisible)
@@ -243,38 +289,4 @@ public partial class MainView : UserControl
             await ani.RunAsync(WindowIcon);
         }
     }
-
-#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
-    readonly Dictionary<string, MainPageModelBase> pages = new List<MainPageModelBase>
-    {
-        new MainPageModelBase
-        {
-            NavHeader = "Dashboard",
-            IconKey = "HomeIcon",
-            Tag = typeof(IDashboardView)
-        },
-        new MainPageModelBase
-        {
-            NavHeader = "Profiles",
-            IconKey = "ContactIcon",
-            Tag = typeof(IProjectsView)
-        },
-        new MainPageModelBase
-        {
-            NavHeader = "Automation",
-            IconKey = "AutomationIcon",
-            Tag = typeof(IAutomationView)
-        },
-        new MainPageModelBase
-        {
-            NavHeader = "Settings",
-            IconKey = "SettingsIcon",
-            ShowsInFooter = true,
-            Tag = typeof(ISettingsView)
-        }
-#pragma warning disable CS8621 // Nullability of reference types in return type doesn't match the target delegate (possibly because of nullability attributes).
-    }.ToDictionary(page => page.NavHeader, page => page);
-#pragma warning restore CS8621 // Nullability of reference types in return type doesn't match the target delegate (possibly because of nullability attributes).
-#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
-
 }

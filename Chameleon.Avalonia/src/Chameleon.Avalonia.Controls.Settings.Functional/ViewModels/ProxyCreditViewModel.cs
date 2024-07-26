@@ -1,22 +1,118 @@
-﻿using Chameleon.App.Shared.Proxies;
-using Chameleon.Avalonia.Common.Services;
-using Chameleon.Avalonia.Controls.Settings.ViewModels.CreditPlan;
-using Chameleon.Avalonia.Controls.Settings.ViewModels.ProxyAccess;
-using Chameleon.Core.Collections.Views;
-using Chameleon.Core.Extensions;
-using Chameleon.CT.Common.Base;
-using Chameleon.CT.Common.Collections;
-using Chameleon.Interfaces.App.Settings;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.Proxies;
-using Chameleon.Interfaces.ProxyCredit;
-using Chameleon.Interfaces.Services;
-using Chameleon.Interfaces.UserProfiles;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using ExCSS;
+﻿namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
-namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
+#region CreditPlan
+public class CreditPlan
+    : SubPageViewModelBase
+{
+    private readonly IEventAggregator _eventAggregator;
+    public CreditPlan(IEventAggregator eventAggregator, decimal amount, string size)
+    {
+        _eventAggregator = eventAggregator;
+        Amount = amount;
+        Size = size;
+    }
+
+    private decimal _amount;
+    public decimal Amount
+    {
+        get => _amount;
+        set => SetProperty(ref _amount, value);
+    }
+
+    private string _size;
+    public string Size
+    {
+        get => _size;
+        set => SetProperty(ref _size, value);
+    }
+
+    private bool _isChecked;
+    public bool IsChecked
+    {
+        get => _isChecked;
+        set
+        {
+            if (SetProperty(ref _isChecked, value) && value)
+            {
+                _eventAggregator
+                    .GetEvent<SelectedCreditPlanEvent>()
+                    .Publish(new SelectedCreditPlanEventArgs(IsChecked));
+            }
+        }
+    }
+}
+
+public class CreditPlans
+    : ObservableCollection<CreditPlan>
+{
+    private readonly IEventAggregator _eventAggregator;
+    public CreditPlans(IEventAggregator eventAggregator)
+    {
+        _eventAggregator = eventAggregator;
+
+        Add(new CreditPlan(_eventAggregator, 19, "5GB"));
+        Add(new CreditPlan(_eventAggregator, 29, "10GB"));
+        Add(new CreditPlan(_eventAggregator, 49, "20GB"));
+    }
+}
+#endregion
+
+#region ProxyAccess
+public interface IProxyAccessViewModels
+    : IList<ProxyAccessViewModel>
+    , ITransientDependency
+{
+    void AddItems(int count);
+}
+
+public partial class ProxyAccessViewModel
+    : SubPageViewModelBase
+{
+    private readonly IToastNotificationService _toastNotificationService;
+    public ProxyAccessViewModel(
+        IToastNotificationService toastNotificationService
+        )
+    {
+        _toastNotificationService = toastNotificationService;
+    }
+    private string _url;
+    public string Url
+    {
+        get => _url;
+        set => SetProperty(ref _url, value);
+    }
+
+    [RelayCommand]
+    private async Task CopyUrl()
+    {
+        if (_url == null)
+        {
+            return;
+        }
+        await ClipboardService.Instance.SetTextAsync(_url);
+    }
+}
+
+public class ProxyAccessViewModels
+    : List<ProxyAccessViewModel>
+    , IProxyAccessViewModels
+{
+    private readonly IToastNotificationService _toastNotificationService;
+    public ProxyAccessViewModels(IToastNotificationService toastNotificationService)
+    {
+        _toastNotificationService = toastNotificationService;
+    }
+
+    public void AddItems(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            Add(new ProxyAccessViewModel(_toastNotificationService));
+        }
+    }
+}
+
+#endregion
 
 public partial class ProxyCreditViewModel
       : SubPageViewModelBase
@@ -31,7 +127,7 @@ public partial class ProxyCreditViewModel
     public CreditPlans _creditPlans;
 
     [ObservableProperty]
-    private CreditPlan.CreditPlan _selectedCreditPlan;
+    private CreditPlan _selectedCreditPlan;
 
     [ObservableProperty]
     private bool _hasSelectedCreditPlan;

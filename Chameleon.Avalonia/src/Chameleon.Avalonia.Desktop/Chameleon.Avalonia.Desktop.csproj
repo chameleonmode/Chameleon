@@ -52,8 +52,10 @@
     <ProjectReference Include="..\..\..\src\Chameleon.Domain\Chameleon.Domain.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
+    <ProjectReference Include="..\..\..\src\Chameleon.Playwright.Automation\Chameleon.Playwright.Automation.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.SystemBrowser\Chameleon.SystemBrowser.csproj" />
     <ProjectReference Include="..\..\..\src\Modules\Chameleon.Modules.Auth\Chameleon.Modules.Auth.csproj" />
+    <ProjectReference Include="..\Chameleon.Avalonia.Controls.Settings.Functional\Chameleon.Avalonia.Controls.Settings.Functional.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Dialogs\Chameleon.Avalonia.Fluent.Dialogs.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent\Chameleon.Avalonia.Fluent.csproj" />
