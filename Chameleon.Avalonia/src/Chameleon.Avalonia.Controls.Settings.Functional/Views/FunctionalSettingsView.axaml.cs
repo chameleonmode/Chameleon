@@ -19,11 +19,14 @@ namespace Chameleon.Avalonia.Controls.Settings.Functional.Views
         public override void OnAfterNavigatedToViewModel(object param)
         {
             base.OnAfterNavigatedToViewModel(param);
-            if (DataContext is not FunctionalSettingsViewModel vm)
-                return;
 
             if (param is IUserProfileFolder)
-                InnerNavFrame.Navigate(typeof(UserProxySettingsView), param, GetTransitionInfo(vm.LastSelectedIndex, 0));
+            {
+                TabStrip1.SelectionChanged -= TabStrip1SelectionChanged;
+                TabStrip1.SelectedIndex = 0;
+                NavigateToIndex(0, param);
+                TabStrip1.SelectionChanged += TabStrip1SelectionChanged;
+            }
         }
 
         protected override void OnLoaded(RoutedEventArgs e)
@@ -35,10 +38,13 @@ namespace Chameleon.Avalonia.Controls.Settings.Functional.Views
 
         private void TabStrip1SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            NavigateToIndex(TabStrip1.SelectedIndex, null);
+        }
+
+        private void NavigateToIndex(int idx, object param)
+        {
             if (DataContext is not FunctionalSettingsViewModel vm)
                 return;
-
-            var idx = TabStrip1.SelectedIndex;
 
             InnerNavFrame.Navigate(idx switch
             {
@@ -48,7 +54,7 @@ namespace Chameleon.Avalonia.Controls.Settings.Functional.Views
                 3 => typeof(ProxyCreditView),
                 4 => typeof(AssistantUsersView),
                 _ => throw new Exception()
-            }, null, GetTransitionInfo(vm.LastSelectedIndex, idx));
+            }, param, GetTransitionInfo(vm.LastSelectedIndex, idx));
 
             vm.LastSelectedIndex = TabStrip1.SelectedIndex;
         }
