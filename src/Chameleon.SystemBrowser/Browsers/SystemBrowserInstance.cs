@@ -201,10 +201,9 @@ public abstract class SystemBrowserInstance(
 
         OPtcs.TrySetResult(true);
 
-        await Task.Delay(1500);
-
-        if (Brocess?.HasExited == false)
+        if (BrowserType != SystemBrowserType.Firefox && Brocess?.HasExited == false)
         {
+            await Task.Delay(500);
             Brocess.Refresh();
             Brocess.Exited += (s, e) => 
             { Cleanup(); };
