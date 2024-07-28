@@ -104,11 +104,9 @@ public partial class SettingsViewModel
     [ObservableProperty]
     Color? _listBoxColor;
 
-    public SettingsViewModel(IApplicationUser user,
-        IApplicationSettingsService settingsService)
+    public SettingsViewModel(IApplicationUser user, IApplicationSettingsService settingsService) 
+        : base("Settings")
     {           
-        Title = "Settings";
-
         _applicationUser = user;
         _settingsService = settingsService;
                                          

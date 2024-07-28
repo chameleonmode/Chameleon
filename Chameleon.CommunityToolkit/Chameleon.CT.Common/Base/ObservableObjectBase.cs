@@ -12,6 +12,7 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     private readonly IDispatcherService _dispatcherService;
     private readonly IEventAggregator eventAggregator;
     private readonly IContentDialogService _cntentDialogService;
+    private readonly IClipboardService _IClipboardService;
 
     private long _isBusy; 
     public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
@@ -25,14 +26,18 @@ public abstract partial class ObservableObjectBase : ObservableObject,
 
     public TaskCompletionSource LoadedTCS { get; } = new();
 
+    public virtual Dictionary<string, Action> CommandMap { get; } = [];
+    public virtual Dictionary<string, Func<Task>> AsyncCommandMap { get; } = [];
+
     public ObservableObjectBase()
     {
         _dispatcherService = ContainerServiceHelper.Resolve<IDispatcherService>();// ?? new DispatcherService();
         _cntentDialogService = ContainerServiceHelper.Resolve<IContentDialogService>();
         eventAggregator = ContainerServiceHelper.Resolve<IEventAggregator>() ?? new EventAggregator();
-      
+       _IClipboardService = ContainerServiceHelper.Resolve<IClipboardService>();
 
-        InitializeAsyncCommand = new AsyncRelayCommand<object>(
+
+    InitializeAsyncCommand = new AsyncRelayCommand<object>(
         async (p) =>
         {
             await IsBusyFor(()=>InitAsync(p));
@@ -45,6 +50,7 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     public IDispatcherService DispatcherService => _dispatcherService;
     public IContentDialogService ContentDialogService => _cntentDialogService;
     public IEventAggregator EventAggregator => eventAggregator;
+    public IClipboardService ClipboardService => _IClipboardService;
     public IAsyncRelayCommand InitializeAsyncCommand { get; }
 
     public virtual Task InitAsync(object? param)
@@ -77,5 +83,25 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     {
         // await InvokeInitializeAsyncCommand(param);
         return Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private void CfromV(string what)
+    {
+        CommandMap[what]?.Invoke();
+    }
+
+    [RelayCommand]
+    private async Task AsyncCfromV(string what)
+    {
+        var cmdt = AsyncCommandMap[what];
+        if(cmdt != null)
+            await cmdt();
+    }
+
+    [RelayCommand]
+    private async Task Copy(object param)
+    {
+        await ClipboardService.SetTextAsync(param as string);
     }
 }

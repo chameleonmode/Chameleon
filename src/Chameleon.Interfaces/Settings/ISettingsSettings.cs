@@ -6,4 +6,5 @@ public interface ISettingsSettings
     string? CustomAccentColor { get; set; }
     bool UseCustomAccentColor { get; set; }
     bool AutoLogin { get; set; }
+    string CodesverifyApiKey { get; set; }
 }

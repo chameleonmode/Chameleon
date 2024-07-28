@@ -89,7 +89,7 @@ public partial class ProxyAccessViewModel
         {
             return;
         }
-        await ClipboardService.Instance.SetTextAsync(_url);
+        await ClipboardService.SetTextAsync(_url);
     }
 }
 
@@ -196,7 +196,7 @@ public partial class ProxyCreditViewModel
     public async Task CopyAllUrls()
     {
         var list = Access.Select(a => a.Url);
-        await ClipboardService.Instance.SetTextAsync(string.Join("\n", list));
+        await ClipboardService.SetTextAsync(string.Join("\n", list));
     }
 
     [RelayCommand]

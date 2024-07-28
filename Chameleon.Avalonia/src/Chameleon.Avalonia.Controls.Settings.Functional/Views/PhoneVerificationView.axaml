@@ -10,97 +10,184 @@
 			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.Settings.Functional.Views.PhoneVerificationView">
 	<Border Padding="20">
-		<afv:ChameleonContentControl Title="SMS PVA"
+		<StackPanel>
+			<afv:ChameleonContentControl Title="Codesverify"
 									 TitleDescription="">
-			<afv:ChameleonContentControl.TitleContent>
-			</afv:ChameleonContentControl.TitleContent>
+				<afv:ChameleonContentControl.TitleContent>
+					<ui:CommandBar
+						DefaultLabelPosition="Right"
+						HorizontalAlignment="Right">
+						<ui:CommandBar.PrimaryCommands>
+							<ui:CommandBarButton IconSource="Save"
+												 Label="Save"
+												 Command="{Binding SaveCommand}"/>
+						</ui:CommandBar.PrimaryCommands>
+					</ui:CommandBar>
+				</afv:ChameleonContentControl.TitleContent>
+
+				<afv:ChameleonContentControl.Header>
+					<Grid RowDefinitions="Auto,Auto">
+						<TextBlock Margin="0 8 0 8"
+								   Text="API Key"/>
+						<Border Grid.Row="1">
+							<StackPanel Orientation="Horizontal">
+								<TextBox
+									Width="425"
+									Text="{Binding CodesverifyApiKey}"/>
+							</StackPanel>
+						</Border>
+					</Grid>
+				</afv:ChameleonContentControl.Header>
+
+				<afv:ChameleonContentControl.Content>
+					<Grid ColumnDefinitions="Auto, *">
+						<StackPanel Spacing="18">
+							<ui:FAComboBox
+								Margin="0 0 0 0"
+								PlaceholderText="Select A App"
+								Header="App:"
+								Width="180"
+								IsTextSearchEnabled="True"
+								SelectedItem="{Binding SelectedCodesverifyApp}"
+								ItemsSource="{Binding CodesverifyApps}"
+								DisplayMemberBinding="{Binding Name}" />
+
+							<StackPanel
+								Orientation="Horizontal"
+								HorizontalAlignment="Left">
+								<HeaderedContentControl
+									Header="Phone Number"
+									Width="360"
+									Tag="{Binding LastNumberResponseCodesverify}"
+									Theme="{StaticResource CopyPasta}" />
+								<Button Classes="accent"
+										Width="108"
+										Margin="12 8 0 0"
+										Content="Get Number"
+										CommandParameter="GetNumberCodesverify"
+										Command="{Binding AsyncCfromVCommand}" />
+							</StackPanel>
+
+							<StackPanel
+								Orientation="Horizontal"
+								HorizontalAlignment="Left">
+								<HeaderedContentControl
+									HorizontalAlignment="Left"
+									Header="Code"
+									Width="360"
+									Tag="{Binding LastCodeResponseCodesverify}"
+									Theme="{StaticResource CopyPasta}" />
+								<Button Classes="accent"
+										Width="108"
+										Margin="12 8 0 0"
+										Content="Get Code"
+										CommandParameter="GetCodeCodesverify"
+										Command="{Binding AsyncCfromVCommand}" />
+							</StackPanel>
+
+							<Panel Grid.Column="1"
+								   Margin="0 0 0 0">
+								<TextBlock
+									Text="{Binding LastFormatedResponseCodesverify}"/>
+								<ui:ProgressRing
+									IsVisible="{Binding IsAwaiting}"/>
+							</Panel>
+						</StackPanel>
+					</Grid>
+				</afv:ChameleonContentControl.Content>
+
+				<afv:ChameleonContentControl.Footer>
+				</afv:ChameleonContentControl.Footer>
+			</afv:ChameleonContentControl>
 			
-			<afv:ChameleonContentControl.Header>
-				<Grid RowDefinitions="Auto,Auto">
-					<TextBlock Margin="0 8 0 8"
-							   Text="Enter your phone API Key"/>
-					<Border Grid.Row="1">
-						<StackPanel Orientation="Horizontal">
-							<TextBox 
-								Width="425"
-								Text="{Binding ApiKey}"/>
-							<Button
-								Theme="{StaticResource AccentSymbleIconButton}"
-								HorizontalAlignment="Left"
-								Margin="10 0 0 0"
-								Content="Save"
-								Command="{Binding SaveCommand}" />
+			<afv:ChameleonContentControl Title="SMS PVA"
+									 TitleDescription="">
+				<afv:ChameleonContentControl.TitleContent>
+				</afv:ChameleonContentControl.TitleContent>
+
+				<afv:ChameleonContentControl.Header>
+					<Grid RowDefinitions="Auto,Auto">
+						<TextBlock Margin="0 8 0 8"
+								   Text="API Key"/>
+						<Border Grid.Row="1">
+							<StackPanel Orientation="Horizontal">
+								<TextBox
+									Width="425"
+									Text="{Binding SmspvApiKey}"/>
+							</StackPanel>
+						</Border>
+					</Grid>
+				</afv:ChameleonContentControl.Header>
+
+				<afv:ChameleonContentControl.Content>
+					<Grid ColumnDefinitions="Auto, *">
+						<StackPanel Spacing="18">
+							<ui:FAComboBox
+								Margin="0 0 0 0"
+								PlaceholderText="Select A Country"
+								Header="Country:"
+								Width="180"
+								IsTextSearchEnabled="True"
+								SelectedItem="{Binding SelectedCountry}"
+								ItemsSource="{Binding Countries}"
+								DisplayMemberBinding="{Binding Name}" />
+
+							<ui:FAComboBox
+								PlaceholderText="Select A Service"
+								Header="Service:"
+								Width="180"
+								IsTextSearchEnabled="True"
+								SelectedItem="{Binding SelectedService}"
+								ItemsSource="{Binding Services}"
+								DisplayMemberBinding="{Binding ServiceName}" />
+
+							<StackPanel
+								Orientation="Horizontal"
+								HorizontalAlignment="Left">
+								<HeaderedContentControl
+									Header="Phone Number"
+									Width="360"
+									Tag="{Binding GetNumberData}"
+									Theme="{StaticResource CopyPasta}" />
+								<Button Classes="accent"
+										Width="108"
+										Margin="12 8 0 0"
+										Content="Get Number"
+										CommandParameter="GetNumberSMSPVA"
+										Command="{Binding AsyncCfromVCommand}" />
+							</StackPanel>
+
+							<StackPanel
+								Orientation="Horizontal"
+								HorizontalAlignment="Left">
+								<HeaderedContentControl
+									HorizontalAlignment="Left"
+									Header="Code"
+									Width="360"
+									Tag="{Binding ReceiveSMSData}"
+									Theme="{StaticResource CopyPasta}" />
+								<Button Classes="accent"
+										Width="108"
+										Margin="12 8 0 0"
+										Content="Get Code"
+										CommandParameter="GetCodeSMSPVA"
+										Command="{Binding AsyncCfromVCommand}" />
+							</StackPanel>
+
+							<Panel Grid.Column="1"
+								   Margin="0 0 0 0">
+								<TextBlock
+									Text="{Binding LastFormatedResponse}"/>
+								<ui:ProgressRing
+									IsVisible="{Binding IsAwaiting}"/>
+							</Panel>
 						</StackPanel>
-					</Border>
-				</Grid>
-			</afv:ChameleonContentControl.Header>
-			
-			<afv:ChameleonContentControl.Content>
-				<Grid ColumnDefinitions="Auto, *">
-					<StackPanel Spacing="18">
-						<ui:FAComboBox
-							Margin="0 -18 0 0"
-							PlaceholderText="Select A Country"
-							Header="Country:"
-							Width="180"
-							IsTextSearchEnabled="True"
-							SelectedItem="{Binding SelectedCountry}"
-							ItemsSource="{Binding Countries}"
-							DisplayMemberBinding="{Binding Name}" />
+					</Grid>
+				</afv:ChameleonContentControl.Content>
 
-						<ui:FAComboBox
-							PlaceholderText="Select A Service"
-							Header="Service:"
-							Width="180"
-							IsTextSearchEnabled="True"
-							SelectedItem="{Binding SelectedService}"
-							ItemsSource="{Binding Services}"
-							DisplayMemberBinding="{Binding ServiceName}" />
-
-						<StackPanel
-							Orientation="Horizontal"
-							HorizontalAlignment="Left">
-							<HeaderedContentControl
-								Header="Phone Number"
-								Width="360"
-								Tag="{Binding GetNumberData}"
-								Theme="{StaticResource CopyPasta}" />
-							<Button Classes="accent"
-									Width="108"
-									Margin="12 8 0 0"
-									Content="Get Number"
-									Command="{Binding GetNumberCommand}" />
-						</StackPanel>
-
-						<StackPanel
-							Orientation="Horizontal"
-							HorizontalAlignment="Left">
-							<HeaderedContentControl
-								HorizontalAlignment="Left"
-								Header="Code"
-								Width="360"
-								Tag="{Binding ReceiveSMSData}"
-								Theme="{StaticResource CopyPasta}" />
-							<Button Classes="accent"
-									Width="108"
-									Margin="12 8 0 0"
-									Content="Get Code"
-									Command="{Binding GetCodeCommand}" />
-						</StackPanel>
-
-						<Panel Grid.Column="1"
-							   Margin="0 0 0 0">
-							<TextBlock
-								Text="{Binding LastFormatedResponse}"/>
-							<ui:ProgressRing
-								IsVisible="{Binding IsAwaiting}"/>
-						</Panel>
-					</StackPanel>
-				</Grid>
-			</afv:ChameleonContentControl.Content>
-
-			<afv:ChameleonContentControl.Footer>
-			</afv:ChameleonContentControl.Footer>
-		</afv:ChameleonContentControl>
+				<afv:ChameleonContentControl.Footer>
+				</afv:ChameleonContentControl.Footer>
+			</afv:ChameleonContentControl>
+		</StackPanel>
 	</Border>
 </UserControl>

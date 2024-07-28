@@ -1,17 +1,29 @@
-﻿using Avalonia.Collections;
+﻿using AutoMapper.Internal;
+using Avalonia.Collections;
 using Chameleon.Core.Util;
+using Chameleon.Infrastructure.ThirdParty.Codesverify;
+using Chameleon.Infrastructure.ThirdParty.Codesverify.Models;
 using Chameleon.Infrastructure.ThirdParty.SMSPVA;
 using Chameleon.Infrastructure.ThirdParty.SMSPVA.Models;
+using Chameleon.Interfaces.Auth;
+using Chameleon.Interfaces.Services;
 using System.Text.Json;
 
 namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
-public partial class PhoneVerificationViewModel(IUserSettingsService userSettingsService)
+public partial class PhoneVerificationViewModel(IUserSettingsService userSettingsService, IApplicationSettingsService settingsService)
        : SubPageViewModelBase("Phone Verification")
        , IPhoneVerificationViewModel
 {
     private readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
+    
     private IUserSetting _userSetting;
+    private IApplicationSettings _appSetting;
+
+    [ObservableProperty]
+    private bool _isChangeApiKey;
+
+    #region smspva
     private ApiResponse<GetNumberData> lastGetNumberData;
     private ApiResponse<ReceiveSMSData> lastReceiveSMSData;
     
@@ -39,15 +51,46 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
 //}
 //}
 //""";
-
-
     [ObservableProperty]
-    private string? _apiKey;
-    [ObservableProperty]
-    private bool _isChangeApiKey;
-
+    private string? _smspvApiKey;
     public AvaloniaList<Country> Countries { get; } = new(SMSPVAService.Instance.Countries);
     public AvaloniaList<Service> Services { get; } = new(SMSPVAService.Instance.Services);
+    #endregion
+
+    [ObservableProperty]
+    private string? _codesverifyApiKey;
+    [ObservableProperty]
+    private string _lastNumberResponseCodesverify;
+    [ObservableProperty]
+    private string _lastCodeResponseCodesverify;
+    [ObservableProperty]
+    private string _lastFormatedResponseCodesverify;
+
+    [ObservableProperty]
+    private AppData? _selectedCodesverifyApp;
+    public AvaloniaList<AppData> CodesverifyApps { get; } = new(CodesVerifyAPI.Instance.Apps);
+
+
+    partial void OnSmspvApiKeyChanged(string? value)
+    {
+        IsChangeApiKey = _userSetting.SmsPvaApiKey != value;
+        SMSPVAService.Instance.ApiKey = _userSetting.SmsPvaApiKey = value ?? "";
+    }
+
+    partial void OnCodesverifyApiKeyChanged(string? value)
+    {
+        IsChangeApiKey = CodesVerifyAPI.Instance.ApiKey != value;
+        CodesVerifyAPI.Instance.ApiKey = _appSetting.Settings.CodesverifyApiKey = value ?? "";
+    }
+
+
+    [RelayCommand]
+    public async Task Save()
+    {
+        await settingsService.Save();
+        await Task.Run(() => userSettingsService.Save(_userSetting));
+        IsChangeApiKey = false;
+    }
 
     public override async Task InitAsync(object? param)
     {                       
@@ -56,62 +99,78 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
         if (!Loaded)
         {
 
-            _userSetting = userSettingsService.Get();
-            ApiKey = _userSetting.SmsPvaApiKey;
+            _userSetting = await Task.Run(userSettingsService.Get);
+            SmspvApiKey = _userSetting.SmsPvaApiKey;
             SelectedCountry = Countries[0];
             SelectedService = Services[0];
+
+            _appSetting = await settingsService.GetAsync();
+            CodesverifyApiKey = _appSetting.Settings.CodesverifyApiKey;
+            SelectedCodesverifyApp = CodesverifyApps[0];
+
+            AsyncCommandMap["GetNumberSMSPVA"] = GetNumber;
+            AsyncCommandMap["GetCodeSMSPVA"] = GetCode;
+            AsyncCommandMap["GetNumberCodesverify"] = GetNumberCodesverify;
+            AsyncCommandMap["GetCodeCodesverify"] = GetCodeCodesverify;
         }
     }
-    partial void OnApiKeyChanged(string? value)
+
+
+    public async Task GetNumberCodesverify()
     {
-        IsChangeApiKey = _userSetting.SmsPvaApiKey != value;
-        _userSetting.SmsPvaApiKey = value;
-        SMSPVAService.Instance.SetApiKey(ApiKey ?? "");
+        if (IsAwaiting || SelectedCodesverifyApp is null)
+            return;
+
+        await MakeRequest(async () =>
+        {
+            LastFormatedResponseCodesverify = LastNumberResponseCodesverify = await CodesVerifyAPI.Instance.GetActivationNumberAsync(SelectedCodesverifyApp);
+        }, e => LastFormatedResponseCodesverify = e);
+       
     }
 
-    [RelayCommand]
-    public void Save()
+    public async Task GetCodeCodesverify()
     {
-        userSettingsService.Save(_userSetting);
-        IsChangeApiKey = false;
+        if (IsAwaiting || LastNumberResponseCodesverify is null)
+            return;
+
+        await MakeRequest(async () =>
+        {
+            LastFormatedResponseCodesverify = LastCodeResponseCodesverify = await CodesVerifyAPI.Instance.GetCodeAsync(LastNumberResponseCodesverify, SelectedCodesverifyApp);
+        }, e => LastFormatedResponseCodesverify = e);
     }
-    [RelayCommand]
+
+
+
     public async Task GetNumber()
     {
         if (IsAwaiting || SelectedCountry is null || SelectedService is null)
             return;
 
-
-        IsAwaiting = true;
-        try
+        await MakeRequest(async () =>
         {
             lastGetNumberData = await SMSPVAService.Instance.GetActivationNumberAsync<GetNumberData>(SelectedCountry, SelectedService);
             GetNumberData = lastGetNumberData?.Data?.PhoneNumber.ToString() ?? "";
             LastFormatedResponse = JsonSerializer.Serialize(lastGetNumberData, jsonSerializerOptions);
-        }
-        catch (Exception ex)
-        {
-            LastFormatedResponse = JsonSerializer.Serialize(ex, jsonSerializerOptions);
-        }
-        IsAwaiting = false;
+        }, e => LastFormatedResponse = e);
     }
-    [RelayCommand]
+
     public async Task GetCode()
     {
         if (IsAwaiting || lastGetNumberData?.Data?.OrderId is null)
             return;
 
-        IsAwaiting = true;
-        try
+        await MakeRequest(async () =>
         {
             lastReceiveSMSData = await SMSPVAService.Instance.ReceiveSMS<ReceiveSMSData>(lastGetNumberData.Data.OrderId);
             ReceiveSMSData = lastReceiveSMSData?.Data?.Sms?.Code ?? "";
             LastFormatedResponse = JsonSerializer.Serialize(lastReceiveSMSData, jsonSerializerOptions);
-        }
-        catch (Exception ex)
-        {
-            LastFormatedResponse = JsonSerializer.Serialize(ex, jsonSerializerOptions);
-        }
-        IsAwaiting = false;
+        }, e => LastFormatedResponse = e);
+    }
+
+    async Task MakeRequest(Func<Task> func, Action<string> onErr)
+    {
+        IsAwaiting = true;
+        await ExUtil.AsyncTryCatch(func, e => onErr(JsonSerializer.Serialize(e, jsonSerializerOptions)));
+        IsAwaiting = false; 
     }
 }

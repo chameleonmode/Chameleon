@@ -166,7 +166,7 @@ public partial class AssistantUserViewModel(
     [RelayCommand]
     private async Task SendLicenceKey()
     {
-        await ClipboardService.Instance.SetTextAsync($"{UserAssistant.EmailAddress} {UserAssistant.UserName} {UserAssistant.Password}");
+        await ClipboardService.SetTextAsync($"{UserAssistant.EmailAddress} {UserAssistant.UserName} {UserAssistant.Password}");
     }
     private void AddFolders(AddProfilesEventArgs args)
     {
