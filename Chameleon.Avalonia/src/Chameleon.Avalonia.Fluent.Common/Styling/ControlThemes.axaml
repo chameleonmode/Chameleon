@@ -16,7 +16,7 @@
 			</StackPanel>
 		</ThemeVariantScope>
 
-			<local:PVAControl Title="PROFILE NAME">
+			<!--<local:PVAControl Title="PROFILE NAME">
 				<local:PVAControl.FACombBoxes>
 					<HeaderedContentControl
 					Tag="SaveCV"
@@ -34,7 +34,7 @@
 						</HeaderedContentControl.Content>
 					</HeaderedContentControl>
 				</local:PVAControl.FACombBoxes>
-			</local:PVAControl>
+			</local:PVAControl>-->
 		</StackPanel>
 	</Design.PreviewWith>
 

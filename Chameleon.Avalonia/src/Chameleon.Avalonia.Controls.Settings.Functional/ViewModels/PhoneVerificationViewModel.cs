@@ -6,13 +6,14 @@ using Chameleon.Infrastructure.ThirdParty.Codesverify;
 using Chameleon.Infrastructure.ThirdParty.Codesverify.Models;
 using Chameleon.Infrastructure.ThirdParty.SMSPVA;
 using Chameleon.Infrastructure.ThirdParty.SMSPVA.Models;
+using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Services;
 using System.Text.Json;
 
 namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
-public partial class PhoneVerificationViewModel(IUserSettingsService userSettingsService)
+public partial class PhoneVerificationViewModel(IUserSettingsService userSettingsService, IToastNotificationService ts)
        : SubPageViewModelBase("Phone Verification")
        , IPhoneVerificationViewModel
 {
@@ -72,6 +73,13 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
     public AvaloniaList<AppData> CodesverifyApps { get; } = new(CodesVerifyAPI.Instance.Apps);
 
 
+
+    [ObservableProperty]
+    private bool _isCodesverifyVisible = true;
+
+    [ObservableProperty]
+    private bool _isSMSPVAVisible = true;
+
     partial void OnSmspvApiKeyChanged(string? value)
     {
         IsChangeApiKey = _userSetting.SmsPvaApiKey != value;
@@ -104,9 +112,38 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
             AsyncCommandMap["GetCodeSMSPVA"] = GetCode;
             AsyncCommandMap["GetNumberCodesverify"] = GetNumberCodesverify;
             AsyncCommandMap["GetCodeCodesverify"] = GetCodeCodesverify;
-            AsyncCommandMap["SaveCV"] = ApplicationSettingsService.Instance.Save;
+            AsyncCommandMap["SaveCV"] = SaveCV;
             AsyncCommandMap["SaveSMSPVA"] = SaveSMSPVA;
+
+            AsyncCommandMap["PoputCodeverify"] = PoputCodeverify;
+            AsyncCommandMap["PoputSMSPVA"] = PoputSMSPVA;
         }
+    }
+
+    private async Task SaveCV()
+    {
+        await ApplicationSettingsService.Instance.Save();
+        ts.ShowSuccess("Saved");
+    }
+
+    private Task PoputSMSPVA()
+    {
+        ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<IPhoneVerificationView, IPhoneVerificationViewModel>(vm =>
+        {
+            vm.IsCodesverifyVisible = false;
+            vm.IsSMSPVAVisible = true;
+        }, null, "Codeverify", 720);
+        return Task.CompletedTask;
+    }
+
+    private Task PoputCodeverify()
+    {
+        ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<IPhoneVerificationView, IPhoneVerificationViewModel>(vm =>
+        {
+            vm.IsCodesverifyVisible = true;
+            vm.IsSMSPVAVisible = false;
+        }, null, "Codeverify", 720);
+        return Task.CompletedTask;
     }
 
     public async Task SaveSMSPVA()

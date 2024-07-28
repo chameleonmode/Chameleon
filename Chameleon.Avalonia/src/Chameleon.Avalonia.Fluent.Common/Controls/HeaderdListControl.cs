@@ -16,35 +16,35 @@ public class HeaderdListControl : HeaderedContentControl
     {
         _faComboBoxes = new List<HeaderedContentControl>();
     }
-    public static readonly StyledProperty<string?> TitleProperty =
-        AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(nameof(Title));
+    //public static readonly StyledProperty<string?> TitleProperty =
+    //    AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(nameof(Title));
 
-    public static readonly StyledProperty<string?> TextProperty =
-        AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(nameof(Text),null,false,BindingMode.TwoWay);
+    //public static readonly StyledProperty<string?> TextProperty =
+    //    AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(nameof(Text),null,false,BindingMode.TwoWay);
 
-    public static readonly StyledProperty<string?> TitleDescriptionProperty =
-        AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(nameof(TitleDescription));
+    //public static readonly StyledProperty<string?> TitleDescriptionProperty =
+    //    AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(nameof(TitleDescription));
 
     public static readonly DirectProperty<HeaderdListControl, IList<HeaderedContentControl>> HeaderdListProperty =
         AvaloniaProperty.RegisterDirect<HeaderdListControl, IList<HeaderedContentControl>>(nameof(HeaderdList),
         x => x.HeaderdList, (x, v) => x.HeaderdList = v);
-    public string? Title
-    {
-        get => GetValue(TitleProperty);
-        set => SetValue(TitleProperty, value);
-    }
+    //public string? Title
+    //{
+    //    get => GetValue(TitleProperty);
+    //    set => SetValue(TitleProperty, value);
+    //}
 
-    public string? Text
-    {
-        get => GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
-    }
+    //public string? Text
+    //{
+    //    get => GetValue(TextProperty);
+    //    set => SetValue(TextProperty, value);
+    //}
 
-    public string? TitleDescription
-    {
-        get => GetValue(TitleDescriptionProperty);
-        set => SetValue(TitleDescriptionProperty, value);
-    }
+    //public string? TitleDescription
+    //{
+    //    get => GetValue(TitleDescriptionProperty);
+    //    set => SetValue(TitleDescriptionProperty, value);
+    //}
 
     /// <summary>
     /// Gets the list of TextBox that display at the bottom of the TaskDialog
