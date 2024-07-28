@@ -104,13 +104,13 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
             AsyncCommandMap["GetCodeSMSPVA"] = GetCode;
             AsyncCommandMap["GetNumberCodesverify"] = GetNumberCodesverify;
             AsyncCommandMap["GetCodeCodesverify"] = GetCodeCodesverify;
-            AsyncCommandMap["Save"] = Save;
+            AsyncCommandMap["SaveCV"] = ApplicationSettingsService.Instance.Save;
+            AsyncCommandMap["SaveSMSPVA"] = SaveSMSPVA;
         }
     }
 
-    public async Task Save()
+    public async Task SaveSMSPVA()
     {
-        await ApplicationSettingsService.Instance.Save();
         await Task.Run(() => userSettingsService.Save(_userSetting));
         IsChangeApiKey = false;
     }

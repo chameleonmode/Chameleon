@@ -80,8 +80,6 @@
 				</Grid>
 			</ControlTemplate>
 		</Setter>
-
-
 	</ControlTheme>
 
 </ResourceDictionary>
