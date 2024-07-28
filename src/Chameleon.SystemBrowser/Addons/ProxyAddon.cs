@@ -74,6 +74,7 @@ public static class ProxyAddonUtil
          
          """
          + $@"
+         chrome.tabs.reload();
          chrome.tabs.update({{ url:""{url}"" }});
          //chrome.tabs.reload();
 ";

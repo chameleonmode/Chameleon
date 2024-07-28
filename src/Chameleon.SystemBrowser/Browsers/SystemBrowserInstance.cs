@@ -1,4 +1,9 @@
-﻿namespace Chameleon.SystemBrowser.Common;
+﻿using Newtonsoft.Json.Linq;
+using System.Net.WebSockets;
+using System.Reflection.Metadata;
+using System.Text;
+
+namespace Chameleon.SystemBrowser.Common;
 
 public abstract class SystemBrowserInstance(
     IEventAggregator eventAggregator,
@@ -155,14 +160,35 @@ public abstract class SystemBrowserInstance(
         }
         else
         {
+            if (BrowserType != SystemBrowserType.Firefox)
+            {
+                var windowHandle = await GetWindowHandleAsync();
+                int tryCount = 0;
+                while (tryCount++ < 36)
+                {
+                    if (windowHandle != IntPtr.Zero)
+                        break;
+                    await Task.Delay(500);
+                    windowHandle = await GetWindowHandleAsync();
+                }
+
+                if(windowHandle == IntPtr.Zero)
+                {
+                    OPtcs.TrySetResult(false);
+                    return;
+                }
+            }
+
 #pragma warning disable CA1416 // Validate platform compatibility
-            windowTracker = new(Brocess);
-            await windowTracker.StartTracking(BrowserType == SystemBrowserType.Firefox);
+            var cts = new CancellationTokenSource();
+            windowTracker = new(Brocess, BrowserType, cts);
+            windowTracker.StartTracking();
             var newHandle = await windowTracker.WaitForMainWindowHandleChangeAsync();
             Brocess = newHandle.Item2;
             if (Brocess == null)
             {
                 OPtcs.TrySetResult(false);
+                return;
             }
             else
             {
@@ -180,7 +206,8 @@ public abstract class SystemBrowserInstance(
         if (Brocess?.HasExited == false)
         {
             Brocess.Refresh();
-            Brocess.Exited += (s, e) => { Cleanup(); };
+            Brocess.Exited += (s, e) => 
+            { Cleanup(); };
         }
     }
 
@@ -363,8 +390,8 @@ public abstract class SystemBrowserInstance(
         if (GetLoadExtensionsArgument().Get() is string exts)
             args.Add($"--load-extension=\"{exts}\"");
        
-        if(!IsMao)
-            args.Add($"{Starturl}");
+        //if(!IsMao)
+        //    args.Add($"{Starturl}");
         
         return string.Join(" ", args);
     }
@@ -383,26 +410,97 @@ public abstract class SystemBrowserInstance(
 
         return exts.ToCommaSeparatedString();
     }
+
+
+    private async Task<string> GetWebSocketDebuggerUrlAsync()
+    {
+        string url = $"http://localhost:{Port}/json";
+        using HttpClient client = new HttpClient();
+        string jsonResponse = await client.GetStringAsync(url);
+        JArray targets = JArray.Parse(jsonResponse);
+
+        foreach (JObject target in targets)
+        {
+            if (target["type"].ToString() == "page") // Assuming you want to debug a page
+            {
+                return target["webSocketDebuggerUrl"].ToString();
+            }
+        }
+
+        return null; // No suitable debugger URL found
+    }
+
+    private async Task<IntPtr> GetWindowHandleAsync()
+    {
+        string webSocketDebuggerUrl = await GetWebSocketDebuggerUrlAsync();
+        using ClientWebSocket webSocket = new ClientWebSocket();
+        Uri uri = new Uri(webSocketDebuggerUrl);
+        await webSocket.ConnectAsync(uri, CancellationToken.None);
+        Console.WriteLine("Connected to WebSocket.");
+
+        string command = "{\"id\": 1, \"method\": \"Browser.getWindowForTarget\"}";
+        await SendCommandAsync(webSocket, command);
+
+        string response = await ReceiveResponseAsync(webSocket);
+        Console.WriteLine($"Received response: {response}");
+
+        JObject jr = JObject.Parse(response);
+        return (IntPtr)jr["result"]["windowId"].ToObject<int>();
+    }
+
+    private async Task<string> GetTargetIdAsync(ClientWebSocket webSocket)
+    {
+        string command = "{\"id\": 2, \"method\": \"Target.getTargets\"}";
+        await SendCommandAsync(webSocket, command);
+
+        string response = await ReceiveResponseAsync(webSocket);
+        Console.WriteLine($"Received response: {response}");
+
+        JObject jr = JObject.Parse(response);
+        return jr["result"]["targetInfos"]
+            .FirstOrDefault(t => t["type"].ToString() == "page")?["targetId"]
+            .ToString();
+    }
+
+    private async Task AttachToTargetAsync(ClientWebSocket webSocket, string targetId)
+    {
+        string command = $"{{\"id\": 3, \"method\": \"Target.attachToTarget\", \"params\": {{\"targetId\": \"{targetId}\"}}}}";
+        await SendCommandAsync(webSocket, command);
+
+        string response = await ReceiveResponseAsync(webSocket);
+        Console.WriteLine($"Received response: {response}");
+    }
+
+    private async Task<int> GetProcessIdAsync(ClientWebSocket webSocket, string targetId)
+    {
+        string command = $"{{\"id\": 4, \"method\": \"Target.sendMessageToTarget\", \"params\": {{\"targetId\": \"{targetId}\", \"message\": \"{{\\\"id\\\": 5, \\\"method\\\": \\\"Browser.getWindowForTarget\\\"}}\"}}}}";
+        await SendCommandAsync(webSocket, command);
+
+        string response = await ReceiveResponseAsync(webSocket);
+        Console.WriteLine($"Received response: {response}");
+
+        JObject jr = JObject.Parse(response);
+        return jr["result"]["processId"].ToObject<int>();
+    }
+
+    private async Task SendCommandAsync(ClientWebSocket webSocket, string command)
+    {
+        byte[] bytesToSend = Encoding.UTF8.GetBytes(command);
+        await webSocket.SendAsync(new ArraySegment<byte>(bytesToSend), WebSocketMessageType.Text, true, CancellationToken.None);
+    }
+
+    private async Task<string> ReceiveResponseAsync(ClientWebSocket webSocket)
+    {
+        StringBuilder responseBuilder = new StringBuilder();
+        byte[] buffer = new byte[1024];
+        WebSocketReceiveResult result;
+
+        do
+        {
+            result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            responseBuilder.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
+        } while (!result.EndOfMessage);
+
+        return responseBuilder.ToString();
+    }
 }
-
- // public static async Task<string> GetWebSocketDebuggerUrlAsync(int port)
- // {
- //     string url = $"http://localhost:{port}/json";
- //     using (HttpClient client = new HttpClient())
- //     {
- //         string jsonResponse = await client.GetStringAsync(url);
- //         Newtonsoft.Json.Linq.JArray targets = Newtonsoft.Json.Linq.JArray.Parse(jsonResponse);
-
- //         foreach (Newtonsoft.Json.Linq.JObject target in targets)
- //         {
- //             if (target["type"].ToString() == "page") // Assuming you want to debug a page
- //             {
- //                 string webSocketDebuggerUrl = target["webSocketDebuggerUrl"].ToString();
- //                 Console.WriteLine($"Found WebSocket Debugger URL: {webSocketDebuggerUrl}");
- //                 return webSocketDebuggerUrl; // Return the first found URL
- //             }
- //         }
- //     }
-
- //     return null; // No suitable debugger URL found
- // }

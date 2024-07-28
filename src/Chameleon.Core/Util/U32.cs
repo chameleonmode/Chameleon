@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Chameleon.Interfaces.WebBrowser;
+using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -135,29 +136,23 @@ public static class U32til
 }
 
 [SupportedOSPlatform("windows")]
-public class MWHandleTrackerUtility
-{         
-    private readonly CancellationTokenSource _cts = new CancellationTokenSource();  
+public class MWHandleTrackerUtility(Process aprocess, SystemBrowserType systemBrowserType, CancellationTokenSource cts)
+{
     private readonly List<int> _childProcessIds = [];
 
     private IntPtr _mainWindowHandle = IntPtr.Zero;
-    private Process _process;
     private TaskCompletionSource<Tuple<IntPtr, Process>> _tcs = new();
 
-    public MWHandleTrackerUtility(Process process)
+    private Process _process =  aprocess ?? throw new ArgumentNullException(nameof(aprocess));
+    public void StartTracking()
     {
-        _process = process ?? throw new ArgumentNullException(nameof(process));
-        //StartTracking();
-    }
 
-    public async Task StartTracking(bool moniterChild)
-    {
-        new Thread(() => TrackMainWindowHandle(_cts.Token)) { IsBackground = true }.Start();
-        if (moniterChild)
-        {
-            await Task.Delay(250);
-            new Thread(() => MonitorChildProcesses(_cts.Token)) { IsBackground = true }.Start();
-        }
+        new Thread(() => TrackMainWindowHandle(cts.Token)) { IsBackground = true }.Start();
+        //if (moniterChild)
+        //{
+        //    await Task.Delay(250);
+        //    new Thread(() => MonitorChildProcesses(cts.Token)) { IsBackground = true }.Start();
+        //}
     }
 
     private void TrackMainWindowHandle(CancellationToken token)
@@ -168,13 +163,25 @@ public class MWHandleTrackerUtility
             {
                 if (_process.HasExited || _mainWindowHandle == IntPtr.Zero)
                 {
-                    foreach (var childId in _childProcessIds)
+                    if (systemBrowserType == SystemBrowserType.Firefox)
                     {
-                        var childProcess = Process.GetProcessById(childId);
-                        if (childProcess != null && !childProcess.HasExited)
+                        Thread.Sleep(1000);
+                        var currentProcesses = Process.GetProcessesByName(
+                            systemBrowserType == SystemBrowserType.Firefox ? "firefox"
+                            : systemBrowserType == SystemBrowserType.Chrome ? "chrome"
+                            : "chrome").Where(p => p.Id != 0);
+                        foreach (var p in currentProcesses)
                         {
-                            _process = childProcess;
-                            break;
+                            if (!_childProcessIds.Contains(p.Id) && p.ParentProcessId() == _process.Id)
+                            {
+                                _childProcessIds.Add(p.Id);
+                                var childProcess = Process.GetProcessById(p.Id);
+                                if (childProcess != null && !childProcess.HasExited)
+                                {
+                                    _process = childProcess;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -210,7 +217,7 @@ public class MWHandleTrackerUtility
                 var currentProcesses = Process.GetProcessesByName("firefox").Where(p => p.Id != 0);
                 foreach (var process in currentProcesses)
                 {
-                    if (!_childProcessIds.Contains(process.Id) && process.ParentProcessId() == _process.Id)
+                    if (!_childProcessIds.Contains(process.Id) && process.ParentProcessId() == process.Id)
                     {
                         _childProcessIds.Add(process.Id);
                     }
@@ -227,7 +234,7 @@ public class MWHandleTrackerUtility
 
     public void StopTracking()
     {
-        _cts.Cancel();
+        cts.Cancel();
     } 
     
     public Task<Tuple<IntPtr, Process>> WaitForMainWindowHandleChangeAsync() => _tcs.Task;
