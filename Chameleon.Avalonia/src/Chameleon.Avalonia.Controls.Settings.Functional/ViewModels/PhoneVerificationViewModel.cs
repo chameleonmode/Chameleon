@@ -1,6 +1,7 @@
 ﻿using AutoMapper.Internal;
 using Avalonia.Collections;
 using Chameleon.Core.Util;
+using Chameleon.Infrastructure.Settings;
 using Chameleon.Infrastructure.ThirdParty.Codesverify;
 using Chameleon.Infrastructure.ThirdParty.Codesverify.Models;
 using Chameleon.Infrastructure.ThirdParty.SMSPVA;
@@ -11,7 +12,7 @@ using System.Text.Json;
 
 namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
-public partial class PhoneVerificationViewModel(IUserSettingsService userSettingsService, IApplicationSettingsService settingsService)
+public partial class PhoneVerificationViewModel(IUserSettingsService userSettingsService)
        : SubPageViewModelBase("Phone Verification")
        , IPhoneVerificationViewModel
 {
@@ -83,15 +84,6 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
         CodesVerifyAPI.Instance.ApiKey = _appSetting.Settings.CodesverifyApiKey = value ?? "";
     }
 
-
-    [RelayCommand]
-    public async Task Save()
-    {
-        await settingsService.Save();
-        await Task.Run(() => userSettingsService.Save(_userSetting));
-        IsChangeApiKey = false;
-    }
-
     public override async Task InitAsync(object? param)
     {                       
         await base.InitAsync(param);
@@ -104,7 +96,7 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
             SelectedCountry = Countries[0];
             SelectedService = Services[0];
 
-            _appSetting = await settingsService.GetAsync();
+            _appSetting = await ApplicationSettingsService.Instance.GetAsync();
             CodesverifyApiKey = _appSetting.Settings.CodesverifyApiKey;
             SelectedCodesverifyApp = CodesverifyApps[0];
 
@@ -112,7 +104,15 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
             AsyncCommandMap["GetCodeSMSPVA"] = GetCode;
             AsyncCommandMap["GetNumberCodesverify"] = GetNumberCodesverify;
             AsyncCommandMap["GetCodeCodesverify"] = GetCodeCodesverify;
+            AsyncCommandMap["Save"] = Save;
         }
+    }
+
+    public async Task Save()
+    {
+        await ApplicationSettingsService.Instance.Save();
+        await Task.Run(() => userSettingsService.Save(_userSetting));
+        IsChangeApiKey = false;
     }
 
 

@@ -137,10 +137,9 @@
 
 						<Button 
 							Grid.Column="1"
-							Content="Folder"
 							Margin="6 0 0 0"
-							Classes="accent"
-							Theme="{StaticResource SymbleIconButton}"
+							Content="Folder"
+							Theme="{StaticResource AccentSymbleIconButton}"
 							Command="{Binding SelectUserScriptFolderCommand}"/>
 					</Grid>
 				</afv:ChameleonContentControl.Header>

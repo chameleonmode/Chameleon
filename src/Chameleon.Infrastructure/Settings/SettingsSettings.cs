@@ -9,4 +9,5 @@ public class SettingsSettings  : ISettingsSettings
     public bool UseCustomAccentColor { get; set; }
     public bool AutoLogin { get; set; } = true;
     public string CodesverifyApiKey { get; set; }
+    public string UserScriptsDirectory { get; set; }
 }

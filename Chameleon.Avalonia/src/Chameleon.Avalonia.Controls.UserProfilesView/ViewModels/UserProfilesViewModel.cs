@@ -7,6 +7,7 @@ using Chameleon.Core.Extensions;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Domain.Entities.Automation;
+using Chameleon.Infrastructure.Settings;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Events;
 using Chameleon.Interfaces.App.Automation.Services;
@@ -323,7 +324,13 @@ public partial class UserProfilesViewModel
     private async Task InitializeScripts()
     {
         var scripts = await _automationService.GetAll();
-        scripts.AddRange(await _automationService.GetAll(ConfigHelper.UserScriptsDirectory));
+        var usd = ConfigHelper.UserScriptsDirectory;
+        if (!usd.HasAny())
+        {
+            var appSetting = await ApplicationSettingsService.Instance.GetAsync();
+            usd = appSetting.Settings.UserScriptsDirectory;
+        }
+        scripts.AddRange(await _automationService.GetAll(usd));
 
         _scriptViewModels = null;
         _scriptMapping = new ObservableCollection<IAutomationScriptDescription,

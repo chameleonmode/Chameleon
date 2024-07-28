@@ -20,7 +20,8 @@
 						<ui:CommandBar.PrimaryCommands>
 							<ui:CommandBarButton IconSource="Save"
 												 Label="Save"
-												 Command="{Binding SaveCommand}"/>
+												 CommandParameter="Save"
+												 Command="{Binding AsyncCfromVCommand}"/>
 						</ui:CommandBar.PrimaryCommands>
 					</ui:CommandBar>
 				</afv:ChameleonContentControl.TitleContent>

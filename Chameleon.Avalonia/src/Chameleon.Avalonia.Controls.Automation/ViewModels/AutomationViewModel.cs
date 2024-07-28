@@ -5,10 +5,13 @@ using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
+using Chameleon.Core.Extensions;
 using Chameleon.CT.Common.Base;
+using Chameleon.Infrastructure.Settings;
 using Chameleon.Interfaces.App.Automation.Entities;
 using Chameleon.Interfaces.App.Automation.Services;
 using Chameleon.Interfaces.App.Automation.ViewModels;
+using Chameleon.Interfaces.Settings;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -74,7 +77,9 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
                 return;
             }
 
-            ConfigHelper.UserScriptsDirectory = selected[0]?.Path?.AbsolutePath;
+            var appSetting = await ApplicationSettingsService.Instance.GetAsync();
+            ConfigHelper.UserScriptsDirectory = appSetting.Settings.UserScriptsDirectory = selected[0]?.Path?.AbsolutePath;
+            await ApplicationSettingsService.Instance.Save();
             await InitializeUserScripts();
         }
 
@@ -128,6 +133,11 @@ namespace Chameleon.Avalonia.Controls.Automation.ViewModels
             try
             {
                 UserScriptsDirectory = ConfigHelper.UserScriptsDirectory;
+                if (!UserScriptsDirectory.HasAny())
+                {
+                    var appSetting = await ApplicationSettingsService.Instance.GetAsync();
+                    UserScriptsDirectory = appSetting.Settings.UserScriptsDirectory;
+                }
     
                 if (!Directory.Exists(UserScriptsDirectory))
                     return;

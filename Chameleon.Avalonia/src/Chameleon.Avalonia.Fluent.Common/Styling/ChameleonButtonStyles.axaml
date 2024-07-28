@@ -30,6 +30,10 @@
 					Content="Folder"
 					Classes="accent"
 					Theme="{StaticResource AccentSymbleIconButton}" />
+
+				<Button
+				Content="Folder"
+				Theme="{StaticResource AccentSymbleIconButton}" />
 				
 				<Button 
 					Content="Folder"
