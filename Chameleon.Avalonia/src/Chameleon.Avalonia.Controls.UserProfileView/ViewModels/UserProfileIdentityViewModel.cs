@@ -41,7 +41,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     private readonly IAuthSession _authSession;
     private readonly IToastNotificationService _toastNotificationService;
     private readonly ISystemBrowserManager _systemBrowserManager;
-    private readonly Dictionary<string, Action> commandMap = [];
 
     public AvaloniaList<CountryBindable> Countries { get; } = [];       
     public AvaloniaList<UserProfilePersonBindable> Persons { get; } = [];
@@ -102,6 +101,11 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             .GetEvent<DeleteUserProfileEvent>()
             .Subscribe(OnDeleteUserProfileEvent);
 
+        CommandMap["AddPerson"] = AddPerson;
+        CommandMap["AddBusiness"] = OnAddBusiness;
+        CommandMap["AddAddress"] = OnAddAddress;
+        CommandMap["AddLogin"] = OnAddLogin;
+
     }
 
     public override async Task InitAsync(object? param)
@@ -111,11 +115,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         if (!Loaded)
         {                     
             OnAuthenticated();
-
-            commandMap["AddPerson"] = AddPerson;   
-            commandMap["AddBusiness"] = OnAddBusiness;
-            commandMap["AddAddress"] = OnAddAddress;
-            commandMap["AddLogin"] = OnAddLogin;
         }
     }
     public override async Task OnNavigatedToAsync(object? param)
@@ -365,15 +364,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     #endregion
 
 
-    #endregion
-
-    #region Commands
-
-    [RelayCommand]
-    private void CfromV(string what)
-    {
-        commandMap[what]?.Invoke();
-    }
     #endregion
 
     #region Persons

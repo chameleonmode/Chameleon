@@ -89,10 +89,4 @@ public partial class UserProfileSidePanelViewModel(IUserProfileAdditionalDataSer
         OnPropertyChanged(nameof(HasNoAddressesItems));
         OnPropertyChanged(nameof(HasNoLoginsItems));
     }
-
-    [RelayCommand]
-    private void Copy(object param)
-    {
-        ClipboardService.Instance.SetTextAsync(param as string);
-    }
 }

@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.App.UserSettings.View
 {
     public interface IPhoneVerificationView
-        : ISingletonDependency
+        : ITransientDependency
     {
     }
 }

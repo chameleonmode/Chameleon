@@ -1,4 +1,6 @@
-﻿namespace Chameleon.Core.Util;
+﻿using System.Text.Json;
+
+namespace Chameleon.Core.Util;
 
 public static class ExUtil
 {
@@ -25,6 +27,19 @@ public static class ExUtil
         catch(Exception ex) 
         {
             caught?.Invoke();
+            Console.WriteLine(ex.ToString());
+        }
+    }
+
+    public static async Task AsyncTryCatch(Func<Task> action, Action<Exception>? caught = null)
+    {
+        try
+        {
+           await action();
+        }
+        catch (Exception ex)
+        {
+            caught?.Invoke(ex);
             Console.WriteLine(ex.ToString());
         }
     }

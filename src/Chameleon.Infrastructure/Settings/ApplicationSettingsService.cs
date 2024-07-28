@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.Environments;
+﻿using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Settings;
 using System;
@@ -14,6 +15,8 @@ namespace Chameleon.Infrastructure.Settings
         private readonly SemaphoreSlim l = new SemaphoreSlim(1, 1);  
 
         private ApplicationSettings _settings;
+
+        public static IApplicationSettingsService Instance { get; } = ContainerServiceHelper.Resolve<IApplicationSettingsService>() as ApplicationSettingsService;
 
         public ApplicationSettingsService(
             IApplicationEnvironment applicationEnvironment

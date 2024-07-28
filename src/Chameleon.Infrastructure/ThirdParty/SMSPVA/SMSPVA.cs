@@ -24,7 +24,7 @@ public class SMSPVAService
         PropertyNameCaseInsensitive = true
     };
 
-    private string apikey = "";
+    public string ApiKey { get; set; }
     public List<Models.Country> Countries { get; } =
     [
         new (1, "United States", "US"),
@@ -339,14 +339,11 @@ public class SMSPVAService
         new(236, "", "ZoomInfo", "opt194") 
     ];
 
-    public void SetApiKey(string apikey)
-        => this.apikey = apikey;
-
 
     public async Task<ApiResponse<T>> GetActivationNumberAsync<T>(Models.Country country, Models.Service service)
     {
         using HttpClient client = new();
-        client.DefaultRequestHeaders.Add("apikey", apikey);
+        client.DefaultRequestHeaders.Add("apikey", ApiKey);
 
         HttpResponseMessage response = await client.GetAsync($"https://api.smspva.com/activation/number/{country.Code}/{service.Code}");
         string responseBody = await response.Content.ReadAsStringAsync();
@@ -358,7 +355,7 @@ public class SMSPVAService
     public async Task<ApiResponse<T>> ReceiveSMS<T>(int id)
     {
         using HttpClient client = new();
-        client.DefaultRequestHeaders.Add("apikey", apikey);
+        client.DefaultRequestHeaders.Add("apikey", ApiKey);
         //client.DefaultRequestHeaders.Add("partnerkey", "SOME_STRING_VALUE");
 
         HttpResponseMessage response = await client.GetAsync($"https://api.smspva.com/activation/sms/{id}");
@@ -373,7 +370,7 @@ public class SMSPVAService
     public async Task<string> GetBalanceAsync()
     {
         using HttpClient client = new();
-        client.DefaultRequestHeaders.Add("apikey", apikey);
+        client.DefaultRequestHeaders.Add("apikey", ApiKey);
 
         HttpResponseMessage response = await client.GetAsync("https://api.smspva.com/activation/balance");
         response.EnsureSuccessStatusCode();

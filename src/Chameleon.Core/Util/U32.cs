@@ -165,7 +165,7 @@ public class MWHandleTrackerUtility(Process aprocess, SystemBrowserType systemBr
                 {
                     if (systemBrowserType == SystemBrowserType.Firefox)
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(500);
                         var currentProcesses = Process.GetProcessesByName(
                             systemBrowserType == SystemBrowserType.Firefox ? "firefox"
                             : systemBrowserType == SystemBrowserType.Chrome ? "chrome"

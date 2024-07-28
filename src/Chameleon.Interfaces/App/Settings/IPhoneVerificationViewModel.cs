@@ -3,6 +3,8 @@
 namespace Chameleon.Interfaces.App.Settings;
 
 public interface IPhoneVerificationViewModel
-    : ISingletonDependency
+    : ITransientDependency
 {
+    bool IsCodesverifyVisible { get; set; }
+    bool IsSMSPVAVisible { get; set; }
 }

@@ -2,105 +2,277 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
+             mc:Ignorable="d" d:DesignWidth="720" d:DesignHeight="1850"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.Functional.ViewModels"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:local="using:Chameleon.Avalonia.Controls.Settings.Functional"
 			 x:DataType="vm:PhoneVerificationViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.Settings.Functional.Views.PhoneVerificationView">
-	<Border Padding="20">
-		<afv:ChameleonContentControl Title="SMS PVA"
-									 TitleDescription="">
-			<afv:ChameleonContentControl.TitleContent>
-			</afv:ChameleonContentControl.TitleContent>
-			
-			<afv:ChameleonContentControl.Header>
-				<Grid RowDefinitions="Auto,Auto">
-					<TextBlock Margin="0 8 0 8"
-							   Text="Enter your phone API Key"/>
-					<Border Grid.Row="1">
-						<StackPanel Orientation="Horizontal">
-							<TextBox 
-								Width="425"
-								Text="{Binding ApiKey}"/>
-							<Button
-								Theme="{StaticResource AccentSymbleIconButton}"
-								HorizontalAlignment="Left"
-								Margin="10 0 0 0"
-								Content="Save"
-								Command="{Binding SaveCommand}" />
-						</StackPanel>
-					</Border>
-				</Grid>
-			</afv:ChameleonContentControl.Header>
-			
-			<afv:ChameleonContentControl.Content>
-				<Grid ColumnDefinitions="Auto, *">
-					<StackPanel Spacing="18">
-						<ui:FAComboBox
-							Margin="0 -18 0 0"
-							PlaceholderText="Select A Country"
-							Header="Country:"
-							Width="180"
-							IsTextSearchEnabled="True"
-							SelectedItem="{Binding SelectedCountry}"
-							ItemsSource="{Binding Countries}"
-							DisplayMemberBinding="{Binding Name}" />
-
-						<ui:FAComboBox
-							PlaceholderText="Select A Service"
-							Header="Service:"
-							Width="180"
-							IsTextSearchEnabled="True"
-							SelectedItem="{Binding SelectedService}"
-							ItemsSource="{Binding Services}"
-							DisplayMemberBinding="{Binding ServiceName}" />
-
-						<StackPanel
-							Orientation="Horizontal"
-							HorizontalAlignment="Left">
-							<HeaderedContentControl
-								Header="Phone Number"
-								Width="360"
-								Tag="{Binding GetNumberData}"
-								Theme="{StaticResource CopyPasta}" />
-							<Button Classes="accent"
-									Width="108"
-									Margin="12 8 0 0"
-									Content="Get Number"
-									Command="{Binding GetNumberCommand}" />
-						</StackPanel>
-
-						<StackPanel
-							Orientation="Horizontal"
-							HorizontalAlignment="Left">
-							<HeaderedContentControl
-								HorizontalAlignment="Left"
-								Header="Code"
-								Width="360"
-								Tag="{Binding ReceiveSMSData}"
-								Theme="{StaticResource CopyPasta}" />
-							<Button Classes="accent"
-									Width="108"
-									Margin="12 8 0 0"
-									Content="Get Code"
-									Command="{Binding GetCodeCommand}" />
-						</StackPanel>
-
-						<Panel Grid.Column="1"
-							   Margin="0 0 0 0">
-							<TextBlock
-								Text="{Binding LastFormatedResponse}"/>
-							<ui:ProgressRing
-								IsVisible="{Binding IsAwaiting}"/>
-						</Panel>
+	<UserControl.Resources>
+		<ControlTheme x:Key="ThesePVApisTitleContent"
+					  TargetType="HeaderedContentControl">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<ui:CommandBar
+						DefaultLabelPosition="Right"
+						HorizontalAlignment="Right">
+						<ui:CommandBar.PrimaryCommands>
+							<ui:CommandBarButton IconSource="Save"
+												 Label="Save"
+												 CommandParameter="{TemplateBinding Tag}"
+												 Command="{Binding AsyncCfromVCommand}"/>
+							<ui:CommandBarButton IconSource="Document"
+												 Label="Pop Out"
+												 CommandParameter="{TemplateBinding Header}"
+												 Command="{Binding AsyncCfromVCommand}"/>
+						</ui:CommandBar.PrimaryCommands>
+					</ui:CommandBar>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		<ControlTheme x:Key="ThesePVApisHeaderContent"
+			  TargetType="HeaderedContentControl">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid RowDefinitions="Auto,Auto">
+						<TextBlock Margin="0 8 0 8"
+								   Text="API Key"/>
+						<Border Grid.Row="1">
+							<StackPanel Orientation="Horizontal">
+								<TextBox
+									Width="425"
+									Text="{TemplateBinding Tag}"/>
+							</StackPanel>
+						</Border>
+					</Grid>
+					<!--<Grid RowDefinitions="Auto,Auto">
+						<TextBlock Margin="0 8 0 8"
+								   Text="API Key"/>
+						<Border Grid.Row="1">
+							<StackPanel Orientation="Horizontal">
+								<TextBox
+									Width="425"
+									Text="{Binding SmspvApiKey}"/>
+								<Button
+									Theme="{StaticResource AccentSymbleIconButton}"
+									HorizontalAlignment="Left"
+									Margin="10 0 0 0"
+									Content="Save"
+									CommandParameter="SaveSMSPVA"
+									Command="{Binding AsyncCfromVCommand}" />
+							</StackPanel>
+						</Border>
+					</Grid>-->
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		<ControlTheme x:Key="ThesePVApisCMB"
+			  TargetType="HeaderedContentControl">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<ui:FAComboBox
+						Margin="0 0 0 0"
+						Width="180"
+						IsTextSearchEnabled="True"
+						Header="{TemplateBinding Header}"
+						ItemsSource="{TemplateBinding Content}"
+						SelectedItem="{TemplateBinding Tag}"
+						DisplayMemberBinding="{ReflectionBinding Name}" />
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		<ControlTheme x:Key="ThesePVApisCP"
+			TargetType="HeaderedContentControl">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<StackPanel
+						Orientation="Horizontal"
+						HorizontalAlignment="Left">
+						<HeaderedContentControl
+							Header="{TemplateBinding Header}"
+							Width="360"
+							Tag="{TemplateBinding Tag}"
+							Theme="{StaticResource CopyPasta}" />
+						<Button Classes="accent"
+								Width="108"
+								Margin="12 8 0 0"
+								Content="{TemplateBinding Content}"
+								CommandParameter="{TemplateBinding Name}"
+								Command="{Binding AsyncCfromVCommand}" />
 					</StackPanel>
-				</Grid>
-			</afv:ChameleonContentControl.Content>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		<ControlTheme x:Key="ThesePVApisAwaiter"
+	TargetType="HeaderedContentControl">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Panel Margin="0 0 0 0">
+						<TextBlock
+							Text="{TemplateBinding Tag}"/>
+						<ui:ProgressRing
+							IsVisible="{Binding IsAwaiting}"/>
+					</Panel>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
 
-			<afv:ChameleonContentControl.Footer>
-			</afv:ChameleonContentControl.Footer>
-		</afv:ChameleonContentControl>
+		<!--<ControlTheme x:Key="ThesePVAControls"
+			TargetType="local:PVAUserControl">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Panel Margin="0 0 0 0">
+						<TextBlock
+							Text="{TemplateBinding Tag}"/>
+						<ui:ProgressRing
+							IsVisible="{Binding IsAwaiting}"/>
+					</Panel>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>-->
+	</UserControl.Resources>
+	<Border Padding="20">
+		<StackPanel>
+			<local:PVAUserControl Title="Codesverify"
+								  IsVisible="{Binding IsCodesverifyVisible}">
+				<local:PVAUserControl.TitleContent>
+					<!--<HeaderedContentControl
+						Tag="SaveCV"
+						Header="PoputCodeverify"
+						Theme="{StaticResource ThesePVApisTitleContent}"/>-->
+					<ui:CommandBar
+						DefaultLabelPosition="Right"
+						HorizontalAlignment="Right">
+						<ui:CommandBar.PrimaryCommands>
+							<ui:CommandBarButton IconSource="Save"
+												 Label="Save"
+												 IsVisible="{Binding IsSMSPVAVisible}"
+												 CommandParameter="SaveCV"
+												 Command="{Binding AsyncCfromVCommand}"/>
+							<ui:CommandBarButton IconSource="Document"
+												 Label="Pop Out"
+												 CommandParameter="PoputCodeverify"
+												 Command="{Binding AsyncCfromVCommand}"/>
+						</ui:CommandBar.PrimaryCommands>
+					</ui:CommandBar>
+				</local:PVAUserControl.TitleContent>
+
+				<local:PVAUserControl.HeaderContentContent>
+					<HeaderedContentControl
+						Tag="{Binding CodesverifyApiKey}"
+						Theme="{StaticResource ThesePVApisHeaderContent}"/>
+				</local:PVAUserControl.HeaderContentContent>
+
+				<local:PVAUserControl.ContentContent>
+					<StackPanel Spacing="18">
+						<afv:HeaderdListControl>
+							<afv:HeaderdListControl.HeaderdList>
+								<HeaderedContentControl
+									Header="App:"
+									Content="{Binding CodesverifyApps}"
+									Tag="{Binding SelectedCodesverifyApp}"
+									Theme="{StaticResource ThesePVApisCMB}"/>
+							</afv:HeaderdListControl.HeaderdList>
+						</afv:HeaderdListControl>
+
+						<afv:HeaderdListControl>
+							<afv:HeaderdListControl.HeaderdList>
+								<HeaderedContentControl
+									Header="Phone Number"
+									Tag="{Binding LastNumberResponseCodesverify}"
+									Content="Get Number"
+									Name="GetNumberCodesverify"
+									Theme="{StaticResource ThesePVApisCP}"/>
+
+								<HeaderedContentControl
+									Header="Code"
+									Tag="{Binding LastCodeResponseCodesverify}"
+									Content="Get Code"
+									Name="GetCodeCodesverify"
+									Theme="{StaticResource ThesePVApisCP}"/>
+							</afv:HeaderdListControl.HeaderdList>
+						</afv:HeaderdListControl>
+
+						<HeaderedContentControl Tag="{Binding LastFormatedResponseCodesverify}"
+												Theme="{StaticResource ThesePVApisAwaiter}" />
+					</StackPanel>
+				</local:PVAUserControl.ContentContent>
+			</local:PVAUserControl>
+
+			<local:PVAUserControl Title="SMS PVA"
+								  IsVisible="{Binding IsSMSPVAVisible}">
+				<local:PVAUserControl.TitleContent>
+					<!--<HeaderedContentControl
+							Header="PoputSMSPVA"
+							Tag="SaveSMSPVA"
+							Theme="{StaticResource ThesePVApisTitleContent}"/>-->
+					<ui:CommandBar
+						DefaultLabelPosition="Right"
+						HorizontalAlignment="Right">
+						<ui:CommandBar.PrimaryCommands>
+							<ui:CommandBarButton IconSource="Save"
+												 IsVisible="{Binding IsCodesverifyVisible}"
+												 Label="Save"
+												 CommandParameter="SaveSMSPVA"
+												 Command="{Binding AsyncCfromVCommand}"/>
+							<ui:CommandBarButton IconSource="Document"
+												 Label="Pop Out"
+												 CommandParameter="PoputSMSPVA"
+												 Command="{Binding AsyncCfromVCommand}"/>
+						</ui:CommandBar.PrimaryCommands>
+					</ui:CommandBar>
+				</local:PVAUserControl.TitleContent>
+
+				<local:PVAUserControl.HeaderContentContent>
+					<HeaderedContentControl
+						Tag="{Binding SmspvApiKey}"
+						Theme="{StaticResource ThesePVApisHeaderContent}"/>
+				</local:PVAUserControl.HeaderContentContent>
+
+				<local:PVAUserControl.ContentContent>
+					<StackPanel Spacing="18">
+						<afv:HeaderdListControl>
+							<afv:HeaderdListControl.HeaderdList>
+								<HeaderedContentControl
+									Header="Country:"
+									Content="{Binding Countries}"
+									Tag="{Binding SelectedCountry}"
+									Theme="{StaticResource ThesePVApisCMB}"/>
+
+								<HeaderedContentControl
+									Header="Service:"
+									Content="{Binding Services}"
+									Tag="{Binding SelectedService}"
+									Theme="{StaticResource ThesePVApisCMB}"/>
+							</afv:HeaderdListControl.HeaderdList>
+						</afv:HeaderdListControl>
+
+						<afv:HeaderdListControl>
+							<afv:HeaderdListControl.HeaderdList>
+								<HeaderedContentControl
+									Header="Phone Number"
+									Tag="{Binding GetNumberData}"
+									Content="Get Number"
+									Name="GetNumberSMSPVA"
+									Theme="{StaticResource ThesePVApisCP}"/>
+
+								<HeaderedContentControl
+									Header="Code"
+									Tag="{Binding ReceiveSMSData}"
+									Content="Get Code"
+									Name="GetCodeSMSPVA"
+									Theme="{StaticResource ThesePVApisCP}"/>
+							</afv:HeaderdListControl.HeaderdList>
+						</afv:HeaderdListControl>
+
+						<HeaderedContentControl Tag="{Binding LastFormatedResponse}"
+												Theme="{StaticResource ThesePVApisAwaiter}" />
+					</StackPanel>
+				</local:PVAUserControl.ContentContent>
+
+			</local:PVAUserControl>
+		</StackPanel>
 	</Border>
 </UserControl>
