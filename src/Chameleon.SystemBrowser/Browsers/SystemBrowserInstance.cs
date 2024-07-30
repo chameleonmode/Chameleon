@@ -160,6 +160,7 @@ public abstract class SystemBrowserInstance(
         }
         else
         {
+            #pragma warning disable CA1416 // Validate platform compatibility
             //Brocess.WaitForInputIdle();
             if (BrowserType != SystemBrowserType.Firefox)
             {
@@ -188,7 +189,6 @@ public abstract class SystemBrowserInstance(
             }
             else
             {
-#pragma warning disable CA1416 // Validate platform compatibility
                 await Task.Delay(2600);
                 TaskCompletionSource<Process> thisTcs = new();
                 new Thread(()=>
@@ -222,9 +222,8 @@ public abstract class SystemBrowserInstance(
                 }).Start();
                 Brocess = await thisTcs.Task;
                 Handle = Brocess?.MainWindowHandle ?? IntPtr.Zero;
-                
-#pragma warning restore CA1416 // Validate platform compatibility
             }
+            #pragma warning restore CA1416 // Validate platform compatibility
 
             SetWin32Events();
         }
