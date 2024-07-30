@@ -135,20 +135,15 @@
 	</UserControl.Resources>
 	<Border Padding="20">
 		<StackPanel>
-			<local:PVAUserControl Title="Codesverify"
-								  IsVisible="{Binding IsCodesverifyVisible}">
-				<local:PVAUserControl.TitleContent>
-					<!--<HeaderedContentControl
-						Tag="SaveCV"
-						Header="PoputCodeverify"
-						Theme="{StaticResource ThesePVApisTitleContent}"/>-->
+			<afv:ChameleonContentControl Title="Codesverify"
+				IsVisible="{Binding IsCodesverifyVisible}">
+				<afv:ChameleonContentControl.TitleContent>
 					<ui:CommandBar
 						DefaultLabelPosition="Right"
 						HorizontalAlignment="Right">
 						<ui:CommandBar.PrimaryCommands>
 							<ui:CommandBarButton IconSource="Save"
 												 Label="Save"
-												 IsVisible="{Binding IsSMSPVAVisible}"
 												 CommandParameter="SaveCV"
 												 Command="{Binding AsyncCfromVCommand}"/>
 							<ui:CommandBarButton IconSource="Document"
@@ -157,15 +152,23 @@
 												 Command="{Binding AsyncCfromVCommand}"/>
 						</ui:CommandBar.PrimaryCommands>
 					</ui:CommandBar>
-				</local:PVAUserControl.TitleContent>
+				</afv:ChameleonContentControl.TitleContent>
 
-				<local:PVAUserControl.HeaderContentContent>
-					<HeaderedContentControl
-						Tag="{Binding CodesverifyApiKey}"
-						Theme="{StaticResource ThesePVApisHeaderContent}"/>
-				</local:PVAUserControl.HeaderContentContent>
+				<afv:ChameleonContentControl.Header>
+					<Grid RowDefinitions="Auto,Auto">
+						<TextBlock Margin="0 8 0 8"
+								   Text="API Key"/>
+						<Border Grid.Row="1">
+							<StackPanel Orientation="Horizontal">
+								<TextBox
+									Width="425"
+									Text="{Binding CodesverifyApiKey}"/>
+							</StackPanel>
+						</Border>
+					</Grid>
+				</afv:ChameleonContentControl.Header>
 
-				<local:PVAUserControl.ContentContent>
+				<afv:ChameleonContentControl.Content>					
 					<StackPanel Spacing="18">
 						<afv:HeaderdListControl>
 							<afv:HeaderdListControl.HeaderdList>
@@ -198,16 +201,12 @@
 						<HeaderedContentControl Tag="{Binding LastFormatedResponseCodesverify}"
 												Theme="{StaticResource ThesePVApisAwaiter}" />
 					</StackPanel>
-				</local:PVAUserControl.ContentContent>
-			</local:PVAUserControl>
+				</afv:ChameleonContentControl.Content>
+			</afv:ChameleonContentControl>
 
-			<local:PVAUserControl Title="SMS PVA"
-								  IsVisible="{Binding IsSMSPVAVisible}">
-				<local:PVAUserControl.TitleContent>
-					<!--<HeaderedContentControl
-							Header="PoputSMSPVA"
-							Tag="SaveSMSPVA"
-							Theme="{StaticResource ThesePVApisTitleContent}"/>-->
+			<afv:ChameleonContentControl Title="SMS PVA"
+				IsVisible="{Binding IsSMSPVAVisible}">
+				<afv:ChameleonContentControl.TitleContent>
 					<ui:CommandBar
 						DefaultLabelPosition="Right"
 						HorizontalAlignment="Right">
@@ -223,15 +222,23 @@
 												 Command="{Binding AsyncCfromVCommand}"/>
 						</ui:CommandBar.PrimaryCommands>
 					</ui:CommandBar>
-				</local:PVAUserControl.TitleContent>
+				</afv:ChameleonContentControl.TitleContent>
 
-				<local:PVAUserControl.HeaderContentContent>
-					<HeaderedContentControl
-						Tag="{Binding SmspvApiKey}"
-						Theme="{StaticResource ThesePVApisHeaderContent}"/>
-				</local:PVAUserControl.HeaderContentContent>
+				<afv:ChameleonContentControl.Header>
+					<Grid RowDefinitions="Auto,Auto">
+						<TextBlock Margin="0 8 0 8"
+								   Text="API Key"/>
+						<Border Grid.Row="1">
+							<StackPanel Orientation="Horizontal">
+								<TextBox
+									Width="425"
+									Text="{Binding SmspvApiKey}"/>
+							</StackPanel>
+						</Border>
+					</Grid>
+				</afv:ChameleonContentControl.Header>
 
-				<local:PVAUserControl.ContentContent>
+				<afv:ChameleonContentControl.Content>					
 					<StackPanel Spacing="18">
 						<afv:HeaderdListControl>
 							<afv:HeaderdListControl.HeaderdList>
@@ -270,9 +277,8 @@
 						<HeaderedContentControl Tag="{Binding LastFormatedResponse}"
 												Theme="{StaticResource ThesePVApisAwaiter}" />
 					</StackPanel>
-				</local:PVAUserControl.ContentContent>
-
-			</local:PVAUserControl>
+				</afv:ChameleonContentControl.Content>
+			</afv:ChameleonContentControl>
 		</StackPanel>
 	</Border>
 </UserControl>

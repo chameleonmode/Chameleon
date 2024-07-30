@@ -180,34 +180,69 @@ public abstract class SystemBrowserInstance(
             }
 
 #pragma warning disable CA1416 // Validate platform compatibility
-            var cts = new CancellationTokenSource();
-            windowTracker = new(Brocess, BrowserType, cts);
-            windowTracker.StartTracking();
-            var newHandle = await windowTracker.WaitForMainWindowHandleChangeAsync();
-            Brocess = newHandle.Item2;
-            if (Brocess == null)
-            {
-                OPtcs.TrySetResult(false);
-                return;
-            }
-            else
-            {
-                Handle = Brocess.MainWindowHandle;
-                windowTracker.StopTracking();
-                SetWin32Events();
-            }
+           //var cts = new CancellationTokenSource();
+           //windowTracker = new(Brocess, BrowserType, cts);
+           //windowTracker.StartTracking();
+           //var newHandle = await windowTracker.WaitForMainWindowHandleChangeAsync();
+           //Brocess = newHandle.Item2;
+           //Handle = Brocess.MainWindowHandle;
+           //if (Brocess == null || Handle == IntPtr.Zero)
+           //{
+           //    OPtcs.TrySetResult(false);
+           //    return;
+           //}
+           //else
+           //{
+           //    windowTracker.StopTracking();
+           //    SetWin32Events();
+           //}
+           int thesetrys = 0;
+           do
+           {
+                Handle = U32til.FindMainWindowHandle(Brocess.Id);
+                if (Handle == IntPtr.Zero)
+                {
+                    Brocess.Refresh();
+                    await Task.Delay(500);
+                }
+                else
+                {
+                    break;
+                }
+           } while (thesetrys++ < 36);
+           thesetrys = 0;
+           do
+           {
+                if (Handle == IntPtr.Zero)
+                    break;
+                Brocess = U32til.GetProcessByMainWindowHandle(Handle);
+                if (Brocess == null || Brocess?.HasExited == true)
+                {
+                    await Task.Delay(500);
+                }
+                else
+                {
+                    break;
+                }
+           } while (thesetrys++ < 36);
 #pragma warning restore CA1416 // Validate platform compatibility
+
+            if (Brocess?.HasExited == false)
+            {
+                SetWin32Events();
+                //await Task.Delay(250);
+                //Brocess.Refresh();
+                //await Task.Delay(250);
+                if(BrowserType != SystemBrowserType.Firefox)
+                Brocess.Exited += (s, e) => 
+                { Cleanup(); };
+            }
         }
 
-        OPtcs.TrySetResult(true);
-
-        if (BrowserType != SystemBrowserType.Firefox && Brocess?.HasExited == false)
-        {
-            await Task.Delay(500);
-            Brocess.Refresh();
-            Brocess.Exited += (s, e) => 
-            { Cleanup(); };
-        }
+        if(Brocess?.HasExited == false)
+            OPtcs.TrySetResult(true);
+        else
+            OPtcs.TrySetResult(false);
     }
 
     void OnWindowForeground(int i) 
@@ -389,8 +424,8 @@ public abstract class SystemBrowserInstance(
         if (GetLoadExtensionsArgument().Get() is string exts)
             args.Add($"--load-extension=\"{exts}\"");
        
-        //if(!IsMao)
-        //    args.Add($"{Starturl}");
+        if(!IsMao)
+            args.Add($"{Starturl}");
         
         return string.Join(" ", args);
     }

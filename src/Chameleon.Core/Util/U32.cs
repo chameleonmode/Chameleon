@@ -133,6 +133,17 @@ public static class U32til
         }, IntPtr.Zero);
         return foundWindow;
     }
+
+    public static Process GetProcessByMainWindowHandle(IntPtr mainWindowHandle)
+    {
+        U32.GetWindowThreadProcessId(mainWindowHandle, out uint processId);
+        if (processId == 0)
+        {
+            throw new InvalidOperationException("Unable to get process ID from window handle.");
+        }
+
+        return Process.GetProcessById((int)processId);
+    }
 }
 
 [SupportedOSPlatform("windows")]
@@ -161,7 +172,12 @@ public class MWHandleTrackerUtility(Process aprocess, SystemBrowserType systemBr
         {
             try
             {
-                if (_process.HasExited || _mainWindowHandle == IntPtr.Zero)
+                if(_process.HasExited)
+                {
+                    _tcs.SetResult(new(0, null));
+                    break;
+                }
+                if (_mainWindowHandle == IntPtr.Zero)
                 {
                     if (systemBrowserType == SystemBrowserType.Firefox)
                     {
@@ -178,8 +194,12 @@ public class MWHandleTrackerUtility(Process aprocess, SystemBrowserType systemBr
                                 var childProcess = Process.GetProcessById(p.Id);
                                 if (childProcess != null && !childProcess.HasExited)
                                 {
-                                    _process = childProcess;
-                                    break;
+                                    IntPtr thishandle = U32til.FindMainWindowHandle(childProcess.Id);
+                                    if(U32.IsWindow(thishandle))
+                                    {
+                                        _process = childProcess;
+                                        break;
+                                    }
                                 }
                             }
                         }

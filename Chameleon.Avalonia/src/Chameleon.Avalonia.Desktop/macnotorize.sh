@@ -35,3 +35,6 @@ xcrun notarytool info 59ae4bbe-48c3-4652-a23a-3d1a4ada1b03 --keychain-profile "D
 xcrun notarytool info 9d773d3d-a3dc-447f-8dbe-2cb390446648 --keychain-profile "DEV"
 xcrun notarytool info 7830c155-31a6-4470-8f52-5be2eaa8f5ba --keychain-profile "DEV"
 xcrun notarytool info 6a65044d-3b4d-421c-a58b-017aee6dc218 --keychain-profile "DEV"
+xcrun notarytool info e8a759a3-d655-483e-86cd-90d2691d1149 --keychain-profile "DEV"
+xcrun notarytool info 4a04b8b8-075f-4f78-a8cc-01bfcaa53ff5 --keychain-profile "DEV"
+xcrun notarytool info 5a2ffaa5-7b55-4e69-8fa1-ec819c43d742 --keychain-profile "DEV"

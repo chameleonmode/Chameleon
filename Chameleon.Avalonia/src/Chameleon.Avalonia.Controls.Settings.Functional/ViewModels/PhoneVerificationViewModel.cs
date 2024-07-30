@@ -80,17 +80,18 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
     [ObservableProperty]
     private bool _isSMSPVAVisible = true;
 
-    partial void OnSmspvApiKeyChanged(string? value)
+    partial void OnSmspvApiKeyChanged(string? oldValue, string? newValue)
     {
-        IsChangeApiKey = _userSetting.SmsPvaApiKey != value;
-        SMSPVAService.Instance.ApiKey = _userSetting.SmsPvaApiKey = value ?? "";
+        IsChangeApiKey = _userSetting.SmsPvaApiKey != newValue;
+        SMSPVAService.Instance.ApiKey = _userSetting.SmsPvaApiKey = SmspvApiKey ?? "";
     }
 
-    partial void OnCodesverifyApiKeyChanged(string? value)
+    partial void OnCodesverifyApiKeyChanged(string? oldValue, string? newValue)
     {
-        IsChangeApiKey = CodesVerifyAPI.Instance.ApiKey != value;
-        CodesVerifyAPI.Instance.ApiKey = _appSetting.Settings.CodesverifyApiKey = value ?? "";
+        IsChangeApiKey = CodesVerifyAPI.Instance.ApiKey != newValue;
+        CodesVerifyAPI.Instance.ApiKey = _appSetting.Settings.CodesverifyApiKey = CodesverifyApiKey ?? "";
     }
+   
 
     public override async Task InitAsync(object? param)
     {                       
@@ -122,8 +123,16 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
 
     private async Task SaveCV()
     {
+        CodesVerifyAPI.Instance.ApiKey = _appSetting.Settings.CodesverifyApiKey = CodesverifyApiKey ?? "";
         await ApplicationSettingsService.Instance.Save();
         ts.ShowSuccess("Saved");
+    }
+
+    public async Task SaveSMSPVA()
+    {
+        SMSPVAService.Instance.ApiKey = _userSetting.SmsPvaApiKey = SmspvApiKey ?? "";
+        await Task.Run(() => userSettingsService.Save(_userSetting));
+        IsChangeApiKey = false;
     }
 
     private Task PoputSMSPVA()
@@ -144,12 +153,6 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
             vm.IsSMSPVAVisible = false;
         }, null, "Codeverify", 720);
         return Task.CompletedTask;
-    }
-
-    public async Task SaveSMSPVA()
-    {
-        await Task.Run(() => userSettingsService.Save(_userSetting));
-        IsChangeApiKey = false;
     }
 
 
