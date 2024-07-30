@@ -20,7 +20,7 @@ public class GetNumberData
     public int OrderId { get; set; }
 
     [JsonPropertyName("phoneNumber")]
-    public long PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; }
 
     [JsonPropertyName("countryCode")]
     public string CountryCode { get; set; }

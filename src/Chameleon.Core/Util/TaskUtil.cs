@@ -14,6 +14,16 @@ public static class TaskUtil
         return contition.Invoke();
     }
 
+    public static async Task AwaitLoop(Action action, int count = 5, int milleseconds = 250)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            action();
+
+            await Task.Delay(milleseconds);
+        }
+    }
+
     public static async Task<T?> TryAwaitFor<T>(Func<T?> contition, int count = 5, int milleseconds = 250)
     {
         for (int i = 0; i < count; i++)

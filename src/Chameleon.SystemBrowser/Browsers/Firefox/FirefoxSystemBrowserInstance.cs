@@ -496,8 +496,8 @@ public partial class FirefoxSystemBrowserInstance(
             ? "about:blank" //added for now to work around proxy refresh issue
             : Starturl;
 
-        if(!IsMao)
-            arguments.Add($"-url {startUrl}");
+        //if(!IsMao)
+        //    arguments.Add($"-url {startUrl}");
         return arguments;
     }
 

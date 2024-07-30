@@ -210,7 +210,7 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
     async Task MakeRequest(Func<Task> func, Action<string> onErr)
     {
         IsAwaiting = true;
-        await ExUtil.AsyncTryCatch(func, e => onErr(JsonSerializer.Serialize(e, jsonSerializerOptions)));
+        await ExUtil.AsyncTryCatch(func, e => onErr(e.Message));
         IsAwaiting = false; 
     }
 }

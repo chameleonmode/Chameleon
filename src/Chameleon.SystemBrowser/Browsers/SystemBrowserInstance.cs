@@ -160,9 +160,11 @@ public abstract class SystemBrowserInstance(
         }
         else
         {
+            //Brocess.WaitForInputIdle();
             if (BrowserType != SystemBrowserType.Firefox)
             {
                 var windowHandle = await GetWindowHandleAsync();
+                //await TaskUtil.AwaitFor(windowHandle != IntPtr.Zero, 36, 500);
                 int tryCount = 0;
                 while (tryCount++ < 36)
                 {
@@ -177,66 +179,54 @@ public abstract class SystemBrowserInstance(
                     OPtcs.TrySetResult(false);
                     return;
                 }
+
+                await TaskUtil.AwaitFor(()=>Brocess?.MainWindowHandle != IntPtr.Zero, 18);
+                Handle = Brocess?.MainWindowHandle ?? IntPtr.Zero;
+                if (Brocess?.HasExited == false)
+                    Brocess.Exited += (s, e) => 
+                    { Cleanup(); };
             }
-
-#pragma warning disable CA1416 // Validate platform compatibility
-           //var cts = new CancellationTokenSource();
-           //windowTracker = new(Brocess, BrowserType, cts);
-           //windowTracker.StartTracking();
-           //var newHandle = await windowTracker.WaitForMainWindowHandleChangeAsync();
-           //Brocess = newHandle.Item2;
-           //Handle = Brocess.MainWindowHandle;
-           //if (Brocess == null || Handle == IntPtr.Zero)
-           //{
-           //    OPtcs.TrySetResult(false);
-           //    return;
-           //}
-           //else
-           //{
-           //    windowTracker.StopTracking();
-           //    SetWin32Events();
-           //}
-           int thesetrys = 0;
-           do
-           {
-                Handle = U32til.FindMainWindowHandle(Brocess.Id);
-                if (Handle == IntPtr.Zero)
-                {
-                    Brocess.Refresh();
-                    await Task.Delay(500);
-                }
-                else
-                {
-                    break;
-                }
-           } while (thesetrys++ < 36);
-           thesetrys = 0;
-           do
-           {
-                if (Handle == IntPtr.Zero)
-                    break;
-                Brocess = U32til.GetProcessByMainWindowHandle(Handle);
-                if (Brocess == null || Brocess?.HasExited == true)
-                {
-                    await Task.Delay(500);
-                }
-                else
-                {
-                    break;
-                }
-           } while (thesetrys++ < 36);
-#pragma warning restore CA1416 // Validate platform compatibility
-
-            if (Brocess?.HasExited == false)
+            else
             {
-                SetWin32Events();
-                //await Task.Delay(250);
-                //Brocess.Refresh();
-                //await Task.Delay(250);
-                if(BrowserType != SystemBrowserType.Firefox)
-                Brocess.Exited += (s, e) => 
-                { Cleanup(); };
+#pragma warning disable CA1416 // Validate platform compatibility
+                await Task.Delay(2600);
+                TaskCompletionSource<Process> thisTcs = new();
+                new Thread(()=>
+                {
+                    for(int i = 0; i < 36; i++)
+                    {
+                        ExUtil.TryCatch(()=>
+                        {
+                            var currentProcesses = Process.GetProcessesByName("firefox");
+                            foreach (var p in currentProcesses)
+                            {
+                                if (p.ParentProcessId() == Brocess.Id)
+                                {
+                                    var childProcess = Process.GetProcessById(p.Id);
+                                    if (childProcess?.HasExited == false)
+                                    {
+                                        IntPtr thishandle = U32til.FindMainWindowHandle(childProcess.Id);
+                                        if(U32.IsWindow(thishandle))
+                                        {
+                                            thisTcs.TrySetResult(childProcess);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        if(Handle != IntPtr.Zero)
+                            break;
+                        Thread.Sleep(500);
+                    }
+                }).Start();
+                Brocess = await thisTcs.Task;
+                Handle = Brocess?.MainWindowHandle ?? IntPtr.Zero;
+                
+#pragma warning restore CA1416 // Validate platform compatibility
             }
+
+            SetWin32Events();
         }
 
         if(Brocess?.HasExited == false)
@@ -254,7 +244,7 @@ public abstract class SystemBrowserInstance(
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
     private void SetWin32Events()
     {
-        if (Brocess != null && Handle != IntPtr.Zero)
+        if (Brocess?.HasExited == false && Handle != IntPtr.Zero)
         {
             winEventsCaptureDelegate = WinEventProc;
 
@@ -424,8 +414,8 @@ public abstract class SystemBrowserInstance(
         if (GetLoadExtensionsArgument().Get() is string exts)
             args.Add($"--load-extension=\"{exts}\"");
        
-        if(!IsMao)
-            args.Add($"{Starturl}");
+        //if(!IsMao)
+        //    args.Add($"{Starturl}");
         
         return string.Join(" ", args);
     }

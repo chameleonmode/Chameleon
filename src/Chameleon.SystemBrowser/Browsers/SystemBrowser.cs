@@ -7,6 +7,9 @@ public abstract class SystemBrowserBase(
     IUserDefaultSettingsService userDefaultsSettingsService)
     : ISystemBrowser
 {
+    private System.Timers.Timer _pollingTimer;
+    private readonly List<int> pollingids = [];
+
     protected IEventAggregator EventAggregator { get; } = eventAggregator;
     protected IApplicationEnvironment ApplicationEnvironment { get; } = applicationEnvironment;
     protected ISetPreferencesService SetPreferencesService { get; } = setPreferencesService;
@@ -24,9 +27,13 @@ public abstract class SystemBrowserBase(
 
     public virtual async Task<ISystemBrowserInstance> Open(ISystemBrowserLaunchOptions o)
     {
-        while (IsBusy)
-            await Task.Delay(500);
-
+        await TaskUtil.AwaitFor(()=>!IsBusy, 120, 500);
+        if(!OperatingSystem.IsMacOS() && _pollingTimer == null)
+        {
+            _pollingTimer = new(1000);
+            _pollingTimer.Elapsed -= OnPollingTimerElapsed;
+            _pollingTimer.Elapsed += OnPollingTimerElapsed;
+        }
         if (!Instances.TryGetValue(o.UserProfile.Id, out ISystemBrowserInstance browser))
             try
             {
@@ -54,7 +61,7 @@ public abstract class SystemBrowserBase(
             {
                 await MesageBoxHelper.ShowErrorAsync("Error", e.Message);
             }
-            finally { Interlocked.Decrement(ref _isBusy); }
+            finally { Interlocked.Exchange(ref _isBusy, 0); }
         else
             await browser.MakeForeground();
 
@@ -63,6 +70,18 @@ public abstract class SystemBrowserBase(
     public virtual Task<ISystemBrowserInstance> InitializeBrowserAsync(ISystemBrowserLaunchOptions o) =>
         Task.Run(() => InitializeBrowser(o));
 
+    private void OnPollingTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+    {
+        ExUtil.TryCatch(()=>
+        {
+            for(int i = Instances.Count; i <= 0; i--)
+            {
+                var b = Instances.ElementAt(i).Value;
+                if(b.Brocess?.HasExited == true)
+                    b.Cleanup();
+            }
+        });
+    }
     public async void Browser_OnProcessClosed(ISystemBrowserLaunchOptions o)
     {
         do
