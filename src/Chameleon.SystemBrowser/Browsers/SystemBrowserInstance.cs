@@ -432,7 +432,7 @@ public abstract class SystemBrowserInstance(
             args.Add($"--load-extension=\"{exts}\"");
        
         //if(!IsMao)
-        //    args.Add($"{Starturl}");
+            args.Add($"about:blank");
         
         return string.Join(" ", args);
     }

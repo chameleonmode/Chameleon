@@ -532,7 +532,7 @@ public partial class FirefoxSystemBrowserInstance(
                 startUrl.Contains(ProxyAddonUtil.DomainLevelDelimiter) ? 
                 @$", async () => {{ 
                         let tabs = await browser.tabs.query({{}});
-                        if (tabs.length > 0) {{
+                        if (tabs.length > 1) {{
                             await browser.tabs.remove(tabs[tabs.length - 1].id);
                         }}
                         browser.tabs.update({{ url:""{startUrl}"" }}); 

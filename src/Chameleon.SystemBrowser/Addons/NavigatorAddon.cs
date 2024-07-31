@@ -24,7 +24,7 @@ public static partial class NavigatorAddon
 
     public static string GetManifestv2 => """
     {
-        "version": "1",
+        "version": "1.0.0",
         "manifest_version": 2,
         "description": "Chameleon browser window and document navigator spoofer and sync",
         "name": "Chameleonair",

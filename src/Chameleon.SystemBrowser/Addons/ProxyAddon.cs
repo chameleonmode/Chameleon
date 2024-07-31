@@ -1,4 +1,6 @@
-﻿namespace Chameleon.SystemBrowser.Addons;
+﻿using System;
+
+namespace Chameleon.SystemBrowser.Addons;
 
 public static class ProxyAddonUtil
 {
@@ -47,9 +49,7 @@ public static class ProxyAddonUtil
       "permissions": [
         "tabs",
         "webRequest",
-        "webRequestBlocking",
-        "webRequestAuthProvider",
-        "<all_urls>"
+        "webRequestAuthProvider"
       ],
       "host_permissions": [
         "<all_urls>"
@@ -71,12 +71,24 @@ public static class ProxyAddonUtil
                  }
              };
          }, { urls: ['<all_urls>'] }, ['blocking']);
-         
          """
-         + $@"
-         chrome.tabs.reload();
-        //chrome.tabs.update({{ url:""{url}"" }});
-";
+    + $@"
+        function getTabInfo(callback) {{
+            chrome.tabs.query({{ }}, callback);
+        }}
+        
+       function processTabInfo(tabs) {{
+            if (tabs.length > 1) {{
+                 chrome.tabs.remove(tabs[tabs.length - 1].id);
+             }}
+             // Update the current tab with a new URL
+             //chrome.tabs.update(tabs[tabs.length - 1].id, {{ url: ""{url}"" }});
+             chrome.tabs.update({{ url:""{url}"" }});
+        }}
+
+        // Call the function to get tab information
+        getTabInfo(processTabInfo);
+    ";
     //let queryOptions = {{ active: true, lastFocusedWindow: true }};
     //chrome.tabs.query(queryOptions, ([tab]) => {{
     //  if (chrome.runtime.lastError)
