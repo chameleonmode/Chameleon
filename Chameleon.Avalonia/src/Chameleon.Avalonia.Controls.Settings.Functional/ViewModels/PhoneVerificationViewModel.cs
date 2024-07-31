@@ -2,10 +2,10 @@
 using Avalonia.Collections;
 using Chameleon.Core.Util;
 using Chameleon.Infrastructure.Settings;
-using Chameleon.Infrastructure.ThirdParty.Codesverify;
-using Chameleon.Infrastructure.ThirdParty.Codesverify.Models;
-using Chameleon.Infrastructure.ThirdParty.SMSPVA;
-using Chameleon.Infrastructure.ThirdParty.SMSPVA.Models;
+using Chameleon.ThirdParty.Codesverify;
+using Chameleon.ThirdParty.Codesverify.Models;
+using Chameleon.ThirdParty.SMSPVA;
+using Chameleon.ThirdParty.SMSPVA.Models;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Services;

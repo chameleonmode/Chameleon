@@ -1,6 +1,6 @@
 ﻿using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Chameleon.Infrastructure.ThirdParty.Codesverify.Models;
+namespace Chameleon.ThirdParty.Codesverify.Models;
 public class ApiGetNumberResponse
 {
     public string Number { get; set; }

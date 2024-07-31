@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Chameleon.ThirdParty.GeoIp;
+using Chameleon.ThirdParty.GeoIp.Models;
+using Microsoft.Playwright;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Reflection.Metadata;
@@ -81,6 +84,8 @@ public abstract class SystemBrowserInstance(
             await EnsureProfileFolderCreated();
             await InitializeProfileFolder();
             await InitializeExtensionPath();
+            if(OPtcs.Task.IsCompleted) 
+                return;
             await StartProcess();
         }
 
@@ -123,6 +128,21 @@ public abstract class SystemBrowserInstance(
     {
         await IOtil.DeleteDExistsAsync(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath));
 
+        Geoiplookup ipLookup = null;
+        if (UserProfile.Proxy != null)
+        {
+            await ExUtil.AsyncTryCatch(async () =>
+            {
+                ipLookup = await GeoIpApi.Instance.GetGeoIp($"http://{UserProfile.Proxy.Server}", UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
+            }, (e) => Cleanup());
+
+            if (ipLookup == null)
+                return;
+        }
+
+        await IOtil.DC(NavigatorExtMainDir);
+        await NavigatorAddon.InitializeExtension(NavigatorExtDir, ipLookup);
+
         if (HasProxyLogin)
         {
             await IOtil.CreateDirectory(ProxyExtDir);
@@ -132,9 +152,6 @@ public abstract class SystemBrowserInstance(
                 Path.Combine(ProxyExtDir, "background.js"),
                 ProxyAddonUtil.GetBgJsv3(Starturl, UserProfile.Proxy));
         }
-
-        await IOtil.DC(NavigatorExtMainDir);
-        await NavigatorAddon.InitializeExtension(NavigatorExtDir);
     }
 
     protected virtual async Task StartProcess()

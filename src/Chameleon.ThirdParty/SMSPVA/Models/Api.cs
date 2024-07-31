@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Chameleon.Infrastructure.ThirdParty.SMSPVA.Models;
+namespace Chameleon.ThirdParty.SMSPVA.Models;
 
 public class ApiResponse<T>
 {

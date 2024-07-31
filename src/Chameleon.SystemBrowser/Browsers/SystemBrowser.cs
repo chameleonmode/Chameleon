@@ -30,7 +30,7 @@ public abstract class SystemBrowserBase(
     {
         if (!Instances.TryGetValue(o.UserProfile.Id, out ISystemBrowserInstance browser))
         {
-            await TaskUtil.AwaitFor(() => !IsBusy, 36, 250);
+            await TaskUtil.AwaitFor(() => !IsBusy, 36, 350);
             //if (!OperatingSystem.IsMacOS() && _pollingTimer == null)
             //{
             //    _pollingTimer = new System.Timers.Timer(5000);

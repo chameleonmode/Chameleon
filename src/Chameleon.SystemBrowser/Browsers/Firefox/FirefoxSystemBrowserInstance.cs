@@ -496,8 +496,8 @@ public partial class FirefoxSystemBrowserInstance(
             ? "about:blank" //added for now to work around proxy refresh issue
             : Starturl;
 
-        //if(!IsMao)
-        //    arguments.Add($"-url {startUrl}");
+        if(!IsMao)
+            arguments.Add($"-url {startUrl}");
         return arguments;
     }
 
@@ -524,12 +524,20 @@ public partial class FirefoxSystemBrowserInstance(
         if (HasProxyLogin)
         {
             string startUrl =
-                Starturl.Contains(ProxyAddonUtil.UrlSchemeEnd)
-                ? Starturl : $"{ProxyAddonUtil.HTTPSScheme}{Starturl}";
+                Starturl.Contains(ProxyAddonUtil.UrlSchemeEnd) ?
+                Starturl : 
+                $"{ProxyAddonUtil.HTTPSScheme}{Starturl}";
 
             string loadUrl =
-                startUrl.Contains(ProxyAddonUtil.DomainLevelDelimiter)
-                ? $", () => {{ browser.tabs.update({{ url:\"{startUrl}\" }}); }});" : ");";
+                startUrl.Contains(ProxyAddonUtil.DomainLevelDelimiter) ? 
+                @$", async () => {{ 
+                        let tabs = await browser.tabs.query({{}});
+                        if (tabs.length > 0) {{
+                            await browser.tabs.remove(tabs[tabs.length - 1].id);
+                        }}
+                        browser.tabs.update({{ url:""{startUrl}"" }}); 
+                  }});" 
+                : ");";
 
             await IOtil.CreateZipAsync(pxoyextFile, new Dictionary<string, string>
             {

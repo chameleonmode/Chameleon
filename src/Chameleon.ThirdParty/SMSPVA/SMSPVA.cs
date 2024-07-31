@@ -1,8 +1,8 @@
-﻿using Chameleon.Infrastructure.ThirdParty.SMSPVA.Models;
+﻿using Chameleon.ThirdParty.SMSPVA.Models;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace Chameleon.Infrastructure.ThirdParty.SMSPVA;
+namespace Chameleon.ThirdParty.SMSPVA;
 
 public class SMSPVAService
 {

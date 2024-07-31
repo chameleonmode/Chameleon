@@ -1,7 +1,7 @@
-﻿using Chameleon.Infrastructure.ThirdParty.Codesverify.Models;
+﻿using Chameleon.ThirdParty.Codesverify.Models;
 using System.Net.Http;
 
-namespace Chameleon.Infrastructure.ThirdParty.Codesverify;
+namespace Chameleon.ThirdParty.Codesverify;
 
 public class CodesVerifyAPI
 {

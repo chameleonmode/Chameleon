@@ -33,6 +33,7 @@
     <Folder Include="Dialogs\" />
     <Folder Include="Logger\" />
     <Folder Include="Services\" />
+    <Folder Include="ThirdParty\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
