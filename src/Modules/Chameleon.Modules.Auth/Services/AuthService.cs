@@ -24,6 +24,7 @@ namespace Chameleon.Auth.Services
         private readonly IApplicationSettingsService _settingsService;
 
         private IApplicationSettings _appSettings;
+        private System.Timers.Timer _pollingTimer;
 
         public AuthService(IAuthApiClient apiClient,
             IAuthSession authSession,
@@ -66,8 +67,14 @@ namespace Chameleon.Auth.Services
                 if (loginResult is not null)
                 {
                     OnAuthenticateSuccess(loginResult);
+                    _pollingTimer = new System.Timers.Timer(TimeSpan.FromSeconds(loginResult.ExpireInSeconds));
+                    _pollingTimer.Elapsed += async (s, e) =>
+                    {
+                        await RefreshTokenAsync(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
+                    };
+                    _pollingTimer.Start();
 
-                    _ = RefreshTokenAsync(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
+                    //_ = RefreshTokenAsync(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
                 }
             }
             //if (loginResult is null || refreshTokenResponse is null)

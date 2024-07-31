@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Reflection.Metadata;
 using System.Text;
@@ -52,6 +53,8 @@ public abstract class SystemBrowserInstance(
     public IUserProfile UserProfile =>
         options.UserProfile;
 
+    public bool IsRunning => Brocess?.HasExited == false;
+
     public static bool IsMao =>
         OperatingSystem.IsMacOS();
 
@@ -81,18 +84,17 @@ public abstract class SystemBrowserInstance(
             await StartProcess();
         }
 
-        await MakeForeground();
+        //MakeForeground();
     }
 
-    public Task MakeForeground()
+    public void MakeForeground()
     {
         if (Brocess != null)
         {
             if (!IsMao)
             {
                 if (Handle == IntPtr.Zero)
-                    return Task.CompletedTask;
-
+                    return;
 #pragma warning disable CA1416 // Validate platform compatibility
                 if (U32.IsWindow(Handle))
                 {
@@ -115,8 +117,6 @@ public abstract class SystemBrowserInstance(
                 }
             }
         }
-        
-        return Task.CompletedTask;
     }
 
     protected virtual async Task InitializeExtensionPath()
@@ -162,22 +162,22 @@ public abstract class SystemBrowserInstance(
         {
             #pragma warning disable CA1416 // Validate platform compatibility
             //Brocess.WaitForInputIdle();
+            await Task.Delay(1800);
+
             if (BrowserType != SystemBrowserType.Firefox)
             {
-                var windowHandle = await GetWindowHandleAsync();
-                //await TaskUtil.AwaitFor(windowHandle != IntPtr.Zero, 36, 500);
-                int tryCount = 0;
-                while (tryCount++ < 36)
+                string windowHandle = null;
+                while (IsRunning)
                 {
-                    if (windowHandle != IntPtr.Zero)
+                    windowHandle = await GetWebSocketDebuggerUrlAsync().ConfigureAwait(false);
+                    if (windowHandle.HasAny())
                         break;
-                    await Task.Delay(500);
-                    windowHandle = await GetWindowHandleAsync();
-                }
 
-                if(windowHandle == IntPtr.Zero)
+                    await Task.Delay(250);
+                }
+                if(!windowHandle.HasAny())
                 {
-                    OPtcs.TrySetResult(false);
+                    Cleanup();
                     return;
                 }
 
@@ -189,18 +189,17 @@ public abstract class SystemBrowserInstance(
             }
             else
             {
-                await Task.Delay(2600);
-                TaskCompletionSource<Process> thisTcs = new();
+                TaskCompletionSource<Process?> thisTcs = new();
                 new Thread(()=>
                 {
-                    for(int i = 0; i < 36; i++)
+                    for(int i = 0; i < 18; i++)
                     {
                         ExUtil.TryCatch(()=>
                         {
                             var currentProcesses = Process.GetProcessesByName("firefox");
                             foreach (var p in currentProcesses)
                             {
-                                if (p.ParentProcessId() == Brocess.Id)
+                                if (Brocess != null && p.ParentProcessId() == Brocess.Id)
                                 {
                                     var childProcess = Process.GetProcessById(p.Id);
                                     if (childProcess?.HasExited == false)
@@ -217,8 +216,10 @@ public abstract class SystemBrowserInstance(
                         });
                         if(Handle != IntPtr.Zero)
                             break;
-                        Thread.Sleep(500);
+                        Thread.Sleep(100);
                     }
+                    if (Handle == IntPtr.Zero)
+                        thisTcs.TrySetResult(null);
                 }).Start();
                 Brocess = await thisTcs.Task;
                 Handle = Brocess?.MainWindowHandle ?? IntPtr.Zero;
@@ -228,10 +229,10 @@ public abstract class SystemBrowserInstance(
             SetWin32Events();
         }
 
-        if(Brocess?.HasExited == false)
+        if (Brocess?.HasExited == false)
             OPtcs.TrySetResult(true);
         else
-            OPtcs.TrySetResult(false);
+            Cleanup();
     }
 
     void OnWindowForeground(int i) 
@@ -438,19 +439,44 @@ public abstract class SystemBrowserInstance(
     private async Task<string> GetWebSocketDebuggerUrlAsync()
     {
         string url = $"http://localhost:{Port}/json";
-        using HttpClient client = new HttpClient();
-        string jsonResponse = await client.GetStringAsync(url);
-        JArray targets = JArray.Parse(jsonResponse);
-
-        foreach (JObject target in targets)
+        using HttpClient client = new HttpClient
         {
-            if (target["type"].ToString() == "page") // Assuming you want to debug a page
-            {
-                return target["webSocketDebuggerUrl"].ToString();
-            }
-        }
+            Timeout = TimeSpan.FromSeconds(5) // Set a timeout of 5 seconds
+        };
 
-        return null; // No suitable debugger URL found
+        try
+        {
+            string jsonResponse = await client.GetStringAsync(url);
+            JArray targets = JArray.Parse(jsonResponse);
+
+            foreach (JObject target in targets)
+            {
+                if (target["type"].ToString() == "page") // Assuming you want to debug a page
+                {
+                    return target["webSocketDebuggerUrl"].ToString();
+                }
+            }
+
+            return null; // No suitable debugger URL found
+        }
+        catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
+        {
+            // Handle timeout
+            Console.WriteLine("The request timed out.");
+            return null;
+        }
+        catch (HttpRequestException ex)
+        {
+            // Handle other HTTP request exceptions
+            Console.WriteLine($"HttpRequestException: {ex.Message}");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            // Handle any other exceptions
+            Console.WriteLine($"Exception: {ex.Message}");
+            return null;
+        }
     }
 
     private async Task<IntPtr> GetWindowHandleAsync()

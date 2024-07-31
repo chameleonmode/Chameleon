@@ -10,6 +10,7 @@ namespace Chameleon.Auth.Api
     {
         private readonly IApiClient _apiClient;
 
+
         public AuthApiClient(
             IApiClient apiClient
             )
@@ -36,7 +37,8 @@ namespace Chameleon.Auth.Api
 
         public async Task<IAuthRefreshTokenResponse?> RefreshTokenAsync(string acessToken, string refreshToken, long delayInSeconds)
         {
-            await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
+
+            //await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
 
             var requestDto = new RefreshTokenRequestDto
             {
