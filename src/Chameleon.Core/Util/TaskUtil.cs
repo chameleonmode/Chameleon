@@ -1,17 +1,24 @@
 ﻿namespace Chameleon.Core.Util;
 public static class TaskUtil
 {
-    public static async Task<bool> AwaitFor(Func<bool> contition, int count = 5, int milleseconds = 250)
+    
+    public static async Task<bool> AwaitFor(Func<bool> contition, int count = 5, int milleseconds = 250, Action<Exception> onfailed = null)
     {
         for (int i = 0; i < count; i++)
         {
-            if (contition.Invoke())
-                break;
-
+            try
+            {
+                if (contition.Invoke())
+                    return true;
+            }
+            catch(Exception e)
+            {
+                onfailed?.Invoke(e);
+            }
             await Task.Delay(milleseconds);
         }
 
-        return contition.Invoke();
+        return false;
     }
 
     public static async Task AwaitLoop(Action action, int count = 5, int milleseconds = 250)

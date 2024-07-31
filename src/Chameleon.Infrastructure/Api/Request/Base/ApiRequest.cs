@@ -10,13 +10,14 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.Text.Json;
 using System.Net.Http;
+using Chameleon.Core.Util;
 
 namespace Chameleon.Infrastructure.Api
 {
     public abstract class ApiRequest<TApiRequest>(IAuthSession session, IApplicationConfiguration configuration)
         where TApiRequest : ApiRequest<TApiRequest>
     {
-        private readonly HttpClient _httpClient = new HttpClient(new HttpClientHandler
+        private HttpClient _httpClient = new HttpClient(new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.GZip,
             ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
@@ -47,22 +48,23 @@ namespace Chameleon.Infrastructure.Api
 
         public TApiRequest Send()
         {
-            try
+            Exception? err = null;
+            TaskUtil.AwaitFor(() =>
             {
                 CreateRequest();
                 SetAuthHeader();
                 InitializeRequest(_request);
                 ReadResponse();
-                return (TApiRequest)this;
-            }
-            catch
-            {
-                if (++_retryIndex >= _retryCount)
-                {
-                    throw;
-                }
-                return Send();
-            }
+                return (TApiRequest)this != null;
+            }, _retryCount, 500, (e) => 
+            { 
+                    err = e;
+            }).Wait();
+
+            if(err != null)
+                throw new InvalidOperationException(err.Message, err);
+
+            return (TApiRequest)this;
         }
 
         public void GetResult()
@@ -144,12 +146,17 @@ namespace Chameleon.Infrastructure.Api
             try
             {
                 // You can send the request and get the response synchronously if needed
-                var response = _httpClient.SendAsync(_request).GetAwaiter().GetResult();
-
+                using var httpResponse = _httpClient.SendAsync(_request).GetAwaiter().GetResult();
+               
                 // Process the response if needed (e.g., check status code, read content)
-                if (response.IsSuccessStatusCode)
+                if(httpResponse.IsSuccessStatusCode)
+                    _responseBody = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                else
                 {
-                    _responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    // Log the error details
+                    var errorContent = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    _responseBody = errorContent;
+                    throw new InvalidOperationException($"Request failed with status code {httpResponse.StatusCode} and reason phrase '{httpResponse.ReasonPhrase}'. Content: {errorContent}");
                 }
             }
             catch (WebException ex)

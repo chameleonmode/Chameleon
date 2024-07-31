@@ -38,9 +38,7 @@ namespace Chameleon.Infrastructure.UserProfileFolders
         {
             var entities = _repository.GetAll(ignoreCache);
 
-#pragma warning disable IDE0028 // Simplify collection initialization
             return new Domain.Entities.UserProfileFolders { entities };
-#pragma warning restore IDE0028 // Simplify collection initialization
         }
 
         public IUserProfileFolders GetAll()

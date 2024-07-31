@@ -1,8 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Chameleon.Wpf.Interfaces\Chameleon.Wpf.Interfaces.csproj" />
-  </ItemGroup>
-</Project>
