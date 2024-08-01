@@ -1,5 +1,7 @@
 ﻿using NodaTime;
 using NodaTime.Extensions;
+using NodaTime.Text;
+using NodaTime.TimeZones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +39,7 @@ public class GeoIpApi
 
         using HttpClient client = new(handler)
         {
-            Timeout = TimeSpan.FromSeconds(10)
+            Timeout = TimeSpan.FromSeconds(5)
         };
         HttpResponseMessage response = await client.GetAsync("https://geoip-lookup.vercel.app/api/geoip");
 
@@ -59,34 +61,90 @@ public class GeoIpApi
         // For example, using System.Text.Json:
         return JsonSerializer.Deserialize<Models.Geoiplookup>(responseBody);
     }
-    public List<string> GetAbbrs(string timeZoneId)
-    {
-        var tzdb = DateTimeZoneProviders.Tzdb;
-        var timeZone = tzdb[timeZoneId];
 
-        var intervals = timeZone.GetZoneIntervals(Instant.FromUtc(2023, 1, 1, 0, 0), Instant.FromUtc(2026, 1, 1, 0, 0));
-        var abbrs = intervals.Select(i => @$"""{i.Name}""").ToList();
-        return abbrs;
+    public string GetFormatted(string tz)
+    {
+        // Get the time zone
+        DateTimeZone dateTimeZone = DateTimeZoneProviders.Tzdb[tz];
+
+        // Create lists to hold the abbreviations, untils, and offsets
+        var abbrs = new List<string>();
+        var untils = new List<string>();
+        var offsets = new List<string>();
+
+        // Get the current time and iterate over the next 10 years
+        Instant now = Instant.FromUtc(2023, 1, 1, 0, 0); //SystemClock.Instance.GetCurrentInstant();
+        Instant end = Instant.FromUtc(2026, 1, 1, 0, 0); // now.Plus(Duration.FromDays(365 * 10));
+
+        // Iterate over the intervals in the time zone
+        foreach (var interval in dateTimeZone.GetZoneIntervals(now, end))
+        {
+            abbrs.Add(interval.Name);
+            untils.Add(interval.End.ToUnixTimeSeconds().ToString());
+            offsets.Add(interval.WallOffset.Seconds.ToString());
+        }
+
+        // Create an object to hold the time zone information
+        var timeZoneInfo = new
+        {
+            name = tz,
+            abbrs = abbrs,
+            untils = untils,
+            offsets = offsets
+        };
+
+        // Serialize the time zone information to JSON
+        string json = JsonSerializer.Serialize(timeZoneInfo, new JsonSerializerOptions { WriteIndented = true });
+        return json;
+
+        // Create a LocalDateTime
+        LocalDateTime localDateTime = new LocalDateTime(2023, 10, 5, 14, 30);
+
+        // Get the time zone
+        DateTimeZone timeZone = DateTimeZoneProviders.Tzdb[tz];
+
+        // Create a ZonedDateTime
+        ZonedDateTime zonedDateTime = localDateTime.InZoneStrictly(timeZone);
+
+        // Format the ZonedDateTime
+        string formattedDateTime = ZonedDateTimePattern.ExtendedFormatOnlyIso.Format(zonedDateTime);
+        return formattedDateTime;
+    }
+    public IEnumerable<string> GetAbbrs(string timeZoneId)
+    {
+        //var intervals = 
+        //    DateTimeZoneProviders.Tzdb[timeZoneId]
+        //    .GetZoneIntervals(Instant.FromUtc(2023, 1, 1, 0, 0), Instant.FromUtc(2026, 1, 1, 0, 0))
+        //    .Union(DateTimeZoneProviders.Bcl[timeZoneId]
+        //    .GetZoneIntervals(Instant.FromUtc(2023, 1, 1, 0, 0), Instant.FromUtc(2026, 1, 1, 0, 0)));
+
+        //var abbrs = intervals.Select(i => @$"""{i.Name}""").ToList();
+        var r =  GetZones(timeZoneId).Select(i => @$"""{i.Name}""");
+        return r;
     }
 
-    public List<long> GetUntilInstants(string timeZoneId)
+    public IEnumerable<long> GetUntilInstants(string timeZoneId)
     {
-        var tzdb = DateTimeZoneProviders.Tzdb;
-        var timeZone = tzdb[timeZoneId];
-        var intervals = timeZone.GetZoneIntervals(Instant.FromUtc(2023, 1, 1, 0, 0), Instant.FromUtc(2026, 1, 1, 0, 0));
-        var untils = intervals.Select(i => i.End.ToDateTimeUtc().Ticks).ToList();
-        return untils;
+        //var tzdb = DateTimeZoneProviders.Tzdb;
+        //var timeZone = tzdb[timeZoneId];
+        //var intervals = timeZone.GetZoneIntervals(Instant.FromUtc(2023, 1, 1, 0, 0), Instant.FromUtc(2026, 1, 1, 0, 0));
+        //var untils = intervals.Select(i => i.End.ToDateTimeUtc().Ticks).ToList();
+        //return untils;
+
+        var r = GetZones(timeZoneId).Select(i => i.End.ToUnixTimeSeconds());
+        return r;
     }
 
-    public List<string> GetOffsets(string timeZoneId)
+    public IEnumerable<string> GetOffsets(string timeZoneId)
     {
-        var tzdb = DateTimeZoneProviders.Tzdb;
-        var timeZone = tzdb[timeZoneId];
+        //var tzdb = DateTimeZoneProviders.Tzdb;
+        //var timeZone = tzdb[timeZoneId];
 
-        var intervals = timeZone.GetZoneIntervals(Instant.FromUtc(2023, 1, 1, 0, 0), Instant.FromUtc(2026, 1, 1, 0, 0));
-        var offsets = intervals.Select(i => @$"""{i.WallOffset.ToString().PadRight(5, '0')}""").ToList();
+        //var intervals = timeZone.GetZoneIntervals(Instant.FromUtc(2023, 1, 1, 0, 0), Instant.FromUtc(2026, 1, 1, 0, 0));
+        //var offsets = intervals.Select(i => @$"""{i.WallOffset.ToString().PadRight(5, '0')}""").ToList();
 
-        return offsets;
+        var r = GetZones(timeZoneId).Select(i => @$"""{i.WallOffset.ToString().PadRight(5, '0')}""").ToList();
+        return r;
         //foreach (var interval in intervals)
         //{
         //    // Calculate the total offset from UTC in minutes
@@ -96,6 +154,13 @@ public class GeoIpApi
 
         //return offsets;
     }
+
+    IEnumerable<ZoneInterval> GetZones(string timeZoneId) =>
+        DateTimeZoneProviders.Tzdb[timeZoneId]
+        .GetZoneIntervals(Instant.FromUtc(2023, 1, 1, 0, 0), Instant.FromUtc(2026, 1, 1, 0, 0))
+        .Union(DateTimeZoneProviders.Bcl[timeZoneId]
+        .GetZoneIntervals(Instant.FromUtc(2023, 1, 1, 0, 0), Instant.FromUtc(2026, 1, 1, 0, 0)));
+    
 
     //public List<string> GetAbbrs(string timeZoneId)
     //{

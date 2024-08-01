@@ -528,21 +528,21 @@ public partial class FirefoxSystemBrowserInstance(
                 Starturl : 
                 $"{ProxyAddonUtil.HTTPSScheme}{Starturl}";
 
-            string loadUrl =
-                startUrl.Contains(ProxyAddonUtil.DomainLevelDelimiter) ? 
-                @$", async () => {{ 
-                        let tabs = await browser.tabs.query({{}});
-                        if (tabs.length > 1) {{
-                            await browser.tabs.remove(tabs[tabs.length - 1].id);
-                        }}
-                        browser.tabs.update({{ url:""{startUrl}"" }}); 
-                  }});" 
-                : ");";
+            //string loadUrl =
+            //    startUrl.Contains(ProxyAddonUtil.DomainLevelDelimiter) ?
+            //    @$", async () => {{ 
+            //            let tabs = await browser.tabs.query({{}});
+            //            if (tabs.length > 1) {{
+            //                await browser.tabs.remove(tabs[tabs.length - 1].id);
+            //            }}
+            //            browser.tabs.update({{ url:""{startUrl}"" }}); 
+            //      }});"
+            //    : ");";
 
             await IOtil.CreateZipAsync(pxoyextFile, new Dictionary<string, string>
             {
                 { "manifest.json", ProxyAddonUtil.GetManifest() },
-                { "background.js", ProxyAddonUtil.GetBgJs(loadUrl, UserProfile.Proxy) }
+                { "background.js", ProxyAddonUtil.GetBgJs(startUrl, UserProfile.Proxy) }
             });
         }
 

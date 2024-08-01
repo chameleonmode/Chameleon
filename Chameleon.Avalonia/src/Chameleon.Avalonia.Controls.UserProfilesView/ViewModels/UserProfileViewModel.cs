@@ -8,6 +8,7 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
+using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -22,11 +23,11 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
     [ObservableProperty]
     private UserProfile _userProfile;
     [ObservableProperty]
-    private bool _isChromeRunning;
+    private string _isChromeRunning = "False";
     [ObservableProperty]
-    private bool _isBraveRunning;
+    private string _isBraveRunning = "False";
     [ObservableProperty]
-    private bool _isFFRunning;
+    private string _isFFRunning = "False";
     [ObservableProperty]
     private bool _isShowGlyph;
     [ObservableProperty]
@@ -84,14 +85,34 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 
         EventAggregator
            .GetEvent<OpenedUserSystemBrowserEvent>()
-           .Subscribe(a => SetRunning(a, true));
+           .Subscribe(a =>
+           {
+               if (a.UserProfile.Id != UserProfile.Id)
+                   return;
+
+               SetRunning(a, true);
+           });
+
+        EventAggregator.Sub<OpenedUserSystemBrowserErrorEvent, UserProfileSystemBrowserProcessEventArgs>(a =>
+        {
+            if (a.UserProfile.Id != UserProfile.Id)
+                return;
+
+            _systemBrowserInstance = null;
+            IsForeground = false;
+            SetRunning(a, null);
+        });
 
         EventAggregator
             .GetEvent<ClosedUserSystemBrowserEvent>()
             .Subscribe(a =>
             {
+                if (a.UserProfile.Id != UserProfile.Id)
+                    return;
+
                 _systemBrowserInstance = null;
-                IsForeground = SetRunning(a, false);
+                var runnin = SetRunning(a, false);
+                IsForeground = runnin != "Error" && runnin != "False";
             });
 
         EventAggregator.GetEvent<ForegroundUserSystemBrowserEvent>().Subscribe(a =>
@@ -112,17 +133,12 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
             }
         });
     }
-
-    void SetForgroung(UserProfileSystemBrowserProcessEventArgs args)
+    string SetRunning(UserProfileSystemBrowserProcessEventArgs args, bool? running) => args.BrowserType switch
     {
-
-    }
-    bool SetRunning(UserProfileSystemBrowserProcessEventArgs args, bool running) => args.UserProfile.Id == UserProfile.Id && args.BrowserType switch
-    {
-        SystemBrowserType.Chrome => IsChromeRunning = UserProfile.IsChromeRunning = running,
-        SystemBrowserType.Firefox => IsFFRunning = UserProfile.IsFFRunning = running,
-        SystemBrowserType.Brave => IsBraveRunning = UserProfile.IsBraveRunning = running,
-        _ => false
+        SystemBrowserType.Chrome => IsChromeRunning = UserProfile.IsChromeRunning = running is null ? "Error" : running == true ? "True" : "False",
+        SystemBrowserType.Firefox => IsFFRunning = UserProfile.IsFFRunning  = running is null ? "Error" : running == true ? "True" : "False",
+        SystemBrowserType.Brave => IsBraveRunning = UserProfile.IsBraveRunning = running is null ? "Error" : running == true ? "True" : "False",
+        _ => "False"
     };
 
     [RelayCommand]

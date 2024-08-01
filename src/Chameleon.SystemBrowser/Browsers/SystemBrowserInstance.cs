@@ -18,6 +18,7 @@ public abstract class SystemBrowserInstance(
     : ISystemBrowserInstance
 {
     public event Action<ISystemBrowserLaunchOptions> OnProcessClosed;
+    public event Action<ISystemBrowserLaunchOptions> OnProcessOpenError;
 
     private readonly string exdir_prox = Guid.NewGuid().ToString();
     private readonly string exdir_nav = Guid.NewGuid().ToString();
@@ -134,7 +135,12 @@ public abstract class SystemBrowserInstance(
             await ExUtil.AsyncTryCatch(async () =>
             {
                 ipLookup = await GeoIpApi.Instance.GetGeoIp($"http://{UserProfile.Proxy.Server}", UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
-            }, (e) => Cleanup());
+            }, (e) => {
+                ToasterHelper.ShowErr(e.Message);
+                OnProcessOpenError?.Invoke(options);
+                eventAggregator.Pub<OpenedUserSystemBrowserErrorEvent>(GetArgs);
+                Cleanup();
+            });
 
             if (ipLookup == null)
                 return;
