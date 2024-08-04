@@ -20,7 +20,8 @@ namespace Chameleon.Domain.Entities
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentException();
+                    return;
+                    //throw new ArgumentException();
                 }
                 _id = value;
             }
@@ -37,7 +38,8 @@ namespace Chameleon.Domain.Entities
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentException();
+                    // throw new ArgumentException();
+                    return;
                 }
                 _folderId = value;
             }
@@ -50,7 +52,8 @@ namespace Chameleon.Domain.Entities
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentException();
+                    return;
+                    //throw new ArgumentException();
                 }
                 _creatorUserId = value;
             }

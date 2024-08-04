@@ -1,4 +1,6 @@
-﻿using Chameleon.ThirdParty.GeoIp;
+﻿using Chameleon.CT.Common.Models;
+using Chameleon.Interfaces.Settings;
+using Chameleon.ThirdParty.GeoIp;
 using Chameleon.ThirdParty.GeoIp.Models;
 using Microsoft.Playwright;
 using Newtonsoft.Json.Linq;
@@ -130,7 +132,7 @@ public abstract class SystemBrowserInstance(
         await IOtil.DeleteDExistsAsync(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath));
 
         Geoiplookup ipLookup = null;
-        if (UserProfile.Proxy != null)
+        if (BrowserDefaultLaunchSettings.Instance.Options.AutoTimezone && UserProfile.Proxy != null && UserProfile.Proxy.Server.HasAny())
         {
             await ExUtil.AsyncTryCatch(async () =>
             {
@@ -147,7 +149,7 @@ public abstract class SystemBrowserInstance(
         }
 
         await IOtil.DC(NavigatorExtMainDir);
-        await NavigatorAddon.InitializeExtension(NavigatorExtDir, ipLookup);
+        await NavigatorAddon.InitializeExtension(NavigatorExtDir, ipLookup, BrowserDefaultLaunchSettings.Instance);
 
         if (HasProxyLogin)
         {
