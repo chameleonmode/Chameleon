@@ -22,6 +22,9 @@
 		<Style Selector=":is(Button)[Tag=True]">
 			<Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}"/>
 		</Style>
+		<Style Selector=":is(Button)[Tag=Error]">
+			<Setter Property="Background" Value="{DynamicResource SystemFillColorCautionBackgroundBrush}"/>
+		</Style>
 		<Style Selector=":is(Border)[Tag=True]">
 			<Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}"/>
 		</Style>

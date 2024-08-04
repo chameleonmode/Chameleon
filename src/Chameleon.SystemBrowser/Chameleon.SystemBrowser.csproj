@@ -14,6 +14,7 @@
     <ProjectReference Include="..\Chameleon.Common\Chameleon.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Core\Chameleon.Core.csproj" />
     <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
+    <ProjectReference Include="..\Chameleon.ThirdParty\Chameleon.ThirdParty.csproj" />
   </ItemGroup>
 
 </Project>

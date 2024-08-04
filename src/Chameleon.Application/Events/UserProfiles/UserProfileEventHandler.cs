@@ -26,9 +26,9 @@ namespace Chameleon.Application.Events
                 .GetEvent<DeleteUserProfileEvent>()
                 .Subscribe(args => DeleteUserProfileEvent(args.UserProfile));
 
-            _eventAggregator
-                .GetEvent<OpenUserSystemBrowserEvent>()
-                .Subscribe(args => OnOpenUserSystemBrowser(args));
+            //_eventAggregator
+            //    .GetEvent<OpenUserSystemBrowserEvent>()
+            //    .Subscribe(args => OnOpenUserSystemBrowser(args));
 
             _eventAggregator
                 .GetEvent<UnfavoriteUserProfileEvent>()
@@ -93,34 +93,34 @@ namespace Chameleon.Application.Events
             return _userProfileService.Get(profileInfo.Id, true);
         }
 
-        private void OnOpenUserSystemBrowser(UserProfileSystemBrowserEventArgs args)
-        {
-            var profileInfo = args.UserProfile;
+        //private void OnOpenUserSystemBrowser(UserProfileSystemBrowserEventArgs args)
+        //{
+        //    var profileInfo = args.UserProfile;
 
-            try
-            {
-                var profile = GetProfile(profileInfo);
+        //    try
+        //    {
+        //        var profile = GetProfile(profileInfo);
 
-                _systemBrowserManager
-                    .Get(args.BrowserType)
-                    .Open(new SystemBrowserLaunchOptions
-                    {
-                        Url = args.Url,
-                        SignIn = args.SignIn,
-                        UserProfile = profile
-                    });
-            }
-            catch (NotSupportedException)
-            {
-                MesageBoxHelper.ShowErrorAsync(
-                    "Browser is not installed",
-                    "Please install browser first");
-            }
-            catch (UserFriendlyException ex)
-            {
-                ShowErrorDialog(ex.Title, ex.Message);
-            }
-        }
+        //        _systemBrowserManager
+        //            .Get(args.BrowserType)
+        //            .Open(new SystemBrowserLaunchOptions
+        //            {
+        //                Url = args.Url,
+        //                SignIn = args.SignIn,
+        //                UserProfile = profile
+        //            });
+        //    }
+        //    catch (NotSupportedException)
+        //    {
+        //        MesageBoxHelper.ShowErrorAsync(
+        //            "Browser is not installed",
+        //            "Please install browser first");
+        //    }
+        //    catch (UserFriendlyException ex)
+        //    {
+        //        ShowErrorDialog(ex.Title, ex.Message);
+        //    }
+        //}
 
         private static void ShowErrorDialog(string title, string text)
         {

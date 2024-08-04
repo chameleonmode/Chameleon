@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chameleon.Core.Extensions;
+using System;
 using System.IO;
 using System.Text.Json;
 
@@ -30,6 +31,9 @@ namespace Chameleon.Infrastructure.Api
 
         private void ExtractData(string prefix, string postfix)
         {
+            if (_json is null)
+                return;
+
             var startIndex = _json.IndexOf(prefix);
             if (startIndex == -1)
             {
@@ -65,7 +69,7 @@ namespace Chameleon.Infrastructure.Api
 
         private void FixNullValue()
         {
-            if (!_json.Contains("\"null\""))
+            if (!_json.HasAny() || !_json.Contains("\"null\""))
             {
                 return;
             }
@@ -76,7 +80,7 @@ namespace Chameleon.Infrastructure.Api
 
         private void FixObjectResponse()
         {
-            if (IsResultArray)
+            if (!_json.HasAny() || IsResultArray)
             {
                 return;
             }
@@ -125,7 +129,7 @@ namespace Chameleon.Infrastructure.Api
 
         private void FixWrappingQuotes()
         {
-            if (!_json.StartsWith('\"'))
+            if (!_json.HasAny() || !_json.StartsWith('\"'))
             {
                 return;
             }
@@ -137,7 +141,7 @@ namespace Chameleon.Infrastructure.Api
         private void FixZeroId()
         {
             const string invalidIdPropertyBug = "\"id\":0,";
-            if (!_json.Contains(invalidIdPropertyBug))
+            if (!_json.HasAny() || !_json.Contains(invalidIdPropertyBug))
             {
                 return;
             }
@@ -148,7 +152,7 @@ namespace Chameleon.Infrastructure.Api
 
         private void ThrowIfInvalidJson()
         {
-            if (_json.Length == 0)
+            if (!_json.HasAny() || _json.Length == 0)
             {
                 throw new InvalidDataException("Empty response");
             }

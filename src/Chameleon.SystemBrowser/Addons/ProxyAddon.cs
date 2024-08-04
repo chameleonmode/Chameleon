@@ -1,4 +1,6 @@
-﻿namespace Chameleon.SystemBrowser.Addons;
+﻿using System;
+
+namespace Chameleon.SystemBrowser.Addons;
 
 public static class ProxyAddonUtil
 {
@@ -47,9 +49,7 @@ public static class ProxyAddonUtil
       "permissions": [
         "tabs",
         "webRequest",
-        "webRequestBlocking",
-        "webRequestAuthProvider",
-        "<all_urls>"
+        "webRequestAuthProvider"
       ],
       "host_permissions": [
         "<all_urls>"
@@ -60,23 +60,47 @@ public static class ProxyAddonUtil
     }
     """;
 
-    public static string GetBgJsv3(string url, IProxySettings proxy) => """
-         chrome.webRequest.onAuthRequired.addListener((details) => {
-             return { 
-                 authCredentials: {
-         """
-                    + "username:" + $"\"{proxy.UserName}\","
-                    + "password: " + $"\"{proxy.Password}\"" +
-         """
-                 }
-             };
-         }, { urls: ['<all_urls>'] }, ['blocking']);
-         
-         """
-         + $@"
-         chrome.tabs.reload();
-        //chrome.tabs.update({{ url:""{url}"" }});
-";
+    public static string GetBgJsv3(string loadUrl, IProxySettings proxy) =>
+    $@"
+    function delay(ms) {{
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }}
+
+    chrome.webRequest.onAuthRequired.addListener((details) => {{
+        return {{ 
+            authCredentials: {{
+               username: ""{proxy.UserName}"",
+               password: ""{proxy.Password}""
+            }}
+        }};
+    }}, {{urls: ['<all_urls>'] }}, ['blocking']);
+
+    (async function(){{
+        let tabs = await chrome.tabs.query({{}});
+        for(let i = 0; i < tabs.length; i++) {{
+            chrome.tabs.reload(tabs[i].id);
+        }}
+        chrome.tabs.update({{ url:""{loadUrl}"" }}); 
+    }})();
+    ";
+    //+ $@"
+    //    function getTabInfo(callback) {{
+    //        chrome.tabs.query({{ }}, callback);
+    //    }}
+
+    //   function processTabInfo(tabs) {{
+    //        if (tabs.length > 1) {{
+    //             chrome.tabs.remove(tabs[tabs.length - 1].id);
+    //         }}
+    //         // Update the current tab with a new URL
+    //         //chrome.tabs.update(tabs[tabs.length - 1].id, {{ url: ""{url}"" }});
+    //         chrome.tabs.update({{ url:""{url}"" }});
+    //    }}
+
+    //    // Call the function to get tab information
+    //    getTabInfo(processTabInfo);
+    //";
+
     //let queryOptions = {{ active: true, lastFocusedWindow: true }};
     //chrome.tabs.query(queryOptions, ([tab]) => {{
     //  if (chrome.runtime.lastError)
@@ -85,31 +109,32 @@ public static class ProxyAddonUtil
     //  chrome.tabs.update(tab.id, {{active: true, url: ""{url}"" }});
     //}});
 
-    public static string GetBgJs(string loadUrl, IProxySettings proxy) => """
-        browser.webRequest.onAuthRequired.addListener((details) => {
-            return {
-                authCredentials: {
-        """
-                    + $"username: \"{proxy.UserName}\","
-                    + $"password: \"{proxy.Password}\"" +
-        """
-                    }
-                };
-            },
-            { urls: ['<all_urls>'] },
-            ['blocking']
-        );
-        const proxyConfig = {
-                proxyType: "manual",
-        """
-              + $"http: \"{proxy.Server}\"," +
-        """       
+    public static string GetBgJs(string loadUrl, IProxySettings proxy) => 
+    $@"
+        browser.webRequest.onAuthRequired.addListener((details) => {{
+            return {{
+                authCredentials: {{ 
+                    username: ""{proxy.UserName}"", 
+                    password: ""{proxy.Password}"" 
+                }}
+            }};
+        }},
+        {{ urls: ['<all_urls>'] }}, ['blocking']);
+
+        const proxyConfig = {{
+                proxyType: ""manual"",
+                http: ""{proxy.Server}"",
                 httpProxyAll : true,
                 autoLogin: false
-            };
-        browser.proxy.settings.set(
-            { value: proxyConfig, scope: 'regular' }
-        """
-        + loadUrl;
+        }};
+        browser.proxy.settings.set({{ value: proxyConfig, scope: 'regular' }}, 
+            async () => {{ 
+                let tabs = await browser.tabs.query({{}});
+                if (tabs.length > 1) {{
+                    await browser.tabs.remove(tabs[tabs.length - 1].id);
+                }}
+                browser.tabs.update({{ url:""{loadUrl}"" }}); 
+        }});
+    ";
 
 }

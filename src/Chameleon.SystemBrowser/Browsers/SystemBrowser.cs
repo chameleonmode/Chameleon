@@ -30,7 +30,7 @@ public abstract class SystemBrowserBase(
     {
         if (!Instances.TryGetValue(o.UserProfile.Id, out ISystemBrowserInstance browser))
         {
-            await TaskUtil.AwaitFor(() => !IsBusy, 36, 250);
+            await TaskUtil.AwaitFor(() => !IsBusy, 36, 350);
             //if (!OperatingSystem.IsMacOS() && _pollingTimer == null)
             //{
             //    _pollingTimer = new System.Timers.Timer(5000);
@@ -42,6 +42,7 @@ public abstract class SystemBrowserBase(
             {
                 browser = await InitializeBrowserAsync(o);
                 browser.OnProcessClosed += Browser_OnProcessClosed;
+                //browser.OnProcessOpenError += Browser_OnProcessOpenError;
                 Instances[o.UserProfile.Id] = browser;
 
                 _ = browser.Open();
@@ -49,8 +50,8 @@ public abstract class SystemBrowserBase(
                 if (await browser.OPtcs.Task)
                 {
                     var args = browser.GetArgs;
-                    EventAggregator.GetEvent<ForegroundUserSystemBrowserEvent>().Publish(args);
-                    EventAggregator.GetEvent<OpenedUserSystemBrowserEvent>().Publish(args);
+                    EventAggregator.Pub<ForegroundUserSystemBrowserEvent>(args);
+                    EventAggregator.Pub<OpenedUserSystemBrowserEvent>(args);
                 }
             }
             catch (Exception e)
@@ -77,6 +78,28 @@ public abstract class SystemBrowserBase(
         }
 
         return browser;
+    }
+
+    private void Browser_OnProcessOpenError(ISystemBrowserLaunchOptions o)
+    {
+        //do
+        //{
+        //    if (Instances.TryGetValue(o.UserProfile.Id, out ISystemBrowserInstance browser))
+        //    {
+        //        _ = await browser.OPtcs.Task;
+
+        //        EventAggregator
+        //           .GetEvent<ClosedUserSystemBrowserEvent>()
+        //           .Publish(browser.GetArgs);
+
+        //        Instances.Remove(o.UserProfile.Id);
+
+        //        break;
+        //    }
+
+        //    await Task.Delay(250);
+        //}
+        //while (IsBusy);
     }
 
     public virtual Task<ISystemBrowserInstance> InitializeBrowserAsync(ISystemBrowserLaunchOptions o) =>
