@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 namespace Chameleon.SystemBrowser.Addons;
 public class TimezoneAddon
 {
-    public static async Task InitializeExtension(string dir, bool ipLookup)
+    public static async Task InitializeExtension(string dir, bool ipLookup, string json)
     {
         await IOtil.DC(dir);
 
         await IOtil.WriteTextToFileAsync(
             Path.Combine(dir, "manifest.json"), Manifestv3);
         await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "worker.js"), SetWorkero(ipLookup.ToString().ToLower()));
+            Path.Combine(dir, "worker.js"), SetWorkero(ipLookup.ToString().ToLower(), json));
 
         var dataDir = Path.Combine(dir, "data");
         await IOtil.CreateDirectory(dataDir);
@@ -308,7 +308,7 @@ public class TimezoneAddon
         
         """;
 
-    public static string SetWorkero(string autoset) => $@"
+    public static string SetWorkero(string autoset, string tz) => $@"
 /* global offsets */
 self.importScripts('/data/offsets.js');
 
@@ -544,7 +544,16 @@ const onClicked = ({{menuItemId}}) => {{
   }}
 }};
 chrome.contextMenus.onClicked.addListener(onClicked);
-if({autoset}) server(false);
+{{
+if({autoset}){{
+    const {{timezone}} = {tz};
+        chrome.storage.local.set({{
+          timezone
+        }}, () => {{
+          uo().then(({{timezone, offset}}) => notify('New Timezone: ' + timezone + ' (' + offset + ')'));
+        }});
+}}
+}}
 /* FAQs & Feedback */
 {{
   const {{management, runtime: {{onInstalled, setUninstallURL, getManifest}}, storage, tabs}} = chrome;

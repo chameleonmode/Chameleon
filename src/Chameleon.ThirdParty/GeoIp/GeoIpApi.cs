@@ -25,7 +25,7 @@ public class GeoIpApi
         }
     }
 
-    public async Task<Models.Ipapi> GetIPApi(string proxyUrl, string proxyUsername = null, string proxyPassword = null)
+    public async Task<string> GetIPApi(string proxyUrl, string proxyUsername = null, string proxyPassword = null)
     {
         var handler = new HttpClientHandler
         {
@@ -46,7 +46,8 @@ public class GeoIpApi
         if (response.IsSuccessStatusCode)
         {
             string responseBody = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Models.Ipapi>(responseBody);
+            //return JsonSerializer.Deserialize<Models.Ipapi>(responseBody);
+            return responseBody;
         }
         else
         {

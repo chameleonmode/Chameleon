@@ -138,27 +138,27 @@ public abstract class SystemBrowserInstance(
     {
         await IOtil.DeleteDExistsAsync(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath));
 
-        //Ipapi ipLookup = null;
-        //if (await BrowserDefaultLaunchSettings.Instance() is BrowserDefaultLaunchSettings bdls && bdls.Options.AutoTimezone &&
-        //    UserProfile.Proxy != null && UserProfile.Proxy.Server.HasAny())
-        //{
-        //    await ExUtil.AsyncTryCatch(async () =>
-        //    {
-        //        ipLookup = await GeoIpApi.Instance.GetIPApi($"http://{UserProfile.Proxy.Server}", UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
-        //        //ipLookup = await GeoIpApi.Instance.GetGeoIp($"http://{UserProfile.Proxy.Server}", UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
-        //    }, (e) =>
-        //    {
-        //        ToasterHelper.ShowErr(e.Message);
-        //        OnProcessOpenError?.Invoke(options);
-        //        eventAggregator.Pub<OpenedUserSystemBrowserErrorEvent>(GetArgs);
-        //        Cleanup();
-        //    });
+        string ipLookup = null;
+        if (await BrowserDefaultLaunchSettings.Instance() is BrowserDefaultLaunchSettings bdls && bdls.Options.AutoTimezone &&
+            UserProfile.Proxy != null && UserProfile.Proxy.Server.HasAny())
+        {
+            await ExUtil.AsyncTryCatch(async () =>
+            {
+                ipLookup = await GeoIpApi.Instance.GetIPApi($"http://{UserProfile.Proxy.Server}", UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
+                //ipLookup = await GeoIpApi.Instance.GetGeoIp($"http://{UserProfile.Proxy.Server}", UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
+            }, (e) =>
+            {
+                ToasterHelper.ShowErr(e.Message);
+                OnProcessOpenError?.Invoke(options);
+                eventAggregator.Pub<OpenedUserSystemBrowserErrorEvent>(GetArgs);
+                Cleanup();
+            });
 
-        //    if (ipLookup == null)
-        //        return;
-        //}
+            if (ipLookup == null)
+                return;
+        }
         await IOtil.DC(TzExtMainDir);
-        await TimezoneAddon.InitializeExtension(TZrExtDir, await BrowserDefaultLaunchSettings.Instance() is BrowserDefaultLaunchSettings bdls && bdls.Options.AutoTimezone);
+        await TimezoneAddon.InitializeExtension(TZrExtDir, ipLookup != null, ipLookup);
 
         await IOtil.DC(NavigatorExtMainDir);
         await NavigatorAddon.InitializeExtension(NavigatorExtDir, await BrowserDefaultLaunchSettings.Instance());
