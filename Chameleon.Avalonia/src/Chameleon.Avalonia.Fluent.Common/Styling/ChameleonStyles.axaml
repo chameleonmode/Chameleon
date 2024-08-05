@@ -213,7 +213,7 @@
                                               Padding="0 4"
                                               Margin="0 -15 0 3"
                                               DockPanel.Dock="Bottom"
-                                              IsVisible="True">
+                                              IsVisible="False">
 								<ContentPresenter.Styles>
 									<Style Selector="TextBlock">
 										<Setter Property="TextWrapping" Value="Wrap" />
@@ -226,6 +226,7 @@
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Center">
 								<ContentPresenter Name="Icon"
+												  ToolTip.Tip="{TemplateBinding Content}"
                                                   Content="{Binding TemplateSettings.Icon, RelativeSource={RelativeSource TemplatedParent}}" />
 							</Viewbox>
 

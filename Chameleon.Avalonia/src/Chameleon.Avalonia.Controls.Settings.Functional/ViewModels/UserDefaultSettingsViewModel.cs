@@ -43,7 +43,7 @@ public partial class UserDefaultSettingsViewModel
     public bool HasSelectedItems => SelectedCount > 0;
 
     [ObservableProperty]
-    BrowserDefaultLaunchSettings browserDefaultLaunchSettings = BrowserDefaultLaunchSettings.Instance;
+    BrowserDefaultLaunchSettings browserDefaultLaunchSettings;
 
     public UserDefaultSettingsViewModel(
         IUserDefaultSettingsService userDefaultsSettingsService,
@@ -70,6 +70,7 @@ public partial class UserDefaultSettingsViewModel
             _mapping = new ObservableCollection<IUserDefaultSetting, UserDefaultSettingViewModel>(
                 userSettings, userSetting => new UserDefaultSettingViewModel(EventAggregator, userSetting, _userDefaultsSettingsService));
 
+            BrowserDefaultLaunchSettings = await BrowserDefaultLaunchSettings.Instance();
             OnPropertyChanged(nameof(ViewModels));
         }
     }
@@ -153,7 +154,7 @@ public partial class UserDefaultSettingsViewModel
     [RelayCommand]
     private async Task SaveLaunchSettings()
     {
-        await BrowserDefaultLaunchSettings.Instance.Save();
+        await BrowserDefaultLaunchSettings.Save();
     }
 
     private void OnSelectedChanged()

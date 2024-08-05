@@ -1,33 +1,43 @@
 ﻿using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.Settings;
-using System.Runtime;
+using Chameleon.Common.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Chameleon.CT.Common.Models;
 public partial class BrowserDefaultLaunchSettings : ObservableObject, IBrowserDefaultLaunchSettings
 {
-    public Config Config { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public object[] Excluded { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public Headers Headers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public object[] IpRules { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public BrowserProfile Profile { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public const string Filename = "defaultBrowserSettings.json";
+    [JsonIgnore]
+    private static readonly JsonSerializerOptions options = new JsonSerializerOptions
+    {
+        Converters = 
+        { 
+            new DynamicJsonConverter<Options, IOptions>(),
+            new DynamicJsonConverter<Protectkbfingerprint, IProtectkbfingerprint>()
+        }
+    };
+    public Config Config { get; set; }
+    public object[] Excluded { get; set; }
+    public Headers Headers { get; set; }
+    public object[] IpRules { get; set; }
+    public BrowserProfile Profile { get; set; }
     public IOptions Options { get; set; } = new Options();
-    public Whitelist Whitelist { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public Whitelist Whitelist { get; set; }
 
     //make singleton
     private static BrowserDefaultLaunchSettings instance;
-    private BrowserDefaultLaunchSettings() { }
-    public static BrowserDefaultLaunchSettings Instance
+    //private BrowserDefaultLaunchSettings() { }
+    public static async Task<BrowserDefaultLaunchSettings> Instance()
     {
-        get
-        {
+        
             if (instance == null)
             {
                 instance = new BrowserDefaultLaunchSettings();
                 // Call the async initialization method
-                instance.InitializeAsync().Wait();
+                await instance.InitializeAsync();
             }
             return instance;
-        }
     }
 
 
@@ -35,14 +45,12 @@ public partial class BrowserDefaultLaunchSettings : ObservableObject, IBrowserDe
     private async Task InitializeAsync()
     {
         // Load settings from a file or a remote source
-       var settingsFilePath = Path.Combine(
-           ContainerServiceHelper.Resolve<IApplicationEnvironment>().ApplicationDataFolderPath,
-           "defaultBrowserLaunchSettings.json");
-        if (!File.Exists(settingsFilePath))
-            return;
         // var settings = await LoadSettingsFromFileAsync("settings.json");
-        var json = await Task.Run(() => File.ReadAllText(settingsFilePath));
-        var settings = System.Text.Json.JsonSerializer.Deserialize<BrowserDefaultLaunchSettings>(json);
+        var json = await ConfigHelper.ReadFromAppDir(Filename);
+        if (json == null)
+            return;
+
+        var settings = JsonSerializer.Deserialize<BrowserDefaultLaunchSettings>(json, options);
         // Apply settings to properties
         // this.Config = settings.Config;
         // this.Excluded = settings.Excluded;
@@ -53,14 +61,10 @@ public partial class BrowserDefaultLaunchSettings : ObservableObject, IBrowserDe
         // this.Whitelist = settings.Whitelist;
     }
 
-    public async Task Save()
+    public static async Task Save()
     {
         // Save settings to a file or a remote source
-        var settingsFilePath = Path.Combine(
-            ContainerServiceHelper.Resolve<IApplicationEnvironment>().ApplicationDataFolderPath,
-            "defaultBrowserLaunchSettings.json");
-        var json = System.Text.Json.JsonSerializer.Serialize(this);
-        await Task.Run(() => File.WriteAllText(settingsFilePath, json));
+        await ConfigHelper.WriteToAppDir(Filename, JsonSerializer.Serialize(await Instance(), options));
     }
 }
 
@@ -75,7 +79,7 @@ public partial class Options : ObservableObject, IOptions
     [ObservableProperty]
     private bool blockCSSExfil;
     [ObservableProperty]
-    private bool disableWebRTC;
+    private bool disableWebRTC = true;
     [ObservableProperty]
     private bool firstPartyIsolate;
     [ObservableProperty]
@@ -113,8 +117,6 @@ public partial class Options : ObservableObject, IOptions
     private bool spoofWebGLFingerprint = true;
     [ObservableProperty]
     private bool spoofWebGPUFingerprint = true;
-    [ObservableProperty]
-    private bool disableWebRtc = true;
 }
 
 public partial class Protectkbfingerprint : ObservableObject, IProtectkbfingerprint
@@ -122,5 +124,5 @@ public partial class Protectkbfingerprint : ObservableObject, IProtectkbfingerpr
     [ObservableProperty]
     private bool enabled;
     [ObservableProperty]
-    int delay;
+    int delay = 1;
 }

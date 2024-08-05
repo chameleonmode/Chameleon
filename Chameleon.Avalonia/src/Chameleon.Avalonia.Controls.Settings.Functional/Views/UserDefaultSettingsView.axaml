@@ -59,7 +59,7 @@
 								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofMediaDevices}" />
 							<CheckBox
 								Content="Disable WebRtc"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.DisableWebRtc}" />
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.DisableWebRTC}" />
 							<!--<CheckBox Content="Do Not Track"
 									  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.Tracking}" />
 							<CheckBox Content="Flash"

@@ -77,7 +77,6 @@ public interface IOptions
     bool CookieNotPersistent { get; set; }
     string CookiePolicy { get; set; }
     bool BlockMediaDevices { get; set; }
-    bool DisableWebRtc { get; set; }
     bool BlockCSSExfil { get; set; }
     bool DisableWebRTC { get; set; }
     bool FirstPartyIsolate { get; set; }

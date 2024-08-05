@@ -75,7 +75,7 @@ public static class ProxyAddonUtil
         }};
     }}, {{urls: ['<all_urls>'] }}, ['blocking']);
    (async function(){{
-    await chrome.tabs.update({{ url:""{loadUrl}"" }}); 
+    //await chrome.tabs.update({{ url:""{loadUrl}"" }}); 
      let tabs = await chrome.tabs.query({{}});
      for(let i = 0; i < tabs.length; i++) {{
         await chrome.tabs.reload(tabs[i].id);

@@ -7,7 +7,7 @@ namespace Chameleon.SystemBrowser.Addons;
 
 public static partial class NavigatorAddon
 {
-    public static async Task InitializeExtension(string dir, Geoiplookup ipLookup, IBrowserDefaultLaunchSettings browserSettings)
+    public static async Task InitializeExtension(string dir, IBrowserDefaultLaunchSettings browserSettings)
     {
         await IOtil.DC(dir);
 
@@ -16,7 +16,7 @@ public static partial class NavigatorAddon
         await IOtil.WriteTextToFileAsync(
             Path.Combine(dir, "background.js"), SetBackgroundo());
         await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "injector.js"), SetInjecto(ipLookup, browserSettings));
+            Path.Combine(dir, "injector.js"), SetInjecto(browserSettings));
         await IOtil.WriteTextToFileAsync(
             Path.Combine(dir, "content.js"), SetContnto());
 
@@ -48,14 +48,13 @@ public static partial class NavigatorAddon
         "optional_permissions": [
           "privacy"
         ],
-        "content_scripts": [
-            {
-              "matches": ["http://*/*", "https://*/*"],
-              "all_frames": true,
-              "js": ["injector.js"],
-              "run_at": "document_start"
-            }
-        ],
+        "content_scripts": [{
+           "matches":["*://*/*"],
+           "match_about_blank": true,
+           "all_frames": true,
+           "js": ["injector.js"],
+           "run_at": "document_start"
+        }],
         "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
     }
     """;
@@ -68,12 +67,13 @@ public static partial class NavigatorAddon
         ";
     }
 
-    public static string SetInjecto(Geoiplookup? ipLookup, IBrowserDefaultLaunchSettings browserSettings)
+    public static string SetInjecto(IBrowserDefaultLaunchSettings browserSettings)
     {
         //string randObjName = RemoveNumbersRegex().Replace(Guid.NewGuid().ToString().Replace("-", ""), "");
         //string os = $@"""platform"": '{(!AddonsUtil.IMac ? "Win32" : "MacIntel")}'";
 
-        string tz = browserSettings.Options.AutoTimezone ? ipLookup?.timezone ?? "default" : "default";
+        string tz = "default";
+        //string tz = browserSettings.Options.AutoTimezone ? ipLookup?.timezone ?? "default" : "default";
 
         //if (ipLookup != null)
         //{
@@ -94,13 +94,15 @@ public static partial class NavigatorAddon
         //['windows', 'macOS', 'linux', 'iOS', 'android']
 
         //string cs = $@"CHAMELEON_SPOOF.set(spoofContext, {{ {os}{tz} }});";
+        //{Timezone_Moment}
+           // {Timezone}
         return $@"
         //imports
-        {Timezone_Moment}
+      
         {Generator}
         {Navigator}
         {Quirks}
-        {Timezone}
+    
         {AudioContext}
         {ClientRect}
         {Font}
@@ -128,7 +130,7 @@ class Injector {{
         this.settings = {{
             options: {{
                 blockMediaDevices: {browserSettings.Options.BlockMediaDevices.ToString().ToLower()},
-                disableWebRtc: {browserSettings.Options.DisableWebRtc.ToString().ToLower()},
+                disableWebRtc: {browserSettings.Options.DisableWebRTC.ToString().ToLower()},
                 blockCSSExfil: {browserSettings.Options.BlockCSSExfil.ToString().ToLower()},
                 limitHistory: {browserSettings.Options.LimitHistory.ToString().ToLower()},
                 protectKBFingerprint: {{
@@ -156,20 +158,20 @@ class Injector {{
         this.enabled = true;
         this.randObjName = randObjName;
 
-        if (this.settings.options.timeZone != 'default') {{
-          let tz = this.settings.options.timeZone;
-
-          if (tz === 'ip') {{
-            tz = tempStore.ipInfo.tz;
-          }}
-
-          this.spoof.metadata['timezone'] = {{
-            locale: 'en-US',
-            zone: moment.tz.zone(tz),
-          }};
-
-          this.updateInjectionData(timezone);
-        }}
+        //if (this.settings.options.timeZone != 'default') {{
+        //  let tz = this.settings.options.timeZone;
+        //
+        //  if (tz === 'ip') {{
+        //    tz = tempStore.ipInfo.tz;
+        //  }}
+        //
+        //  this.spoof.metadata['timezone'] = {{
+        //    locale: 'en-US',
+        //    zone: moment.tz.zone(tz),
+        //  }};
+        //
+        //  this.updateInjectionData(timezone);
+        //}}
 
         // get real profile
         let profileId = '';
@@ -1283,12 +1285,13 @@ class Injector {{
     
        // modify CSS2Properties fontFamily
        // In Firefox, the fontFamily property is located here instead of CSSStyleDeclaration
+try{
        Object.defineProperty(spoofContext.CSSStyleDeclaration.prototype, ""fontFamily"", {
          set: function fontFamily(f) {
            this[""font-family""] = f ? getWhitelistFonts(f) : f;
          }
        });
-    
+    }catch(e){}
        // modify CSSStyleDeclaration cssText
        {
          let obj = Object.getOwnPropertyDescriptor(spoofContext.CSSStyleDeclaration.prototype, 'cssText');

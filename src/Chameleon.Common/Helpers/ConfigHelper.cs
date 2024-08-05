@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using Chameleon.Interfaces.Environments;
+using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
@@ -46,5 +47,20 @@ public static class ConfigHelper
     public static string? GetSetting([CallerMemberName] string? propertyName = null)
     {
         return ConfigurationManager.AppSettings[propertyName];
+    }
+
+    public static Task WriteToAppDir(string fname, string content)
+    {
+        var settingsFilePath = Path.Combine(ContainerServiceHelper.Resolve<IApplicationEnvironment>().ApplicationDataFolderPath, fname);
+        return File.WriteAllTextAsync(settingsFilePath, content);
+    }
+
+    public static Task<string> ReadFromAppDir(string fname)
+    {
+        var settingsFilePath = Path.Combine(ContainerServiceHelper.Resolve<IApplicationEnvironment>().ApplicationDataFolderPath, fname);
+        if (!File.Exists(settingsFilePath))
+            return null;
+
+        return File.ReadAllTextAsync(settingsFilePath);
     }
 }
