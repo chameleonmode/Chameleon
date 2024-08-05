@@ -42,6 +42,13 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     private readonly IToastNotificationService _toastNotificationService;
     private readonly ISystemBrowserManager _systemBrowserManager;
 
+    private bool _isChangedProperty;
+
+    [ObservableProperty]
+    private UserProfilesView.ViewModels.UserProfileViewModel _profileVM;
+    [ObservableProperty]
+    private bool _isSaving;
+
     public AvaloniaList<CountryBindable> Countries { get; } = [];       
     public AvaloniaList<UserProfilePersonBindable> Persons { get; } = [];
     public AvaloniaList<UserProfileBusinessBindable> Businesses { get; } = [];
@@ -52,6 +59,20 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     public bool HasNoBusinessItems => Businesses?.Count > 0;
     public bool HasNoAddressesItems => Addresses?.Count > 0;
     public bool HasNoLoginsItems => Logins?.Count > 0;
+    public int UserProfileId => _userProfile?.Id ?? 0;
+
+    private int _selectedTadIndex;
+    public int SelectedTadIndex
+    {
+        get => _selectedTadIndex;
+        set
+        {
+            if (SetProperty(ref _selectedTadIndex, value))
+            {
+                Discard();
+            }
+        }
+    }
 
     public UserProfileIdentityViewModel(
         IMapper mapper,
@@ -99,7 +120,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
         EventAggregator
             .GetEvent<DeleteUserProfileEvent>()
-            .Subscribe(OnDeleteUserProfileEvent);
+            .Subscribe(a=> NavigationService.PopAsync());
 
         CommandMap["AddPerson"] = AddPerson;
         CommandMap["AddBusiness"] = OnAddBusiness;
@@ -132,28 +153,10 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         Title = UserProfileModel.Title;
     }
 
-    private void OnDeleteUserProfileEvent(UserProfileEventArgs args)
-    {
-        NavigationService.PopAsync();
-    }
-
     private void OpenUserProfileIdentityTab(UserProfileIdentityTab userProfileIdentityTab)
     {
         SelectedTadIndex = (int)userProfileIdentityTab;
         OnPropertyChanged(nameof(SelectedTadIndex));
-    }
-
-    private int _selectedTadIndex;
-    public int SelectedTadIndex
-    {
-        get => _selectedTadIndex;
-        set
-        {
-            if (SetProperty(ref _selectedTadIndex, value))
-            {
-                Discard();
-            }
-        }
     }
 
     [RelayCommand]
@@ -222,9 +225,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
     #region UserProfile
 
-    [ObservableProperty]
-    private UserProfilesView.ViewModels.UserProfileViewModel _profileVM;
-
     private UserProfile _userProfile;
     public UserProfile UserProfile
     {
@@ -238,8 +238,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         }
     }
 
-    public int UserProfileId => _userProfile?.Id ?? 0;
-
     private UserProfileBindable _userProfileModel;
     public UserProfileBindable UserProfileModel
     {
@@ -248,23 +246,10 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         {
             if (SetProperty(ref _userProfileModel, value))
             {
-                _userProfileModel.ChangedProperty += UserProfileModel_ChangedProperty;
+                _userProfileModel.ChangedProperty += (s,v) => _isChangedProperty = v;
                 SyncBtnVisibilityChange();
             }
         }
-    }
-    private void UserProfileModel_ChangedProperty(object sender, bool value)
-    {
-        _isChangedProperty = value;
-    }
-
-    private bool _isChangedProperty;
-
-    private bool _isSaving;
-    public bool IsSaving
-    {
-        get => _isSaving;
-        private set => SetProperty(ref _isSaving, value);
     }
 
     [RelayCommand]
@@ -275,7 +260,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             return;
 
         IsSaving = true;
-        //UserProfileModel.YoutubeSettings.IsChanged = false;
         UserProfile userProfile = null;
 
         DispatcherService.InvokeOnUiThreadAsync(() =>

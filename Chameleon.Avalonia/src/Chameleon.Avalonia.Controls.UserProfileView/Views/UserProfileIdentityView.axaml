@@ -134,12 +134,14 @@
 						<afv:HeaderdInputFieldsControl Title="NOTES"
 													   Text="{Binding UserProfileModel.Notes, FallbackValue=Notes}" />
 
-						<afv:HeaderdInputFieldsControl Title="CANVAS VALUE"
-													   Text="{Binding UserProfileModel.WebBrowser.Canvas, FallbackValue=Canvas}" />
+						<!--<afv:HeaderdInputFieldsControl Title="CANVAS VALUE"
+													   Text="{Binding UserProfileModel.WebBrowser.Canvas, FallbackValue=Canvas}" />-->
 
 
-						<TextBlock Text="PROFILE ITEM" />
+						<!--<TextBlock Text="BROWSER SPOOF SETTINGS" />
 						<UniformGrid>
+							<CheckBox Content="Audio Context"
+							  IsChecked="{Binding Path=UserProfileModel.WebBrowser.AudioContext}" />
 							<CheckBox Content="Web RTC off"
 									  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.WebRTC}" />
 							<CheckBox Content="Web GL off"
@@ -148,7 +150,7 @@
 									  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.Tracking}" />
 							<CheckBox Content="Flash"
 									  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.Flash}" />
-						</UniformGrid>
+						</UniformGrid>-->
 
 						<!--
 						TODO: theres no current setting for this so its confusing

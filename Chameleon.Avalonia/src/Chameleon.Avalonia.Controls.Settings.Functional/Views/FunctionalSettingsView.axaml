@@ -98,7 +98,7 @@
 				Content="Proxy"
 				Tag="{StaticResource Proxy}"/>
 			<TabStripItem
-				Content="Default Home Pages"
+				Content="Default Launch Settings"
 				Tag="{StaticResource DefaultSettingsPageIcon}"/>
 			<TabStripItem 
 				Content="Phone Verification"

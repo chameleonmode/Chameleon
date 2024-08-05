@@ -13,65 +13,130 @@
 
 	</UserControl.Resources>
 	<Border Padding="20">
-		<afv:ChameleonContentControl Title="Saved Pages"
-									   TitleDescription="Select and edit default saved pages">
-			<afv:ChameleonContentControl.TitleContent>
-				<ui:CommandBar DefaultLabelPosition="Right"
-							   HorizontalAlignment="Right">
-					<ui:CommandBar.PrimaryCommands>
-						<ui:CommandBarButton IconSource="Save"
-											 Label="Save"
-											 Command="{Binding SaveCommand}"/>
-						<ui:CommandBarButton IconSource="Add"
-											 Label="New"
-											 Command="{Binding CreateNewDefaultSettingsCommand}"/>
-						<ui:CommandBarButton IconSource="Page"
-											 Label="Add pages"
-											 Command="{Binding BulkAddPagesCommand}"/>
-					</ui:CommandBar.PrimaryCommands>
-				</ui:CommandBar>
-			</afv:ChameleonContentControl.TitleContent>
-			<afv:ChameleonContentControl.Header>
-				<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
-					<HeaderedContentControl.Header>
-						<Button Theme="{StaticResource SvgIconTextButton}"
-								Content="delete"
-								Tag="Delete"
-								Margin="3 0 0 0"
-								Command="{Binding RemoveSelectedItemsCommand}" />
-					</HeaderedContentControl.Header>
-				</HeaderedContentControl>
-			</afv:ChameleonContentControl.Header>
-			<afv:ChameleonContentControl.Content>
-				<Panel>
-					<ListBox ItemsSource="{Binding ViewModels}">
-						<ListBox.ItemTemplate>
-							<DataTemplate>
-								<Grid Margin="{StaticResource ChameleonInnerControlMargin}"
-									  ColumnDefinitions="Auto,*,Auto">
-									<CheckBox Grid.Column="0"
-											  IsChecked="{Binding IsChecked}"/>
-									<TextBox Grid.Column="1"
-											  Margin="{StaticResource ChameleonInnerControlMargin}"
-											 Text="{Binding DefaultUrl}"  />
-									<Button Theme="{DynamicResource TransparentButton}"
-											Grid.Column="2"
-											 Margin="{StaticResource ChameleonInnerControlMargin}"
-											Content="Delete"
-											 Classes="accent"
-											Command="{Binding DeleteDefaultSettingsCommand}">
-										<ui:SymbolIcon Symbol="Delete" />
-									</Button>
-								</Grid>
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-				</Panel>
-			</afv:ChameleonContentControl.Content>
-
-			<afv:ChameleonContentControl.Footer>
-
-			</afv:ChameleonContentControl.Footer>
-		</afv:ChameleonContentControl>
+		<StackPanel>
+			<afv:ChameleonContentControl Title="Default Anonymity Settings"
+				   TitleDescription="Select and edit default launch setting">
+				<afv:ChameleonContentControl.TitleContent>
+					<ui:CommandBar DefaultLabelPosition="Right"
+								   HorizontalAlignment="Right">
+						<ui:CommandBar.PrimaryCommands>
+							<ui:CommandBarButton IconSource="Save"
+												 Label="Save"
+												 Command="{Binding SaveLaunchSettingsCommand}"/>
+						</ui:CommandBar.PrimaryCommands>
+					</ui:CommandBar>
+				</afv:ChameleonContentControl.TitleContent>
+				
+				<afv:ChameleonContentControl.Content>
+					<StackPanel>
+						<UniformGrid Columns="2">
+							<CheckBox
+								Content="Block CSS Exfil"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.BlockCSSExfil}" />
+							<CheckBox
+								Content="Block Media Devices"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.BlockMediaDevices}" />
+							<CheckBox
+								Content="Spoof Canvas Fingerprint"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofCanvasFingerprint}" />
+							<CheckBox
+								Content="Spoof WebGl Fingerprint"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofWebGLFingerprint}" />
+							<CheckBox
+								Content="Spoof WebGPU Fingerprint"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofWebGPUFingerprint}" />
+							<CheckBox
+								Content="Spoof Audio Context"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofAudioContext}" />
+							<CheckBox
+								Content="Spoof Client Rects"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofClientRects}" />
+							<CheckBox
+								Content="Spoof Font Fingerprint"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofFontFingerprint}" />
+							<CheckBox
+								Content="Spoof Media Devices"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofMediaDevices}" />
+							<CheckBox
+								Content="Disable WebRtc"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.DisableWebRTC}" />
+							<!--<CheckBox Content="Do Not Track"
+									  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.Tracking}" />
+							<CheckBox Content="Flash"
+									  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.Flash}" />-->
+							<CheckBox
+								Content="Auto Timezone"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.AutoTimezone}" />
+							<CheckBox
+								Content="Limit History"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.LimitHistory}" />
+							<CheckBox
+								Content="Protect Keyboad Fingerprint"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.ProtectKBFingerprint.Enabled}" />
+							<CheckBox
+								Content="Protect Window Name"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.ProtectWinName}" />
+						</UniformGrid>
+					</StackPanel>
+				</afv:ChameleonContentControl.Content>
+			</afv:ChameleonContentControl>
+			
+			<afv:ChameleonContentControl Title="Default Home Pages"
+							   TitleDescription="Select and edit default saved pages">
+				<afv:ChameleonContentControl.TitleContent>
+					<ui:CommandBar DefaultLabelPosition="Right"
+								   HorizontalAlignment="Right">
+						<ui:CommandBar.PrimaryCommands>
+							<ui:CommandBarButton IconSource="Add"
+												 Label="New"
+												 Command="{Binding CreateNewDefaultSettingsCommand}"/>
+							<ui:CommandBarButton IconSource="Page"
+												 Label="Add pages"
+												 Command="{Binding BulkAddPagesCommand}"/>
+							<ui:CommandBarButton IconSource="Save"
+												 Label="Save"
+												 Command="{Binding SaveCommand}"/>
+						</ui:CommandBar.PrimaryCommands>
+					</ui:CommandBar>
+				</afv:ChameleonContentControl.TitleContent>
+				<afv:ChameleonContentControl.Header>
+					<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
+						<HeaderedContentControl.Header>
+							<Button Theme="{StaticResource SvgIconTextButton}"
+									Content="delete"
+									Tag="Delete"
+									Margin="3 0 0 0"
+									Command="{Binding RemoveSelectedItemsCommand}" />
+						</HeaderedContentControl.Header>
+					</HeaderedContentControl>
+				</afv:ChameleonContentControl.Header>
+				<afv:ChameleonContentControl.Content>
+					<Panel>
+						<ListBox ItemsSource="{Binding ViewModels}">
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Grid Margin="{StaticResource ChameleonInnerControlMargin}"
+										  ColumnDefinitions="Auto,*,Auto">
+										<CheckBox Grid.Column="0"
+												  IsChecked="{Binding IsChecked}"/>
+										<TextBox Grid.Column="1"
+												  Margin="{StaticResource ChameleonInnerControlMargin}"
+												 Text="{Binding DefaultUrl}"  />
+										<Button Theme="{DynamicResource TransparentButton}"
+												Grid.Column="2"
+												 Margin="{StaticResource ChameleonInnerControlMargin}"
+												Content="Delete"
+												 Classes="accent"
+												Command="{Binding DeleteDefaultSettingsCommand}">
+											<ui:SymbolIcon Symbol="Delete" />
+										</Button>
+									</Grid>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</Panel>
+				</afv:ChameleonContentControl.Content>
+			</afv:ChameleonContentControl>
+		</StackPanel>
 	</Border>
 </UserControl>

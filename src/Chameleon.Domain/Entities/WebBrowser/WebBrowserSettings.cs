@@ -23,7 +23,8 @@ namespace Chameleon.Domain.Entities
             {
                 if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(Canvas), "value should be > 0");
+                    //throw new ArgumentOutOfRangeException(nameof(Canvas), "value should be > 0");
+                    return;
                 }
                 _canvas = value;
             }
@@ -44,7 +45,8 @@ namespace Chameleon.Domain.Entities
 
                 if (value.Value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(UserAgentId), "value should be > 0");
+                    //throw new ArgumentOutOfRangeException(nameof(UserAgentId), "value should be > 0");
+                    return;
                 }
 
                 if (UserAgent != null && UserAgent.Id != value.Value)

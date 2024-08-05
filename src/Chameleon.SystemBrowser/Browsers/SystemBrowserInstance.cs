@@ -1,4 +1,6 @@
-﻿using Chameleon.ThirdParty.GeoIp;
+﻿using Chameleon.CT.Common.Models;
+using Chameleon.Interfaces.Settings;
+using Chameleon.ThirdParty.GeoIp;
 using Chameleon.ThirdParty.GeoIp.Models;
 using Microsoft.Playwright;
 using Newtonsoft.Json.Linq;
@@ -22,7 +24,9 @@ public abstract class SystemBrowserInstance(
 
     private readonly string exdir_prox = Guid.NewGuid().ToString();
     private readonly string exdir_nav = Guid.NewGuid().ToString();
+    private readonly string exdir_tz = Guid.NewGuid().ToString();
     private readonly List<IntPtr> winEventHooks = [];
+    private List<string> Extensions => [ProxyExtDir, NavigatorExtDir, TZrExtDir];
 
 
     private U32.WinEventDelegate winEventsCaptureDelegate;
@@ -53,6 +57,11 @@ public abstract class SystemBrowserInstance(
 
     public string NavigatorExtMainDir =>
         Path.Combine(BrowserProfileFolderPath, "Chameleonavigator");
+
+    public string TzExtMainDir =>
+        Path.Combine(BrowserProfileFolderPath, "ChameleonTZ");
+    public string TZrExtDir =>
+        Path.Combine(TzExtMainDir, exdir_tz);
 
     public IUserProfile UserProfile =>
         options.UserProfile;
@@ -129,13 +138,16 @@ public abstract class SystemBrowserInstance(
     {
         await IOtil.DeleteDExistsAsync(ProxyAddonUtil.ProxyExtDir(BrowserProfileFolderPath));
 
-        Geoiplookup ipLookup = null;
-        if (UserProfile.Proxy != null)
+        string ipLookup = null;
+        if (await BrowserDefaultLaunchSettings.Instance() is BrowserDefaultLaunchSettings bdls && bdls.Options.AutoTimezone &&
+            UserProfile.Proxy != null && UserProfile.Proxy.Server.HasAny())
         {
             await ExUtil.AsyncTryCatch(async () =>
             {
-                ipLookup = await GeoIpApi.Instance.GetGeoIp($"http://{UserProfile.Proxy.Server}", UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
-            }, (e) => {
+                ipLookup = await GeoIpApi.Instance.GetIPApi($"http://{UserProfile.Proxy.Server}", UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
+                //ipLookup = await GeoIpApi.Instance.GetGeoIp($"http://{UserProfile.Proxy.Server}", UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
+            }, (e) =>
+            {
                 ToasterHelper.ShowErr(e.Message);
                 OnProcessOpenError?.Invoke(options);
                 eventAggregator.Pub<OpenedUserSystemBrowserErrorEvent>(GetArgs);
@@ -145,9 +157,11 @@ public abstract class SystemBrowserInstance(
             if (ipLookup == null)
                 return;
         }
+        await IOtil.DC(TzExtMainDir);
+        await TimezoneAddon.InitializeExtension(TZrExtDir, ipLookup != null, ipLookup);
 
         await IOtil.DC(NavigatorExtMainDir);
-        await NavigatorAddon.InitializeExtension(NavigatorExtDir, ipLookup);
+        await NavigatorAddon.InitializeExtension(NavigatorExtDir, await BrowserDefaultLaunchSettings.Instance());
 
         if (HasProxyLogin)
         {
@@ -438,7 +452,7 @@ public abstract class SystemBrowserInstance(
             args.Add($"--load-extension=\"{exts}\"");
        
         //if(!IsMao)
-            args.Add($"about:blank");
+            args.Add($"{Starturl}");
         
         return string.Join(" ", args);
     }
@@ -446,11 +460,11 @@ public abstract class SystemBrowserInstance(
     public virtual string GetLoadExtensionsArgument()
     {
         List<string> exts = [];
-        if (Directory.Exists(ProxyExtDir))
-            exts.Add(ProxyExtDir);
-
-        if (Directory.Exists(NavigatorExtDir))
-            exts.Add(NavigatorExtDir);
+        foreach (var dir in Extensions)
+        {
+            if (Directory.Exists(dir))
+                exts.Add(dir);
+        }
 
         if (Directory.Exists(BrowserExtensionsFolderPath))
             exts.AddRange(Directory.GetDirectories(BrowserExtensionsFolderPath));

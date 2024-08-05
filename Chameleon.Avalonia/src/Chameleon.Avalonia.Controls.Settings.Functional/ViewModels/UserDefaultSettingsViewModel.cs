@@ -1,19 +1,56 @@
-﻿namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
+﻿using Chameleon.CT.Common.Models;
+
+namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
 public partial class UserDefaultSettingsViewModel
        : SubPageViewModelBase
        , IUserDefaultSettingsViewModel
 {
+    private const char BulkAddSeparator = ',';
+
     private readonly IBulkAddPagesPopupViewModel _bulkAddPagesPopupViewModel;
     private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
+
     private ObservableCollection<IUserDefaultSetting, UserDefaultSettingViewModel> _mapping;
+    private List<UserDefaultSettingViewModel> _selectedDefaultSetting;
+
+    private ObservableCollectionView<UserDefaultSettingViewModel> _viewModels;
+    public ObservableCollectionView<UserDefaultSettingViewModel> ViewModels
+    {
+        get
+        {
+            if (_viewModels == null && _mapping != null)
+            {
+                _viewModels = new ObservableCollectionView<UserDefaultSettingViewModel>(_mapping);
+            }
+            return _viewModels;
+        }
+    }
+    
+    private int _selectedCount;
+    public int SelectedCount
+    {
+        get => _selectedCount;
+        set
+        {
+            if (SetProperty(ref _selectedCount, value))
+            {
+                OnPropertyChanged(nameof(HasSelectedItems));
+            }
+        }
+    }
+
+    public bool HasSelectedItems => SelectedCount > 0;
+
+    [ObservableProperty]
+    BrowserDefaultLaunchSettings browserDefaultLaunchSettings;
 
     public UserDefaultSettingsViewModel(
         IUserDefaultSettingsService userDefaultsSettingsService,
         IBulkAddPagesPopupViewModel bulkAddPagesPopupView
         )
     {        
-        Title = "Default Home Pages";
+        Title = "Default Browser Settings";
 
         _userDefaultsSettingsService = userDefaultsSettingsService;
         _bulkAddPagesPopupViewModel = bulkAddPagesPopupView;
@@ -21,19 +58,24 @@ public partial class UserDefaultSettingsViewModel
         EventAggregator
            .GetEvent<SelectedUserDefaultSettingEvent>()
            .Subscribe(_ => OnSelectedChanged());
-
-
     }
     public override async Task InitAsync(object? param)
     {
         await base.InitAsync(param);
 
         if (!Loaded)
-            OnAuthenticated();
+        {
+            var userSettings = _userDefaultsSettingsService.GetAll();
+
+            _mapping = new ObservableCollection<IUserDefaultSetting, UserDefaultSettingViewModel>(
+                userSettings, userSetting => new UserDefaultSettingViewModel(EventAggregator, userSetting, _userDefaultsSettingsService));
+
+            BrowserDefaultLaunchSettings = await BrowserDefaultLaunchSettings.Instance();
+            OnPropertyChanged(nameof(ViewModels));
+        }
     }
 
     
-    private const char BulkAddSeparator = ',';
     [RelayCommand]
     private async Task BulkAddPages()
     {
@@ -107,36 +149,14 @@ public partial class UserDefaultSettingsViewModel
         {
             viewModel.SaveUrlFromViewText();
         }
-
-        //EventAggregator
-        //    .GetEvent<CreateUserDefaultSettingsEvent>()
-        //    .Publish();
     }
 
-    private ObservableCollectionView<UserDefaultSettingViewModel> _viewModels;
-    public ObservableCollectionView<UserDefaultSettingViewModel> ViewModels
+    [RelayCommand]
+    private async Task SaveLaunchSettings()
     {
-        get
-        {
-            if (_viewModels == null && _mapping != null)
-            {
-                _viewModels = new ObservableCollectionView<UserDefaultSettingViewModel>(_mapping);
-            }
-            return _viewModels;
-        }
-    }
-    public void OnAuthenticated()
-    {
-        var userSettings = _userDefaultsSettingsService.GetAll();
-
-        _mapping = new ObservableCollection<IUserDefaultSetting, UserDefaultSettingViewModel>(
-            userSettings, userSetting => new UserDefaultSettingViewModel(EventAggregator, userSetting, _userDefaultsSettingsService)
-            );
-
-        OnPropertyChanged(nameof(ViewModels));
+        await BrowserDefaultLaunchSettings.Save();
     }
 
-    private List<UserDefaultSettingViewModel> _selectedDefaultSetting;
     private void OnSelectedChanged()
     {
         _selectedDefaultSetting = _mapping
@@ -145,19 +165,4 @@ public partial class UserDefaultSettingsViewModel
 
         SelectedCount = _selectedDefaultSetting.Count;
     }
-
-    private int _selectedCount;
-    public int SelectedCount
-    {
-        get => _selectedCount;
-        set
-        {
-            if (SetProperty(ref _selectedCount, value))
-            {
-                OnPropertyChanged(nameof(HasSelectedItems));
-            }
-        }
-    }
-
-    public bool HasSelectedItems => SelectedCount > 0;
 }

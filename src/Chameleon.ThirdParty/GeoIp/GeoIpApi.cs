@@ -25,6 +25,36 @@ public class GeoIpApi
         }
     }
 
+    public async Task<string> GetIPApi(string proxyUrl, string proxyUsername = null, string proxyPassword = null)
+    {
+        var handler = new HttpClientHandler
+        {
+            Proxy = new WebProxy(proxyUrl)
+        };
+
+        if (!string.IsNullOrEmpty(proxyUsername) && !string.IsNullOrEmpty(proxyPassword))
+        {
+            handler.Proxy.Credentials = new NetworkCredential(proxyUsername, proxyPassword);
+        }
+
+        using HttpClient client = new(handler)
+        {
+            Timeout = TimeSpan.FromSeconds(5)
+        };
+        HttpResponseMessage response = await client.GetAsync("http://ip-api.com/json");
+
+        if (response.IsSuccessStatusCode)
+        {
+            string responseBody = await response.Content.ReadAsStringAsync();
+            //return JsonSerializer.Deserialize<Models.Ipapi>(responseBody);
+            return responseBody;
+        }
+        else
+        {
+            throw new HttpRequestException($"Request failed with status code {response.StatusCode}");
+        }
+    }
+
     public async Task<Models.Geoiplookup> GetGeoIp(string proxyUrl, string proxyUsername = null, string proxyPassword = null)
     {
         var handler = new HttpClientHandler
