@@ -59,7 +59,7 @@ public static class ConfigHelper
     {
         var settingsFilePath = Path.Combine(ContainerServiceHelper.Resolve<IApplicationEnvironment>().ApplicationDataFolderPath, fname);
         if (!File.Exists(settingsFilePath))
-            return null;
+            return Task.FromResult<string>(null);
 
         return File.ReadAllTextAsync(settingsFilePath);
     }
