@@ -25,7 +25,17 @@ public class GeoIpApi
         }
     }
 
-    public async Task<string> GetIPApi(string proxyUrl, string proxyUsername = null, string proxyPassword = null)
+    public Task<string> GetIPApi(string proxyUrl, string proxyUsername = null, string proxyPassword = null)
+        => GetHttpResponseContent(proxyUrl, "http://ip-api.com/json", proxyUsername, proxyPassword);
+
+    public async Task<Models.Geoiplookup> GetGeoIp(string proxyUrl, string proxyUsername = null, string proxyPassword = null)
+    {
+            string responseBody = await GetHttpResponseContent(proxyUrl, "https://geoip-lookup.vercel.app/api/geoip", proxyUsername, proxyPassword);
+            // Assuming you have a method to deserialize the response to Models.Geoiplookup
+            return JsonSerializer.Deserialize<Models.Geoiplookup>(responseBody);
+    }
+
+    private async Task<string> GetHttpResponseContent(string proxyUrl, string requestUri, string proxyUsername = null, string proxyPassword = null)
     {
         var handler = new HttpClientHandler
         {
@@ -41,7 +51,8 @@ public class GeoIpApi
         {
             Timeout = TimeSpan.FromSeconds(5)
         };
-        HttpResponseMessage response = await client.GetAsync("http://ip-api.com/json");
+
+        HttpResponseMessage response = await client.GetAsync(requestUri);
 
         if (response.IsSuccessStatusCode)
         {
@@ -51,45 +62,8 @@ public class GeoIpApi
         }
         else
         {
-            throw new HttpRequestException($"Request failed with status code {response.StatusCode}");
+            throw new HttpRequestException($"failed with status code {response.StatusCode}");
         }
-    }
-
-    public async Task<Models.Geoiplookup> GetGeoIp(string proxyUrl, string proxyUsername = null, string proxyPassword = null)
-    {
-        var handler = new HttpClientHandler
-        {
-            Proxy = new WebProxy(proxyUrl)
-        };
-
-        if (!string.IsNullOrEmpty(proxyUsername) && !string.IsNullOrEmpty(proxyPassword))
-        {
-            handler.Proxy.Credentials = new NetworkCredential(proxyUsername, proxyPassword);
-        }
-
-        using HttpClient client = new(handler)
-        {
-            Timeout = TimeSpan.FromSeconds(5)
-        };
-        HttpResponseMessage response = await client.GetAsync("https://geoip-lookup.vercel.app/api/geoip");
-
-        if (response.IsSuccessStatusCode)
-        {
-            string responseBody = await response.Content.ReadAsStringAsync();
-            // Assuming you have a method to deserialize the response to Models.Geoiplookup
-            return DeserializeGeoiplookup(responseBody);
-        }
-        else
-        {
-            throw new HttpRequestException($"Request failed with status code {response.StatusCode}");
-        }
-    }
-
-    private Models.Geoiplookup DeserializeGeoiplookup(string responseBody)
-    {
-        // Implement the deserialization logic here
-        // For example, using System.Text.Json:
-        return JsonSerializer.Deserialize<Models.Geoiplookup>(responseBody);
     }
 
     public string GetFormatted(string tz)

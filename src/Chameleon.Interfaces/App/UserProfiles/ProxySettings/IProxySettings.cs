@@ -11,5 +11,6 @@
         bool CanUse { get; }
         bool HasUserName { get; }
         string Server { get; }
+        string ServerForRequest { get; }
     }
 }

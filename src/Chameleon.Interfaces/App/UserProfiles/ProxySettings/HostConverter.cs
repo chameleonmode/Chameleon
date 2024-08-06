@@ -1,4 +1,6 @@
-﻿namespace Chameleon.Interfaces.UserProfiles
+﻿using static System.Net.WebRequestMethods;
+
+namespace Chameleon.Interfaces.UserProfiles
 {
     public static class HostConverter
     {

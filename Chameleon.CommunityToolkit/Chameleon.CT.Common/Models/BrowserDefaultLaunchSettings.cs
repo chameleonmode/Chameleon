@@ -117,6 +117,10 @@ public partial class Options : ObservableObject, IOptions
     private bool spoofWebGLFingerprint = true;
     [ObservableProperty]
     private bool spoofWebGPUFingerprint = true;
+
+
+    [ObservableProperty]
+    private bool spoofGeoLocation = true;
 }
 
 public partial class Protectkbfingerprint : ObservableObject, IProtectkbfingerprint

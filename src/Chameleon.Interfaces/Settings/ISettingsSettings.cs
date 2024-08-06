@@ -92,6 +92,7 @@ public interface IOptions
     bool SpoofCanvasFingerprint { get; set; }
     bool SpoofWebGLFingerprint { get; set; }
     bool SpoofWebGPUFingerprint { get; set; }
+    bool SpoofGeoLocation { get; set; }
     string TimeZone { get; set; }
     bool AutoTimezone { get; set; }
     string TrackingProtectionMode { get; set; }

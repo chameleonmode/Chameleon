@@ -135,10 +135,16 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
     }
     string SetRunning(UserProfileSystemBrowserProcessEventArgs args, bool? running) => args.BrowserType switch
     {
-        SystemBrowserType.Chrome => IsChromeRunning = UserProfile.IsChromeRunning = running is null ? "Error" : running == true ? "True" : "False",
-        SystemBrowserType.Firefox => IsFFRunning = UserProfile.IsFFRunning  = running is null ? "Error" : running == true ? "True" : "False",
-        SystemBrowserType.Brave => IsBraveRunning = UserProfile.IsBraveRunning = running is null ? "Error" : running == true ? "True" : "False",
-        _ => "False"
+        SystemBrowserType.Chrome => running != true && IsChromeRunning == "Error" ? "Error" 
+        : IsChromeRunning = UserProfile.IsChromeRunning = running is null ? "Error" : running == true ? "True" : "False",
+       
+        SystemBrowserType.Firefox => running != true && IsFFRunning == "Error" ? "Error" 
+        : IsFFRunning = UserProfile.IsFFRunning= running is null ? "Error" : running == true ? "True" : "False",
+        
+        SystemBrowserType.Brave => running != true && IsBraveRunning == "Error" ? "Error"
+        : IsBraveRunning = UserProfile.IsBraveRunning = running is null ? "Error" : running == true ? "True" : "False",
+
+        _ => "Error"
     };
 
     [RelayCommand]

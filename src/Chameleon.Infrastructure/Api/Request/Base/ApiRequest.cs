@@ -28,7 +28,6 @@ namespace Chameleon.Infrastructure.Api
         private string _requestUrl;
         private string _requestQuery;
         private string _responseBody;
-        private int _retryIndex = 0;
         private int _retryCount = 3;
 
 

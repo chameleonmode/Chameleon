@@ -7,6 +7,7 @@ namespace Chameleon.SystemBrowser.Addons;
 
 public static partial class NavigatorAddon
 {
+    public const string DirName = "Chameleonavigator";
     public static async Task InitializeExtension(string dir, IBrowserDefaultLaunchSettings browserSettings)
     {
         await IOtil.DC(dir);
@@ -27,7 +28,7 @@ public static partial class NavigatorAddon
         "version": "1.0.0",
         "manifest_version": 2,
         "description": "Chameleon browser window and document navigator spoofer and sync",
-        "name": "Chameleonair",
+        "name": "Chameleon Defender",
         "background": {
             "scripts": [
                  "background.js"
@@ -95,7 +96,9 @@ public static partial class NavigatorAddon
 
         //string cs = $@"CHAMELEON_SPOOF.set(spoofContext, {{ {os}{tz} }});";
         //{Timezone_Moment}
-           // {Timezone}
+        // {Timezone}
+        //{ WebRtc}
+        //{ Font}
         return $@"
         //imports
       
@@ -105,7 +108,6 @@ public static partial class NavigatorAddon
     
         {AudioContext}
         {ClientRect}
-        {Font}
         {MediaSpoof}
         {CssExfill}
         {Media}
@@ -118,7 +120,7 @@ public static partial class NavigatorAddon
         {CanvasFingerprint}
         {WebGLFingerprint}
         {WebGPUFingerprint}
-        {WebRtc}
+        
             let seed = Math.random() * 0.00000001;
             let randObjName = String.fromCharCode(65 + Math.floor(Math.random() * 26)) +
               Math.random()
@@ -130,7 +132,7 @@ class Injector {{
         this.settings = {{
             options: {{
                 blockMediaDevices: {browserSettings.Options.BlockMediaDevices.ToString().ToLower()},
-                disableWebRtc: {browserSettings.Options.DisableWebRTC.ToString().ToLower()},
+                disableWebRtc: false,
                 blockCSSExfil: {browserSettings.Options.BlockCSSExfil.ToString().ToLower()},
                 limitHistory: {browserSettings.Options.LimitHistory.ToString().ToLower()},
                 protectKBFingerprint: {{
@@ -141,7 +143,7 @@ class Injector {{
                 screenSize: 'default',
                 spoofAudioContext: {browserSettings.Options.SpoofAudioContext.ToString().ToLower()},
                 spoofClientRects: {browserSettings.Options.SpoofClientRects.ToString().ToLower()},
-                spoofFontFingerprint: {browserSettings.Options.SpoofFontFingerprint.ToString().ToLower()},
+                spoofFontFingerprint: false,
                 spoofMediaDevices: {browserSettings.Options.SpoofMediaDevices.ToString().ToLower()},
                 spoofCanvasFingerprint: {browserSettings.Options.SpoofCanvasFingerprint.ToString().ToLower()},
                 spoofWebGLFingerprint: {browserSettings.Options.SpoofWebGLFingerprint.ToString().ToLower()},
@@ -247,16 +249,16 @@ class Injector {{
           this.updateInjectionData(clientRects);
         }}
 
-        if (this.settings.options.spoofFontFingerprint) {{
-            this.updateInjectionData(font);
-        }}
+        //if (this.settings.options.spoofFontFingerprint) {{
+        //    this.updateInjectionData(font);
+        //}}
 
         if (this.settings.options.limitHistory) this.updateInjectionData(history);      
 
         if (this.settings.options.spoofCanvasFingerprint) this.updateInjectionData(canvasFingerprint);      
         if (this.settings.options.spoofWebGLFingerprint) this.updateInjectionData(webGLFingerprint);  
         if (this.settings.options.spoofWebGPUFingerprint) this.updateInjectionData(webGPUFingerprint);  
-        if (this.settings.options.disableWebRtc) this.updateInjectionData(disableWebRtc);  
+        //if (this.settings.options.disableWebRtc) this.updateInjectionData(disableWebRtc);  
 
 
 

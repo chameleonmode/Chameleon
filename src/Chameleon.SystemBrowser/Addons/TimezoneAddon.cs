@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 namespace Chameleon.SystemBrowser.Addons;
 public class TimezoneAddon
 {
-    public static async Task InitializeExtension(string dir, bool ipLookup, string json)
+    public const string DirName = "ChameleonTZ";
+    public static async Task InitializeExtension(string dir, string json)
     {
         await IOtil.DC(dir);
 
         await IOtil.WriteTextToFileAsync(
             Path.Combine(dir, "manifest.json"), Manifestv3);
         await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "worker.js"), SetWorkero(ipLookup.ToString().ToLower(), json));
+            Path.Combine(dir, "worker.js"), SetWorkero(json));
 
         var dataDir = Path.Combine(dir, "data");
         await IOtil.CreateDirectory(dataDir);
@@ -45,7 +46,7 @@ public class TimezoneAddon
         {
           "manifest_version": 3,
           "version": "1.0.0",
-          "name": "Chameleon Timezone",
+          "name": "Chameleon Timezone Switcher",
           "description": "This extension alters browser timezone to a random or user-defined value.",
           "permissions": [
             "storage",
@@ -308,7 +309,7 @@ public class TimezoneAddon
         
         """;
 
-    public static string SetWorkero(string autoset, string tz) => $@"
+    public static string SetWorkero(string tz) => $@"
 /* global offsets */
 self.importScripts('/data/offsets.js');
 
@@ -358,6 +359,17 @@ uo.date = new Date();
 
 chrome.runtime.onInstalled.addListener(uo);
 chrome.runtime.onStartup.addListener(uo);
+
+const initIt = () => {{
+    const {{timezone}} = {tz};
+        chrome.storage.local.set({{
+          timezone
+        }}, () => {{
+          uo().then(({{timezone, offset}}) => notify('New Timezone: ' + timezone + ' (' + offset + ')'));
+        }});
+}};
+chrome.runtime.onInstalled.addListener(initIt);
+chrome.runtime.onStartup.addListener(initIt);
 
 chrome.runtime.onMessage.addListener((request, sender, response) => {{
   if (request.method === 'update-offset') {{
@@ -544,16 +556,6 @@ const onClicked = ({{menuItemId}}) => {{
   }}
 }};
 chrome.contextMenus.onClicked.addListener(onClicked);
-{{
-if({autoset}){{
-    const {{timezone}} = {tz};
-        chrome.storage.local.set({{
-          timezone
-        }}, () => {{
-          uo().then(({{timezone, offset}}) => notify('New Timezone: ' + timezone + ' (' + offset + ')'));
-        }});
-}}
-}}
 /* FAQs & Feedback */
 {{
   const {{management, runtime: {{onInstalled, setUninstallURL, getManifest}}, storage, tabs}} = chrome;
