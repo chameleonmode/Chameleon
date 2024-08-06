@@ -360,17 +360,6 @@ uo.date = new Date();
 chrome.runtime.onInstalled.addListener(uo);
 chrome.runtime.onStartup.addListener(uo);
 
-const initIt = () => {{
-    const {{timezone}} = {tz};
-        chrome.storage.local.set({{
-          timezone
-        }}, () => {{
-          uo().then(({{timezone, offset}}) => notify('New Timezone: ' + timezone + ' (' + offset + ')'));
-        }});
-}};
-chrome.runtime.onInstalled.addListener(initIt);
-chrome.runtime.onStartup.addListener(initIt);
-
 chrome.runtime.onMessage.addListener((request, sender, response) => {{
   if (request.method === 'update-offset') {{
     uo();
@@ -513,6 +502,21 @@ const server = async (silent = true) => {{
     }}
   }}
 }};
+const initIt = () => {{
+    chrome.storage.local.set({tz}, () => {{
+        uo().then(({{ timezone, offset }}) => notify('New Timezone: ' + timezone + ' (' + offset + ')'));
+    }});
+}};
+chrome.runtime.onInstalled.addListener(initIt);
+chrome.runtime.onStartup.addListener(initIt);
+
+// Ensure the initIt function runs before any other tab or content script
+//chrome.tabs.onCreated.addListener((tab) => {{
+//    initIt().then(() => {{
+//        // Your logic to handle the tab creation after initIt has run
+//    }});
+//}});
+
 
 /* update on startup */
 {{

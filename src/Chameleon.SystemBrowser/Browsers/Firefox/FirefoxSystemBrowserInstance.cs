@@ -412,6 +412,7 @@ public partial class FirefoxSystemBrowserInstance(
             ["dom.forms.autocomplete.formautofill"] = true,
             ["signon.autologin.proxy"] = true,
             ["network.auth.use-sspi"] = false,
+            ["background.service_worker"] = true,
 
             ["network.proxy.type"] = 1,
         };
@@ -512,51 +513,51 @@ public partial class FirefoxSystemBrowserInstance(
     [GeneratedRegex(@"user_pref\(""(.*?)"", (\""(.*?)\""|.*?)\);")]
     private static partial Regex UserPrefRegex();
 
-    protected override async Task<string> InitializeExtensionPath()
-    {
-        string proxyextdir = Path.Combine(BrowserProfileFolderPath, ProxyAddonUtil.AutoProxyFolderName);
-        string pxoyextFile = Path.Combine(proxyextdir, ProxyAddonUtil.FirefoxAutoProxyAddonName);
-
-        await IOtil.DeleteFExists(pxoyextFile);
-        await IOtil.DeleteDExistsAsync(proxyextdir);
-        Directory.CreateDirectory(proxyextdir);
-
-        if (HasProxyLogin)
-        {
-            string startUrl =
-                Starturl.Contains(ProxyAddonUtil.UrlSchemeEnd) ?
-                Starturl : 
-                $"{ProxyAddonUtil.HTTPSScheme}{Starturl}";
-
-            //string loadUrl =
-            //    startUrl.Contains(ProxyAddonUtil.DomainLevelDelimiter) ?
-            //    @$", async () => {{ 
-            //            let tabs = await browser.tabs.query({{}});
-            //            if (tabs.length > 1) {{
-            //                await browser.tabs.remove(tabs[tabs.length - 1].id);
-            //            }}
-            //            browser.tabs.update({{ url:""{startUrl}"" }}); 
-            //      }});"
-            //    : ");";
-
-            await IOtil.CreateZipAsync(pxoyextFile, new Dictionary<string, string>
-            {
-                { "manifest.json", ProxyAddonUtil.GetManifest() },
-                { "background.js", ProxyAddonUtil.GetBgJs(startUrl, UserProfile.Proxy) }
-            });
-        }
-
-       // string extNavDir = Path.Combine(BrowserProfileFolderPath, ProxyAddonUtil.AutoProxyFolderName);
-       // string extNavFile = Path.Combine(NavigatorExtDir, "Chameleonavigator.xpi");
-        
-        //    await IOtil.CreateZipAsync(extNavFile, new Dictionary<string, string>
-         //   {
-          //      { "manifest.json",NavigatorAddon.GetManifestv2 },
-           //     { "background.js", NavigatorAddon.SetNavigato() }
-            //});
-
-        return proxyextdir;
-    }
+   //protected override async Task<string> InitializeExtensionPath()
+   //{
+   //    string proxyextdir = ProxyExtMainDir;
+   //    string pxoyextFile = Path.Combine(proxyextdir, ProxyAddonUtil.FirefoxAutoProxyAddonName);
+   //
+   //    await IOtil.DeleteFExists(pxoyextFile);
+   //    await IOtil.DeleteDExistsAsync(proxyextdir);
+   //    Directory.CreateDirectory(proxyextdir);
+   //
+   //    if (HasProxyLogin)
+   //    {
+   //        string startUrl =
+   //            Starturl.Contains(ProxyAddonUtil.UrlSchemeEnd) ?
+   //            Starturl : 
+   //            $"{ProxyAddonUtil.HTTPSScheme}{Starturl}";
+   //
+   //        //string loadUrl =
+   //        //    startUrl.Contains(ProxyAddonUtil.DomainLevelDelimiter) ?
+   //        //    @$", async () => {{ 
+   //        //            let tabs = await browser.tabs.query({{}});
+   //        //            if (tabs.length > 1) {{
+   //        //                await browser.tabs.remove(tabs[tabs.length - 1].id);
+   //        //            }}
+   //        //            browser.tabs.update({{ url:""{startUrl}"" }}); 
+   //        //      }});"
+   //        //    : ");";
+   //
+   //        await IOtil.CreateZipAsync(pxoyextFile, new Dictionary<string, string>
+   //        {
+   //            { "manifest.json", ProxyAddonUtil.GetManifest() },
+   //            { "background.js", ProxyAddonUtil.GetBgJs(startUrl, UserProfile.Proxy) }
+   //        });
+   //    }
+   //
+   //   // string extNavDir = Path.Combine(BrowserProfileFolderPath, ProxyAddonUtil.AutoProxyFolderName);
+   //   // string extNavFile = Path.Combine(NavigatorExtDir, "Chameleonavigator.xpi");
+   //    
+   //    //    await IOtil.CreateZipAsync(extNavFile, new Dictionary<string, string>
+   //     //   {
+   //      //      { "manifest.json",NavigatorAddon.GetManifestv2 },
+   //       //     { "background.js", NavigatorAddon.SetNavigato() }
+   //        //});
+   //
+   //    return proxyextdir;
+   //}
 
     private static async Task AddFileToArchive(string fileName, string fileText, ZipArchive archive)
     {

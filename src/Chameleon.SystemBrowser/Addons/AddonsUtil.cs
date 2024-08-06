@@ -76,6 +76,19 @@ public static class AddonsUtil
      }}
  }}
 
+async function processDirectory(dir) {{
+    let entries = dir.directoryEntries;
+    while (entries.hasMoreElements()) {{
+        let entry = entries.getNext().QueryInterface(Ci.nsIFile);
+        if (entry.isDirectory()) {{
+            await processDirectory(entry); // Recursively process the directory
+        }} else if (entry.isFile() && (entry.leafName.endsWith('.xpi') || entry.leafName.endsWith('.zip'))) {{
+            printDebug(`Attempting to install: ${{entry.leafName}}`);
+            await installExtension(entry.path, true);
+        }}
+    }}
+}}
+
  async function installUnpackedExtensions() {{
     const BrowserExtensionsFolderPath = `{browserExtensionsFolderPath}`;
 
@@ -106,11 +119,19 @@ public static class AddonsUtil
     }}
 
 
-     var folder = Services.dirsvc.get(""ProfD"", Ci.nsIFile).path;
-     {(IMac ?
-              "await installExtension(`${folder}/ChameleonAutoExt/autoproxy.chameleon.zip`, true);" :
-              "await installExtension(`${folder}\\\\ChameleonAutoExt\\\\autoproxy.chameleon.zip`, true);")}
 
+        var folder = Services.dirsvc.get(""ProfD"", Ci.nsIFile).path;
+        folder = {(IMac ? "`${folder}/Chameleon-addons`" : "`${folder}\\\\Chameleon-addons`")};
+     printDebug(`Attempting ffffqf:${{folder}}`);
+        var pdirDir = new FileUtils.File(folder);
+        printDebug(`Attempting fffff:${{pdirDir.directoryEntries}} ${{pdirDir.exists() && pdirDir.isDirectory()}}`);
+        if (pdirDir.exists() && pdirDir.isDirectory()) {{
+            try {{
+                await processDirectory(pdirDir); // Process the profile directory
+            }} catch (ex) {{
+                reportError(`Error iterating directory: ${{ex.message}}`);
+            }}
+        }}
 
      await setPermission(""autoproxy@chameleonmode.com"");
  }}

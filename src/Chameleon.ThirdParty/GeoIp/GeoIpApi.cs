@@ -2,6 +2,9 @@
 using NodaTime.Extensions;
 using NodaTime.Text;
 using NodaTime.TimeZones;
+using Polly.CircuitBreaker;
+using Polly.Retry;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,17 +28,19 @@ public class GeoIpApi
         }
     }
 
-    public Task<string> GetIPApi(string proxyUrl, string proxyUsername = null, string proxyPassword = null)
-        => GetHttpResponseContent(proxyUrl, "http://ip-api.com/json", proxyUsername, proxyPassword);
 
-    public async Task<Models.Geoiplookup> GetGeoIp(string proxyUrl, string proxyUsername = null, string proxyPassword = null)
+    public Task<string> GetIPApi(string proxyUrl, Action<string> onretry, string proxyUsername = null, string proxyPassword = null)
+        => GetHttpResponseContent(proxyUrl, "http://ip-api.com/json", onretry, proxyUsername, proxyPassword);
+
+
+    public async Task<Models.Geoiplookup> GetGeoIp(string proxyUrl, Action<string> onretry, string proxyUsername = null, string proxyPassword = null)
     {
-            string responseBody = await GetHttpResponseContent(proxyUrl, "https://geoip-lookup.vercel.app/api/geoip", proxyUsername, proxyPassword);
-            // Assuming you have a method to deserialize the response to Models.Geoiplookup
-            return JsonSerializer.Deserialize<Models.Geoiplookup>(responseBody);
+        string responseBody = await GetHttpResponseContent(proxyUrl, "https://geoip-lookup.vercel.app/api/geoip", onretry, proxyUsername, proxyPassword);
+        // Assuming you have a method to deserialize the response to Models.Geoiplookup
+        return JsonSerializer.Deserialize<Models.Geoiplookup>(responseBody);
     }
 
-    private async Task<string> GetHttpResponseContent(string proxyUrl, string requestUri, string proxyUsername = null, string proxyPassword = null)
+    private async Task<string> GetHttpResponseContent(string proxyUrl, string requestUri, Action<string> onretry, string proxyUsername = null, string proxyPassword = null)
     {
         var handler = new HttpClientHandler
         {
@@ -52,17 +57,28 @@ public class GeoIpApi
             Timeout = TimeSpan.FromSeconds(5)
         };
 
-        HttpResponseMessage response = await client.GetAsync(requestUri);
+        HttpResponseMessage response = await Policy.WrapAsync(
+            Policy.HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.BadGateway)
+            .Or<HttpRequestException>()
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (outcome, timespan, retryAttempt, context) =>
+            {
+                onretry($"Retry {retryAttempt} for {context.PolicyKey} at {context.OperationKey}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
+            }),
+            Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+            .Or<HttpRequestException>()
+            .CircuitBreakerAsync(
+                handledEventsAllowedBeforeBreaking: 2,
+                durationOfBreak: TimeSpan.FromSeconds(30)
+            )).ExecuteAsync(() => client.GetAsync(requestUri));
 
         if (response.IsSuccessStatusCode)
         {
             string responseBody = await response.Content.ReadAsStringAsync();
-            //return JsonSerializer.Deserialize<Models.Ipapi>(responseBody);
             return responseBody;
         }
         else
         {
-            throw new HttpRequestException($"failed with status code {response.StatusCode}");
+            throw new HttpRequestException($"Request failed with status code {response.StatusCode}");
         }
     }
 
@@ -102,17 +118,17 @@ public class GeoIpApi
         return json;
 
         // Create a LocalDateTime
-        LocalDateTime localDateTime = new LocalDateTime(2023, 10, 5, 14, 30);
-
-        // Get the time zone
-        DateTimeZone timeZone = DateTimeZoneProviders.Tzdb[tz];
-
-        // Create a ZonedDateTime
-        ZonedDateTime zonedDateTime = localDateTime.InZoneStrictly(timeZone);
-
-        // Format the ZonedDateTime
-        string formattedDateTime = ZonedDateTimePattern.ExtendedFormatOnlyIso.Format(zonedDateTime);
-        return formattedDateTime;
+        //LocalDateTime localDateTime = new LocalDateTime(2023, 10, 5, 14, 30);
+        //
+        //// Get the time zone
+        //DateTimeZone timeZone = DateTimeZoneProviders.Tzdb[tz];
+        //
+        //// Create a ZonedDateTime
+        //ZonedDateTime zonedDateTime = localDateTime.InZoneStrictly(timeZone);
+        //
+        //// Format the ZonedDateTime
+        //string formattedDateTime = ZonedDateTimePattern.ExtendedFormatOnlyIso.Format(zonedDateTime);
+        //return formattedDateTime;
     }
     public IEnumerable<string> GetAbbrs(string timeZoneId)
     {

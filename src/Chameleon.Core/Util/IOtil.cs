@@ -23,6 +23,19 @@ public static class IOtil
         });
     }
 
+    public static Task CreateZipAsync(string zipFilePath, string directoryPath)
+    {
+        return Task.Run(() =>
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                throw new DirectoryNotFoundException($"The directory '{directoryPath}' does not exist.");
+            }
+
+            ZipFile.CreateFromDirectory(directoryPath, zipFilePath, CompressionLevel.Fastest, false);
+        });
+    }
+
     public static Task CreateZipAsync(string filePath, Dictionary<string,string> files)
         => Task.Run(async () => 
         {
