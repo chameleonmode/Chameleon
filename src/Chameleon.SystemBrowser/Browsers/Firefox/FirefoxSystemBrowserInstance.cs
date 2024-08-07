@@ -78,8 +78,8 @@ public partial class FirefoxSystemBrowserInstance(
             ["browser.crashReports.unsubmittedCheck.autoSubmit2"] = false,
             //	OTHER
             ["captivedetect.canonicalURL"] = "",
-            //["network.captive-portal-service.enabled"] = false,
-            //["network.connectivity-service.enabled"] = false, 
+            ["network.captive-portal-service.enabled"] = false,
+            ["network.connectivity-service.enabled"] = false, 
             //[SECTION 0400]: SAFE BROWSING (SB)   
             ["browser.safebrowsing.malware.enabled"] = false,
             ["browser.safebrowsing.phishing.enabled"] = false,
@@ -129,13 +129,13 @@ public partial class FirefoxSystemBrowserInstance(
             // =================================================================
             // THESE ARE THE PROPERTIES FROM https://mullvad.net/en/browser/hard-facts
             // =================================================================
-            ["privacy.fingerprintingProtection"] = false,
-            ["privacy.resistFingerprinting"] = false,//true,
-            ["privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts"] = false,//true,
-            ["privacy.resistFingerprinting.block_mozAddonManager"] = false,//true,
+            ["privacy.fingerprintingProtection"] = true,
+            ["privacy.resistFingerprinting"] = true,
+            ["privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts"] = true,
+            ["privacy.resistFingerprinting.block_mozAddonManager"] = true,
             ["privacy.resistFingerprinting.exemptedDomains"] = "*.example.invalid",
             ["privacy.resistFingerprinting.jsmloglevel"] = "Warn",
-            ["privacy.resistFingerprinting.letterboxing"] = false,//true,
+            ["privacy.resistFingerprinting.letterboxing"] = true,
             ["privacy.resistFingerprinting.randomDataOnCanvasExtract"] = true,
             ["privacy.resistFingerprinting.reduceTimerPrecision.jitter"] = true,
             ["privacy.resistFingerprinting.reduceTimerPrecision.microseconds"] = 1000,
@@ -399,9 +399,9 @@ public partial class FirefoxSystemBrowserInstance(
             //pref("browser.translations.enable", false);
             // Disable spell check
             //pref("layout.spellcheckDefault", 0);
-            ["webgl.disabled"] = !UserProfile.WebBrowser.WebGL,
-            ["media.navigator.enabled"] = UserProfile.WebBrowser.WebRTC,
-            ["media.peerconnection.enabled"] = UserProfile.WebBrowser.WebRTC,
+            ["webgl.disabled"] = false,
+            ["media.navigator.enabled"] = true,
+            ["media.peerconnection.enabled"] = true,
             ["plugin.state.flash"] = UserProfile.WebBrowser.Flash ? 1 : 0,
             ["plugins.flashBlock.enabled"] = !UserProfile.WebBrowser.Flash,
             ["privacy.donottrackheader.enabled"] = !UserProfile.WebBrowser.Tracking,
@@ -455,9 +455,7 @@ public partial class FirefoxSystemBrowserInstance(
 
                     // Add key-value pair to the dictionary
                     if (!prefs.ContainsKey(key) && 
-                        !key.Contains(".proxy.") &&
-                        !key.Contains("privacy.resistFingerprinting.") && 
-                        !key.Contains("geo.provider"))
+                        !key.Contains(".proxy."))
                         prefs[key] = value;
                 }
 
