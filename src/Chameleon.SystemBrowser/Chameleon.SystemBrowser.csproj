@@ -20,11 +20,7 @@
   </ItemGroup>
 
    <ItemGroup>
-   	<AvaloniaResource Include="Addons\Assets\**" />
-   </ItemGroup>
-
-   <ItemGroup>
-     <Folder Include="Addons\Assets\" />
+     <AvaloniaResource Include="Addons\ChameleonAddon.cs" />
    </ItemGroup>
 
 </Project>

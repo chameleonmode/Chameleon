@@ -7,7 +7,6 @@ namespace Chameleon.SystemBrowser.Addons;
 
 public static partial class NavigatorAddon
 {
-
     public static async Task InitializeExtension(string dir, IBrowserDefaultLaunchSettings browserSettings)
     {
         await IOtil.DC(dir);
@@ -28,7 +27,7 @@ public static partial class NavigatorAddon
         "version": "1.0.0",
         "manifest_version": 2,
         "description": "Chameleon browser window and document navigator spoofer and sync",
-        "name": "Chameleon Defender",
+        "name": "Chameleon Auto Defender",
         "background": {
             "scripts": [
                  "background.js"

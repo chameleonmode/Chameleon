@@ -139,6 +139,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="Assets\Addons\ChameleonAddon\options\options.css" />
+	  <Content Include="Assets\Addons\ChameleonAddon\options\options.html" />
+	  <Content Include="Assets\Addons\ChameleonAddon\popup\popup.css" />
+	  <Content Include="Assets\Addons\ChameleonAddon\popup\popup.html" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\de\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\en\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\es\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\fi\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\fr\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\it\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\ja\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\ko\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\pl\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\pt_BR\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\pt_PT\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\ru\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\tr\messages.json" />
+	  <Content Include="Assets\Addons\ChameleonAddon\_locales\zh_CN\messages.json" />
 	  <Content Include="Assets\Addons\ClientRectsAddon\data\popup\popup.css" />
 	  <Content Include="Assets\Addons\ClientRectsAddon\data\popup\popup.html" />
 	  <Content Include="Assets\Addons\FontDefenderAddon\data\popup\explore\explore.css" />

@@ -4,6 +4,7 @@ namespace Chameleon.SystemBrowser.Addons;
 
 public static class AddonsUtil
 {
+    public const string ChameleonAddon = nameof(ChameleonAddon);
     public const string ClientRectsAddon = nameof(ClientRectsAddon);
     public const string FontDefenderAddon = nameof(FontDefenderAddon);
     public const string GeoAddon = nameof(GeoAddon);
@@ -36,7 +37,10 @@ public static class AddonsUtil
  }}
 
  function printDebug(text) {{
-     Components.utils.reportError(""userChrome.js "" + text);
+  var consoleService = Components.classes[""@mozilla.org/consoleservice;1""]
+                                 .getService(Components.interfaces.nsIConsoleService);
+  consoleService.logStringMessage(""userChrome.js "" + text);
+     //Components.utils.logStringMessage(""userChrome.js "" + text);
  }}
 
  // Based on class Addon {{ static async install(path, temporary = false) ... }}
@@ -132,9 +136,7 @@ async function processDirectory(dir) {{
 
         var folder = Services.dirsvc.get(""ProfD"", Ci.nsIFile).path;
         folder = {(IMac ? "`${folder}/Chameleon-addons`" : "`${folder}\\\\Chameleon-addons`")};
-     printDebug(`Attempting ffffqf:${{folder}}`);
         var pdirDir = new FileUtils.File(folder);
-        printDebug(`Attempting fffff:${{pdirDir.directoryEntries}} ${{pdirDir.exists() && pdirDir.isDirectory()}}`);
         if (pdirDir.exists() && pdirDir.isDirectory()) {{
             try {{
                 await processDirectory(pdirDir); // Process the profile directory
@@ -143,7 +145,8 @@ async function processDirectory(dir) {{
             }}
         }}
 
-     await setPermission(""autoproxy@chameleonmode.com"");
+        await setPermission(""autoproxy@chameleonmode.com"");
+        await setPermission(""ezexe@Chameleonmode"");
  }}
 
  async function setPermission(addonId) {{
