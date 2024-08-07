@@ -54,21 +54,19 @@ public class GeoIpApi
 
         using HttpClient client = new(handler)
         {
-            Timeout = TimeSpan.FromSeconds(5)
+            Timeout = TimeSpan.FromSeconds(15)
         };
 
         HttpResponseMessage response = await Policy.WrapAsync(
-            Policy.HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.BadGateway)
-            .Or<HttpRequestException>()
-            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (outcome, timespan, retryAttempt, context) =>
+            Policy.HandleResult<HttpResponseMessage>(r => r.StatusCode >= HttpStatusCode.InternalServerError).Or<HttpRequestException>()
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt), (outcome, timespan, retryAttempt, context) =>
             {
-                onretry($"Retry {retryAttempt} for {context.PolicyKey} at {context.OperationKey}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
+                onretry($"Timezone Request from proxy failed. Retry {retryAttempt} for {context.PolicyKey} at {context.OperationKey}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
             }),
-            Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
-            .Or<HttpRequestException>()
+            Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode).Or<HttpRequestException>()
             .CircuitBreakerAsync(
                 handledEventsAllowedBeforeBreaking: 2,
-                durationOfBreak: TimeSpan.FromSeconds(30)
+                durationOfBreak: TimeSpan.FromSeconds(2)
             )).ExecuteAsync(() => client.GetAsync(requestUri));
 
         if (response.IsSuccessStatusCode)

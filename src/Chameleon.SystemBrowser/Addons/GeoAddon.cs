@@ -7,36 +7,37 @@ using System.Threading.Tasks;
 namespace Chameleon.SystemBrowser.Addons;
 public class GeoAddon
 {
-    public const string DirName = "GeoAddon";
-
-    public static async Task InitializeExtension(string dir)
+    public static async Task InitializeExtension(ExtensionDirectory dir)
     {
-        await IOtil.DC(dir);
+        await AddonsUtil.LoadFromInternal(dir);
+        //await AddonsUtil.LoadFromInternal(AddonsUtil.GeoAddon, dir);
 
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "manifest.json"), Manifestv3);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "context.js"), Context);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "worker.js"), Worker);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "tld.js"), TLD);
-
-        var dataDir = Path.Combine(dir, "data");
-        await IOtil.CreateDirectory(dataDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dataDir, "protected.js"), Protected);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dataDir, "unprotected.js"), UnProtected);
-
-        var optionsDir = Path.Combine(dataDir, "editor");
-        await IOtil.CreateDirectory(optionsDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "index.html"), Index);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "index.css"), IndexCSS);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "index.js"), IndexJS);
+        //await IOtil.DC(dir);
+        //
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dir, "manifest.json"), Manifestv3);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dir, "context.js"), Context);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dir, "worker.js"), Worker);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dir, "tld.js"), TLD);
+        //
+        //var dataDir = Path.Combine(dir, "data");
+        //await IOtil.CreateDirectory(dataDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dataDir, "protected.js"), Protected);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dataDir, "unprotected.js"), UnProtected);
+        //
+        //var optionsDir = Path.Combine(dataDir, "editor");
+        //await IOtil.CreateDirectory(optionsDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "index.html"), Index);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "index.css"), IndexCSS);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "index.js"), IndexJS);
     }
 
     static string Manifestv3 => """
@@ -53,6 +54,14 @@ public class GeoAddon
           "host_permissions": [
             "*://*/*"
           ],
+          "icons": {
+            "16": "data/icons/16.png",
+            "32": "data/icons/32.png",
+            "48": "data/icons/48.png",
+            "64": "data/icons/64.png",
+            "128": "data/icons/128.png",
+            "256": "data/icons/256.png"
+          },
           "action":{},
           "background": {
             "service_worker": "worker.js"

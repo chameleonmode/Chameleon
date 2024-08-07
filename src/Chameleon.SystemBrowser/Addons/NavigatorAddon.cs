@@ -7,7 +7,7 @@ namespace Chameleon.SystemBrowser.Addons;
 
 public static partial class NavigatorAddon
 {
-    public const string DirName = "Chameleonavigator";
+
     public static async Task InitializeExtension(string dir, IBrowserDefaultLaunchSettings browserSettings)
     {
         await IOtil.DC(dir);
@@ -142,7 +142,7 @@ class Injector {{
                 protectWinName:  {browserSettings.Options.ProtectWinName.ToString().ToLower()},
                 screenSize: 'default',
                 spoofAudioContext: {browserSettings.Options.SpoofAudioContext.ToString().ToLower()},
-                spoofClientRects: {browserSettings.Options.SpoofClientRects.ToString().ToLower()},
+                spoofClientRects: false,
                 spoofFontFingerprint: false,
                 spoofMediaDevices: {browserSettings.Options.SpoofMediaDevices.ToString().ToLower()},
                 spoofCanvasFingerprint: {browserSettings.Options.SpoofCanvasFingerprint.ToString().ToLower()},
@@ -244,10 +244,10 @@ class Injector {{
             this.updateInjectionData(audioContext);
         }}
 
-        if (this.settings.options.spoofClientRects) {{
-          this.spoof.metadata['clientRectsSeed'] = seed;
-          this.updateInjectionData(clientRects);
-        }}
+        //if (this.settings.options.spoofClientRects) {{
+        //  this.spoof.metadata['clientRectsSeed'] = seed;
+        //  this.updateInjectionData(clientRects);
+        //}}
 
         //if (this.settings.options.spoofFontFingerprint) {{
         //    this.updateInjectionData(font);

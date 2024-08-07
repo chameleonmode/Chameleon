@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.Settings;
+﻿using Avalonia.Platform;
+using Chameleon.Interfaces.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,58 +11,58 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace Chameleon.SystemBrowser.Addons;
 public class FontDefenderAddon
 {
-    public const string DirName = "FontDefenderAddon";
+
     public static async Task InitializeExtension(string dir)
     {
-        await IOtil.DC(dir);
+        //await AddonsUtil.LoadFromInternal(AddonsUtil.FontDefenderAddon, dir);
+        //await IOtil.DC(dir);
 
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "manifest.json"), Manifestv3);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "background.js"), Background);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dir, "manifest.json"), Manifestv3);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dir, "background.js"), Background);
 
-        var libDir = Path.Combine(dir, "lib");
-        await IOtil.CreateDirectory(libDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(libDir, "chrome.js"), Chrome);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(libDir, "common.js"), Common);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(libDir, "config.js"), CConfig);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(libDir, "runtime.js"), Runtime);
+        //var libDir = Path.Combine(dir, "lib");
+        //await IOtil.CreateDirectory(libDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(libDir, "chrome.js"), Chrome);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(libDir, "common.js"), Common);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(libDir, "config.js"), CConfig);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(libDir, "runtime.js"), Runtime);
 
-        var dataDir = Path.Combine(dir, "data");
+        //var dataDir = Path.Combine(dir, "data");
 
-        var optionsDir = Path.Combine(dataDir, "popup");
-        await IOtil.CreateDirectory(optionsDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "popup.html"), PopupHTLM);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "popup.css"), PopupCSS);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "popup.js"), PopupJS);
-        
-        var exploreoptionsDir = Path.Combine(optionsDir, "explore");
-        await IOtil.CreateDirectory(exploreoptionsDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(exploreoptionsDir, "explore.css"), ExploreCSS);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(exploreoptionsDir, "explore.json"), ExploreJSON);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(exploreoptionsDir, "explore.js"), ExploreJS);
+        //var optionsDir = Path.Combine(dataDir, "popup");
+        //await IOtil.CreateDirectory(optionsDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "popup.html"), PopupHTLM);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "popup.css"), PopupCSS);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "popup.js"), PopupJS);
+
+        //var exploreoptionsDir = Path.Combine(optionsDir, "explore");
+        //await IOtil.CreateDirectory(exploreoptionsDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(exploreoptionsDir, "explore.css"), ExploreCSS);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(exploreoptionsDir, "explore.json"), ExploreJSON);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(exploreoptionsDir, "explore.js"), ExploreJS);
 
 
-        var contentScriptDir = Path.Combine(dataDir, "content_script");
-        await IOtil.CreateDirectory(contentScriptDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(contentScriptDir, "inject.js"), Inject);
+        //var contentScriptDir = Path.Combine(dataDir, "content_script");
+        //await IOtil.CreateDirectory(contentScriptDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(contentScriptDir, "inject.js"), Inject);
 
-        var contentScriptPageDir = Path.Combine(contentScriptDir, "page_context");
-        await IOtil.CreateDirectory(contentScriptPageDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(contentScriptPageDir, "inject.js"), InjectContent);
-
+        //var contentScriptPageDir = Path.Combine(contentScriptDir, "page_context");
+        //await IOtil.CreateDirectory(contentScriptPageDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(contentScriptPageDir, "inject.js"), InjectContent);
     }
 
     static string Manifestv3 => """
@@ -71,7 +72,7 @@ public class FontDefenderAddon
           "offline_enabled": true,
           "name": "Chameleon Font Defender",
           "permissions": ["storage", "contextMenus", "notifications"],
-          "description": "Defending against Font fingerprinting by reporting a fake value.",
+          "description": "Defending against Font fingerprinting by reporting a obfuscated value.",
           "commands": {
             "_execute_action": {}
           },
@@ -80,7 +81,15 @@ public class FontDefenderAddon
           },
           "action": {
             "default_popup": "data/popup/popup.html",
-            "default_title": "Chameleon Font Defender"
+            "default_title": "Chameleon Font Defender",
+            "default_icon": {
+              "16": "data/icons/16.png",
+              "32": "data/icons/32.png",
+              "64": "data/icons/64.png",
+              "128": "data/icons/128.png",
+              "256": "data/icons/256.png",
+              "512": "data/icons/512.png"
+            }
           },
           "content_scripts": [
             {

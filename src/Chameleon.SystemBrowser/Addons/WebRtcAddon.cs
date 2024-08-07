@@ -9,35 +9,36 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace Chameleon.SystemBrowser.Addons;
 public class WebRtcAddon
 {
-    public const string DirName = "WebRtcAddon";
     public static async Task InitializeExtension(string dir)
     {
-        await IOtil.DC(dir);
+        //await AddonsUtil.LoadFromInternal(AddonsUtil.WebRtcAddon, dir);
 
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "manifest.json"), Manifestv3);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "context.js"), Context);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "worker.js"), Worker);
-
-        var dataDir = Path.Combine(dir, "data");
-
-        var optionsDir = Path.Combine(dataDir, "options");
-        await IOtil.CreateDirectory(optionsDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "index.html"), Index);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "index.css"), IndexCSS);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "index.js"), IndexJS);
-
-        var dataInjectDir = Path.Combine(dataDir, "inject");
-        await IOtil.CreateDirectory(dataInjectDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dataInjectDir, "main.js"), Main);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dataInjectDir, "isolated.js"), Isolated);
+        //await IOtil.DC(dir);
+        //
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dir, "manifest.json"), Manifestv3);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dir, "context.js"), Context);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dir, "worker.js"), Worker);
+        //
+        //var dataDir = Path.Combine(dir, "data");
+        //
+        //var optionsDir = Path.Combine(dataDir, "options");
+        //await IOtil.CreateDirectory(optionsDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "index.html"), Index);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "index.css"), IndexCSS);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "index.js"), IndexJS);
+        //
+        //var dataInjectDir = Path.Combine(dataDir, "inject");
+        //await IOtil.CreateDirectory(dataInjectDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dataInjectDir, "main.js"), Main);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dataInjectDir, "isolated.js"), Isolated);
 
     }
 

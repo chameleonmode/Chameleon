@@ -23,25 +23,49 @@ public abstract class SystemBrowserInstance(
     public event Action<ISystemBrowserLaunchOptions> OnProcessOpenError;
 
     private readonly List<IntPtr> winEventHooks = [];
-    private List<string> extensions;
-    private List<string> Extensions
+
+    private Dictionary<string, ExtensionDirectory> extensions;
+    public Dictionary<string, ExtensionDirectory> ExtensionDirectories
     {
         get
         {
-            if(extensions == null)
-                extensions = new()
+            if (extensions == null)
+                extensions = new Dictionary<string, ExtensionDirectory>
                 {
-                    { ProxyExtMainDir },
-                    { NavigatorExtMainDir },
-                    { TzExtMainDir },
-                    { WebRTCExtMainDir },
-                    { FontDefenderExtMainDir},
-                    { GeoExtMainDir }
+                    {
+                        AddonsUtil.ClientRectsAddon,
+                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.ClientRectsAddon)
+                    },
+                    {
+                        AddonsUtil.FontDefenderAddon,
+                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.FontDefenderAddon)
+                    },
+                    {
+                        AddonsUtil.GeoAddon,
+                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.GeoAddon + (BrowserType == SystemBrowserType.Firefox ? "v2" : "v3"))
+                    },
+                    {
+                        AddonsUtil.NavigatorAddon, 
+                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.NavigatorAddon) 
+                    },
+                    {
+                       AddonsUtil.ProxyAddonUtil, 
+                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.ProxyAddonUtil) 
+                    },
+                    {
+                        AddonsUtil.TimezoneAddon,
+                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.TimezoneAddon +  "v2")
+                    },
+                    {
+                        AddonsUtil.WebRtcAddon,
+                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.WebRtcAddon + (BrowserType == SystemBrowserType.Firefox ? "v2" : "v3"))
+                    }
                 };
 
             return extensions;
         }
     }
+
 
 
     private U32.WinEventDelegate winEventsCaptureDelegate;
@@ -60,32 +84,11 @@ public abstract class SystemBrowserInstance(
     public string BrowserProfileFolderPath =>
         Path.Combine(browserDataFolderPath, BrowserType.ToString(), UserProfile.Id.ToString());
 
-
     protected string BrowserExtensionsFolderPath =>
         Path.Combine(AddonsUtil.BrowserExtensionsRootFolderPath, BrowserType.ToString());
 
-
-    private readonly string exdir_id = Guid.NewGuid().ToString();
     public string BrowserProfileAddonsDir =>
         Path.Combine(BrowserProfileFolderPath, "Chameleon-addons");
-    public string ProxyExtMainDir =>
-        Path.Combine(BrowserProfileAddonsDir, ProxyAddonUtil.AutoProxyFolderName);
-
-    public string NavigatorExtMainDir =>
-        Path.Combine(BrowserProfileAddonsDir, NavigatorAddon.DirName);
-
-    public string TzExtMainDir =>
-        Path.Combine(BrowserProfileAddonsDir, TimezoneAddon.DirName);
-
-    public string WebRTCExtMainDir =>
-        Path.Combine(BrowserProfileAddonsDir, WebRtcAddon.DirName);
-
-    public string FontDefenderExtMainDir =>
-        Path.Combine(BrowserProfileAddonsDir, FontDefenderAddon.DirName);
-
-    public string GeoExtMainDir =>
-        Path.Combine(BrowserProfileAddonsDir, GeoAddon.DirName);
-
 
     public IUserProfile UserProfile =>
         options.UserProfile;
@@ -161,62 +164,62 @@ public abstract class SystemBrowserInstance(
     protected virtual async Task InitializeExtensionPath()
     {
         await IOtil.DC(BrowserProfileAddonsDir);
+        
+        var theseOptions = await BrowserDefaultLaunchSettings.Instance();
+
+        if (theseOptions.Options.AutoTimezone && UserProfile.Proxy != null && UserProfile.Proxy.Server.HasAny())
+        {
+            try
+            {
+                string ipLookup = await GeoIpApi.Instance.GetIPApi(UserProfile.Proxy.ServerForRequest, ToasterHelper.ShowErr,
+                    UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
+                await TimezoneAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.TimezoneAddon], ipLookup);
+                //if(BrowserType == SystemBrowserType.Firefox)
+                //    await IOtil.CreateZipAsync(Path.Combine(BrowserProfileAddonsDir, GettmpFname), ExtensionDirectories[AddonsUtil.TimezoneAddon].AddonDir);
+            }
+            catch (Exception ex)
+            {
+                ToasterHelper.ShowErr($"Request for timezone failed {UserProfile.Proxy.Server} - {ex.Message}");
+                OnProcessOpenError?.Invoke((ISystemBrowserLaunchOptions)theseOptions);
+                eventAggregator.Pub<OpenedUserSystemBrowserErrorEvent>(GetArgs);
+                Cleanup();
+                return;
+            }
+        }
+
+        if (theseOptions.Options.SpoofGeoLocation)
+        {
+            await GeoAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.GeoAddon]);
+            if (BrowserType == SystemBrowserType.Firefox)
+                await IOtil.CreateZipAsync(Path.Combine(BrowserProfileAddonsDir, GettmpFname), ExtensionDirectories[AddonsUtil.GeoAddon].AddonDir);
+        }
+
 
         //TODO edit for ff
         if (BrowserType != SystemBrowserType.Firefox)
         {
-            var theseOptions = await BrowserDefaultLaunchSettings.Instance();
-
-            if (theseOptions.Options.AutoTimezone && UserProfile.Proxy != null && UserProfile.Proxy.Server.HasAny())
-            {
-                await ExUtil.AsyncTryCatch(async () =>
-                {
-                    string ipLookup = await GeoIpApi.Instance.GetIPApi(
-                        UserProfile.Proxy.ServerForRequest,
-                        onretry => { ToasterHelper.ShowErr(onretry); },
-                        UserProfile.Proxy.UserName, UserProfile.Proxy.Password)
-                    .ConfigureAwait(false);
-                    await TimezoneAddon.InitializeExtension(TzExtMainDir, ipLookup);
-                    //ipLookup = await GeoIpApi.Instance.GetGeoIp($"http://{UserProfile.Proxy.Server}", UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
-                }, (e) =>
-                {
-                    ToasterHelper.ShowErr($"Request for timezone failed {UserProfile.Proxy.Server} - {e.Message}");
-                    OnProcessOpenError?.Invoke((ISystemBrowserLaunchOptions)theseOptions);
-                    eventAggregator.Pub<OpenedUserSystemBrowserErrorEvent>(GetArgs);
-                    Cleanup();
-                });
-            }
-
-            if (theseOptions.Options.SpoofGeoLocation)
-            {
-                await GeoAddon.InitializeExtension(GeoExtMainDir);
-            }
+            if (theseOptions.Options.SpoofClientRects)
+                await AddonsUtil.LoadFromInternal(ExtensionDirectories[AddonsUtil.ClientRectsAddon]);
 
             if (BrowserType == SystemBrowserType.Chrome)
             {
                 if (theseOptions.Options.DisableWebRTC)
-                    await WebRtcAddon.InitializeExtension(WebRTCExtMainDir);
+                    await AddonsUtil.LoadFromInternal(ExtensionDirectories[AddonsUtil.WebRtcAddon]);
+               // await WebRtcAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.WebRtcAddon]);
 
                 if (theseOptions.Options.SpoofFontFingerprint)
-                    await FontDefenderAddon.InitializeExtension(FontDefenderExtMainDir);
+                    await AddonsUtil.LoadFromInternal(ExtensionDirectories[AddonsUtil.FontDefenderAddon]);
+               // await FontDefenderAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.FontDefenderAddon]);
 
                 //if (BrowserType == SystemBrowserType.Chrome)
-                await NavigatorAddon.InitializeExtension(NavigatorExtMainDir, await BrowserDefaultLaunchSettings.Instance());
+                await NavigatorAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.NavigatorAddon].AddonDir, await BrowserDefaultLaunchSettings.Instance());
             }
         }
-        //if (BrowserType == SystemBrowserType.Firefox)
-        //    foreach (var dir in Extensions)
-        //    {
-        //        if(Directory.Exists(dir))
-        //        {
-        //            await IOtil.CreateZipAsync(Path.Combine(BrowserProfileAddonsDir, GettmpFname), dir);
-        //            await IOtil.DeleteDExistsAsync(dir);
-        //        }
-        //    }
+
 
         if (HasProxyLogin)
         {
-            await IOtil.CreateDirectory(ProxyExtMainDir);
+            await IOtil.CreateDirectory(ExtensionDirectories[AddonsUtil.ProxyAddonUtil].AddonDir);
             string startUrl = Starturl.Contains(ProxyAddonUtil.UrlSchemeEnd) ?
                 Starturl : $"{ProxyAddonUtil.HTTPSScheme}{Starturl}";
             if (BrowserType == SystemBrowserType.Firefox)
@@ -233,7 +236,7 @@ public abstract class SystemBrowserInstance(
                 //      }});"
                 //    : ");";
 
-                await IOtil.CreateZipAsync(Path.Combine(ProxyExtMainDir, GettmpFname), new Dictionary<string, string>
+                await IOtil.CreateZipAsync(Path.Combine(ExtensionDirectories[AddonsUtil.ProxyAddonUtil].AddonDir, GettmpFname), new Dictionary<string, string>
                 {
                     { "manifest.json", ProxyAddonUtil.GetManifest() },
                     { "background.js", ProxyAddonUtil.GetBgJs(startUrl, UserProfile.Proxy) }
@@ -241,9 +244,12 @@ public abstract class SystemBrowserInstance(
             }
             else
             {
-                await IOtil.WriteTextToFileAsync(Path.Combine(ProxyExtMainDir, "manifest.json"), ProxyAddonUtil.GetManifestv3());
                 await IOtil.WriteTextToFileAsync(
-                    Path.Combine(ProxyExtMainDir, "background.js"),
+                    Path.Combine(ExtensionDirectories[AddonsUtil.ProxyAddonUtil].AddonDir, "manifest.json"), 
+                    ProxyAddonUtil.GetManifestv3());
+
+                await IOtil.WriteTextToFileAsync(
+                    Path.Combine(ExtensionDirectories[AddonsUtil.ProxyAddonUtil].AddonDir, "background.js"),
                     ProxyAddonUtil.GetBgJsv3(startUrl, UserProfile.Proxy));
             }
         }
@@ -537,10 +543,10 @@ public abstract class SystemBrowserInstance(
     public virtual string GetLoadExtensionsArgument()
     {
         List<string> exts = [];
-        foreach (var dir in Extensions)
+        foreach (var dir in ExtensionDirectories)
         {
-            if (Directory.Exists(dir))
-                exts.Add(dir);
+            if (Directory.Exists(dir.Value.AddonDir))
+                exts.Add(dir.Value.AddonDir);
         }
 
         if (Directory.Exists(BrowserExtensionsFolderPath))

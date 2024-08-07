@@ -11,6 +11,7 @@ using System.Net.Security;
 using System.Text.Json;
 using System.Net.Http;
 using Chameleon.Core.Util;
+using Polly;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -28,7 +29,7 @@ namespace Chameleon.Infrastructure.Api
         private string _requestUrl;
         private string _requestQuery;
         private string _responseBody;
-        private int _retryCount = 3;
+        private readonly int _retryCount = 3;
 
 
         public TApiRequest ForUrl(string requestUrl)
@@ -41,29 +42,42 @@ namespace Chameleon.Infrastructure.Api
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(retryCount);
 
-            _retryCount = retryCount;
+            //_retryCount = retryCount;
             return (TApiRequest)this;
         }
 
         public TApiRequest Send()
         {
-            Exception? err = null;
-            TaskUtil.AwaitFor(() =>
+            try
             {
                 CreateRequest();
                 SetAuthHeader();
                 InitializeRequest(_request);
                 ReadResponse();
-                return (TApiRequest)this != null;
-            }, _retryCount, 500, (e) => 
-            { 
-                    err = e;
-            }).Wait();
+                return (TApiRequest)this;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(ex.Message, ex);
+            }
 
-            if(err != null)
-                throw new InvalidOperationException(err.Message, err);
+            //Exception? err = null;
+            //TaskUtil.AwaitFor(() =>
+            //{
+            //    CreateRequest();
+            //    SetAuthHeader();
+            //    InitializeRequest(_request);
+            //    ReadResponse();
+            //    return (TApiRequest)this != null;
+            //}, _retryCount, 500, (e) => 
+            //{ 
+            //        err = e;
+            //}).Wait();
 
-            return (TApiRequest)this;
+            //if(err != null)
+            //    throw new InvalidOperationException(err.Message, err);
+
+            //return (TApiRequest)this;
         }
 
         public void GetResult()
@@ -145,10 +159,24 @@ namespace Chameleon.Infrastructure.Api
             try
             {
                 // You can send the request and get the response synchronously if needed
-                using var httpResponse = _httpClient.SendAsync(_request).GetAwaiter().GetResult();
-               
+                //using var httpResponse = _httpClient.SendAsync(_request).GetAwaiter().GetResult();
+               using HttpResponseMessage httpResponse = Policy.WrapAsync(
+                   Policy.HandleResult<HttpResponseMessage>(r => r.StatusCode >= HttpStatusCode.InternalServerError)
+                   .Or<HttpRequestException>()
+                   .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))),
+                   //.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (outcome, timespan, retryAttempt, context) =>
+                   //{
+                   //     //onretry($"Timezone Request from proxy failed. Retry {retryAttempt} for {context.PolicyKey} at {context.OperationKey}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
+                   //}),
+                   Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+                   .Or<HttpRequestException>()
+                   .CircuitBreakerAsync(
+                       handledEventsAllowedBeforeBreaking: _retryCount,
+                       durationOfBreak: TimeSpan.FromSeconds(30)
+                   )).ExecuteAsync(() => _httpClient.SendAsync(_request)).GetAwaiter().GetResult();
+
                 // Process the response if needed (e.g., check status code, read content)
-                if(httpResponse.IsSuccessStatusCode)
+                if (httpResponse.IsSuccessStatusCode)
                     _responseBody = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 else
                 {

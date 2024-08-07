@@ -4,7 +4,6 @@ namespace Chameleon.SystemBrowser.Addons;
 
 public static class ProxyAddonUtil
 {
-    public const string AutoProxyFolderName = "ChameleonAutoExt";
     public const string FirefoxAutoProxyAddonName = "autoproxy.chameleon.zip";
 
     public const string UrlSchemeEnd = "://";
