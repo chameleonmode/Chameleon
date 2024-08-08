@@ -5,6 +5,21 @@ namespace Chameleon.Interfaces.App.Settings;
 public interface IPhoneVerificationViewModel
     : ITransientDependency
 {
-    bool IsCodesverifyVisible { get; set; }
-    bool IsSMSPVAVisible { get; set; }
+    TaskCompletionSource LoadedTCS { get; }
+    IPVApiModel CodesVerify { get; }
+    IPVApiModel SMSPVA { get; }
+}
+
+public interface IPVApiModel
+    : IPageViewModel
+{
+    string ApiKey { get; set; }
+
+    string GetNumberData { get; set; }
+    string ReceiveSMSData { get; set; }
+    string LastFormatedResponse { get; set; }
+
+    bool IsVisible { get; set; }
+    bool IsVisibleSave { get; set; }
+    bool IsAwaiting {  get; set; }
 }

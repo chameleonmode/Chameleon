@@ -86,13 +86,13 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     }
 
     [RelayCommand]
-    private void CfromV(string what)
+    public void CfromV(string what)
     {
         CommandMap[what]?.Invoke();
     }
 
     [RelayCommand]
-    private async Task AsyncCfromV(string what)
+    public async Task AsyncCfromV(string what)
     {
         var cmdt = AsyncCommandMap[what];
         if(cmdt != null)

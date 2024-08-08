@@ -19,13 +19,13 @@ public class SMSPVAService
             return _instance;
         }
     }
-    private readonly JsonSerializerOptions options = new()
+    public readonly JsonSerializerOptions JSOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
 
     public string ApiKey { get; set; }
-    public List<Models.Country> Countries { get; } =
+    public List<ThirdParty.SMSPVA.Models.Country> Countries { get; } =
     [
         new (1, "United States", "US"),
         new (2, "Canada", "CA"),
@@ -340,7 +340,9 @@ public class SMSPVAService
     ];
 
 
-    public async Task<ApiResponse<T>> GetActivationNumberAsync<T>(Models.Country country, Models.Service service)
+    public async Task<string> GetActivationNumberAsync<T1, T2>(T1 country, T2 service)
+        where T1 : Models.Country
+        where T2 : Models.Service
     {
         using HttpClient client = new();
         client.DefaultRequestHeaders.Add("apikey", ApiKey);
@@ -348,11 +350,11 @@ public class SMSPVAService
         HttpResponseMessage response = await client.GetAsync($"https://api.smspva.com/activation/number/{country.Code}/{service.Code}");
         string responseBody = await response.Content.ReadAsStringAsync();
 
-        var jsonResponse = JsonSerializer.Deserialize<ApiResponse<T>>(responseBody, options);
-        return jsonResponse;
+        //var jsonResponse = JsonSerializer.Deserialize<ApiResponse<T>>(responseBody, options);
+        return responseBody;
     }
 
-    public async Task<ApiResponse<T>> ReceiveSMS<T>(int id)
+    public async Task<string> ReceiveSMS(int id)
     {
         using HttpClient client = new();
         client.DefaultRequestHeaders.Add("apikey", ApiKey);
@@ -363,8 +365,8 @@ public class SMSPVAService
 
         string responseBody = await response.Content.ReadAsStringAsync();
 
-        var jsonResponse = JsonSerializer.Deserialize<ApiResponse<T>>(responseBody, options);
-        return jsonResponse;
+        //var jsonResponse = JsonSerializer.Deserialize<ApiResponse<T>>(responseBody, options);
+        return responseBody;
     }
 
     public async Task<string> GetBalanceAsync()

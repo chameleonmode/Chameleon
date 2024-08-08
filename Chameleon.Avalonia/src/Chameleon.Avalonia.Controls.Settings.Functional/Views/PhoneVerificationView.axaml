@@ -11,7 +11,7 @@
 			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.Settings.Functional.Views.PhoneVerificationView">
 	<UserControl.Resources>
-		<ControlTheme x:Key="ThesePVApisTitleContent"
+		<!--<ControlTheme x:Key="ThesePVApisTitleContent"
 					  TargetType="HeaderedContentControl">
 			<Setter Property="Template">
 				<ControlTemplate>
@@ -31,8 +31,8 @@
 					</ui:CommandBar>
 				</ControlTemplate>
 			</Setter>
-		</ControlTheme>
-		<ControlTheme x:Key="ThesePVApisHeaderContent"
+		</ControlTheme>-->
+		<!--<ControlTheme x:Key="ThesePVApisHeaderContent"
 			  TargetType="HeaderedContentControl">
 			<Setter Property="Template">
 				<ControlTemplate>
@@ -47,7 +47,7 @@
 							</StackPanel>
 						</Border>
 					</Grid>
-					<!--<Grid RowDefinitions="Auto,Auto">
+					--><!--<Grid RowDefinitions="Auto,Auto">
 						<TextBlock Margin="0 8 0 8"
 								   Text="API Key"/>
 						<Border Grid.Row="1">
@@ -64,12 +64,11 @@
 									Command="{Binding AsyncCfromVCommand}" />
 							</StackPanel>
 						</Border>
-					</Grid>-->
+					</Grid>--><!--
 				</ControlTemplate>
 			</Setter>
-		</ControlTheme>
-		<ControlTheme x:Key="ThesePVApisCMB"
-			  TargetType="HeaderedContentControl">
+		</ControlTheme>-->
+		<!--<ControlTheme x:Key="ThesePVApisCMB" TargetType="HeaderedContentControl">
 			<Setter Property="Template">
 				<ControlTemplate>
 					<ui:FAComboBox
@@ -82,7 +81,7 @@
 						DisplayMemberBinding="{ReflectionBinding Name}" />
 				</ControlTemplate>
 			</Setter>
-		</ControlTheme>
+		</ControlTheme>-->
 		<ControlTheme x:Key="ThesePVApisCP"
 			TargetType="HeaderedContentControl">
 			<Setter Property="Template">
@@ -105,8 +104,7 @@
 				</ControlTemplate>
 			</Setter>
 		</ControlTheme>
-		<ControlTheme x:Key="ThesePVApisAwaiter"
-	TargetType="HeaderedContentControl">
+		<!--<ControlTheme x:Key="ThesePVApisAwaiter" TargetType="HeaderedContentControl">
 			<Setter Property="Template">
 				<ControlTemplate>
 					<Panel Margin="0 0 0 0">
@@ -117,7 +115,7 @@
 					</Panel>
 				</ControlTemplate>
 			</Setter>
-		</ControlTheme>
+		</ControlTheme>-->
 
 		<!--<ControlTheme x:Key="ThesePVAControls"
 			TargetType="local:PVAUserControl">
@@ -133,10 +131,101 @@
 			</Setter>
 		</ControlTheme>-->
 	</UserControl.Resources>
+	<UserControl.Styles>
+		<Style Selector="ui|FAComboBox.apiSelector">
+			<Setter Property="Width" Value="180"/>
+			<Setter Property="Margin" Value="0 0 0 0" />
+			<Setter Property="IsTextSearchEnabled" Value="True" />
+		</Style>
+	</UserControl.Styles>
 	<Border Padding="20">
 		<StackPanel>
-			<afv:ChameleonContentControl Title="Codesverify"
-				IsVisible="{Binding IsCodesverifyVisible}">
+			<ItemsControl ItemsSource="{Binding PVApis}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<afv:ChameleonContentControl Title="{Binding Title}"
+													 IsVisible="{Binding IsVisible}">
+							<afv:ChameleonContentControl.TitleContent>
+								<ui:CommandBar
+									DefaultLabelPosition="Right"
+									HorizontalAlignment="Right">
+									<ui:CommandBar.PrimaryCommands>
+										<ui:CommandBarButton IconSource="Save"
+															 Label="Save"
+															 CommandParameter="Save"
+															 IsVisible="{Binding IsVisibleSave}"
+															 Command="{ReflectionBinding AsyncCfromVCommand}"/>
+										<ui:CommandBarButton IconSource="Document"
+															 Label="Pop Out"
+															 CommandParameter="Popout"
+															 Command="{ReflectionBinding CfromVCommand}"/>
+									</ui:CommandBar.PrimaryCommands>
+								</ui:CommandBar>
+							</afv:ChameleonContentControl.TitleContent>
+
+							<afv:ChameleonContentControl.Header>
+								<Grid RowDefinitions="Auto,Auto">
+									<TextBlock Margin="0 8 0 8"
+											   Text="API Key"/>
+									<Border Grid.Row="1">
+										<StackPanel Orientation="Horizontal">
+											<TextBox
+												Width="425"
+												Text="{Binding ApiKey}"/>
+										</StackPanel>
+									</Border>
+								</Grid>
+							</afv:ChameleonContentControl.Header>
+
+							<afv:ChameleonContentControl.Content>
+								<StackPanel Spacing="18">
+									<ui:FAComboBox
+										Classes="apiSelector"
+										Header="App:"
+										ItemsSource="{ReflectionBinding Apps}"
+										SelectedItem="{ReflectionBinding SelectedApp}"
+										DisplayMemberBinding="{ReflectionBinding Name}" />
+
+									<ui:FAComboBox
+										Classes="apiSelector"
+										Header="Country:"
+										ItemsSource="{ReflectionBinding Countries}"
+										SelectedItem="{ReflectionBinding SelectedCountry}"
+										DisplayMemberBinding="{ReflectionBinding Name}" />
+
+									<afv:HeaderdListControl>
+										<afv:HeaderdListControl.HeaderdList>
+											<HeaderedContentControl
+												Header="Phone Number"
+												Content="Get Number"
+												Tag="{Binding GetNumberData}"
+												Name="GetNumber"
+												Theme="{StaticResource ThesePVApisCP}"/>
+
+											<HeaderedContentControl
+												Header="Code"
+												Content="Get Code"
+												Tag="{Binding ReceiveSMSData}"
+												Name="GetCode"
+												Theme="{StaticResource ThesePVApisCP}"/>
+										</afv:HeaderdListControl.HeaderdList>
+									</afv:HeaderdListControl>
+
+									<Panel Margin="0 0 0 0">
+										<TextBlock
+											Text="{Binding LastFormatedResponse}"/>
+										<ui:ProgressRing
+											IsVisible="{Binding IsAwaiting}"/>
+									</Panel>
+								</StackPanel>
+							</afv:ChameleonContentControl.Content>
+						</afv:ChameleonContentControl>
+
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+			<!--<afv:ChameleonContentControl Title="Codesverify"
+										 IsVisible="{Binding IsCodesverifyVisible}">
 				<afv:ChameleonContentControl.TitleContent>
 					<ui:CommandBar
 						DefaultLabelPosition="Right"
@@ -170,15 +259,12 @@
 
 				<afv:ChameleonContentControl.Content>					
 					<StackPanel Spacing="18">
-						<afv:HeaderdListControl>
-							<afv:HeaderdListControl.HeaderdList>
-								<HeaderedContentControl
-									Header="App:"
-									Content="{Binding CodesverifyApps}"
-									Tag="{Binding SelectedCodesverifyApp}"
-									Theme="{StaticResource ThesePVApisCMB}"/>
-							</afv:HeaderdListControl.HeaderdList>
-						</afv:HeaderdListControl>
+						<ui:FAComboBox
+							Classes="apiSelector"
+							Header="App:"
+							ItemsSource="{Binding CodesverifyApps}"
+							SelectedItem="{Binding SelectedCodesverifyApp}"
+							DisplayMemberBinding="{Binding Name}" />
 
 						<afv:HeaderdListControl>
 							<afv:HeaderdListControl.HeaderdList>
@@ -278,7 +364,7 @@
 												Theme="{StaticResource ThesePVApisAwaiter}" />
 					</StackPanel>
 				</afv:ChameleonContentControl.Content>
-			</afv:ChameleonContentControl>
+			</afv:ChameleonContentControl>-->
 		</StackPanel>
 	</Border>
 </UserControl>

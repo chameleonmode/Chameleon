@@ -6,6 +6,10 @@ namespace Chameleon.ThirdParty.Codesverify;
 public class CodesVerifyAPI
 {
     public string ApiKey { get; set; }
+    public List<Country> Countries { get; } =
+    [
+        new("USA")
+    ];
     public List<AppData> Apps { get; } =
     [
         new("2RedBeans", "0.50"),
@@ -346,16 +350,16 @@ public class CodesVerifyAPI
         new ("Other", "1.00")
     ];
 
-    public async Task<string> GetActivationNumberAsync(AppData app)
+    public async Task<string> GetActivationNumberAsync<T>(T app) where T : AppData
     {
         using HttpClient client = new();
-
-        HttpResponseMessage response = await client.GetAsync($"http://codesverify.com/user/api/get_number.php?customer={ApiKey}&app={app.Name}&country=USA");
+        var apiUrl = $"http://codesverify.com/user/api/get_number.php?customer={ApiKey}&app={app.Name}&country=USA";
+        HttpResponseMessage response = await client.GetAsync(apiUrl);
         string responseBody = await response.Content.ReadAsStringAsync();
         return responseBody;
     }
 
-    public async Task<string> GetCodeAsync(string numba, AppData app)
+    public async Task<string> GetCodeAsync<T>(string numba, T app) where T : AppData
     {
         using HttpClient client = new();
 
