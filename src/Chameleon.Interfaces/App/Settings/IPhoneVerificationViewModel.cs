@@ -3,9 +3,9 @@
 namespace Chameleon.Interfaces.App.Settings;
 
 public interface IPhoneVerificationViewModel
-    : ITransientDependency
+    : IPageViewModel,
+    ISingletonDependency
 {
-    TaskCompletionSource LoadedTCS { get; }
     IPVApiModel CodesVerify { get; }
     IPVApiModel SMSPVA { get; }
 }

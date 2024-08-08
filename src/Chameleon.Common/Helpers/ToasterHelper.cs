@@ -21,4 +21,7 @@ public class ToasterHelper
 
     public static void ShowErr(string err)
         => Current.ToastNotificationService.ShowError(err);
+
+    public static void ShowSuccess(string err)
+    => Current.ToastNotificationService.ShowSuccess(err);
 }

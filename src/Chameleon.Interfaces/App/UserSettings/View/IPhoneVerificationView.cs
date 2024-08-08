@@ -6,4 +6,7 @@ namespace Chameleon.Interfaces.App.UserSettings.View
         : ITransientDependency
     {
     }
+
+    public interface IPVApiView
+        : ITransientDependency { }
 }

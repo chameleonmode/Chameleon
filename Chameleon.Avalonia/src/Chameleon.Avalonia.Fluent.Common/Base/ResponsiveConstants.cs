@@ -2,5 +2,5 @@
 
 public class ResponsiveConstants
 {
-    public const double MaxWindowWidth1060 = 1060;
+    public const double MaxWindowWidth1080 = 1080;
 }

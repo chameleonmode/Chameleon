@@ -15,13 +15,16 @@ using System.Security.Cryptography;
 using System;
 using Microsoft.Playwright;
 using System.Runtime.CompilerServices;
+using Chameleon.Interfaces.ThirdParty;
 
 namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
-public partial class PVApiModel<TApps, TCountries>
+public partial class PVApiModel
     : SubPageViewModelBase,
     IPVApiModel
 {
+    private readonly IPVAInstance _pnapinstance;
+
     [ObservableProperty]
     private string apiKey;
     [ObservableProperty]
@@ -39,52 +42,41 @@ public partial class PVApiModel<TApps, TCountries>
     private bool _isAwaiting;
 
     [ObservableProperty]
-    private TApps selectedApp;
-    public IList<TApps> Apps { get; set; }
+    private RService selectedApp;
+    public IList<RService> Apps { get; set; }
 
     [ObservableProperty]
-    private TCountries selectedCountry;
-    public IList<TCountries> Countries { get; set; }
+    private RCountry selectedCountry;
+    public IList<RCountry> Countries { get; set; }
 
-    Func<TApps, TCountries, Task<Tuple<string,string>>> GetNumberRequest { get; set; }
-    Func<TApps, TCountries, string, Task<Tuple<string, string>>> GetCodeRequest { get; set; }
-    Func<string, Task> OnSave { get; set; }
-   Action OnPopout { get; set; }
-    public PVApiModel(string title, 
-        List<TApps> apps,
-        List<TCountries> countries,
-        Func<Task<string>> init,
-        Func<TApps, TCountries, Task<Tuple<string,string>>> getNumber,
-        Func<TApps, TCountries, string, Task<Tuple<string, string>>> getCode,
-        Func<string, Task> save,
-        Action popout)
+
+    public PVApiModel(IPVAInstance pnapinstance)
     {
-        Apps = new AvaloniaList<TApps>(apps);
+        _pnapinstance = pnapinstance;
+        title = pnapinstance.Name;
+        Apps = new AvaloniaList<RService>(pnapinstance.Services);
         SelectedApp = Apps[0];
-        Countries = new AvaloniaList<TCountries>(countries);
-        SelectedCountry = Countries[0];
-        _ = DoInit(init);
-        
 
-        GetNumberRequest = getNumber;
-        GetCodeRequest = getCode;
-        OnSave = save;
+        Countries = new AvaloniaList<RCountry>(pnapinstance.Countries);
+        SelectedCountry = Countries[0];
+
+        _ = DoInit();
 
         AsyncCommandMap["GetNumber"] = GetNumber;
         AsyncCommandMap["GetCode"] = GetCode;
         AsyncCommandMap["Save"] = Save;
 
-        CommandMap["Popout"] = popout;
-
-        this.title = title;
+        CommandMap["Popout"] = Popout;
     }
-    async Task DoInit(Func<Task<string>> init)
+    async Task DoInit()
     {
-        ApiKey = await init();
+        await _pnapinstance.Init();
+        ApiKey = _pnapinstance.ApiKey;
     }
     public async Task Save()
     {
-        await OnSave(ApiKey);
+        _pnapinstance.ApiKey = ApiKey;
+        await _pnapinstance.Save();
     }
 
     public async Task GetNumber()
@@ -94,7 +86,7 @@ public partial class PVApiModel<TApps, TCountries>
 
         await MakeRequest(async ()=>
         {
-            var response = await GetNumberRequest(SelectedApp, SelectedCountry);
+            var response = await _pnapinstance.GetNumberAsync(SelectedCountry, SelectedApp);
             LastFormatedResponse = response.Item1;
             GetNumberData = response.Item2;
         }, e => LastFormatedResponse = e);
@@ -107,7 +99,7 @@ public partial class PVApiModel<TApps, TCountries>
 
         await MakeRequest(async () =>
         {
-            var response = await GetCodeRequest(SelectedApp, SelectedCountry, GetNumberData);
+            var response = await _pnapinstance.GetCodeAsync(SelectedCountry, SelectedApp, GetNumberData);
             LastFormatedResponse = response.Item1;
             ReceiveSMSData = response.Item2;
         }, e => LastFormatedResponse = e);
@@ -119,18 +111,29 @@ public partial class PVApiModel<TApps, TCountries>
         await ExUtil.AsyncTryCatch(func, e => onErr(e.Message));
         IsAwaiting = false;
     }
+
+    public void Popout()
+    {
+        WindowDialogService.ShowTopmost<IPVApiView, IPVApiModel>(new PVApiModel(_pnapinstance), async vm =>
+        {
+            vm.IsVisibleSave = false;
+            await vm.LoadedTCS.Task;
+        }, null, Title, 526);
+    }
 }
 
-public partial class PhoneVerificationViewModel(IUserSettingsService userSettingsService, IToastNotificationService ts)
+public partial class PhoneVerificationViewModel()
        : SubPageViewModelBase("Phone Verification")
        , IPhoneVerificationViewModel
 {
     private readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
-    
-    private IUserSetting _userSetting;
-    private IApplicationSettings _appSetting;
+ 
 
-    public AvaloniaList<IPVApiModel> PVApis { get; set; } = [];
+    public AvaloniaList<IPVApiModel> PVApis { get; set; } = 
+    [
+        new PVApiModel(CodesVerifyAPI.Instance), 
+        new PVApiModel(SMSPVAService.Instance),
+    ];
     public IPVApiModel CodesVerify => PVApis[0];
     public IPVApiModel SMSPVA => PVApis[1];
 
@@ -138,115 +141,6 @@ public partial class PhoneVerificationViewModel(IUserSettingsService userSetting
     {                       
         await base.InitAsync(param);
 
-        if (!Loaded)
-        {
-            PVApis.Add(new PVApiModel<AppData, ThirdParty.Codesverify.Models.Country>(
-                    "Codesverify",
-                    CodesVerifyAPI.Instance.Apps,
-                    CodesVerifyAPI.Instance.Countries,
-                    async () =>
-                    {
-                        var appSetting = await ApplicationSettingsService.Instance.GetAsync();
-                        CodesVerifyAPI.Instance.ApiKey = appSetting.Settings.CodesverifyApiKey;
-                        return appSetting.Settings.CodesverifyApiKey;
-                    },
-                    async (app, country) =>
-                    {
-                        var response = await CodesVerifyAPI.Instance.GetActivationNumberAsync(app);
-                        return new Tuple<string, string>(response, response);
-                    },
-                    async (app, country, lastnumber) =>
-                    {
-                        var response = await CodesVerifyAPI.Instance.GetCodeAsync(lastnumber, app);
-                        return new Tuple<string, string>(response, response);
-                    },
-                    async (key) =>
-                    {
-                        CodesVerifyAPI.Instance.ApiKey = _appSetting.Settings.CodesverifyApiKey = key ?? "";
-                        await ApplicationSettingsService.Instance.Save();
-                        ts.ShowSuccess("Saved");
-                    },
-                    () =>
-                    {
-                        ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<IPhoneVerificationView, IPhoneVerificationViewModel>(async vm =>
-                        {
-                            await vm.LoadedTCS.Task;
-                            vm.CodesVerify.IsVisibleSave = vm.SMSPVA.IsVisible = false;
-                        }, null, "Codeverify API", 720);
-                    }));
-            PVApis.Add(new PVApiModel<Service, ThirdParty.SMSPVA.Models.Country>(
-                    "SMS PVA",
-                    SMSPVAService.Instance.Services,
-                    SMSPVAService.Instance.Countries, async () =>
-                    {
-                        var userSetting = await Task.Run(userSettingsService.Get);
-                        SMSPVAService.Instance.ApiKey = userSetting.SmsPvaApiKey;
-                        return userSetting.SmsPvaApiKey;
-                    },
-                    async (app, country) =>
-                    {
-                        var response =
-                           await SMSPVAService.Instance.GetActivationNumberAsync(country, app);
-
-                        var jsonResponse =
-                           JsonSerializer.Deserialize<ApiResponse<GetNumberData>>(response, SMSPVAService.Instance.JSOptions);
-
-                        return new Tuple<string, string>(response, jsonResponse?.Data?.PhoneNumber);
-                    },
-                    async (app, country, lastresponse) =>
-                    {
-                        var jsonResponse = JsonSerializer.Deserialize<ApiResponse<GetNumberData>>(lastresponse, SMSPVAService.Instance.JSOptions);
-                        var response = await SMSPVAService.Instance.ReceiveSMS(jsonResponse.Data.OrderId);
-                        var lastReceiveSMSData = JsonSerializer.Deserialize<ApiResponse<ReceiveSMSData>>(response, SMSPVAService.Instance.JSOptions);
-                        return new Tuple<string, string>(response, lastReceiveSMSData?.Data?.Sms?.Code);
-                    },
-                    async (key) =>
-                    {
-                        SMSPVAService.Instance.ApiKey = _userSetting.SmsPvaApiKey = key ?? "";
-                        await Task.Run(() => userSettingsService.Save(_userSetting));
-                    },
-                    () =>
-                    {
-                        ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<IPhoneVerificationView, IPhoneVerificationViewModel>(async vm =>
-                        {
-                            await vm.LoadedTCS.Task;
-                            vm.SMSPVA.IsVisibleSave = vm.CodesVerify.IsVisible = false;
-                        }, null, "SMSPVA API", 720);
-                    }));
-        }
-
         OnPropertyChanged(nameof(PVApis));
     }
-
-
-
-    //private async Task SaveCV()
-    //{
-    //    CodesVerifyAPI.Instance.ApiKey = _appSetting.Settings.CodesverifyApiKey = CodesverifyApiKey ?? "";
-    //    await ApplicationSettingsService.Instance.Save();
-    //    ts.ShowSuccess("Saved");
-    //}
-
-    //public async Task SaveSMSPVA()
-    //{
-    //    SMSPVAService.Instance.ApiKey = _userSetting.SmsPvaApiKey = SmspvApiKey ?? "";
-    //    await Task.Run(() => userSettingsService.Save(_userSetting));
-    //    IsChangeApiKey = false;
-    //}
-
-    //private Task PoputSMSPVA()
-    //{
-
-    //    return Task.CompletedTask;
-    //}
-
-    //private Task PoputCodeverify()
-    //{
-    //    ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<IPhoneVerificationView, IPhoneVerificationViewModel>(vm =>
-    //    {
-    //        vm.IsCodesverifyVisible = true;
-    //        vm.IsSMSPVAVisible = false;
-    //    }, null, "Codeverify", 720);
-    //    return Task.CompletedTask;
-    //}
 }

@@ -12,9 +12,10 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     private readonly IDispatcherService _dispatcherService;
     private readonly IEventAggregator eventAggregator;
     private readonly IContentDialogService _cntentDialogService;
+    private readonly IWindowDialogService _iWindowDialogService;
     private readonly IClipboardService _IClipboardService;
 
-    private long _isBusy; 
+    private long _isBusy;
     public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
 
     [ObservableProperty]
@@ -34,23 +35,25 @@ public abstract partial class ObservableObjectBase : ObservableObject,
         _dispatcherService = ContainerServiceHelper.Resolve<IDispatcherService>();// ?? new DispatcherService();
         _cntentDialogService = ContainerServiceHelper.Resolve<IContentDialogService>();
         eventAggregator = ContainerServiceHelper.Resolve<IEventAggregator>() ?? new EventAggregator();
-       _IClipboardService = ContainerServiceHelper.Resolve<IClipboardService>();
+        _IClipboardService = ContainerServiceHelper.Resolve<IClipboardService>();
+        _iWindowDialogService = ContainerServiceHelper.Resolve<IWindowDialogService>();
 
 
-    InitializeAsyncCommand = new AsyncRelayCommand<object>(
-        async (p) =>
-        {
-            await IsBusyFor(()=>InitAsync(p));
-            Loaded = true;
-            LoadedTCS.TrySetResult();
-        },
-        AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
+        InitializeAsyncCommand = new AsyncRelayCommand<object>(
+            async (p) =>
+            {
+                await IsBusyFor(() => InitAsync(p));
+                Loaded = true;
+                LoadedTCS.TrySetResult();
+            },
+            AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
     }
 
     public IDispatcherService DispatcherService => _dispatcherService;
     public IContentDialogService ContentDialogService => _cntentDialogService;
     public IEventAggregator EventAggregator => eventAggregator;
     public IClipboardService ClipboardService => _IClipboardService;
+    public IWindowDialogService WindowDialogService => _iWindowDialogService;
     public IAsyncRelayCommand InitializeAsyncCommand { get; }
 
     public virtual Task InitAsync(object? param)
