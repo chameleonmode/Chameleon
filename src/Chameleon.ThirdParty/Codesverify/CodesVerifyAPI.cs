@@ -1,4 +1,5 @@
-﻿using Chameleon.Infrastructure.Settings;
+﻿using Chameleon.Common.Helpers;
+using Chameleon.Infrastructure.Settings;
 using Chameleon.Interfaces.ThirdParty;
 using Chameleon.ThirdParty.Codesverify.Models;
 using System.Net.Http;
@@ -368,19 +369,15 @@ public class CodesVerifyAPI : IPVAInstance
 
     public async Task<Tuple<string, string>> GetNumberAsync(RCountry country, RService app)
     {
-        using HttpClient client = new();
         var apiUrl = $"http://codesverify.com/user/api/get_number.php?customer={ApiKey}&app={app.Name}&country={country.Name}";
-        HttpResponseMessage response = await client.GetAsync(apiUrl);
-        string responseBody = await response.Content.ReadAsStringAsync();
+        string responseBody = await HttpClientHelper.GetAsync(apiUrl);
         return new Tuple<string, string>(responseBody, responseBody);
     }
 
     public async Task<Tuple<string, string>> GetCodeAsync(RCountry country, RService app, string numberData)
     {
-        using HttpClient client = new();
-
-        HttpResponseMessage response = await client.GetAsync($"http://codesverify.com/user/api/get_sms.php?customer={ApiKey}&number={numberData}&country={country.Name}&app={app.Name}");
-        string responseBody = await response.Content.ReadAsStringAsync();
+        var apiUrl = $"http://codesverify.com/user/api/get_sms.php?customer={ApiKey}&number={numberData}&country={country.Name}&app={app.Name}";
+        string responseBody = await HttpClientHelper.GetAsync(apiUrl);
         return new Tuple<string, string>(responseBody, responseBody);
     }
 

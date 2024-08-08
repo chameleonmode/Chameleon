@@ -80,16 +80,16 @@
 				<StackPanel Orientation="Horizontal">
 					<ui:FAComboBox
 						Classes="apiSelector"
-						Header="App:"
-						ItemsSource="{ReflectionBinding Apps}"
-						SelectedItem="{ReflectionBinding SelectedApp}"
-						DisplayMemberBinding="{ReflectionBinding Name}" />
-
-					<ui:FAComboBox
-						Classes="apiSelector"
 						Header="Country:"
 						ItemsSource="{ReflectionBinding Countries}"
 						SelectedItem="{ReflectionBinding SelectedCountry}"
+						DisplayMemberBinding="{ReflectionBinding Name}" />
+					
+					<ui:FAComboBox
+						Classes="apiSelector"
+						Header="App:"
+						ItemsSource="{ReflectionBinding Apps}"
+						SelectedItem="{ReflectionBinding SelectedApp}"
 						DisplayMemberBinding="{ReflectionBinding Name}" />
 				</StackPanel>
 				<afv:HeaderdListControl>

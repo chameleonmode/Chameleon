@@ -7,6 +7,7 @@ public interface ISettingsSettings
     bool UseCustomAccentColor { get; set; }
     bool AutoLogin { get; set; }
     string CodesverifyApiKey { get; set; }
+    string SMSPoolApiKey { get; set; }
     string UserScriptsDirectory { get; set; }
 }
 
