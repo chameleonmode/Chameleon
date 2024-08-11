@@ -12,6 +12,9 @@ using System.Text.Json;
 using System.Net.Http;
 using Chameleon.Core.Util;
 using Polly;
+using Chameleon.Interfaces.Dialogs;
+using Chameleon.Common.Helpers;
+using Polly.CircuitBreaker;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -50,9 +53,6 @@ namespace Chameleon.Infrastructure.Api
         {
             try
             {
-                CreateRequest();
-                SetAuthHeader();
-                InitializeRequest(_request);
                 ReadResponse();
                 return (TApiRequest)this;
             }
@@ -154,44 +154,71 @@ namespace Chameleon.Infrastructure.Api
             return $"{_requestUrl}?{_requestQuery}";
         }
 
+        // You can send the request and get the response synchronously if needed
         private void ReadResponse()
         {
             try
             {
-                // You can send the request and get the response synchronously if needed
-                //using var httpResponse = _httpClient.SendAsync(_request).GetAwaiter().GetResult();
-               using HttpResponseMessage httpResponse = Policy.WrapAsync(
-                   Policy.HandleResult<HttpResponseMessage>(r => r.StatusCode >= HttpStatusCode.InternalServerError)
-                   .Or<HttpRequestException>()
-                   .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))),
-                   //.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (outcome, timespan, retryAttempt, context) =>
-                   //{
-                   //     //onretry($"Timezone Request from proxy failed. Retry {retryAttempt} for {context.PolicyKey} at {context.OperationKey}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
-                   //}),
-                   Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
-                   .Or<HttpRequestException>()
-                   .CircuitBreakerAsync(
-                       handledEventsAllowedBeforeBreaking: _retryCount,
-                       durationOfBreak: TimeSpan.FromSeconds(30)
-                   )).ExecuteAsync(() => _httpClient.SendAsync(_request)).GetAwaiter().GetResult();
+                var retryPolicy = Policy.HandleResult<HttpResponseMessage>(r => r.StatusCode >= HttpStatusCode.InternalServerError)
+                    .Or<HttpRequestException>()
+                    .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (outcome, timespan, retryAttempt, context) =>
+                    {
+                        ToasterHelper.ShowErr($"Request Failed: Retry {retryAttempt} for {outcome.Result?.RequestMessage?.RequestUri}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
+                    });
 
-                // Process the response if needed (e.g., check status code, read content)
-                if (httpResponse.IsSuccessStatusCode)
-                    _responseBody = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                else
+                var circuitBreakerPolicy = Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+                    .Or<HttpRequestException>()
+                    .CircuitBreakerAsync(
+                        handledEventsAllowedBeforeBreaking: _retryCount,
+                        durationOfBreak: TimeSpan.FromSeconds(30),
+                        onBreak: (outcome, breakDelay) =>
+                        {
+                            _responseBody = outcome.Result.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                            // Log the circuit breaker opening
+                            Console.WriteLine($"Circuit breaker opened due to: {outcome.Exception?.Message ?? outcome.Result.ReasonPhrase}");
+                        },
+                        onReset: () =>
+                        {
+                            // Log the circuit breaker resetting
+                            Console.WriteLine("Circuit breaker reset.");
+                        },
+                        onHalfOpen: () =>
+                        {
+                            // Log the circuit breaker half-open state
+                            Console.WriteLine("Circuit breaker is half-open.");
+                        });
+
+                var policyWrap = Policy.WrapAsync(retryPolicy, circuitBreakerPolicy);
+
+                using HttpResponseMessage httpResponse = policyWrap.ExecuteAsync(() =>
                 {
-                    // Log the error details
-                    var errorContent = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    _responseBody = errorContent;
-                    throw new InvalidOperationException($"Request failed with status code {httpResponse.StatusCode} and reason phrase '{httpResponse.ReasonPhrase}'. Content: {errorContent}");
+                    CreateRequest();
+                    SetAuthHeader();
+                    InitializeRequest(_request);
+                    return _httpClient.SendAsync(_request);
+                }).GetAwaiter().GetResult();
+
+                _responseBody = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                if (!httpResponse.IsSuccessStatusCode)
+                {
+                    throw new InvalidOperationException($"Request failed with status code {httpResponse.StatusCode} and reason phrase '{httpResponse.ReasonPhrase}'. Content: {_responseBody}");
                 }
+            }
+            catch (BrokenCircuitException ex)
+            {
+                // Handle the open circuit scenario
+                Console.WriteLine("Circuit is open and not allowing calls.");
+                if(JsonSerializer.Deserialize<ApiResponseDto>(_responseBody, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }) is not ApiResponseDto responseDto)
+                    throw new InvalidOperationException("Circuit is open and not allowing calls.", ex);
+                else
+                    throw new InvalidOperationException(responseDto.Error?.Message, ex);
             }
             catch (WebException ex)
             {
                 HandleResponseException(ex);
                 throw;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new InvalidOperationException(ex.Message, ex);
             }
