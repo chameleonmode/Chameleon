@@ -1,4 +1,5 @@
 ﻿using Chameleon.ThirdParty.GeoIp.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,44 +9,61 @@ using System.Threading.Tasks;
 namespace Chameleon.SystemBrowser.Addons;
 public class TimezoneAddon
 {
-    public static async Task InitializeExtension(string dir, bool ipLookup, string json)
+    public static async Task InitializeExtension(ExtensionDirectory dir, string json)
     {
-        await IOtil.DC(dir);
-
+        var ipapi = JsonConvert.DeserializeObject<Ipapi>(json);
+        await AddonsUtil.LoadFromInternal(dir);
         await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "manifest.json"), Manifestv3);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dir, "worker.js"), SetWorkero(ipLookup.ToString().ToLower(), json));
-
-        var dataDir = Path.Combine(dir, "data");
-        await IOtil.CreateDirectory(dataDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dataDir, "offsets.js"), Offsets);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dataDir, "inject.js"), Inject);
-
-        var optionsDir = Path.Combine(dataDir, "options");
-        await IOtil.CreateDirectory(optionsDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "index.html"), Index);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "index.css"), IndexCSS);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(optionsDir, "index.js"), IndexJS);
-
-        var dataInjectDir = Path.Combine(dataDir, "inject");
-        await IOtil.CreateDirectory(dataInjectDir);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dataInjectDir, "main.js"), Main);
-        await IOtil.WriteTextToFileAsync(
-            Path.Combine(dataInjectDir, "isolated.js"), Isolated);
+            Path.Combine(dir.AddonDir, "onload.js"), AddInit(ipapi.timezone));
+        //await IOtil.DC(dir);
+        //
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dir, "manifest.json"), Manifestv3);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dir, "worker.js"), SetWorkero(json));
+        //
+        //var dataDir = Path.Combine(dir, "data");
+        //await IOtil.CreateDirectory(dataDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dataDir, "offsets.js"), Offsets);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dataDir, "inject.js"), Inject);
+        //
+        //var optionsDir = Path.Combine(dataDir, "options");
+        //await IOtil.CreateDirectory(optionsDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "index.html"), Index);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "index.css"), IndexCSS);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(optionsDir, "index.js"), IndexJS);
+        //
+        //var dataInjectDir = Path.Combine(dataDir, "inject");
+        //await IOtil.CreateDirectory(dataInjectDir);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dataInjectDir, "main.js"), Main);
+        //await IOtil.WriteTextToFileAsync(
+        //    Path.Combine(dataInjectDir, "isolated.js"), Isolated);
 
     }
+
+    static string AddInit(string tz) => $@"
+    const initIt = () => {{
+      localStorage.setItem('location', '{tz}');
+      uo();
+       // chrome.storage.local.set({tz}, () => {{
+       //     uo().then(({{ timezone, offset }}) => notify('New Timezone: ' + timezone + ' (' + offset + ')'));
+       // }});
+    }};
+    chrome.runtime.onInstalled.addListener(initIt);
+    chrome.runtime.onStartup.addListener(initIt);
+    ";
+
     static string Manifestv3 => """
         {
           "manifest_version": 3,
           "version": "1.0.0",
-          "name": "Chameleon Timezone",
+          "name": "Chameleon Timezone Switcher",
           "description": "This extension alters browser timezone to a random or user-defined value.",
           "permissions": [
             "storage",
@@ -308,7 +326,7 @@ public class TimezoneAddon
         
         """;
 
-    public static string SetWorkero(string autoset, string tz) => $@"
+    public static string SetWorkero(string tz) => $@"
 /* global offsets */
 self.importScripts('/data/offsets.js');
 
@@ -501,6 +519,21 @@ const server = async (silent = true) => {{
     }}
   }}
 }};
+const initIt = () => {{
+    chrome.storage.local.set({tz}, () => {{
+        uo().then(({{ timezone, offset }}) => notify('New Timezone: ' + timezone + ' (' + offset + ')'));
+    }});
+}};
+chrome.runtime.onInstalled.addListener(initIt);
+chrome.runtime.onStartup.addListener(initIt);
+
+// Ensure the initIt function runs before any other tab or content script
+//chrome.tabs.onCreated.addListener((tab) => {{
+//    initIt().then(() => {{
+//        // Your logic to handle the tab creation after initIt has run
+//    }});
+//}});
+
 
 /* update on startup */
 {{
@@ -544,16 +577,6 @@ const onClicked = ({{menuItemId}}) => {{
   }}
 }};
 chrome.contextMenus.onClicked.addListener(onClicked);
-{{
-if({autoset}){{
-    const {{timezone}} = {tz};
-        chrome.storage.local.set({{
-          timezone
-        }}, () => {{
-          uo().then(({{timezone, offset}}) => notify('New Timezone: ' + timezone + ' (' + offset + ')'));
-        }});
-}}
-}}
 /* FAQs & Feedback */
 {{
   const {{management, runtime: {{onInstalled, setUninstallURL, getManifest}}, storage, tabs}} = chrome;

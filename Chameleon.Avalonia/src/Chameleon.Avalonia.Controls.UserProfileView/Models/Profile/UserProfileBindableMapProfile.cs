@@ -72,8 +72,8 @@ public class UserProfileBindableMapProfile : AutoMapper.Profile
             .ForMember(bindable => bindable.IsFavourite, options => options.MapFrom(entity => entity.IsFavourite))
             .ForMember(bindable => bindable.Title, options => options.MapFrom(entity => entity.Title))
             .ForMember(bindable => bindable.FolderId, options => options.MapFrom(entity => entity.FolderId))
-           .ForMember(bindable => bindable.WebBrowser, options => options.MapFrom(entity => entity.WebBrowser))
-           .ForMember(bindable => bindable.Proxy, options => options.MapFrom(entity => entity.Proxy))
+            .ForMember(bindable => bindable.WebBrowser, options => options.MapFrom(entity => entity.WebBrowser))
+            .ForMember(bindable => bindable.Proxy, options => options.MapFrom(entity => entity.Proxy))
            //.ForMember(bindable => bindable.YoutubeSettings, options => options.MapFrom(entity => entity.YoutubeSettings))
            //.ForMember(bindable => bindable.WordPressSettings, options => options.MapFrom(entity => entity.WordPressSettings))
             ;

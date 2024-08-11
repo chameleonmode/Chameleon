@@ -81,13 +81,10 @@ public class ChameleonContentControl : HeaderedContentControl
 
     private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
-        if (VisualRoot is not Window window)
+        if (VisualRoot is Window window)
         {
-            return;
+            window.GetObservable(Window.ClientSizeProperty).Subscribe(OnWindowSizeChanged);
         }
-        window
-            .GetObservable(Window.ClientSizeProperty)
-            .Subscribe(OnWindowSizeChanged);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -103,7 +100,7 @@ public class ChameleonContentControl : HeaderedContentControl
 
     private void OnWindowSizeChanged(Size newSize)
     {
-        bool isWindowChange = newSize.Width < ResponsiveConstants.MaxWindowWidth1060;
+        bool isWindowChange = newSize.Width < ResponsiveConstants.MaxWindowWidth1080;
 
         _expandOptionsButton?.SetValue(IsVisibleProperty, isWindowChange);
 
@@ -124,6 +121,9 @@ public class ChameleonContentControl : HeaderedContentControl
     {
         base.OnPropertyChanged(change);
 
+        if (Options is null)
+            return;
+
         if (change.Property == OptionsProperty)
         {
             PseudoClasses.Set(":options", change.NewValue != null);
@@ -132,8 +132,8 @@ public class ChameleonContentControl : HeaderedContentControl
         {
             var wid = change.GetNewValue<Rect>().Width;
 
-            PseudoClasses.Set(":mediumWidth", wid < 725);
-            PseudoClasses.Set(":smallWidth", wid < 500);
+            PseudoClasses.Set(":mediumWidth", wid < 720);
+            PseudoClasses.Set(":smallWidth", wid < 480);
         }
         //else if (change.Property == IsOptionsExpandedProperty)
         //{

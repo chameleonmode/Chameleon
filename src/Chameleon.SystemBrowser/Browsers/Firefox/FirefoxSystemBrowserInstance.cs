@@ -1,4 +1,7 @@
-﻿namespace Chameleon.SystemBrowser.Firefox;
+﻿using Chameleon.CT.Common.Models;
+using Chameleon.SystemBrowser.Addons.Assets;
+
+namespace Chameleon.SystemBrowser.Firefox;
 
 public partial class FirefoxSystemBrowserInstance(
         IEventAggregator eventAggregator,
@@ -75,8 +78,8 @@ public partial class FirefoxSystemBrowserInstance(
             ["browser.crashReports.unsubmittedCheck.autoSubmit2"] = false,
             //	OTHER
             ["captivedetect.canonicalURL"] = "",
-            //["network.captive-portal-service.enabled"] = false,
-            //["network.connectivity-service.enabled"] = false, 
+            ["network.captive-portal-service.enabled"] = false,
+            ["network.connectivity-service.enabled"] = false, 
             //[SECTION 0400]: SAFE BROWSING (SB)   
             ["browser.safebrowsing.malware.enabled"] = false,
             ["browser.safebrowsing.phishing.enabled"] = false,
@@ -126,13 +129,13 @@ public partial class FirefoxSystemBrowserInstance(
             // =================================================================
             // THESE ARE THE PROPERTIES FROM https://mullvad.net/en/browser/hard-facts
             // =================================================================
-            ["privacy.fingerprintingProtection"] = false,
-            ["privacy.resistFingerprinting"] = false,//true,
-            ["privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts"] = false,//true,
-            ["privacy.resistFingerprinting.block_mozAddonManager"] = false,//true,
+            ["privacy.fingerprintingProtection"] = true,
+            ["privacy.resistFingerprinting"] = true,
+            ["privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts"] = true,
+            ["privacy.resistFingerprinting.block_mozAddonManager"] = true,
             ["privacy.resistFingerprinting.exemptedDomains"] = "*.example.invalid",
             ["privacy.resistFingerprinting.jsmloglevel"] = "Warn",
-            ["privacy.resistFingerprinting.letterboxing"] = false,//true,
+            ["privacy.resistFingerprinting.letterboxing"] = true,
             ["privacy.resistFingerprinting.randomDataOnCanvasExtract"] = true,
             ["privacy.resistFingerprinting.reduceTimerPrecision.jitter"] = true,
             ["privacy.resistFingerprinting.reduceTimerPrecision.microseconds"] = 1000,
@@ -396,9 +399,9 @@ public partial class FirefoxSystemBrowserInstance(
             //pref("browser.translations.enable", false);
             // Disable spell check
             //pref("layout.spellcheckDefault", 0);
-            ["webgl.disabled"] = !UserProfile.WebBrowser.WebGL,
-            ["media.navigator.enabled"] = UserProfile.WebBrowser.WebRTC,
-            ["media.peerconnection.enabled"] = UserProfile.WebBrowser.WebRTC,
+            ["webgl.disabled"] = false,
+            ["media.navigator.enabled"] = true,
+            ["media.peerconnection.enabled"] = true,
             ["plugin.state.flash"] = UserProfile.WebBrowser.Flash ? 1 : 0,
             ["plugins.flashBlock.enabled"] = !UserProfile.WebBrowser.Flash,
             ["privacy.donottrackheader.enabled"] = !UserProfile.WebBrowser.Tracking,
@@ -412,6 +415,7 @@ public partial class FirefoxSystemBrowserInstance(
             ["dom.forms.autocomplete.formautofill"] = true,
             ["signon.autologin.proxy"] = true,
             ["network.auth.use-sspi"] = false,
+            ["background.service_worker"] = true,
 
             ["network.proxy.type"] = 1,
         };
@@ -451,9 +455,7 @@ public partial class FirefoxSystemBrowserInstance(
 
                     // Add key-value pair to the dictionary
                     if (!prefs.ContainsKey(key) && 
-                        !key.Contains(".proxy.") &&
-                        !key.Contains("privacy.resistFingerprinting.") && 
-                        !key.Contains("geo.provider"))
+                        !key.Contains(".proxy."))
                         prefs[key] = value;
                 }
 
@@ -512,22 +514,20 @@ public partial class FirefoxSystemBrowserInstance(
     [GeneratedRegex(@"user_pref\(""(.*?)"", (\""(.*?)\""|.*?)\);")]
     private static partial Regex UserPrefRegex();
 
-    protected override async Task<string> InitializeExtensionPath()
+    protected override async Task InitializeExtensionPath()
     {
-        string proxyextdir = Path.Combine(BrowserProfileFolderPath, ProxyAddonUtil.AutoProxyFolderName);
-        string pxoyextFile = Path.Combine(proxyextdir, ProxyAddonUtil.FirefoxAutoProxyAddonName);
+        foreach (var dir in ExtensionDirectories)
+        {
+            if (Directory.Exists(dir.Value.AddonDir))
+                await IOtil.CreateZipAsync(Path.Combine(BrowserProfileAddonsDir, GettmpFname), dir.Value.AddonDir);
+        }
 
-        await IOtil.DeleteFExists(pxoyextFile);
-        await IOtil.DeleteDExistsAsync(proxyextdir);
-        Directory.CreateDirectory(proxyextdir);
+        await ChameleonAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.ChameleonAddon]);
+        await IOtil.CreateZipAsync(Path.Combine(BrowserProfileAddonsDir, GettmpFname), ExtensionDirectories[AddonsUtil.ChameleonAddon].AddonDir);
 
         if (HasProxyLogin)
         {
-            string startUrl =
-                Starturl.Contains(ProxyAddonUtil.UrlSchemeEnd) ?
-                Starturl : 
-                $"{ProxyAddonUtil.HTTPSScheme}{Starturl}";
-
+            await IOtil.CreateDirectory(ExtensionDirectories[AddonsUtil.ProxyAddonUtil].AddonDir);
             //string loadUrl =
             //    startUrl.Contains(ProxyAddonUtil.DomainLevelDelimiter) ?
             //    @$", async () => {{ 
@@ -539,23 +539,23 @@ public partial class FirefoxSystemBrowserInstance(
             //      }});"
             //    : ");";
 
-            await IOtil.CreateZipAsync(pxoyextFile, new Dictionary<string, string>
+            await IOtil.CreateZipAsync(Path.Combine(ExtensionDirectories[AddonsUtil.ProxyAddonUtil].AddonDir, GettmpFname), new Dictionary<string, string>
             {
                 { "manifest.json", ProxyAddonUtil.GetManifest() },
-                { "background.js", ProxyAddonUtil.GetBgJs(startUrl, UserProfile.Proxy) }
+                { "background.js", ProxyAddonUtil.GetBgJs(Starturl, UserProfile.Proxy) }
             });
         }
 
-       // string extNavDir = Path.Combine(BrowserProfileFolderPath, ProxyAddonUtil.AutoProxyFolderName);
-       // string extNavFile = Path.Combine(NavigatorExtDir, "Chameleonavigator.xpi");
-        
-        //    await IOtil.CreateZipAsync(extNavFile, new Dictionary<string, string>
-         //   {
-          //      { "manifest.json",NavigatorAddon.GetManifestv2 },
-           //     { "background.js", NavigatorAddon.SetNavigato() }
-            //});
+        // string extNavDir = Path.Combine(BrowserProfileFolderPath, ProxyAddonUtil.AutoProxyFolderName);
+        // string extNavFile = Path.Combine(NavigatorExtDir, "Chameleonavigator.xpi");
 
-        return proxyextdir;
+        //    await IOtil.CreateZipAsync(extNavFile, new Dictionary<string, string>
+        //   {
+        //      { "manifest.json",NavigatorAddon.GetManifestv2 },
+        //     { "background.js", NavigatorAddon.SetNavigato() }
+        //});
+
+        //return proxyextdir;
     }
 
     private static async Task AddFileToArchive(string fileName, string fileText, ZipArchive archive)

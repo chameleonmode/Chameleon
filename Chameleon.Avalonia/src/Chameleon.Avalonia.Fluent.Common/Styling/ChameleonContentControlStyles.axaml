@@ -253,7 +253,7 @@
 								<Grid>
 									<!--{Binding ShowCustomizeProxies}-->
 									<Border CornerRadius="5 0"
-										  Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
+										  Background="{StaticResource LayerFillColorDefaultBrush}"
 										  VerticalAlignment="Bottom"
 										  IsVisible="True">
 										<Grid>
@@ -455,7 +455,7 @@
 											CornerRadius="{DynamicResource OverlayCornerRadius}"
 											Grid.Column="1"
 											Grid.Row="1"
-											Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+											Background="{DynamicResource LayerFillColorDefaultBrush}"
 											BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
 											BorderThickness="1"
 											Opacity="1"

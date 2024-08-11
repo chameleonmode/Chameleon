@@ -10,4 +10,5 @@ public class SettingsSettings  : ISettingsSettings
     public bool AutoLogin { get; set; } = true;
     public string CodesverifyApiKey { get; set; }
     public string UserScriptsDirectory { get; set; }
+    public string SMSPoolApiKey { get; set; }
 }

@@ -1,7 +1,18 @@
-﻿namespace Chameleon.SystemBrowser.Addons;
+﻿using Avalonia.Platform;
+
+namespace Chameleon.SystemBrowser.Addons;
 
 public static class AddonsUtil
 {
+    public const string ChameleonAddon = nameof(ChameleonAddon);
+    public const string ClientRectsAddon = nameof(ClientRectsAddon);
+    public const string FontDefenderAddon = nameof(FontDefenderAddon);
+    public const string GeoAddon = nameof(GeoAddon);
+    public const string NavigatorAddon = nameof(NavigatorAddon);
+    public const string ProxyAddonUtil = nameof(ProxyAddonUtil);
+    public const string TimezoneAddon = nameof(TimezoneAddon);
+    public const string WebRtcAddon = nameof(WebRtcAddon);
+
     public static bool IMac => OperatingSystem.IsMacOS();
     // public static string BrowserExtensionsRootFolderPath => IMac ?
     // "/Applications/Chameleon.app/Contents/Resources/BrowserExtensions/mac"
@@ -26,7 +37,10 @@ public static class AddonsUtil
  }}
 
  function printDebug(text) {{
-     Components.utils.reportError(""userChrome.js "" + text);
+  var consoleService = Components.classes[""@mozilla.org/consoleservice;1""]
+                                 .getService(Components.interfaces.nsIConsoleService);
+  consoleService.logStringMessage(""userChrome.js "" + text);
+     //Components.utils.logStringMessage(""userChrome.js "" + text);
  }}
 
  // Based on class Addon {{ static async install(path, temporary = false) ... }}
@@ -76,6 +90,19 @@ public static class AddonsUtil
      }}
  }}
 
+async function processDirectory(dir) {{
+    let entries = dir.directoryEntries;
+    while (entries.hasMoreElements()) {{
+        let entry = entries.getNext().QueryInterface(Ci.nsIFile);
+        if (entry.isDirectory()) {{
+            await processDirectory(entry); // Recursively process the directory
+        }} else if (entry.isFile() && (entry.leafName.endsWith('.xpi') || entry.leafName.endsWith('.zip'))) {{
+            printDebug(`Attempting to install: ${{entry.leafName}}`);
+            await installExtension(entry.path, true);
+        }}
+    }}
+}}
+
  async function installUnpackedExtensions() {{
     const BrowserExtensionsFolderPath = `{browserExtensionsFolderPath}`;
 
@@ -106,13 +133,20 @@ public static class AddonsUtil
     }}
 
 
-     var folder = Services.dirsvc.get(""ProfD"", Ci.nsIFile).path;
-     {(IMac ?
-              "await installExtension(`${folder}/ChameleonAutoExt/autoproxy.chameleon.zip`, true);" :
-              "await installExtension(`${folder}\\\\ChameleonAutoExt\\\\autoproxy.chameleon.zip`, true);")}
 
+        var folder = Services.dirsvc.get(""ProfD"", Ci.nsIFile).path;
+        folder = {(IMac ? "`${folder}/Chameleon-addons`" : "`${folder}\\\\Chameleon-addons`")};
+        var pdirDir = new FileUtils.File(folder);
+        if (pdirDir.exists() && pdirDir.isDirectory()) {{
+            try {{
+                await processDirectory(pdirDir); // Process the profile directory
+            }} catch (ex) {{
+                reportError(`Error iterating directory: ${{ex.message}}`);
+            }}
+        }}
 
-     await setPermission(""autoproxy@chameleonmode.com"");
+        await setPermission(""autoproxy@chameleonmode.com"");
+        await setPermission(""ezexe@Chameleonmode"");
  }}
 
  async function setPermission(addonId) {{
@@ -182,5 +216,43 @@ pref(""general.config.sandbox_enabled"", false);
         var cpp = IMac ? Path.Combine(directory, "Contents", "Resources", "defaults", "pref", "config-prefs.js") : Path.Combine(directory, "defaults", "pref", "config-prefs.js");
         await File.WriteAllTextAsync(ucp, userChrome);
         await File.WriteAllTextAsync(cpp, configPrefs);
+    }
+
+    public static async Task LoadFromInternal(ExtensionDirectory addond)
+    {
+        var ldir = $"avares://Chameleon.Avalonia.Common/Assets/Addons/{addond.AddonFolderName}/";
+        var jses = AssetLoader.GetAssets(new Uri(ldir), null);
+        foreach (var j in jses)
+        {
+            var fname = j.Segments.Last();
+            var todir = Path.Combine(addond.AddonDir, Path.Combine(j.Segments[4..^1])); ///j.AbsoluteUri.Replace(ldir, dir + "\\");
+            await IOtil.CreateDirectory(todir);
+            await IOtil.CopyFromStream(
+                AssetLoader.Open(j),
+                Path.Combine(todir, fname));
+        }
+
+        var dataDir = Path.Combine(addond.AddonDir, "data");
+        var iconsDir = Path.Combine(dataDir, "icons");
+        await IOtil.CreateDirectory(iconsDir);
+        var localpath = "avares://Chameleon.Avalonia.Common/Assets/logo-symbol.iconset";
+        await IOtil.CopyFromStream(
+            AssetLoader.Open(new Uri($"{localpath}/icon_16x16.png")),
+            Path.Combine(iconsDir, "16.png"));
+        await IOtil.CopyFromStream(
+            AssetLoader.Open(new Uri($"{localpath}/icon_32x32.png")),
+            Path.Combine(iconsDir, "32.png"));
+        await IOtil.CopyFromStream(
+            AssetLoader.Open(new Uri($"{localpath}/icon_32x32@2x.png")),
+            Path.Combine(iconsDir, "64.png"));
+        await IOtil.CopyFromStream(
+            AssetLoader.Open(new Uri($"{localpath}/icon_128x128.png")),
+            Path.Combine(iconsDir, "128.png"));
+        await IOtil.CopyFromStream(
+            AssetLoader.Open(new Uri($"{localpath}/icon_256x256.png")),
+            Path.Combine(iconsDir, "256.png"));
+        await IOtil.CopyFromStream(
+            AssetLoader.Open(new Uri($"{localpath}/icon_512x512.png")),
+            Path.Combine(iconsDir, "512.png"));
     }
 }

@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.Settings;
+﻿using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.Settings;
 using System;
 using System.Linq;
 
@@ -7,6 +8,7 @@ namespace Chameleon.Infrastructure.UserSettings
     public class UserSettingsService
         : IUserSettingsService
     {
+        public static UserSettingsService Instance => ContainerServiceHelper.Resolve<IUserSettingsService>() as UserSettingsService;
         private readonly IUserSettingsRepository _repository;
 
         public UserSettingsService(

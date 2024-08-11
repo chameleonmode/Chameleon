@@ -8,6 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="NodaTime" />
+    <PackageReference Include="Polly" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
+    <ProjectReference Include="..\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

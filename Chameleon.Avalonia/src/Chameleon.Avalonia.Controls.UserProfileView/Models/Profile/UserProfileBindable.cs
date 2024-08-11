@@ -15,6 +15,17 @@ public partial class UserProfileBindable : ObservableObject
 {
     public event EventHandler<bool> ChangedProperty;
 
+    [ObservableProperty]
+    private int _id;
+    [ObservableProperty]
+    private string _notes;
+    [ObservableProperty]
+    private bool _isFavourite;
+    [ObservableProperty]
+    private string _title;
+    [ObservableProperty]
+    private int? _folderId;
+
     public UserProfileBindable()
     {
         PropertyChanged += UserProfileBindablePropertyChanged;
@@ -80,41 +91,5 @@ public partial class UserProfileBindable : ObservableObject
                 _wordPressSettings.PropertyChanged += UserProfileBindablePropertyChanged;
             }
         }
-    }
-
-    private int _id;
-    public int Id
-    {
-        get => _id;
-        set => SetProperty(ref _id, value);
-    }
-
-    private string _notes;
-    public string Notes
-    {
-        get => _notes;
-        set => SetProperty(ref _notes, value);
-    }
-
-    private bool _isFavourite;
-    public bool IsFavourite
-    {
-        get => _isFavourite;
-        set => SetProperty(ref _isFavourite, value);
-    }
-
-    [ObservableProperty]
-    private string _title;
-    //public new string Title
-    //{
-    //    get => _title;
-    //    set => SetProperty(ref _title, value);
-    //}
-
-    private int? _folderId;
-    public int? FolderId
-    {
-        get => _folderId;
-        set => SetProperty(ref _folderId, value);
     }
 }

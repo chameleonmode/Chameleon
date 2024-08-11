@@ -7,6 +7,7 @@ public interface ISettingsSettings
     bool UseCustomAccentColor { get; set; }
     bool AutoLogin { get; set; }
     string CodesverifyApiKey { get; set; }
+    string SMSPoolApiKey { get; set; }
     string UserScriptsDirectory { get; set; }
 }
 
@@ -92,6 +93,7 @@ public interface IOptions
     bool SpoofCanvasFingerprint { get; set; }
     bool SpoofWebGLFingerprint { get; set; }
     bool SpoofWebGPUFingerprint { get; set; }
+    bool SpoofGeoLocation { get; set; }
     string TimeZone { get; set; }
     bool AutoTimezone { get; set; }
     string TrackingProtectionMode { get; set; }

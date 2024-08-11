@@ -58,6 +58,9 @@
 								Content="Spoof Media Devices"
 								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofMediaDevices}" />
 							<CheckBox
+								Content="Spoof Geo Location"
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofGeoLocation}" />
+							<CheckBox
 								Content="Disable WebRtc"
 								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.DisableWebRTC}" />
 							<!--<CheckBox Content="Do Not Track"

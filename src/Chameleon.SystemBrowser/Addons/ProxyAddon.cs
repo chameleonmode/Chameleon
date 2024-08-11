@@ -4,15 +4,11 @@ namespace Chameleon.SystemBrowser.Addons;
 
 public static class ProxyAddonUtil
 {
-    public const string AutoProxyFolderName = "ChameleonAutoExt";
     public const string FirefoxAutoProxyAddonName = "autoproxy.chameleon.zip";
 
     public const string UrlSchemeEnd = "://";
     public const string HTTPSScheme = "https://";
     public const string DomainLevelDelimiter = ".";
-
-    public static string ProxyExtDir(string browserProfileFolderPath) =>
-        Path.Combine(browserProfileFolderPath, AutoProxyFolderName);
 
     public static bool ServerPortDelimiter(string starturl) => starturl.Contains(DomainLevelDelimiter);
 
@@ -74,13 +70,24 @@ public static class ProxyAddonUtil
             }}
         }};
     }}, {{urls: ['<all_urls>'] }}, ['blocking']);
-   (async function(){{
-    //await chrome.tabs.update({{ url:""{loadUrl}"" }}); 
-     let tabs = await chrome.tabs.query({{}});
-     for(let i = 0; i < tabs.length; i++) {{
-        await chrome.tabs.reload(tabs[i].id);
-     }}
-    }})();
+/* update on startup */
+{{
+    const once = async () => {{
+    let tabs = await chrome.tabs.query({{}});
+        for(let i = 0; i < tabs.length; i++) {{
+            await chrome.tabs.reload(tabs[i].id);
+        }}
+    }}
+    chrome.runtime.onInstalled.addListener(once);
+    chrome.runtime.onStartup.addListener(once);
+}}
+   //(async function(){{
+   ////await chrome.tabs.update({{ url:""{loadUrl}"" }}); 
+   // let tabs = await chrome.tabs.query({{}});
+   // for(let i = 0; i < tabs.length; i++) {{
+   //    await chrome.tabs.reload(tabs[i].id);
+   // }}
+   //}})();
     ";
     //+ $@"
     //    function getTabInfo(callback) {{

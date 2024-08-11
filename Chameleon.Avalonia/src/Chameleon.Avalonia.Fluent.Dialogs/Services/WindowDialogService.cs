@@ -17,54 +17,49 @@ public class WindowDialogService : IWindowDialogService
         throw new NotImplementedException();
         
     }
+    private void PrivateShow<TViewModel>(TViewModel viewModel, Action<TViewModel> initialize, Control view, int width, string title, Action<TViewModel>? onClosed)
+    {
+        initialize(viewModel);
 
-    public void ShowTopmost<TView, TViewModel>(Action<TViewModel> initialize, Action<TViewModel>? OnClosed = null,string title = "Copy Pasta", int width = 256) where TViewModel : class
+        if (!windows.TryGetValue(viewModel, out AcrylicWindow w))
+        {
+            w = new()
+            {
+                Topmost = true,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Width = width,
+                Title = title,
+            };
+            windows[viewModel] = w;
+
+            w.Closed += (s, e) =>
+            {
+                w.MainPanel.Children.Remove(view);
+                windows.Remove(viewModel);
+                onClosed?.Invoke(viewModel);
+            };
+            w.MainPanel.Children.Add(view);
+        }
+
+        w.Show();
+    }
+    public void ShowTopmost<TView, TViewModel>(TViewModel vm, Action<TViewModel> initialize,
+        Action<TViewModel>? onClosed = null, string title = "Copy Pasta", int width = 256) where TViewModel : class
     {
         if (ContainerServiceHelper.Resolve<TView>() is Control view)
         {
-            //if (view.Parent != null)
-            //{
-            //    var _originalHost = (Control)view.Parent;
-            //    switch (_originalHost)
-            //    {
-            //        case Panel p:
-            //            p.Children.Remove(view);
-            //            break;
-            //        case Decorator d:
-            //            d.Child = null;
-            //            break;
-            //        case ContentControl cc:
-            //            cc.Content = null;
-            //            break;
-            //        case ContentPresenter cp:
-            //            cp.Content = null;
-            //            break;
-            //    }
-            //}
-            var viewModel = view.DataContext as TViewModel;
-            initialize?.Invoke(viewModel);
+            view.DataContext = vm;
+            PrivateShow(vm, initialize, view, width, title, onClosed);
+        }
+    }
 
-            if (!windows.TryGetValue(viewModel, out AcrylicWindow w))
-            {
-                w = new()
-                {
-                    Topmost = true,
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                    Width = width,
-                    Title = title,
-                };
-                windows[viewModel] = w;
-
-                w.Closed += (s, e) =>
-                {
-                    w.MainPanel.Children.Remove(view);
-                    windows.Remove(viewModel);
-                    OnClosed?.Invoke(viewModel);
-                };
-                w.MainPanel.Children.Add(view);
-            }
-
-            w.Show();
+    public void ShowTopmost<TView, TViewModel>(Action<TViewModel> initialize,
+        Action<TViewModel>? onClosed = null, string title = "Copy Pasta", int width = 256) where TViewModel : class
+    {
+        if (ContainerServiceHelper.Resolve<TView>() is Control view)
+        {
+            var vm = view.DataContext as TViewModel;
+            PrivateShow(vm, initialize, view, width, title, onClosed);
         }
     }
 }

@@ -12,15 +12,61 @@ namespace Chameleon.Controls.UserProfileView.Models.Additional
         : ObservableObject
         , IUserProfilePerson
     {
+        [ObservableProperty]
+        private int _id; 
+        [ObservableProperty]
+        private int _profileId;
+        [ObservableProperty]
+        private string _title = string.Empty;
+        [ObservableProperty]
+        private string _jobTitle = string.Empty;
+        [ObservableProperty]
+        private string _firstName = string.Empty;
+        [ObservableProperty]
+        private string _middleName = string.Empty;
+        [ObservableProperty]
+        private string _lastName = string.Empty;
+        [ObservableProperty]
+        private string _email = string.Empty;
+        [ObservableProperty]
+        private string _phoneNumber = string.Empty;
+        [ObservableProperty]
+        private string _birthPlace = string.Empty;
+        [ObservableProperty]
+        private string _notes = string.Empty;
+
+        [ObservableProperty]
+        private bool _isOpenSearchParameters;
+        [ObservableProperty]
+        private bool _isPropertyChanged;
+
+        [ObservableProperty]
+        string _gendertext = "Female";
+        [ObservableProperty]
+        public GenderType[] genderTypeList = [GenderType.Female, GenderType.Male, GenderType.Unknown];
+        [ObservableProperty]
+        private GenderType _gender;
+
+        [ObservableProperty]
+        private DateTimeOffset _birthDateOffset = new DateTimeOffset(DateTime.Now.AddYears(-20));
+        public DateTime BirthDate
+        {
+            get => BirthDateOffset.DateTime;
+            set
+            {
+                BirthDateOffset = new DateTimeOffset(value);
+            }
+        }
+
         public UserProfilePersonBindable()
         {
             PropertyChanged += UserProfilePersonBindablePropertyChanged;
+            Gender = GenderTypeList[0];
         }        
 
-        public UserProfilePersonBindable(int profileId)
+        public UserProfilePersonBindable(int profileId) : this()
         {
             _profileId = profileId;
-            PropertyChanged += UserProfilePersonBindablePropertyChanged;
         }
 
         private void UserProfilePersonBindablePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -34,154 +80,68 @@ namespace Chameleon.Controls.UserProfileView.Models.Additional
             IsPropertyChanged = true;
         }
 
-        private bool _isPropertyChanged;
-        public bool IsPropertyChanged
+        partial void OnGenderChanged(GenderType oldValue, GenderType newValue)
         {
-            get => _isPropertyChanged;
-            set => SetProperty(ref _isPropertyChanged, value);
-        }
-
-        private int _id;
-        public int Id
-        {
-            get => _id;
-            set => SetProperty(ref _id, value);
-        }
-
-        private string _title = string.Empty;
-        public string Title 
-        { 
-            get => _title; 
-            set => SetProperty(ref _title,value); 
-        }
-
-        private string _firstName = string.Empty;
-        public string FirstName 
-        { 
-            get => _firstName;
-            set => SetProperty(ref _firstName, value); 
-        }
-
-        private string _lastName = string.Empty;
-        public string LastName 
-        { 
-            get => _lastName;
-            set => SetProperty(ref _lastName,value); 
-        }
-
-        private string _middleName = string.Empty;
-        public string MiddleName 
-        { 
-            get => _middleName;
-            set => SetProperty(ref _middleName,value); 
-        }
-
-        private string _jobTitle = string.Empty;
-        public string JobTitle 
-        { 
-            get => _jobTitle; 
-            set => SetProperty(ref _jobTitle,value); 
-        }
-
-        private string _phoneNumber = string.Empty;
-        public string PhoneNumber 
-        { 
-            get => _phoneNumber;
-            set => SetProperty(ref _phoneNumber,value); 
-        }
-
-        private string _email = string.Empty;
-        public string Email 
-        { 
-            get => _email; 
-            set => SetProperty(ref _email,value); 
-        }
-
-        //private DateTime _birthDate = DateTime.Now.AddYears(-20);
-        public DateTime BirthDate 
-        { 
-            get => BirthDateOffset.DateTime;
-            set
+            switch (newValue)
             {
-                BirthDateOffset = new DateTimeOffset(value);
+                case GenderType.Female:
+                    Gendertext = "Female";
+                    break;
+                case GenderType.Male:
+                    Gendertext = "Male";
+                    break;
+                case GenderType.Unknown:
+                    Gendertext = "Unknown";
+                    break;
+                default:
+                    Gendertext = "default";
+                    break;
             }
         }
 
 
-        private string _birthPlace = string.Empty;
-        public string BirthPlace
-        {
-            get => _birthPlace;
-            set => SetProperty(ref _birthPlace, value);
-        }
-        [ObservableProperty]
-        private DateTimeOffset _birthDateOffset = new DateTimeOffset(DateTime.Now.AddYears(-20));
-
-        private string _notes = string.Empty;
-        public string Notes 
-        { 
-            get => _notes; 
-            set => SetProperty(ref _notes,value); 
-        }
-
-        [ObservableProperty]
-        bool _genderMale;
-        partial void OnGenderMaleChanged(bool oldValue, bool newValue)
-        {
-            if(newValue)
-                Gender = GenderType.Male;
-            else
-                Gender = GenderType.Female;
-        }
-         [ObservableProperty]
-        bool _genderFeMale = true;
-        partial void OnGenderFeMaleChanged(bool oldValue, bool newValue)
-        {
-            if(newValue)
-                Gender = GenderType.Female;
-            else
-                Gender = GenderType.Male;
-        }
-        [ObservableProperty]
-        string _gendertext = "Female";
-        private GenderType _gender = GenderType.Female;
-        public GenderType Gender 
-        { 
-            get => _gender;
-            set {
-                if(SetProperty(ref _gender,value))
-                {
-                    if(Gender == GenderType.Female)
-                   {  
-                     GenderMale = false;
-                     GenderFeMale = true;
-                     Gendertext = "Female";
-                   }else if(Gender == GenderType.Male){
-                       GenderMale = true;
-                     GenderFeMale = false;
-                     Gendertext = "Male";
-                   }
-                }
-            }
-        }
-
-        private int _profileId;
-        public int ProfileId
-        {
-            get => _profileId;
-            set => SetProperty(ref _profileId, value);
-        }
+        //[ObservableProperty]
+        //bool _genderMale;
+        //partial void OnGenderMaleChanged(bool oldValue, bool newValue)
+        //{
+        //    if(newValue)
+        //        Gender = GenderType.Male;
+        //    else
+        //        Gender = GenderType.Female;
+        //}
+        // [ObservableProperty]
+        //bool _genderFeMale = true;
+        //partial void OnGenderFeMaleChanged(bool oldValue, bool newValue)
+        //{
+        //    if(newValue)
+        //        Gender = GenderType.Female;
+        //    else
+        //        Gender = GenderType.Male;
+        //}
+        //private GenderType _gender = GenderType.Female;
+        //public GenderType Gender 
+        //{ 
+        //    get => _gender;
+        //    set {
+        //        if(SetProperty(ref _gender,value))
+        //        {
+        //            if(Gender == GenderType.Female)
+        //           {  
+        //             GenderMale = false;
+        //             GenderFeMale = true;
+        //             Gendertext = "Female";
+        //           }else if(Gender == GenderType.Male){
+        //               GenderMale = true;
+        //             GenderFeMale = false;
+        //             Gendertext = "Male";
+        //           }
+        //        }
+        //    }
+        //}
 
         public override string ToString()
         {
             return Title;
-        }
-
-        private bool _isOpenSearchParameters;
-        public bool IsOpenSearchParameters
-        {
-            get => _isOpenSearchParameters;
-            set => SetProperty(ref _isOpenSearchParameters, value);
         }
     }
 }

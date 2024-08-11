@@ -30,7 +30,7 @@ public partial class ProxySettingsBindable
     private string? _portString;
     partial void OnPortStringChanged(string? oldValue, string? newValue)
     {
-              if(int.TryParse(newValue, out var port)) {if(Port!=port) Port = port; }
+        if (int.TryParse(newValue, out var port)) { if (Port != port) Port = port; }
     }
     private int _port;
     public int Port
@@ -62,6 +62,9 @@ public partial class ProxySettingsBindable
     public string Server { get; }
 
     public string Error { get; private set; }
+
+    public string ServerForRequest { get; }
+
     public string this[string columnName]
     {
         get

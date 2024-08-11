@@ -33,8 +33,7 @@ public class UserProfileAdditionalDataService : IUserProfileAdditionalDataServic
         IUserProfileAddressRepository addressRepository,
         IUserProfileLoginRepository loginRepository,
         ICountryRepository countryRepository,
-        IUserProfileOutReachRssRepository outReachRssRepository
-        )
+        IUserProfileOutReachRssRepository outReachRssRepository)
     {
         _mapper = mapper;
         _personRepository = personRepository;
@@ -83,8 +82,43 @@ public class UserProfileAdditionalDataService : IUserProfileAdditionalDataServic
     {
         var request = new UserProfileGetAllRequestDto(profileId);
         var persons = _personRepository.GetAll(ignoreCache, request);
+        //return _mapper.Map<UserProfilePersonBindable[]>(persons);
+
+        // Validate the source data before mapping
+        for (int i = 0; i < persons.Length; i++)
+        {
+           if (persons[i].BirthDate <= DateTimeOffset.MinValue.DateTime || persons[i].BirthDate >= DateTimeOffset.MaxValue.DateTime)
+                persons[i].BirthDate = DateTimeOffset.Now.AddYears(-20).DateTime;
+        }
         return _mapper.Map<UserProfilePersonBindable[]>(persons);
+
+        // Validate the source data before mapping
+        //List<UserProfilePersonBindable> result = [];
+        //foreach (var person in persons)
+        //{
+        //    if (person.BirthDate <= DateTimeOffset.MinValue.DateTime || person.BirthDate >= DateTimeOffset.MaxValue.DateTime)
+        //        person.BirthDate = DateTimeOffset.Now.AddYears(-20).DateTime;
+
+        //    //result.Add(new UserProfilePersonBindable()
+        //    //{
+        //    //    Id = person.Id,
+        //    //    ProfileId = person.ProfileId,
+        //    //    Title = person.Title ?? $"{result.Count}",
+        //    //    JobTitle = person.JobTitle,
+        //    //    FirstName = person.FirstName,
+        //    //    MiddleName = person.MiddleName,
+        //    //    LastName = person.LastName,
+        //    //    Email = person.Email,
+        //    //    PhoneNumber = person.PhoneNumber,
+        //    //    BirthPlace = person.BirthPlace,
+        //    //    Notes = person.Notes,
+        //    //    Gender = person.Gender,
+        //    //    BirthDate = person.BirthDate,
+        //    //});
+        //}
+        //return result;
     }
+
 
     public Task<IEnumerable<UserProfilePersonBindable>> GetPersonsAsync(int profileId, bool ignoreCache = true)
            => Task.Run(() => GetPersons(profileId, ignoreCache));

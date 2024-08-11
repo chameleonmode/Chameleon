@@ -402,7 +402,7 @@ public partial class UserProxySettingsViewModel
             .Split(':');
         if (applingProxies.Length != 4)
         {
-            ErrorMessage("Not a valid string");
+            ToasterHelper.ShowErr($"Not a valid set {applingProxy}");
             return false;
         }
 
@@ -410,7 +410,7 @@ public partial class UserProxySettingsViewModel
         var isValidPort = Int32.TryParse(portStr, out var port);
         if (!isValidPort && !string.IsNullOrWhiteSpace(portStr))
         {
-            ErrorMessage("Port cann't be text");
+            ToasterHelper.ShowErr($"Port cann't be text {applingProxy}");
             return false;
         }
 
@@ -447,11 +447,6 @@ public partial class UserProxySettingsViewModel
             models.Add(item);
         }
         return models;
-    }
-
-    private static async void ErrorMessage(string message)
-    {
-        await MesageBoxHelper.ShowErrorAsync("Warning", message);
     }
     private async void PurchaseMessage()
     {
