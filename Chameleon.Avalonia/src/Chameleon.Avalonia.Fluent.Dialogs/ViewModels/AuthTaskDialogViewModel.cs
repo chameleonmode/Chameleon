@@ -56,7 +56,7 @@ public partial class AuthTaskDialogViewModel : DialogBase, IAuthTaskDialogViewMo
             if (LicenceKey is not null && !LicenceKey.StartsWith("KEY") &&
                 !await _apiClient.IsLicenseActiveAsync(LicenceKey))
             {
-                result = await MesageBoxHelper.ShowAsync("Warning", "Do you want to activate another license? Current one will not be active anymore.") ? IContentDialogResult.Primary : IContentDialogResult.Secondary;
+                result = IContentDialogResult.Primary;//TODO: investigate await MesageBoxHelper.ShowAsync("Warning", "Do you want to activate another license? Current one will not be active anymore.") ? IContentDialogResult.Primary : IContentDialogResult.Secondary;
             }
             else 
                 result = IContentDialogResult.Primary;

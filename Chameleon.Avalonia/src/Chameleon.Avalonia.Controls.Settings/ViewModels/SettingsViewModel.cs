@@ -12,6 +12,7 @@ using Avalonia.Styling;
 using Avalonia;
 using FluentAvalonia.Styling;
 using Avalonia.Media;
+using System.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -22,6 +23,9 @@ public partial class SettingsViewModel
     private const string _system = "System";
     private const string _dark = "Dark";
     private const string _light = "Light";
+
+    public string CurrentVersion =>
+        typeof(Interfaces.IHaveInitialize).Assembly.GetName().Version?.ToString();
 
     public string[] AppThemes => [_system, _light, _dark /*, FluentAvaloniaTheme.HighContrastTheme*/];
     public List<Color> PredefinedColors => new List<Color>
@@ -104,6 +108,10 @@ public partial class SettingsViewModel
     [ObservableProperty]
     Color? _listBoxColor;
 
+
+    [ObservableProperty]
+    string _liscencedTo;
+
     public SettingsViewModel(IApplicationUser user, IApplicationSettingsService settingsService) 
         : base("Settings")
     {           
@@ -124,7 +132,7 @@ public partial class SettingsViewModel
         if (_settings.Settings.UseCustomAccentColor && _settings.Settings.CustomAccentColor is string coler)
             UpdateAppAccentColor(Color.Parse(coler));
         UseCustomAccentColor = _settings.Settings.UseCustomAccentColor;
-
+        LiscencedTo = $"Licensed to: {_applicationUser.Email}";
         InitializeTabControl();
     }
 

@@ -10,6 +10,7 @@
 	<Thickness x:Key="ChameleonAppPageMargin">8 0</Thickness>
 	<Thickness x:Key="ChameleonControlMargin">8</Thickness>
 	<Thickness x:Key="ChameleonInnerControlMargin">4</Thickness>
+	<Thickness x:Key="ScrollviewerAppPageMargin">20 20 20 0</Thickness>
 
 	<!--Icons-->	
 	<ui:SymbolIconSource Symbol="Home" x:Key="HomeIcon" />

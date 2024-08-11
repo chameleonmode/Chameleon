@@ -10,65 +10,65 @@
 			 x:DataType="vm:SettingsViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.Settings.SettingsView">	
-		<ScrollViewer>
-			<StackPanel>
-				<contrls:PageHeaderControl 
+		<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
+			<StackPanel Spacing="8">
+				<!--<contrls:PageHeaderControl 
 					TextType="Settings"
 					Classes="smallest"
-					Margin="7 12 12 0"/>
-			<StackPanel Spacing="15"
-                        Margin="30 0 30 30">
-				<!--<ui:SettingsExpander 
-					Header="Web"
-					Name="Default"
-					IconSource="{StaticResource DefaultSettingsPageIcon}"
-					Description="Default home pages"
-					IsClickEnabled="True"
-					ActionIconSource="{StaticResource GoIcon}"
-					Command="{Binding CmdNavigateToChildCommand}"
-					CommandParameter="DEFAULTS" />-->
-				<!--<ui:SettingsExpander 
-					Header="Proxy"
-					Name="PROXY"
-					IconSource="{StaticResource Proxy}"
-					Description="Proxy settings"
-					IsClickEnabled="True"
-					ActionIconSource="{StaticResource GoIcon}"
-					Command="{Binding CmdNavigateToChildCommand}"
-					CommandParameter="PROXY"/>-->
-				
-				<!--<ui:SettingsExpander Header="Proxy Credit"
-									 Name="PROXYCREDIT"
-					 IconSource="{StaticResource ProxyCred}"
-					 Description="Proxy credit settings"
-					 IsClickEnabled="True"
-					 ActionIconSource="{StaticResource GoIcon}"
-					 Command="{Binding CmdNavigateToChildCommand}"
-					 CommandParameter="PROXYCREDIT"/>-->
-				
-				<!--<ui:SettingsExpander Header="Virtual Taskforce"
-									 Name="USERS"
-					 IconSource="{StaticResource User}"
-					 Description="VA settings"
-					 IsClickEnabled="True"
-					 ActionIconSource="{StaticResource GoIcon}"
-					 Command="{Binding CmdNavigateToChildCommand}"
-					 CommandParameter="USERS"/>-->
+					Margin="7 12 12 0"/>-->
+				<DockPanel Margin="0 0 0 10">
+					<!--<Image Source="avares://Chameleon.Avalonia.Common/Assets/Images/logo-merge.png"
+                           DockPanel.Dock="Left"
+                           Height="72"
+                           RenderOptions.BitmapInterpolationMode="HighQuality"/>-->
+					<!--<Image Source="avares://Chameleon.Avalonia.Common/Assets/logo-symbol.iconset/icon_128x128.png"
+						DockPanel.Dock="Left"
+						Height="78"
+						RenderOptions.BitmapInterpolationMode="HighQuality"/>-->
 
+					<StackPanel Spacing="0" Margin="12 0">
+						<TextBlock Text="Chameleon Mode"
+                                   Theme="{StaticResource TitleTextBlockStyle}" />
+						<!--<Image 
+							Source="avares://Chameleon.Avalonia.Common/Assets/Images/logo-merge.png"
+							Height="54"
+							Margin="-6 0 0 0"
+							HorizontalAlignment="Left"
+							RenderOptions.BitmapInterpolationMode="HighQuality"/>-->
+
+						<TextBlock Text="{Binding CurrentVersion}"  
+								   Theme="{StaticResource BodyTextBlockStyle}" />
+
+						<TextBlock Text="{Binding LiscencedTo}"
+                                   Theme="{StaticResource CaptionTextBlockStyle}" />
+
+						<TextBlock Theme="{StaticResource CaptionTextBlockStyle}"
+                                   Text="https://chameleonmode.com/"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+					</StackPanel>
+				</DockPanel>
+
+				<ui:SettingsExpander Header="Account"
+					 IconSource="Contact">
+					<ui:SettingsExpander.Footer>
+						<Button Command="{Binding LogoutCommand}"
+								Content="Logout"
+								  MinWidth="150" />
+					</ui:SettingsExpander.Footer>
+				</ui:SettingsExpander>
+			
 				<ui:SettingsExpander
 					Header="App Theme"
-					IconSource="DarkTheme"
-					Description="Change the current app theme">
+					IconSource="DarkTheme">
 					<ui:SettingsExpander.Footer>
 						<ComboBox SelectedItem="{Binding CurrentAppTheme}"
 								  ItemsSource="{Binding AppThemes}"
 								  MinWidth="150" />
 					</ui:SettingsExpander.Footer>
 				</ui:SettingsExpander>
-				
+
 				<ui:SettingsExpander Header="App Accent Color"
 					 IconSource="ColorLine"
-					 Description="Set a custom accent color for the App"
 					 IsExpanded="False">
 
 					<ui:SettingsExpanderItem Content="Preview">
@@ -221,24 +221,47 @@
 
 				</ui:SettingsExpander>
 
-				<ui:SettingsExpander Header="Account"
-					 IconSource="Contact"
-					 Description="Default app Settings">
-					<ui:SettingsExpander.Footer>
-						<Button Command="{Binding LogoutCommand}"
-								Content="Logout"
-								  MinWidth="150" />
-					</ui:SettingsExpander.Footer>
+				<ui:SettingsExpander Header="About"
+							IconSource="M2 14C2 20.6274 7.37258 26 14 26C20.6274 26 26 20.6274 26 14C26 7.37258 20.6274 2 14 2C7.37258 2 2 7.37258 2 14ZM15.25 8C15.25 8.69036 14.6904 9.25 14 9.25C13.3096 9.25 12.75 8.69036 12.75 8C12.75 7.30964 13.3096 6.75 14 6.75C14.6904 6.75 15.25 7.30964 15.25 8ZM14 11C14.5523 11 15 11.4477 15 12L15 20C15 20.5523 14.5523 21 14 21C13.4477 21 13 20.5523 13 20L13 12C13 11.4477 13.4477 11 14 11Z">
+					<ui:SettingsExpanderItem Content="Found a bug? Want a new feature, control, or sample?"
+											 ActionIconSource="Open"
+											 IsClickEnabled="True"
+											 Name="LaunchSupportLinkItem"/>
+					<ui:SettingsExpanderItem Content="Contact Us">
+						<ui:SettingsExpanderItem.Footer>
+							<SelectableTextBlock Text="https://chameleonmode.com/contact" />
+						</ui:SettingsExpanderItem.Footer>
+					</ui:SettingsExpanderItem>
+					<ui:SettingsExpanderItem Content="Training">
+						<ui:SettingsExpanderItem.Footer>
+							<SelectableTextBlock Text="https://www.skool.com/chameleon-mode-training" />
+						</ui:SettingsExpanderItem.Footer>
+					</ui:SettingsExpanderItem>
+					<!--<ui:SettingsExpanderItem Content="Customer Portal">
+						<ui:SettingsExpanderItem.Footer>
+							<SelectableTextBlock Text="https://chameleonmode.com/customer-portal/" />
+						</ui:SettingsExpanderItem.Footer>
+					</ui:SettingsExpanderItem>-->
+					<ui:SettingsExpanderItem>
+						<StackPanel Spacing="4">
+							<TextBlock Text="License" />
+							<TextBlock TextWrapping="Wrap"
+									   Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+								<Run>
+									This release of Chameleon is 
+								</Run>
+								<Run Text="{Binding LiscencedTo}" />
+								<LineBreak />
+								<Run>
+									Chameleonmode © 2024 Chameleonmode.com
+								</Run>
+							</TextBlock>
+						</StackPanel>
+						<ui:SettingsExpanderItem.Footer>
+							<SelectableTextBlock Text="https://chameleonmode.com" />
+						</ui:SettingsExpanderItem.Footer>
+					</ui:SettingsExpanderItem>
 				</ui:SettingsExpander>
-				<!--<ui:SettingsExpander Header="IMPORT PROFILES"
-									 Name="IMPORTPROFILES"
-					 IconSource="{StaticResource Import}"
-					 Description="Import profiles from file"
-					 IsClickEnabled="True"
-					 ActionIconSource="{StaticResource GoIcon}"
-					 Command="{Binding CmdNavigateToChildCommand}"
-					 CommandParameter="IMPORTPROFILES"/>-->
-			</StackPanel>
 			</StackPanel>
 		</ScrollViewer>
 </UserControl>

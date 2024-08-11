@@ -10,12 +10,14 @@ using Chameleon.Av.Fluent.Common.Pages;
 using Chameleon.Avalonia.Controls.Settings.ViewModels;
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Attributes;
+using Chameleon.Core.Util;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Settings;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
+using System.Diagnostics;
 
 namespace Chameleon.Avalonia.Controls.Settings;
 
@@ -27,10 +29,20 @@ public partial class SettingsView : ChameleonNavigationPage
         InitializeComponent();
         //DataContext = ContainerServiceHelper.Resolve<ISettingsViewModel>();
 
-        //// Use the frame events here to ensure ConnectedAnimations still work with
-        //// Back/Forward navigation and not just explicit page invokes
-        //AddHandler(Frame.NavigatingFromEvent, OnNavigatingFrom, RoutingStrategies.Direct);
-        //AddHandler(Frame.NavigatedToEvent, OnNavigatedTo, RoutingStrategies.Direct);
+        LaunchSupportLinkItem.Click += LaunchSupportLinkItemClick;
+    }
+
+    private void LaunchSupportLinkItemClick(object sender, RoutedEventArgs e)
+    {
+        var uri = new Uri("https://help.chameleonmode.com");
+        try
+        {
+            ProUtil.GoToUrlDefault(uri.ToString());
+        }
+        catch
+        {
+             ToasterHelper.ShowErr($"Error navigationg to {uri}");
+        }
     }
 
     //private void Default_Tapped(object? sender, TappedEventArgs e)
