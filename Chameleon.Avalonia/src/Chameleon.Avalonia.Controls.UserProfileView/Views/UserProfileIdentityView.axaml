@@ -71,11 +71,29 @@
 			<Setter Property="IsExpanded" Value="{ReflectionBinding IsOpenSearchParameters, FallbackValue=True}" />
 			<Setter Property="Header" Value="{ReflectionBinding Title}" />
 			<Setter Property="Margin" Value="0 0 0 6" />
-			<Setter Property="Background" Value="{StaticResource CardBackgroundFillColorDefaultBrush}" />
+			<Setter Property="Background" Value="{StaticResource LayerFillColorDefaultBrush}" />
 		</Style>
 		<Style Selector="ItemsControl.TheseItemControls">
 			<Setter Property="Grid.Row" Value="1" />
 			<Setter Property="Margin" Value="0 20 0 0" />
+		</Style>
+		<!--Use Classes="RadioButtonListBox" in any ListBox to represent its items as RadioButtons-->
+		<!--https://github.com/AvaloniaUI/Avalonia/issues/3016-->
+		<Style Selector="ListBox.RadioButtonListBox">
+			<Setter Property="BorderBrush" Value="Transparent"/>
+		</Style>
+		<Style Selector="ListBox.RadioButtonListBox ListBoxItem">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate>
+						<Border Background="Transparent">
+							<RadioButton Content="{TemplateBinding ContentPresenter.Content}"
+										 VerticalAlignment="Center"
+										 IsChecked="{Binding Path=IsSelected,RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}"/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
 		</Style>
 	</UserControl.Styles>
 	<Grid RowDefinitions="Auto,*">
@@ -101,7 +119,6 @@
 						Command="{Binding SaveChangesCommand}"/>
 				</StackPanel>
 		</Grid>
-
 
 		<TabControl Grid.Row="2"
 					HorizontalAlignment="Stretch"
@@ -205,8 +222,10 @@
 																			   Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
 
 												<UniformGrid Rows="1">
-													<!--todo https://github.com/AvaloniaUI/Avalonia/issues/3016-->
-													<Border HorizontalAlignment="Stretch" Padding="15 0 22 0">
+													<ListBox ItemsSource="{ReflectionBinding GenderTypeList}"
+															 SelectedItem="{Binding Gender}"
+															 Classes="RadioButtonListBox"/>
+													<!--<Border HorizontalAlignment="Stretch" Padding="15 0 22 0">
 														<RadioButton
 															GroupName="rbgGender"
 															IsChecked="{Binding GenderMale}">
@@ -222,7 +241,7 @@
 																<TextBlock Text="Female"  />
 															</RadioButton.Content>
 														</RadioButton>
-													</Border>
+													</Border>-->
 												</UniformGrid>
 
 												<DatePicker SelectedDate="{Binding BirthDateOffset, FallbackValue=1/2/23}"
