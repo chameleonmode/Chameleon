@@ -34,7 +34,7 @@ public partial class SettingsView : ChameleonNavigationPage
 
     private void LaunchSupportLinkItemClick(object sender, RoutedEventArgs e)
     {
-        var uri = new Uri("https://help.chameleonmode.com");
+        var uri = new Uri("https://chameleonmode.com");
         try
         {
             ProUtil.GoToUrlDefault(uri.ToString());
