@@ -381,6 +381,11 @@ public class CodesVerifyAPI : IPVAInstance
         return new Tuple<string, string>(responseBody, responseBody);
     }
 
+    public Task<Tuple<string, string>> CancelOrderAsync(string orderId)
+    {
+        throw new NotImplementedException();
+    }
+
     // Make class singleton
     private CodesVerifyAPI()
     {

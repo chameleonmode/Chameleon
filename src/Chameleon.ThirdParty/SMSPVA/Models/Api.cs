@@ -11,13 +11,16 @@ public class ApiResponse<T>
     public T Data { get; set; }
 
     [JsonPropertyName("error")]
-    public object Error { get; set; }
+    public ErrorData Error { get; set; }
 }
-
-public class GetNumberData
+public class DataBase
 {
     [JsonPropertyName("orderId")]
     public int OrderId { get; set; }
+}
+
+public class GetNumberData : DataBase
+{
 
     [JsonPropertyName("phoneNumber")]
     public string PhoneNumber { get; set; }
@@ -29,13 +32,10 @@ public class GetNumberData
     public int OrderExpireIn { get; set; }
 }
 
-public class ReceiveSMSData
+public class ReceiveSMSData : DataBase
 {
     [JsonPropertyName("sms")]
     public Sms Sms { get; set; }
-
-    [JsonPropertyName("orderId")]
-    public string OrderId { get; set; }
 
     [JsonPropertyName("orderExpireIn")]
     public int OrderExpireIn { get; set; }

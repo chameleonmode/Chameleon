@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="526" d:DesignHeight="390"
+             mc:Ignorable="d" d:DesignWidth="720" d:DesignHeight="520"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.Functional.ViewModels"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
@@ -30,6 +30,27 @@
 								CommandParameter="{TemplateBinding Name}"
 								Command="{Binding AsyncCfromVCommand}" />
 					</StackPanel>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		<ControlTheme x:Key="ActionsItemsBorder"
+					  TargetType="HeaderedContentControl">
+			<Setter Property="VerticalAlignment" Value="Bottom" />
+			<Setter Property="Margin" Value="0" />
+			<Setter Property="MinWidth" Value="420" />
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border
+						Background="{StaticResource LayerFillColorDefaultBrush}"
+						HorizontalAlignment="Center"
+						Height="50"
+						CornerRadius="{StaticResource ControlCornerRadius}"
+						Margin="0 0 0 3"
+						BoxShadow="0 8 32 0 #66000000">
+						<Panel Margin="24 0">
+							<ContentPresenter Content="{TemplateBinding Header}" />
+						</Panel>
+					</Border>
 				</ControlTemplate>
 			</Setter>
 		</ControlTheme>
@@ -62,56 +83,102 @@
 		</afv:ChameleonContentControl.TitleContent>
 
 		<afv:ChameleonContentControl.Header>
-			<Grid RowDefinitions="Auto,Auto">
-				<TextBlock Margin="0 8 0 8"
-						   Text="API Key"/>
-				<Border Grid.Row="1">
-					<StackPanel Orientation="Horizontal">
-						<TextBox
-							Width="360"
-							Text="{Binding ApiKey}"/>
+				<!--<afv:HeaderdInputFieldsControl HorizontalAlignment="Left"
+											   Margin="0 8 0 0"
+											   Width="420"
+											   Title="API Key"
+											   Text="{Binding ApiKey}" />-->
+			<HeaderedContentControl Margin="0 18 0 0" Theme="{StaticResource ActionsItemsBorder}">
+				<HeaderedContentControl.Header>
+					<StackPanel Margin="0 2 0 0" Orientation="Horizontal">
+						<!--<ui:FAComboBox
+								Width="108"
+								Margin="0 10 0 0"
+								ItemsSource="{Binding Countries}"
+								SelectedItem="{Binding SelectedCountry}"
+								DisplayMemberBinding="{Binding Name}" />
+						<ui:FAComboBox
+							Width="108"
+								Margin="12 10 0 0"
+								ItemsSource="{Binding Apps}"
+								SelectedItem="{Binding SelectedApp}"
+								DisplayMemberBinding="{Binding Name}" />-->
+						<Button
+							Width="108"
+							Margin="0 0 0 0"
+							Content="Get Number"
+							CommandParameter="GetNumber"
+							Command="{Binding AsyncCfromVCommand}"
+							Theme="{DynamicResource TransparentButton}" />
+						<Button
+							Margin="8 0 0 0"
+							Width="108"
+							Content="Get Code"
+							CommandParameter="GetCode"
+							Command="{Binding AsyncCfromVCommand}"
+							Theme="{DynamicResource TransparentButton}"/>
+
+						<Border IsVisible="{Binding CanCancel}"
+								BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+								Margin="18 6"
+								BorderThickness="1 0 0 0" />
+
+						<Button
+							IsVisible="{Binding CanCancel}"
+							Width="108"
+							Content="Cancel Order"
+							CommandParameter="CancelOrder"
+							Command="{Binding AsyncCfromVCommand}"
+							Theme="{DynamicResource TransparentButton}" />
 					</StackPanel>
-				</Border>
-			</Grid>
+				</HeaderedContentControl.Header>
+			</HeaderedContentControl>
 		</afv:ChameleonContentControl.Header>
 
-		<afv:ChameleonContentControl.Content>
-			<StackPanel Spacing="18">
-				<StackPanel Orientation="Horizontal">
-					<ui:FAComboBox
-						Classes="apiSelector"
-						Header="Country:"
-						ItemsSource="{ReflectionBinding Countries}"
-						SelectedItem="{ReflectionBinding SelectedCountry}"
-						DisplayMemberBinding="{ReflectionBinding Name}" />
-					
-					<ui:FAComboBox
-						Classes="apiSelector"
-						Header="App:"
-						ItemsSource="{ReflectionBinding Apps}"
-						SelectedItem="{ReflectionBinding SelectedApp}"
-						DisplayMemberBinding="{ReflectionBinding Name}" />
-				</StackPanel>
-				<afv:HeaderdListControl>
-					<afv:HeaderdListControl.HeaderdList>
-						<HeaderedContentControl
-							Header="Phone Number"
-							Content="Get Number"
-							Tag="{Binding GetNumberData}"
-							Name="GetNumber"
-							Theme="{StaticResource ThesePVApisCP}"/>
+		<afv:ChameleonContentControl.Options>
+			<StackPanel>
+				<ui:FAComboBox
+					Classes="apiSelector"
+					Header="Country:"
+					ItemsSource="{ReflectionBinding Countries}"
+					SelectedItem="{ReflectionBinding SelectedCountry}"
+					DisplayMemberBinding="{ReflectionBinding Name}" />
 
-						<HeaderedContentControl
-							Header="Code"
-							Content="Get Code"
-							Tag="{Binding ReceiveSMSData}"
-							Name="GetCode"
-							Theme="{StaticResource ThesePVApisCP}"/>
-					</afv:HeaderdListControl.HeaderdList>
-				</afv:HeaderdListControl>
+				<ui:FAComboBox
+					Classes="apiSelector"
+					Header="App:"
+					ItemsSource="{ReflectionBinding Apps}"
+					SelectedItem="{ReflectionBinding SelectedApp}"
+					DisplayMemberBinding="{ReflectionBinding Name}" />
+			</StackPanel>
+		</afv:ChameleonContentControl.Options>
+
+		<afv:ChameleonContentControl.Content>
+			<StackPanel Spacing="18" 
+						HorizontalAlignment="Left">
+				<afv:HeaderdInputFieldsControl 
+					IsVisible="{Binding IsVisibleSave}"
+					HorizontalAlignment="Left"
+					Margin="0 8 0 0"
+					Width="420"
+					Title="API Key"
+					Text="{Binding ApiKey}" />
+				<HeaderedContentControl
+					MaxWidth="420"
+					Header="Phone Number"
+					Tag="{Binding GetNumberData}"
+					Theme="{StaticResource CopyPasta}" />
+
+				<HeaderedContentControl
+					MaxWidth="420"
+					Header="Code"
+					Tag="{Binding ReceiveSMSData}"
+					Theme="{StaticResource CopyPasta}" />
 
 				<Panel Margin="0 0 0 0">
 					<TextBlock
+						MaxWidth="420"
+						TextWrapping="Wrap"
 						Text="{Binding LastFormatedResponse}"/>
 					<ui:ProgressRing
 						IsVisible="{Binding IsAwaiting}"/>

@@ -10,13 +10,13 @@
 			 x:DataType="vm:PhoneVerificationViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.Avalonia.Controls.Settings.Functional.Views.PhoneVerificationView">
-	<Border Padding="20">
+	<Border Padding="{StaticResource ScrollviewerAppPageMargin}">
 			<ItemsControl ItemsSource="{Binding PVApis}">
-				<ItemsControl.ItemsPanel>
+				<!--<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<UniformGrid Columns="2"  />
+						<UniformGrid Rows="3"  />
 					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
+				</ItemsControl.ItemsPanel>-->
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<local:PVAUserControl VerticalAlignment="Top"  />

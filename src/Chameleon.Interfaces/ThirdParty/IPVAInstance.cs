@@ -15,4 +15,5 @@ public interface IPVAInstance
     Task Save();
     Task<Tuple<string, string>> GetNumberAsync(RCountry country, RService app);
     Task<Tuple<string, string>> GetCodeAsync(RCountry country, RService app, string numberData);
+    Task<Tuple<string, string>> CancelOrderAsync(string orderId);
 }

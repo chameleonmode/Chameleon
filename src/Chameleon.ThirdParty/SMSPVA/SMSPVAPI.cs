@@ -1,17 +1,13 @@
 ﻿using Chameleon.Common.Helpers;
-using Chameleon.Domain.Entities;
-using Chameleon.Infrastructure.Settings;
 using Chameleon.Infrastructure.UserSettings;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.ThirdParty;
 using Chameleon.ThirdParty.SMSPVA.Models;
-using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace Chameleon.ThirdParty.SMSPVA;
 
-public class SMSPVAService : IPVAInstance
+public class SMSPVAPI : IPVAInstance
 {
     public readonly JsonSerializerOptions JSOptions = new()
     {
@@ -405,15 +401,27 @@ public class SMSPVAService : IPVAInstance
         return responseBody;
     }
 
+    public async Task<Tuple<string, string>> CancelOrderAsync(string orderId)
+    {
+        var phoneNumberData =
+            JsonSerializer.Deserialize<ApiResponse<GetNumberData>>(orderId, JSOptions);
+
+        string url = $"https://api.smspva.com/activation/cancelorder/{phoneNumberData.Data?.OrderId}";
+        using var response = await HttpClientHelper.PutAsync(url, new List<KeyValuePair<string, string>>() { new("apikey",ApiKey)  });
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var jsonResponse = JsonSerializer.Deserialize<ApiResponse<DataBase>>(responseContent, JSOptions);
+        return new Tuple<string, string>(responseContent, (jsonResponse?.Error?.Type == null).ToString());
+    }
+
     //make singleton claa
-    private static SMSPVAService? _instance;
-    public static SMSPVAService Instance
+    private static SMSPVAPI? _instance;
+    public static SMSPVAPI Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = new SMSPVAService();
+                _instance = new SMSPVAPI();
             }
             return _instance;
         }

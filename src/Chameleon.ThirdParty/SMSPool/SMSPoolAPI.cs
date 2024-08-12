@@ -2,6 +2,7 @@
 using Chameleon.Infrastructure.Settings;
 using Chameleon.Interfaces.ThirdParty;
 using Chameleon.ThirdParty.SMSPool.Models;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace Chameleon.ThirdParty.SMSPool;
@@ -11,7 +12,7 @@ public class SMSPoolAPI : IPVAInstance
     {
         PropertyNameCaseInsensitive = true
     };
-
+    private readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
     public string Name => "SMS Pool API";
     public string ApiKey { get; set; } = "";
     public List<RCountry> Countries { get; } = [];
@@ -23,16 +24,14 @@ public class SMSPoolAPI : IPVAInstance
         ApiKey = appSetting.Settings.SMSPoolApiKey;
 
         var getCountriesUrl = $"https://api.smspool.net/country/retrieve_all";
-        string getCountriesResponse = await HttpClientHelper.GetAsync(getCountriesUrl);
-        var countries = JsonSerializer.Deserialize<Country[]>(getCountriesResponse, JSOptions);
         Countries.Clear();
-        Countries.AddRange(countries);
+        Countries.AddRange(JsonSerializer.Deserialize<Country[]>(
+            await HttpClientHelper.GetAsync(getCountriesUrl), JSOptions));
 
         var getServicesUrl = $"https://api.smspool.net/service/retrieve_all";
-        string getServicesResponse = await HttpClientHelper.GetAsync(getServicesUrl);
-        var services = JsonSerializer.Deserialize<Service[]>(getCountriesResponse, JSOptions);
         Services.Clear();
-        Services.AddRange(services);
+        Services.AddRange(JsonSerializer.Deserialize<Service[]>(
+            await HttpClientHelper.GetAsync(getServicesUrl), JSOptions));
     }
 
     public async Task Save()
@@ -49,22 +48,63 @@ public class SMSPoolAPI : IPVAInstance
     where T2 : Service
     {
         var apiUrl = $"https://api.smspool.net/purchase/sms";
-        string responseBody = await HttpClientHelper.PostAsync(apiUrl, ApiKey, new MultipartFormDataContent() { });
-        var jsonResponse = JsonSerializer.Deserialize<SuccessfullOrder>(responseBody, JSOptions);
-        return new Tuple<string, string>(responseBody, jsonResponse?.number.ToString());
+        using var response = await HttpClientHelper.PostAsync(apiUrl, Authorization, null, new MultipartFormDataContent
+        {
+            { new StringContent(country.ID.ToString()), "country" },
+            { new StringContent(service.ID.ToString()), "service" },
+            { new StringContent(ApiKey), "key" }
+        });
+        var responseContent = await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+        {
+            var jsonResponse = JsonSerializer.Deserialize<SuccessfullOrder>(responseContent, JSOptions);
+            string formattedJson = JsonSerializer.Serialize(jsonResponse, jsonSerializerOptions);
+            return new Tuple<string, string>(formattedJson, jsonResponse?.number.ToString());
+        }
+        else
+        {
+            var jsonResponse = JsonSerializer.Deserialize<UnSuccessfullOrder>(responseContent, JSOptions);
+            string formattedJson = JsonSerializer.Serialize(jsonResponse, jsonSerializerOptions);
+            return new Tuple<string, string>(formattedJson, jsonResponse?.message);
+        }
+
+    }
+    public async Task<Tuple<string, string>> CancelOrderAsync(string orderid)
+    {
+        var phoneNumberData =
+            JsonSerializer.Deserialize<SuccessfullOrder>(orderid, JSOptions);
+
+        var apiUrl =  "https://api.smspool.net/sms/cancel";
+        using var response = await HttpClientHelper.PostAsync(apiUrl, Authorization,null, new MultipartFormDataContent
+        {
+           // { new StringContent(phoneNumberData?.order_id), "rental_code" },
+            { new StringContent(phoneNumberData?.order_id), "orderid" },
+            { new StringContent(ApiKey), "key" }
+        });
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var jsonResponse = JsonSerializer.Deserialize<OrderBase>(responseContent, JSOptions);
+        string formattedJson = JsonSerializer.Serialize(jsonResponse, jsonSerializerOptions);
+        return new Tuple<string, string>(formattedJson, (jsonResponse?.success > 0).ToString());
     }
 
     public async Task<Tuple<string, string>> GetCodeAsync(RCountry country, RService app, string numberData)
     {
-        using HttpClient client = new();
-
-        HttpResponseMessage response = await client.GetAsync($"http://codesverify.com/user/api/get_sms.php?customer={ApiKey}&number={numberData}&country={country.Name}&app={app.Name}");
-        string responseBody = await response.Content.ReadAsStringAsync();
-        return new Tuple<string, string>(responseBody, responseBody);
+        var apiUrl = "https://api.smspool.net/sms/check";
+        using var response = await HttpClientHelper.PostAsync(apiUrl, Authorization,null, new MultipartFormDataContent
+        {
+            { new StringContent(numberData), "orderid" },
+            { new StringContent(ApiKey), "key" }
+        });
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var jsonResponse = JsonSerializer.Deserialize<SMSOrder>(responseContent, JSOptions);
+        string formattedJson = JsonSerializer.Serialize(jsonResponse, jsonSerializerOptions);
+        return new Tuple<string, string>(formattedJson, jsonResponse?.sms);
     }
 
-    // Make class singleton
-    private SMSPoolAPI()
+    AuthenticationHeaderValue Authorization =>
+         new AuthenticationHeaderValue("Token", ApiKey);
+// Make class singleton
+private SMSPoolAPI()
     {
     }
     private static SMSPoolAPI instance;
