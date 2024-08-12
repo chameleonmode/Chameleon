@@ -89,16 +89,29 @@ public class SMSPoolAPI : IPVAInstance
 
     public async Task<Tuple<string, string>> GetCodeAsync(RCountry country, RService app, string numberData)
     {
+        var phoneNumberData =
+           JsonSerializer.Deserialize<SuccessfullOrder>(numberData, JSOptions);
+
         var apiUrl = "https://api.smspool.net/sms/check";
-        using var response = await HttpClientHelper.PostAsync(apiUrl, Authorization,null, new MultipartFormDataContent
+        using var response = await HttpClientHelper.PostAsync(apiUrl, Authorization, null, new MultipartFormDataContent
         {
-            { new StringContent(numberData), "orderid" },
+            { new StringContent(phoneNumberData.order_id), "orderid" },
             { new StringContent(ApiKey), "key" }
         });
         var responseContent = await response.Content.ReadAsStringAsync();
         var jsonResponse = JsonSerializer.Deserialize<SMSOrder>(responseContent, JSOptions);
         string formattedJson = JsonSerializer.Serialize(jsonResponse, jsonSerializerOptions);
         return new Tuple<string, string>(formattedJson, jsonResponse?.sms);
+        //var apiUrl = "https://api.smspool.net/request/active";
+        //using var response = await HttpClientHelper.PostAsync(apiUrl, Authorization, null, new MultipartFormDataContent
+        //{
+        //    { new StringContent(numberData), "orderid" },
+        //    { new StringContent(ApiKey), "key" }
+        //});
+        //var responseContent = await response.Content.ReadAsStringAsync();
+        //var jsonResponse = JsonSerializer.Deserialize<SMSOrder>(responseContent, JSOptions);
+        //string formattedJson = JsonSerializer.Serialize(jsonResponse, jsonSerializerOptions);
+        //return new Tuple<string, string>(formattedJson, jsonResponse?.sms);
     }
 
     AuthenticationHeaderValue Authorization =>
