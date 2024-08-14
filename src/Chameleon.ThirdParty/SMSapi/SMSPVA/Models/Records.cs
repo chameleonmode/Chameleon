@@ -5,6 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chameleon.ThirdParty.SMSPVA.Models;
+namespace Chameleon.ThirdParty.SMSapi.SMSPVA.Models;
 public record class Service(int ID, string Logo, string Name, string Code) : RService(Name);
 public record class Country(int ID, string Name, string Code) : RCountry(Name);

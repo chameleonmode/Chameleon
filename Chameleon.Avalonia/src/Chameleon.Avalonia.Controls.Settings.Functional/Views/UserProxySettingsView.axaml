@@ -16,8 +16,7 @@
 		<conv:MultiStringJoinConverter x:Key="MultiStringJoin" />
 		<!--<converter:MultiStringJoinConverter x:Key="MultiStringJoin"/>-->
 	</UserControl.Resources>
-		<Border Padding="20">
-			<Grid RowDefinitions="*,Auto">
+	<Grid RowDefinitions="*,Auto">
 				<afv:ChameleonContentControl Title="Proxies list"
 												   TitleDescription="Select proxies to edit them">
 					<afv:ChameleonContentControl.TitleContent>
@@ -235,5 +234,4 @@
 					</afv:ChameleonContentControl.Footer>
 				</afv:ChameleonContentControl>
 			</Grid>
-		</Border>
 </UserControl>

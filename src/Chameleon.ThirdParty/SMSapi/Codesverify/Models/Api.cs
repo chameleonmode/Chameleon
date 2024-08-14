@@ -1,11 +1,11 @@
 ﻿using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Chameleon.ThirdParty.Codesverify.Models;
+namespace Chameleon.ThirdParty.SMSapi.Codesverify.Models;
 public class ApiGetNumberResponse
 {
     public string Number { get; set; }
 
-    public List<string> Errors { get; } = 
+    public List<string> Errors { get; } =
     [
         "Customer Not Found.",
         "App Not Found.",

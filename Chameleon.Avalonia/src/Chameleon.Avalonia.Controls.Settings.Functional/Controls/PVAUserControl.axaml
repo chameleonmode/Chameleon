@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="720" d:DesignHeight="520"
+             mc:Ignorable="d" d:DesignWidth="520" d:DesignHeight="520"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.Functional.ViewModels"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
@@ -61,48 +61,115 @@
 			<Setter Property="Margin" Value="0 0 36 0" />
 			<Setter Property="IsTextSearchEnabled" Value="True" />
 		</Style>
+		<Style Selector=":is(ui|CommandBar).thisCommandBar[Tag=True]">
+			<Setter Property="OverflowButtonVisibility" Value="Auto"/>
+		</Style>
+		<Style Selector=":is(ui|CommandBar).thisCommandBar[Tag=False]">
+			<Setter Property="OverflowButtonVisibility" Value="Collapsed"/>
+		</Style>
 	</UserControl.Styles>
-	<afv:ChameleonContentControl Title="{Binding Title}"
+	<afv:ChameleonContentControl Title="{Binding Title, FallbackValue=PVA API}"
 								 IsVisible="{Binding IsVisible}">
 		<afv:ChameleonContentControl.TitleContent>
-			<ui:CommandBar
-				IsVisible="{Binding IsVisibleSave}"
-				DefaultLabelPosition="Right"
-				HorizontalAlignment="Right">
-				<ui:CommandBar.PrimaryCommands>
-					<ui:CommandBarButton IconSource="Save"
-										 Label="Save"
-										 CommandParameter="Save"
-										 Command="{ReflectionBinding AsyncCfromVCommand}"/>
-					<ui:CommandBarButton IconSource="Document"
-										 Label="Pop Out"
-										 CommandParameter="Popout"
-										 Command="{ReflectionBinding CfromVCommand}"/>
-				</ui:CommandBar.PrimaryCommands>
-			</ui:CommandBar>
+			<Grid ColumnDefinitions="*,Auto"
+				  HorizontalAlignment="Right">
+				<StackPanel Margin="0 0 2 2"
+							Orientation="Horizontal">
+					<!--<ui:FAComboBox
+							Classes="apiSelector"
+							ItemsSource="{ReflectionBinding Countries}"
+							SelectedItem="{ReflectionBinding SelectedCountry}"
+							DisplayMemberBinding="{ReflectionBinding Name}" />
+
+						<ui:FAComboBox
+							Classes="apiSelector"
+							ItemsSource="{ReflectionBinding Apps}"
+							SelectedItem="{ReflectionBinding SelectedApp}"
+							DisplayMemberBinding="{ReflectionBinding Name}" />-->
+					<!--<Button
+						Classes="accent"
+						Width="108"
+						Margin="0 0 0 0"
+						Content="Get Number"
+						CommandParameter="GetNumber"
+						Command="{Binding AsyncCfromVCommand}" />
+					<Button
+						Classes="accent"
+						Margin="8 0 0 0"
+						Width="108"
+						Content="Get Code"
+						CommandParameter="GetCode"
+						Command="{Binding AsyncCfromVCommand}"/>-->
+
+					<!--<Border IsVisible="{Binding CanCancel}"
+							BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+							Margin="18 6"
+							BorderThickness="1 0 0 0" />-->
+
+				</StackPanel>
+				<ui:CommandBar
+					Grid.Column="1"
+					DefaultLabelPosition="Right"
+					Classes="thisCommandBar"
+					Tag="{Binding IsVisibleSave}">
+					<ui:CommandBar.PrimaryCommands>
+						<ui:CommandBarElementContainer>
+							<StackPanel Orientation="Horizontal">
+								<ComboBox VerticalAlignment="Center"
+										  Margin="12 0 0 0"
+										  Width="128"
+										  ItemsSource="{Binding Countries}"
+										  SelectedItem="{Binding SelectedCountry}"
+										  DisplayMemberBinding="{Binding Name}" />
+
+								<ComboBox VerticalAlignment="Center"
+										  Margin="6 0 0 0"
+										  Width="128"
+										  ItemsSource="{Binding Apps}"
+										  SelectedItem="{Binding SelectedApp}"
+										  DisplayMemberBinding="{Binding Name}"/>
+								<!--<Button
+									Classes="accent"
+									IsVisible="{Binding CanCancel}"
+									Width="108"
+									Content="Cancel Order"
+									CommandParameter="CancelOrder"
+									Command="{Binding AsyncCfromVCommand}"/>-->
+							</StackPanel>
+						</ui:CommandBarElementContainer>
+						<ui:CommandBarSeparator Margin="6 0 6 0"
+												IsVisible="{Binding CanCancel}"/>
+						<ui:CommandBarButton IconSource="Cancel"
+											 Label="Cancel"
+											 CommandParameter="CancelOrder"
+											 Command="{Binding AsyncCfromVCommand}"
+											 IsVisible="{Binding CanCancel}"/>
+					</ui:CommandBar.PrimaryCommands>
+					<ui:CommandBar.SecondaryCommands>
+						<ui:CommandBarButton IconSource="Document"
+											 Label="Pop Out"
+											 CommandParameter="Popout"
+											 Command="{Binding CfromVCommand}"/>
+						<ui:CommandBarButton IconSource="Save"
+											 Label="Save"
+											 CommandParameter="Save"
+											 Command="{Binding AsyncCfromVCommand}"/>
+					</ui:CommandBar.SecondaryCommands>
+				</ui:CommandBar>
+			</Grid>
 		</afv:ChameleonContentControl.TitleContent>
 
 		<afv:ChameleonContentControl.Header>
-				<!--<afv:HeaderdInputFieldsControl HorizontalAlignment="Left"
-											   Margin="0 8 0 0"
-											   Width="420"
-											   Title="API Key"
-											   Text="{Binding ApiKey}" />-->
-			<HeaderedContentControl Margin="0 18 0 0" Theme="{StaticResource ActionsItemsBorder}">
+			<afv:HeaderdInputFieldsControl
+				Margin="0 8 0 0"
+				Width="490"
+				HorizontalAlignment="Left"
+				Title="API Key"
+				IsVisible="{Binding IsVisibleSave}"
+				Text="{Binding ApiKey}" />
+			<!--<HeaderedContentControl Margin="0 18 0 0" Theme="{StaticResource ActionsItemsBorder}">
 				<HeaderedContentControl.Header>
 					<StackPanel Margin="0 2 0 0" Orientation="Horizontal">
-						<!--<ui:FAComboBox
-								Width="108"
-								Margin="0 10 0 0"
-								ItemsSource="{Binding Countries}"
-								SelectedItem="{Binding SelectedCountry}"
-								DisplayMemberBinding="{Binding Name}" />
-						<ui:FAComboBox
-							Width="108"
-								Margin="12 10 0 0"
-								ItemsSource="{Binding Apps}"
-								SelectedItem="{Binding SelectedApp}"
-								DisplayMemberBinding="{Binding Name}" />-->
 						<Button
 							Width="108"
 							Margin="0 0 0 0"
@@ -132,10 +199,10 @@
 							Theme="{DynamicResource TransparentButton}" />
 					</StackPanel>
 				</HeaderedContentControl.Header>
-			</HeaderedContentControl>
+			</HeaderedContentControl>-->
 		</afv:ChameleonContentControl.Header>
 
-		<afv:ChameleonContentControl.Options>
+		<!--<afv:ChameleonContentControl.Options>
 			<StackPanel>
 				<ui:FAComboBox
 					Classes="apiSelector"
@@ -151,29 +218,62 @@
 					SelectedItem="{ReflectionBinding SelectedApp}"
 					DisplayMemberBinding="{ReflectionBinding Name}" />
 			</StackPanel>
-		</afv:ChameleonContentControl.Options>
+		</afv:ChameleonContentControl.Options>-->
 
 		<afv:ChameleonContentControl.Content>
-			<StackPanel Spacing="18" 
+			<StackPanel Spacing="8"
 						HorizontalAlignment="Left">
-				<afv:HeaderdInputFieldsControl 
+				<!--<afv:HeaderdInputFieldsControl 
 					IsVisible="{Binding IsVisibleSave}"
 					HorizontalAlignment="Left"
 					Margin="0 8 0 0"
 					Width="420"
 					Title="API Key"
-					Text="{Binding ApiKey}" />
-				<HeaderedContentControl
+					Text="{Binding ApiKey}" />-->
+				<afv:HeaderdInputFieldsControl
+					Width="480"
+					HorizontalAlignment="Left"
+					Title="Phone Number"
+					Text="{Binding GetNumberData}"
+					Tag="copy">
+					<afv:HeaderdInputFieldsControl.Buttons>
+						<Button
+							Content="Phone"
+							ToolTip.Tip="Get Number"
+							CommandParameter="GetNumber"
+							Command="{Binding AsyncCfromVCommand}"
+							Classes="accent"
+							Theme="{DynamicResource AccentSymbleIconButton}" />
+					</afv:HeaderdInputFieldsControl.Buttons>
+				</afv:HeaderdInputFieldsControl>
+				<!--<HeaderedContentControl
 					MaxWidth="420"
 					Header="Phone Number"
 					Tag="{Binding GetNumberData}"
-					Theme="{StaticResource CopyPasta}" />
+					Theme="{StaticResource CopyPasta}" />-->
 
-				<HeaderedContentControl
+				<!--<HeaderedContentControl
 					MaxWidth="420"
 					Header="Code"
 					Tag="{Binding ReceiveSMSData}"
-					Theme="{StaticResource CopyPasta}" />
+					Theme="{StaticResource CopyPasta}" />-->
+				<afv:HeaderdInputFieldsControl
+					Width="480"
+					HorizontalAlignment="Left"
+					Title="Code"
+					Text="{Binding ReceiveSMSData}"
+					Tag="copy">
+					<afv:HeaderdInputFieldsControl.Buttons>
+						<Button
+							IsEnabled="{Binding GetNumberData, Converter={x:Static ObjectConverters.IsNotNull}}"
+							Content="Message"
+							ToolTip.Tip="Get Code"
+							CommandParameter="GetCode"
+							Command="{Binding AsyncCfromVCommand}"
+							Classes="accent"
+							Theme="{DynamicResource AccentSymbleIconButton}" />
+					</afv:HeaderdInputFieldsControl.Buttons>
+				</afv:HeaderdInputFieldsControl>
 
 				<Panel Margin="0 0 0 0">
 					<TextBlock

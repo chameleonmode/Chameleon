@@ -16,7 +16,7 @@
 	x:CompileBindings="True"
 	x:Class="Chameleon.Avalonia.Controls.Automation.Views.AutomationView">
 
-	<ScrollViewer>
+	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
 		<StackPanel>
 
 			<!-- Header -->

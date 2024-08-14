@@ -8,7 +8,7 @@
 			<StackPanel Spacing="5"
 						Background="Gray">
 				<ui:SymbolIcon
-					Symbol="Save"
+					Symbol="Cancel"
 							Margin="0 0 5 0"/>
 				
 				
@@ -19,35 +19,37 @@
 
 				<!-- NOTE: Designer bug, using StaticResource here requires a rebuild for
                 the changes to display. DynamicResource will respond without rebuilding -->
-				<Button Content="TransparentButton" Theme="{DynamicResource TransparentButton}" />
+				<Button Content="TransparentButton" 
+						Theme="{DynamicResource TransparentButton}" />
 
-				<Button 
-					Content="SyncChangesButton" Theme="{StaticResource SyncChangesButton}" />
-				<Button 
-					Content="three-dots" Theme="{StaticResource SvgIconButton}" />
+				<Button Content="SyncChangesButton" 
+						Theme="{DynamicResource SyncChangesButton}" />
+				
+				<Button Content="three-dots" 
+						Theme="{DynamicResource SvgIconButton}" />
 				
 				<Button
-					Content="Folder"
+					Content="Phone"
 					Classes="accent"
-					Theme="{StaticResource AccentSymbleIconButton}" />
+					Theme="{DynamicResource AccentSymbleIconButton}" />
 
 				<Button
-				Content="Folder"
-				Theme="{StaticResource AccentSymbleIconButton}" />
+					Content="Phone"
+					Theme="{DynamicResource AccentSymbleIconButton}" />
 				
 				<Button 
 					Content="Folder"
 						Classes="accent"
 						Tag="Folder"
-						Theme="{StaticResource SymbleIconTextButton}" />
+						Theme="{DynamicResource SymbleIconTextButton}" />
 				
 				<Button 
 					Content="three-dots" 
-					Theme="{StaticResource FavoriteButton}" />
+					Theme="{DynamicResource FavoriteButton}" />
 				
 				<Button Content="select-all" 
 						Tag="Select All Yo"
-						Theme="{StaticResource SvgIconTextButton}" />
+						Theme="{DynamicResource SvgIconTextButton}" />
 			</StackPanel>
 		</Border>
 	</Design.PreviewWith>

@@ -38,8 +38,7 @@
 			<WrapPanel Orientation="Horizontal" />
 		</ItemsPanelTemplate>
 	</UserControl.Resources>
-	<Border Padding="20">
-		<afv:ChameleonContentControl Title="Current Users"
+	<afv:ChameleonContentControl Title="Current Users"
 										   TitleDescription="Manage your taskforce users control">
 
 			<afv:ChameleonContentControl.TitleContent>
@@ -138,5 +137,5 @@
 				</ItemsControl>
 			</afv:ChameleonContentControl.Content>
 		</afv:ChameleonContentControl>
-	</Border>
+
 </UserControl>

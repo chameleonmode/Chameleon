@@ -8,27 +8,14 @@ using System.Threading.Tasks;
 namespace Chameleon.Common.Helpers;
 public class HttpClientHelper
 {
-    public static async Task<string> GetAsync(string url)
+    public static async Task<string> GetAsync(string url, IEnumerable<KeyValuePair<string, string>> headers = null)
     {
         using HttpClient client = new();
-        //if (!string.IsNullOrEmpty(bearerToken))
-        //{
-        //    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", bearerToken);
-        //}
-        using HttpResponseMessage response = await client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStringAsync();
-    }
+        if (headers != null)
+            foreach (var header in headers)
+                client.DefaultRequestHeaders.Add(header.Key, header.Value);
 
-    public static async Task<string> PostAsync(string url, HttpContent content, string bearerToken = null)
-    {
-        using HttpClient client = new();
-        //if (!string.IsNullOrEmpty(bearerToken))
-        //{
-        //    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", bearerToken);
-        //}
-        using HttpResponseMessage response = await client.PostAsync(url, content);
-        response.EnsureSuccessStatusCode();
+        using var response = await client.GetAsync(url);
         return await response.Content.ReadAsStringAsync();
     }
 
@@ -37,10 +24,6 @@ public class HttpClientHelper
         using HttpClient client = new();
         if(authorization != null)
             client.DefaultRequestHeaders.Authorization = authorization;
-        //if (!string.IsNullOrEmpty(bearerToken))
-        //{
-        //    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", bearerToken);
-        //}
         using var request = new HttpRequestMessage(HttpMethod.Post, url)
         {
             Content = content
@@ -48,20 +31,20 @@ public class HttpClientHelper
         if (headers != null)
             foreach (var header in headers)
                 request.Headers.Add(header.Key, header.Value);
+
         return await client.SendAsync(request);
-        //response.EnsureSuccessStatusCode();
-        //return await response.Content.ReadAsStringAsync();
     }
 
-    public async static Task<HttpResponseMessage> PutAsync(string url, IEnumerable<KeyValuePair<string, string>> headers = null)
+    public async static Task<string> PutAsync(string url, IEnumerable<KeyValuePair<string, string>> headers = null)
     {
         using HttpClient client = new();
         using var request = new HttpRequestMessage(HttpMethod.Put, url);
         if(headers != null)
             foreach (var header in headers)
                 request.Headers.Add(header.Key, header.Value);
-      
 
-        return await client.SendAsync(request);
+        using var response = await client.SendAsync(request);
+
+        return await response.Content.ReadAsStringAsync();
     }
 }

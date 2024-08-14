@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chameleon.ThirdParty.SMSPool.Models;
+namespace Chameleon.ThirdParty.SMSapi.SMSPool.Models;
 public class OrderBase
 {
     public int success { get; set; }

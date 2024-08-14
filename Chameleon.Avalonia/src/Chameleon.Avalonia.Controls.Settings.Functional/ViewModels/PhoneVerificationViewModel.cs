@@ -1,22 +1,9 @@
-﻿using AutoMapper.Internal;
-using Avalonia.Collections;
+﻿using Avalonia.Collections;
 using Chameleon.Core.Util;
-using Chameleon.Infrastructure.Settings;
-using Chameleon.ThirdParty.Codesverify;
-using Chameleon.ThirdParty.Codesverify.Models;
-using Chameleon.ThirdParty.SMSPVA;
-using Chameleon.ThirdParty.SMSPVA.Models;
-using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.Services;
-using System.Text.Json;
-using Chameleon.Interfaces.App.Settings;
-using System.Security.Cryptography;
-using System;
-using Microsoft.Playwright;
-using System.Runtime.CompilerServices;
 using Chameleon.Interfaces.ThirdParty;
-using Chameleon.ThirdParty.SMSPool;
+using Chameleon.ThirdParty.SMSapi.Codesverify;
+using Chameleon.ThirdParty.SMSapi.SMSPool;
+using Chameleon.ThirdParty.SMSapi.SMSPVA;
 
 namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
@@ -98,7 +85,20 @@ public partial class PVApiModel
             var response = await _pnapinstance.GetNumberAsync(SelectedCountry, SelectedApp);
             LastFormatedResponse = lastJsonResponse = response.Item1;
             GetNumberData = response.Item2;
-            CanCancel = HasCancel;
+            CanCancel = GetNumberData.HasAny() && HasCancel;
+        }, e => LastFormatedResponse = e);
+    }
+
+    public async Task GetCode()
+    {
+        if (!lastJsonResponse.HasAny())
+            return;
+
+        await MakeRequest(async () =>
+        {
+            var response = await _pnapinstance.GetCodeAsync(SelectedCountry, SelectedApp, lastJsonResponse);
+            LastFormatedResponse = response.Item1;
+            ReceiveSMSData = response.Item2;
         }, e => LastFormatedResponse = e);
     }
 
@@ -119,19 +119,6 @@ public partial class PVApiModel
         }, e => LastFormatedResponse = e);
     }
 
-    public async Task GetCode()
-    {
-        if (!lastJsonResponse.HasAny())
-            return;
-
-        await MakeRequest(async () =>
-        {
-            var response = await _pnapinstance.GetCodeAsync(SelectedCountry, SelectedApp, lastJsonResponse);
-            LastFormatedResponse = response.Item1;
-            ReceiveSMSData = response.Item2;
-        }, e => LastFormatedResponse = e);
-    }
-
     async Task MakeRequest(Func<Task> func, Action<string> onErr)
     {
         IsAwaiting = true;
@@ -145,7 +132,7 @@ public partial class PVApiModel
         {
             vm.IsVisibleSave = false;
             await vm.LoadedTCS.Task;
-        }, null, Title, 720);
+        }, null, Title, 560);
     }
 }
 

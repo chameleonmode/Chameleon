@@ -4,8 +4,10 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using FluentAvalonia.UI.Controls;
 using System.Data.Common;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace Chameleon.Av.Fluent.Common.Controls;
@@ -13,6 +15,14 @@ namespace Chameleon.Av.Fluent.Common.Controls;
 [TemplatePart("TextBoxesHost", typeof(ItemsControl))]
 public class HeaderdInputFieldsControl : HeaderedContentControl
 {
+    public static readonly StyledProperty<object?> CommandParameterProperty = AvaloniaProperty.Register<HeaderdInputFieldsControl, object?>("CommandParameter");
+
+    private IList<TextBox> _textboxes;
+    private IList<Button> _buttons;
+    private ICommand _command;
+
+    private bool _commandCanExecute = true;
+
     public HeaderdInputFieldsControl()
     {
         _textboxes = new List<TextBox>();
@@ -83,8 +93,57 @@ public class HeaderdInputFieldsControl : HeaderedContentControl
         get => _buttons;
         set => SetAndRaise(ButtonsProperty, ref _buttons, value);
     }
+    //
+    // Summary:
+    //     Gets or sets a parameter to be passed to the Avalonia.Controls.Button.Command.
+    public object? CommandParameter
+    {
+        get
+        {
+            return GetValue(CommandParameterProperty);
+        }
+        set
+        {
+            SetValue(CommandParameterProperty, value);
+        }
+    }
 
-    private IList<TextBox> _textboxes;
-    private IList<Button> _buttons;
-    private ICommand _command;
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == CommandParameterProperty)
+        {
+            CanExecuteChanged(Command, change.NewValue);
+        }
+    }
+
+    //
+    // Summary:
+    //     Called when the System.Windows.Input.ICommand.CanExecuteChanged event fires.
+    //
+    //
+    // Parameters:
+    //   sender:
+    //     The event sender.
+    //
+    //   e:
+    //     The event args.
+    private void CanExecuteChanged(object? sender, EventArgs e)
+    {
+        CanExecuteChanged(Command, CommandParameter);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void CanExecuteChanged(ICommand? command, object? parameter)
+    {
+        if (((ILogical)this).IsAttachedToLogicalTree)
+        {
+            bool flag = command?.CanExecute(parameter) ?? true;
+            if (flag != _commandCanExecute)
+            {
+                _commandCanExecute = flag;
+                UpdateIsEffectivelyEnabled();
+            }
+        }
+    }
 }
