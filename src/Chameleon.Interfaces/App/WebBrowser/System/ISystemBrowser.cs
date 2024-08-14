@@ -1,10 +1,11 @@
 ﻿using Chameleon.Interfaces.Ioc;
+using System.Collections.Concurrent;
 
 namespace Chameleon.Interfaces.WebBrowser
 {
     public interface ISystemBrowser : ISingletonDependency
     {
-        Dictionary<int, ISystemBrowserInstance> Instances { get; }
+        ConcurrentDictionary<int, ISystemBrowserInstance> Instances { get; }
         Task<ISystemBrowserInstance> Open(ISystemBrowserLaunchOptions options);
     }
 }

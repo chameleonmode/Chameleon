@@ -56,6 +56,24 @@ public enum User32Events : uint
     WINEVENT_INCONTEXT = 0x0004
 }
 
+public enum ShowWindowCommands : int
+{
+    SW_HIDE = 0,
+    SW_SHOWNORMAL = 1,
+    SW_NORMAL = 1,
+    SW_SHOWMINIMIZED = 2,
+    SW_SHOWMAXIMIZED = 3,
+    SW_MAXIMIZE = 3,
+    SW_SHOWNOACTIVATE = 4,
+    SW_SHOW = 5,
+    SW_MINIMIZE = 6,
+    SW_SHOWMINNOACTIVE = 7,
+    SW_SHOWNA = 8,
+    SW_RESTORE = 9,
+    SW_SHOWDEFAULT = 10,
+    SW_FORCEMINIMIZE = 11
+}
+
 [SupportedOSPlatform("windows")]
 public static partial class U32
 {
@@ -66,16 +84,25 @@ public static partial class U32
     public delegate bool MonitorEnumDelegate(
         IntPtr hMonitor, IntPtr hdcMonitor, ref RECT lprcMonitor, IntPtr dwData);
 
-    public delegate void WinEventDelegate(
-        IntPtr hWinEventHook, User32Events eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+    //public delegate void WinEventDelegate(
+    //    IntPtr hWinEventHook, User32Events eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
     public delegate bool EnumWindowsProc(
         IntPtr hWnd, IntPtr lParam);
     #endregion
 
-    [LibraryImport("user32.dll")]
-    public static partial IntPtr SetWinEventHook(
-        User32Events eventMin, User32Events eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
+    // Delegate for the WinEventProc callback
+    public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr SetWinEventHook(
+        uint eventMin,
+        uint eventMax,
+        IntPtr hmodWinEventProc,
+        WinEventDelegate lpfnWinEventProc,
+        uint idProcess,
+        uint idThread,
+        uint dwFlags);
 
     [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -113,7 +140,84 @@ public static partial class U32
     public static partial bool EnumWindows(
         EnumWindowsProc lpEnumFunc, IntPtr lParam);
 
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+    [LibraryImport("kernel32.dll")]
+    public static partial uint GetCurrentThreadId();
+
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool AttachThreadInput(uint idAttach, uint idAttachTo, [MarshalAs(UnmanagedType.Bool)] bool fAttach);
+
 }
+
+[SupportedOSPlatform("windows")]
+public class WindowEventHandler
+{
+    private IntPtr _hook;
+    private IntPtr _closehook;
+    private U32.WinEventDelegate _delegate;
+
+    public event Action<nint> OnForeground;
+    public event Action<nint> OnDestroy;
+
+    public void StartListening()
+    {
+        _delegate = new U32.WinEventDelegate(WinEventProc);
+        _hook = U32.SetWinEventHook(
+            (uint)User32Events.EVENT_SYSTEM_FOREGROUND,
+            (uint)User32Events.EVENT_SYSTEM_FOREGROUND,
+            IntPtr.Zero,
+            _delegate,
+            0,
+            0,
+            (uint)User32Events.WINEVENT_OUTOFCONTEXT);
+
+        _closehook = U32.SetWinEventHook(
+            (uint)User32Events.EVENT_OBJECT_DESTROY,
+            (uint)User32Events.EVENT_OBJECT_DESTROY,
+            IntPtr.Zero,
+            _delegate,
+            0,
+            0,
+            (uint)User32Events.WINEVENT_OUTOFCONTEXT);
+
+        //if (_hook == IntPtr.Zero)
+        //{
+        //    throw new Exception("Failed to set windows event hook.");
+        //}
+    }
+
+    public void StopListening()
+    {
+        if (_hook != IntPtr.Zero)
+        {
+            U32.UnhookWinEvent(_hook);
+            _hook = IntPtr.Zero;
+        }
+    }
+
+    private void WinEventProc(IntPtr hWinEventHook, uint eventType,
+        IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+    {
+        switch (eventType)
+        {
+            case (uint)User32Events.EVENT_SYSTEM_FOREGROUND:
+                OnForeground?.Invoke(hwnd);
+                break;
+
+            case (uint)User32Events.EVENT_OBJECT_DESTROY:
+                OnDestroy?.Invoke(hwnd);
+                break;
+
+            default:
+                break;
+        }
+    }
+}
+
 
 [SupportedOSPlatform("windows")]
 public static class U32til
@@ -143,6 +247,52 @@ public static class U32til
         }
 
         return Process.GetProcessById((int)processId);
+    }
+
+    public static bool BringWindowToForeground(IntPtr hWnd)
+    {
+        // Check if the window handle is valid
+        if (hWnd == IntPtr.Zero)
+        {
+            return false;
+        }
+
+        // Get the thread ID of the target window
+        uint targetThreadId = U32.GetWindowThreadProcessId(hWnd, out _);
+        uint currentThreadId = U32.GetCurrentThreadId();
+
+        // Attach the current thread's input to the target window's thread
+        bool threadInputAttached = false;
+        if (targetThreadId != currentThreadId)
+        {
+            threadInputAttached = U32.AttachThreadInput(currentThreadId, targetThreadId, true);
+        }
+
+        try
+        {
+            // Restore the window if it's minimized
+            U32.ShowWindow(hWnd, (int)ShowWindowCommands.SW_RESTORE);
+
+            // Set the window as the foreground window
+            bool result = U32.SetForegroundWindow(hWnd);
+
+            // If setting the foreground window fails, try again after a short delay
+            if (!result)
+            {
+                Thread.Sleep(100);
+                result = U32.SetForegroundWindow(hWnd);
+            }
+
+            return result;
+        }
+        finally
+        {
+            // Detach the thread input if it was attached
+            if (threadInputAttached)
+            {
+                U32.AttachThreadInput(currentThreadId, targetThreadId, false);
+            }
+        }
     }
 }
 

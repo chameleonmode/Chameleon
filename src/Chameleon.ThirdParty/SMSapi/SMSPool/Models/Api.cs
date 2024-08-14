@@ -31,7 +31,7 @@ public class SuccessfullOrder : OrderBase
     public string country { get; set; }
     public string service { get; set; }
     public long pool { get; set; }
-    public long expires_in { get; set; }
+    public object expires_in { get; set; }
     public long expiration { get; set; }
     public string cost { get; set; }
     public int cost_in_cents { get; set; }

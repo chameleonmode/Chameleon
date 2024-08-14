@@ -4,6 +4,7 @@ using Chameleon.ThirdParty.GeoIp;
 using Chameleon.ThirdParty.GeoIp.Models;
 using Microsoft.Playwright;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Reflection.Metadata;
@@ -21,8 +22,6 @@ public abstract class SystemBrowserInstance(
 {
     public event Action<ISystemBrowserLaunchOptions> OnProcessClosed;
     public event Action<ISystemBrowserLaunchOptions> OnProcessOpenError;
-
-    private readonly List<IntPtr> winEventHooks = [];
 
     private Dictionary<string, ExtensionDirectory> extensions;
     public Dictionary<string, ExtensionDirectory> ExtensionDirectories
@@ -160,8 +159,12 @@ public abstract class SystemBrowserInstance(
 #pragma warning disable CA1416 // Validate platform compatibility
                 if (U32.IsWindow(Handle))
                 {
-                    U32.SetForegroundWindow(Handle);
-                    U32.SetActiveWindow(Handle);
+                    //U32.SetForegroundWindow(Handle);
+                    if (U32til.BringWindowToForeground(Handle))
+                    {
+                        eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs);
+                    }
+                    //U32.SetActiveWindow(Handle);
                 }
 #pragma warning restore CA1416 // Validate platform compatibility
             }
@@ -229,7 +232,7 @@ public abstract class SystemBrowserInstance(
             // await FontDefenderAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.FontDefenderAddon]);
 
             //if (BrowserType == SystemBrowserType.Chrome)
-            await NavigatorAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.NavigatorAddon].AddonDir, await BrowserDefaultLaunchSettings.Instance());
+            await NavigatorAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.NavigatorAddon].AddonDir, browserSettings: await BrowserDefaultLaunchSettings.Instance());
         }
 
 
@@ -292,9 +295,9 @@ public abstract class SystemBrowserInstance(
 
                 await TaskUtil.AwaitFor(()=>Brocess?.MainWindowHandle != IntPtr.Zero, 18);
                 Handle = Brocess?.MainWindowHandle ?? IntPtr.Zero;
-                if (Brocess?.HasExited == false)
-                    Brocess.Exited += (s, e) => 
-                    { Cleanup(); };
+                //if (Brocess?.HasExited == false)
+                //    Brocess.Exited += (s, e) => 
+                //    { Cleanup(); };
             }
             else
             {
@@ -334,8 +337,6 @@ public abstract class SystemBrowserInstance(
                 Handle = Brocess?.MainWindowHandle ?? IntPtr.Zero;
             }
             #pragma warning restore CA1416 // Validate platform compatibility
-
-            SetWin32Events();
         }
 
         if (Brocess?.HasExited == false)
@@ -350,49 +351,21 @@ public abstract class SystemBrowserInstance(
             eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
-    private void SetWin32Events()
-    {
-        if (Brocess?.HasExited == false && Handle != IntPtr.Zero)
-        {
-            winEventsCaptureDelegate = WinEventProc;
-
-            // capture EVENT_OBJECT_FOCUS
-            winEventHooks.Add(U32.SetWinEventHook(
-                User32Events.EVENT_OBJECT_FOCUS,
-                User32Events.EVENT_OBJECT_FOCUS,
-                IntPtr.Zero,
-                winEventsCaptureDelegate,
-                (uint)Brocess.Id,
-                0,
-                (uint)User32Events.WINEVENT_OUTOFCONTEXT));
-
-            //capture window close
-            winEventHooks.Add(U32.SetWinEventHook(
-                User32Events.EVENT_OBJECT_DESTROY,
-                User32Events.EVENT_OBJECT_DESTROY,
-                IntPtr.Zero,
-                winEventsCaptureDelegate,
-                0,
-                0,
-                (uint)User32Events.WINEVENT_OUTOFCONTEXT));
-
-            U32.SetForegroundWindow(Handle);
-            U32.SetActiveWindow(Handle);
-        }
-    }
-
-    private async void WinEventProc(IntPtr hWinEventHook, User32Events eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+    private async void WinEventProc(IntPtr hWinEventHook, User32Events eventType,
+        IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
     {
         switch (eventType)
         {
             case User32Events.EVENT_OBJECT_FOCUS:
-                if (hwnd == Handle)
-                {
-                    eventAggregator
-                        .GetEvent<ForegroundUserSystemBrowserEvent>()
-                        .Publish(GetArgs);
-                }
+                //uint targetThreadId = U32.GetWindowThreadProcessId(hwnd, out _);
+                //var p = U32til.GetProcessByMainWindowHandle(hwnd);
+                //var pp = U32til.GetProcessByMainWindowHandle(Handle);
+                //if (hwnd == Handle || Brocess.Id == targetThreadId)
+                //{
+                //    eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs);
+                //}
+                if (Brocess.MainWindowHandle == (uint)hwnd)
+                    eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs);
                 break;
             case User32Events.EVENT_SYSTEM_MENUSTART:
             case User32Events.EVENT_SYSTEM_MENUEND:
@@ -426,18 +399,6 @@ public abstract class SystemBrowserInstance(
         {
             MacOSWindowListener.Instance.WindowForegroundChanged -= OnWindowForeground;
             MacOSWindowListener.Instance.RemPid(Brocess.Id);
-        }
-        else
-        {
-#pragma warning disable CA1416 // Validate platform compatibility
-            ExUtil.TryCatch(() =>
-            {
-                foreach (var item in winEventHooks)
-                {
-                    U32.UnhookWinEvent(item);
-                }
-            });
-#pragma warning restore CA1416 // Validate platform compatibility
         }
 
         var r = OPtcs.TrySetResult(false);

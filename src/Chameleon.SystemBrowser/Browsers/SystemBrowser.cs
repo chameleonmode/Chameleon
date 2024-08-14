@@ -1,30 +1,84 @@
-﻿using Microsoft.Playwright;
+﻿using Chameleon.Core.Util;
+using Microsoft.Playwright;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 namespace Chameleon.SystemBrowser.Browsers;
-public abstract class SystemBrowserBase(
-    IEventAggregator eventAggregator,
-    IApplicationEnvironment applicationEnvironment,
-    ISetPreferencesService setPreferencesService,
-    IUserDefaultSettingsService userDefaultsSettingsService)
+public abstract class SystemBrowserBase
     : ISystemBrowser
 {
+    protected SystemBrowserBase(
+        IEventAggregator eventAggregator,
+        IApplicationEnvironment applicationEnvironment,
+        ISetPreferencesService setPreferencesService,
+        IUserDefaultSettingsService userDefaultsSettingsService)
+    {
+        EventAggregator = eventAggregator;
+        ApplicationEnvironment = applicationEnvironment;
+        SetPreferencesService = setPreferencesService;
+        UserDefaultSettingsService = userDefaultsSettingsService;
+
+        if (OperatingSystem.IsWindows())
+        {
+            windowEventHandler = new WindowEventHandler();
+            windowEventHandler.OnForeground += U32til_OnForeground;
+            windowEventHandler.OnDestroy += U32til_OnClose;
+            windowEventHandler.StartListening();
+        }
+    }
+
+    readonly WindowEventHandler windowEventHandler;
+
+    private void U32til_OnClose(nint obj)
+    {
+        for (int i = Instances.Count - 1; i >= 0; i--)
+        {
+            var uid = Instances.Keys.ElementAt(i);
+            if (Instances.TryGetValue(uid, out ISystemBrowserInstance browser))
+            {
+                //_ = await browser.OPtcs.Task;
+
+                if (browser.Brocess?.HasExited == true)
+                {
+                    browser.Cleanup();
+                }
+            }
+        }
+    }
+
+    private async void U32til_OnForeground(nint obj)
+    {
+        for (int i = Instances.Count - 1; i >= 0; i--)
+        {
+            var uid = Instances.Keys.ElementAt(i);
+            if (Instances.TryGetValue(uid, out ISystemBrowserInstance browser))
+            {
+                _ = await browser.OPtcs.Task;
+
+                if (browser.Brocess?.HasExited != true && browser.Brocess?.MainWindowHandle == obj)
+                {
+                    EventAggregator.Pub<ForegroundUserSystemBrowserEvent>(browser.GetArgs);
+                }
+            }
+        }
+    }
+
     //private System.Timers.Timer _pollingTimer;
     private readonly SemaphoreSlim _openSemaphore = new(1, 1);
     private readonly List<int> pollingids = [];
-    private readonly Dictionary<int, ISystemBrowserInstance> instances = [];
+    private readonly ConcurrentDictionary<int, ISystemBrowserInstance> instances = [];
     private long _isBusy;
 
-    protected IEventAggregator EventAggregator { get; } = eventAggregator;
-    protected IApplicationEnvironment ApplicationEnvironment { get; } = applicationEnvironment;
-    protected ISetPreferencesService SetPreferencesService { get; } = setPreferencesService;
-    protected IUserDefaultSettingsService UserDefaultSettingsService { get; } = userDefaultsSettingsService;
+    protected IEventAggregator EventAggregator { get; }
+    protected IApplicationEnvironment ApplicationEnvironment { get; } 
+    protected ISetPreferencesService SetPreferencesService { get; } 
+    protected IUserDefaultSettingsService UserDefaultSettingsService { get; } 
 
     public string Path => GetSystemBrowserExePath();
     public string ChamelonPath => GetBrowserExePath();
     public string Directory => GetDirectoryPath();
     public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
-    public Dictionary<int, ISystemBrowserInstance> Instances => instances;
+    public ConcurrentDictionary<int, ISystemBrowserInstance> Instances => instances;
 
     public virtual async Task<ISystemBrowserInstance> Open(ISystemBrowserLaunchOptions o)
     {
@@ -132,7 +186,7 @@ public abstract class SystemBrowserBase(
                    .GetEvent<ClosedUserSystemBrowserEvent>()
                    .Publish(browser.GetArgs);
 
-                Instances.Remove(o.UserProfile.Id);
+                Instances.TryRemove(o.UserProfile.Id,out _);
 
                 break;
             }
