@@ -1,47 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Chameleon.Common.Helpers;
 public class HttpClientHelper
 {
-    public static async Task<string> GetAsync(string url, string bearerToken = null)
+    public static async Task<string> GetAsync(string url, IEnumerable<KeyValuePair<string, string>> headers = null)
     {
         using HttpClient client = new();
-        if (!string.IsNullOrEmpty(bearerToken))
-        {
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", bearerToken);
-        }
-        HttpResponseMessage response = await client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
+        if (headers != null)
+            foreach (var header in headers)
+                client.DefaultRequestHeaders.Add(header.Key, header.Value);
+
+        using var response = await client.GetAsync(url);
         return await response.Content.ReadAsStringAsync();
     }
 
-    public static async Task<string> PostAsync(string url, HttpContent content, string bearerToken = null)
+    public static async Task<HttpResponseMessage> PostAsync(string url, AuthenticationHeaderValue authorization = null, IEnumerable<KeyValuePair<string, string>> headers = null, MultipartFormDataContent content = null)
     {
         using HttpClient client = new();
-        if (!string.IsNullOrEmpty(bearerToken))
+        if(authorization != null)
+            client.DefaultRequestHeaders.Authorization = authorization;
+        using var request = new HttpRequestMessage(HttpMethod.Post, url)
         {
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", bearerToken);
-        }
-        HttpResponseMessage response = await client.PostAsync(url, content);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStringAsync();
+            Content = content
+        };
+        if (headers != null)
+            foreach (var header in headers)
+                request.Headers.Add(header.Key, header.Value);
+
+        return await client.SendAsync(request);
     }
 
-    public static async Task<string> PostAsync(string url, string bearerToken = null, MultipartFormDataContent content = null)
+    public async static Task<string> PutAsync(string url, IEnumerable<KeyValuePair<string, string>> headers = null)
     {
         using HttpClient client = new();
-        if (!string.IsNullOrEmpty(bearerToken))
-        {
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", bearerToken);
-        }
-        var request = new HttpRequestMessage(HttpMethod.Post, url);
-        request.Content = content;
-        var response = await client.SendAsync(request);
-        response.EnsureSuccessStatusCode();
+        using var request = new HttpRequestMessage(HttpMethod.Put, url);
+        if(headers != null)
+            foreach (var header in headers)
+                request.Headers.Add(header.Key, header.Value);
+
+        using var response = await client.SendAsync(request);
+
         return await response.Content.ReadAsStringAsync();
     }
 }

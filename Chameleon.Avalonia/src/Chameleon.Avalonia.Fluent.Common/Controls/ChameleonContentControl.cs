@@ -100,7 +100,7 @@ public class ChameleonContentControl : HeaderedContentControl
 
     private void OnWindowSizeChanged(Size newSize)
     {
-        bool isWindowChange = newSize.Width < ResponsiveConstants.MaxWindowWidth1080;
+        bool isWindowChange = newSize.Width < 690; //ResponsiveConstants.MaxWindowWidth1080;
 
         _expandOptionsButton?.SetValue(IsVisibleProperty, isWindowChange);
 
@@ -132,7 +132,7 @@ public class ChameleonContentControl : HeaderedContentControl
         {
             var wid = change.GetNewValue<Rect>().Width;
 
-            PseudoClasses.Set(":mediumWidth", wid < 720);
+            PseudoClasses.Set(":mediumWidth", wid < 690);
             PseudoClasses.Set(":smallWidth", wid < 480);
         }
         //else if (change.Property == IsOptionsExpandedProperty)
