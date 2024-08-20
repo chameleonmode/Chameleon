@@ -8,6 +8,7 @@ public partial class UserDefaultSettingsViewModel
 {
     private const char BulkAddSeparator = ',';
 
+    private readonly IUserDefaultSettingsService _userDefaultSettingsService;
     private readonly IBulkAddPagesPopupViewModel _bulkAddPagesPopupViewModel;
     private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
 
@@ -47,11 +48,13 @@ public partial class UserDefaultSettingsViewModel
 
     public UserDefaultSettingsViewModel(
         IUserDefaultSettingsService userDefaultsSettingsService,
-        IBulkAddPagesPopupViewModel bulkAddPagesPopupView
+        IBulkAddPagesPopupViewModel bulkAddPagesPopupView,
+        IUserDefaultSettingsService userDefaultSettingsService
         )
     {        
         Title = "Default Browser Settings";
 
+        _userDefaultSettingsService = userDefaultSettingsService;
         _userDefaultsSettingsService = userDefaultsSettingsService;
         _bulkAddPagesPopupViewModel = bulkAddPagesPopupView;
 
@@ -82,7 +85,7 @@ public partial class UserDefaultSettingsViewModel
         var result = await _bulkAddPagesPopupViewModel.ShowAsync();
         if (result == IContentDialogResult.Primary)
         {
-            AddPages(_bulkAddPagesPopupViewModel.Urls);
+            await AddPages(_bulkAddPagesPopupViewModel.Urls);
         }
         else
         {
@@ -90,24 +93,33 @@ public partial class UserDefaultSettingsViewModel
         }
     }
 
-    private void AddPages(string urls)
+    private async Task AddPages(string urls)
     {
         if (!string.IsNullOrEmpty(urls))
         {
-            AddPages(urls.Split(BulkAddSeparator));
+            await AddPages(urls.Split(BulkAddSeparator,StringSplitOptions.RemoveEmptyEntries));
         }
         _bulkAddPagesPopupViewModel.Urls = null;
     }
 
-    private void AddPages(string[] urls)
+    private async Task AddPages(string[] urls)
     {
-        foreach (var url in urls)
+        for (int i = 0; i < urls.Length; i++)
         {
-            Save();
-            ViewModels.Last().DefaultUrl = string.IsNullOrWhiteSpace(url) ? null : url.Trim();
+            if (i < ViewModels.Count)
+            {
+                ViewModels[i].DefaultUrl = string.IsNullOrWhiteSpace(urls[i]) ? null : urls[i].Trim();
+            }
+            else
+            {
+                await CreateNewDefaultSettings();
+                ViewModels.Last().DefaultUrl = string.IsNullOrWhiteSpace(urls[i]) ? null : urls[i].Trim();
+            }
         }
-    }
 
+        OnPropertyChanged(nameof(ViewModels));
+        Save();
+    }
     [RelayCommand]
     private void UnselectItems()
     {
@@ -133,11 +145,9 @@ public partial class UserDefaultSettingsViewModel
     }
 
     [RelayCommand]
-    private void CreateNewDefaultSettings()
+    private async Task CreateNewDefaultSettings()
     {
-        EventAggregator
-            .GetEvent<CreateUserDefaultSettingsEvent>()
-            .Publish();
+        await Task.Run(_userDefaultSettingsService.Create);
     }
 
     [RelayCommand]

@@ -32,10 +32,6 @@ namespace Chameleon.Application.Events
               .Subscribe(args => DeleteDefaultSettings(args.UserDefaultSetting));
 
             _eventAggregator
-               .GetEvent<CreateUserDefaultSettingsEvent>()
-               .Subscribe(CreateDefaultSettings);
-
-            _eventAggregator
                 .GetEvent<OpenChangeProxiesEvent>()
                 .Subscribe(args => OpenChangeProxies(args.FolderId));            
         }
@@ -53,11 +49,6 @@ namespace Chameleon.Application.Events
                     .GetEvent<UserProxySetFolderIdEvent>()
                     .Publish(new UserProxySetFolderIdEventArgs(folderId));
             });
-        }
-
-        private void CreateDefaultSettings()
-        {
-            _userDefaultSettingsService.Create();
         }
 
         private void DeleteDefaultSettings(IUserDefaultSetting userDefaultSettings)
