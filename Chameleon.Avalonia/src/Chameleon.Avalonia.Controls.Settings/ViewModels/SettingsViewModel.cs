@@ -25,7 +25,7 @@ public partial class SettingsViewModel
     private const string _light = "Light";
 
     public string CurrentVersion =>
-        typeof(Interfaces.IHaveInitialize).Assembly.GetName().Version?.ToString();
+        typeof(ISettingsViewModel).Assembly.GetName().Version?.ToString();
 
     public string[] AppThemes => [_system, _light, _dark /*, FluentAvaloniaTheme.HighContrastTheme*/];
     public List<Color> PredefinedColors => new List<Color>
