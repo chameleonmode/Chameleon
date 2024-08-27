@@ -9,7 +9,7 @@ namespace Chameleon.Application.Events
             // injected just to create all event handlers to start them up
             IEntityEventHandler entityEventHandler,
             //IOutReachEventHandler outReachEventHandler,
-            IBookmarkEventHandler bookmarkEventHandler,
+            //IBookmarkEventHandler bookmarkEventHandler,
             IUserProfileEventHandler userProfileEventHandler,
             IUserSettingsEventHandler userSettingsEvantHandler,
             IOpenBrowserEventHandler userProfileRssEventHandler,

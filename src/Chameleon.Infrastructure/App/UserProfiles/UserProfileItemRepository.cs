@@ -90,7 +90,7 @@ namespace Chameleon.Infrastructure.Profiles
             {
                 return GetAllOrRequest(request);
             }
-            throw new NotImplementedException();
+            return [];
         }
         public override TEntityInterface[] GetAll(bool ignoreCache, UserProfileGetAllRequestDto request = null)
         {
@@ -99,7 +99,7 @@ namespace Chameleon.Infrastructure.Profiles
             {
                 return GetAllOrRequest(request, ignoreCache);
             }
-            throw new NotImplementedException();
+            return [];
         }
 
         private TEntityInterface[] GetAllOrRequest(UserProfileGetAllRequestDto request, bool ignoreCache = false)
@@ -108,23 +108,27 @@ namespace Chameleon.Infrastructure.Profiles
             {
                 _entities = new ConcurrentDictionary<int, TEntityInterface>();
             }
-                                                         
-            ArgumentNullException.ThrowIfNull(request.ProfileId);
-            var profileId = request.ProfileId.Value;        
 
-            if (ignoreCache)
+            //ArgumentNullException.ThrowIfNull(request.ProfileId);
+            if (request.ProfileId is int profileId)
             {
-                _entities.Clear();
-                _getAllRequested.Remove(profileId);
-            }
 
-            if (!_getAllRequested.Contains(profileId))
-            {
-                GetAllByProfileId(request);
-                _getAllRequested.Add(profileId);
+                if (ignoreCache)
+                {
+                    _entities.Clear();
+                    _getAllRequested.Remove(profileId);
+                }
 
+                if (!_getAllRequested.Contains(profileId))
+                {
+                    GetAllByProfileId(request);
+                    _getAllRequested.Add(profileId);
+
+                }
+
+                return GetLoadedByProfileId(profileId);
             }
-            return GetLoadedByProfileId(profileId);
+            return [];
         }
 
         private TEntityInterface[] GetLoadedByProfileId(int profileId)
@@ -154,11 +158,14 @@ namespace Chameleon.Infrastructure.Profiles
 
         protected virtual bool TryAddEntity(TEntityInterface entity)
         {
-            if (_entities.TryAdd(entity.Id, entity))
+            try
             {
-                return true;
+                return _entities.TryAdd(entity.Id, entity);
             }
-            throw new InvalidOperationException();
+            catch
+            {
+                return false;
+            }
         }
 
         protected bool IsEntityLoadedById(int entityId)

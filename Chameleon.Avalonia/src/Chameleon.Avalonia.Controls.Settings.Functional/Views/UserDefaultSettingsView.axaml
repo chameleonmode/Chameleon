@@ -5,7 +5,7 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:Chameleon.Avalonia.Controls.Settings.Functional.ViewModels"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="350"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
 			 x:CompileBindings="True"
 			 x:DataType="vm:UserDefaultSettingsViewModel"
              x:Class="Chameleon.Avalonia.Controls.Settings.Functional.Views.UserDefaultSettingsView">
@@ -89,9 +89,10 @@
 							<ui:CommandBarButton IconSource="Add"
 												 Label="New"
 												 Command="{Binding CreateNewDefaultSettingsCommand}"/>
+							<!--TODO: implement smoother functionality
 							<ui:CommandBarButton IconSource="Page"
 												 Label="Add pages"
-												 Command="{Binding BulkAddPagesCommand}"/>
+												 Command="{Binding BulkAddPagesCommand}"/>-->
 							<ui:CommandBarButton IconSource="Save"
 												 Label="Save"
 												 Command="{Binding SaveCommand}"/>

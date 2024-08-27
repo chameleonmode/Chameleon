@@ -39,7 +39,7 @@ namespace Chameleon.Infrastructure.Repositories
         protected readonly IEventAggregator _eventAggregator;
         protected readonly IApiLayer<TEntityDto, TPrimaryKey, TCreateInput, TUpdateInput> _apiClient;
 
-        protected ConcurrentDictionary<TPrimaryKey, TEntityInterface> _entities;
+        protected ConcurrentDictionary<TPrimaryKey, TEntityInterface> _entities = new ConcurrentDictionary<TPrimaryKey, TEntityInterface>();
         protected ConcurrentDictionary<TPrimaryKey, TEntityInterface> Entities
         {
             get
