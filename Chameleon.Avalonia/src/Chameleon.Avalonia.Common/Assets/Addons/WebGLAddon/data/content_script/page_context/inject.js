@@ -62,12 +62,11 @@
                                     }
                                 } else if (args[1] instanceof Uint8Array || args[1] instanceof Uint16Array || args[1] instanceof Uint32Array) {
                                     data = new Uint8Array(args[1].buffer);
-                                    let percentChange = config.sessionStorage.getOrSet('webglBufferPercentChange', () =>
-                                        config.random.float(-0.001, 0.001)
+                                    let offset = config.sessionStorage.getOrSet('webglBufferOffset', () =>
+                                        config.random.int(-1, 1)
                                     );
                                     for (let i = 0; i < data.length; i++) {
-                                        let newValue = data[i] * (1 + percentChange);
-                                        data[i] = Math.max(0, Math.min(255, Math.round(newValue)));
+                                        data[i] = Math.max(0, Math.min(255, data[i] + offset));
                                     }
                                 } else {
                                     data = args[1]; // For other types, keep original data
