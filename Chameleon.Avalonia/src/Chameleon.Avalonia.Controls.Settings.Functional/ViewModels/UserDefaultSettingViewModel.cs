@@ -1,4 +1,6 @@
-﻿namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
+﻿using Chameleon.Domain.Entities;
+
+namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
 public partial class UserDefaultSettingViewModel : SubPageViewModelBase
 {
@@ -78,9 +80,7 @@ public partial class UserDefaultSettingViewModel : SubPageViewModelBase
     [RelayCommand]
     public void DeleteDefaultSettings()
     {
-        _eventAggregator
-               .GetEvent<DeleteUserDefaultSettingsEvent>()
-               .Publish(new UserDefaultSettingsEventArgs(_userDefaultSetting));
+        _userDefaultsSettingsService.Delete(_userDefaultSetting);
         ChangeSelected();
     }
 }

@@ -11,11 +11,11 @@ namespace Chameleon.Application.Events
             //IOutReachEventHandler outReachEventHandler,
             //IBookmarkEventHandler bookmarkEventHandler,
             IUserProfileEventHandler userProfileEventHandler,
-            IUserSettingsEventHandler userSettingsEvantHandler,
+            //IUserSettingsEventHandler userSettingsEvantHandler,
             IOpenBrowserEventHandler userProfileRssEventHandler,
             IUserProfileFolderEventHandler userProfileFolderEventHandler,
             //IProspectorEventHandler prospectorEventHandler,
-            ICookiesExcludedDomainEventHandler cookiesExcludedDomainEventHandler,
+            //ICookiesExcludedDomainEventHandler cookiesExcludedDomainEventHandler,
             //ITourHandler tourHandler,
             ISyncChangesEventHandler syncChangesEventHandler
             )

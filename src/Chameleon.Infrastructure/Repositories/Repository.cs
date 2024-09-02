@@ -118,22 +118,24 @@ namespace Chameleon.Infrastructure.Repositories
 
         public virtual TEntityInterface[] GetAll(TGetAllRequest request = null)
         {
-            if (_entities != null)
-            {
-                return GetEntities();
-            }
-            _entities = new ConcurrentDictionary<TPrimaryKey, TEntityInterface>();
+            return GetAll(false, request);
 
-            var entities = GetEntities(request);
-            foreach (var entity in entities)
-            {
-                if (!_entities.TryAdd(entity.Id, entity))
-                {
-                    throw new InvalidOperationException();
-                }
-                OnGet(entity);
-            }
-            return GetEntities();
+            //if (_entities != null)
+            //{
+            //    return GetEntities();
+            //}
+            //_entities = new ConcurrentDictionary<TPrimaryKey, TEntityInterface>();
+
+            //var entities = GetEntities(request);
+            //foreach (var entity in entities)
+            //{
+            //    if (!_entities.TryAdd(entity.Id, entity))
+            //    {
+            //        throw new InvalidOperationException();
+            //    }
+            //    OnGet(entity);
+            //}
+            //return GetEntities();
         }
 
         public virtual TEntityInterface[] GetAll(bool ignoreCache, TGetAllRequest request = null)
@@ -144,18 +146,20 @@ namespace Chameleon.Infrastructure.Repositories
                 _entities = null;
             }
 
-            if (_entities != null)
+            if (_entities != null && _entities.Values.Count > 0)
             {
                 return GetEntities();
             }
-            _entities = new ConcurrentDictionary<TPrimaryKey, TEntityInterface>();
+            if (_entities == null)
+                _entities = new ConcurrentDictionary<TPrimaryKey, TEntityInterface>();
 
             var entities = GetEntities(request);
             foreach (var entity in entities)
             {
                 if (!_entities.TryAdd(entity.Id, entity))
                 {
-                    throw new InvalidOperationException();
+                    //throw new InvalidOperationException();
+                    return GetEntities();
                 }
                 OnGet(entity);
             }
