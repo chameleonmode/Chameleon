@@ -34,34 +34,38 @@ public abstract class SystemBrowserInstance(
                     {
                         AddonsUtil.ChameleonAddon,
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.ChameleonAddon)
-                    },
-                    {
-                        AddonsUtil.ClientRectsAddon,
+                    },                                                 
+                    {                                                  
+                        AddonsUtil.ClientRectsAddon,                   
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.ClientRectsAddon)
-                    },
-                    {
-                        AddonsUtil.FontDefenderAddon,
+                    },                                                 
+                    {                                                  
+                        AddonsUtil.FontDefenderAddon,                  
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.FontDefenderAddon)
-                    },
-                    {
-                        AddonsUtil.GeoAddon,
+                    },                                                 
+                    {                                                  
+                        AddonsUtil.GeoAddon,                           
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.GeoAddon + (BrowserType == SystemBrowserType.Firefox ? "v2" : "v3"))
-                    },
-                    {
-                        AddonsUtil.NavigatorAddon, 
-                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.NavigatorAddon) 
-                    },
-                    {
-                       AddonsUtil.ProxyAddonUtil, 
+                    },                                                 
+                    {                                                  
+                        AddonsUtil.NavigatorAddon,                     
+                        new ExtensionDirectory(BrowserProfileAddonsDir,  AddonsUtil.NavigatorAddon) 
+                    },                                                 
+                    {                                                  
+                       AddonsUtil.ProxyAddonUtil,                      
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.ProxyAddonUtil) 
-                    },
-                    {
-                        AddonsUtil.TimezoneAddon,
+                    },                                                 
+                    {                                                  
+                        AddonsUtil.TimezoneAddon,                      
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.TimezoneAddon +  "v2")
-                    },
-                    {
-                        AddonsUtil.WebRtcAddon,
+                    },                                                 
+                    {                                                  
+                        AddonsUtil.WebRtcAddon,                        
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.WebRtcAddon + (BrowserType == SystemBrowserType.Firefox ? "v2" : "v3"))
+                    },                                                 
+                    {
+                        AddonsUtil.WebGLAddon,
+                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtil.WebGLAddon)
                     }
                 };
 
@@ -225,11 +229,12 @@ public abstract class SystemBrowserInstance(
         {
             if (theseOptions.Options.DisableWebRTC)
                 await AddonsUtil.LoadFromInternal(ExtensionDirectories[AddonsUtil.WebRtcAddon]);
-            // await WebRtcAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.WebRtcAddon]);
 
             if (theseOptions.Options.SpoofFontFingerprint)
                 await AddonsUtil.LoadFromInternal(ExtensionDirectories[AddonsUtil.FontDefenderAddon]);
-            // await FontDefenderAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.FontDefenderAddon]);
+
+            if (theseOptions.Options.SpoofWebGLFingerprint)
+                await AddonsUtil.LoadFromInternal(ExtensionDirectories[AddonsUtil.WebGLAddon]);
 
             //if (BrowserType == SystemBrowserType.Chrome)
             await NavigatorAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.NavigatorAddon].AddonDir, browserSettings: await BrowserDefaultLaunchSettings.Instance());

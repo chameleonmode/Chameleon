@@ -12,6 +12,7 @@ public static class AddonsUtil
     public const string ProxyAddonUtil = nameof(ProxyAddonUtil);
     public const string TimezoneAddon = nameof(TimezoneAddon);
     public const string WebRtcAddon = nameof(WebRtcAddon);
+    public const string WebGLAddon = nameof(WebGLAddon);
 
     public static bool IMac => OperatingSystem.IsMacOS();
     // public static string BrowserExtensionsRootFolderPath => IMac ?

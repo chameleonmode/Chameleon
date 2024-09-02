@@ -198,6 +198,10 @@
 	  <Content Include="Assets\Addons\TimezoneAddonv3\data\options\index.css" />
 	  <Content Include="Assets\Addons\TimezoneAddonv3\data\options\index.html" />
 	  <Content Include="Assets\Addons\TimezoneAddonv3\manifest.json" />
+	  <Content Include="Assets\Addons\WebGLAddon\data\popup\explore\explore.css" />
+	  <Content Include="Assets\Addons\WebGLAddon\data\popup\explore\explore.json" />
+	  <Content Include="Assets\Addons\WebGLAddon\data\popup\popup.css" />
+	  <Content Include="Assets\Addons\WebGLAddon\data\popup\popup.html" />
 	  <Content Include="Assets\Addons\WebRtcAddonv3\data\icons\disabled\16.png" />
 	  <Content Include="Assets\Addons\WebRtcAddonv3\data\icons\disabled\32.png" />
 	  <Content Include="Assets\Addons\WebRtcAddonv3\data\icons\disabled\48.png" />
@@ -270,6 +274,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Assets\Addons\WebGLAddon\data\icons\" />
     <Folder Include="Controls\" />
     <Folder Include="Converters\ValueConverters\Visibility\" />
     <Folder Include="Util/" />

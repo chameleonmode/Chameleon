@@ -15,6 +15,7 @@ using Polly;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Common.Helpers;
 using Polly.CircuitBreaker;
+using Chameleon.Auth.Api;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -163,7 +164,18 @@ namespace Chameleon.Infrastructure.Api
                     .Or<HttpRequestException>()
                     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (outcome, timespan, retryAttempt, context) =>
                     {
-                        ToasterHelper.ShowErr($"Request Failed: Retry {retryAttempt} for {outcome.Result?.RequestMessage?.RequestUri}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
+                        ToasterHelper.ShowErr($"Request Failed: Retry {retryAttempt}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
+                    });
+
+                var refreshPolicy = Policy.HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.Unauthorized)
+                    .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), async (outcome, timespan, retryAttempt, context) =>
+                    {
+                        ToasterHelper.ShowErr($"Request Failed: Retry {retryAttempt}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
+
+                        var refresh = await AuthApiClient.Instance.RefreshTokenAsync(session.AuthToken, session.AuthRefreshToken, 0) ?? throw new UnauthorizedAccessException("Refresh token failed");
+                        session.AuthToken = refresh.NewAccessToken;
+                        session.AuthRefreshToken = refresh.NewRefreshToken;
+                        session.ExpireInSeconds = refresh.ExpireInSeconds;
                     });
 
                 var circuitBreakerPolicy = Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
@@ -188,7 +200,7 @@ namespace Chameleon.Infrastructure.Api
                             Console.WriteLine("Circuit breaker is half-open.");
                         });
 
-                var policyWrap = Policy.WrapAsync(retryPolicy, circuitBreakerPolicy);
+                var policyWrap = Policy.WrapAsync(retryPolicy, refreshPolicy, circuitBreakerPolicy);
 
                 using HttpResponseMessage httpResponse = policyWrap.ExecuteAsync(() =>
                 {

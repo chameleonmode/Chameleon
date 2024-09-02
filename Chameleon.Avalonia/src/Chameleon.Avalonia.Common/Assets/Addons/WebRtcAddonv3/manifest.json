@@ -1,5 +1,5 @@
 {
-  "name": "Chameleon WebRTC Defender",
+  "name": "WebRTC",
   "description": "Hides your private and public IP addresses by configuring how WebRTC's network traffic is routed.",
   "version": "1.2.3",
   "manifest_version": 3,

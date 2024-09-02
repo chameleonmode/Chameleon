@@ -2,7 +2,7 @@
   "version": "1.1.5",
   "manifest_version": 3,
   "offline_enabled": true,
-  "name": "Chameleon Font Defender",
+  "name": "Font",
   "permissions": [ "storage", "contextMenus", "notifications" ],
   "description": "Defending against Font fingerprinting by reporting a obfuscated value.",
   "commands": {
