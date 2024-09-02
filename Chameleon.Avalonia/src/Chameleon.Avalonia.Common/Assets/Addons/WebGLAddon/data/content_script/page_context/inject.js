@@ -194,39 +194,39 @@
                                 case 32944: return config.sessionStorage.getOrSet('PACK_SKIP_PIXELS', () => config.random.int(0, 256));
                                 case 32945: return config.sessionStorage.getOrSet('UNPACK_SKIP_IMAGES', () => config.random.int(0, 256));
                                 case 32946: return config.sessionStorage.getOrSet('UNPACK_IMAGE_HEIGHT', () => config.random.int(0, 4096));
-                                case 33170: return null; // FRAMEBUFFER_BINDING
+                             /*   case 33170: return null; // FRAMEBUFFER_BINDING*/
                                 case 33984: return config.sessionStorage.getOrSet('ACTIVE_TEXTURE', () => config.random.int(33984, 33999));
-                                case 34016: return null; // RENDERBUFFER_BINDING
+                         /*       case 34016: return null; // RENDERBUFFER_BINDING*/
                                 case 34467: return config.sessionStorage.getOrSet('CONTEXT_LOST_WEBGL', () => config.random.bool());
                                 case 35656: return config.sessionStorage.getOrSet('TRANSFORM_FEEDBACK_BUFFER_SIZE', () => config.random.int(128, 512));
-                                case 35738: return null; // TEXTURE_BINDING_2D
-                                case 35739: return null; // TEXTURE_BINDING_CUBE_MAP
+                                //case 35738: return null; // TEXTURE_BINDING_2D
+                                //case 35739: return null; // TEXTURE_BINDING_CUBE_MAP
                                 case 36003: return config.sessionStorage.getOrSet('BLEND_SRC_ALPHA', () => config.random.item([0, 1, 768, 769, 774, 775, 776]));
                                 case 36004: return config.sessionStorage.getOrSet('BLEND_DST_ALPHA', () => config.random.item([0, 1, 768, 769, 774, 775, 776]));
                                 case 36005: return config.sessionStorage.getOrSet('BLEND_EQUATION_ALPHA', () => config.random.item([32774, 32778, 32779]));
                                 case 36006: return config.sessionStorage.getOrSet('BLEND_SRC_ALPHA', () => config.random.item([0, 1, 768, 769, 774, 775, 776]));
                                 case 36007: return config.sessionStorage.getOrSet('BLEND_DST_ALPHA', () => config.random.item([0, 1, 768, 769, 774, 775, 776]));
-                                case 36179: return null; // TEXTURE_BINDING_2D_ARRAY
+                        /*        case 36179: return null; // TEXTURE_BINDING_2D_ARRAY*/
                                 case 36203: return config.sessionStorage.getOrSet('TRANSFORM_FEEDBACK_BUFFER_START', () => config.random.int(0, 1024));
-                                case 36288: return null; // COPY_READ_BUFFER_BINDING
-                                case 36289: return null; // COPY_WRITE_BUFFER_BINDING
+                                //case 36288: return null; // COPY_READ_BUFFER_BINDING
+                                //case 36289: return null; // COPY_WRITE_BUFFER_BINDING
                                 case 36335: return config.sessionStorage.getOrSet('DEPTH_CLAMP', () => config.random.bool());
-                                case 36336: return null; // COLOR_BUFFER_FLOAT
+                        /*        case 36336: return null; // COLOR_BUFFER_FLOAT*/
                                 case 36337: return config.sessionStorage.getOrSet('MAX_VERTEX_UNIFORM_VECTORS', () => config.random.int(4, 16));
                                 case 36338: return config.sessionStorage.getOrSet('MAX_VARYING_VECTORS', () => config.random.int(4, 16));
                                 case 36339: return config.sessionStorage.getOrSet('MAX_FRAGMENT_UNIFORM_VECTORS', () => config.random.int(4, 16));
                                 case 36340: return config.sessionStorage.getOrSet('MAX_VERTEX_UNIFORM_COMPONENTS', () => config.random.int(16, 64));
                                 case 36343: return config.sessionStorage.getOrSet('MAJOR_MINOR_VERSION', () => [config.random.int(1, 4), config.random.int(0, 9)]);
                                 case 36346: return config.sessionStorage.getOrSet('SRGB_DECODE_EXT', () => [config.random.int(0, 1), config.random.int(0, 1)]);
-                                case 36350: return null; // TRANSFORM_FEEDBACK_BINDING
-                                case 36351: return null; // TRANSFORM_FEEDBACK_BUFFER_BINDING
-                                case 36386: return null; // PIXEL_PACK_BUFFER_BINDING
+                                //case 36350: return null; // TRANSFORM_FEEDBACK_BINDING
+                                //case 36351: return null; // TRANSFORM_FEEDBACK_BUFFER_BINDING
+                                //case 36386: return null; // PIXEL_PACK_BUFFER_BINDING
                                 case 36392: return config.sessionStorage.getOrSet('COLOR_WRITEMASK', () => [config.random.bool(), config.random.bool(), config.random.bool(), config.random.bool()]);
-                                case 36662: return null; // PIXEL_UNPACK_BUFFER_BINDING
-                                case 36795: return null; // TRANSFORM_FEEDBACK_BINDING
+                                //case 36662: return null; // PIXEL_UNPACK_BUFFER_BINDING
+                                //case 36795: return null; // TRANSFORM_FEEDBACK_BINDING
 
                                 default:
-                                    console.warn("Unhandled WebGL parameter:", args[0]);
+                           /*         console.warn("Unhandled WebGL parameter:", args[0]);*/
                                     return Reflect.apply(target, self, args);
                             }
                         }
