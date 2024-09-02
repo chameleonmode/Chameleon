@@ -1,7 +1,9 @@
 ﻿using Chameleon.Auth.Api.Client;
 using Chameleon.Auth.Api.Response;
+using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Api;
 using Chameleon.Interfaces.Auth;
+using Chameleon.Interfaces.Dialogs;
 using System.Net;
 
 namespace Chameleon.Auth.Api
@@ -10,6 +12,7 @@ namespace Chameleon.Auth.Api
     {
         private readonly IApiClient _apiClient;
 
+        public static IAuthApiClient Instance => ContainerServiceHelper.Resolve<IAuthApiClient>();
 
         public AuthApiClient(
             IApiClient apiClient

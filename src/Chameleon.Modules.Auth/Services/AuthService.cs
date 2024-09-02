@@ -67,12 +67,12 @@ namespace Chameleon.Auth.Services
                 if (loginResult is not null)
                 {
                     OnAuthenticateSuccess(loginResult);
-                    _pollingTimer = new System.Timers.Timer(TimeSpan.FromSeconds(loginResult.ExpireInSeconds));
-                    _pollingTimer.Elapsed += async (s, e) =>
-                    {
-                        await RefreshTokenAsync(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
-                    };
-                    _pollingTimer.Start();
+                    //_pollingTimer = new System.Timers.Timer(TimeSpan.FromSeconds(loginResult.ExpireInSeconds));
+                    //_pollingTimer.Elapsed += async (s, e) =>
+                    //{
+                    //    await RefreshTokenAsync(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
+                    //};
+                    //_pollingTimer.Start();
 
                     //_ = RefreshTokenAsync(loginResult.AuthToken, loginResult.AuthRefreshToken, loginResult.ExpireInSeconds);
                 }
@@ -179,7 +179,7 @@ namespace Chameleon.Auth.Services
             _authSession.AuthRefreshToken = response.NewRefreshToken;
             _authSession.ExpireInSeconds = response.ExpireInSeconds;
 
-            await RefreshTokenAsync(_authSession.AuthToken, _authSession.AuthRefreshToken, _authSession.ExpireInSeconds);
+            //await RefreshTokenAsync(_authSession.AuthToken, _authSession.AuthRefreshToken, _authSession.ExpireInSeconds);
         }
 
         public void Logout()
