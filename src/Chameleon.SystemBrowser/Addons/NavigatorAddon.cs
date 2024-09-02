@@ -4552,7 +4552,7 @@ class Generator {{
      finalOutput() {{
         return  `(function(){{
         const inject = async (spoofContext) => {{
-        if (spoofContext === 'undefined' || spoofContext.CHAMELEON_SPOOF) return;
+        if (spoofContext === 'undefined' || spoofContext.CHAMELEON_SPOOF !== 'undefined') return;
         spoofContext.CHAMELEON_SPOOF = ""CHAMELEON_SPOOF"";
 
         let CHAMELEON_SPOOF = new WeakMap();

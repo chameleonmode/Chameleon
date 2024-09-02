@@ -44,16 +44,16 @@ app.popup.receive("fingerprint", function () {app.tab.open(config.test.page)});
 /*app.popup.receive("donation", function () {app.tab.open(app.homepage() + "?reason=support")});*/
 
 app.popup.receive("load", function () {
-  app.popup.send("storage", {
-    "notifications": config.notification.show
-  });
+  //app.popup.send("storage", {
+  //  "notifications": config.notification.show
+  //});
 });
 
 app.popup.receive("notifications", function () {
-  config.notification.show = !config.notification.show;
-  app.popup.send("storage", {
-    "notifications": config.notification.show
-  });
+  //config.notification.show = !config.notification.show;
+  //app.popup.send("storage", {
+  //  "notifications": config.notification.show
+  //});
 });
 
 app.page.receive("fingerprint", function (e) {

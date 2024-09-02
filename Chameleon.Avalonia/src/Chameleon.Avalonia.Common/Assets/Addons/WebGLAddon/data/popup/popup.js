@@ -80,8 +80,8 @@ var config = {
       document.getElementById("explore").style.display = "none";
     }
     /*  */
-    //background.send("load");
-    //window.removeEventListener("load", config.load, false);
+    background.send("load");
+    window.removeEventListener("load", config.load, false);
   }
 };
 
