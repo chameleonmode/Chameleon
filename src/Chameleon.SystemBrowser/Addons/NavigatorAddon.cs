@@ -145,7 +145,7 @@ class Injector {{
                 spoofFontFingerprint: false,
                 spoofMediaDevices: {browserSettings.Options.SpoofMediaDevices.ToString().ToLower()},
                 spoofCanvasFingerprint: {browserSettings.Options.SpoofCanvasFingerprint.ToString().ToLower()},
-                spoofWebGLFingerprint: {browserSettings.Options.SpoofWebGLFingerprint.ToString().ToLower()},
+                spoofWebGLFingerprint: false,
                 spoofWebGPUFingerprint: {browserSettings.Options.SpoofWebGPUFingerprint.ToString().ToLower()},
                 timeZone: '{tz}',
             }}
@@ -255,7 +255,7 @@ class Injector {{
         if (this.settings.options.limitHistory) this.updateInjectionData(history);      
 
         if (this.settings.options.spoofCanvasFingerprint) this.updateInjectionData(canvasFingerprint);      
-        if (this.settings.options.spoofWebGLFingerprint) this.updateInjectionData(webGLFingerprint);  
+        //if (this.settings.options.spoofWebGLFingerprint) this.updateInjectionData(webGLFingerprint);  
         if (this.settings.options.spoofWebGPUFingerprint) this.updateInjectionData(webGPUFingerprint);  
         //if (this.settings.options.disableWebRtc) this.updateInjectionData(disableWebRtc);  
 

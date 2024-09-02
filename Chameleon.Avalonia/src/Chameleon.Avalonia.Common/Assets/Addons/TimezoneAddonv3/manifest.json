@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "version": "1.0.0",
-  "name": "Chameleon Timezone Switcher",
+  "name": "Timezone",
   "description": "This extension alters browser timezone to a random or user-defined value.",
   "permissions": [
     "storage",

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "version": "1.2.3",
-  "name": "Chameleon Geo Protect",
+  "name": "Geo",
   "description": "This extension alters browser Geolocation latitude and longitude to user-defined values",
   "permissions": [
     "storage",
