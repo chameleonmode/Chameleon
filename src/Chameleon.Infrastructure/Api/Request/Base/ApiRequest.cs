@@ -171,7 +171,8 @@ namespace Chameleon.Infrastructure.Api
                     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), async (outcome, timespan, retryAttempt, context) =>
                     {
                         ToasterHelper.ShowErr($"Request Failed: Retry {retryAttempt}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
-                        var refresh = await AuthApiClient.Instance.RefreshTokenAsync(session.AuthToken, session.AuthRefreshToken, 0) ?? throw new InvalidOperationException("Refresh token failed");
+
+                        var refresh = await AuthApiClient.Instance.RefreshTokenAsync(session.AuthToken, session.AuthRefreshToken, 0) ?? throw new UnauthorizedAccessException("Refresh token failed");
                         session.AuthToken = refresh.NewAccessToken;
                         session.AuthRefreshToken = refresh.NewRefreshToken;
                         session.ExpireInSeconds = refresh.ExpireInSeconds;
