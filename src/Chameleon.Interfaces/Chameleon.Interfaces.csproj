@@ -12,7 +12,7 @@
    	<PackageTags>c-sharp;xaml;cross-platform;dotnet;dotnetcore;avalonia;avaloniaui;fluent;fluent-design</PackageTags>
    	<PackageLicenseExpression>MIT</PackageLicenseExpression>-->
    	<!--<Version>0.0.92-preview1</Version>-->
-   	<AssemblyVersion>2024.0.9.6</AssemblyVersion>
+   	<AssemblyVersion>2024.0.9.7</AssemblyVersion>
    </PropertyGroup>
 
   <ItemGroup>
