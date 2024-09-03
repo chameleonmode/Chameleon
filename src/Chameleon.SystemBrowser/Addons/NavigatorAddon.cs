@@ -144,7 +144,7 @@ class Injector {{
                 spoofClientRects: false,
                 spoofFontFingerprint: false,
                 spoofMediaDevices: {browserSettings.Options.SpoofMediaDevices.ToString().ToLower()},
-                spoofCanvasFingerprint: {browserSettings.Options.SpoofCanvasFingerprint.ToString().ToLower()},
+                spoofCanvasFingerprint: false,
                 spoofWebGLFingerprint: false,
                 spoofWebGPUFingerprint: {browserSettings.Options.SpoofWebGPUFingerprint.ToString().ToLower()},
                 timeZone: '{tz}',

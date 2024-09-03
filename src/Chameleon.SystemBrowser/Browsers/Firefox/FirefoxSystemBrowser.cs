@@ -44,7 +44,7 @@ public class FirefoxSystemBrowser(
         }
 
 
-        await AddonsUtil.AddAutoloadTemporaryAddonFF(System.IO.Path.Combine(DirectoryForCopy));
+        await AddonsUtilv1.AddAutoloadTemporaryAddonFF(System.IO.Path.Combine(DirectoryForCopy));
     }
 
     protected override string GetSystemBrowserExePath()

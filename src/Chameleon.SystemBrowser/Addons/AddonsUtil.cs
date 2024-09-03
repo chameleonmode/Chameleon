@@ -2,7 +2,7 @@
 
 namespace Chameleon.SystemBrowser.Addons;
 
-public static class AddonsUtil
+public static class AddonsUtilv1
 {
     public const string ChameleonAddon = nameof(ChameleonAddon);
     public const string ClientRectsAddon = nameof(ClientRectsAddon);
@@ -12,8 +12,6 @@ public static class AddonsUtil
     public const string ProxyAddonUtil = nameof(ProxyAddonUtil);
     public const string TimezoneAddon = nameof(TimezoneAddon);
     public const string WebRtcAddon = nameof(WebRtcAddon);
-    public const string WebGLAddon = nameof(WebGLAddon);
-
     public static bool IMac => OperatingSystem.IsMacOS();
     // public static string BrowserExtensionsRootFolderPath => IMac ?
     // "/Applications/Chameleon.app/Contents/Resources/BrowserExtensions/mac"
@@ -27,7 +25,7 @@ public static class AddonsUtil
 
     public static async Task AddAutoloadTemporaryAddonFF(string directory)
     {
-        var browserExtensionsFolderPath = AddonsUtil.BERFFF.Replace("\\", "\\\\");
+        var browserExtensionsFolderPath = AddonsUtilv1.BERFFF.Replace("\\", "\\\\");
 
         var userChrome = $@"
  // First line is always a comment

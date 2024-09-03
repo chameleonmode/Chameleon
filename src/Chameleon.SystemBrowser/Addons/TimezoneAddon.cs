@@ -12,7 +12,7 @@ public class TimezoneAddon
     public static async Task InitializeExtension(ExtensionDirectory dir, string json)
     {
         var ipapi = JsonConvert.DeserializeObject<Ipapi>(json);
-        await AddonsUtil.LoadFromInternal(dir);
+        await AddonsUtilv1.LoadFromInternal(dir);
         await IOtil.WriteTextToFileAsync(
             Path.Combine(dir.AddonDir, "onload.js"), AddInit(ipapi.timezone));
         //await IOtil.DC(dir);

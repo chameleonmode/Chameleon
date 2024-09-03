@@ -13,7 +13,7 @@ public class ChameleonAddon
 {
     public static async Task InitializeExtension(ExtensionDirectory dir)
     {
-        await AddonsUtil.LoadFromInternal(dir);
+        await AddonsUtilv1.LoadFromInternal(dir);
 
         var bgf = Path.Combine(dir.AddonDir, "background.js");
        // var bg = await File.ReadAllTextAsync(bgf);

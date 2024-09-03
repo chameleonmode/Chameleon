@@ -522,12 +522,12 @@ public partial class FirefoxSystemBrowserInstance(
                 await IOtil.CreateZipAsync(Path.Combine(BrowserProfileAddonsDir, GettmpFname), dir.Value.AddonDir);
         }
 
-        await ChameleonAddon.InitializeExtension(ExtensionDirectories[AddonsUtil.ChameleonAddon]);
-        await IOtil.CreateZipAsync(Path.Combine(BrowserProfileAddonsDir, GettmpFname), ExtensionDirectories[AddonsUtil.ChameleonAddon].AddonDir);
+        await ChameleonAddon.InitializeExtension(ExtensionDirectories[AddonsUtilv1.ChameleonAddon]);
+        await IOtil.CreateZipAsync(Path.Combine(BrowserProfileAddonsDir, GettmpFname), ExtensionDirectories[AddonsUtilv1.ChameleonAddon].AddonDir);
 
         if (HasProxyLogin)
         {
-            await IOtil.CreateDirectory(ExtensionDirectories[AddonsUtil.ProxyAddonUtil].AddonDir);
+            await IOtil.CreateDirectory(ExtensionDirectories[AddonsUtilv1.ProxyAddonUtil].AddonDir);
             //string loadUrl =
             //    startUrl.Contains(ProxyAddonUtil.DomainLevelDelimiter) ?
             //    @$", async () => {{ 
@@ -539,7 +539,7 @@ public partial class FirefoxSystemBrowserInstance(
             //      }});"
             //    : ");";
 
-            await IOtil.CreateZipAsync(Path.Combine(ExtensionDirectories[AddonsUtil.ProxyAddonUtil].AddonDir, GettmpFname), new Dictionary<string, string>
+            await IOtil.CreateZipAsync(Path.Combine(ExtensionDirectories[AddonsUtilv1.ProxyAddonUtil].AddonDir, GettmpFname), new Dictionary<string, string>
             {
                 { "manifest.json", ProxyAddonUtil.GetManifest() },
                 { "background.js", ProxyAddonUtil.GetBgJs(Starturl, UserProfile.Proxy) }

@@ -9,7 +9,7 @@ public class GeoAddon
 {
     public static async Task InitializeExtension(ExtensionDirectory dir)
     {
-        await AddonsUtil.LoadFromInternal(dir);
+        await AddonsUtilv1.LoadFromInternal(dir);
         //await AddonsUtil.LoadFromInternal(AddonsUtil.GeoAddon, dir);
 
         //await IOtil.DC(dir);
