@@ -5,8 +5,6 @@ namespace Chameleon.SystemBrowser.Addons;
 public static class AddonsUtilv1
 {
     public const string ChameleonAddon = nameof(ChameleonAddon);
-    public const string ClientRectsAddon = nameof(ClientRectsAddon);
-    public const string FontDefenderAddon = nameof(FontDefenderAddon);
     public const string GeoAddon = nameof(GeoAddon);
     public const string NavigatorAddon = nameof(NavigatorAddon);
     public const string ProxyAddonUtil = nameof(ProxyAddonUtil);

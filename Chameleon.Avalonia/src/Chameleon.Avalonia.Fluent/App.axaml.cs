@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
+using Chameleon.app.Addons.Services;
 using Chameleon.Auth.Services;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Views;
@@ -35,6 +36,8 @@ using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Playwright.Automation.Manager;
 using Chameleon.SystemBrowser;
 using DryIoc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Prism.DryIoc;
 using System.Reflection;
 
@@ -91,6 +94,7 @@ public partial class App : PrismApplication
         cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
 
         containerRegistry.RegisterSingleton<IIocManager, IocManager>();
+        containerRegistry.RegisterSingleton<IExtensionLoaderService, ExtensionLoaderService>();
 
         Container.AddInfrastructure();
 
@@ -146,6 +150,12 @@ public partial class App : PrismApplication
     {
         var container = containerRegistry.GetContainer();
         //container.AddExtension(new Diagnostic());
+        // Register logging services
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddLogging(configure => configure.AddConsole());
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        containerRegistry.RegisterInstance(serviceProvider.GetService<ILoggerFactory>());
+        containerRegistry.Register(typeof(ILogger<>), typeof(Logger<>));
 
         //,,,,
         var factoryMethod = FactoryMethod.Of(

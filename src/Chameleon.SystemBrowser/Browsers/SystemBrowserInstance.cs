@@ -1,4 +1,5 @@
-﻿using Chameleon.Avalonia.Addons.Net.Util;
+﻿using Chameleon.app.Addons.Models;
+using Chameleon.app.Addons.Services;
 using Chameleon.CT.Common.Models;
 using Chameleon.Interfaces.Settings;
 using Chameleon.ThirdParty.GeoIp;
@@ -10,8 +11,10 @@ using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Reflection.Metadata;
 using System.Text;
-using static Chameleon.Avalonia.Addons.Net.Util.AddonsUtil;
 
+using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
+using Chameleon.SystemBrowser.Addons.Assets;
 
 namespace Chameleon.SystemBrowser.Common;
 
@@ -37,15 +40,7 @@ public abstract class SystemBrowserInstance(
                     {
                         AddonsUtilv1.ChameleonAddon,
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtilv1.ChameleonAddon)
-                    },                                                 
-                    {                                                  
-                        AddonsUtilv1.ClientRectsAddon,                   
-                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtilv1.ClientRectsAddon)
-                    },                                                 
-                    {                                                  
-                        AddonsUtilv1.FontDefenderAddon,                  
-                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtilv1.FontDefenderAddon)
-                    },                                                 
+                    },                                                     
                     {                                                  
                         AddonsUtilv1.GeoAddon,                           
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtilv1.GeoAddon + (BrowserType == SystemBrowserType.Firefox ? "v2" : "v3"))
@@ -72,7 +67,8 @@ public abstract class SystemBrowserInstance(
         }
     }
 
-    public List<string> ExtentionsDirv2 { get; } = [];
+    readonly string destinationExtentionsDirv2 = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+    public Dictionary<ExtensionType, string> ExtentionsDirv2 { get; } = [];
 
 
 
@@ -198,8 +194,10 @@ public abstract class SystemBrowserInstance(
         }
     }
 
+    private IExtensionLoaderService? _extensionLoaderService = ContainerServiceHelper.Resolve<IExtensionLoaderService>();
     protected virtual async Task InitializeExtensionPath()
     {
+
         var theseOptions = await BrowserDefaultLaunchSettings.Instance();
 
         if (theseOptions.Options.AutoTimezone && UserProfile.Proxy != null && UserProfile.Proxy.Server.HasAny())
@@ -223,42 +221,37 @@ public abstract class SystemBrowserInstance(
         }
 
         //TODO edit for ff
-        if (theseOptions.Options.SpoofClientRects)
-            await AddonsUtilv1.LoadFromInternal(ExtensionDirectories[AddonsUtilv1.ClientRectsAddon]);
+        //if (theseOptions.Options.SpoofClientRects)
+        //    await AddonsUtilv1.LoadFromInternal(ExtensionDirectories[AddonsUtilv1.ClientRectsAddon]);
+
+  
+        var enabledGl = (theseOptions.Options.SpoofWebGLFingerprint || theseOptions.Options.SpoofCanvasFingerprint).ToLowerStrring();
+        var webglSpoofing = theseOptions.Options.SpoofWebGLFingerprint.ToLowerStrring();
+        var canvasProtection = theseOptions.Options.SpoofCanvasFingerprint.ToLowerStrring();
+        var rects = theseOptions.Options.SpoofClientRects.ToLowerStrring();
+        var fonts = theseOptions.Options.SpoofFontFingerprint.ToLowerStrring();
+        ExtentionsDirv2.Add(ExtensionType.chromeleon_addon, @$"
+                let settings = {{
+                    enabled: {enabledGl},
+                    webglSpoofing: {webglSpoofing},
+                    canvasProtection: {canvasProtection},
+                    clientRectsSpoofing: {rects},
+                    fontsSpoofing: {fonts},
+                    noiseLevel: 'medium',
+                    loggingEnabled: true,
+                    errorLoggingEnabled: true,
+                }};");
 
         if (BrowserType == SystemBrowserType.Chrome)
         {
             if (theseOptions.Options.DisableWebRTC)
                 await AddonsUtilv1.LoadFromInternal(ExtensionDirectories[AddonsUtilv1.WebRtcAddon]);
 
-            if (theseOptions.Options.SpoofFontFingerprint)
-                await AddonsUtilv1.LoadFromInternal(ExtensionDirectories[AddonsUtilv1.FontDefenderAddon]);
+            //if (theseOptions.Options.SpoofFontFingerprint)
+            //    await AddonsUtilv1.LoadFromInternal(ExtensionDirectories[AddonsUtilv1.FontDefenderAddon]);
 
             //if (theseOptions.Options.SpoofWebGLFingerprint)
             //    await AddonsUtil.LoadFromInternal(ExtensionDirectories[AddonsUtil.WebGLAddon]);
-
-            // get the appdata directory
-            string appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            // get the browser profile addons directory
-            string addonsDir = Path.Combine(appDataDir, "Chameleon", "Profiles", $"{UserProfile.Id}", "addons");
-            await IOtil.DC(addonsDir);
-            string addonDir = Path.Combine(addonsDir, $"{AddonType.WebGLAddon.GetDescription()}", $"{Guid.NewGuid()}");
-            await CreateDirectory(addonDir);
-            ExtentionsDirv2.Add(addonDir);
-            var enabledGl = (theseOptions.Options.SpoofWebGLFingerprint || theseOptions.Options.SpoofCanvasFingerprint).ToString().ToLower();
-            var webglSpoofing = theseOptions.Options.SpoofWebGLFingerprint.ToString().ToLower();
-            var canvasProtection = theseOptions.Options.SpoofCanvasFingerprint.ToString().ToLower();
-            
-            await LoadToFromInternal(AddonType.WebGLAddon, addonDir, @$"
-                let settings = {{
-                    enabled: {enabledGl},
-                    webglSpoofing: {webglSpoofing},
-                    canvasProtection: {canvasProtection},
-                    noiseLevel: 'medium',
-                    loggingEnabled: false,
-                    errorLoggingEnabled: false
-                }};
-                ");
 
             //if (BrowserType == SystemBrowserType.Chrome)
             await NavigatorAddon.InitializeExtension(ExtensionDirectories[AddonsUtilv1.NavigatorAddon].AddonDir, browserSettings: await BrowserDefaultLaunchSettings.Instance());
@@ -267,14 +260,24 @@ public abstract class SystemBrowserInstance(
 
         if (HasProxyLogin)
         {
-            await IOtil.CreateDirectory(ExtensionDirectories[AddonsUtilv1.ProxyAddonUtil].AddonDir);
-            await IOtil.WriteTextToFileAsync(
-                Path.Combine(ExtensionDirectories[AddonsUtilv1.ProxyAddonUtil].AddonDir, "manifest.json"),
-                ProxyAddonUtil.GetManifestv3());
+            ExtentionsDirv2.Add(ExtensionType.chromeleon_auto_proxy, @$"
+                let settings = {{
+                    enabled: true,
+                    type: 'http',
+                    host: '{UserProfile.Proxy.Host}',
+                    port: {UserProfile.Proxy.Port},
+                    username: '{UserProfile.Proxy.UserName}',
+                    password: '{UserProfile.Proxy.Password}',
+                    url: '{Starturl}',
+                    debug: true,
+                }};
+            ");
+        }
 
-            await IOtil.WriteTextToFileAsync(
-                Path.Combine(ExtensionDirectories[AddonsUtilv1.ProxyAddonUtil].AddonDir, "background.js"),
-                ProxyAddonUtil.GetBgJsv3(Starturl, UserProfile.Proxy));
+
+        foreach (var (ext, setting) in ExtentionsDirv2)
+        {
+            await _extensionLoaderService!.LoadExtension(ext, destinationExtentionsDirv2, setting);
         }
     }
 
@@ -514,14 +517,22 @@ public abstract class SystemBrowserInstance(
             args.Add($"--load-extension=\"{exts}\"");
        
         //if(!IsMao)
-            args.Add($"{Starturl}");
+            args.Add($"about:blank");
         
         return string.Join(" ", args);
     }
 
     public virtual string GetLoadExtensionsArgument()
     {
-        List<string> exts = new(ExtentionsDirv2);
+        List<string> extsdestinationExtentionsDirv2 = [];
+        if (Directory.Exists(destinationExtentionsDirv2))
+        {
+            foreach (var item in Directory.GetDirectories(destinationExtentionsDirv2))
+            {
+                extsdestinationExtentionsDirv2.Add(item);
+            }
+        }
+        List<string> exts = new(extsdestinationExtentionsDirv2);
         foreach (var dir in ExtensionDirectories)
         {
             if (Directory.Exists(dir.Value.AddonDir))
