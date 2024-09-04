@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Chameleon.Core.Extensions;
 public static class BooleanExtentions
 {
-    public static string ToLowerStrring(this bool value)
+    public static string ToLwrStr(this bool value)
     {
         return value.ToString().ToLower();
     }

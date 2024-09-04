@@ -224,23 +224,25 @@ public abstract class SystemBrowserInstance(
         //if (theseOptions.Options.SpoofClientRects)
         //    await AddonsUtilv1.LoadFromInternal(ExtensionDirectories[AddonsUtilv1.ClientRectsAddon]);
 
-  
-        var enabledGl = (theseOptions.Options.SpoofWebGLFingerprint || theseOptions.Options.SpoofCanvasFingerprint).ToLowerStrring();
-        var webglSpoofing = theseOptions.Options.SpoofWebGLFingerprint.ToLowerStrring();
-        var canvasProtection = theseOptions.Options.SpoofCanvasFingerprint.ToLowerStrring();
-        var rects = theseOptions.Options.SpoofClientRects.ToLowerStrring();
-        var fonts = theseOptions.Options.SpoofFontFingerprint.ToLowerStrring();
-        ExtentionsDirv2.Add(ExtensionType.chromeleon_addon, @$"
-                let settings = {{
-                    enabled: {enabledGl},
-                    webglSpoofing: {webglSpoofing},
-                    canvasProtection: {canvasProtection},
-                    clientRectsSpoofing: {rects},
-                    fontsSpoofing: {fonts},
-                    noiseLevel: 'medium',
-                    loggingEnabled: true,
-                    errorLoggingEnabled: true,
-                }};");
+        HashSet<KeyValuePair<string, string>> options =
+        [
+            new ("webglSpoofing", theseOptions.Options.SpoofWebGLFingerprint.ToLwrStr()),
+            new ("canvasProtection", theseOptions.Options.SpoofCanvasFingerprint.ToLwrStr()),
+            new ("clientRectsSpoofing", theseOptions.Options.SpoofClientRects.ToLwrStr()),
+            new ("fontsSpoofing", theseOptions.Options.SpoofFontFingerprint.ToLwrStr())
+        ];
+        StringBuilder settingsBuilder = new StringBuilder();
+        settingsBuilder.AppendLine("let settings = {");
+        settingsBuilder.AppendLine($"enabled: {options.Any(o => o.Value == "true").ToLwrStr()},");
+        foreach (var option in options)
+        {
+            settingsBuilder.AppendLine($"{option.Key}: {option.Value},");
+        }
+        settingsBuilder.AppendLine("noiseLevel: 'medium',");
+        settingsBuilder.AppendLine("loggingEnabled: false,");
+        settingsBuilder.AppendLine("errorLoggingEnabled: false,");
+        settingsBuilder.AppendLine("};");
+        ExtentionsDirv2.Add(ExtensionType.chromeleon_addon, settingsBuilder.ToString());
 
         if (BrowserType == SystemBrowserType.Chrome)
         {
@@ -269,7 +271,7 @@ public abstract class SystemBrowserInstance(
                     username: '{UserProfile.Proxy.UserName}',
                     password: '{UserProfile.Proxy.Password}',
                     url: '{Starturl}',
-                    debug: true,
+                    debug: false,
                 }};
             ");
         }
