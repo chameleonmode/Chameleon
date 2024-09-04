@@ -1,38 +1,8 @@
-﻿using AutoMapper;
-using Chameleon.Avalonia.Controls.UserProfileView.Models.Country;
-using Chameleon.Avalonia.Controls.UserProfileView.Models.Profile;
-using Chameleon.Avalonia.Controls.UserProfileView.Services;
-using Chameleon.Controls.UserProfileView.Models.Additional;
-using Chameleon.CT.Common.Base;
-using Chameleon.CT.Common.Collections;
-using Chameleon.Infrastructure.Users;
-using Chameleon.Interfaces.App.Assistants.Events;
-using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.App.UserProfiles.Events.Common;
-using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.Common;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.UserProfiles;
-using CommunityToolkit.Mvvm.Input;
-using System.Collections.Specialized;
-using Chameleon.Core.Extensions;
-using Chameleon.Authorization;
-using Chameleon.Interfaces.Dashboard;
-using Chameleon.Domain.Entities;
-using Chameleon.Common.Helpers;
-using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Chameleon.Interfaces.WebBrowser;
-using Avalonia.Collections;
-using Chameleon.Interfaces;
-using Chameleon.Avalonia.Common.Extensions;
-
-namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
+﻿namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 
 public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     IUserProfileIdentityViewModel
 {
-
     private readonly IMapper _mapper;
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfileAdditionalDataService _userProfileAdditionalDataService;
@@ -42,18 +12,16 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     private readonly IToastNotificationService _toastNotificationService;
     private readonly ISystemBrowserManager _systemBrowserManager;
 
-    private bool _isChangedProperty;
-
     [ObservableProperty]
     private UserProfilesView.ViewModels.UserProfileViewModel _profileVM;
     [ObservableProperty]
     private bool _isSaving;
 
-    public AvaloniaList<CountryBindable> Countries { get; } = [];       
-    public AvaloniaList<UserProfilePersonBindable> Persons { get; } = [];
-    public AvaloniaList<UserProfileBusinessBindable> Businesses { get; } = [];
-    public AvaloniaList<UserProfileLoginBindable> Logins { get; } = [];
-    public AvaloniaList<UserProfileAddressBindable> Addresses { get; } = [];
+    public AvaloniaList<CountryBindable> Countries { get; } = new();
+    public AvaloniaList<UserProfilePersonBindable> Persons { get; } = new();
+    public AvaloniaList<UserProfileBusinessBindable> Businesses { get; } = new();
+    public AvaloniaList<UserProfileLoginBindable> Logins { get; } = new();
+    public AvaloniaList<UserProfileAddressBindable> Addresses { get; } = new();
 
     public bool HasNoItems => Persons?.Count > 0;
     public bool HasNoBusinessItems => Businesses?.Count > 0;
@@ -82,51 +50,38 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         IApplicationUser applicationUser,
         IAuthSession authSession,
         ISystemBrowserManager systemBrowserManager,
-        IToastNotificationService toastNotificationService
-        )
+        IToastNotificationService toastNotificationService)
     {
-        _systemBrowserManager = systemBrowserManager;
         _mapper = mapper;
         _userProfileService = userProfileService;
         _userProfileAdditionalDataService = userProfileAdditionalDataService;
         _userAssistantService = userAssistantService;
         _applicationUser = applicationUser;
         _authSession = authSession;
+        _systemBrowserManager = systemBrowserManager;
         _toastNotificationService = toastNotificationService;
 
-        EventAggregator
-             .GetEvent<SavedUserProfileEvent>()
-             .Subscribe(args => OnUserProfileSaved(args.UserProfile));
+        SubscribeToEvents();
+        InitializeCommands();
+    }
 
-        EventAggregator
-            .GetEvent<OpenUserProfileTabEvent>()
-            .Subscribe(args => OpenUserProfileIdentityTab(args.UserProfileIdentityTab));
+    private void SubscribeToEvents()
+    {
+        EventAggregator.GetEvent<SavedUserProfileEvent>().Subscribe(args => OnUserProfileSaved(args.UserProfile));
+        EventAggregator.GetEvent<OpenUserProfileTabEvent>().Subscribe(args => OpenUserProfileIdentityTab(args.UserProfileIdentityTab));
+        EventAggregator.GetEvent<RestrictContentEvent>().Subscribe(args => RestrictConfigurations(args.Permissions));
+        EventAggregator.GetEvent<SavedUserAssistantEvent>().Subscribe(args => SyncBtnVisibilityChange());
+        EventAggregator.GetEvent<DeletedUserAssistantEvent>().Subscribe(args => SyncBtnVisibilityChange());
+        EventAggregator.GetEvent<UserProfileTabChangedEvent>().Subscribe(Discard);
+        EventAggregator.GetEvent<DeleteUserProfileEvent>().Subscribe(a => NavigationService.PopAsync());
+    }
 
-        EventAggregator
-            .GetEvent<RestrictContentEvent>()
-            .Subscribe(args => RestrictConfigurations(args.Permissions));
-
-        EventAggregator
-            .GetEvent<SavedUserAssistantEvent>()
-            .Subscribe(args => SyncBtnVisibilityChange());
-
-        EventAggregator
-            .GetEvent<DeletedUserAssistantEvent>()
-            .Subscribe(args => SyncBtnVisibilityChange());
-
-        EventAggregator
-            .GetEvent<UserProfileTabChangedEvent>()
-            .Subscribe(Discard);
-
-        EventAggregator
-            .GetEvent<DeleteUserProfileEvent>()
-            .Subscribe(a=> NavigationService.PopAsync());
-
+    private void InitializeCommands()
+    {
         CommandMap["AddPerson"] = AddPerson;
         CommandMap["AddBusiness"] = OnAddBusiness;
         CommandMap["AddAddress"] = OnAddAddress;
         CommandMap["AddLogin"] = OnAddLogin;
-
     }
 
     public override async Task InitAsync(object? param)
@@ -134,19 +89,17 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         await base.InitAsync(param);
 
         if (!Loaded)
-        {                     
+        {
             OnAuthenticated();
         }
     }
+
     public override async Task OnNavigatedToAsync(object? param)
     {
         await base.OnNavigatedToAsync(param);
 
-
         if (param is UserProfile up)
         {
-            //TODO: UserAgent var p = await Task.Run(() => { return _userProfileService.Get(up.Id, false); });
-            //await Task.Delay(256);
             UserProfile = up;
         }
 
@@ -167,19 +120,33 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
 
     private void OnUserProfileSaved(IUserProfile userProfile)
     {
-        if (_userProfile == null)
+        if (_userProfile == null || userProfile.Id != _userProfile.Id)
         {
             return;
         }
 
-        if (userProfile.Id != _userProfile.Id)
-        {
-            return;
-        }
         UserProfileModel = _mapper.Map<UserProfileBindable>(_userProfile);
     }
 
-    private async void BindUi()
+    private void UpdateCollectionChangedHandlers(NotifyCollectionChangedEventHandler handler, bool subscribe)
+    {
+        if (subscribe)
+        {
+            Addresses.CollectionChanged += handler;
+            Logins.CollectionChanged += handler;
+            Persons.CollectionChanged += handler;
+            Businesses.CollectionChanged += handler;
+        }
+        else
+        {
+            Addresses.CollectionChanged -= handler;
+            Logins.CollectionChanged -= handler;
+            Persons.CollectionChanged -= handler;
+            Businesses.CollectionChanged -= handler;
+        }
+    }
+
+    private async Task BindUi()
     {
         if (UserProfileModel == null)
             return;
@@ -191,28 +158,31 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
                        _systemBrowserManager,
                        false);
 
-        if(Countries.Count == 0)
-            Countries.AddRange(await Task.Run(_userProfileAdditionalDataService.GetCountries));
-
-        Addresses.AddNewRangeAsync(_userProfileAdditionalDataService.GetAddressesAsync(UserProfileModel.Id));
-        Persons.AddNewRangeAsync(_userProfileAdditionalDataService.GetPersonsAsync(UserProfileModel.Id));
-        Logins.AddNewRangeAsync(_userProfileAdditionalDataService.GetLoginsAsync(UserProfileModel.Id));
-        Businesses.AddNewRangeAsync(_userProfileAdditionalDataService.GetBusinessesAsync(UserProfileModel.Id));
-
-        foreach (var a in Addresses)
-            a.SelectedCountry = Countries.FirstOrDefault(x => a?.CountryId == x.Id);
+        Task[] tasks = [
+            Addresses.AddNewRangeAsync(() => _userProfileAdditionalDataService.GetAddressesAsync(UserProfileModel.Id)),
+            Persons.AddNewRangeAsync(() => _userProfileAdditionalDataService.GetPersonsAsync(UserProfileModel.Id)),
+            Logins.AddNewRangeAsync(() => _userProfileAdditionalDataService.GetLoginsAsync(UserProfileModel.Id)),
+            Businesses.AddNewRangeAsync(() => _userProfileAdditionalDataService.GetBusinessesAsync(UserProfileModel.Id))
+        ];
 
         CollectionChanged(this, null);
 
-        Addresses.CollectionChanged -= CollectionChanged;
-        Logins.CollectionChanged -= CollectionChanged;
-        Persons.CollectionChanged -= CollectionChanged;
-        Businesses.CollectionChanged -= CollectionChanged;
+        UpdateCollectionChangedHandlers(CollectionChanged, false);
+        UpdateCollectionChangedHandlers(CollectionChanged, true);
 
-        Addresses.CollectionChanged += CollectionChanged;
-        Logins.CollectionChanged += CollectionChanged;
-        Persons.CollectionChanged += CollectionChanged;
-        Businesses.CollectionChanged += CollectionChanged;
+        try
+        {
+            if (Countries.Count == 0)
+                await Countries.AddNewRangeAsync(() => Task.Run(_userProfileAdditionalDataService.GetCountries));
+
+            await Task.WhenAll(tasks);
+            foreach (var a in Addresses)
+                a.SelectedCountry = Countries.FirstOrDefault(x => a?.CountryId == x.Id);
+        }
+        catch (Exception ex)
+        {
+            _toastNotificationService.ShowError(ex.Message);
+        }
     }
 
     private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -223,6 +193,25 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         OnPropertyChanged(nameof(HasNoBusinessItems));
     }
 
+    private Task SaveCollections => Task.Run(() =>
+    {
+        SaveCollection(Logins, i => i.IsPropertyChanged, OnSaveLogin);
+        SaveCollection(Persons, i => i.IsPropertyChanged, OnSavePerson);
+        SaveCollection(Addresses, i => i.IsPropertyChanged, OnSaveAddress);
+        SaveCollection(Businesses, i => i.IsPropertyChanged, OnSaveBusiness);
+    });
+
+    static void SaveCollection<T>(IEnumerable<T> collection, Func<T, bool> isPropChanged, Action<T> saveAction)
+    {
+        foreach (var item in collection)
+        {
+            if (isPropChanged(item))
+            {
+                saveAction(item);
+            }
+        }
+    }
+
     #region UserProfile
 
     private UserProfile _userProfile;
@@ -231,10 +220,12 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         get => _userProfile;
         set
         {
-            SetProperty(ref _userProfile, value);
-            UserProfileModel = _mapper.Map<UserProfileBindable>(value);
-            BindUi();
-            RestrictConfigurations(_authSession.Permissions);
+            if (SetProperty(ref _userProfile, value))
+            {
+                UserProfileModel = _mapper.Map<UserProfileBindable>(value);
+                _ = BindUi();
+                RestrictConfigurations(_authSession.Permissions);
+            }
         }
     }
 
@@ -246,106 +237,40 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         {
             if (SetProperty(ref _userProfileModel, value))
             {
-                _userProfileModel.ChangedProperty += (s,v) => _isChangedProperty = v;
                 SyncBtnVisibilityChange();
             }
         }
     }
 
     [RelayCommand]
-    private void SaveChanges()
+    private async Task SaveChanges()
     {
-        if (string.IsNullOrEmpty(UserProfileModel.Title) || 
-            string.IsNullOrWhiteSpace(UserProfileModel.Title))
+        if (!UserProfileModel.Title.HasAny())
             return;
 
         IsSaving = true;
-        UserProfile userProfile = null;
 
-        DispatcherService.InvokeOnUiThreadAsync(() =>
-        {
-            SaveCollections();
 
-            //if (_isChangedProperty)
-            //{
-                //TODO: check valid for saving only valid data (postoped / agreed)
-                //bool isValid = UserProfileModel.Proxy.IsModelValid();
-                userProfile = _mapper.Map<UserProfile>(UserProfileModel);
-                _userProfileService.Save(userProfile);
-            //}
-        }, _ =>
+        try
         {
-            if (_isChangedProperty)
-            {
-                // _mainWindow.SetContent(_mainWindow.GetContent(), userProfile.Title);
-            }
-            _isChangedProperty = false;
+            await SaveCollections;
+
+            //TODO: check valid for saving only valid data (postoped / agreed)
+            UserProfile userProfile = _mapper.Map<UserProfile>(UserProfileModel);
+
+            await Task.Run(() => _userProfileService.Save(userProfile));
+        }
+        catch (Exception ex)
+        {
+            // Handle the exception (e.g., log it, show a notification, etc.)
+            _toastNotificationService.ShowError($"{ex.Message}");
+        }
+        finally
+        {
+            // Code to execute after the task completes, regardless of success or failure
             IsSaving = false;
-            //_featureTourNavigator.IfCurrentStepEquals(ElementID.SaveChangesBtn).GoNext();
-        });
-    }
-
-    #region SaveCollections
-    private void SaveCollections()
-    {
-        IsSaving = true;
-        DispatcherService.InvokeOnUiThreadAsync(() =>
-        {
-            OnSaveLogins();
-            OnSavePersons();
-            OnSaveAddresses();
-            OnSaveBusinesses();
-        }, _ => IsSaving = false);
-    }
-
-    private void OnSaveLogins()
-    {
-        foreach (var item in Logins)
-        {
-            if (!item.IsPropertyChanged)
-            {
-                continue;
-            }
-            OnSaveLogin(item);
         }
     }
-
-    private void OnSavePersons()
-    {
-        foreach (var item in Persons)
-        {
-            if (!item.IsPropertyChanged)
-            {
-                continue;
-            }
-            OnSavePerson(item);
-        }
-    }
-
-    private void OnSaveAddresses()
-    {
-        foreach (var item in Addresses)
-        {
-            if (!item.IsPropertyChanged)
-            {
-                continue;
-            }
-            OnSaveAddress(item);
-        }
-    }
-
-    private void OnSaveBusinesses()
-    {
-        foreach (var item in Businesses)
-        {
-            if (!item.IsPropertyChanged)
-            {
-                continue;
-            }
-            OnSaveBusiness(item);
-        }
-    }
-    #endregion
 
 
     #endregion
@@ -583,8 +508,8 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         return _applicationUser.IsAuthenticated && _userAssistantService.Get().Count > 0;
     }
     public bool IsSyncChangesBtnVisible => _applicationUser.IsAssistant ? _userProfileService.IsSharedProfile(_userProfile) : HasAssistants();
-    #endregion  
-    
+    #endregion
+
     public void OnAuthenticated()
     {
         SyncBtnVisibilityChange();

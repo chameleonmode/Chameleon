@@ -24,8 +24,8 @@ public partial class SettingsViewModel
     private const string _dark = "Dark";
     private const string _light = "Light";
 
-    public string CurrentVersion =>
-        typeof(ISettingsViewModel).Assembly.GetName().Version?.ToString();
+    //TODO: refactor
+    public string CurrentVersion { get; } = "2024.0.9.8";
 
     public string[] AppThemes => [_system, _light, _dark /*, FluentAvaloniaTheme.HighContrastTheme*/];
     public List<Color> PredefinedColors => new List<Color>

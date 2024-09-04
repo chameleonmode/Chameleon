@@ -16,7 +16,7 @@ public partial class UserProfileSidePanelViewModel(IUserProfileAdditionalDataSer
     : SubPageViewModelBase, 
     IUserProfileSidePanelViewModel
 {
-    private IReadOnlyList<CountryBindable> _countries;
+    private IEnumerable<CountryBindable> _countries;
 
     [ObservableProperty]
     private List<UserProfileLoginBindable> _profileLogins;

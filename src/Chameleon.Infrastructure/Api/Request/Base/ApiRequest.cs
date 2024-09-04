@@ -16,6 +16,8 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Common.Helpers;
 using Polly.CircuitBreaker;
 using Chameleon.Auth.Api;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -164,13 +166,13 @@ namespace Chameleon.Infrastructure.Api
                     .Or<HttpRequestException>()
                     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (outcome, timespan, retryAttempt, context) =>
                     {
-                        ToasterHelper.ShowErr($"Request Failed: Retry {retryAttempt}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
+                        ToasterHelper.ShowErr($"Request Failed: Retry {retryAttempt}: {outcome.Result?.StatusCode}");
                     });
 
                 var refreshPolicy = Policy.HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.Unauthorized)
                     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), async (outcome, timespan, retryAttempt, context) =>
                     {
-                        ToasterHelper.ShowErr($"Request Failed: Retry {retryAttempt}: due to {outcome.Exception?.Message} {outcome.Result?.StatusCode}");
+                        ToasterHelper.ShowErr($"Request Failed: Retry {retryAttempt}: {outcome.Result?.StatusCode}");
 
                         var refresh = await AuthApiClient.Instance.RefreshTokenAsync(session.AuthToken, session.AuthRefreshToken, 0) ?? throw new UnauthorizedAccessException("Refresh token failed");
                         session.AuthToken = refresh.NewAccessToken;
@@ -213,7 +215,44 @@ namespace Chameleon.Infrastructure.Api
                 _responseBody = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 if (!httpResponse.IsSuccessStatusCode)
                 {
-                    throw new InvalidOperationException($"Request failed with status code {httpResponse.StatusCode} and reason phrase '{httpResponse.ReasonPhrase}'. Content: {_responseBody}");
+                    string FormatErrorMessage(HttpStatusCode statusCode, string reasonPhrase, string responseBody)
+                    {
+                        var errorDetails = new StringBuilder();
+                        //errorDetails.AppendLine($"Request failed with status code {statusCode} and reason phrase '{reasonPhrase}'.");
+                        errorDetails.AppendLine($"Request failed. ");
+
+                        // Extract error message
+                        //var errorMessageMatch = Regex.Match(responseBody, @"""message"":""([^""]+)""");
+                        //if (errorMessageMatch.Success)
+                        //{
+                        //    errorDetails.AppendLine($"Error Message: {errorMessageMatch.Groups[1].Value}");
+                        //}
+
+                        // Extract error details
+                        var errorDetailsMatch = Regex.Match(responseBody, @"""details"":""([^""]+)""");
+                        if (errorDetailsMatch.Success)
+                        {
+                            var cleanedDetails = errorDetailsMatch.Groups[1].Value.Replace("\\r\\n", " ");
+                            errorDetails.AppendLine($"{cleanedDetails}");
+                        }
+
+                        // Extract validation errors
+                        //var validationErrorsMatch = Regex.Match(responseBody, @"""validationErrors"":\[(.*?)\]");
+                        //if (validationErrorsMatch.Success)
+                        //{
+                        //    errorDetails.AppendLine("Validation Errors:");
+                        //    var validationErrors = validationErrorsMatch.Groups[1].Value;
+                        //    var validationErrorMatches = Regex.Matches(validationErrors, @"{""message"":""([^""]+)"",""members"":\[""([^""]+)""\]}");
+                        //    foreach (Match match in validationErrorMatches)
+                        //    {
+                        //        errorDetails.AppendLine($" - {match.Groups[1].Value} (Members: {match.Groups[2].Value})");
+                        //    }
+                        //}
+
+                        return errorDetails.ToString();
+                    }
+                    var errorMessage = FormatErrorMessage(httpResponse.StatusCode, httpResponse.ReasonPhrase, _responseBody);
+                    throw new InvalidOperationException(errorMessage);
                 }
             }
             catch (BrokenCircuitException ex)

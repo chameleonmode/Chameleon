@@ -200,12 +200,11 @@ public class UserProfileAdditionalDataService : IUserProfileAdditionalDataServic
     public Task<IEnumerable<UserProfileLoginBindable>> GetLoginsAsync(int profileId, bool ignoreCache = true)
         => Task.Run(() => GetLogins(profileId, ignoreCache));
 
-    public IReadOnlyList<CountryBindable> GetCountries()
+    public IEnumerable<CountryBindable> GetCountries()
     {
         var countries = _countryRepository.GetAll();
         return _mapper.Map<CountryBindable[]>(countries)
-            .OrderBy(coutry => coutry.Name)
-            .ToReadOnlyList();
+            .OrderBy(coutry => coutry.Name);
     }
 
     public IReadOnlyList<UserProfileOutReachRssBindable> GetOutReachRsses(int profileId)

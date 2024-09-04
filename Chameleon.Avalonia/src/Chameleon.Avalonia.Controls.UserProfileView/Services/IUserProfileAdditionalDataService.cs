@@ -16,7 +16,7 @@ public interface IUserProfileAdditionalDataService
     void DeleteBusiness(UserProfileBusinessBindable businessBindable);
     void DeleteLogin(UserProfileLoginBindable loginBindable);
     void DeletePerson(UserProfilePersonBindable personBindable);
-    IReadOnlyList<CountryBindable> GetCountries();
+    IEnumerable<CountryBindable> GetCountries();
     IEnumerable<UserProfileAddressBindable> GetAddresses(int profileId, bool ignoreCache = true);
     Task<IEnumerable<UserProfileAddressBindable>> GetAddressesAsync(int profileId, bool ignoreCache = true);
     IEnumerable<UserProfileBusinessBindable> GetBusinesses(int profileId);
