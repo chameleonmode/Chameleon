@@ -40,26 +40,22 @@ public abstract class SystemBrowserInstance(
                     {
                         AddonsUtilv1.ChameleonAddon,
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtilv1.ChameleonAddon)
-                    },                                                     
-                    {                                                  
-                        AddonsUtilv1.GeoAddon,                           
+                    },
+                    {
+                        AddonsUtilv1.GeoAddon,
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtilv1.GeoAddon + (BrowserType == SystemBrowserType.Firefox ? "v2" : "v3"))
-                    },                                                 
-                    {                                                  
-                        AddonsUtilv1.NavigatorAddon,                     
-                        new ExtensionDirectory(BrowserProfileAddonsDir,  AddonsUtilv1.NavigatorAddon) 
-                    },                                                 
-                    {                                                  
-                       AddonsUtilv1.ProxyAddonUtil,                      
-                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtilv1.ProxyAddonUtil) 
-                    },                                                 
-                    {                                                  
-                        AddonsUtilv1.TimezoneAddon,                      
+                    },
+                    {
+                        AddonsUtilv1.NavigatorAddon,
+                        new ExtensionDirectory(BrowserProfileAddonsDir,  AddonsUtilv1.NavigatorAddon)
+                    },
+                    {
+                       AddonsUtilv1.ProxyAddonUtil,
+                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtilv1.ProxyAddonUtil)
+                    },
+                    {
+                        AddonsUtilv1.TimezoneAddon,
                         new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtilv1.TimezoneAddon +  "v2")
-                    },                                                 
-                    {                                                  
-                        AddonsUtilv1.WebRtcAddon,                        
-                        new ExtensionDirectory(BrowserProfileAddonsDir, AddonsUtilv1.WebRtcAddon + (BrowserType == SystemBrowserType.Firefox ? "v2" : "v3"))
                     }
                 };
 
@@ -67,12 +63,10 @@ public abstract class SystemBrowserInstance(
         }
     }
 
+    private readonly IExtensionLoaderService? _extensionLoaderService = ContainerServiceHelper.Resolve<IExtensionLoaderService>();
+
     readonly string destinationExtentionsDirv2 = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
     public Dictionary<ExtensionType, string> ExtentionsDirv2 { get; } = [];
-
-
-
-    private U32.WinEventDelegate winEventsCaptureDelegate;
 
     public TaskCompletionSource<bool> OPtcs { get; } = new();
     protected abstract SystemBrowserType BrowserType { get; }
@@ -94,7 +88,7 @@ public abstract class SystemBrowserInstance(
     public Process? Brocess { get; set; }
     public IntPtr Handle { get; private set; } = IntPtr.Zero;
 
-    public string BrowserExeFilePath => 
+    public string BrowserExeFilePath =>
         browserExeFilePath;
 
     public string BrowserProfileFolderPath =>
@@ -116,8 +110,8 @@ public abstract class SystemBrowserInstance(
     public static bool IsMao =>
         OperatingSystem.IsMacOS();
 
-    public UserProfileSystemBrowserProcessEventArgs GetArgs => 
-        new (UserProfile,
+    public UserProfileSystemBrowserProcessEventArgs GetArgs =>
+        new(UserProfile,
             BrowserType,
             Brocess,
             options.Url,
@@ -141,7 +135,7 @@ public abstract class SystemBrowserInstance(
             await IOtil.DC(BrowserProfileAddonsDir);
             await InitializeBaseExtensionPath();
             await InitializeExtensionPath();
-            if (OPtcs.Task.IsCompleted) 
+            if (OPtcs.Task.IsCompleted)
                 return;
             await StartProcess();
         }
@@ -160,25 +154,18 @@ public abstract class SystemBrowserInstance(
 #pragma warning disable CA1416 // Validate platform compatibility
                 if (U32.IsWindow(Handle))
                 {
-                    //U32.SetForegroundWindow(Handle);
                     if (U32til.BringWindowToForeground(Handle))
                     {
                         eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs);
                     }
-                    //U32.SetActiveWindow(Handle);
                 }
 #pragma warning restore CA1416 // Validate platform compatibility
             }
             else
             {
-                if(MacOSUtil.SetForegroundWindow(Brocess.Id))
+                if (MacOSUtil.SetForegroundWindow(Brocess.Id))
                 {
-                    //Brocess.EnableRaisingEvents = false;
-                    //Brocess.Exited -= OnProcessExited; 
                     Brocess.Refresh();
-                    //Brocess.Exited += OnProcessExited; 
-                    //Brocess.EnableRaisingEvents = true;
-                    //await Process.Start(BrowserExeFilePath, GetCommandLineArgumentsList()).WaitForExitAsync();
                     eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs);
                 }
             }
@@ -194,7 +181,6 @@ public abstract class SystemBrowserInstance(
         }
     }
 
-    private IExtensionLoaderService? _extensionLoaderService = ContainerServiceHelper.Resolve<IExtensionLoaderService>();
     protected virtual async Task InitializeExtensionPath()
     {
 
@@ -229,33 +215,22 @@ public abstract class SystemBrowserInstance(
             new ("webglSpoofing", theseOptions.Options.SpoofWebGLFingerprint.ToLwrStr()),
             new ("canvasProtection", theseOptions.Options.SpoofCanvasFingerprint.ToLwrStr()),
             new ("clientRectsSpoofing", theseOptions.Options.SpoofClientRects.ToLwrStr()),
-            new ("fontsSpoofing", theseOptions.Options.SpoofFontFingerprint.ToLwrStr())
+            new ("fontsSpoofing", theseOptions.Options.SpoofFontFingerprint.ToLwrStr()),
+            new ("dAPI", theseOptions.Options.DisableWebRTC.ToLwrStr()),
         ];
         StringBuilder settingsBuilder = new StringBuilder();
         settingsBuilder.AppendLine("let settings = {");
         settingsBuilder.AppendLine($"enabled: {options.Any(o => o.Value == "true").ToLwrStr()},");
-        foreach (var option in options)
-        {
-            settingsBuilder.AppendLine($"{option.Key}: {option.Value},");
-        }
+        options.ForEach(o => settingsBuilder.AppendLine($"{o.Key}: {o.Value},"));
+        settingsBuilder.AppendLine("eMode: 'disable_non_proxied_udp',"); //isFirefox ? 'proxy_only'
+        settingsBuilder.AppendLine("dMode: 'default_public_interface_only',");
         settingsBuilder.AppendLine("noiseLevel: 'medium',");
-        settingsBuilder.AppendLine("loggingEnabled: false,");
-        settingsBuilder.AppendLine("errorLoggingEnabled: false,");
+        settingsBuilder.AppendLine("debug: 3");
         settingsBuilder.AppendLine("};");
         ExtentionsDirv2.Add(ExtensionType.chromeleon_addon, settingsBuilder.ToString());
 
         if (BrowserType == SystemBrowserType.Chrome)
         {
-            if (theseOptions.Options.DisableWebRTC)
-                await AddonsUtilv1.LoadFromInternal(ExtensionDirectories[AddonsUtilv1.WebRtcAddon]);
-
-            //if (theseOptions.Options.SpoofFontFingerprint)
-            //    await AddonsUtilv1.LoadFromInternal(ExtensionDirectories[AddonsUtilv1.FontDefenderAddon]);
-
-            //if (theseOptions.Options.SpoofWebGLFingerprint)
-            //    await AddonsUtil.LoadFromInternal(ExtensionDirectories[AddonsUtil.WebGLAddon]);
-
-            //if (BrowserType == SystemBrowserType.Chrome)
             await NavigatorAddon.InitializeExtension(ExtensionDirectories[AddonsUtilv1.NavigatorAddon].AddonDir, browserSettings: await BrowserDefaultLaunchSettings.Instance());
         }
 
@@ -295,19 +270,18 @@ public abstract class SystemBrowserInstance(
             Handle = Brocess.Handle;
             Brocess.Exited += (s, e) => { Cleanup(); };
             int tryCount = 0;
-            while(Brocess?.HasExited == false && 
+            while (Brocess?.HasExited == false &&
                     MacOSUtil.FindWindowByPID(Brocess.Id) == null &&
                     tryCount++ < 36)
                 await Task.Delay(1000);
-            
+
             MacOSWindowListener.Instance.AddPid(Brocess.Id);
 
             MacOSWindowListener.Instance.WindowForegroundChanged += OnWindowForeground;
         }
         else
         {
-            #pragma warning disable CA1416 // Validate platform compatibility
-            //Brocess.WaitForInputIdle();
+#pragma warning disable CA1416 // Validate platform compatibility
             await Task.Delay(1800);
 
             if (BrowserType != SystemBrowserType.Firefox)
@@ -321,26 +295,23 @@ public abstract class SystemBrowserInstance(
 
                     await Task.Delay(250);
                 }
-                if(!windowHandle.HasAny())
+                if (!windowHandle.HasAny())
                 {
                     Cleanup();
                     return;
                 }
 
-                await TaskUtil.AwaitFor(()=>Brocess?.MainWindowHandle != IntPtr.Zero, 18);
+                await TaskUtil.AwaitFor(() => Brocess?.MainWindowHandle != IntPtr.Zero, 18);
                 Handle = Brocess?.MainWindowHandle ?? IntPtr.Zero;
-                //if (Brocess?.HasExited == false)
-                //    Brocess.Exited += (s, e) => 
-                //    { Cleanup(); };
             }
             else
             {
                 TaskCompletionSource<Process?> thisTcs = new();
-                new Thread(()=>
+                new Thread(() =>
                 {
-                    for(int i = 0; i < 18; i++)
+                    for (int i = 0; i < 18; i++)
                     {
-                        ExUtil.TryCatch(()=>
+                        ExUtil.TryCatch(() =>
                         {
                             var currentProcesses = Process.GetProcessesByName("firefox");
                             foreach (var p in currentProcesses)
@@ -351,7 +322,7 @@ public abstract class SystemBrowserInstance(
                                     if (childProcess?.HasExited == false)
                                     {
                                         IntPtr thishandle = U32til.FindMainWindowHandle(childProcess.Id);
-                                        if(U32.IsWindow(thishandle))
+                                        if (U32.IsWindow(thishandle))
                                         {
                                             thisTcs.TrySetResult(childProcess);
                                             break;
@@ -360,7 +331,7 @@ public abstract class SystemBrowserInstance(
                                 }
                             }
                         });
-                        if(Handle != IntPtr.Zero)
+                        if (Handle != IntPtr.Zero)
                             break;
                         Thread.Sleep(100);
                     }
@@ -370,7 +341,7 @@ public abstract class SystemBrowserInstance(
                 Brocess = await thisTcs.Task;
                 Handle = Brocess?.MainWindowHandle ?? IntPtr.Zero;
             }
-            #pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
         }
 
         if (Brocess?.HasExited == false)
@@ -379,52 +350,10 @@ public abstract class SystemBrowserInstance(
             Cleanup();
     }
 
-    void OnWindowForeground(int i) 
+    void OnWindowForeground(int i)
     {
         if (i == Brocess.Id)
             eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs);
-    }
-
-    private async void WinEventProc(IntPtr hWinEventHook, User32Events eventType,
-        IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
-    {
-        switch (eventType)
-        {
-            case User32Events.EVENT_OBJECT_FOCUS:
-                //uint targetThreadId = U32.GetWindowThreadProcessId(hwnd, out _);
-                //var p = U32til.GetProcessByMainWindowHandle(hwnd);
-                //var pp = U32til.GetProcessByMainWindowHandle(Handle);
-                //if (hwnd == Handle || Brocess.Id == targetThreadId)
-                //{
-                //    eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs);
-                //}
-                if (Brocess.MainWindowHandle == (uint)hwnd)
-                    eventAggregator.Pub<ForegroundUserSystemBrowserEvent>(GetArgs);
-                break;
-            case User32Events.EVENT_SYSTEM_MENUSTART:
-            case User32Events.EVENT_SYSTEM_MENUEND:
-                if (idObject == 0 || idObject == -1)
-                {
-                    //TODO:
-                    //context sensitive menu
-                }
-                break;
-            case User32Events.EVENT_SYSTEM_MINIMIZEEND:
-            case User32Events.EVENT_SYSTEM_MINIMIZESTART:
-            case User32Events.EVENT_SYSTEM_MOVESIZEEND:
-                // only care about child windows that are moved by user
-                break;
-
-            case User32Events.EVENT_OBJECT_DESTROY:
-                var r = await OPtcs.Task;
-
-                if (!r || Handle == IntPtr.Zero || Brocess == null || Brocess.HasExited)
-                    Cleanup();
-                break;
-
-            default:
-                break;
-        }
     }
 
     public void Cleanup()
@@ -440,7 +369,7 @@ public abstract class SystemBrowserInstance(
         Handle = IntPtr.Zero;
         OnProcessClosed?.Invoke(options);
     }
-    
+
 
     protected async Task EnsureProfileFolderCreated()
     {
@@ -476,23 +405,6 @@ public abstract class SystemBrowserInstance(
             //args.Add($"--proxy-server=http://{UserProfile.Proxy.Host}:{UserProfile.Proxy.Port}");
         }
 
-       //if (!UserProfile.WebBrowser.WebRTC)
-       //{
-       //    args.Add("--disable-media-stream");
-       //    args.Add("--disable-webrtc-hw-encoding");
-       //    args.Add("--disable-webrtc-hw-decoding");
-       //    args.Add("--webrtc-stun-probe-trial");
-       //    args.Add("--use-fake-device-for-media-stream");
-       //    args.Add("--enable-webrtc-hide-local-ips-with-mdns");
-       //    args.Add("--force-webrtc-ip-handling-policy");
-       //    args.Add("--enforce-webrtc-ip-permission-check");
-       //}
-
-        //if (!UserProfile.WebBrowser.WebGL)
-        //{
-            //args.Add("--disable-webgl");
-        //}
-
         if (!UserProfile.WebBrowser.Tracking)
         {
             // not disable tracking totally, but disable for hyperlink
@@ -514,13 +426,13 @@ public abstract class SystemBrowserInstance(
     protected virtual string GetCommandLineArguments()
     {
         List<string> args = GetCommandLineArgumentsList();
-        
+
         if (GetLoadExtensionsArgument().Get() is string exts)
             args.Add($"--load-extension=\"{exts}\"");
-       
+
         //if(!IsMao)
-            args.Add($"about:blank");
-        
+        args.Add($"about:blank");
+
         return string.Join(" ", args);
     }
 

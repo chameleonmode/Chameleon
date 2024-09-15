@@ -24,7 +24,6 @@ namespace Chameleon.Auth.Services
         private readonly IApplicationSettingsService _settingsService;
 
         private IApplicationSettings _appSettings;
-        private System.Timers.Timer _pollingTimer;
 
         public AuthService(IAuthApiClient apiClient,
             IAuthSession authSession,
