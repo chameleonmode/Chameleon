@@ -3,17 +3,15 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+	xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+	xmlns:vm="using:Chameleon.app.Avalonia.ViewModels.Playwright"
+	x:DataType="vm:AutomationViewModel"
+	x:CompileBindings="True"
+	x:Class="Chameleon.app.Avalonia.Views.Playwright.AutomationView"
 	mc:Ignorable="d"
 	d:DesignWidth="800"
-	d:DesignHeight="1280"
-	xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-	xmlns:vm="using:Chameleon.Avalonia.Controls.Automation.ViewModels"
-	x:DataType="vm:AutomationViewModel"
-	xmlns:paginator="using:Chameleon.Avalonia.Controls.Paginator"
-	xmlns:converter="using:Chameleon.Common.ValueConverters"
-	xmlns:local="clr-namespace:Chameleon.Avalonia.Controls.Automation.Views"
-	x:CompileBindings="True"
-	x:Class="Chameleon.Avalonia.Controls.Automation.Views.AutomationView">
+	d:DesignHeight="1280">
 
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
 		<StackPanel>
@@ -30,19 +28,64 @@
 					  Title="{Binding Title}"
 					  TitleDescription="{Binding TotalCount, StringFormat='You have {0} scripts.'}">
 
-				<afv:ChameleonContentControl.TitleContent>
+				<!--<afv:ChameleonContentControl.TitleContent>
 					<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
-				</afv:ChameleonContentControl.TitleContent>
+				</afv:ChameleonContentControl.TitleContent>-->
+
+				<afv:ChameleonContentControl.Options>
+					<Grid RowDefinitions="*, Auto">
+						<ui:CommandBar Grid.Row="1"
+									   HorizontalAlignment="Right" 
+									   DefaultLabelPosition="Right"
+									   OverflowButtonVisibility="Collapsed">
+							<ui:CommandBar.PrimaryCommands>
+								<ui:CommandBarButton HorizontalAlignment="Right"
+									IconSource="Save"
+									Label="Save"
+									CommandParameter="Save"
+									Command="{Binding AsyncCfromVCommand}"/>
+							</ui:CommandBar.PrimaryCommands>
+						</ui:CommandBar>
+						
+						<ListBox Width="210"
+							Theme="{StaticResource ListBoxNoScroller}"
+							ItemContainerTheme="{StaticResource GridViewItem}"
+							ItemsSource="{Binding SelectedBundledScript.Parameters}"
+							MaxHeight="300">
+							<ListBox.ItemsPanel>
+								<ItemsPanelTemplate>
+									<UniformGrid Columns="1"/>
+								</ItemsPanelTemplate>
+							</ListBox.ItemsPanel>
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<StackPanel Spacing="6"
+												Margin="6">
+										<afv:HeaderdInputFieldsControl 
+											Title="{Binding Name}"
+											Text="{Binding Value, Mode=TwoWay}" />
+										<!--<TextBlock
+											Text="{Binding Name}"
+											Padding="0 5"/>
+										<TextBox
+											Text="{Binding Value, Mode=TwoWay}"
+											ToolTip.Tip="{Binding Value}"/>-->
+									</StackPanel>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+						
+					</Grid>
+				</afv:ChameleonContentControl.Options>
 
 				<afv:ChameleonContentControl.Content>
 
 					<!-- ListBox with ViewModel items -->
 					<ListBox
-								  Name="lbProfiles"
-								  ItemsSource="{Binding ViewModels}"
-								  Theme="{StaticResource ListBoxNoScroller}"
-								  ItemContainerTheme="{StaticResource GridViewItem}"
-								  Grid.Row="1">
+						VerticalAlignment="Top"
+						ItemsSource="{Binding BundlesScripts}"
+						Theme="{StaticResource ListBoxNoScroller}"
+						ItemContainerTheme="{StaticResource GridViewItem}">
 						<ListBox.ItemsPanel>
 							<ItemsPanelTemplate>
 								<UniformGrid Columns="1"/>
@@ -60,7 +103,7 @@
 									<!-- Title -->
 									<TextBlock
 										Grid.Column="0"
-										Text="{Binding Title, StringFormat='Demo {0}.'}"
+										Text="{Binding Title}"
 										ToolTip.Tip="{Binding Description}"
 										VerticalAlignment="Center"
 										HorizontalAlignment="Left"
@@ -68,7 +111,7 @@
 										TextTrimming="CharacterEllipsis"
 										TextWrapping="NoWrap"
 										Margin="5 5 10 5"/>
-									
+
 									<!-- Description -->
 									<!--<TextBlock
 										Grid.Column="1"
@@ -83,8 +126,7 @@
 									<Button
 									   Grid.Column="2"
 									   Command="{Binding OpenParamsPopupCommand}"
-									   CommandParameter="{Binding Id}"
-									   IsVisible="{Binding IsHasParameter}"
+									   CommandParameter="{Binding Title}"
 									   ToolTip.Tip="Set Parameters"
 									   Content="three-dots"
 									   Theme="{DynamicResource SvgIconButton}">
@@ -96,7 +138,6 @@
 					</ListBox>
 
 				</afv:ChameleonContentControl.Content>
-
 
 				<afv:ChameleonContentControl.Footer>
 					<StackPanel
@@ -126,15 +167,15 @@
 			</afv:ChameleonContentControl.TitleContent>-->
 
 				<afv:ChameleonContentControl.Header>
-					<Grid 
+					<Grid
 						Margin="6"
 						ColumnDefinitions="*,Auto">
 
-						<TextBox 
+						<TextBox
 							IsReadOnly="True"
 							Text="{Binding UserScriptsDirectory, FallbackValue=Select A Directory}" />
 
-						<Button 
+						<Button
 							Grid.Column="1"
 							Margin="6 0 0 0"
 							Content="Folder"

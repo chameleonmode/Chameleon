@@ -1,7 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
+
 using Chameleon.app.Addons.Services;
 using Chameleon.Auth.Services;
 using Chameleon.Av.Fluent.Common.Services;
@@ -33,181 +35,227 @@ using Chameleon.Interfaces.Modules;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Common;
+using Chameleon.lib.Common.Types;
+using Chameleon.lib.Playwright.Interfaces;
+using Chameleon.lib.Playwright.Scripts;
+using Chameleon.lib.Playwright.Services;
 using Chameleon.Playwright.Automation.Manager;
 using Chameleon.SystemBrowser;
+
 using DryIoc;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Prism.DryIoc;
+
 using System.Reflection;
 
 namespace Chameleon.Av.Fluent;
 
-public partial class App : PrismApplication
-{
-    public static Action<MainWindow> OnFramworkInitComplete;
+public partial class App : PrismApplication {
+	public static Action<MainWindow> OnFramworkInitComplete;
 
-    private MainWindow _mainWindow;
-    public MainWindow MainAppWindow
-    {
-        get
-        {
-            if (_mainWindow == null)
-                _mainWindow = Container.Resolve<MainWindow>();
-            return _mainWindow;
-        }
-    }
-    //public static bool FrameworkInitComplete = false;
+	private MainWindow _mainWindow;
+	public MainWindow MainAppWindow {
+		get {
+			if (_mainWindow == null)
+				_mainWindow = Container.Resolve<MainWindow>();
+			return _mainWindow;
+		}
+	}
+	//public static bool FrameworkInitComplete = false;
 
-    public override void Initialize()
-    {
-        //App.Current.ActualThemeVariant = ThemeVariant.Dark;
-        AvaloniaXamlLoader.Load(this);
+	public override void Initialize()
+	{
+		//App.Current.ActualThemeVariant = ThemeVariant.Dark;
+		AvaloniaXamlLoader.Load(this);
 
-        // Default logic doesn't auto detect windows theme anymore in designer
-        // to stop light mode, force here
-        if (Design.IsDesignMode)
-        {
-            RequestedThemeVariant = ThemeVariant.Light;
-        }
+		// Default logic doesn't auto detect windows theme anymore in designer
+		// to stop light mode, force here
+		if (Design.IsDesignMode) {
+			RequestedThemeVariant = ThemeVariant.Light;
+		}
 
-        // Initializes Prism.Avalonia - DO NOT REMOVE
-        base.Initialize();
-    }
+		// Initializes Prism.Avalonia - DO NOT REMOVE
+		base.Initialize();
+	}
 
-    /// <summary>Register Services and Views.</summary>
-    /// <param name="containerRegistry"></param>
-    protected override void RegisterTypes(IContainerRegistry containerRegistry)
-    {
-        containerRegistry.RegisterInstance(containerRegistry);
-        RegisterIocContainer(containerRegistry);
+	/// <summary>Register Services and Views.</summary>
+	/// <param name="containerRegistry"></param>
+	protected override void RegisterTypes(IContainerRegistry containerRegistry)
+	{
+		containerRegistry.RegisterInstance(containerRegistry);
+		RegisterIocContainer(containerRegistry);
 
-        // Services
-        containerRegistry.RegisterSingleton<IHaveContainerRegistry, HasContainerRegistryService>();
+		// Services
+		containerRegistry.RegisterSingleton<IHaveContainerRegistry, HasContainerRegistryService>();
 
-        var cr = Container.Resolve<IHaveContainerRegistry>();
-        cr.RegisterSingleton<IHaveContainerProvider, HasContainerProviderService>(true);
-        cr.RegisterSingleton<INavigationService, NavigationService>();
-        //Container.Resolve<IHaveContainerProvider>();
+		var cr = Container.Resolve<IHaveContainerRegistry>();
+		cr.RegisterSingleton<IHaveContainerProvider, HasContainerProviderService>(true);
+		cr.RegisterSingleton<INavigationService, NavigationService>();
+		//Container.Resolve<IHaveContainerProvider>();
 
-        cr.RegisterSingleton<Prism.Events.IEventAggregator, Prism.Events.EventAggregator>();
-        cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
+		cr.RegisterSingleton<Prism.Events.IEventAggregator, Prism.Events.EventAggregator>();
+		cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
 
-        containerRegistry.RegisterSingleton<IIocManager, IocManager>();
-        containerRegistry.RegisterSingleton<IExtensionLoaderService, ExtensionLoaderService>();
+		containerRegistry.RegisterSingleton<IIocManager, IocManager>();
+		containerRegistry.RegisterSingleton<IExtensionLoaderService, ExtensionLoaderService>();
 
-        Container.AddInfrastructure();
+		Container.AddInfrastructure();
 
-        //Assemblys
-        Container.RegisterTypesFrom(typeof(Chameleon.Domain.AssemblyResolver).Assembly);
-        Container.RegisterTypesFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);
-        Container.RegisterMapperFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);
-        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Common.AssemblyResolver).Assembly);
-        Container.RegisterTypesFrom(typeof(AuthService).Assembly);
-        Container.RegisterTypesFrom(typeof(SystemBrowserManager).Assembly);
-        Container.RegisterTypesFrom(typeof(PlaywrightBrowserManager).Assembly);
-        Container.RegisterTypesFrom(Assembly.GetExecutingAssembly());
+		//Assemblys
+		Container.RegisterTypesFrom(typeof(Chameleon.Domain.AssemblyResolver).Assembly);
+		Container.RegisterTypesFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);
+		Container.RegisterMapperFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);
+		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Common.AssemblyResolver).Assembly);
+		Container.RegisterTypesFrom(typeof(AuthService).Assembly);
+		Container.RegisterTypesFrom(typeof(SystemBrowserManager).Assembly);
+		Container.RegisterTypesFrom(typeof(PlaywrightBrowserManager).Assembly);
+		Container.RegisterTypesFrom(Assembly.GetExecutingAssembly());
 
-        // cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();
+		// cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();
 
-        // Dialogs
-        // //Chameleon.Av.Fluent.Dialogs
-        Container.RegisterTypesFrom(typeof(Chameleon.Av.Fluent.Dialogs.AssemblyResolver).Assembly);
-        cr.Register<IMoveUserProfilesPopupView, MoveUserProfilesPopupView>();
-        cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();           
-        cr.Register<IUserProfileSidePanelView, UserProfileSidePanelView>();
-        cr.Register<IUserProfileSidePanelViewModel, UserProfileSidePanelViewModel>();
+		// Dialogs
+		// //Chameleon.Av.Fluent.Dialogs
+		Container.RegisterTypesFrom(typeof(Chameleon.Av.Fluent.Dialogs.AssemblyResolver).Assembly);
+		cr.Register<IMoveUserProfilesPopupView, MoveUserProfilesPopupView>();
+		cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();
+		cr.Register<IUserProfileSidePanelView, UserProfileSidePanelView>();
+		cr.Register<IUserProfileSidePanelViewModel, UserProfileSidePanelViewModel>();
 
-        // Views - Viewmodels
-        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.ViewModels.SettingsViewModel).Assembly);
-        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.Functional.ViewModels.FunctionalSettingsViewModel).Assembly);
-        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfilesView.ViewModels.ProjectsViewModel).Assembly);
-        Container.RegisterTypesFrom(typeof(Chameleon.Av.Fluent.ViewModels.MainViewViewModel).Assembly);
-        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Dashboard.ViewModels.DashboardViewModel).Assembly);
-        Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfileView.ViewModels.UserProfileIdentityViewModel).Assembly);
-        Container.RegisterMapperFrom(typeof(Chameleon.Avalonia.Controls.UserProfileView.ViewModels.UserProfileIdentityViewModel).Assembly);
+		// Views - Viewmodels
+		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.ViewModels.SettingsViewModel).Assembly);
+		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.Functional.ViewModels.FunctionalSettingsViewModel).Assembly);
+		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfilesView.ViewModels.ProjectsViewModel).Assembly);
+		Container.RegisterTypesFrom(typeof(Chameleon.Av.Fluent.ViewModels.MainViewViewModel).Assembly);
+		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Dashboard.ViewModels.DashboardViewModel).Assembly);
+		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfileView.ViewModels.UserProfileIdentityViewModel).Assembly);
+		Container.RegisterMapperFrom(typeof(Chameleon.Avalonia.Controls.UserProfileView.ViewModels.UserProfileIdentityViewModel).Assembly);
 
-        RegisterAutomationTypes(containerRegistry);
-    }
+		RegisterAutomationTypes(containerRegistry);
+	}
 
-    private static void RegisterAutomationTypes(IContainerRegistry containerRegistry)
-    {
-        containerRegistry.RegisterSingleton<IAutomationScriptRepository, AutomationScriptRepository>();
-        containerRegistry.RegisterSingleton<IAutomationService, AutomationService>();
-        containerRegistry.Register<IAutomationView, AutomationView>();
-        containerRegistry.Register<IAutomationViewModel, AutomationViewModel>();
-        containerRegistry.Register<IAutomationScriptViewModel, AutomationScriptViewModel>();
-        containerRegistry.Register<IAutomationScriptParameterViewModel, AutomationScriptParameterViewModel>();
-        containerRegistry.Register<IAutomationParameterValueViewModel, AutomationParameterValueViewModel>();
-        containerRegistry.Register<IAutomationScriptDescription, AutomationScriptDescription>();
-        containerRegistry.Register<IAddScriptParametersPopupView, AddScriptParametersPopupView>();
-        containerRegistry.Register<IAddScriptParametersPopupViewModel, AddScriptParametersPopupViewModel>();
-        containerRegistry.Register<ISelectAutomationPopupViewModel, SelectAutomationPopupViewModel>();
-        containerRegistry.Register<ISelectAutomationPopupView, SelectAutomationPopupView>();
-    }
+	private static void RegisterAutomationTypes(IContainerRegistry containerRegistry)
+	{
+		containerRegistry.RegisterSingleton<IAutomationScriptRepository, AutomationScriptRepository>();
+		containerRegistry.RegisterSingleton<IAutomationService, AutomationService>();
+		//containerRegistry.Register<IAutomationView, AutomationView>();
+		//containerRegistry.Register<IAutomationViewModel, AutomationViewModel>();
+		//containerRegistry.Register<IAutomationScriptViewModel, AutomationScriptViewModel>();
+		//containerRegistry.Register<IAutomationScriptParameterViewModel, AutomationScriptParameterViewModel>();
+		//containerRegistry.Register<IAutomationParameterValueViewModel, AutomationParameterValueViewModel>();
+		//containerRegistry.Register<IAutomationScriptDescription, AutomationScriptDescription>();
+		//containerRegistry.Register<IAddScriptParametersPopupView, AddScriptParametersPopupView>();
+		//containerRegistry.Register<IAddScriptParametersPopupViewModel, AddScriptParametersPopupViewModel>();
+		//containerRegistry.Register<ISelectAutomationPopupViewModel, SelectAutomationPopupViewModel>();
+		//containerRegistry.Register<ISelectAutomationPopupView, SelectAutomationPopupView>();
+	}
 
-    private void RegisterIocContainer(IContainerRegistry containerRegistry)
-    {
-        var container = containerRegistry.GetContainer();
-        //container.AddExtension(new Diagnostic());
-        // Register logging services
-        var serviceCollection = new ServiceCollection();
-        serviceCollection.AddLogging(configure => configure.AddConsole());
-        var serviceProvider = serviceCollection.BuildServiceProvider();
-        containerRegistry.RegisterInstance(serviceProvider.GetService<ILoggerFactory>());
-        containerRegistry.Register(typeof(ILogger<>), typeof(Logger<>));
+	private void RegisterIocContainer(IContainerRegistry containerRegistry)
+	{
+		var container = containerRegistry.GetContainer();
+		//container.AddExtension(new Diagnostic());
+		// Register logging services
+		//var serviceCollection = new ServiceCollection();
+		//serviceCollection.AddLogging(configure => configure.AddConsole());
+		//var serviceProvider = serviceCollection.BuildServiceProvider();
+		//containerRegistry.RegisterInstance(serviceProvider.GetService<ILoggerFactory>());
+		//containerRegistry.Register(typeof(ILogger<>), typeof(Logger<>));
 
-        //,,,,
-        var factoryMethod = FactoryMethod.Of(
-            typeof(StaticFactory).GetMethods().Single(m => m.Name == "Create" && m.IsGenericMethodDefinition));
-        container.Register(typeof(Repository<,,,,,,>), made: Made.Of(factoryMethod));
-        container.Register(typeof(Repository<,,,,>), made: Made.Of(factoryMethod));
-        container.Register(typeof(Repository<,,,>), made: Made.Of(factoryMethod));
-        container.Register(typeof(Repository<,,>), made: Made.Of(factoryMethod));
-        container.Register(typeof(IRepository<,,>), made: Made.Of(factoryMethod));
+		void setup(bool init)
+		{
+			var repo = IoC.GetService<IPlaywrightScriptRepository>();
+			repo!.BundledScripts.Add(new GoogleCTRClickThrough());
+			repo!.BundledScripts.Add(new KeepGmailAlive());
+			repo!.BundledScripts.Add(new URLsexplorer());
 
-        var factoryMethod1 = FactoryMethod.Of(
-            typeof(StaticFactory).GetMethods().Single(m => m.Name == "CreateOne" && m.IsGenericMethodDefinition));
-        container.Register(typeof(IRepository<>), made: Made.Of(factoryMethod1));
+			containerRegistry.RegisterInstance(IoC.GetService<ILoggerFactory>());
+			containerRegistry.Register(typeof(ILogger<>), typeof(Logger<>));
 
-        //UserProfileItemRepository<,,,,> 
-        var factoryMethod3 = FactoryMethod.Of(
-    typeof(StaticUPFactory).GetMethods().Single(m => m.Name == "Create" && m.IsGenericMethodDefinition));
-        container.Register(typeof(UserProfileItemRepository<,,,,>), made: Made.Of(factoryMethod3));
 
-        containerRegistry.RegisterInstance(Container);
-        containerRegistry.RegisterInstance(container);
-    }
+			containerRegistry.Register<IAutomationView, Chameleon.app.Avalonia.Views.Playwright.AutomationView>();
+			containerRegistry.RegisterInstance(IoC.GetService<Chameleon.app.Avalonia.ViewModels.Playwright.AutomationViewModel>());
+		}
 
-    /// <summary>Register optional modules in the catalog.</summary>
-    /// <param name="moduleCatalog">Module Catalog.</param>
-    protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
-    {
-        //base.ConfigureModuleCatalog(moduleCatalog);
-        Container
-               .Resolve<IModuleLoader<IModuleCatalog>>()
-               .LoadModules(moduleCatalog);
-    }
+		IoC.Instance.Configure(() => {
+			return new WritableConfiguration(new ConfigurationBuilder()
+				.SetBasePath(Chameleon.app.Avalonia.Common.ApplicationEnvironment.ApplicationDataFolderPath)
+				.AddJsonFile(Chameleon.app.Avalonia.Common.ApplicationEnvironment.ApplicationFileName, optional: true, reloadOnChange: true)
+				.AddEnvironmentVariables()
+				.Build(), 
+				Path.Combine(Chameleon.app.Avalonia.Common.ApplicationEnvironment.ApplicationDataFolderPath, Chameleon.app.Avalonia.Common.ApplicationEnvironment.ApplicationFileName));
 
-    public override void OnFrameworkInitializationCompleted()
-    {
-       //if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-       //{
-       //    desktop.MainWindow = new MainWindow();
-       //}
-       //else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
-       //{
-       //    singleView.MainView = new MainView();
-       //}
+		}, (services) => {
+			_ = services
+			//lib.Core
+			.AddSingleton<Chameleon.lib.Core.Automation.Interfaces.IAutomationScriptApi, Chameleon.lib.Core.Automation.Services.AutomationScriptApi>()
+			.AddSingleton<Chameleon.lib.Core.Automation.Interfaces.IAutomationScriptRepository, Chameleon.lib.Core.Automation.Services.AutomationScriptRepository>()
+			.AddSingleton<Chameleon.lib.Core.Automation.Interfaces.IAutomationService, Chameleon.lib.Core.Automation.Services.AutomationService>()
+			//app.Playwright
+			.AddSingleton<Chameleon.lib.Playwright.Interfaces.ICompileScriptService, Chameleon.lib.Playwright.Services.CompileScriptService>()
+			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywriteBrowserService, Chameleon.lib.Playwright.Services.PlaywriteBrowserService>()
+			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywrightScriptRepository, Chameleon.lib.Playwright.Services.PlaywrightScriptRepository>()
+			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, Chameleon.lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
+			.AddSingleton<Chameleon.app.Avalonia.ViewModels.Playwright.AutomationViewModel>();
+		});
+		// Setup IoC
+		IoC.Instance.Init(action: setup);
 
-        base.OnFrameworkInitializationCompleted();
+		//,,,,
+		var factoryMethod = FactoryMethod.Of(
+				typeof(StaticFactory).GetMethods().Single(m => m.Name == "Create" && m.IsGenericMethodDefinition));
+		container.Register(typeof(Repository<,,,,,,>), made: Made.Of(factoryMethod));
+		container.Register(typeof(Repository<,,,,>), made: Made.Of(factoryMethod));
+		container.Register(typeof(Repository<,,,>), made: Made.Of(factoryMethod));
+		container.Register(typeof(Repository<,,>), made: Made.Of(factoryMethod));
+		container.Register(typeof(IRepository<,,>), made: Made.Of(factoryMethod));
 
-        OnFramworkInitComplete?.Invoke(MainAppWindow);
-        //MainAppWindow.MainView.OnFrameworkInit(MainAppWindow);
-    }
+		var factoryMethod1 = FactoryMethod.Of(
+				typeof(StaticFactory).GetMethods().Single(m => m.Name == "CreateOne" && m.IsGenericMethodDefinition));
+		container.Register(typeof(IRepository<>), made: Made.Of(factoryMethod1));
 
-    protected override AvaloniaObject CreateShell()
-    {
-        return MainAppWindow;
-    }
+		//UserProfileItemRepository<,,,,> 
+		var factoryMethod3 = FactoryMethod.Of(
+typeof(StaticUPFactory).GetMethods().Single(m => m.Name == "Create" && m.IsGenericMethodDefinition));
+		container.Register(typeof(UserProfileItemRepository<,,,,>), made: Made.Of(factoryMethod3));
+
+		containerRegistry.RegisterInstance(Container);
+		containerRegistry.RegisterInstance(container);
+	}
+
+	/// <summary>Register optional modules in the catalog.</summary>
+	/// <param name="moduleCatalog">Module Catalog.</param>
+	protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+	{
+		//base.ConfigureModuleCatalog(moduleCatalog);
+		Container
+					 .Resolve<IModuleLoader<IModuleCatalog>>()
+					 .LoadModules(moduleCatalog);
+	}
+
+	public override void OnFrameworkInitializationCompleted()
+	{
+		BindingPlugins.DataValidators.RemoveAt(0);
+		//if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+		//{
+		//    desktop.MainWindow = new MainWindow();
+		//}
+		//else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
+		//{
+		//    singleView.MainView = new MainView();
+		//}
+
+		base.OnFrameworkInitializationCompleted();
+
+		OnFramworkInitComplete?.Invoke(MainAppWindow);
+		//MainAppWindow.MainView.OnFrameworkInit(MainAppWindow);
+	}
+
+	protected override AvaloniaObject CreateShell()
+	{
+		return MainAppWindow;
+	}
 }
