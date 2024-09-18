@@ -167,11 +167,6 @@ public partial class App : PrismApplication {
 
 		void setup(bool init)
 		{
-			var repo = IoC.GetService<IPlaywrightScriptRepository>();
-			repo!.BundledScripts.Add(new GoogleCTRClickThrough());
-			repo!.BundledScripts.Add(new KeepGmailAlive());
-			repo!.BundledScripts.Add(new URLsexplorer());
-
 			containerRegistry.RegisterInstance(IoC.GetService<ILoggerFactory>());
 			containerRegistry.Register(typeof(ILogger<>), typeof(Logger<>));
 
@@ -190,13 +185,9 @@ public partial class App : PrismApplication {
 
 		}, (services) => {
 			_ = services
-			//lib.Core
-			.AddSingleton<Chameleon.lib.Core.Automation.Interfaces.IAutomationScriptApi, Chameleon.lib.Core.Automation.Services.AutomationScriptApi>()
-			.AddSingleton<Chameleon.lib.Core.Automation.Interfaces.IAutomationScriptRepository, Chameleon.lib.Core.Automation.Services.AutomationScriptRepository>()
-			.AddSingleton<Chameleon.lib.Core.Automation.Interfaces.IAutomationService, Chameleon.lib.Core.Automation.Services.AutomationService>()
 			//app.Playwright
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.ICompileScriptService, Chameleon.lib.Playwright.Services.CompileScriptService>()
-			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywriteBrowserService, Chameleon.lib.Playwright.Services.PlaywriteBrowserService>()
+			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywriteService, Chameleon.lib.Playwright.Services.PlaywriteService>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywrightScriptRepository, Chameleon.lib.Playwright.Services.PlaywrightScriptRepository>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, Chameleon.lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
 			.AddSingleton<Chameleon.app.Avalonia.ViewModels.Playwright.AutomationViewModel>();

@@ -62,7 +62,7 @@
 									<StackPanel Spacing="6"
 												Margin="6">
 										<afv:HeaderdInputFieldsControl 
-											Title="{Binding Name}"
+											Title="{Binding Key}"
 											Text="{Binding Value, Mode=TwoWay}" />
 										<!--<TextBlock
 											Text="{Binding Name}"
@@ -127,6 +127,7 @@
 									   Grid.Column="2"
 									   Command="{Binding OpenParamsPopupCommand}"
 									   CommandParameter="{Binding Title}"
+									   IsVisible="{Binding IsHasParameter}"
 									   ToolTip.Tip="Set Parameters"
 									   Content="three-dots"
 									   Theme="{DynamicResource SvgIconButton}">

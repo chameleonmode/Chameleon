@@ -4,11 +4,11 @@ using Chameleon.lib.Common;
 using Chameleon.lib.Common.Extensions;
 using System.Diagnostics;
 using Chameleon.lib.Playwright.Interfaces;
-using Chameleon.lib.Core.Automation.Models;
 using Chameleon.lib.Playwright.Models;
 using Chameleon.Avalonia.Common.Collections;
 using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.Core.Extensions;
 
 namespace Chameleon.app.Avalonia.ViewModels.Playwright;
 
@@ -39,7 +39,7 @@ public partial class AutomationViewModel
 
 	public Task Save() => Task.Run(() => {
 		foreach (var param in SelectedBundledScript.Parameters) {
-			IoC.SetValue($"{SelectedBundledScript.Title} - {param.Name}", param.Value);
+			IoC.SetValue($"{SelectedBundledScript.Title} {param.Key}", param.Value);
 		}
 	});
 
@@ -64,7 +64,6 @@ public partial class AutomationViewModel
 	public override async Task InitAsync(object? param)
 	{
 		await base.InitAsync(param);
-
 		if (!Loaded) {
 			Initialize();
 			await InitializeUserScripts();
@@ -73,20 +72,25 @@ public partial class AutomationViewModel
 
 	private void Initialize()
 	{
+		BundlesScripts.Clear();
 		BundlesScripts.AddMapped(repository.BundledScripts, b => {
-			var vm = new AutomationScriptViewModel(new PlaywriteRunScriptOptions {
-				BundledScript = b,
-				Script = new AutomationScriptDescription {
-					Title = b.Title
-				}
-			}) {
-				Parameters = b.parameters.Select(param => new AutomationParameterValue {
-					Name = param,
-					Value = IoC.GetValue<string>($"{b.Title} - {param}")
-				}).ToList<lib.Core.Automation.Interfaces.IAutomationParameterValue>()
+			var d = new PlaywrightScriptDescription {
+				Title = b.Value.Title,
+				Description = b.Value.Description,
+				Parameters = b.Value.parameters
+						.Select(p => new PlaywrightDescriptionParam { Key = p, Value = IoC.GetValue<string>($"{b.Value.Title} {p}") ?? string.Empty })
+						.ToList()
+			};
+			var o = new PlaywriteRunScriptOptions {
+				BundledScript = b.Value,
+				Description = d,
 			};
 
-			vm.OnOpenEdit += (scriptTitle) => { SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle); };
+			var vm = new AutomationScriptViewModel(o);
+			vm.Parameters.AddRange(d.Parameters);
+			vm.OnOpenEdit += (scriptTitle) => { 
+				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle); 
+			};
 			return vm;
 		});
 
@@ -126,7 +130,7 @@ public partial class AutomationViewModel
 			//UserScripts.Clear();
 			//await Task.Delay(50);
 			UserScripts.UpdateMapped(await repository.GetAll(UserScriptsDirectory), s => new(new PlaywriteRunScriptOptions {
-				Script = s,
+				Description = s,
 			}), (x, y) => x.Filepath == y.FilePath);
 			await Task.Delay(250);
 		} finally {
