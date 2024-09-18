@@ -1,7 +1,4 @@
-﻿using Chameleon.Core.Util;
-using Microsoft.Playwright;
-using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Concurrent;
 
 namespace Chameleon.SystemBrowser.Browsers;
 public abstract class SystemBrowserBase

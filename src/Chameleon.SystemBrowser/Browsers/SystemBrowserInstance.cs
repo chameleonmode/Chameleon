@@ -1,20 +1,10 @@
 ﻿using Chameleon.app.Addons.Models;
 using Chameleon.app.Addons.Services;
 using Chameleon.CT.Common.Models;
-using Chameleon.Interfaces.Settings;
 using Chameleon.ThirdParty.GeoIp;
-using Chameleon.ThirdParty.GeoIp.Models;
-using Microsoft.Playwright;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Diagnostics;
 using System.Net.WebSockets;
-using System.Reflection.Metadata;
 using System.Text;
-
-using Microsoft.Extensions.Logging;
-using System.Runtime.CompilerServices;
-using Chameleon.SystemBrowser.Addons.Assets;
 
 namespace Chameleon.SystemBrowser.Common;
 

@@ -1,6 +1,5 @@
 ﻿using Chameleon.app.Avalonia.ViewModels.Playwright;
 using Chameleon.Avalonia.Common.Collections;
-using Chameleon.Avalonia.Common.Services;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Collections;
@@ -8,13 +7,6 @@ using Chameleon.Core.Collections.Views;
 using Chameleon.Core.Extensions;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
-using Chameleon.Domain.Entities.Automation;
-using Chameleon.Infrastructure.App.Automation;
-using Chameleon.Infrastructure.Repositories;
-using Chameleon.Interfaces.App.Automation.Entities;
-using Chameleon.Interfaces.App.Automation.Playwright;
-using Chameleon.Interfaces.App.Automation.Services;
-using Chameleon.Interfaces.App.Automation.ViewModels;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles;
@@ -30,8 +22,6 @@ using Chameleon.lib.Playwright.Models;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using Microsoft.Playwright;
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;

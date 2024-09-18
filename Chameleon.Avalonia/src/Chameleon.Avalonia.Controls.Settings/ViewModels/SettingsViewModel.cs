@@ -25,7 +25,7 @@ public partial class SettingsViewModel
     private const string _light = "Light";
 
     //TODO: refactor
-    public string CurrentVersion { get; } = "2024.0.9.8";
+    public string CurrentVersion { get; } = "2024.0.9.9";
 
     public string[] AppThemes => [_system, _light, _dark /*, FluentAvaloniaTheme.HighContrastTheme*/];
     public List<Color> PredefinedColors => new List<Color>
