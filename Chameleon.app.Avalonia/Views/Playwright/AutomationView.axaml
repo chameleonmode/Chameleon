@@ -47,11 +47,10 @@
 							</ui:CommandBar.PrimaryCommands>
 						</ui:CommandBar>
 						
-						<ListBox Width="210"
-							Theme="{StaticResource ListBoxNoScroller}"
+						<ListBox Width="256"
 							ItemContainerTheme="{StaticResource GridViewItem}"
 							ItemsSource="{Binding SelectedBundledScript.Parameters}"
-							MaxHeight="300">
+							MaxHeight="512">
 							<ListBox.ItemsPanel>
 								<ItemsPanelTemplate>
 									<UniformGrid Columns="1"/>

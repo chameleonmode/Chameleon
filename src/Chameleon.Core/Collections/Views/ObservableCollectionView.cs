@@ -75,7 +75,7 @@ public class ObservableCollectionView<TItem>
     }
 
     /// <summary>Gets or sets the filter. </summary>
-    public Func<TItem, bool> Filter
+    public Func<TItem, bool>? Filter
     {
         get { return _filter; }
         set

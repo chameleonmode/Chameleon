@@ -8,7 +8,7 @@ using Chameleon.lib.Playwright.Models;
 using Chameleon.Avalonia.Common.Collections;
 using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.Core.Extensions;
+using Chameleon.Common.Helpers;
 
 namespace Chameleon.app.Avalonia.ViewModels.Playwright;
 
@@ -41,6 +41,8 @@ public partial class AutomationViewModel
 		foreach (var param in SelectedBundledScript.Parameters) {
 			IoC.SetValue($"{SelectedBundledScript.Title} {param.Key}", param.Value);
 		}
+
+		ToasterHelper.ShowSuccess("Saved");
 	});
 
 	[RelayCommand]
@@ -73,25 +75,15 @@ public partial class AutomationViewModel
 	private void Initialize()
 	{
 		BundlesScripts.Clear();
-		BundlesScripts.AddMapped(repository.BundledScripts, b => {
-			var d = new PlaywrightScriptDescription {
-				Title = b.Value.Title,
-				Description = b.Value.Description,
-				Parameters = b.Value.parameters
-						.Select(p => new PlaywrightDescriptionParam { Key = p, Value = IoC.GetValue<string>($"{b.Value.Title} {p}") ?? string.Empty })
-						.ToList()
-			};
-			var o = new PlaywriteRunScriptOptions {
-				BundledScript = b.Value,
-				Description = d,
+
+		BundlesScripts.AddMapped(repository.GetBundledScrits(), b => {
+			var viewModel = new AutomationScriptViewModel(b);
+			viewModel.Parameters.AddRange(b.Description.Parameters);
+			viewModel.OnOpenEdit += scriptTitle => {
+				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
 			};
 
-			var vm = new AutomationScriptViewModel(o);
-			vm.Parameters.AddRange(d.Parameters);
-			vm.OnOpenEdit += (scriptTitle) => { 
-				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle); 
-			};
-			return vm;
+			return viewModel;
 		});
 
 		SelectedBundledScript = BundlesScripts.FirstOrDefault();
@@ -129,9 +121,7 @@ public partial class AutomationViewModel
 
 			//UserScripts.Clear();
 			//await Task.Delay(50);
-			UserScripts.UpdateMapped(await repository.GetAll(UserScriptsDirectory), s => new(new PlaywriteRunScriptOptions {
-				Description = s,
-			}), (x, y) => x.Filepath == y.FilePath);
+			UserScripts.UpdateMapped(await repository.GetUserScripts(UserScriptsDirectory), s => new(s), (x, y) => x.Filepath == y.Description.FilePath);
 			await Task.Delay(250);
 		} finally {
 			semaphore.Release();
@@ -140,14 +130,10 @@ public partial class AutomationViewModel
 
 	private async void OnChanged(object sender, FileSystemEventArgs e)
 	{
-		Debug.WriteLine($"OnChanged: {e.ChangeType}");
 		await InitializeUserScripts();
 	}
 	private async void OnRenamed(object sender, RenamedEventArgs e)
 	{
-		Debug.WriteLine($"Renamed:");
-		Debug.WriteLine($"    Old: {e.OldFullPath}");
-		Debug.WriteLine($"    New: {e.FullPath}");
 		await InitializeUserScripts();
 	}
 }

@@ -13,22 +13,24 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.app.Avalonia.ViewModels.Playwright;
-public partial class AutomationScriptViewModel(PlaywriteRunScriptOptions automationScriptDescription) : PageViewModelBase(automationScriptDescription.Description?.Title)
+public partial class AutomationScriptViewModel(PlaywriteRunScriptOptions runOptions) : PageViewModelBase(runOptions.Description?.Title)
 {
 	public Action<string> OnOpenEdit;
 
   [ObservableProperty]
-  private string? description = automationScriptDescription.Description?.Description;
+  private string? description = runOptions.Description?.Description;
 
   [ObservableProperty]
-  private string? filepath = automationScriptDescription.Description?.FilePath;
+  private string? filepath = runOptions.Description?.FilePath;
 
 	[ObservableProperty]
 	public AvaloniaList<PlaywrightDescriptionParam> parameters = [];
 
-  public bool IsHasParameter => automationScriptDescription.Description?.Parameters.Count != 0;
+  public bool IsHasParameter => runOptions.Description?.Parameters.Count != 0;
 
-  [RelayCommand]
+	public PlaywriteRunScriptOptions RunOptions => runOptions;
+
+	[RelayCommand]
   public void OpenParamsPopup(string selectedScript)
   {
 		OnOpenEdit?.Invoke(selectedScript);

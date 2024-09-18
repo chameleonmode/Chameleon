@@ -8,6 +8,7 @@ using Chameleon.app.Addons.Services;
 using Chameleon.Auth.Services;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Views;
+using Chameleon.Avalonia.Common.Services;
 using Chameleon.Avalonia.Controls.Automation.ViewModels;
 using Chameleon.Avalonia.Controls.Automation.Views;
 using Chameleon.Avalonia.Controls.Automation.Views.ViewModels;
@@ -172,7 +173,8 @@ public partial class App : PrismApplication {
 
 
 			containerRegistry.Register<IAutomationView, Chameleon.app.Avalonia.Views.Playwright.AutomationView>();
-			containerRegistry.RegisterInstance(IoC.GetService<Chameleon.app.Avalonia.ViewModels.Playwright.AutomationViewModel>());
+			containerRegistry.RegisterInstance(IoC.GetService<IPlaywriteService>());
+			containerRegistry.RegisterInstance(IoC.GetService<IPlaywrightScriptRepository>());
 		}
 
 		IoC.Instance.Configure(() => {
