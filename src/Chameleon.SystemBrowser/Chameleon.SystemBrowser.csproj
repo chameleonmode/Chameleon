@@ -7,13 +7,13 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Chameleon.app.Addons" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Newtonsoft.Json" />
 	<PackageReference Include="Avalonia" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\chromeleon-addons\src\Chameleon.app.Addons\Chameleon.app.Addons.csproj" />
     <ProjectReference Include="..\..\Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Common\Chameleon.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Core\Chameleon.Core.csproj" />

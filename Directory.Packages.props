@@ -1,5 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
+	<Version>2024.1.0.1</Version>
     <PublishAot>false</PublishAot>
     <PublishTrimmed>false</PublishTrimmed>
     <StripSymbols>false</StripSymbols>
@@ -33,7 +34,6 @@
     <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.1.0.4" />
     <PackageVersion Include="Avalonia.Svg" Version="11.1.0.1" />
     <PackageVersion Include="Avalonia.Svg.Skia" Version="11.1.0.1" />
-    <PackageVersion Include="Chameleon.app.Addons" Version="2024.0.2" />
     <PackageVersion Include="Chameleon.Avalonia.Addons.Net" Version="1.0.0" />
     <PackageVersion Include="Chameleon.lib.Common" Version="2024.0.0.3" />
     <PackageVersion Include="Chameleon.lib.CommunityToolkit" Version="2024.0.0.3" />
