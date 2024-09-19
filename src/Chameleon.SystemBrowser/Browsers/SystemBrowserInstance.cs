@@ -191,7 +191,6 @@ $@"
 		_ = settingsBuilder.AppendLine("chrome.runtime.onInstalled.addListener(initIt);");
 		_ = settingsBuilder.AppendLine("chrome.runtime.onStartup.addListener(initIt);");
 
-
 		//TODO edit for ff
 		//if (theseOptions.Options.SpoofClientRects)
 		//    await AddonsUtilv1.LoadFromInternal(ExtensionDirectories[AddonsUtilv1.ClientRectsAddon]);
@@ -233,8 +232,6 @@ $@"
                     debug: false,
                 }};
             ");
-		
-
 
 		foreach (var (ext, setting) in ExtentionsDirv2) {
 			await _extensionLoaderService!.LoadExtension(ext, destinationExtentionsDirv2, setting);
