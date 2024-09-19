@@ -2,7 +2,9 @@
 using Chameleon.app.Addons.Services;
 using Chameleon.CT.Common.Models;
 using Chameleon.ThirdParty.GeoIp;
+using Chameleon.ThirdParty.GeoIp.Models;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using System.Net.WebSockets;
@@ -120,7 +122,6 @@ public abstract class SystemBrowserInstance(
 			await EnsureProfileFolderCreated();
 			await InitializeProfileFolder();
 			await IOtil.DC(BrowserProfileAddonsDir);
-			await InitializeBaseExtensionPath();
 			await InitializeExtensionPath();
 			if (OPtcs.Task.IsCompleted)
 				return;
@@ -151,26 +152,31 @@ public abstract class SystemBrowserInstance(
 			}
 		}
 	}
-	protected virtual async Task InitializeBaseExtensionPath()
-	{
-		var theseOptions = await BrowserDefaultLaunchSettings.Instance();
-
-		if (theseOptions.Options.SpoofGeoLocation) {
-			await GeoAddon.InitializeExtension(ExtensionDirectories[AddonsUtilv1.GeoAddon]);
-		}
-	}
 
 	protected virtual async Task InitializeExtensionPath()
 	{
 		await IOtil.DC(destinationExtentionsDirv2Base);
 
 		var theseOptions = await BrowserDefaultLaunchSettings.Instance();
+		var settingsBuilder = new StringBuilder();
 
+		_ = settingsBuilder.AppendLine("const initIt = () => {");
 		if (theseOptions.Options.AutoTimezone && UserProfile.Proxy != null && UserProfile.Proxy.Server.HasAny()) {
 			try {
-				var ipLookup = await GeoIpApi.Instance.GetIPApi(UserProfile.Proxy.ServerForRequest, ToasterHelper.ShowErr,
+				var ipapi = await GeoIpApi.Instance.GetIpapi(UserProfile.Proxy.ServerForRequest, ToasterHelper.ShowErr,
 						UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
-				await TimezoneAddon.InitializeExtension(ExtensionDirectories[AddonsUtilv1.TimezoneAddon], ipLookup);
+				if (ipapi != null) {
+					_ = settingsBuilder.AppendLine(
+$@"
+	chrome.storage.local.set({{
+	  timezone: '{ipapi.timezone}',
+	  random: false,
+	  update: true
+	}}, () => {{
+		OnLoad();
+	}});
+");
+				}
 			} catch (Exception ex) {
 				ToasterHelper.ShowErr($"Request for timezone failed {UserProfile.Proxy.Server} - {ex.Message}");
 				OnProcessOpenError?.Invoke((ISystemBrowserLaunchOptions)theseOptions);
@@ -178,7 +184,13 @@ public abstract class SystemBrowserInstance(
 				Cleanup();
 				return;
 			}
+		}else {
+			_ = settingsBuilder.AppendLine("OnLoad();");
 		}
+		_ = settingsBuilder.AppendLine("};");
+		_ = settingsBuilder.AppendLine("chrome.runtime.onInstalled.addListener(initIt);");
+		_ = settingsBuilder.AppendLine("chrome.runtime.onStartup.addListener(initIt);");
+
 
 		//TODO edit for ff
 		//if (theseOptions.Options.SpoofClientRects)
@@ -191,8 +203,9 @@ public abstract class SystemBrowserInstance(
 			new ("clientRectsSpoofing", theseOptions.Options.SpoofClientRects.ToLwrStr()),
 			new ("fontsSpoofing", theseOptions.Options.SpoofFontFingerprint.ToLwrStr()),
 			new ("dAPI", theseOptions.Options.DisableWebRTC.ToLwrStr()),
+			new ("geoSpoofing", theseOptions.Options.SpoofGeoLocation.ToLwrStr()),
+			new ("timezoneSpoofing", theseOptions.Options.AutoTimezone.ToLwrStr())
 		];
-		var settingsBuilder = new StringBuilder();
 		_ = settingsBuilder.AppendLine("let settings = {");
 		_ = settingsBuilder.AppendLine($"enabled: {options.Any(o => o.Value == "true").ToLwrStr()},");
 		options.ForEach(o => settingsBuilder.AppendLine($"{o.Key}: {o.Value},"));
@@ -206,7 +219,6 @@ public abstract class SystemBrowserInstance(
 		if (BrowserType == SystemBrowserType.Chrome) {
 			await NavigatorAddon.InitializeExtension(ExtensionDirectories[AddonsUtilv1.NavigatorAddon].AddonDir, browserSettings: await BrowserDefaultLaunchSettings.Instance());
 		}
-
 
 		var enabled = HasProxyLogin ? "true" : "false";
 		ExtentionsDirv2.Add(ExtensionType.chromeleon_auto_proxy, @$"
@@ -381,13 +393,12 @@ public abstract class SystemBrowserInstance(
 
 	protected virtual string GetCommandLineArguments()
 	{
-		List<string> args = GetCommandLineArgumentsList();
+		var args = GetCommandLineArgumentsList();
 
 		if (GetLoadExtensionsArgument().Get() is string exts)
 			args.Add($"--load-extension=\"{exts}\"");
 
-		//if(!IsMao)
-		//args.Add($"about:blank");
+		args.Add($"about:blank");
 
 		return string.Join(" ", args);
 	}
