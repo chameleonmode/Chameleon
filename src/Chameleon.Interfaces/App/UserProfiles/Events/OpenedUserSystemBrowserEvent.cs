@@ -8,12 +8,12 @@ namespace Chameleon.Interfaces.UserProfiles
     public class UserProfileSystemBrowserProcessEventArgs
         : UserProfileSystemBrowserEventArgs
     {
-        public Process Process { get; }
+        public Process? Process { get; }
 
         public UserProfileSystemBrowserProcessEventArgs(
             IUserProfile userProfile,
             SystemBrowserType browserType,
-            Process process,
+            Process? process,
             string? url = null,
             bool signin = false
             ) : base(userProfile, browserType, url, signin)

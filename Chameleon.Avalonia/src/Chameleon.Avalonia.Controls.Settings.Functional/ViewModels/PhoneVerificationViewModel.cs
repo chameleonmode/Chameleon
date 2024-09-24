@@ -1,9 +1,11 @@
 ﻿using Avalonia.Collections;
 using Chameleon.Core.Util;
-using Chameleon.Interfaces.ThirdParty;
-using Chameleon.ThirdParty.SMSapi.Codesverify;
-using Chameleon.ThirdParty.SMSapi.SMSPool;
-using Chameleon.ThirdParty.SMSapi.SMSPVA;
+using Chameleon.lib.Common.Extensions;
+using Chameleon.lib.Common.Interfaces.ThirdParty;
+using Chameleon.lib.Common.Records;
+using Chameleon.lib.ThirdParty.SMSapi.Codesverify;
+using Chameleon.lib.ThirdParty.SMSapi.SMSPool;
+using Chameleon.lib.ThirdParty.SMSapi.SMSPVA;
 
 namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
@@ -14,14 +16,14 @@ public partial class PVApiModel
     private readonly IPVAInstance _pnapinstance;
 
     [ObservableProperty]
-    private string apiKey;
+    private string? apiKey;
     [ObservableProperty]
-    private string lastFormatedResponse;
-    private string lastJsonResponse;
+    private string? lastFormatedResponse;
+    private string? lastJsonResponse;
     [ObservableProperty]
-    private string getNumberData;
+    private string? getNumberData;
     [ObservableProperty]
-    private string receiveSMSData;
+    private string? receiveSMSData;
 
     [ObservableProperty]
     private bool isVisible = true;
@@ -33,16 +35,16 @@ public partial class PVApiModel
     private bool canCancel;
 
     [ObservableProperty]
-    private RCountry selectedCountry;
-    public IList<RCountry> Countries { get; set; }
+    private RCountry? selectedCountry;
+    public IList<RCountry>? Countries { get; set; }
 
     [ObservableProperty]
-    private RService selectedApp;
-    public IList<RService> Apps { get; set; }
+    private RService? selectedApp;
+    public IList<RService>? Apps { get; set; }
 
     public bool HasCancel { get; set; } = true;
 
-    public PVApiModel(IPVAInstance pnapinstance)
+	public PVApiModel(IPVAInstance pnapinstance)
     {
         _pnapinstance = pnapinstance;
         title = pnapinstance.Name;
@@ -91,7 +93,7 @@ public partial class PVApiModel
 
     public async Task GetCode()
     {
-        if (!lastJsonResponse.HasAny())
+        if (lastJsonResponse?.Is() == false)
             return;
 
         await MakeRequest(async () =>
@@ -104,8 +106,8 @@ public partial class PVApiModel
 
     private async Task CancelOrder()
     {
-        if (!lastJsonResponse.HasAny())
-            return;
+		if (lastJsonResponse?.Is() == false)
+			return;
 
         await MakeRequest(async () =>
         {
@@ -119,12 +121,12 @@ public partial class PVApiModel
         }, e => LastFormatedResponse = e);
     }
 
-    async Task MakeRequest(Func<Task> func, Action<string> onErr)
-    {
-        IsAwaiting = true;
-        await ExUtil.AsyncTryCatch(func, e => onErr(e.Message));
-        IsAwaiting = false;
-    }
+  private async Task MakeRequest(Func<Task> func, Action<string> onErr)
+  {
+    IsAwaiting = true;
+    await ExUtil.AsyncTryCatch(func, e => onErr(e.Message));
+    IsAwaiting = false;
+  }
 
     public void Popout()
     {

@@ -1,9 +1,4 @@
-﻿using Chameleon.ThirdParty.GeoIp;
-using Chameleon.ThirdParty.GeoIp.Models;
-using Newtonsoft.Json;
-using System.Xml.Linq;
-
-namespace Chameleon.SystemBrowser.Addons;
+﻿namespace Chameleon.SystemBrowser.Addons;
 
 public static partial class NavigatorAddon
 {

@@ -22,6 +22,7 @@
   <ItemGroup>
     <Folder Include="App\Bookmarks\Views\Details\" />
     <Folder Include="App\Settings\UserDefaultSettings\" />
+    <Folder Include="ThirdParty\" />
   </ItemGroup>
 
   <ItemGroup>

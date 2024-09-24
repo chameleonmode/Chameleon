@@ -1,6 +1,7 @@
 ﻿using Chameleon.Common.Icons;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.Dialogs;
+using Chameleon.Interfaces.Views;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
 
@@ -8,7 +9,7 @@ namespace Chameleon.CT.Common.Base;
 
 public abstract partial class ObservableObjectBase : ObservableObject,
     IPageViewModel
-{
+	{
     private readonly IDispatcherService _dispatcherService;
     private readonly IEventAggregator eventAggregator;
     private readonly IContentDialogService _cntentDialogService;
@@ -77,7 +78,7 @@ public abstract partial class ObservableObjectBase : ObservableObject,
         }
     }
 
-    public Task InvokeInitializeAsyncCommand(object p = null) 
+    public Task InvokeInitializeAsyncCommand(object? p = null) 
     {
         return InitializeAsyncCommand.ExecuteAsync(p);
     }
@@ -105,6 +106,6 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     [RelayCommand]
     private async Task Copy(object param)
     {
-        await ClipboardService.SetTextAsync(param as string);
+        await ClipboardService.SetTextAsync(param as string ?? "");
     }
 }

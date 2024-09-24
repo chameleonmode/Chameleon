@@ -31,7 +31,7 @@ public static class ExUtil
         }
     }
 
-    public static async Task? AsyncTryCatch(Func<Task> action, Action<Exception>? caught = null)
+    public static async Task AsyncTryCatch(Func<Task> action, Action<Exception>? caught = null)
     {
         try
         {

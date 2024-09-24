@@ -47,5 +47,5 @@ public class ProxySettings : IProxySettings
     public bool HasUserName => UserName.Length > 0;
     public string Server => CanUse ? $"{HostForRequest}:{Port}" : string.Empty;
 
-    public string ServerForRequest => CanUse ? $"http://{HostForRequest}:{Port}" : string.Empty;
+    public string ServerForRequest => CanUse ? $"http://{Server}" : string.Empty;
 }

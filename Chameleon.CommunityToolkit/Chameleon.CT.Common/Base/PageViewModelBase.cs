@@ -5,8 +5,8 @@ namespace Chameleon.CT.Common.Base;
 
 public class PageViewModelBase : ObservableObjectBase
 {
-    private readonly IMainViewViewModel mvvm;
-    private readonly INavigationService _navigationService;
+    private readonly IMainViewViewModel? mvvm;
+    private readonly INavigationService? _navigationService;
     public PageViewModelBase()
     {                                                            
         mvvm = ContainerServiceHelper.Resolve<IMainViewViewModel>();
@@ -23,7 +23,7 @@ public class PageViewModelBase : ObservableObjectBase
         init();
     }
 
-    public IMainViewViewModel MVVM => mvvm;
-    public INavigationService NavigationService => _navigationService;
+    public IMainViewViewModel? MVVM => mvvm;
+    public INavigationService? NavigationService => _navigationService;
 
 }

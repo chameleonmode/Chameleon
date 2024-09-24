@@ -1,10 +1,6 @@
-﻿using Chameleon.ThirdParty.GeoIp.Models;
+﻿using Chameleon.lib.ThirdParty.GeoIp.Models;
+
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chameleon.SystemBrowser.Addons;
 public class TimezoneAddon

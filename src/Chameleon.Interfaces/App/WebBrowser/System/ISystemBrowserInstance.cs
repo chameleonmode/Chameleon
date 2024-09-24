@@ -5,8 +5,8 @@ namespace Chameleon.Interfaces.WebBrowser;
 
 public interface ISystemBrowserInstance
 {
-    public event Action<ISystemBrowserLaunchOptions> OnProcessClosed;
-    public event Action<ISystemBrowserLaunchOptions> OnProcessOpenError;
+    public event Action<ISystemBrowserLaunchOptions>? OnProcessClosed;
+    public event Action<ISystemBrowserLaunchOptions>? OnProcessOpenError;
     TaskCompletionSource<bool> OPtcs { get; }
     UserProfileSystemBrowserProcessEventArgs GetArgs{get;}
     Task Open();

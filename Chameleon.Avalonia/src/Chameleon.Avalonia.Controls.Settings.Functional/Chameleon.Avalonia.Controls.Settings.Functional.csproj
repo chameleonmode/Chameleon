@@ -8,10 +8,10 @@
     <PackageReference Include="Avalonia" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj" />
+    <ProjectReference Include="..\..\..\..\chameleon-lib\Chameleon.lib.CommunityToolkit\Chameleon.lib.CommunityToolkit.csproj" />
+    <ProjectReference Include="..\..\..\..\chameleon-lib\Chameleon.lib.ThirdParty\Chameleon.lib.ThirdParty.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
-    <ProjectReference Include="..\..\..\src\Chameleon.ThirdParty\Chameleon.ThirdParty.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Dialogs\Chameleon.Avalonia.Fluent.Dialogs.csproj" />

@@ -1,10 +1,8 @@
 ﻿using Chameleon.app.Addons.Models;
 using Chameleon.app.Addons.Services;
 using Chameleon.CT.Common.Models;
-using Chameleon.ThirdParty.GeoIp;
-using Chameleon.ThirdParty.GeoIp.Models;
+using Chameleon.lib.ThirdParty.GeoIp;
 
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using System.Net.WebSockets;
@@ -19,14 +17,13 @@ public abstract class SystemBrowserInstance(
 		string browserDataFolderPath,
 		string browserExeFilePath)
 		: ISystemBrowserInstance {
-	public event Action<ISystemBrowserLaunchOptions> OnProcessClosed;
-	public event Action<ISystemBrowserLaunchOptions> OnProcessOpenError;
+	public event Action<ISystemBrowserLaunchOptions>? OnProcessClosed;
+	public event Action<ISystemBrowserLaunchOptions>? OnProcessOpenError;
 
-	private Dictionary<string, ExtensionDirectory> extensions;
+	private Dictionary<string, ExtensionDirectory>? extensions;
 	public Dictionary<string, ExtensionDirectory> ExtensionDirectories {
 		get {
-			if (extensions == null)
-				extensions = new Dictionary<string, ExtensionDirectory>
+			extensions ??= new Dictionary<string, ExtensionDirectory>
 				{
 										{
 												AddonsUtilv1.ChameleonAddon,
@@ -108,10 +105,13 @@ public abstract class SystemBrowserInstance(
 					options.SignIn);
 
 	public bool HasProxyLogin =>
-			UserProfile.Proxy?.CanUse == true &&
-			UserProfile.Proxy.Host.HasAny() &&
+			HasProxy &&
 			UserProfile.Proxy.UserName.HasAny() &&
 			UserProfile.Proxy.Password.HasAny();
+
+	public bool HasProxy =>
+		UserProfile.Proxy?.CanUse == true &&
+		UserProfile.Proxy.Host.HasAny();
 
 	public virtual async Task Open()
 	{
@@ -171,7 +171,7 @@ $@"
 	chrome.storage.local.set({{
 	  timezone: '{ipapi.timezone}',
 	  random: false,
-	  update: true
+	  update: false
 	}}, () => {{
 		OnLoad();
 	}});
@@ -219,7 +219,7 @@ $@"
 			await NavigatorAddon.InitializeExtension(ExtensionDirectories[AddonsUtilv1.NavigatorAddon].AddonDir, browserSettings: await BrowserDefaultLaunchSettings.Instance());
 		}
 
-		var enabled = HasProxyLogin ? "true" : "false";
+		var enabled = HasProxy ? "true" : "false";
 		ExtentionsDirv2.Add(ExtensionType.chromeleon_auto_proxy, @$"
                 let settings = {{
                     enabled: {enabled},
@@ -248,7 +248,7 @@ $@"
 		if (IsMao) {
 			Handle = Brocess.Handle;
 			Brocess.Exited += (s, e) => { Cleanup(); };
-			int tryCount = 0;
+			var tryCount = 0;
 			while (Brocess?.HasExited == false &&
 							MacOSUtil.FindWindowByPID(Brocess.Id) == null &&
 							tryCount++ < 36)
@@ -281,14 +281,14 @@ $@"
 			} else {
 				TaskCompletionSource<Process?> thisTcs = new();
 				new Thread(() => {
-					for (int i = 0; i < 18; i++) {
+					for (var i = 0; i < 18; i++) {
 						ExUtil.TryCatch(() => {
 							var currentProcesses = Process.GetProcessesByName("firefox");
 							foreach (var p in currentProcesses) {
 								if (Brocess != null && p.ParentProcessId() == Brocess.Id) {
 									var childProcess = Process.GetProcessById(p.Id);
 									if (childProcess?.HasExited == false) {
-										IntPtr thishandle = U32til.FindMainWindowHandle(childProcess.Id);
+										var thishandle = U32til.FindMainWindowHandle(childProcess.Id);
 										if (U32.IsWindow(thishandle)) {
 											thisTcs.TrySetResult(childProcess);
 											break;
@@ -365,7 +365,7 @@ $@"
                 //$"--window-name=\"{UserProfile.Title}\"",
             ];
 
-		if (HasProxyLogin) {
+		if (HasProxy) {
 			args.Add($"--proxy-server={UserProfile.Proxy.ServerForRequest}");
 		} else {
 			args.Add("--no-proxy-server");
@@ -421,21 +421,21 @@ $@"
 	}
 
 
-	private async Task<string> GetWebSocketDebuggerUrlAsync()
+	private async Task<string?>? GetWebSocketDebuggerUrlAsync()
 	{
-		string url = $"http://localhost:{Port}/json";
-		using HttpClient client = new HttpClient {
+		var url = $"http://localhost:{Port}/json";
+		using var client = new HttpClient {
 			Timeout = TimeSpan.FromSeconds(5) // Set a timeout of 5 seconds
 		};
 
 		try {
-			string jsonResponse = await client.GetStringAsync(url);
-			JArray targets = JArray.Parse(jsonResponse);
+			var jsonResponse = await client.GetStringAsync(url);
+			var targets = JArray.Parse(jsonResponse);
 
 			foreach (JObject target in targets) {
-				if (target["type"].ToString() == "page") // Assuming you want to debug a page
+				if (target["type"]?.ToString() == "page") // Assuming you want to debug a page
 				{
-					return target["webSocketDebuggerUrl"].ToString();
+					return target["webSocketDebuggerUrl"]?.ToString();
 				}
 			}
 
@@ -455,69 +455,70 @@ $@"
 		}
 	}
 
-	private async Task<IntPtr> GetWindowHandleAsync()
-	{
-		string webSocketDebuggerUrl = await GetWebSocketDebuggerUrlAsync();
-		using ClientWebSocket webSocket = new ClientWebSocket();
-		Uri uri = new Uri(webSocketDebuggerUrl);
-		await webSocket.ConnectAsync(uri, CancellationToken.None);
-		Console.WriteLine("Connected to WebSocket.");
+	//TODO implement
+	//private async Task<IntPtr?>? GetWindowHandleAsync()
+	//{
+	//	var webSocketDebuggerUrl = await GetWebSocketDebuggerUrlAsync();
+	//	using var webSocket = new ClientWebSocket();
+	//	var uri = new Uri(webSocketDebuggerUrl);
+	//	await webSocket.ConnectAsync(uri, CancellationToken.None);
+	//	Console.WriteLine("Connected to WebSocket.");
 
-		string command = "{\"id\": 1, \"method\": \"Browser.getWindowForTarget\"}";
-		await SendCommandAsync(webSocket, command);
+	//	var command = "{\"id\": 1, \"method\": \"Browser.getWindowForTarget\"}";
+	//	await SendCommandAsync(webSocket, command);
 
-		string response = await ReceiveResponseAsync(webSocket);
-		Console.WriteLine($"Received response: {response}");
+	//	var response = await ReceiveResponseAsync(webSocket);
+	//	Console.WriteLine($"Received response: {response}");
 
-		JObject jr = JObject.Parse(response);
-		return (IntPtr)jr["result"]["windowId"].ToObject<int>();
-	}
+	//	var jr = JObject.Parse(response);
+	//	return jr["result"]?["windowId"]?.ToObject<int>();
+	//}
 
-	private async Task<string> GetTargetIdAsync(ClientWebSocket webSocket)
-	{
-		string command = "{\"id\": 2, \"method\": \"Target.getTargets\"}";
-		await SendCommandAsync(webSocket, command);
+	//private async Task<string> GetTargetIdAsync(ClientWebSocket webSocket)
+	//{
+	//	var command = "{\"id\": 2, \"method\": \"Target.getTargets\"}";
+	//	await SendCommandAsync(webSocket, command);
 
-		string response = await ReceiveResponseAsync(webSocket);
-		Console.WriteLine($"Received response: {response}");
+	//	var response = await ReceiveResponseAsync(webSocket);
+	//	Console.WriteLine($"Received response: {response}");
 
-		JObject jr = JObject.Parse(response);
-		return jr["result"]["targetInfos"]
-				.FirstOrDefault(t => t["type"].ToString() == "page")?["targetId"]
-				.ToString();
-	}
+	//	var jr = JObject.Parse(response);
+	//	return jr["result"]["targetInfos"]
+	//			.FirstOrDefault(t => t["type"].ToString() == "page")?["targetId"]
+	//			.ToString();
+	//}
 
-	private async Task AttachToTargetAsync(ClientWebSocket webSocket, string targetId)
-	{
-		string command = $"{{\"id\": 3, \"method\": \"Target.attachToTarget\", \"params\": {{\"targetId\": \"{targetId}\"}}}}";
-		await SendCommandAsync(webSocket, command);
+	//private async Task AttachToTargetAsync(ClientWebSocket webSocket, string targetId)
+	//{
+	//	var command = $"{{\"id\": 3, \"method\": \"Target.attachToTarget\", \"params\": {{\"targetId\": \"{targetId}\"}}}}";
+	//	await SendCommandAsync(webSocket, command);
 
-		string response = await ReceiveResponseAsync(webSocket);
-		Console.WriteLine($"Received response: {response}");
-	}
+	//	var response = await ReceiveResponseAsync(webSocket);
+	//	Console.WriteLine($"Received response: {response}");
+	//}
 
-	private async Task<int> GetProcessIdAsync(ClientWebSocket webSocket, string targetId)
-	{
-		string command = $"{{\"id\": 4, \"method\": \"Target.sendMessageToTarget\", \"params\": {{\"targetId\": \"{targetId}\", \"message\": \"{{\\\"id\\\": 5, \\\"method\\\": \\\"Browser.getWindowForTarget\\\"}}\"}}}}";
-		await SendCommandAsync(webSocket, command);
+	//private async Task<int> GetProcessIdAsync(ClientWebSocket webSocket, string targetId)
+	//{
+	//	var command = $"{{\"id\": 4, \"method\": \"Target.sendMessageToTarget\", \"params\": {{\"targetId\": \"{targetId}\", \"message\": \"{{\\\"id\\\": 5, \\\"method\\\": \\\"Browser.getWindowForTarget\\\"}}\"}}}}";
+	//	await SendCommandAsync(webSocket, command);
 
-		string response = await ReceiveResponseAsync(webSocket);
-		Console.WriteLine($"Received response: {response}");
+	//	var response = await ReceiveResponseAsync(webSocket);
+	//	Console.WriteLine($"Received response: {response}");
 
-		JObject jr = JObject.Parse(response);
-		return jr["result"]["processId"].ToObject<int>();
-	}
+	//	var jr = JObject.Parse(response);
+	//	return jr["result"]["processId"].ToObject<int>();
+	//}
 
 	private async Task SendCommandAsync(ClientWebSocket webSocket, string command)
 	{
-		byte[] bytesToSend = Encoding.UTF8.GetBytes(command);
+		var bytesToSend = Encoding.UTF8.GetBytes(command);
 		await webSocket.SendAsync(new ArraySegment<byte>(bytesToSend), WebSocketMessageType.Text, true, CancellationToken.None);
 	}
 
 	private async Task<string> ReceiveResponseAsync(ClientWebSocket webSocket)
 	{
-		StringBuilder responseBuilder = new StringBuilder();
-		byte[] buffer = new byte[1024];
+		var responseBuilder = new StringBuilder();
+		var buffer = new byte[1024];
 		WebSocketReceiveResult result;
 
 		do {
