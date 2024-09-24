@@ -2,10 +2,10 @@
 
 namespace Chameleon.Interfaces.Dialogs.Views;
 
-public interface IDefaultContentDialogTitle :ITransientDependency
+public interface IDefaultContentDialogTitle :Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
 {
 }
 
-public interface IChameleonLogoDialogTitle : ITransientDependency
+public interface IChameleonLogoDialogTitle : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
 {
 }

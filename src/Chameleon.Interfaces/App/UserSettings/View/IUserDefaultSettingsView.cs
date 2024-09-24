@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.Settings
 {
     public interface IUserDefaultSettingsView
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

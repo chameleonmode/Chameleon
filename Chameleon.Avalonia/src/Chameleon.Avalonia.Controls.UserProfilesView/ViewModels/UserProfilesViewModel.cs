@@ -16,6 +16,7 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
+using Chameleon.lib.Common.Enums;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.Playwright.Models;
@@ -630,7 +631,7 @@ public partial class UserProfilesViewModel
 
 		_mapping = new ObservableCollection<IUserProfile, UserProfileViewModel>(
 		userProfiles, profile => new UserProfileViewModel
-				(_userProfileService, profile as UserProfile, _currentUser, _systemBrowserManager));
+				(_userProfileService, profile as UserProfile, _currentUser));
 
 		_mapping.CollectionChanged += OnViewModelChange;
 

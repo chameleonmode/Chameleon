@@ -3,7 +3,7 @@
 namespace Chameleon.Application.Events.SyncChanges
 {
     public interface ISyncChangesEventHandler
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.Ioc
 {
-    public interface IIocManager : ISingletonDependency
+    public interface IIocManager : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void RegisterTypes(Assembly assembly);
     }

@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.App.Users.PrimaryUser
 {
     public interface IPrimaryUserService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void MarkGuidedTourDone();
     }

@@ -11,7 +11,7 @@ namespace Chameleon.Infrastructure.Prospector.Api
             , CreateUserProfileProspectorBlogsOfInterestDto
             , UserProfileProspectorBlogsOfInterestDto
             >
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

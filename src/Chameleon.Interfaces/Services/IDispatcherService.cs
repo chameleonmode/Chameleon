@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.Services;
 
-public interface IDispatcherService : ISingletonDependency
+public interface IDispatcherService : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
     void InvokeOnUiThread(Action callback);
     T InvokeOnUiThread<T>(Func<T> action);

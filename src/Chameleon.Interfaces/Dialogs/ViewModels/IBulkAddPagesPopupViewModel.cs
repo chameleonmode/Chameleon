@@ -6,7 +6,7 @@ namespace Chameleon.Interfaces.Dialogs.ViewModels
 {
     public interface IBulkAddPagesPopupViewModel
     : IDialogViewModelBase,
-    ISingletonDependency
+    Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         string? Urls { set; get; }
     }

@@ -1,6 +1,7 @@
 ﻿using Chameleon.app.Addons.Models;
 using Chameleon.app.Addons.Services;
 using Chameleon.CT.Common.Models;
+using Chameleon.lib.Common.Enums;
 using Chameleon.lib.ThirdParty.GeoIp;
 
 using Newtonsoft.Json.Linq;
@@ -99,7 +100,6 @@ public abstract class SystemBrowserInstance(
 
 	public UserProfileSystemBrowserProcessEventArgs GetArgs =>
 			new(UserProfile,
-					BrowserType,
 					Brocess,
 					options.Url,
 					options.SignIn);
@@ -163,7 +163,7 @@ public abstract class SystemBrowserInstance(
 		_ = settingsBuilder.AppendLine("const initIt = () => {");
 		if (theseOptions.Options.AutoTimezone && UserProfile.Proxy != null && UserProfile.Proxy.Server.HasAny()) {
 			try {
-				var ipapi = await GeoIpApi.Instance.GetIpapi(UserProfile.Proxy.ServerForRequest, ToasterHelper.ShowErr,
+				var ipapi = await GeoIpApi.GetIpapi(UserProfile.Proxy.ServerForRequest, ToasterHelper.ShowErr,
 						UserProfile.Proxy.UserName, UserProfile.Proxy.Password).ConfigureAwait(false);
 				if (ipapi != null) {
 					_ = settingsBuilder.AppendLine(

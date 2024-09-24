@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Chameleon.Interfaces.App.Dashboard
 {
     public interface ITaskForceViewModel 
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

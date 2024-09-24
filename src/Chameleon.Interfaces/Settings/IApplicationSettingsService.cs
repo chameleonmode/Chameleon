@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.Settings
 {
-    public interface IApplicationSettingsService : ISingletonDependency
+    public interface IApplicationSettingsService : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         //IApplicationSettings Get();
         Task<IApplicationSettings> GetAsync();

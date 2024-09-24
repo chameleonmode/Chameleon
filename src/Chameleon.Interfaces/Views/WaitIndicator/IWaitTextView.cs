@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.Views.WaitIndicator
 {
     public interface IWaitTextView
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         bool IsIndicatorVisible { get; set; }
         string Text { get; set; }

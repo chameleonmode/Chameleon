@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.Auth
 {
     public interface IAuthViewModel 
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

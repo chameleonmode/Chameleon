@@ -6,7 +6,7 @@ namespace Chameleon.Infrastructure.App.Permissions.ProfileFolderPermission.Api
 {
     public interface IProfileFolderPermissionApi
          : IApiLayer<ProfileFolderPermissionDto>
-         , ISingletonDependency
+         , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

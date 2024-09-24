@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Chameleon.Interfaces.Dialogs;
 
-public interface IPopupDialogService : ISingletonDependency
+public interface IPopupDialogService : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
     Task<IPopupDialogResult?> Create<T>() where T : INotifyPropertyChanged;
 

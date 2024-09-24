@@ -8,7 +8,7 @@ namespace Chameleon.Infrastructure.App.Assistants.AssistantProfilePermissions.Ap
 {
     public interface IAssistantProfilePermissionApi
        : IApiLayer<AssistantProfilePermissionDto, int, CreateAssistantProfilePermissionDto, AssistantProfilePermissionDto>
-       , ISingletonDependency
+       , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IList<AssistantProfilePermissionDto> GetAllProfilePermissions(long assistantId, int profileId);
         void InsertProfilePermission(IAssistantProfilePermission assistantProfilePermission);

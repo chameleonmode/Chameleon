@@ -1,4 +1,5 @@
 ﻿using Chameleon.CT.Common.Models;
+using Chameleon.lib.Common.Enums;
 using Chameleon.SystemBrowser.Addons.Assets;
 
 namespace Chameleon.SystemBrowser.Firefox;

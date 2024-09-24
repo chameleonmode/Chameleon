@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.Environments
 {
-    public interface IApplicationConfigurationManager : ISingletonDependency
+    public interface IApplicationConfigurationManager : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         string Get(string key, string defaultValue = "");
         T Get<T>(string key, T defaultValue = default);

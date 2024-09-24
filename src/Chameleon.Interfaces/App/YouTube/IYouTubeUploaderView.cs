@@ -4,7 +4,7 @@ using Chameleon.Interfaces.UserProfiles;
 namespace Chameleon.Interfaces.YouTube
 {
     public interface IYouTubeUploaderView 
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
         , IUserProfileAccessor
     {
         bool IsInitialized { get; }

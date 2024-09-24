@@ -6,7 +6,7 @@ namespace Chameleon.Interfaces.UserProfiles
 {
     public interface IAddUserProfilesPopupView
         : IViewControl
-        , ITransientDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         //IUserProfileFolder Folder { get; set; }
     }

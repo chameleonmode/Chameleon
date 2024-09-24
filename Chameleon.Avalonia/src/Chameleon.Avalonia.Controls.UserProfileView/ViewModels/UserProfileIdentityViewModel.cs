@@ -155,7 +155,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
                        _userProfileService,
                        UserProfile,
                        _applicationUser,
-                       _systemBrowserManager,
                        false);
 
         Task[] tasks = [

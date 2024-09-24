@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.UpgradePlan
 {
     public interface IUpgradePlanViewModel 
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         string LimitExceededText { get; set; }
     }

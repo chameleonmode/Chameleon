@@ -5,7 +5,7 @@ using Chameleon.Interfaces.UserProfiles;
 namespace Chameleon.Interfaces.App.UserProfiles;
 
 //TODO: ???
-public interface IUserProfilesViewModel :ISingletonDependency
+public interface IUserProfilesViewModel :Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {                           
     Func<IUserProfile, bool>? Filter { get; set; }
     string SearchText { get; set; }

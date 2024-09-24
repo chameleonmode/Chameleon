@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.UserProfiles
 {
     public interface IUserProfileIdentityView
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
        // , IUserProfileAccessor
     {
     }

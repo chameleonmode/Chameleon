@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Chameleon.Interfaces.YouTube
 {
-    public interface IMediaFileService : ISingletonDependency
+    public interface IMediaFileService : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         string VideoFormats { get; }
         string ImageFormats { get; }

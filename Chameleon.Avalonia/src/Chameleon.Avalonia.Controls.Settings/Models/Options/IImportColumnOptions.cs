@@ -2,7 +2,7 @@
 
 namespace Chameleon.Controls.ImportExport.Models
 {
-    public interface IImportColumnOptions : ITransientDependency
+    public interface IImportColumnOptions : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         IImportColumnOption Selected { get; set; }
     }    

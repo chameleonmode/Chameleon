@@ -4,7 +4,7 @@ using System;
 namespace Chameleon.Interfaces.App.OutReach.OutReachLink
 {
     public interface IReminderPopupViewModel
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         DateTime? Date { set; get; }
         DateTime? Time { set; get; }

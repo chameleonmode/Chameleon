@@ -4,7 +4,7 @@ using System;
 namespace Chameleon.Interfaces.WebBrowser
 {
     public interface IBrowserExtensionService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
         , IDisposable
     {
         void Start();

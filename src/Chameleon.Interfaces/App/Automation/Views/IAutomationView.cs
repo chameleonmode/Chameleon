@@ -2,6 +2,6 @@
 
 namespace Chameleon.Interfaces.App.Automation.Views;
 public interface IAutomationView
-    : ISingletonDependency
+    : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
 }

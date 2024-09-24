@@ -1,11 +1,12 @@
+using Chameleon.lib.Common.Enums;
+
 namespace Chameleon.SystemBrowser.Browsers.Brave;
 public class BraveSystemBrowser(
         IEventAggregator eventAggregator,
         IApplicationEnvironment applicationEnvironment,
         ISystemBrowserInfoManager systemBrowserInfoManager,
-        ISetPreferencesService setPreferencesService,
         IUserDefaultSettingsService userDefaultsSettingsService)
-    : SystemBrowserBase(eventAggregator, applicationEnvironment, setPreferencesService, userDefaultsSettingsService),
+    : SystemBrowserBase(eventAggregator, applicationEnvironment, userDefaultsSettingsService),
     IBraveSystemBrowser
 {
     public override SystemBrowserType BrowserType => SystemBrowserType.Brave;
@@ -15,7 +16,6 @@ public class BraveSystemBrowser(
         return new BraveSystemBrowserInstance(
              EventAggregator,
              o,
-             SetPreferencesService,
              ApplicationEnvironment,
              UserDefaultSettingsService,
              GetBrowserExePath());

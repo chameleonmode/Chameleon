@@ -1,11 +1,12 @@
-﻿namespace Chameleon.SystemBrowser.Firefox;
+﻿using Chameleon.lib.Common.Enums;
+
+namespace Chameleon.SystemBrowser.Firefox;
 public class FirefoxSystemBrowser(
         IEventAggregator eventAggregator,
         IApplicationEnvironment applicationEnvironment,
-         ISetPreferencesService setPreferencesService,
         ISystemBrowserInfoManager systemBrowserInfoManager,
         IUserDefaultSettingsService userDefaultsSettingsService)
-    : SystemBrowserBase(eventAggregator, applicationEnvironment, setPreferencesService, userDefaultsSettingsService),
+    : SystemBrowserBase(eventAggregator, applicationEnvironment, userDefaultsSettingsService),
     IFirefoxSystemBrowser
 {
     public const string FirefoxChameleonDirectory = "FirefoxChameleon";

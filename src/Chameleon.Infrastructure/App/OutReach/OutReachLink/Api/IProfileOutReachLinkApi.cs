@@ -10,7 +10,7 @@ namespace Chameleon.Infrastructure.OutReachLink
             , CreateProfileOutReachLinkDto
             , ProfileOutReachLinkDto
             >
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

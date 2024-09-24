@@ -7,7 +7,7 @@ namespace Chameleon.Infrastructure.App.Assistants.AssistantProfiles.Api
 {
     public interface IAssistantProfileApi
        : IApiLayer<AssistantProfileDto, long, CreateAssistantProfileDto, AssistantProfileDto>
-       , ISingletonDependency
+       , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IList<AssistantProfileDto> GetAllAssistantProfilesById(long id);
         void DeleteAssistantProfile(long assistantId, int profileId);

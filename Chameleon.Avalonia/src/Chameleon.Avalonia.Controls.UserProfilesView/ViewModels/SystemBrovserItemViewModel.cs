@@ -1,5 +1,6 @@
 ﻿using Chameleon.Interfaces.WebBrowser;
 using Chameleon.CT.Common.Base;
+using Chameleon.lib.Common.Enums;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 

@@ -4,7 +4,7 @@ using Chameleon.Interfaces.UserProfiles;
 namespace Chameleon.Interfaces.UserProfileFolders
 {
     public interface IUserProfileFolderService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IUserProfileFolder Get(int folderId);
         IUserProfileFolders GetAll();

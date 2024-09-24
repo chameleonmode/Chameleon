@@ -5,7 +5,7 @@ using Chameleon.Interfaces.UserProfiles;
 
 namespace Chameleon.Interfaces.WebBrowser
 {
-    public interface IWebBrowserSettingsDialogService : ISingletonDependency
+    public interface IWebBrowserSettingsDialogService : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void ShowSettingsDialog(IUserProfile userProfile, ILinkManager linkManager);
         void ShowUserAgentsDialog(IUserProfile userProfile);

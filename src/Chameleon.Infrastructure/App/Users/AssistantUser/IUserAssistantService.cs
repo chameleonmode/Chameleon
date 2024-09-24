@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Chameleon.Infrastructure.Users
 {
     public interface IUserAssistantService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         ICollection<IUserAssistant> Get();
         Task<ICollection<IUserAssistant>> GetAsync();

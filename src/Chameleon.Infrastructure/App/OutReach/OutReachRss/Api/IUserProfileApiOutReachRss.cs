@@ -11,7 +11,7 @@ namespace Chameleon.Infrastructure.OutReach.Api
             , CreateUserProfileOutReachRssDto
             , UserProfileOutReachRssDto
             >
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

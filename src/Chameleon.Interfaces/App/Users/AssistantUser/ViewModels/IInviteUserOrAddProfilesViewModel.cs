@@ -6,7 +6,7 @@ namespace Chameleon.Controls.AssistantUsers.Interfaces
 {
     public interface IInviteUserOrAddProfilesViewModel 
         : IContentDialogViewModel,
-        ITransientDependency
+        Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         bool ShowInviteinfo { get; set; }
 

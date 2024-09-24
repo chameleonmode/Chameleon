@@ -3,10 +3,10 @@
 namespace Chameleon.Interfaces.App.UserSettings.View
 {
     public interface IPhoneVerificationView
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
     }
 
     public interface IPVApiView
-        : ITransientDependency { }
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency { }
 }

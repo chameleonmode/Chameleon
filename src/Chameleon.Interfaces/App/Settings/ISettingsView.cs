@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.Settings
 {
     public interface ISettingsView
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void SetTabContent(SettingTabs tab);
     }

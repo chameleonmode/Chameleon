@@ -2,6 +2,6 @@
 
 namespace Chameleon.Interfaces.Services;
 
-public interface IEventAggregatorServise : ISingletonDependency
+public interface IEventAggregatorServise : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
 }

@@ -2,7 +2,7 @@
 
 namespace Chameleon.Controls.ImportExport.Models
 {
-    public interface IImportColumnItemViewModel : ITransientDependency
+    public interface IImportColumnItemViewModel : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         string Value { get; set; }
     }    

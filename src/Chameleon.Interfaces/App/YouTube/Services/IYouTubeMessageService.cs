@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.YouTube
 {
     public interface IYouTubeMessageService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void PathToVideoIsError();
         void PathToThumbnailIsError();

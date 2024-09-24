@@ -4,7 +4,7 @@ using Chameleon.Interfaces.UserProfiles;
 namespace Chameleon.Interfaces.OutReach
 {
     public interface IUserProfileOutReachRssesView
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
         , IUserProfileAccessor
     {
     }

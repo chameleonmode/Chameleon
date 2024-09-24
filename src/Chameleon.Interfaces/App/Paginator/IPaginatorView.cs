@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.Paginator
 {
-    public interface IPaginatorView : ITransientDependency
+    public interface IPaginatorView : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
     }
 }

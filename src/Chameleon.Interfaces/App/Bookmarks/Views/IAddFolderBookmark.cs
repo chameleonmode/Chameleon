@@ -4,7 +4,7 @@ namespace Chameleon.Interfaces.Bookmarks
 {
     public interface IAddFolderBookmark
         : IUserControl
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

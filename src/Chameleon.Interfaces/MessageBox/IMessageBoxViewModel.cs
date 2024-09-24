@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.MessageBox
 {
     public interface IMessageBoxViewModel
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
     }
 }

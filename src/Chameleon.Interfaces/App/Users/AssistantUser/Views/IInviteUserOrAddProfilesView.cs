@@ -5,7 +5,7 @@ namespace Chameleon.Controls.AssistantUsers.Interfaces
 {
     public interface IInviteUserOrAddProfilesView 
         : IViewControl
-        , ITransientDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
     }
 }

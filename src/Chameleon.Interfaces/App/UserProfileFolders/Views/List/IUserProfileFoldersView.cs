@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.UserProfileFolders
 {
-    public interface IUserProfileFoldersView : ISingletonDependency
+    public interface IUserProfileFoldersView : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
        
     }

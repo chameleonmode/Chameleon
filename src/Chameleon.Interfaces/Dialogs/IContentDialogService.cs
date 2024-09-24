@@ -4,7 +4,7 @@ using Chameleon.Interfaces.Ioc;
 namespace Chameleon.Interfaces.Dialogs;
 
 public interface IContentDialogService :
-    ISingletonDependency
+    Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
     Task<IContentDialogResult> ShowAsync<TView,TViewModel>(Action<TViewModel> initialize) where TViewModel : class;
     Task<IContentDialogResult> ShowContentDialogAsync(Type contentDialog);

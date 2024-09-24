@@ -3,7 +3,7 @@
 namespace Chameleon.Application.Events
 {
     public interface IUserSettingsEventHandler
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

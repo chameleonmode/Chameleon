@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Chameleon.Interfaces.Proxies
 {
     public interface IProxyService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IProxyCountry CurrentCountry { get; set; }
         IList<IProxyCountry> GetCountries();

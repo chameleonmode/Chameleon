@@ -3,7 +3,7 @@
 namespace Chameleon.Controls.AssistantUsers.Interfaces
 {
     public interface IAssistantUsersViewModel
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

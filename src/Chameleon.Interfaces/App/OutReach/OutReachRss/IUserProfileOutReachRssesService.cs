@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.OutReach
 {
     public interface IUserProfileOutReachRssesService 
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IUserProfileOutReachRsses GetAll(int profileId);
         IUserProfileOutReachRss AddOutReachRss(UserProfileOutReachRssBindable outReachRss);

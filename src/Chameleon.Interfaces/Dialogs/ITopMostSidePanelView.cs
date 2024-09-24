@@ -2,6 +2,6 @@
 
 namespace Chameleon.Interfaces.Dialogs;
 
-public interface ITopMostSidePanelView : ISingletonDependency
+public interface ITopMostSidePanelView : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
 }

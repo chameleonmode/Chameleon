@@ -3,7 +3,7 @@ using Chameleon.Interfaces.Views;
 
 namespace Chameleon.Interfaces.SidePanel
 {
-    public interface ISidePanelView : ISingletonDependency
+    public interface ISidePanelView : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         bool IsOpen { get; set; }
         string MainHeader { get; set; }

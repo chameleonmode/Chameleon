@@ -12,11 +12,10 @@ namespace Chameleon.Interfaces.UserProfiles
 
         public UserProfileSystemBrowserProcessEventArgs(
             IUserProfile userProfile,
-            SystemBrowserType browserType,
             Process? process,
             string? url = null,
             bool signin = false
-            ) : base(userProfile, browserType, url, signin)
+            ) : base(userProfile, url, signin)
         {
             Process = process;
         }

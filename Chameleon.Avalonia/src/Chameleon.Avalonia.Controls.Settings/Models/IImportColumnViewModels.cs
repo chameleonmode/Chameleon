@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Chameleon.Controls.ImportExport.Models
 {
     public interface IImportColumnViewModels : 
-        ITransientDependency
+        Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         IReadOnlyList<IImportColumnViewModel> Selected { get; }
     }    

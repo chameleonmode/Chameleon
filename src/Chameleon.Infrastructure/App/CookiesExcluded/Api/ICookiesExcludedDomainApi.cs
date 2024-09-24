@@ -5,7 +5,7 @@ namespace Chameleon.Infrastructure.CookiesExcluded
 {
     public interface ICookiesExcludedDomainApi
         : IApiLayer<CookiesExcludedDomainDto, int, CreateCookiesExcludedDomainDto, CookiesExcludedDomainDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

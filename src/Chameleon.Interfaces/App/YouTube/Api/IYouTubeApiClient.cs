@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Chameleon.Interfaces.YouTube
 {
-    public interface IYouTubeApiClient : ITransientDependency
+    public interface IYouTubeApiClient : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         Task UnInitializeAsync();
         Task<IList<IYouTubeCategory>> GetVideoCategoriesAsync(string regionCode);

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Chameleon.Interfaces.YouTube
 {
-    public interface IGoogleAuthenticationService : ISingletonDependency
+    public interface IGoogleAuthenticationService : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         Task<IOAuthToken> HandleRedirect(IUserProfile userProfile, string[] scopes);
     }

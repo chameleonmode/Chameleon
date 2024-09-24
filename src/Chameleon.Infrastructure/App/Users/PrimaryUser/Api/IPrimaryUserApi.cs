@@ -6,7 +6,7 @@ namespace Chameleon.Infrastructure.App.Users.PrimaryUser.Api
 {
     public interface IPrimaryUserApi
         : IApiLayer<PrimaryUserDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void MarkGuidedTourDone();
     }

@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.ExceptionOptions
 {
     public interface IAppLoggerService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void Create(IAppLogger appLogger);
     }

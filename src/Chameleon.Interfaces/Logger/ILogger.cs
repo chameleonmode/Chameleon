@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Chameleon.Interfaces.Logger
 {
-    public interface ILogger : ISingletonDependency
+    public interface ILogger : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
        //TODO:  ILog Log { get; }
     }

@@ -4,7 +4,7 @@ using Chameleon.Interfaces.Ioc;
 namespace Chameleon.Interfaces.ProxyCredit
 {
     public interface IProxyCreditService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IProxyCredit GetCredits();
         IProxyCredit BuyCredits(BuyCreditsDto input);

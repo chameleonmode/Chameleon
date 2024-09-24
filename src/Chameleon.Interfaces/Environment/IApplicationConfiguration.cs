@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.Environments
 {
-    public interface IApplicationConfiguration : ISingletonDependency
+    public interface IApplicationConfiguration : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         string ApiBaseUrl { get; }
         string ApiSocialAnimalUrl { get; }
@@ -10,14 +10,14 @@ namespace Chameleon.Interfaces.Environments
         string ApiSocialAnimalAuthKey { get; }
     }
 
-    public interface ISocialAnimalConfiguration : ISingletonDependency
+    public interface ISocialAnimalConfiguration : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         string ApiSocialAnimalUrl { get; }
         string ApiSocialAnimalUserId { get; }
         string ApiSocialAnimalAuthKey { get; }
     }
 
-    public interface IUrlConfiguration : ISingletonDependency
+    public interface IUrlConfiguration : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         string WebsiteUrl { get; }
         string SupportUrl { get; }

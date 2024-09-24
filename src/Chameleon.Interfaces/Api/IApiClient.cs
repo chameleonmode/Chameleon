@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.Api
 {
-    public interface IApiClient : ISingletonDependency
+    public interface IApiClient : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         TResponse Get<TResponse>(string url, object query = null);
         Task<TResponse> GetAsync<TResponse>(string url, object query = null);

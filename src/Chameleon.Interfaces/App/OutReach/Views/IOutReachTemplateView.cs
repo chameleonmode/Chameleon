@@ -4,7 +4,7 @@ using Chameleon.Interfaces.UserProfiles;
 namespace Chameleon.Interfaces.OutReach
 {
     public interface IOutReachTemplateView
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void SetOutReachTemplate(IOutReachTemplate template, IUserProfile userProfile);
     }

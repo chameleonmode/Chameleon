@@ -8,7 +8,7 @@ namespace Chameleon.Infrastructure.ExceptionOptions
             , int
             , CreateAppLoggerDto
             , AppLoggerDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

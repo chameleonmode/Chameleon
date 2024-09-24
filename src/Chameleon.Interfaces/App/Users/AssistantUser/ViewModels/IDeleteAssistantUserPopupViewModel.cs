@@ -3,7 +3,7 @@
 namespace Chameleon.Controls.AssistantUsers.Interfaces
 {
     public interface IDeleteAssistantUserPopupViewModel 
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         string UserName { get; set; }
     }

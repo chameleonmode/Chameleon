@@ -21,7 +21,7 @@ public class MainAppSearchItem
     public Type PageType { get; set; }
 }
 
-public interface IMainViewViewModel : ISingletonDependency
+public interface IMainViewViewModel : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
     void BuildSearchTerms(List<MainAppSearchItem> items);
 }

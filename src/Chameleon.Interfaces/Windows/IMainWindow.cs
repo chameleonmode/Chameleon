@@ -6,7 +6,7 @@ namespace Chameleon.Interfaces.Windows
 {
     public interface IMainWindow 
         : IViewContent
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         //Window GetWindow();
         void Show();

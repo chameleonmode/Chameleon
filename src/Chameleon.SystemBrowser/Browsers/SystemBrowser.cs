@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
 
+using Chameleon.lib.Common.Enums;
+
 namespace Chameleon.SystemBrowser.Browsers;
 public abstract class SystemBrowserBase
     : ISystemBrowser
@@ -7,12 +9,10 @@ public abstract class SystemBrowserBase
     protected SystemBrowserBase(
         IEventAggregator eventAggregator,
         IApplicationEnvironment applicationEnvironment,
-        ISetPreferencesService setPreferencesService,
         IUserDefaultSettingsService userDefaultsSettingsService)
     {
         EventAggregator = eventAggregator;
         ApplicationEnvironment = applicationEnvironment;
-        SetPreferencesService = setPreferencesService;
         UserDefaultSettingsService = userDefaultsSettingsService;
 
         if (OperatingSystem.IsWindows())
@@ -68,7 +68,6 @@ public abstract class SystemBrowserBase
 
     protected IEventAggregator EventAggregator { get; }
     protected IApplicationEnvironment ApplicationEnvironment { get; } 
-    protected ISetPreferencesService SetPreferencesService { get; } 
     protected IUserDefaultSettingsService UserDefaultSettingsService { get; } 
 
     public string Path => GetSystemBrowserExePath();

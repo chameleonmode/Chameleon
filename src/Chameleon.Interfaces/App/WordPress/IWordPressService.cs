@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Chameleon.Interfaces.WordPress
 {
-    public interface IWordPressService : ITransientDependency
+    public interface IWordPressService : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         string CreatePost(IPostCreateParameters parameters, IUserProfile userProfile);
     }

@@ -6,7 +6,7 @@ namespace Chameleon.Interfaces.Prospector
 {
     public interface IBlogOfInterestView
        : IViewControl
-       , ISingletonDependency
+       , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
        , IUserProfileAccessor
     {
     }

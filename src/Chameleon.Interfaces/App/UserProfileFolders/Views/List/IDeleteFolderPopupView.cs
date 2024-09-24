@@ -5,7 +5,7 @@ namespace Chameleon.Interfaces.UserProfileFolders
 {
     public interface IDeleteFolderPopupView 
         : IViewControl
-        , ITransientDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         string FolderName { get; set; }
     }

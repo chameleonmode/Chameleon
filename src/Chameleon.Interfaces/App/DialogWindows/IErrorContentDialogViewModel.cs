@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.DialogWindows
 {
     public interface IErrorContentDialogViewModel
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         string Text { get; set; }
     }

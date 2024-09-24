@@ -3,7 +3,7 @@
 namespace Chameleon.Application.Events
 {
     public interface IOpenBrowserEventHandler
-       : ISingletonDependency
+       : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

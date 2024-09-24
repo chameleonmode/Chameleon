@@ -5,7 +5,7 @@ namespace Chameleon.Infrastructure.Rss
 {
     public interface IUserProfileRssFeedApi
         : IApiLayer<UserProfileRssFeedDto, int, CreateUserProfileRssFeedDto, UserProfileRssFeedDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

@@ -1,8 +1,9 @@
-﻿namespace Chameleon.SystemBrowser.Browsers.Brave;
+﻿using Chameleon.lib.Common.Enums;
+
+namespace Chameleon.SystemBrowser.Browsers.Brave;
 public class BraveSystemBrowserInstance(
         IEventAggregator eventAggregator,
         ISystemBrowserLaunchOptions options,
-        ISetPreferencesService setPreferencesService,
         IApplicationEnvironment applicationEnvironment,
         IUserDefaultSettingsService userDefaultsSettingsService,
         string browserExeFilePath) :
@@ -10,9 +11,4 @@ public class BraveSystemBrowserInstance(
 {
     protected override SystemBrowserType BrowserType => SystemBrowserType.Brave;
 
-
-    protected override async Task InitializeProfileFolder()
-    {
-        await Task.Run(() => setPreferencesService.SetPreferences(UserProfile.WebBrowser, BrowserProfileFolderPath, BrowserType));
-    }
 }

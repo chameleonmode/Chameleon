@@ -11,16 +11,13 @@ namespace Chameleon.Application.Events
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly IUserProfileService _userProfileService;
-        private readonly ISystemBrowserManager _systemBrowserManager;
         public UserProfileEventHandler(
             IUserProfileService userProfileService,
-            IEventAggregator eventAggregator,
-            ISystemBrowserManager systemBrowserManager
+            IEventAggregator eventAggregator
             )
         {
             _eventAggregator = eventAggregator;
             _userProfileService = userProfileService;
-            _systemBrowserManager = systemBrowserManager;
 
             _eventAggregator
                 .GetEvent<DeleteUserProfileEvent>()

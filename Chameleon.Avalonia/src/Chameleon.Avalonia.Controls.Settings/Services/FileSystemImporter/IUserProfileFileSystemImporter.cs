@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Chameleon.Controls.ImportExport.Services
 {
-    public interface IUserProfileFileSystemImporter : ISingletonDependency
+    public interface IUserProfileFileSystemImporter : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         Task ImportAsync();
     }

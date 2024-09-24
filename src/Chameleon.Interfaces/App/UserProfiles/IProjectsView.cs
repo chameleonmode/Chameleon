@@ -3,6 +3,6 @@
 namespace Chameleon.Interfaces.App.UserProfiles;
 
 public interface IProjectsView
-    : ISingletonDependency
+    : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
 }

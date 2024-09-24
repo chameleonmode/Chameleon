@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.App.ImportExport.Views
 {
     public interface IExportView
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

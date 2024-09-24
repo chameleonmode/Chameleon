@@ -4,7 +4,7 @@ using Chameleon.Interfaces.UserProfileFolders;
 namespace Chameleon.Application.Events
 {
     public interface IUserProfileFolderEventHandler
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         Task DeleteFolder(IUserProfileFolder userProfileFolder);
     }

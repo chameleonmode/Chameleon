@@ -6,7 +6,7 @@ using Chameleon.Interfaces.WebBrowser;
 namespace Chameleon.Interfaces.UserProfiles
 {
     public interface IUserProfileView
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
         , IUserProfileGetter
         , IViewContentContext
     {

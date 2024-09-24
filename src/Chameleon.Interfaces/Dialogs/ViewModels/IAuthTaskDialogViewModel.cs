@@ -4,7 +4,7 @@ namespace Chameleon.Interfaces.Dialogs.ViewModels;
 
 public interface IAuthTaskDialogViewModel
   : IDialogViewModelBase,
-    ISingletonDependency
+    Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
    
 }

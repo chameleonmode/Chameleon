@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.Settings
 {
     public interface IUserDefaultSettingsService
-         : ISingletonDependency
+         : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IUserDefaultSetting Get(int defaultUrlId);
         IUserDefaultSettings GetAll();

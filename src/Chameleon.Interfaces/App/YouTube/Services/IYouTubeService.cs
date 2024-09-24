@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Chameleon.Interfaces.YouTube
 {
     public interface IYouTubeService 
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         Task<bool> InitializeAsync(IUserProfile userProfile);
         Task<IList<IYouTubePlaylist>> GetPlayListsAsync();

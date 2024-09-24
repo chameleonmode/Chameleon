@@ -9,7 +9,7 @@ public interface IUserProfileViewModelBase
     ISystemBrowserInstance SBI { get; }
     void Open();
     void OpenUserBrowser();
-    Task OpenSystemBrowser(SystemBrowserType browserType);
+    Task OpenSystemBrowser(object browserType);
 }
 public interface IUserProfileActionsViewModel : IUserProfileViewModelBase, IPageViewModel
 {

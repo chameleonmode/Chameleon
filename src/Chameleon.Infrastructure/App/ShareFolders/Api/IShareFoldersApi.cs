@@ -7,7 +7,7 @@ namespace Chameleon.Infrastructure.App.ShareFolders.Api
 {
     public interface IShareFoldersApi
         : IApiLayer<ShareFolderDto, int, CreateShareFolderDto, UpdateShareFolderDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IList<ShareFolderDto> Share(CreateShareFolderDto input);
         void AddPermission(CreateShareFolderPermissionDto input);

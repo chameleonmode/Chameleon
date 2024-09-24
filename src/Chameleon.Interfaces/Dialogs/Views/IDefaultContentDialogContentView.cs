@@ -3,6 +3,6 @@
 namespace Chameleon.Interfaces.Dialogs.Views;
 
 public interface IDefaultContentDialogContentView : IViewModelAware,
-    ITransientDependency
+    Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
 {
 }

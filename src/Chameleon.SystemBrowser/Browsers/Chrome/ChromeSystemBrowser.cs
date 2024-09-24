@@ -1,12 +1,13 @@
-﻿namespace Chameleon.SystemBrowser.Chrome
+﻿using Chameleon.lib.Common.Enums;
+
+namespace Chameleon.SystemBrowser.Chrome
 {
     public class ChromeSystemBrowser(
             IEventAggregator eventAggregator,
             IApplicationEnvironment applicationEnvironment,
             ISystemBrowserInfoManager systemBrowserInfoManager,
-            ISetPreferencesService setPreferencesService,
             IUserDefaultSettingsService userDefaultsSettingsService)
-    : SystemBrowserBase(eventAggregator, applicationEnvironment, setPreferencesService, userDefaultsSettingsService),
+    : SystemBrowserBase(eventAggregator, applicationEnvironment, userDefaultsSettingsService),
         IChromeSystemBrowser
     {
         public override SystemBrowserType BrowserType => SystemBrowserType.Chrome;
@@ -16,7 +17,6 @@
             return new ChromeSystemBrowserInstance(
                 EventAggregator,
                 o,
-                SetPreferencesService,
                 ApplicationEnvironment,
                 UserDefaultSettingsService,
                 GetBrowserExePath());

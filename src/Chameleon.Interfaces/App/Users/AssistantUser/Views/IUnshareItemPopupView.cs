@@ -5,7 +5,7 @@ namespace Chameleon.Interfaces.App.Assistants
 {
     public interface IUnshareItemPopupView
         : IViewControl
-        , ITransientDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
     }
 }

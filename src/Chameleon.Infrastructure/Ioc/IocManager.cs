@@ -1,8 +1,8 @@
-﻿using Chameleon.Interfaces.Ioc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
+
+using Chameleon.Interfaces.Ioc;
+using Chameleon.lib.Common.Interfaces.Systemics;
 
 namespace Chameleon.Infrastructure.Ioc
 {
@@ -49,13 +49,13 @@ namespace Chameleon.Infrastructure.Ioc
 
         private void RegisterSingletons(Type[] types)
         {
-            Register<ISingletonDependency>(types, (fromType, toType) =>
+            Register<Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency>(types, (fromType, toType) =>
                 _containerRegistry.RegisterSingleton(fromType, toType));
         }
 
         private void RegisterTransients(Type[] types)
         {
-            Register<ITransientDependency>(types, (fromType, toType) =>
+            Register<Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency>(types, (fromType, toType) =>
                 _containerRegistry.Register(fromType, toType));
         }
 
@@ -73,7 +73,7 @@ namespace Chameleon.Infrastructure.Ioc
             var typesToRegister = GetTypesToRegister<TInterface>(types);
             foreach (var typeToRegister in typesToRegister)
             {
-                if (typeof(ISkipIOCRegistration).IsAssignableFrom(typeToRegister))
+                if (typeof(INotaDependency).IsAssignableFrom(typeToRegister))
                 {
                     continue;
                 }
@@ -93,7 +93,7 @@ namespace Chameleon.Infrastructure.Ioc
 
                     if (viewControlType.IsAssignableFrom(interfaceType) && viewControlType != interfaceType)
                     {
-                        var dependencyName = interfaceType.GetDependencyName();
+                        var dependencyName = interfaceType.FullName;
                         // https://github.com/PrismLibrary/Prism/blob/master/src/Wpf/Prism.Wpf/Services/Dialogs/DialogService.cs
                         if (!_containerRegistry.IsRegistered(objectType, dependencyName))
                         {
@@ -141,8 +141,8 @@ namespace Chameleon.Infrastructure.Ioc
         private bool IsInterfaceMarker(Type type)
         {
             return typeof(IDependency) == type
-                || typeof(ISingletonDependency) == type
-                || typeof(ITransientDependency) == type
+                || typeof(Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency) == type
+                || typeof(Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency) == type
                 || typeof(IScopedDependency) == type;
         }
 

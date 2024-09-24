@@ -25,4 +25,8 @@
      <AvaloniaResource Include="Addons\ChameleonAddon.cs" />
    </ItemGroup>
 
+   <ItemGroup>
+     <Folder Include="Manager\" />
+   </ItemGroup>
+
 </Project>

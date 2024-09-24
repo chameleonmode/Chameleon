@@ -3,7 +3,7 @@ using Chameleon.Interfaces.Views;
 
 namespace Chameleon.Interfaces.Dialogs.Views
 {
-    public interface IBulkAddPagesPopupView : IContentDialogView ,ITransientDependency
+    public interface IBulkAddPagesPopupView : IContentDialogView ,Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
     }
 }

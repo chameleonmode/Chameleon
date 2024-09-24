@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.App.Prospector
 {
     public interface IUserProfileProspectorBlogsOfInterestsService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IUserProfileProspectorBlogsOfInterests GetAll(int profileId);
         IUserProfileProspectorBlogsOfInterest AddProspectorBlogsOfInterest(IUserProfileProspectorBlogsOfInterest blogsOfInterest);

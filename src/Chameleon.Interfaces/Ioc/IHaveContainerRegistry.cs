@@ -1,6 +1,6 @@
 ﻿namespace Chameleon.Interfaces.Ioc;
 
-public interface IHaveContainerRegistry : ISingletonDependency
+public interface IHaveContainerRegistry : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
   
     //

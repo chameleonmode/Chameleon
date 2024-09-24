@@ -7,7 +7,7 @@ namespace Chameleon.Interfaces.Auth
         , IAuthUserToken
         , IAuthLimits
         , IAuthPermissions
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

@@ -4,7 +4,7 @@ using Chameleon.Interfaces.UserProfileFolders;
 namespace Chameleon.Interfaces.UserProfiles
 {
     public interface IUserProfilesPopupService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void ShowPopup(IUserProfileFolder folder);
     }

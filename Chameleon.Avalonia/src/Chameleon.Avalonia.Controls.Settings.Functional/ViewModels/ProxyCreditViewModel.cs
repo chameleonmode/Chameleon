@@ -60,7 +60,7 @@ public class CreditPlans
 #region ProxyAccess
 public interface IProxyAccessViewModels
     : IList<ProxyAccessViewModel>
-    , ITransientDependency
+    , Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
 {
     void AddItems(int count);
 }

@@ -1,4 +1,6 @@
-﻿namespace Chameleon.SystemBrowser;
+﻿using Chameleon.lib.Common.Enums;
+
+namespace Chameleon.SystemBrowser;
 public class SystemBrowserInfoManager : ISystemBrowserInfoManager
 {
     public static SystemBrowserInfoManager Instance => ContainerServiceHelper.Resolve<ISystemBrowserInfoManager>() as SystemBrowserInfoManager;

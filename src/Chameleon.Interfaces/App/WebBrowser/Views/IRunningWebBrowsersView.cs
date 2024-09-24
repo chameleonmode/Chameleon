@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.WebBrowser
 {
-    public interface IRunningWebBrowsersView : ISingletonDependency
+    public interface IRunningWebBrowsersView : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

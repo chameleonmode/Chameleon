@@ -1,4 +1,6 @@
-﻿namespace Chameleon.Interfaces.Ioc;
+﻿using Chameleon.lib.Common.Interfaces.Systemics;
+
+namespace Chameleon.Interfaces.Ioc;
 
 public interface IHaveContainerProvider : ISingletonDependency
 {

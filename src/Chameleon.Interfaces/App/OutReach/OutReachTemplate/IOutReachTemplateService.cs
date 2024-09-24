@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.OutReach
 {
     public interface IOutReachTemplateService
-         : ISingletonDependency
+         : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IOutReachTemplate Get(int outReachTemplateId);
         IOutReachTemplates GetAll();

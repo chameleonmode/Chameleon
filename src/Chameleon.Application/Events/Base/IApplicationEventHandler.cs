@@ -2,7 +2,7 @@
 
 namespace Chameleon.Application.Events
 {
-    public interface IApplicationEventHandler : ISingletonDependency
+    public interface IApplicationEventHandler : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

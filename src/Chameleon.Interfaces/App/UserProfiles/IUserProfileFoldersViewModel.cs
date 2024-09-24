@@ -3,7 +3,7 @@ using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 
 namespace Chameleon.Interfaces.App.UserProfiles;
-public interface IUserProfileFoldersViewModel:ISingletonDependency
+public interface IUserProfileFoldersViewModel:Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
     void SetSelectedById(int id);
     Func<IUserProfileFolder, bool> Filter { get; set; }

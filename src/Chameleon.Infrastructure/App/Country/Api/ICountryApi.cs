@@ -6,7 +6,7 @@ namespace Chameleon.Infrastructure.Country.Api
 {
     public interface ICountryApi 
         : IApiLayer<CountryDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

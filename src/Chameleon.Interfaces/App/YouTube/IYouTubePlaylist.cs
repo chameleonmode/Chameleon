@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.YouTube
 {
     public interface IYouTubePlaylist
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         string Id { get; set; }
         string Name { get; set; }

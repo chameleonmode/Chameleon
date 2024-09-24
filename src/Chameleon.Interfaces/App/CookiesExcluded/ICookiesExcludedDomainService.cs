@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.CookiesExcluded
 {
     public interface ICookiesExcludedDomainService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         ICookiesExcludedDomains GetAll(int profileId, bool ignoreCache = false);
         void Update(ICookiesExcludedDomain cookiesExcludedDomain);

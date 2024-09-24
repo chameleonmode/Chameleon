@@ -7,7 +7,7 @@ namespace Chameleon.Infrastructure.UserSettings
         : IApiLayer<UserSettingsDto
             , int
             , UserSettingsDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

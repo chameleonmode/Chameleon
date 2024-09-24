@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Chameleon.Interfaces.App.ShareFolders
 {
     public interface IShareFoldersService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IList<IShareFolder> GetAll(long userId);
         IList<IShareFolder> Share(long userId, IList<int> folderIds, IList<int> permissionIds);

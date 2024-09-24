@@ -5,7 +5,7 @@ using Chameleon.Interfaces.UserProfiles;
 namespace Chameleon.Interfaces.App.OutReach.Views;
 
 public interface IOutReachTemplateViewModel
-    : ISingletonDependency
+    : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
     IOutReachTemplate OutReachTemplate { get; set; }
     IUserProfile UserProfile { get; set; }

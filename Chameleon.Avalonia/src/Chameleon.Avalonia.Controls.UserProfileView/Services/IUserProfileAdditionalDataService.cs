@@ -6,7 +6,7 @@ using Chameleon.Interfaces.OutReach;
 namespace Chameleon.Avalonia.Controls.UserProfileView.Services;
 
 public interface IUserProfileAdditionalDataService
-    : ISingletonDependency
+    : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
     int AddAddress(UserProfileAddressBindable addressBindable);
     int AddBusiness(UserProfileBusinessBindable businessBindable);

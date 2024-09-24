@@ -6,7 +6,7 @@ namespace Chameleon.Interfaces.App.OutReach.OutReachLink
 {
     public interface IReminderPopupView
         : IViewControl
-        , ITransientDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         DateTime? ReminderDatetime { get; set; }
         string Notes { get; set; }

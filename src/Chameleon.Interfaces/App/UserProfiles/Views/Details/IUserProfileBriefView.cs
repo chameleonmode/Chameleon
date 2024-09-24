@@ -4,7 +4,7 @@ namespace Chameleon.Interfaces.UserProfiles
 {
     public interface IUserProfileBriefView 
         : IUserControl
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

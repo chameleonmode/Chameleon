@@ -6,7 +6,7 @@ using System.Reflection;
 namespace Chameleon.Interfaces.Repository
 {
     public interface IRepository<TEntity, TPrimaryKey, TGetAllRequest>
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
         where TGetAllRequest: GetAllRequestDto
     {
         TEntity[] GetAll(TGetAllRequest request = null);

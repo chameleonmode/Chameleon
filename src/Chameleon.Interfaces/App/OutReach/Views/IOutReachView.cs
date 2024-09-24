@@ -5,7 +5,7 @@ using Chameleon.Interfaces.Views;
 namespace Chameleon.Interfaces.OutReach
 {
     public interface IOutReachView
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
         , IUserProfileGetter
     {
         OutReachViewTab Tab { get; }

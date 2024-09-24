@@ -1,8 +1,9 @@
+using Chameleon.lib.Common.Enums;
+
 namespace Chameleon.SystemBrowser.Chrome;
 public class ChromeSystemBrowserInstance(
     IEventAggregator eventAggregator,
     ISystemBrowserLaunchOptions options,
-    ISetPreferencesService setPreferencesService,
     IApplicationEnvironment applicationEnvironment,
     IUserDefaultSettingsService userDefaultsSettingsService,
     string browserExeFilePath) :
@@ -10,9 +11,4 @@ public class ChromeSystemBrowserInstance(
 {
 
     protected override SystemBrowserType BrowserType => SystemBrowserType.Chrome;
-
-    protected override async Task InitializeProfileFolder()
-    {
-        await Task.Run(() => setPreferencesService.SetPreferences(UserProfile.WebBrowser, BrowserProfileFolderPath, BrowserType));
-    }
 }

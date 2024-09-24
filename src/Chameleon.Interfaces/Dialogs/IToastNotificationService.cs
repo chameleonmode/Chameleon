@@ -4,7 +4,7 @@ using System;
 namespace Chameleon.Interfaces.Dialogs
 {
     public interface IToastNotificationService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void SetHostWindow(object? hostWindow);
         void ShowInformation(string message);

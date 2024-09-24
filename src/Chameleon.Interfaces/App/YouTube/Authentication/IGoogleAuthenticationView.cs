@@ -5,7 +5,7 @@ namespace Chameleon.Interfaces.YouTube
 {
     public interface IGoogleAuthenticationView
         : IViewControl
-        , ITransientDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         IGoogleAuthenticationViewModel ViewModel { get; }
     }

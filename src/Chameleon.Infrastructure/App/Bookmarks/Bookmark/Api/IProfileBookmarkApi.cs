@@ -10,7 +10,7 @@ namespace Chameleon.Infrastructure.Bookmarks
             , CreateProfileBookmarkDto
             , ProfileBookmarkDto
             >
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

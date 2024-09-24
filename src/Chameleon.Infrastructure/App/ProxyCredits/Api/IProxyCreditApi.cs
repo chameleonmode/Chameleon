@@ -6,7 +6,7 @@ using Chameleon.Interfaces.ProxyCredit;
 namespace Chameleon.Infrastructure.ProxyCredit.Api
 {
     public interface IProxyCreditApi
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         ProxyCreditDto GetCredits();
         ProxyCreditDto BuyCredits(BuyCreditsDto input);

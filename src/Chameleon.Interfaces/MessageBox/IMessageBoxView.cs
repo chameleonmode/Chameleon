@@ -5,7 +5,7 @@ namespace Chameleon.Interfaces.MessageBox
 {
     public interface IMessageBoxView 
         : IViewControl
-        , ITransientDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         IMessageBoxViewModel ViewModel { get; }
     }

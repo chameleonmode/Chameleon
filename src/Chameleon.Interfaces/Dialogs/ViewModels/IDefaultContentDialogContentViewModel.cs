@@ -5,6 +5,6 @@ namespace Chameleon.Interfaces.Dialogs.ViewModels;
 public interface IDefaultContentDialogContentViewModel : IViewAware,
     IDialogViewModelBase,
     IContentDialogAware,
-    ISingletonDependency
+    Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
 }

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Chameleon.Infrastructure.Proxies.Api
 {
     public interface IProxyApi
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IList<ProxyCountryDto> GetCountries();
         IList<ProxyAccessDto> GetAccess(ProxyAccessRequestDto input);

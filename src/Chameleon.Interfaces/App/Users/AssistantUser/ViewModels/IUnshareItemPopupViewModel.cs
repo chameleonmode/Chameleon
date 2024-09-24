@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.App.Assistants
 {
     public interface IUnshareItemPopupViewModel 
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         string Text { get; set; }
     }

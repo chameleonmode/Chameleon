@@ -7,7 +7,7 @@ namespace Chameleon.Interfaces.App.UserProfiles.Views.List
 {
     public interface IMoveUserProfilesPopupView
         : IViewControl
-        , ITransientDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         //IList<IUserProfile> ProfileIds { get; set; }
     }

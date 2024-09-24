@@ -5,7 +5,7 @@ namespace Chameleon.Infrastructure.Profiles
 {
     public interface IUserProfileApi
         : IApiLayer<UserProfileDto, int, CreateUserProfileDto, UserProfileDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         UserProfileDto[] GetAllByUserId(int id);
         void Execute(string endpoint, object query = null);

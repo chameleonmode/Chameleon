@@ -8,6 +8,8 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
+using Chameleon.lib.Common.Enums;
+using Chameleon.lib.Common.Models;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -18,7 +20,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 {
     private readonly IUserProfileService _userProfileService;
     private readonly IApplicationUser _applicationUser;
-    private readonly ISystemBrowserManager _systemBrowserManager;
 
     [ObservableProperty]
     private UserProfile _userProfile;
@@ -58,7 +59,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
         IUserProfileService userProfileService,
         UserProfile userProfile,
         IApplicationUser applicationUser,
-        ISystemBrowserManager systemBrowserManager,
         bool isShowCheckboxColumn = true,
         bool isShowGlyph = true,
         bool isShowC = true,
@@ -66,7 +66,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
         bool isShowF = true
         )
     {
-        _systemBrowserManager = systemBrowserManager;
         _userProfileService = userProfileService;
         _applicationUser = applicationUser;
         _userProfile = userProfile;
@@ -133,7 +132,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
             }
         });
     }
-    string SetRunning(UserProfileSystemBrowserProcessEventArgs args, bool? running) => args.BrowserType switch
+    string SetRunning(UserProfileSystemBrowserProcessEventArgs args, bool? running) => (SystemBrowserType.Unknown) switch
     {
         SystemBrowserType.Chrome => running != true && IsChromeRunning == "Error" ? "Error" 
         : IsChromeRunning = UserProfile.IsChromeRunning = running is null ? "Error" : running == true ? "True" : "False",
@@ -236,17 +235,13 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
         await OpenSystemBrowser(SystemBrowserType.Brave);
     }
     [RelayCommand]
-    public async Task OpenSystemBrowser(SystemBrowserType browserType)
+    public async Task OpenSystemBrowser(object browserType)
     {
-        _systemBrowserInstance =
-             await _systemBrowserManager.Get(browserType)
-                 .Open(new SystemBrowserLaunchOptions
-                 {
-                     Url = null,
-                     SignIn = false,
-                     UserProfile = UserProfile,
-                     BrowserType = browserType,
-                 });
+        //_systemBrowserInstance 
+        //         .Open(new SystemBrowserLaunchOptions
+        //         {
+        //             BrowserType = browserType,
+        //         });
     }
 
     private bool _isSelected;

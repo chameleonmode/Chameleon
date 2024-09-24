@@ -4,7 +4,7 @@
 namespace Chameleon.Interfaces.DialogWindows
 {
     public interface IDialogWindowViewModel 
-        : ITransientDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         string Title { get; set; }
     }

@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.UpgradePlan
 {
-    public interface IUpgradePlanView : ITransientDependency
+    public interface IUpgradePlanView : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         string Title { get; set; }
     }

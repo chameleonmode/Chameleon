@@ -6,7 +6,7 @@ namespace Chameleon.Infrastructure.UserProfiles.Api.Additional
 {
     public interface IUserProfileApiAddress
         : IApiLayer<UserProfileAddressDto, int, CreateUserProfileAddressDto, UserProfileAddressDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

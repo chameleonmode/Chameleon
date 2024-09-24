@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Chameleon.Interfaces.Bookmarks
 {
     public interface IBookmarkFileService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IBookmarkFiles GetAll();
         IBookmarkFile Update(IBookmarkFile bookmarkFile);

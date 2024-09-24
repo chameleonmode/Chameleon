@@ -4,7 +4,7 @@ using Chameleon.Interfaces.Views;
 namespace Chameleon.Interfaces.UpgradePlan
 {
     public interface IUpgradePlanPopupView 
-        : ITransientDependency,
+        : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency,
         IViewControl
     {
     }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Chameleon.Interfaces.OutReach
 {
     public interface IProfileOutReachLinkService 
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IProfileOutReachLinks GetAll(int profileId);
         void Update(IProfileOutReachLink outReachLink);

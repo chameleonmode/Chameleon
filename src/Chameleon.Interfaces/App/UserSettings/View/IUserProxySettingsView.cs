@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.UserSettings
 {
     public interface IUserProxySettingsView
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

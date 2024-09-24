@@ -5,13 +5,13 @@ namespace Chameleon.Interfaces.Auth
 {
     public interface IAuthView 
         : IViewControl
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IAuthViewModel ViewModel { get; }
     }
 
     public interface IAuthLoginView  :
-     ISingletonDependency
+     Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 

@@ -3,12 +3,12 @@
 namespace Chameleon.Interfaces.App.ImportExport.Views
 {
     public interface IImportView
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 
     public interface IImportViewModel
-    : ISingletonDependency
+    : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

@@ -5,7 +5,7 @@ namespace Chameleon.Interfaces.DialogWindows
 {
     public interface IDialogWindowView
         : IViewControl
-        , ITransientDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         object InnerContent { get; set; }
         //string Title { get; set; }

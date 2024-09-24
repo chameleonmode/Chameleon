@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.Dashboard
 {
-    public interface IDashboardView : ISingletonDependency
+    public interface IDashboardView : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

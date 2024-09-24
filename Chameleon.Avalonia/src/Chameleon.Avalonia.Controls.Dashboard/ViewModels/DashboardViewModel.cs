@@ -152,7 +152,6 @@ public partial class DashboardViewModel
                     _userProfileService,
                     profile as UserProfile,
                     _applicationUser,
-                     _systemBrowserManager,
                     false
                 )
             );

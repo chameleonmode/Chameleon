@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Chameleon.Interfaces.App.UserProfiles
 {
     public interface IMoveUserProfilesPopupViewModel
-     : ITransientDependency, IContentDialogViewModel
+     : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency, IContentDialogViewModel
     {
         IList<IUserProfile> Profiles { get; set; } 
     }

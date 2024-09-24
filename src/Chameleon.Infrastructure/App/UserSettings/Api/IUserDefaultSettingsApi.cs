@@ -8,7 +8,7 @@ namespace Chameleon.Infrastructure.UserSettings
             , int
             , CreateUserDefaultSettingsDto
             , UserDefaultSettingsDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

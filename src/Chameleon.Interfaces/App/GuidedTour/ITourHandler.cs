@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.App.GuidedTour
 {
     public interface ITourHandler
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

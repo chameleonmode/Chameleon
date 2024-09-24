@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Chameleon.Interfaces.UserProfiles
 {
     public interface IUserProfileService 
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IUserProfiles GetAll();
         Task<IUserProfiles> GetAllAsync();

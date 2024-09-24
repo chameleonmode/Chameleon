@@ -9,7 +9,7 @@ namespace Chameleon.Infrastructure.OutReach.Api
             , int
             , CreateOutReachTemplateDto
             , OutReachTemplateDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

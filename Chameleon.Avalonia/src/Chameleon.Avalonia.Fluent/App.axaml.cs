@@ -29,6 +29,7 @@ using Chameleon.lib.Common;
 using Chameleon.lib.Common.Types;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.SystemBrowser;
+using Chameleon.SystemBrowser.Browsers;
 
 using DryIoc;
 
@@ -99,7 +100,7 @@ public partial class App : PrismApplication {
 		Container.RegisterMapperFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Common.AssemblyResolver).Assembly);
 		Container.RegisterTypesFrom(typeof(AuthService).Assembly);
-		Container.RegisterTypesFrom(typeof(SystemBrowserManager).Assembly);
+		Container.RegisterTypesFrom(typeof(SystemBrowserBase).Assembly);
 		Container.RegisterTypesFrom(Assembly.GetExecutingAssembly());
 
 		// cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();

@@ -6,7 +6,7 @@ namespace Chameleon.Infrastructure.App.ChangeLog.Api
 {
     public interface IChangeLogApi
        : IApiLayer<ChangeLogDto>,
-        ISingletonDependency
+        Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

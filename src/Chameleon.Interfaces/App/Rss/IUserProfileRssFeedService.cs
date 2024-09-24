@@ -4,7 +4,7 @@ using Chameleon.Interfaces.Repository;
 namespace Chameleon.Interfaces.Rss
 {
     public interface IUserProfileRssFeedService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IUserProfileRssFeeds GetAll(int profileId, bool ignoreCache = false);
         void Save(UpsertItems<IUserProfileRssFeed> result);

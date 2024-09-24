@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.Bookmarks
 {
     public interface IProfileBookmarkService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IProfileBookmarks GetAll(int profileId, bool ignoreCache = false);
         void Update(IProfileBookmark bookmark);

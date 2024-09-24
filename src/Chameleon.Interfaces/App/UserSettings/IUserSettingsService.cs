@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.Settings
 {
     public interface IUserSettingsService
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IUserSetting Get();
         //IUserSetting Create();

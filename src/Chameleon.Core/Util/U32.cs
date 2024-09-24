@@ -1,4 +1,6 @@
 ﻿using Chameleon.Interfaces.WebBrowser;
+using Chameleon.lib.Common.Enums;
+
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;

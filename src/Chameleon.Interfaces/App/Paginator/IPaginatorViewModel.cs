@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.Paginator
 {
-    public interface IPaginatorViewModel : ITransientDependency
+    public interface IPaginatorViewModel : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         int PageIndex { get; set; }
         int PageCount { get; }

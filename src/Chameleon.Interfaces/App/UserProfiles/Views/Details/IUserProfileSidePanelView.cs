@@ -5,6 +5,6 @@ namespace Chameleon.Interfaces.UserProfiles
 {
     public interface IUserProfileSidePanelView
         : IViewControl
-        , ITransientDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     { }
 }

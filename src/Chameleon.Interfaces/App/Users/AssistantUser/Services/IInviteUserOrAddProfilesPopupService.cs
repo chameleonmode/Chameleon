@@ -3,7 +3,7 @@
 namespace Chameleon.Controls.AssistantUsers.Interfaces
 {
     public interface IInviteUserOrAddProfilesPopupService 
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void ShowPopup(bool showInviteInfo, long? userAssistantId = null);
     }

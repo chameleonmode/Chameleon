@@ -1,11 +1,13 @@
 ﻿using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
+using Chameleon.lib.Common.Enums;
+
 using Newtonsoft.Json.Linq;
 using System.IO;
 
 namespace Chameleon.SystemBrowser.Services
 {
-    public class SetPreferencesService : ISetPreferencesService
+    public class SetPreferencesService 
     {
         private void SetWebRTC(JObject values)
         {

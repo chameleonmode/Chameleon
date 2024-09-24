@@ -8,7 +8,7 @@ namespace Chameleon.Infrastructure.Users
             , long
             , CreateUserAssistantDto
             , UserAssistantDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         void AddProfiles(UserAssistantDto input);
         void SetCanCreateProfiles(long assistantId, bool canCreateProfiles);

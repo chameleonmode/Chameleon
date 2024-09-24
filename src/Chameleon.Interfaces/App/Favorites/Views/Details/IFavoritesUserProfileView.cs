@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.Favorites
 {
     public interface IFavoritesUserProfileView 
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         IFavoritesUserProfile FavoritesUserProfile { get; set; }
     }

@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.UserProfileFolders
 {
-    public interface IDeleteFolderPopupViewModel : ITransientDependency
+    public interface IDeleteFolderPopupViewModel : Chameleon.lib.Common.Interfaces.Systemics.ITransientDependency
     {
         string FolderName { get; set; }
     }

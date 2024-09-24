@@ -65,7 +65,6 @@ public class TopMostSidePanelViewModel : SubPageViewModelBase, ITopMostSidePanel
                     _userProfileService,
                     profile as UserProfile,
                     _applicationUser,
-                    _systemBrowserManager,
                     false,
                     false,
                     false,

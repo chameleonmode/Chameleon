@@ -5,7 +5,7 @@ namespace Chameleon.Infrastructure.WebBrowsers
 {
     public interface IWebBrowserUserAgentApi
         : IApiLayer<WebBrowserUserAgentDto, int, CreateWebBrowserUserAgentDto, WebBrowserUserAgentDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

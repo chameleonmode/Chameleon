@@ -4,7 +4,7 @@ using Chameleon.Interfaces.OutReach;
 namespace Chameleon.Interfaces.App.OutReach;
 
 public interface IOutReachTemplateItemViewModel
-    : ISingletonDependency
+    : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
     IOutReachTemplate OutReachTemplate { get; set; }
     string ItemContent { get; set; }

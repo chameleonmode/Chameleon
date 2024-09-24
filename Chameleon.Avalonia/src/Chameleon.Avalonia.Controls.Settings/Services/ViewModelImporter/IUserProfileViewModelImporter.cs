@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Chameleon.Controls.ImportExport.Services
 {
-    public interface IUserProfileViewModelImporter : ISingletonDependency
+    public interface IUserProfileViewModelImporter : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         Task ImportAsync(ImportColumnViewModels viewModels, int? folderId = null);
     }

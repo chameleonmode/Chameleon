@@ -3,7 +3,7 @@
 namespace Chameleon.Interfaces.App.ProxyCredit.Views
 {
     public interface IProxyCreditView
-        : ISingletonDependency
+        : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

@@ -5,7 +5,7 @@ namespace Chameleon.Infrastructure.UserProfileFolders
 {
     public interface IUserProfileFolderApi 
         : IApiLayer<UserProfileFolderDto, int, CreateUserProfileFolderDto, UserProfileFolderDto>
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
     }
 }

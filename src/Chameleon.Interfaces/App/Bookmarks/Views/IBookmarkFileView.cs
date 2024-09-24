@@ -6,7 +6,7 @@ namespace Chameleon.Interfaces.Bookmarks
 {
     public interface IBookmarkFileView
         : IViewControl
-        , ISingletonDependency
+        , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
         , IUserProfileAccessor
     {
     }

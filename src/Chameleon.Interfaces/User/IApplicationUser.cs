@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.Auth
 {
-    public interface IApplicationUser : ISingletonDependency
+    public interface IApplicationUser : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
         bool IsAuthenticated { get; }
         string Email { get; }

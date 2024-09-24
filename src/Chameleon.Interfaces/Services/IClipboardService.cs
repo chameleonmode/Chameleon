@@ -2,7 +2,7 @@
 
 namespace Chameleon.Interfaces.Services;
 
-public interface IClipboardService : ISingletonDependency
+public interface IClipboardService : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
 {
     static readonly IClipboardService Instance;
     void SetOwner(object owner);

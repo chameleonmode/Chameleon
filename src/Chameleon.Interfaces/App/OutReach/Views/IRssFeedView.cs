@@ -6,7 +6,7 @@ namespace Chameleon.Interfaces.OutReach
 {
     public interface IRssFeedView
       : IViewControl
-      , ISingletonDependency
+      , Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
       , IUserProfileAccessor
     {
     }
