@@ -133,7 +133,8 @@ public class SystemBrowserInfoManager : ISystemBrowserInfoManager
         SystemBrowserType.Chrome => FindByName("chrome"),
         SystemBrowserType.Brave => FindByName("brave"),
         SystemBrowserType.Firefox => FindByName("firefox"),
-        _ => null
+        _ => throw new NotSupportedException(
+						$"{BrowserType} browser is not installed.")
     };
 }
 

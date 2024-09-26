@@ -16,14 +16,6 @@ public class DispatcherService : IDispatcherService
         return Dispatcher.UIThread.Invoke(action);
     }
 
-    public void InvokeOnUiThread(object self, EventHandler handler, EventArgs args = null)
-    {
-        InvokeOnUiThread(() =>
-        {
-            handler?.Invoke(self, args ?? new EventArgs());
-        });
-    }
-
     public Task InvokeOnUiThreadAsync<T>(Func<T> action, Action<T> handler = null, Action @finally = null)
     {
         return Task.Run(() =>

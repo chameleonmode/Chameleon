@@ -1,6 +1,4 @@
-﻿using Chameleon.app.Addons.Models;
-using Chameleon.app.Addons.Services;
-using Chameleon.CT.Common.Models;
+﻿using Chameleon.CT.Common.Models;
 using Chameleon.lib.Common.Enums;
 using Chameleon.lib.ThirdParty.GeoIp;
 
