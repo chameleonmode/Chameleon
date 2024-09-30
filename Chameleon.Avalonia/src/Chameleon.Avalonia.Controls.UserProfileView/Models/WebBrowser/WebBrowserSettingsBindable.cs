@@ -1,11 +1,6 @@
-﻿using Chameleon.CT.Common.Base;
-using Chameleon.Interfaces.WebBrowser;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿namespace Chameleon.Avalonia.Controls.UserProfileView.Models.WebBrowser;
 
-
-namespace Chameleon.Avalonia.Controls.UserProfileView.Models.WebBrowser;
-
-public class WebBrowserSettingsBindable : ObservableObject, IWebBrowserSettings
+public class WebBrowserSettingsBindable : ObservableObject
 {
     private bool _webRTC;
     public bool WebRTC
@@ -48,6 +43,4 @@ public class WebBrowserSettingsBindable : ObservableObject, IWebBrowserSettings
         get => _userAgentId;
         set => SetProperty(ref _userAgentId, value);
     }
-
-    public IWebBrowserUserAgent UserAgent { get; set; }
 }

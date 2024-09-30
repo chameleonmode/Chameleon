@@ -4,10 +4,10 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 
-using Chameleon.app.Addons.Services;
 using Chameleon.Auth.Services;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Views;
+using Chameleon.Avalonia.Common.Services;
 using Chameleon.Avalonia.Controls.UserProfilesView;
 using Chameleon.Avalonia.Controls.UserProfileView;
 using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
@@ -26,10 +26,12 @@ using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.lib.Common;
+using Chameleon.lib.Common.Interfaces.Services;
+using Chameleon.lib.Common.Services;
 using Chameleon.lib.Common.Types;
 using Chameleon.lib.Playwright.Interfaces;
-using Chameleon.SystemBrowser;
-using Chameleon.SystemBrowser.Browsers;
+using Chameleon.lib.WebBrowser.Interfaces;
+using Chameleon.lib.WebBrowser.Services;
 
 using DryIoc;
 
@@ -44,13 +46,12 @@ using System.Reflection;
 namespace Chameleon.Av.Fluent;
 
 public partial class App : PrismApplication {
-	public static Action<MainWindow> OnFramworkInitComplete;
+	public static Action<MainWindow>? OnFramworkInitComplete;
 
-	private MainWindow _mainWindow;
+	private MainWindow? _mainWindow;
 	public MainWindow MainAppWindow {
 		get {
-			if (_mainWindow == null)
-				_mainWindow = Container.Resolve<MainWindow>();
+			_mainWindow ??= Container.Resolve<MainWindow>();
 			return _mainWindow;
 		}
 	}
@@ -84,7 +85,6 @@ public partial class App : PrismApplication {
 		var cr = Container.Resolve<IHaveContainerRegistry>();
 		cr.RegisterSingleton<IHaveContainerProvider, HasContainerProviderService>(true);
 		cr.RegisterSingleton<INavigationService, NavigationService>();
-		//Container.Resolve<IHaveContainerProvider>();
 
 		cr.RegisterSingleton<Prism.Events.IEventAggregator, Prism.Events.EventAggregator>();
 		cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
@@ -100,7 +100,6 @@ public partial class App : PrismApplication {
 		Container.RegisterMapperFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Common.AssemblyResolver).Assembly);
 		Container.RegisterTypesFrom(typeof(AuthService).Assembly);
-		Container.RegisterTypesFrom(typeof(SystemBrowserBase).Assembly);
 		Container.RegisterTypesFrom(Assembly.GetExecutingAssembly());
 
 		// cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();
@@ -143,6 +142,8 @@ public partial class App : PrismApplication {
 			containerRegistry.Register<IAutomationView, Chameleon.app.Avalonia.Views.Playwright.AutomationView>();
 			containerRegistry.RegisterInstance(IoC.GetService<IPlaywriteService>());
 			containerRegistry.RegisterInstance(IoC.GetService<IPlaywrightScriptRepository>());
+			containerRegistry.RegisterInstance(IoC.GetService<IExtensionLoaderService>());
+			containerRegistry.RegisterInstance(IoC.GetService<ISysBrowserService>());
 		}
 
 		IoC.Instance.Configure(() => {
@@ -155,12 +156,17 @@ public partial class App : PrismApplication {
 
 		}, (services) => {
 			_ = services
-			//app.Playwright
+			.AddSingleton<IToasterService, ToasterNotificationService>()
+			.AddSingleton<IDispatchService, DispatchService>()
+			//Playwright
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.ICompileScriptService, Chameleon.lib.Playwright.Services.CompileScriptService>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywriteService, Chameleon.lib.Playwright.Services.PlaywriteService>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywrightScriptRepository, Chameleon.lib.Playwright.Services.PlaywrightScriptRepository>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, Chameleon.lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.Playwright.AutomationViewModel>();
+			.AddSingleton<Chameleon.app.Avalonia.ViewModels.Playwright.AutomationViewModel>()
+			//SysBrowser
+			.AddSingleton<IExtensionLoaderService, ExtensionLoaderService>()
+			.AddSingleton<ISysBrowserService, SysBrowserService>();
 		});
 		// Setup IoC
 		IoC.Instance.Init(action: setup);

@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
+﻿using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using Chameleon.Core.Collections;
 using Chameleon.Core.Collections.Views;
-using Chameleon.Core.Util;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Users;
@@ -10,18 +8,13 @@ using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.Assistants.Events;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
-using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.App.UserProfiles.Events;
-using Chameleon.Interfaces.App.UserProfiles.Services;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Prism.Events;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Chameleon.Avalonia.Controls.Dashboard.ViewModels;
@@ -36,7 +29,6 @@ public partial class DashboardViewModel
     private readonly IUserProfileFolderService _userProfileFolderService;
     private readonly IApplicationUser _applicationUser;
     private readonly IUserAssistantService _userAssistantService;
-    private readonly ISystemBrowserManager _systemBrowserManager;
 
 
     private ObservableCollection<IUserProfile, UserProfileViewModel> _mapping;
@@ -49,8 +41,7 @@ public partial class DashboardViewModel
         IUserProfileService userProfileService,
         IUserProfileFolderService userProfileFolderService,
         IApplicationUser applicationUser,
-        IUserAssistantService userAssistantService,
-        ISystemBrowserManager systemBrowserManager)
+        IUserAssistantService userAssistantService)
     {
         Title = _pageTitle;
 
@@ -58,7 +49,7 @@ public partial class DashboardViewModel
         _userProfileFolderService = userProfileFolderService;
         _applicationUser = applicationUser;
         _userAssistantService = userAssistantService;
-        _systemBrowserManager = systemBrowserManager;
+        //_systemBrowserManager = systemBrowserManager;
 
         EventAggregator
            .GetEvent<DeleteUserProfileEvent>()

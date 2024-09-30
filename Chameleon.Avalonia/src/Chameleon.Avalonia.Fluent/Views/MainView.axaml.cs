@@ -26,6 +26,8 @@ using Chameleon.Avalonia.Common.Helpers;
 using static System.Net.Mime.MediaTypeNames;
 using Avpplication = Avalonia.Application;
 using Chameleon.Interfaces.FunctionalSettings;
+using Chameleon.lib.Common;
+using Chameleon.lib.Common.Interfaces.Services;
 
 namespace Chameleon.Av.Fluent.Views;
 
@@ -122,10 +124,14 @@ public partial class MainView : UserControl
 
         // Initialize the WindowNotificationManager with the "TopLevel". Previously (v0.10), MainWindow
         var notifyService = ContainerServiceHelper.Resolve<IToastNotificationService>();
-        notifyService.SetHostWindow(TopLevel.GetTopLevel(this));
+        notifyService?.SetHostWindow(TopLevel.GetTopLevel(this));
+
+		var toaser = IoC.GetService<IToasterService>();
+		toaser?.SetHostWindow(TopLevel.GetTopLevel(this));
 
 
-        if (ContainerServiceHelper.Current.ContainerProvider is not null)
+
+		if (ContainerServiceHelper.Current.ContainerProvider is not null)
         {
             DataContext = ContainerServiceHelper.Resolve<IMainViewViewModel>() as MainViewViewModel;
 

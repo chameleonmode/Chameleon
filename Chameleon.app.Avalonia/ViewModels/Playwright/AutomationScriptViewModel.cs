@@ -13,7 +13,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.app.Avalonia.ViewModels.Playwright;
-public partial class AutomationScriptViewModel(PlaywriteRunScriptOptions runOptions) : PageViewModelBase(runOptions.Description?.Title)
+public partial class AutomationScriptViewModel(PlaywriteRunScriptOptions runOptions) : ViewModelObjectBase(runOptions.Description?.Title)
 {
 	public Action<string> OnOpenEdit;
 

@@ -26,35 +26,35 @@
 				<afv:ChameleonContentControl.Content>
 					<StackPanel>
 						<UniformGrid Columns="2">
-							<CheckBox
+							<!--<CheckBox
 								Content="Block CSS Exfil"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.BlockCSSExfil}" />
-							<CheckBox
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.BlockCSSExfil}" />-->
+							<!--<CheckBox
 								Content="Block Media Devices"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.BlockMediaDevices}" />
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.BlockMediaDevices}" />-->
 							<CheckBox
-								Content="Spoof Canvas Fingerprint"
+								Content="Resist Canvas Fingerprint"
 								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofCanvasFingerprint}" />
 							<CheckBox
-								Content="Spoof WebGl Fingerprint"
+								Content="Resist WebGl Fingerprint"
 								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofWebGLFingerprint}" />
-							<CheckBox
+							<!--<CheckBox
 								Content="Spoof WebGPU Fingerprint"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofWebGPUFingerprint}" />
-							<CheckBox
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofWebGPUFingerprint}" />-->
+							<!--<CheckBox
 								Content="Spoof Audio Context"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofAudioContext}" />
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofAudioContext}" />-->
 							<CheckBox
-								Content="Spoof Client Rects"
+								Content="Resist Client Rects"
 								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofClientRects}" />
 							<CheckBox
-								Content="Spoof Font Fingerprint"
+								Content="Resist Font Fingerprint"
 								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofFontFingerprint}" />
-							<CheckBox
+							<!--<CheckBox
 								Content="Spoof Media Devices"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofMediaDevices}" />
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofMediaDevices}" />-->
 							<CheckBox
-								Content="Spoof Geo Location"
+								Content="Resist Geo Location"
 								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofGeoLocation}" />
 							<CheckBox
 								Content="Disable WebRtc"
@@ -66,15 +66,15 @@
 							<CheckBox
 								Content="Auto Timezone"
 								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.AutoTimezone}" />
-							<CheckBox
+							<!--<CheckBox
 								Content="Limit History"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.LimitHistory}" />
-							<CheckBox
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.LimitHistory}" />-->
+							<!--<CheckBox
 								Content="Protect Keyboad Fingerprint"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.ProtectKBFingerprint.Enabled}" />
-							<CheckBox
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.ProtectKBFingerprint.Enabled}" />-->
+							<!--<CheckBox
 								Content="Protect Window Name"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.ProtectWinName}" />
+								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.ProtectWinName}" />-->
 						</UniformGrid>
 					</StackPanel>
 				</afv:ChameleonContentControl.Content>

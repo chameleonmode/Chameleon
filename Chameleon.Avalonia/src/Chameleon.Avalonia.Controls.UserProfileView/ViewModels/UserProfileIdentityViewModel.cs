@@ -10,7 +10,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     private readonly IApplicationUser _applicationUser;
     private readonly IAuthSession _authSession;
     private readonly IToastNotificationService _toastNotificationService;
-    private readonly ISystemBrowserManager _systemBrowserManager;
 
     [ObservableProperty]
     private UserProfilesView.ViewModels.UserProfileViewModel _profileVM;
@@ -49,7 +48,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         IUserAssistantService userAssistantService,
         IApplicationUser applicationUser,
         IAuthSession authSession,
-        ISystemBrowserManager systemBrowserManager,
         IToastNotificationService toastNotificationService)
     {
         _mapper = mapper;
@@ -58,7 +56,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         _userAssistantService = userAssistantService;
         _applicationUser = applicationUser;
         _authSession = authSession;
-        _systemBrowserManager = systemBrowserManager;
         _toastNotificationService = toastNotificationService;
 
         SubscribeToEvents();

@@ -15,11 +15,11 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Interfaces.WebBrowser;
 using Chameleon.lib.Common.Enums;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.Playwright.Models;
+using Chameleon.lib.WebBrowser.Interfaces;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -35,7 +35,7 @@ public partial class UserProfilesViewModel
 	private readonly IUserProfileService _userProfileService;
 	private readonly IUserProfileFolderService _userProfileFolderService;
 	private readonly IApplicationUser _currentUser;
-	private readonly ISystemBrowserManager _systemBrowserManager;
+	private readonly ISysBrowserService _systemBrowserManager;
 	private readonly ObservableCollection<SystemBrovserItemViewModel> _browserItems =
 [
 		new SystemBrovserItemViewModel(SystemBrowserType.Brave),
@@ -85,7 +85,9 @@ public partial class UserProfilesViewModel
 		get => _selectedBrowserItem;
 		set {
 			_ = SetProperty(ref _selectedBrowserItem, value);
-			lib.Common.IoC.SetValue("LastSelectedBrowser", value.SystemBrowserType.ToString());
+			var cur = lib.Common.IoC.GetValue<string>("LastSelectedBrowser");
+			if (cur != value.SystemBrowserType.ToString())
+				lib.Common.IoC.SetValue(value.SystemBrowserType.ToString(), "LastSelectedBrowser");
 		}
 	}
 
@@ -101,7 +103,9 @@ public partial class UserProfilesViewModel
 				OnPropertyChanged(nameof(IsSelectedScript));
 				RunAutomationCommand.NotifyCanExecuteChanged();
 
-				lib.Common.IoC.SetValue("LastRunScriptId", value.Title);
+				var cur = lib.Common.IoC.GetValue<string>("LastRunScriptId");
+				if(cur != value.Title)
+					lib.Common.IoC.SetValue(value.Title, "LastRunScriptId");
 			}
 		}
 	}
@@ -216,7 +220,7 @@ public partial class UserProfilesViewModel
 	public UserProfilesViewModel(
 			IUserProfileService userProfileService,
 			IUserProfileFolderService userProfileFolderService,
-			ISystemBrowserManager systemBrowserManager,
+			ISysBrowserService systemBrowserManager,
 			IApplicationUser currentUser,
 			IPlaywrightScriptRepository plawrightRepository,
 			IPlaywriteService playwriteService)
@@ -550,11 +554,11 @@ public partial class UserProfilesViewModel
 			var browserWasNotOpened = profile.SBI == null;
 			if (browserWasNotOpened) {
 				await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(token);
-				if (!await profile.SBI!.OPtcs.Task.WaitAsync(token))
+				if (!await profile.SBI!.LoadedTCS.Task.WaitAsync(token))
 					continue;
 			}
 			var options = SelectedPlaywrightScript.RunOptions;
-			options.Port = profile.SBI!.Port;
+			options.Port = profile.SBI!.Options.Port;
 			options.Record = IsRecordSelected;
 			try {
 				await _playwriteService.RunScript(SelectedPlaywrightScript.RunOptions, token);

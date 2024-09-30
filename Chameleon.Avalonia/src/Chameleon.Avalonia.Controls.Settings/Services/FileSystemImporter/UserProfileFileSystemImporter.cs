@@ -125,18 +125,6 @@ namespace Chameleon.Controls.ImportExport.Services
             profile.Proxy.UserName = jObject.ProxyUsername?.ToString();
             profile.Proxy.Password = jObject.ProxyPassword?.ToString();
 
-            bool.TryParse(jObject.WEBRTC?.ToString(), out bool WEBRTC);
-            profile.WebBrowser.WebRTC = WEBRTC;
-
-            bool.TryParse(jObject.WEBGL?.ToString(), out bool WEBGL);
-            profile.WebBrowser.WebRTC = WEBGL;
-
-            bool.TryParse(jObject.Track?.ToString(), out bool Track);
-            profile.WebBrowser.Tracking = Track;
-
-            bool.TryParse(jObject.Flash?.ToString(), out bool Flash);
-            profile.WebBrowser.Flash = Flash;
-
             var identityID = jObject.IdentityID?.ToString();
             if (string.IsNullOrEmpty(identityID))
             {

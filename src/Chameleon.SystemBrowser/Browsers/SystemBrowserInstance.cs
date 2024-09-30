@@ -50,7 +50,7 @@ public abstract class SystemBrowserInstance(
 		}
 	}
 
-	private readonly IExtensionLoaderService? _extensionLoaderService = ContainerServiceHelper.Resolve<IExtensionLoaderService>();
+	//private readonly IExtensionLoaderService? _extensionLoaderService = ContainerServiceHelper.Resolve<IExtensionLoaderService>();
 
 	readonly string destinationExtentionsDirv2Base = Path.Combine(Path.GetTempPath(), "Chameleon");
 
@@ -231,9 +231,9 @@ $@"
                 }};
             ");
 
-		foreach (var (ext, setting) in ExtentionsDirv2) {
-			await _extensionLoaderService!.LoadExtension(ext, destinationExtentionsDirv2, setting);
-		}
+		//foreach (var (ext, setting) in ExtentionsDirv2) {
+		//	await _extensionLoaderService!.LoadExtension(ext, destinationExtentionsDirv2, setting);
+		//}
 	}
 
 	protected virtual async Task StartProcess()

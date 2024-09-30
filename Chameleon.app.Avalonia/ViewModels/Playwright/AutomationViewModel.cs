@@ -2,9 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Extensions;
-using System.Diagnostics;
 using Chameleon.lib.Playwright.Interfaces;
-using Chameleon.lib.Playwright.Models;
 using Chameleon.Avalonia.Common.Collections;
 using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -13,7 +11,7 @@ using Chameleon.Common.Helpers;
 namespace Chameleon.app.Avalonia.ViewModels.Playwright;
 
 public partial class AutomationViewModel
-			: PageViewModelBase {
+			: ViewModelObjectBase {
 	private readonly IPlaywrightScriptRepository repository;
 	private FileSystemWatcher? watcher;
 	private readonly SemaphoreSlim semaphore = new(1, 1);
@@ -39,7 +37,7 @@ public partial class AutomationViewModel
 
 	public Task Save() => Task.Run(() => {
 		foreach (var param in SelectedBundledScript.Parameters) {
-			IoC.SetValue($"{SelectedBundledScript.Title} {param.Key}", param.Value);
+			IoC.SetValue(param.Value, SelectedBundledScript.Title!, param.Key!);
 		}
 
 		ToasterHelper.ShowSuccess("Saved");
