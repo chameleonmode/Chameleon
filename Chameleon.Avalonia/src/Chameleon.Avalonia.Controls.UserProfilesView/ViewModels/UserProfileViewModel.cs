@@ -85,7 +85,24 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 		IsShowCheckboxColumn = isShowCheckboxColumn && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
 		IsEnabledCheckboxColumn = !_userProfileService.IsSharedProfile(_userProfile);
 
-		EventAggregator.GetEvent<SavedUserProfileEvent>().Subscribe(a => {
+		if (SysBrowserServiceBase != null) {
+			async Task setEvents()
+			{
+				if (SysBrowserServiceBase.OpenTaskCompletionSource != null) {
+					_ = await SysBrowserServiceBase.OpenTaskCompletionSource.Task;
+				}
+				foreach (var sbi in SBI) {
+					if (sbi.Value != null) {
+						_ = SetRunning(sbi.Value.Settings.BrowserType, true);
+						sbi.Value.OnEvent += Browser_OnEvent;
+					}
+				}
+			}
+			_ = setEvents();
+		}
+	
+
+		_ = EventAggregator.GetEvent<SavedUserProfileEvent>().Subscribe(a => {
 			if (a.UserProfile.Id == UserProfile.Id) {
 				Title = _userProfile.Title;
 				OnPropertyChanged(nameof(Title));
@@ -200,21 +217,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 
 				if (browser != null) {
 					_ = SetRunning(browserType, true);
-					browser.OnEvent += (sender, args) => {
-						IsForeground = args.EventType == SysBrowserEventType.Foreground;
-						if (!IsForeground && args.EventType != SysBrowserEventType.Background) {
-							var runnin = args.EventType switch {
-								SysBrowserEventType.Opened => SetRunning(browserType, true),
-								SysBrowserEventType.Closed => SetRunning(browserType, false),
-								SysBrowserEventType.Error => SetRunning(browserType, null),
-								_ => SetRunning(args.OpenOptions.BrowserType, null)
-							};
-
-							if(runnin is "Error" or "False") {
-								SBI[browserType] = null;
-							}
-						};
-					};
+					browser.OnEvent += Browser_OnEvent;
 					SBI[browserType] = browser;
 				} else {
 					IsForeground = false;
@@ -224,6 +227,23 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 				browser.InvokeEvent(Enums.SysBrowserEventType.Foreground);
 			}
 		}
+	}
+
+	private void Browser_OnEvent(object sender, SysBrowserEvent args)
+	{
+		IsForeground = args.EventType == SysBrowserEventType.Foreground;
+		if (!IsForeground && args.EventType != SysBrowserEventType.Background) {
+			var runnin = args.EventType switch {
+				SysBrowserEventType.Opened => SetRunning(args.OpenOptions.BrowserType, true),
+				SysBrowserEventType.Closed => SetRunning(args.OpenOptions.BrowserType, false),
+				SysBrowserEventType.Error => SetRunning(args.OpenOptions.BrowserType, null),
+				_ => SetRunning(args.OpenOptions.BrowserType, null)
+			};
+
+			if (runnin is "Error" or "False") {
+				SBI[args.OpenOptions.BrowserType] = null;
+			}
+		};
 	}
 
 	private string SetRunning(SystemBrowserType args, bool? running) => args switch {
