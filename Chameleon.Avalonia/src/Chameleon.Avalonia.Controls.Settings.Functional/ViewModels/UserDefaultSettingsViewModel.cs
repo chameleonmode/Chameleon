@@ -152,7 +152,7 @@ public partial class UserDefaultSettingsViewModel
 	private async Task SaveLaunchSettings()
 	{
 		await BrowserDefaultLaunchSettings.Save();
-		IoC.SetValue(new EmulationOptions {
+		IoC.SetJsonValue(new EmulationOptions {
 			DisableWebRTC = BrowserDefaultLaunchSettings.Options.DisableWebRTC,
 			SpoofClientRects = BrowserDefaultLaunchSettings.Options.SpoofClientRects,
 			SpoofFontFingerprint = BrowserDefaultLaunchSettings.Options.SpoofFontFingerprint,
