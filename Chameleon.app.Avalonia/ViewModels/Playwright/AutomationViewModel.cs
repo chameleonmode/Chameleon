@@ -37,10 +37,9 @@ public partial class AutomationViewModel
 
 	public Task Save() => Task.Run(() => {
 		foreach (var param in SelectedBundledScript?.Parameters!) {
-			IoC.SetValue(param.Value, SelectedBundledScript.Title!, param.Key!);
+			if(IoC.GetValue(SelectedBundledScript.Title!, param.Key!) != param.Value)
+				IoC.SetValue(param.Value, SelectedBundledScript.Title!, param.Key!);
 		}
-
-		ToasterHelper.ShowSuccess("Saved");
 	});
 
 	[RelayCommand]

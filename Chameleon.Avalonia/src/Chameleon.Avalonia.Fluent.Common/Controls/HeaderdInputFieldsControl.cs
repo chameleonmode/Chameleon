@@ -19,14 +19,14 @@ public class HeaderdInputFieldsControl : HeaderedContentControl
 
     private IList<TextBox> _textboxes;
     private IList<Button> _buttons;
-    private ICommand _command;
+    private ICommand? _command;
 
     private bool _commandCanExecute = true;
 
     public HeaderdInputFieldsControl()
     {
-        _textboxes = new List<TextBox>();
-        _buttons = new List<Button>();
+        _textboxes = [];
+        _buttons = [];
     }
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(nameof(Title));
@@ -40,8 +40,8 @@ public class HeaderdInputFieldsControl : HeaderedContentControl
     /// <summary>
     /// Defines the <see cref="Command"/> property
     /// </summary>
-    public static readonly DirectProperty<HeaderdInputFieldsControl, ICommand> CommandProperty =
-        AvaloniaProperty.RegisterDirect<HeaderdInputFieldsControl, ICommand>(nameof(Command),
+    public static readonly DirectProperty<HeaderdInputFieldsControl, ICommand?> CommandProperty =
+        AvaloniaProperty.RegisterDirect<HeaderdInputFieldsControl, ICommand?>(nameof(Command),
             x => x.Command, (x, v) => x.Command = v);
 
 
@@ -73,7 +73,7 @@ public class HeaderdInputFieldsControl : HeaderedContentControl
     /// <summary>
     /// Gets or sets the command that is invoked when the button is clicked
     /// </summary>
-    public ICommand Command
+    public ICommand? Command
     {
         get => _command;
         set => SetAndRaise(CommandProperty, ref _command, value);
