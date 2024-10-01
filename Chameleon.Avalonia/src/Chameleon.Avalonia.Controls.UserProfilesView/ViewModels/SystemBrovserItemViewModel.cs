@@ -1,5 +1,5 @@
 ﻿using Chameleon.CT.Common.Base;
-using Chameleon.lib.Common.Enums;
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 

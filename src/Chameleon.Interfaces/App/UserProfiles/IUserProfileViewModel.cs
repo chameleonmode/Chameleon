@@ -1,15 +1,15 @@
 ﻿using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Interfaces.WebBrowser;
-using Chameleon.lib.Common.Enums;
 using Chameleon.lib.WebBrowser.Interfaces;
+
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.Interfaces.App.UserProfiles;
 
 public interface IUserProfileViewModelBase
 {
     IUserProfile UserProfile { get; }
-		ISysBrowserInstance SBI { get; }
-    void Open();
+	 Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI { get; }
+	void Open();
     void OpenUserBrowser();
     Task OpenSystemBrowser(SystemBrowserType browserType);
 }

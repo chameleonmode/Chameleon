@@ -60,7 +60,7 @@ public partial class PVApiModel
 		CommandMap["Popout"] = Popout;
 	}
 
-	async Task DoInit()
+	private async Task DoInit()
 	{
 		await _pnapinstance.Init();
 		ApiKey = _pnapinstance.ApiKey;
@@ -97,7 +97,7 @@ public partial class PVApiModel
 			return;
 
 		await MakeRequest(async () => {
-			var response = await _pnapinstance.GetCodeAsync(SelectedCountry, SelectedApp, lastJsonResponse);
+			var response = await _pnapinstance.GetCodeAsync(SelectedCountry!, SelectedApp!, lastJsonResponse!);
 			LastFormatedResponse = response.Item1;
 			ReceiveSMSData = response.Item2;
 		}, e => LastFormatedResponse = e);
@@ -109,7 +109,7 @@ public partial class PVApiModel
 			return;
 
 		await MakeRequest(async () => {
-			var response = await _pnapinstance.CancelOrderAsync(lastJsonResponse);
+			var response = await _pnapinstance.CancelOrderAsync(lastJsonResponse!);
 			LastFormatedResponse = response.Item1;
 			if (response.Item2 == "True") {
 				GetNumberData = string.Empty;
@@ -142,9 +142,9 @@ public partial class PhoneVerificationViewModel()
 	public AvaloniaList<IPVApiModel> PVApis { get; set; } =
 	[
 			new PVApiModel(CodesVerifyAPI.Instance){ HasCancel = false},
-				new PVApiModel(SMSPoolAPI.Instance),
-				new PVApiModel(SMSPVAPI.Instance),
-		];
+			new PVApiModel(SMSPoolAPI.Instance),
+			new PVApiModel(SMSPVAPI.Instance),
+	];
 	public IPVApiModel CodesVerify => PVApis[0];
 	public IPVApiModel SMSPVA => PVApis[2];
 	public IPVApiModel SMSPool => PVApis[1];

@@ -4,6 +4,8 @@ using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Services;
+using Chameleon.lib.Common.Interfaces.Services;
+using Chameleon.lib.Common.ServiceManagers;
 
 namespace Chameleon.Avalonia.Common.Services;
 
@@ -36,4 +38,20 @@ public class ClipboardService  : IClipboardService
             await MesageBoxHelper.ShowErrorAsync("Failed to copy to clipboard.", ex.Message);
         }
     }
+}
+
+//ICopyPastaService
+public class CopyPastaService : ICopyPastaService {
+	public TopLevel? Owner { get; set; }
+	public async Task SetTextAsync(string text)
+	{
+		try {
+			Owner ??= TopLevel.GetTopLevel(ApplicationHelper.GetToplevetVisual());
+			await Owner!.Clipboard!.SetTextAsync(text);
+			Toaster.ShowSuccess("Copied to clipboard");
+
+		} catch (Exception ex) {
+			Toaster.ShowErr(ex.Message);
+		}
+	}
 }

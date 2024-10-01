@@ -1,8 +1,7 @@
 ﻿using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.lib.Common.Enums;
 
-using System;
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.Interfaces.WebBrowser
 {

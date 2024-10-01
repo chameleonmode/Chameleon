@@ -7,14 +7,17 @@ using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.Interfaces.WebBrowser;
 using Chameleon.lib.Common;
-using Chameleon.lib.Common.Enums;
+using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Models;
 using Chameleon.lib.WebBrowser.Interfaces;
 using Chameleon.lib.WebBrowser.Models;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
@@ -42,8 +45,6 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 	[ObservableProperty]
 	private bool _isForeground;
 
-	private ISysBrowserInstance? _systemBrowserInstance;
-
 	public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
 	public bool IsFavorite => UserProfile?.IsFavourite ?? false;
 	public bool IsSharedProfile => _userProfileService.IsSharedProfile(UserProfile);
@@ -53,7 +54,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 	public bool IsOutreachBtnEnabled => !IsSharedProfile || UserProfile.HasPermission(PermissionNames.Pages_Outreach);
 	public bool IsRssBtnEnabled => !IsSharedProfile || UserProfile.HasPermission(PermissionNames.Pages_RSS);
 
-	public ISysBrowserInstance? SBI => _systemBrowserInstance;
+	public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI  => UserProfile.SBI;
 
 	IUserProfile IUserProfileViewModelBase.UserProfile => UserProfile;
 
@@ -96,7 +97,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 	[RelayCommand]
 	private void ShowViewProfile()
 	{
-		ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<IUserProfileSidePanelView, IUserProfileSidePanelViewModel>(vm => {
+		ContainerServiceHelper.Resolve<IWindowDialogService>()?.ShowTopmost<IUserProfileSidePanelView, IUserProfileSidePanelViewModel>(vm => {
 			vm.UserProfile = UserProfile;
 		}, null, "Copy Pasta", 156);
 	}
@@ -137,7 +138,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 	}
 	public void Open()
 	{
-		NavigationService.NavigateToType(typeof(IUserProfileIdentityView), UserProfile);
+		NavigationService?.NavigateToType(typeof(IUserProfileIdentityView), UserProfile);
 		//OpenUserProfile();
 	}
 
@@ -149,7 +150,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 	[RelayCommand]
 	public void OpenUserBrowser()
 	{
-		ContainerServiceHelper.Resolve<IWindowDialogService>().ShowTopmost<ITopMostSidePanelView, ITopMostSidePanelViewModel>(
+		ContainerServiceHelper.Resolve<IWindowDialogService>()?.ShowTopmost<ITopMostSidePanelView, ITopMostSidePanelViewModel>(
 				vm => {
 					if (!vm.RunningList.Contains(this))
 						vm.RunningList.Add(this);
@@ -181,8 +182,10 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 		if (SysBrowserServiceBase == null) {
 			return;
 		}
-		_systemBrowserInstance = await SysBrowserServiceBase.Open(
-			new SysBrowserOpenOptions(
+		if (SBI.TryGetValue(browserType, out var browser)) {
+			IsForeground = false;
+			if (browser == null) {
+				browser = await SysBrowserServiceBase.Open(new SysBrowserOpenOptions(
 				browserType,
 				new UserProfileModel() {
 					Id = UserProfile.Id,
@@ -195,32 +198,35 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 				})
 			);
 
-		if (_systemBrowserInstance != null) {
-			_systemBrowserInstance.OnProcessClosed += (sender, args) => {
-				IsForeground = false;
-				_systemBrowserInstance = null;
-				_ = SetRunning(browserType, false);
-			};
-
-			_systemBrowserInstance.OnBecameForeground += (sender, args) => {
-				if (sender is bool b) {
-					IsForeground = b;
+				if (browser != null) {
 					_ = SetRunning(browserType, true);
-				}
-			};
+					browser.OnEvent += (sender, args) => {
+						IsForeground = args.EventType == SysBrowserEventType.Foreground;
+						if (!IsForeground && args.EventType != SysBrowserEventType.Background) {
+							var runnin = args.EventType switch {
+								SysBrowserEventType.Opened => SetRunning(browserType, true),
+								SysBrowserEventType.Closed => SetRunning(browserType, false),
+								SysBrowserEventType.Error => SetRunning(browserType, null),
+								_ => SetRunning(args.OpenOptions.BrowserType, null)
+							};
 
-			_systemBrowserInstance.OnProcessOpenError += (sender, args) => {
-				IsForeground = false;
-				_systemBrowserInstance = null;
-				_ = SetRunning(browserType, null);
-			};
-		} else {
-			IsForeground = false;
-			_ = SetRunning(browserType, null);
+							if(runnin is "Error" or "False") {
+								SBI[browserType] = null;
+							}
+						};
+					};
+					SBI[browserType] = browser;
+				} else {
+					IsForeground = false;
+					_ = SetRunning(browserType, null);
+				}
+			} else {
+				browser.InvokeEvent(Enums.SysBrowserEventType.Foreground);
+			}
 		}
 	}
 
-	string SetRunning(SystemBrowserType args, bool? running) => (args) switch {
+	private string SetRunning(SystemBrowserType args, bool? running) => args switch {
 		SystemBrowserType.Chrome => running != true && IsChromeRunning == "Error" ? "Error"
 		: IsChromeRunning = UserProfile.IsChromeRunning = running is null ? "Error" : running == true ? "True" : "False",
 

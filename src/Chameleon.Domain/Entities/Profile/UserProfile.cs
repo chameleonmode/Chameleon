@@ -5,8 +5,12 @@ using Chameleon.Interfaces.UserProfiles.Additional;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Interfaces.WordPress;
 using Chameleon.Interfaces.YouTube;
+using Chameleon.lib.WebBrowser.Interfaces;
+
 using System;
 using System.Collections.Generic;
+
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.Domain.Entities
 {
@@ -137,5 +141,11 @@ namespace Chameleon.Domain.Entities
         public string IsChromeRunning { get; set; } = "False";
         public string IsBraveRunning { get; set; } = "False";
         public string IsFFRunning { get; set; } = "False";
-    }
+
+		public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI { get; set; } = new Dictionary<SystemBrowserType, ISysBrowserInstance?>(){
+		{ SystemBrowserType.Chrome, null } ,
+		{ SystemBrowserType.Firefox, null } ,
+		{ SystemBrowserType.Brave, null }
+	};
+	}
 }

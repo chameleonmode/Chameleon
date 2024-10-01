@@ -144,6 +144,7 @@ public partial class App : PrismApplication {
 			containerRegistry.RegisterInstance(IoC.GetService<IPlaywrightScriptRepository>());
 			containerRegistry.RegisterInstance(IoC.GetService<IExtensionLoaderService>());
 			containerRegistry.RegisterInstance(IoC.GetService<ISysBrowserService>());
+			containerRegistry.RegisterInstance(IoC.GetService<ICopyPastaService>());
 		}
 
 		IoC.Instance.Configure(() => {
@@ -158,6 +159,7 @@ public partial class App : PrismApplication {
 			_ = services
 			.AddSingleton<IToasterService, ToasterNotificationService>()
 			.AddSingleton<IDispatchService, DispatchService>()
+			.AddSingleton<ICopyPastaService, CopyPastaService>()
 			//Playwright
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.ICompileScriptService, Chameleon.lib.Playwright.Services.CompileScriptService>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywriteService, Chameleon.lib.Playwright.Services.PlaywriteService>()

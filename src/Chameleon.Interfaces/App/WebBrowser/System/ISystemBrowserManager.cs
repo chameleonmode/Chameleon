@@ -1,5 +1,4 @@
-﻿using Chameleon.Interfaces.Ioc;
-using Chameleon.lib.Common.Enums;
+﻿using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.Interfaces.WebBrowser
 {

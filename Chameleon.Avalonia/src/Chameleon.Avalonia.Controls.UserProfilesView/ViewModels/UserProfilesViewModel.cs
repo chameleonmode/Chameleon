@@ -15,7 +15,6 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.lib.Common.Enums;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.Playwright.Models;
@@ -26,6 +25,8 @@ using CommunityToolkit.Mvvm.Input;
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 
@@ -551,14 +552,14 @@ public partial class UserProfilesViewModel
 
 		var token = RecreateCancellationToken;
 		foreach (var profile in GetSelectedProfiles) {
-			var browserWasNotOpened = profile.SBI == null;
+			var browserWasNotOpened = profile.SBI![SelectedBrowserItem.SystemBrowserType] == null;
 			if (browserWasNotOpened) {
 				await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(token);
-				if (!await profile.SBI!.LoadedTCS.Task.WaitAsync(token))
+				if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || await profile.SBI[SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))
 					continue;
 			}
 			var options = SelectedPlaywrightScript.RunOptions;
-			options.Port = profile.SBI!.Options.Port;
+			options.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
 			options.Record = IsRecordSelected;
 			try {
 				await _playwriteService.RunScript(SelectedPlaywrightScript.RunOptions, token);
@@ -570,20 +571,20 @@ public partial class UserProfilesViewModel
 			// Check if the browser process is not null and hasn't exited
 			if (browserWasNotOpened &&
 					profile.SBI != null &&
-					profile.SBI.Brocess != null &&
-					!profile.SBI.Brocess.HasExited) {
+					profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess != null &&
+					!profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess!.HasExited) {
 				try {
 					// Attempt to close the browser gracefully
-					_ = profile.SBI.Brocess.CloseMainWindow();
+					_ = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess!.CloseMainWindow();
 
 					// Give the process some time to exit gracefully
-					var exitedGracefully = profile.SBI.Brocess.WaitForExit(2500); // Wait for 2.5 seconds
+					var exitedGracefully = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess!.WaitForExit(2500); // Wait for 2.5 seconds
 
 					if (!exitedGracefully) {
 						// If the process hasn't exited within 5 seconds, kill it
-						profile.SBI.Brocess.Kill();
+						profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess?.Kill();
 						// Wait for the process to be killed
-						profile.SBI.Brocess.WaitForExit();
+						profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess?.WaitForExit();
 					}
 				} catch (Exception ex) {
 					// Log or handle the exception if closing the process fails

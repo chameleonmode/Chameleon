@@ -1,10 +1,8 @@
-﻿using Chameleon.Interfaces.WebBrowser;
-using Chameleon.lib.Common.Enums;
-
-using System.Diagnostics;
-using System.Reflection.Metadata;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.Core.Util;
 
