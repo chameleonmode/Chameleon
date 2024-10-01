@@ -61,7 +61,7 @@
 									<StackPanel Spacing="6"
 												Margin="6">
 										<afv:HeaderdInputFieldsControl 
-											Title="{Binding Key}"
+											Title="{Binding DisplayName}"
 											Text="{Binding Value, Mode=TwoWay}" />
 										<!--<TextBlock
 											Text="{Binding Name}"

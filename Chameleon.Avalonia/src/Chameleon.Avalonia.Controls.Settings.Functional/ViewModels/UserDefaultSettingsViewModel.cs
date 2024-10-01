@@ -145,7 +145,7 @@ public partial class UserDefaultSettingsViewModel
 			urls.Add(viewModel.DefaultUrl);
 		}
 
-		IoC.SetValue(urls.ToArray(), "DefaultHomePageSettings");
+		IoC.SetJsonValue(urls.ToArray(), "DefaultHomePageSettings");
 	}
 
 	[RelayCommand]

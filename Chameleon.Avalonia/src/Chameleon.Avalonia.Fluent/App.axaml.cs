@@ -149,11 +149,11 @@ public partial class App : PrismApplication {
 
 		IoC.Instance.Configure(() => {
 			return new WritableConfiguration(new ConfigurationBuilder()
-				.SetBasePath(Chameleon.app.Avalonia.Common.ApplicationEnvironment.ApplicationDataFolderPath)
-				.AddJsonFile(Chameleon.app.Avalonia.Common.ApplicationEnvironment.ApplicationFileName, optional: true, reloadOnChange: true)
+				.SetBasePath(Chameleon.lib.Common.Constants.Consts.AppDataDir)
+				.AddJsonFile(Chameleon.lib.Common.Constants.Consts.AppSettingsFileName, optional: true, reloadOnChange: true)
 				.AddEnvironmentVariables()
 				.Build(), 
-				Path.Combine(Chameleon.app.Avalonia.Common.ApplicationEnvironment.ApplicationDataFolderPath, Chameleon.app.Avalonia.Common.ApplicationEnvironment.ApplicationFileName));
+				Path.Combine(Chameleon.lib.Common.Constants.Consts.AppDataDir, Chameleon.lib.Common.Constants.Consts.AppSettingsFileName));
 
 		}, (services) => {
 			_ = services

@@ -20,7 +20,7 @@ public partial class AutomationViewModel
 	public AvList<AutomationScriptViewModel> BundlesScripts { get; } = [];
 
 	[ObservableProperty]
-	private AutomationScriptViewModel _selectedBundledScript;
+	private AutomationScriptViewModel? _selectedBundledScript;
 
 	[ObservableProperty]
 	private int _totalCount;
@@ -36,7 +36,7 @@ public partial class AutomationViewModel
 	}
 
 	public Task Save() => Task.Run(() => {
-		foreach (var param in SelectedBundledScript.Parameters) {
+		foreach (var param in SelectedBundledScript?.Parameters!) {
 			IoC.SetValue(param.Value, SelectedBundledScript.Title!, param.Key!);
 		}
 
@@ -76,7 +76,7 @@ public partial class AutomationViewModel
 
 		BundlesScripts.AddMapped(repository.GetBundledScrits(), b => {
 			var viewModel = new AutomationScriptViewModel(b);
-			viewModel.Parameters.AddRange(b.Description.Parameters);
+			viewModel.Parameters.AddRange(b.Description?.Parameters!);
 			viewModel.OnOpenEdit += scriptTitle => {
 				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
 			};
@@ -94,8 +94,9 @@ public partial class AutomationViewModel
 			UserScriptsDirectory = IoC.GetValue<string>("UserScriptsDirectory") ?? "";
 
 			if (!UserScriptsDirectory.Is() ||
-				!Directory.Exists(UserScriptsDirectory))
+				!Directory.Exists(UserScriptsDirectory)) {
 				return;
+			}
 
 			if (watcher == null) {
 				watcher = new(UserScriptsDirectory) {
@@ -117,12 +118,10 @@ public partial class AutomationViewModel
 				watcher.Created += OnChanged;
 			}
 
-			//UserScripts.Clear();
-			//await Task.Delay(50);
-			UserScripts.UpdateMapped(await repository.GetUserScripts(UserScriptsDirectory), s => new(s), (x, y) => x.Filepath == y.Description.FilePath);
+			UserScripts.UpdateMapped(await repository.GetUserScripts(UserScriptsDirectory), s => new(s), (x, y) => x.Filepath == y.Description!.FilePath);
 			await Task.Delay(250);
 		} finally {
-			semaphore.Release();
+			_ = semaphore.Release();
 		}
 	}
 
