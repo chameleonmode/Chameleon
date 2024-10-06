@@ -11,6 +11,7 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Settings;
 using System;
+using Chameleon.lib.Common.ServiceManagers;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -26,7 +27,6 @@ public partial class AssistantUsersViewModel
     private readonly IAuthSession _authSession;
     //private readonly IUpgradePlanPopupView _upgradePlanPopupView;
     private readonly IShareFoldersService _shareFoldersService;
-    private readonly IToastNotificationService _toastNotificationService;
     private readonly IUserProfileService _userProfileService;
 
     private ObservableCollection<IUserAssistant, AssistantUserViewModel> _mapping;
@@ -40,7 +40,6 @@ public partial class AssistantUsersViewModel
         IAuthSession authSession,
         //IUpgradePlanPopupView upgradePlanPopupView,
         IShareFoldersService shareFoldersService,
-        IToastNotificationService toastNotificationService,
         IUserProfileService userProfileService
         )
     {
@@ -52,7 +51,6 @@ public partial class AssistantUsersViewModel
         _authSession = authSession;
         //_upgradePlanPopupView = upgradePlanPopupView;
         _shareFoldersService = shareFoldersService;
-        _toastNotificationService = toastNotificationService;
         _userProfileService = userProfileService;
 
         Title = "User Management";
@@ -145,7 +143,6 @@ public partial class AssistantUsersViewModel
                 (userAssistant,
                 _userAssistantService,
                 _shareFoldersService,
-                _toastNotificationService,
                 _userProfileService));
 
         foreach (var a in _mapping)
@@ -163,7 +160,7 @@ public partial class AssistantUsersViewModel
     }
     private async void ShowOutOfLimitPopup()
     {
-        if(await MesageBoxHelper.ShowAsync("USERS LIMIT REACHED", "You have reached the maximum number of users."))
+        if(await Mbox.ShowAsync("USERS LIMIT REACHED", "You have reached the maximum number of users."))
             ProUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
     }
     private void SendLicenceKey(string emailAddress, string password)
@@ -177,7 +174,7 @@ public partial class AssistantUsersViewModel
             .First(v => v.Id == args.Id);
         ViewModels.Remove(itemToRemove);
 
-        _toastNotificationService.ShowSuccess($"{itemToRemove.Username} was deleted successfully");
+		Toaster.ShowSuccess($"{itemToRemove.Username} was deleted successfully");
     }
     private void OnUserAssistantSaved(SavedUserAssistantEventArgs args)
     {
@@ -195,7 +192,6 @@ public partial class AssistantUsersViewModel
             userAssistant,
             _userAssistantService,
             _shareFoldersService,
-            _toastNotificationService,
             _userProfileService);
 
         var isExist = ViewModels
@@ -209,12 +205,12 @@ public partial class AssistantUsersViewModel
 
         if (args.ProfileIds?.Count > 0)
         {
-            _toastNotificationService.ShowSuccess($"{args.ProfileIds.Count} profile(s) shared successfully");
+            Toaster.ShowSuccess($"{args.ProfileIds.Count} profile(s) shared successfully");
         }
 
         if (args.FolderIds?.Count > 0)
         {
-            _toastNotificationService.ShowSuccess($"{args.FolderIds.Count} folder(s) shared successfully");
+			Toaster.ShowSuccess($"{args.FolderIds.Count} folder(s) shared successfully");
         }
     }
     private void OnCreate(InviteUserAssistantEventArgs args)
@@ -233,7 +229,7 @@ public partial class AssistantUsersViewModel
         }
         catch
         {
-            _toastNotificationService.ShowError($"Failed to invite the user. Please try again.");
+			Toaster.ShowErr($"Failed to invite the user. Please try again.");
         }
     }
 

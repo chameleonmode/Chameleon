@@ -1,4 +1,6 @@
-﻿namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
+﻿using Chameleon.lib.Common.ServiceManagers;
+
+namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 
 #region CreditPlan
 public class CreditPlan
@@ -68,12 +70,8 @@ public interface IProxyAccessViewModels
 public partial class ProxyAccessViewModel
     : SubPageViewModelBase
 {
-    private readonly IToastNotificationService _toastNotificationService;
-    public ProxyAccessViewModel(
-        IToastNotificationService toastNotificationService
-        )
+    public ProxyAccessViewModel()
     {
-        _toastNotificationService = toastNotificationService;
     }
     private string _url;
     public string Url
@@ -89,7 +87,8 @@ public partial class ProxyAccessViewModel
         {
             return;
         }
-        await ClipboardService.SetTextAsync(_url);
+
+		 await CopyPasta.Copy(_url);
     }
 }
 
@@ -97,17 +96,15 @@ public class ProxyAccessViewModels
     : List<ProxyAccessViewModel>
     , IProxyAccessViewModels
 {
-    private readonly IToastNotificationService _toastNotificationService;
-    public ProxyAccessViewModels(IToastNotificationService toastNotificationService)
+    public ProxyAccessViewModels()
     {
-        _toastNotificationService = toastNotificationService;
     }
 
     public void AddItems(int count)
     {
         for (int i = 0; i < count; i++)
         {
-            Add(new ProxyAccessViewModel(_toastNotificationService));
+            Add(new ProxyAccessViewModel());
         }
     }
 }
@@ -121,7 +118,6 @@ public partial class ProxyCreditViewModel
     private readonly IProxyService _proxyService;
     private readonly IProxyCreditService _proxyCreditService;
     private readonly IProxyAccessViewModels _proxyAccessViewModels;
-    private readonly IToastNotificationService _toastNotificationService;
 
     [ObservableProperty]
     public CreditPlans _creditPlans;
@@ -147,8 +143,7 @@ public partial class ProxyCreditViewModel
     public ProxyCreditViewModel(
         IProxyService proxyService,
         IProxyCreditService proxyCreditService,
-        IProxyAccessViewModels proxyAccessViewModels,
-        IToastNotificationService toastNotificationService
+        IProxyAccessViewModels proxyAccessViewModels
         )
     {
         Title = "Proxy Credit";
@@ -158,7 +153,6 @@ public partial class ProxyCreditViewModel
         _proxyCreditService = proxyCreditService;
         _proxyAccessViewModels = proxyAccessViewModels;
         _proxyAccessViewModels.AddItems(CountProxies);
-        _toastNotificationService = toastNotificationService;
     }
 
     public override async Task InitAsync(object? param)
@@ -188,7 +182,7 @@ public partial class ProxyCreditViewModel
     private IList<IProxyCountry> GetCountries()
     {
         var countries = _proxyService.GetCountries();
-        DispatcherService.InvokeOnUiThread(() => Country = countries.FirstOrDefault());
+				Country = countries[0];
         return countries;
     }
 
@@ -196,7 +190,7 @@ public partial class ProxyCreditViewModel
     public async Task CopyAllUrls()
     {
         var list = Access.Select(a => a.Url);
-        await ClipboardService.SetTextAsync(string.Join("\n", list));
+        await CopyPasta.Copy(string.Join("\n", list));
     }
 
     [RelayCommand]

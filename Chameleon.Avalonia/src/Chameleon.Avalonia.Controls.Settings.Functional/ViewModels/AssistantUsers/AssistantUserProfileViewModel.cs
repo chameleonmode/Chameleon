@@ -1,16 +1,8 @@
 ﻿using Chameleon.Authorization;
-using Chameleon.CT.Common.Base;
-using Chameleon.Core.Collections;
-using Chameleon.Core.Collections.Views;
 using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.Assistants;
 using Chameleon.Interfaces.App.Assistants.Events;
-using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.Assistants;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
-using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
@@ -19,7 +11,6 @@ public partial class AssistantUserProfileViewModel
 {
     private readonly IEventAggregator _eventAggregator;
     private readonly IUserAssistantService _userAssistantService;
-    private readonly IToastNotificationService _toastNotificationService;
     private readonly IUserProfileService _userProfileService;
 
     private ObservableCollection<IAssistantProfilePermission, AssistantProfilePermissionViewModel> _permissionMapping;
@@ -27,14 +18,12 @@ public partial class AssistantUserProfileViewModel
     public AssistantUserProfileViewModel(
         IEventAggregator eventAggregator,
         IUserAssistantService userAssistantService,
-        IToastNotificationService toastNotificationService,
         IUserProfileService userProfileService,
         IAssistantProfile assistantProfile
         )
     {
         _eventAggregator = eventAggregator;
         _userAssistantService = userAssistantService;
-        _toastNotificationService = toastNotificationService;
         _userProfileService = userProfileService;
 
         AssistantProfile = assistantProfile;
@@ -110,7 +99,6 @@ public partial class AssistantUserProfileViewModel
         _permissionMapping = new ObservableCollection<IAssistantProfilePermission, AssistantProfilePermissionViewModel>(
             permissions, permission => new AssistantProfilePermissionViewModel(
                 _userAssistantService,
-                _toastNotificationService,
                 permission)
             );
 

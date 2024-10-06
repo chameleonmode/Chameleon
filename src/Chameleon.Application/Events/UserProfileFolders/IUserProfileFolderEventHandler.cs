@@ -6,6 +6,6 @@ namespace Chameleon.Application.Events
     public interface IUserProfileFolderEventHandler
         : Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency
     {
-        Task DeleteFolder(IUserProfileFolder userProfileFolder);
+        //Task DeleteFolder(IUserProfileFolder userProfileFolder);
     }
 }

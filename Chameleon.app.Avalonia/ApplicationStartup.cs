@@ -1,41 +1,44 @@
-﻿using Chameleon.Interfaces.Auth;
+﻿using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.Auth;
 using Chameleon.lib.Common.ServiceManagers;
 
 namespace Chameleon.app.Avalonia;
-//internal class ApplicationStartup {
-//	public async Task RunAsync()
-//	{
-//		if (!await RunAsync(0)) {
-//			_ = await Mbox.ShowErrorAsync("Error Logging In", "There was an error validationg the login information that was provided.");
-//			CloseApplication();
-//		} else
-//			_eventAggregator
-//						 .GetEvent<LoginSuccessEvent>()
-//						 .Publish(new LoginEventArgs(null));
-//	}
-//	public async Task<bool> RunAsync(int trys)
-//	{
-//		bool success;
-//		try {
-//			success = await _authService.LoginAsync();
-//			if (!success)
-//				success = await _authService.ShowLoginDialogAsync();
-//		} catch {
-//			if (trys < 1)
-//				return await RunAsync(trys);
+public class AppStartup {
+	public event Action? OnLoginSuccess;
 
-//			success = false;
-//		}
-//		return success;
-//	}
+	private readonly IAuthService? _authService;
 
-//	private void CloseApplication()
-//	{
-//		Environment.Exit(0);
-//	}
+	public async Task RunAsync()
+	{
+		if (!await RunAsync(0)) {
+			_ = await Mbox.ShowErrorAsync("Error Logging In", "There was an error validationg the login information that was provided.");
+			Environment.Exit(0);
+		} else {
+			OnLoginSuccess?.Invoke();
+		}
+	}
+	public async Task<bool> RunAsync(int trys)
+	{
+		if(_authService == null)
+			return false;
 
-//	public void Run()
-//	{
-//		_authService.Login();
-//	}
-//}
+		bool success;
+		try {
+			success = await _authService.LoginAsync();
+			if (!success)
+				success = await _authService.ShowLoginDialogAsync();
+		} catch {
+			if (trys < 1)
+				return await RunAsync(trys);
+
+			success = false;
+		}
+		return success;
+	}
+
+	public static AppStartup Instance { get; } = new AppStartup();
+	private AppStartup()
+	{
+		_authService = ContainerServiceHelper.Resolve<IAuthService>();
+	}
+}

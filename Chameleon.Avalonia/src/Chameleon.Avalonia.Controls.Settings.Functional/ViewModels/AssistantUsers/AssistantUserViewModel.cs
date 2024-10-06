@@ -1,8 +1,4 @@
-﻿using Chameleon.CT.Common.Base;
-using Chameleon.Controls.AssistantUsers.Interfaces;
-using Chameleon.Core.Collections;
-using Chameleon.Core.Collections.Views;
-using Chameleon.Domain.Entities;
+﻿using Chameleon.Controls.AssistantUsers.Interfaces;
 using Chameleon.Domain.Entities.Assistants;
 using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.Assistants;
@@ -10,14 +6,7 @@ using Chameleon.Interfaces.App.Assistants.Events;
 using Chameleon.Interfaces.App.ShareFolders;
 using Chameleon.Interfaces.App.Users.AssistantUser.Events;
 using Chameleon.Interfaces.Assistants;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
-using CommunityToolkit.Mvvm.Input;
-using Chameleon.Common.Helpers;
-using Chameleon.Avalonia.Common.Helpers;
-using Chameleon.Avalonia.Common.Services;
-using CommunityToolkit.Mvvm.ComponentModel;
+using Chameleon.lib.Common.ServiceManagers;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 
@@ -25,7 +14,6 @@ public partial class AssistantUserViewModel(
         IUserAssistant userAssistant,
         IUserAssistantService userAssistantService,
         IShareFoldersService shareFoldersService,
-        IToastNotificationService toastNotificationService,
         IUserProfileService userProfileService)
        : SubPageViewModelBase
 {
@@ -120,7 +108,6 @@ public partial class AssistantUserViewModel(
             profiles, profile => new AssistantUserProfileViewModel(
                 EventAggregator,
                 userAssistantService,
-                toastNotificationService,
                 userProfileService,
                 profile));
     }
@@ -132,21 +119,20 @@ public partial class AssistantUserViewModel(
             folders, folder => new AssistantUserFolderViewModel(
                 EventAggregator,
                 shareFoldersService,
-                toastNotificationService,
                 folder));
     }
   
     [RelayCommand]
     private async Task DeleteAssistant()
     {
-        if (await MesageBoxHelper.ShowAsync(_deleteUserDialogTitle, $"Are you sure you want to delete {Username}", fontIconInfo: "Delete"))
+        if (await Mbox.ShowAsync(_deleteUserDialogTitle, $"Are you sure you want to delete {Username}", fontIconInfo: "Delete"))
             try
             {
                 userAssistantService.DeleteAssistant(UserAssistant);
             }
             catch
             {
-                toastNotificationService.ShowError($"Failed to delete {UserAssistant.UserName}. Please try again.");
+				Toaster.ShowErr($"Failed to delete {UserAssistant.UserName}. Please try again.");
             }
     }
 
@@ -166,7 +152,7 @@ public partial class AssistantUserViewModel(
     [RelayCommand]
     private async Task SendLicenceKey()
     {
-        await ClipboardService.SetTextAsync($"{UserAssistant.EmailAddress} {UserAssistant.UserName} {UserAssistant.Password}");
+        await CopyPasta.Copy($"{UserAssistant.EmailAddress} {UserAssistant.UserName} {UserAssistant.Password}");
     }
     private void AddFolders(AddProfilesEventArgs args)
     {
@@ -188,18 +174,17 @@ public partial class AssistantUserViewModel(
                 var newVm = new AssistantUserFolderViewModel(
                     EventAggregator,
                     shareFoldersService,
-                    toastNotificationService,
                     newFolder
                     );
 
                 FolderViewModels.Add(newVm);
             }
 
-            toastNotificationService.ShowSuccess($"{folderIds.Count} folder(s) shared successfully");
+			Toaster.ShowSuccess($"{folderIds.Count} folder(s) shared successfully");
         }
         catch
         {
-            toastNotificationService.ShowError($"Failed to share folder(s). Please try again.");
+			Toaster.ShowErr($"Failed to share folder(s). Please try again.");
         }
     }
     private void AddProfiles(AddProfilesEventArgs args)
@@ -240,18 +225,17 @@ public partial class AssistantUserViewModel(
                 var newProfile = new AssistantUserProfileViewModel(
                     EventAggregator,
                     userAssistantService,
-                    toastNotificationService,
                     userProfileService,
                     assistantProfile);
 
                 ProfileViewModels.Add(newProfile);
             }
 
-            toastNotificationService.ShowSuccess($"{profileIds.Count} profile(s) shared successfully");
+			Toaster.ShowSuccess($"{profileIds.Count} profile(s) shared successfully");
         }
         catch
         {
-            toastNotificationService.ShowError($"Failed to share profile(s). Please try again.");
+			Toaster.ShowErr($"Failed to share profile(s). Please try again.");
         }
     }
     private void OnAddProfiles(AddProfilesEventArgs args)
@@ -271,7 +255,7 @@ public partial class AssistantUserViewModel(
             return;
         }
 
-        if (await MesageBoxHelper.ShowAsync(_unshareProfileDialogTitle, $"Are you sure you want to unshare {args.AssistantProfile.ProfileName}? This will not affect other profiles."))
+        if (await Mbox.ShowAsync(_unshareProfileDialogTitle, $"Are you sure you want to unshare {args.AssistantProfile.ProfileName}? This will not affect other profiles."))
             try
             {
                 userAssistantService.DeleteAssistantProfile(args.AssistantProfile);
@@ -281,11 +265,11 @@ public partial class AssistantUserViewModel(
 
                 ProfileViewModels.Remove(viewModelToDelete);
 
-                toastNotificationService.ShowSuccess($"{args.AssistantProfile.ProfileName} was unshared successfully");
+				Toaster.ShowSuccess($"{args.AssistantProfile.ProfileName} was unshared successfully");
             }
             catch
             {
-                toastNotificationService.ShowError($"Failed to unshare profile. Please try again.");
+				Toaster.ShowErr($"Failed to unshare profile. Please try again.");
             }
     }
     private async void OnUnshareFolder(UnshareFolderEventArgs args)
@@ -295,7 +279,7 @@ public partial class AssistantUserViewModel(
             return;
         }
 
-        if (await MesageBoxHelper.ShowAsync(_unshareFolderDialogTitle, $"Are you sure you want to unshare {args.AssistantFolder.FolderName}? This will not affect other folders."))
+        if (await Mbox.ShowAsync(_unshareFolderDialogTitle, $"Are you sure you want to unshare {args.AssistantFolder.FolderName}? This will not affect other folders."))
             try
             {
                 shareFoldersService.Delete(args.AssistantFolder.Id);
@@ -305,11 +289,11 @@ public partial class AssistantUserViewModel(
 
                 FolderViewModels.Remove(viewModelToDelete);
 
-                toastNotificationService.ShowSuccess($"{args.AssistantFolder.FolderName} was unshared successfully");
+				Toaster.ShowSuccess($"{args.AssistantFolder.FolderName} was unshared successfully");
             }
             catch
             {
-                toastNotificationService.ShowError($"Failed to unshare folder. Please try again.");
+				Toaster.ShowErr($"Failed to unshare folder. Please try again.");
             }
     }
 
@@ -326,11 +310,11 @@ public partial class AssistantUserViewModel(
         {
             userAssistantService.SetCanCreateProfiles(Id, CanCreateProfiles);
 
-            toastNotificationService.ShowSuccess($"Permission to create profiles was successfully {(CanCreateProfiles ? "given" : "taken")}");
+			Toaster.ShowSuccess($"Permission to create profiles was successfully {(CanCreateProfiles ? "given" : "taken")}");
         }
         catch
         {
-            toastNotificationService.ShowError($"Create profiles permission update failed. Please try again.");
+			Toaster.ShowErr($"Create profiles permission update failed. Please try again.");
         }
     }
 

@@ -336,6 +336,6 @@ public partial class DashboardViewModel
                 PageType = this.GetType()
             });
 
-        DispatcherService.InvokeOnUiThread(() => MVVM.BuildSearchTerms(items));
+        MVVM?.BuildSearchTerms(items);
     }
 }

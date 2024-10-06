@@ -1,4 +1,6 @@
-﻿namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
+﻿using Chameleon.lib.Common.ServiceManagers;
+
+namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 
 public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     IUserProfileIdentityViewModel
@@ -9,7 +11,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
     private readonly IUserAssistantService _userAssistantService;
     private readonly IApplicationUser _applicationUser;
     private readonly IAuthSession _authSession;
-    private readonly IToastNotificationService _toastNotificationService;
 
     [ObservableProperty]
     private UserProfilesView.ViewModels.UserProfileViewModel _profileVM;
@@ -47,8 +48,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         IUserProfileAdditionalDataService userProfileAdditionalDataService,
         IUserAssistantService userAssistantService,
         IApplicationUser applicationUser,
-        IAuthSession authSession,
-        IToastNotificationService toastNotificationService)
+        IAuthSession authSession)
     {
         _mapper = mapper;
         _userProfileService = userProfileService;
@@ -56,7 +56,6 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         _userAssistantService = userAssistantService;
         _applicationUser = applicationUser;
         _authSession = authSession;
-        _toastNotificationService = toastNotificationService;
 
         SubscribeToEvents();
         InitializeCommands();
@@ -177,7 +176,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         }
         catch (Exception ex)
         {
-            _toastNotificationService.ShowError(ex.Message);
+			Toaster.ShowErr(ex.Message);
         }
     }
 
@@ -258,8 +257,8 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         }
         catch (Exception ex)
         {
-            // Handle the exception (e.g., log it, show a notification, etc.)
-            _toastNotificationService.ShowError($"{ex.Message}");
+			// Handle the exception (e.g., log it, show a notification, etc.)
+			Toaster.ShowErr($"{ex.Message}");
         }
         finally
         {
@@ -491,7 +490,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
             .GetEvent<OpenUserProfileEvent>()
             .Publish(new UserProfileEventArgs(_userProfile));
 
-        _toastNotificationService.ShowSuccess("Synchronization is completed");
+		Toaster.ShowSuccess("Synchronization is completed");
     }
 
     private void SyncBtnVisibilityChange()

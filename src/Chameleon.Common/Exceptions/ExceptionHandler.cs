@@ -87,7 +87,7 @@ namespace Chameleon.Common.Exceptions
                      });
                  }, TaskContinuationOptions.OnlyOnFaulted);
 
-            ContainerServiceHelper.Resolve<IDispatcherService>().InvokeOnUiThread(() => ShowExceptionWindow(exception));
+            //ContainerServiceHelper.Resolve<IDispatcherService>().InvokeOnUiThread(() => ShowExceptionWindow(exception));
         }
 
         public static void LogException(Exception exception, string message = null)
@@ -269,8 +269,7 @@ namespace Chameleon.Common.Exceptions
 
             return (e, args) =>
             {
-
-                 IClipboardService.Instance.SetTextAsync(message);
+                 //IClipboardService.Instance.SetTextAsync(message);
             };
         }
 

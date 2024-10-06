@@ -135,31 +135,3 @@ public class ContentDialogService : IContentDialogService {
 		return (IContentDialogResult)res;
 	}
 }
-
-//public class MboxService(IDispatcherService dispatcher) : IMboxService, INotaDependency {
-//	public async Task<Enums.MboxResult> ShowAsync(string title, string content, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo, string icon = "Info")
-//	{
-//		var c = ContainerServiceHelper.Resolve<IDefaultContentDialogContentViewModel>();
-//		if (c == null)
-//			return Enums.MboxResult.Unknown;
-
-//		var icons = await Icons.Instance.FontIcons;
-//		c.Title = title;
-//		c.Glyph = icons.FirstOrDefault(i => i.Name == icon)?.Glyph;
-
-//		return await dispatcher.InvokeOnUiThread(async () => {
-
-//			var dialog = new ContentDialog() {
-//				Title = ContainerServiceHelper.Resolve<IDefaultContentDialogTitle>(),
-//				Content = content,
-//				DataContext = c,
-//				PrimaryButtonText = btns.PrimaryBtnText(),
-//				SecondaryButtonText = btns.SecondaryBtnText(),
-//				CloseButtonText = btns.CloseBtnText(),
-//				DefaultButton = ContentDialogButton.Primary,
-//			};
-//			var res = await dialog.ShowAsync();
-//			return (Enums.MboxResult)res;
-//		});
-//	}
-//}

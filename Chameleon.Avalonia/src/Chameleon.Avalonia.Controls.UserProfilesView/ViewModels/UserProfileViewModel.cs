@@ -11,6 +11,7 @@ using Chameleon.Interfaces.WebBrowser;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Models;
+using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.WebBrowser.Interfaces;
 using Chameleon.lib.WebBrowser.Models;
 
@@ -145,9 +146,9 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 	[RelayCommand]
 	private async Task DeleteUserProfile()
 	{
-		if (await MesageBoxHelper.ShowAsync("Delete User Profile",
+		if (await Mbox.ShowAsync("Delete User Profile",
 			$"Are you sure you want to delete {UserProfile.Title}?",
-			ContentDialogButtons.YesNo,
+			MBoxButtons.OkCancel,
 			"DeleteLines"))
 			EventAggregator
 			 .GetEvent<DeleteUserProfileEvent>()

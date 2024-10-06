@@ -16,7 +16,9 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Extensions;
+using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.Playwright.Models;
@@ -384,9 +386,9 @@ public partial class UserProfilesViewModel
 	[RelayCommand]
 	private async Task Delete()
 	{
-		if (await MesageBoxHelper.ShowAsync("Delete User Profiles",
+		if (await Mbox.ShowAsync("Delete User Profiles",
 				$"Are you sure you want to delete {SelectedCount} profiles?",
-				ContentDialogButtons.YesNo,
+				MBoxButtons.OkCancel,
 				"DeleteLines")) {
 			var profiles = _selectedProfiles.ToList();
 
@@ -541,11 +543,11 @@ public partial class UserProfilesViewModel
 	private async Task RunAutomation()
 	{
 		if (!ViewModels.Any(p => p.IsSelected == true)) {
-			ToasterHelper.ShowErr("Select one or more profiles to run the automation.");
+			Toaster.ShowErr("Select one or more profiles to run the automation.");
 			return;
 		}
 		if (SelectedPlaywrightScript == null) {
-			ToasterHelper.ShowErr("Select an automation.");
+			Toaster.ShowErr("Select an automation.");
 			return;
 		}
 
@@ -567,7 +569,7 @@ public partial class UserProfilesViewModel
 				await _playwriteService.RunScript(SelectedPlaywrightScript.RunOptions, token);
 			} catch (Exception ex) {
 				// Log or handle the exception if closing the process fails
-				ToasterHelper.ShowErr($"{ex.Message}");
+				Toaster.ShowErr($"{ex.Message}");
 			}
 
 			// Check if the browser process is not null and hasn't exited

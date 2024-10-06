@@ -3,6 +3,8 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Environments;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Settings;
+using Chameleon.lib.Common.ServiceManagers;
+
 using System;
 using System.IO;
 using System.Threading;
@@ -37,7 +39,7 @@ namespace Chameleon.Infrastructure.Settings
             {
                 string json = System.Text.Json.JsonSerializer.Serialize(_settings);
                 await Task.Run(() => File.WriteAllText(_settingsFilePath, json));
-                ToasterHelper.ShowSuccess("Saved");
+				Toaster.ShowSuccess("Saved");
             }
             finally
             {

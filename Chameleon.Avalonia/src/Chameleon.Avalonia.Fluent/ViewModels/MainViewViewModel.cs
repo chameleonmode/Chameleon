@@ -1,5 +1,8 @@
 ﻿using Avalonia.Collections;
 using Avalonia.Controls;
+
+using Chameleon.app.Avalonia;
+using Chameleon.Application.Startup;
 using Chameleon.Auth.Services;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Common.Helpers;
@@ -30,7 +33,9 @@ public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewMode
 
     public MainViewViewModel()
     {
-        EventAggregator
+		AppStartup.Instance.OnLoginSuccess += () => IsSplashVisible = false;
+
+		EventAggregator
             .GetEvent<LoginSuccessEvent>()
             .SubscribeOnce(() => IsSplashVisible = false);
     }

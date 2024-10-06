@@ -14,6 +14,8 @@ using Chameleon.Interfaces.UpgradePlan;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.UserProfiles.Additional;
 using Chameleon.Interfaces.WebBrowser;
+using Chameleon.lib.Common.ServiceManagers;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -228,7 +230,7 @@ namespace Chameleon.Infrastructure.Profiles
 
             //_dialogWindowsService.ShowDialogWindow(_upgradePlanPopupView, "PROFILES LIMIT REACHED", initialize);
 
-            if (await MesageBoxHelper.ShowAsync("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
+            if (await Mbox.ShowAsync("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
                 ProUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
         }
 

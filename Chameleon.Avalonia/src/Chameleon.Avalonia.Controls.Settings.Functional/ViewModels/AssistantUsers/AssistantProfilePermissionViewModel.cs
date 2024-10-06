@@ -2,6 +2,8 @@
 using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.Assistants;
 using Chameleon.Interfaces.Dialogs;
+using Chameleon.lib.Common.ServiceManagers;
+
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
@@ -10,16 +12,13 @@ public partial class AssistantProfilePermissionViewModel
         : SubPageViewModelBase
 {
     private readonly IUserAssistantService _userAssistantService;
-    private readonly IToastNotificationService _toastNotificationService;
 
     public AssistantProfilePermissionViewModel(
         IUserAssistantService userAssistantService,
-        IToastNotificationService toastNotificationService,
         IAssistantProfilePermission assistantProfilePermission
         )
     {
         _userAssistantService = userAssistantService;
-        _toastNotificationService = toastNotificationService;
 
         AssistantProfilePermission = assistantProfilePermission;
     }
@@ -46,13 +45,13 @@ public partial class AssistantProfilePermissionViewModel
         {
             _userAssistantService.UpdateProfilePermission(AssistantProfilePermission);
 
-            _toastNotificationService.ShowSuccess($"{AssistantProfilePermission.DisplayName} was updated successfully");
+            Toaster.ShowSuccess($"{AssistantProfilePermission.DisplayName} was updated successfully");
         }
         catch
         {
             IsGranted = !IsGranted;
 
-            _toastNotificationService.ShowError($"{AssistantProfilePermission.DisplayName} update failed. Please try again.");
+			Toaster.ShowErr($"{AssistantProfilePermission.DisplayName} update failed. Please try again.");
         }
     }
 }

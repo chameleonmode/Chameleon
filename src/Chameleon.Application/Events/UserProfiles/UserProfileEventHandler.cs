@@ -4,6 +4,7 @@ using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Prism.Events;
 using Chameleon.Common.Helpers;
+using Chameleon.lib.Common.ServiceManagers;
 
 namespace Chameleon.Application.Events
 {
@@ -121,7 +122,7 @@ namespace Chameleon.Application.Events
 
         private static void ShowErrorDialog(string title, string text)
         {
-            MesageBoxHelper.ShowErrorAsync(
+            Toaster.ShowErr(
                 title,
                 text);
         }

@@ -204,10 +204,10 @@ public partial class ImportViewModel : SubPageViewModelBase,
     }
 
    [RelayCommand]
-    private void OnImport()
+    private async Task OnImport()
     {
-        DispatcherService.InvokeOnUiThread(() => _fileSystemImporter.ImportAsync());
-    }
+		await _fileSystemImporter.ImportAsync();
+		}
 
     public bool HasItems => Columns?.Count > 0;
 }

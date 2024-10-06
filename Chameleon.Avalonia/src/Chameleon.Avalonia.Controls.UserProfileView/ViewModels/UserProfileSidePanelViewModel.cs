@@ -1,17 +1,4 @@
-﻿using Chameleon.Avalonia.Common.Services;
-using Chameleon.Avalonia.Controls.UserProfileView.Models.Country;
-using Chameleon.Avalonia.Controls.UserProfileView.Services;
-using Chameleon.Controls.UserProfileView.Models.Additional;
-using Chameleon.CT.Common.Base;
-using Chameleon.CT.Common.Collections;
-using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.Services;
-using Chameleon.Interfaces.UserProfiles;
-
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-
-namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
+﻿namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 
 public partial class UserProfileSidePanelViewModel(IUserProfileAdditionalDataService userProfileAdditionalDataService)
 	: SubPageViewModelBase, IUserProfileSidePanelViewModel {

@@ -11,9 +11,8 @@ namespace Chameleon.Infrastructure.Api
     {
         public ApiClient(
             IAuthSession session,
-            IApplicationConfiguration configuration,
-            IToastNotificationService toaster) 
-            : base(session, configuration,toaster)
+            IApplicationConfiguration configuration) 
+            : base(session, configuration)
         {
         }
     }

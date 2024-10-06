@@ -1,6 +1,8 @@
 ﻿using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.ShareFolders;
 using Chameleon.Interfaces.Dialogs;
+using Chameleon.lib.Common.ServiceManagers;
+
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
@@ -9,16 +11,13 @@ public partial class AssistantFolderPermissionViewModel
        : SubPageViewModelBase
 {
     private readonly IShareFoldersService _shareFoldersService;
-    private readonly IToastNotificationService _toastNotificationService;
 
     public AssistantFolderPermissionViewModel(
         IShareFoldersService shareFoldersService,
-        IToastNotificationService toastNotificationService,
         IShareFolderPermission shareFolderPermission,
         IShareFolder shareFolder)
     {
         _shareFoldersService = shareFoldersService;
-        _toastNotificationService = toastNotificationService;
 
         ShareFolderPermission = shareFolderPermission;
         ShareFolder = shareFolder;
@@ -55,13 +54,13 @@ public partial class AssistantFolderPermissionViewModel
                 _shareFoldersService.DeletePermission(ShareFolder.Id, ShareFolderPermission.PermissionId);
             }
 
-            _toastNotificationService.ShowSuccess($"{ShareFolderPermission.DisplayName} was updated successfully");
+            Toaster.ShowSuccess($"{ShareFolderPermission.DisplayName} was updated successfully");
         }
         catch
         {
             IsGranted = !IsGranted;
 
-            _toastNotificationService.ShowError($"{ShareFolderPermission.DisplayName} update failed. Please try again.");
+			Toaster.ShowErr($"{ShareFolderPermission.DisplayName} update failed. Please try again.");
         }
     }
 }

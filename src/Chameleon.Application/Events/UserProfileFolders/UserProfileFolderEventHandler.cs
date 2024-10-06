@@ -30,24 +30,24 @@ namespace Chameleon.Application.Events
             //   .Subscribe(args => DeleteFolder(args.UserProfileFolder));
         }
 
-        public async Task DeleteFolder(IUserProfileFolder userProfileFolder)
-        {
-            var userProfiles = _userProfileService.GetAll()
-                .Where(a => a.FolderId == userProfileFolder.Id)
-                .ToList();
+        //public async Task DeleteFolder(IUserProfileFolder userProfileFolder)
+        //{
+        //    var userProfiles = _userProfileService.GetAll()
+        //        .Where(a => a.FolderId == userProfileFolder.Id)
+        //        .ToList();
 
-            foreach (var item in userProfiles)
-            {
-                item.FolderId = null;
-                await Task.Run(()=> _userProfileService.Save(item));
-            }
+        //    foreach (var item in userProfiles)
+        //    {
+        //        item.FolderId = null;
+        //        await Task.Run(()=> _userProfileService.Save(item));
+        //    }
 
-            _userProfileFolderService.Delete(userProfileFolder);
+        //    _userProfileFolderService.Delete(userProfileFolder);
 
-            _eventAggregator
-                .GetEvent<AfterCreateOrRemoveFolderEvent>()
-                .Publish();
-        }
+        //    _eventAggregator
+        //        .GetEvent<AfterCreateOrRemoveFolderEvent>()
+        //        .Publish();
+        //}
 
         private void CreateFolder()
         {

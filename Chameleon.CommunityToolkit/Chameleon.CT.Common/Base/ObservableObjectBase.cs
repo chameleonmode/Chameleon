@@ -2,6 +2,7 @@
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Views;
+using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
 
@@ -10,11 +11,9 @@ namespace Chameleon.CT.Common.Base;
 public abstract partial class ObservableObjectBase : ObservableObject,
     IPageViewModel
 	{
-    private readonly IDispatcherService _dispatcherService;
     private readonly IEventAggregator eventAggregator;
     private readonly IContentDialogService _cntentDialogService;
     private readonly IWindowDialogService _iWindowDialogService;
-    private readonly IClipboardService _IClipboardService;
 
     private long _isBusy;
     public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
@@ -33,10 +32,8 @@ public abstract partial class ObservableObjectBase : ObservableObject,
 
     public ObservableObjectBase()
     {
-        _dispatcherService = ContainerServiceHelper.Resolve<IDispatcherService>();// ?? new DispatcherService();
         _cntentDialogService = ContainerServiceHelper.Resolve<IContentDialogService>();
         eventAggregator = ContainerServiceHelper.Resolve<IEventAggregator>() ?? new EventAggregator();
-        _IClipboardService = ContainerServiceHelper.Resolve<IClipboardService>();
         _iWindowDialogService = ContainerServiceHelper.Resolve<IWindowDialogService>();
 
 
@@ -49,11 +46,8 @@ public abstract partial class ObservableObjectBase : ObservableObject,
             },
             AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
     }
-
-    public IDispatcherService DispatcherService => _dispatcherService;
     public IContentDialogService ContentDialogService => _cntentDialogService;
     public IEventAggregator EventAggregator => eventAggregator;
-    public IClipboardService ClipboardService => _IClipboardService;
     public IWindowDialogService WindowDialogService => _iWindowDialogService;
     public IAsyncRelayCommand InitializeAsyncCommand { get; }
 
@@ -106,6 +100,6 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     [RelayCommand]
     private async Task Copy(object param)
     {
-        await ClipboardService.SetTextAsync(param as string ?? "");
+        await CopyPasta.Copy(param as string ?? "");
     }
 }

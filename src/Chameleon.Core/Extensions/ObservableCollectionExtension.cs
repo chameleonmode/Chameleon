@@ -62,16 +62,6 @@ public static class ObservableCollectionExtension
           });
     }
 
-    public static Task AddRangeAsync<T>(
-        this ObservableCollection<T> self,
-        Func<IEnumerable<T>> getItems,
-        IDispatcherService dispatcher)
-    {
-        return dispatcher.InvokeOnUiThreadAsync(getItems,
-            items => self.AddRange(items)
-            );
-    }
-
     public static void ReAddRange<T>(this ObservableCollection<T> self, IEnumerable<T> items)
     {
         self.Clear();
@@ -84,12 +74,5 @@ public static class ObservableCollectionExtension
         {
             self.Remove(item);
         }
-    }
-
-    public static Task ReAddRangeAsync<T>(this ObservableCollection<T> self, Func<IEnumerable<T>> items,
-        IDispatcherService dispatcher)
-    {
-        self.Clear();
-        return self.AddRangeAsync(items,dispatcher);
     }
 }

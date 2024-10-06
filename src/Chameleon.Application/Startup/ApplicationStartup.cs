@@ -2,6 +2,7 @@
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Startup;
+using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.Prism.Events;
 
 namespace Chameleon.Application.Startup
@@ -28,7 +29,7 @@ namespace Chameleon.Application.Startup
         {
             if (!await RunAsync(0))
             {
-                await MesageBoxHelper.ShowErrorAsync("Error Logging In", "There was an error validationg the login information that was provided.");
+				_ = await Mbox.ShowErrorAsync("Error Logging In", "There was an error validationg the login information that was provided.");
                 CloseApplication();
             }
             else

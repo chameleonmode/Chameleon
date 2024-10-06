@@ -1,4 +1,6 @@
-﻿namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
+﻿using Chameleon.lib.Common.ServiceManagers;
+
+namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
 public class ProfileFolderViewModel
     : ObservableObject
@@ -169,7 +171,7 @@ public partial class UserProxySettingsViewModel
         OnPropertyChanged(nameof(HasSelectedItems));
         OnPropertyChanged(nameof(FillProxiesIsEnabled));
 
-        initializeViewModelsSlim.Release();
+		_ = initializeViewModelsSlim.Release();
     }
     static readonly SemaphoreSlim initializeFolderViewModelsSlim = new SemaphoreSlim(1, 1);
     private async Task LoadUserProfileFolderViewModels()
@@ -188,12 +190,12 @@ public partial class UserProxySettingsViewModel
         initializeFolderViewModelsSlim.Release();
     }
 
-    private void UpdateProxyAccessAsync()
+    private async void UpdateProxyAccessAsync()
     {
         IsGettingAccess = true;
-        DispatcherService.InvokeOnUiThreadAsync(UpdateProxyAccess,
-            null, () => IsGettingAccess = false);
-    }
+				await Task.Run(UpdateProxyAccess);
+				IsGettingAccess = false;
+		}
 
     private bool _isGettingAccess;
     public bool IsGettingAccess
@@ -223,14 +225,11 @@ public partial class UserProxySettingsViewModel
         }
     }
 
-    private void OnUpdateStaleDataEvent()
+    private async void OnUpdateStaleDataEvent()
     {
-        DispatcherService.InvokeOnUiThreadAsync(async() =>
-        {
-            await LoadUserProfileFolderViewModels();
-            await InitializeViewModels();
-        });
-    }
+			await LoadUserProfileFolderViewModels();
+			await InitializeViewModels();
+		}
 
     private void OnUserProfileSelected()
     {
@@ -402,7 +401,7 @@ public partial class UserProxySettingsViewModel
             .Split(':');
         if (applingProxies.Length != 4)
         {
-            ToasterHelper.ShowErr($"Not a valid set {applingProxy}");
+			Toaster.ShowErr($"Not a valid set {applingProxy}");
             return false;
         }
 
@@ -410,7 +409,7 @@ public partial class UserProxySettingsViewModel
         var isValidPort = Int32.TryParse(portStr, out var port);
         if (!isValidPort && !string.IsNullOrWhiteSpace(portStr))
         {
-            ToasterHelper.ShowErr($"Port cann't be text {applingProxy}");
+			Toaster.ShowErr($"Port cann't be text {applingProxy}");
             return false;
         }
 
@@ -450,7 +449,7 @@ public partial class UserProxySettingsViewModel
     }
     private async void PurchaseMessage()
     {
-        if(await MesageBoxHelper.ShowAsync("No Proxy Credit","You have no proxy to set. Purchase them on Proxy Credit tab"))
+        if(await Mbox.ShowAsync("No Proxy Credit","You have no proxy to set. Purchase them on Proxy Credit tab"))
         {
             var args = new ChangeSelectedTabIndexEventArgs() { SelectedIndex = 2 };
             EventAggregator
@@ -535,8 +534,8 @@ public partial class UserProxySettingsViewModel
             {
                 IsSelectedAll = false;
                 OnPropertyChanged(nameof(IsSelectedAll));
-                DispatcherService.InvokeOnUiThreadAsync(InitializeViewModels);
-            }
+								_ = InitializeViewModels();
+						}
         }
     }
 

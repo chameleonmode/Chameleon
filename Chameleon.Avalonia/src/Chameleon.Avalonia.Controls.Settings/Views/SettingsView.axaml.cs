@@ -14,6 +14,8 @@ using Chameleon.Core.Util;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Settings;
+using Chameleon.lib.Common.ServiceManagers;
+
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
@@ -41,7 +43,7 @@ public partial class SettingsView : ChameleonNavigationPage
         }
         catch
         {
-             ToasterHelper.ShowErr($"Error navigationg to {uri}");
+			Toaster.ShowErr($"Error navigationg to {uri}");
         }
     }
 

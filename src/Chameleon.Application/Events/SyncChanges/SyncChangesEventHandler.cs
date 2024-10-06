@@ -3,6 +3,7 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.Windows;
+using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.Prism.Events;
 
 namespace Chameleon.Application.Events.SyncChanges
@@ -13,18 +14,15 @@ namespace Chameleon.Application.Events.SyncChanges
         private readonly IEventAggregator _eventAggregator;
         private readonly IUserProfileFolderService _userProfileFolderService;
         private readonly IUserProfileService _userProfileService;
-        private readonly IToastNotificationService _toastNotificationService;
 
         public SyncChangesEventHandler(
             IEventAggregator eventAggregator,
             IUserProfileFolderService userProfileFolderService,
-            IUserProfileService userProfileService,
-            IToastNotificationService toastNotificationService)
+            IUserProfileService userProfileService)
         {
             _eventAggregator = eventAggregator;
             _userProfileFolderService = userProfileFolderService;
             _userProfileService = userProfileService;
-            _toastNotificationService = toastNotificationService;
 
             _eventAggregator
                 .GetEvent<SyncChangesEvent>()
@@ -40,7 +38,7 @@ namespace Chameleon.Application.Events.SyncChanges
                 .GetEvent<UpdateStaleDataEvent>()
                 .Publish();
 
-            _toastNotificationService.ShowSuccess("Synchronization is completed");
+            Toaster.ShowSuccess("Synchronization is completed");
         }
     }
 }

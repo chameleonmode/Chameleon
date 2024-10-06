@@ -4,10 +4,11 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 
+using Chameleon.app.Avalonia.Community.lib.Services;
+using Chameleon.app.Avalonia.Services;
 using Chameleon.Auth.Services;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Views;
-using Chameleon.Avalonia.Common.Services;
 using Chameleon.Avalonia.Controls.UserProfilesView;
 using Chameleon.Avalonia.Controls.UserProfileView;
 using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
@@ -27,7 +28,6 @@ using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Interfaces.Services;
-using Chameleon.lib.Common.Services;
 using Chameleon.lib.Common.Types;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.WebBrowser.Interfaces;
@@ -157,8 +157,9 @@ public partial class App : PrismApplication {
 
 		}, (services) => {
 			_ = services
-			.AddSingleton<IToasterService, ToasterNotificationService>()
-			.AddSingleton<IDispatcherService, DispatcherService>()
+			.AddSingleton<IDispatchService, DispatchService>()
+			.AddSingleton<IToasterService, ToasterService>()
+			.AddSingleton<IMboxService, MboxService>()
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
 			//Playwright
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.ICompileScriptService, Chameleon.lib.Playwright.Services.CompileScriptService>()

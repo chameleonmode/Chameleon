@@ -15,19 +15,16 @@ public partial class AssistantUserFolderViewModel
 {
     private readonly IEventAggregator _eventAggregator;
     private readonly IShareFoldersService _shareFoldersService;
-    private readonly IToastNotificationService _toastNotificationService;
 
     private ObservableCollection<IShareFolderPermission, AssistantFolderPermissionViewModel> _permissionMapping;
 
     public AssistantUserFolderViewModel(
         IEventAggregator eventAggregator,
         IShareFoldersService shareFoldersService,
-        IToastNotificationService toastNotificationService,
         IShareFolder shareFolder)
     {
         _eventAggregator = eventAggregator;
         _shareFoldersService = shareFoldersService;
-        _toastNotificationService = toastNotificationService;
 
         ShareFolder = shareFolder;
 
@@ -85,7 +82,6 @@ public partial class AssistantUserFolderViewModel
         _permissionMapping = new ObservableCollection<IShareFolderPermission, AssistantFolderPermissionViewModel>(
             ShareFolder.FolderPermissions, folderPermission => new AssistantFolderPermissionViewModel(
                 _shareFoldersService,
-                _toastNotificationService,
                 folderPermission,
                 ShareFolder)
             );

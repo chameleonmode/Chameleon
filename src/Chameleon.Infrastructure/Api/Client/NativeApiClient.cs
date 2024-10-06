@@ -1,7 +1,5 @@
 ﻿using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Environments;
-using System.Threading.Tasks;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -9,14 +7,11 @@ namespace Chameleon.Infrastructure.Api
     {
         private readonly IAuthSession _session;
         protected readonly IApplicationConfiguration _configuration;
-        readonly IToastNotificationService _toaster;
         public NativeApiClient(
             IAuthSession session,
-            IApplicationConfiguration configuration,
-            IToastNotificationService toaster
+            IApplicationConfiguration configuration
             )
         {
-            _toaster = toaster;
             _session = session;
             _configuration = configuration;
         }

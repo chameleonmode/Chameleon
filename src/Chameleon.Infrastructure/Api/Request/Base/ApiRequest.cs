@@ -18,6 +18,7 @@ using Polly.CircuitBreaker;
 using Chameleon.Auth.Api;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Chameleon.lib.Common.ServiceManagers;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -166,13 +167,13 @@ namespace Chameleon.Infrastructure.Api
                     .Or<HttpRequestException>()
                     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (outcome, timespan, retryAttempt, context) =>
                     {
-                        ToasterHelper.ShowErr($"Request Failed: Retry {retryAttempt}: {outcome.Result?.StatusCode}");
+											Toaster.ShowErr($"Request Failed: Retry {retryAttempt}: {outcome.Result?.StatusCode}");
                     });
 
                 var refreshPolicy = Policy.HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.Unauthorized)
                     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), async (outcome, timespan, retryAttempt, context) =>
                     {
-                        ToasterHelper.ShowErr($"Request Failed: Retry {retryAttempt}: {outcome.Result?.StatusCode}");
+											Toaster.ShowErr($"Request Failed: Retry {retryAttempt}: {outcome.Result?.StatusCode}");
 
                         var refresh = await AuthApiClient.Instance.RefreshTokenAsync(session.AuthToken, session.AuthRefreshToken, 0) ?? throw new UnauthorizedAccessException("Refresh token failed");
                         session.AuthToken = refresh.NewAccessToken;
