@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Avalonia.Collections;
+﻿using Avalonia.Collections;
 
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Playwright.Models;
@@ -12,10 +6,10 @@ using Chameleon.lib.Playwright.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Chameleon.app.Avalonia.ViewModels.Playwright;
-public partial class AutomationScriptViewModel(PlaywriteRunScriptOptions runOptions) : ViewModelObjectBase(runOptions.Description?.Title)
+namespace Chameleon.app.Avalonia.Models.Playwright;
+public partial class AutomationScriptModel(PlaywriteRunScriptOptions runOptions) : ViewModelObjectBase(runOptions.Description?.Title)
 {
-	public Action<string> OnOpenEdit;
+	public Action<string>? OnOpenEdit;
 
   [ObservableProperty]
   private string? description = runOptions.Description?.Description;

@@ -95,6 +95,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.ThirdParty", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.WebBrowser", "..\chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj", "{005D507C-7B09-4091-9CFA-416F76E3CA9B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "chameleon.assets", "..\chameleon-lib\Chameleon.Assets\chameleon.assets.csproj", "{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -213,6 +215,10 @@ Global
 		{005D507C-7B09-4091-9CFA-416F76E3CA9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{005D507C-7B09-4091-9CFA-416F76E3CA9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{005D507C-7B09-4091-9CFA-416F76E3CA9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

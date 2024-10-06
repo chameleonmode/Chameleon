@@ -27,8 +27,8 @@ namespace Chameleon.CT.Common.Base;
     //public virtual object? DialogContent => "ContentDialogAwareBase Content";
 
     public string PrimaryButtonText => primaryBtnTxt ?? GetPrimaryButtonText(DialogButtons);
-    public string SecondaryButtonText => secondaryBtnTxt ?? GetSecondaryButtonText(DialogButtons);
-    public string CloseButtonText => closebtnTxt ?? GetCloseButtonText(DialogButtons);
+    public string SecondaryButtonText => secondaryBtnTxt ?? GetSecondaryButtonText(DialogButtons) ?? "";
+    public string CloseButtonText => closebtnTxt ?? GetCloseButtonText(DialogButtons) ?? "";
 
     public static string GetPrimaryButtonText(ContentDialogButtons btns) => btns switch
     {
@@ -37,13 +37,13 @@ namespace Chameleon.CT.Common.Base;
         _ => "OK"
     };
 
-    public static string GetSecondaryButtonText(ContentDialogButtons btns) => btns switch
+    public static string? GetSecondaryButtonText(ContentDialogButtons btns) => btns switch
     {
         ContentDialogButtons.YesNoCancel => "No",
          _ => null
     };
 
-    public static string GetCloseButtonText(ContentDialogButtons btns) => btns switch
+    public static string? GetCloseButtonText(ContentDialogButtons btns) => btns switch
     {
         ContentDialogButtons.YesNo => "No",
         ContentDialogButtons.YesNoCancel or

@@ -7,6 +7,7 @@ using Chameleon.Avalonia.Common.Collections;
 using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.Common.Helpers;
+using Chameleon.app.Avalonia.Models.Playwright;
 
 namespace Chameleon.app.Avalonia.ViewModels.Playwright;
 
@@ -16,11 +17,11 @@ public partial class AutomationViewModel
 	private FileSystemWatcher? watcher;
 	private readonly SemaphoreSlim semaphore = new(1, 1);
 
-	public AvList<AutomationScriptViewModel> UserScripts { get; } = [];
-	public AvList<AutomationScriptViewModel> BundlesScripts { get; } = [];
+	public AvList<AutomationScriptModel> UserScripts { get; } = [];
+	public AvList<AutomationScriptModel> BundlesScripts { get; } = [];
 
 	[ObservableProperty]
-	private AutomationScriptViewModel? _selectedBundledScript;
+	private AutomationScriptModel? _selectedBundledScript;
 
 	[ObservableProperty]
 	private int _totalCount;
@@ -73,15 +74,15 @@ public partial class AutomationViewModel
 	{
 		BundlesScripts.Clear();
 
-		BundlesScripts.AddMapped(repository.GetBundledScrits(), b => {
-			var viewModel = new AutomationScriptViewModel(b);
-			viewModel.Parameters.AddRange(b.Description?.Parameters!);
+		BundlesScripts.AddMapped(repository.GetBundledScrits(), (Func<lib.Playwright.Models.PlaywriteRunScriptOptions, AutomationScriptModel>)(b => {
+			var viewModel = new AutomationScriptModel(b);
+			viewModel.Parameters.AddRange((IEnumerable<lib.Playwright.Models.PlaywrightDescriptionParam>)b.Description?.Parameters!);
 			viewModel.OnOpenEdit += scriptTitle => {
 				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
 			};
 
 			return viewModel;
-		});
+		}));
 
 		SelectedBundledScript = BundlesScripts.FirstOrDefault();
 	}

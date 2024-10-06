@@ -1,4 +1,5 @@
-﻿using Chameleon.app.Avalonia.ViewModels.Playwright;
+﻿using Chameleon.app.Avalonia.Models.Playwright;
+using Chameleon.app.Avalonia.ViewModels.Playwright;
 using Chameleon.Avalonia.Common.Collections;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Common.Helpers;
@@ -16,6 +17,7 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.lib.Common.Extensions;
+using Chameleon.lib.Common.Util;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.Playwright.Models;
 using Chameleon.lib.WebBrowser.Interfaces;
@@ -92,11 +94,11 @@ public partial class UserProfilesViewModel
 		}
 	}
 
-	public AvList<AutomationScriptViewModel> PlaywrightScripts { get; } = [];
+	public AvList<AutomationScriptModel> PlaywrightScripts { get; } = [];
 
 	public bool IsSelectedScript => SelectedPlaywrightScript != null;
-	private AutomationScriptViewModel? _selectedPlaywrightScript;
-	public AutomationScriptViewModel? SelectedPlaywrightScript {
+	private AutomationScriptModel? _selectedPlaywrightScript;
+	public AutomationScriptModel? SelectedPlaywrightScript {
 		get { return _selectedPlaywrightScript; }
 		set {
 			if (value != null && _selectedPlaywrightScript != value) {
@@ -270,11 +272,11 @@ public partial class UserProfilesViewModel
 	{
 		void AddMappedScripts(IEnumerable<PlaywriteRunScriptOptions> scripts)
 		{
-			PlaywrightScripts.AddMapped(scripts, b => {
-				var viewModel = new AutomationScriptViewModel(b);
-				viewModel.Parameters.AddRange(b.Description!.Parameters);
+			PlaywrightScripts.AddMapped(scripts, (Func<PlaywriteRunScriptOptions, AutomationScriptModel>)(b => {
+				var viewModel = new AutomationScriptModel(b);
+				viewModel.Parameters.AddRange((IEnumerable<PlaywrightDescriptionParam>)b.Description!.Parameters);
 				return viewModel;
-			});
+			}));
 		}
 
 		PlaywrightScripts.Clear();
@@ -555,7 +557,7 @@ public partial class UserProfilesViewModel
 			var browserWasNotOpened = profile.SBI![SelectedBrowserItem.SystemBrowserType] == null;
 			if (browserWasNotOpened) {
 				await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(token);
-				if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || await profile.SBI[SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))
+        if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || !await profile.SBI![SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))
 					continue;
 			}
 			var options = SelectedPlaywrightScript.RunOptions;
@@ -569,28 +571,10 @@ public partial class UserProfilesViewModel
 			}
 
 			// Check if the browser process is not null and hasn't exited
-			if (browserWasNotOpened &&
-					profile.SBI != null &&
-					profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess != null &&
-					!profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess!.HasExited) {
-				try {
-					// Attempt to close the browser gracefully
-					_ = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess!.CloseMainWindow();
-
-					// Give the process some time to exit gracefully
-					var exitedGracefully = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess!.WaitForExit(2500); // Wait for 2.5 seconds
-
-					if (!exitedGracefully) {
-						// If the process hasn't exited within 5 seconds, kill it
-						profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess?.Kill();
-						// Wait for the process to be killed
-						profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Brocess?.WaitForExit();
-					}
-				} catch (Exception ex) {
-					// Log or handle the exception if closing the process fails
-					ToasterHelper.ShowErr($"Failed to close the browser process: {ex.Message}");
-				}
+			if (browserWasNotOpened) {
+				await ProUtil.TryKillProcess(profile.SBI[SelectedBrowserItem.SystemBrowserType]?.Brocess);
 			}
+
 			// Stop loop if canceled
 			if (token.IsCancellationRequested) {
 				break;

@@ -95,23 +95,11 @@ public class ToastNotificationService
     }
 }
 
-public class ToasterNotificationService
-				: IToasterService {
+public class ToasterNotificationService(IDispatcherService dispatcher)
+								: IToasterService {
 	private int _notificationTimeout = 9;
-	private WindowNotificationManager _notificationManager;
-	private readonly IDispatchService _dispatcher;
-
-	public ToasterNotificationService(IDispatchService dispatcher)
-	{
-		_dispatcher = dispatcher;
-
-		// _notificationManager = new WindowNotificationManager(ApplicationHelper.GetMainWindow())
-		// {
-		//     Position = NotificationPosition.BottomRight,
-		//     MaxItems = 4,
-		//     Margin = new Thickness(0, 0, 15, 40),
-		// };
-	}
+	private WindowNotificationManager? _notificationManager;
+	private readonly IDispatcherService _dispatcher = dispatcher;
 
 	public int NotificationTimeout {
 		get => _notificationTimeout;
@@ -131,8 +119,7 @@ public class ToasterNotificationService
 	void ShowOnUI(string message, NotificationType notificationType)
 	{
 		if (_notificationManager is { } nm) {
-			var DispatcherService = ContainerServiceHelper.Resolve<IDispatcherService>();
-			DispatcherService?.InvokeOnUiThread(() =>
+			_dispatcher?.InvokeOnUiThread(() =>
 			{
 				nm.Show(CreateNotification(message, notificationType));
 			});

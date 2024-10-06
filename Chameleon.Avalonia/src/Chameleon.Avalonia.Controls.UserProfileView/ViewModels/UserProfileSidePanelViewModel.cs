@@ -7,86 +7,71 @@ using Chameleon.CT.Common.Collections;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfiles;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 
 public partial class UserProfileSidePanelViewModel(IUserProfileAdditionalDataService userProfileAdditionalDataService)
-    : SubPageViewModelBase, 
-    IUserProfileSidePanelViewModel
-{
-    private IEnumerable<CountryBindable> _countries;
+	: SubPageViewModelBase, IUserProfileSidePanelViewModel {
 
-    [ObservableProperty]
-    private List<UserProfileLoginBindable> _profileLogins;
-    [ObservableProperty]
-    private UserProfileLoginBindable _selectedLogin;
-    [ObservableProperty]
-    private List<UserProfilePersonBindable> _profilePersons;
-    [ObservableProperty]
-    private UserProfilePersonBindable _selectedPerson;
-    [ObservableProperty]
-    private List<UserProfileAddressBindable> _profileAddresses;
+	private IEnumerable<CountryBindable> _countries;
 
-    public string CountryName => _countries?.FirstOrDefault(x => SelectedAddress?.CountryId == x.Id)?.Name;
-    public bool HasNoItems => ProfilePersons?.Count > 0;
-    public bool HasNoAddressesItems => ProfileAddresses?.Count > 0;
-    public bool HasNoLoginsItems => ProfileLogins?.Count > 0;
+	[ObservableProperty]
+	private List<UserProfileLoginBindable> profileLogins;
+	[ObservableProperty]
+	private UserProfileLoginBindable? selectedLogin;
+	[ObservableProperty]
+	private List<UserProfilePersonBindable> profilePersons;
+	[ObservableProperty]
+	private UserProfilePersonBindable? selectedPerson;
+	[ObservableProperty]
+	private List<UserProfileAddressBindable> profileAddresses;
+	[ObservableProperty]
+	private UserProfileAddressBindable? selectedAddress;
+	[ObservableProperty]
+	private IUserProfile? userProfile;
 
-    private UserProfileAddressBindable _selectedAddress;
-    public UserProfileAddressBindable SelectedAddress
-    {
-        get => _selectedAddress;
-        set
-        {
-            if (SetProperty(ref _selectedAddress, value))
-            {
-                OnPropertyChanged(nameof(CountryName));
-            }
-        }
-    }
+	public string? CountryName => _countries?.FirstOrDefault(x => SelectedAddress?.CountryId == x.Id)?.Name;
+	public bool HasNoItems => ProfilePersons?.Count > 0;
+	public bool HasNoAddressesItems => ProfileAddresses?.Count > 0;
+	public bool HasNoLoginsItems => ProfileLogins?.Count > 0;
+	public override async Task InitAsync(object? param)
+	{
+		await base.InitAsync(param);
 
-    private IUserProfile _userProfile;
-    public IUserProfile UserProfile
-    {
-        set
-        {
-            SetProperty(ref _userProfile, value);
+		if (!Loaded) {
+			_countries = await Task.Run(userProfileAdditionalDataService.GetCountries);
+			await Loader();
+		}
 
-            if (value != null && Loaded)
-            {
-                _ = Loader();
-            }
-        }
-        get => _userProfile;
-    }
+		OnPropertyChanged(nameof(HasNoItems));
+		OnPropertyChanged(nameof(HasNoAddressesItems));
+		OnPropertyChanged(nameof(HasNoLoginsItems));
+		OnPropertyChanged(nameof(CountryName));
+	}
 
-    public override async Task InitAsync(object? param)
-    {
-        await base.InitAsync(param);
+	private async Task Loader()
+	{
+		if (UserProfile == null)
+			return;
 
-        if (!Loaded)
-        {
-            _countries = await Task.Run(() => userProfileAdditionalDataService.GetCountries());
-            await Loader();
-        }
-        OnPropertyChanged(nameof(string.Empty));
-    }
+		ProfileLogins = (await userProfileAdditionalDataService.GetLoginsAsync(UserProfile.Id, false)).ToList();
+		SelectedLogin = ProfileLogins.FirstOrDefault();
 
-    async Task Loader()
-    {
-        ProfileLogins = (await userProfileAdditionalDataService.GetLoginsAsync(UserProfile.Id, false)).ToList();
-        SelectedLogin = ProfileLogins.FirstOrDefault(); 
+		ProfilePersons = (await userProfileAdditionalDataService.GetPersonsAsync(UserProfile.Id, false)).ToList();
+		SelectedPerson = ProfilePersons.FirstOrDefault();
 
-        ProfilePersons = (await userProfileAdditionalDataService.GetPersonsAsync(UserProfile.Id, false)).ToList();
-        SelectedPerson = ProfilePersons.FirstOrDefault();
+		ProfileAddresses = (await userProfileAdditionalDataService.GetAddressesAsync(UserProfile.Id, false)).ToList();
+		SelectedAddress = ProfileAddresses.FirstOrDefault();
+	}
 
-        ProfileAddresses = (await userProfileAdditionalDataService.GetAddressesAsync(UserProfile.Id, false)).ToList();
-        SelectedAddress = ProfileAddresses.FirstOrDefault();
-
-        OnPropertyChanged(nameof(HasNoItems));
-        OnPropertyChanged(nameof(HasNoAddressesItems));
-        OnPropertyChanged(nameof(HasNoLoginsItems));
-    }
+	partial void OnSelectedAddressChanged(UserProfileAddressBindable? value) => OnPropertyChanged(nameof(CountryName));
+	partial void OnUserProfileChanged(IUserProfile? value)
+	{
+		if (value != null && Loaded) {
+			_ = Loader();
+		}
+	}
 }

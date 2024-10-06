@@ -158,7 +158,7 @@ public partial class App : PrismApplication {
 		}, (services) => {
 			_ = services
 			.AddSingleton<IToasterService, ToasterNotificationService>()
-			.AddSingleton<IDispatchService, DispatchService>()
+			.AddSingleton<IDispatcherService, DispatcherService>()
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
 			//Playwright
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.ICompileScriptService, Chameleon.lib.Playwright.Services.CompileScriptService>()
