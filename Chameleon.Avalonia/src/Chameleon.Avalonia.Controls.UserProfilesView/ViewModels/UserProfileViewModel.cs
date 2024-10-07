@@ -216,7 +216,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 				})
 			);
 
-				if (browser != null) {
+				if (browser != null && await browser.LoadedTCS.Task) {
 					_ = SetRunning(browserType, true);
 					browser.OnEvent += Browser_OnEvent;
 					SBI[browserType] = browser;

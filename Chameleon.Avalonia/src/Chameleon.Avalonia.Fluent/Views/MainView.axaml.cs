@@ -29,6 +29,7 @@ using Chameleon.Interfaces.FunctionalSettings;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.app.Avalonia;
+using Chameleon.lib.Common.ServiceManagers;
 
 namespace Chameleon.Av.Fluent.Views;
 
@@ -121,20 +122,14 @@ public partial class MainView : UserControl {
 
 		TooltipManager.Attach(Avpplication.Current, NavView);
 
-		// Initialize the WindowNotificationManager with the "TopLevel". Previously (v0.10), MainWindow
-		//var notifyService = ContainerServiceHelper.Resolve<IToastNotificationService>();
-		//notifyService?.SetHostWindow(TopLevel.GetTopLevel(this));
-
-		var toaser = IoC.GetService<IToasterService>();
-		toaser?.SetHostWindow(TopLevel.GetTopLevel(this));
-
 
 
 		if (ContainerServiceHelper.Current.ContainerProvider is not null) {
 			DataContext = ContainerServiceHelper.Resolve<IMainViewViewModel>() as MainViewViewModel;
 			await AppStartup.Instance.RunAsync();
-			//await ContainerServiceHelper.Resolve<IApplicationStartup>().RunAsync();
+			_ = ContainerServiceHelper.Resolve<IApplicationStartup>();
 		}
+		Toaster.ShowSuccess("Welcome to Chameleon!");
 
 		//InitializeNavigationPages();
 		FrameView.NavigationPageFactory = NavigationService.Instance.NavigationFactory;

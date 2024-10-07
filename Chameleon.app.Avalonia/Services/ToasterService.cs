@@ -29,9 +29,18 @@ public class ToasterService(IDispatchService dispatcher)
 
 	private void ShowOnUI(string message, NotificationType notificationType)
 	{
-		if (_notificationManager is { } nm) {
+		if (_notificationManager is WindowNotificationManager nm) {
 			_dispatcher?.InvokeOnUiThread(() => {
 				nm.Show(CreateNotification(message, notificationType));
+			});
+		} else {
+			_dispatcher?.InvokeOnUiThread(() => {
+				_notificationManager = new WindowNotificationManager(ApplicationHelper.GetMainWindow()) {
+					Position = NotificationPosition.BottomRight,
+					MaxItems = 6,
+					Margin = new Thickness(0, 0, 15, 40)
+				};
+			  ShowOnUI(message, notificationType);
 			});
 		}
 	}

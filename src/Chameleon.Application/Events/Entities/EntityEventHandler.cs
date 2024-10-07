@@ -1,4 +1,5 @@
-﻿using Chameleon.Interfaces.Dialogs;
+﻿
+using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Repository;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.Prism.Events;
@@ -31,5 +32,5 @@ namespace Chameleon.Application.Events
                 .GetEvent<SavedEntityEvent>()
                 .Subscribe(args => Toaster.ShowSuccess("Saved Successfully"));
         }
-    }
+	}
 }
