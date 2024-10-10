@@ -136,16 +136,11 @@ public partial class UserDefaultSettingsViewModel
 	[RelayCommand]
 	private void Save()
 	{
-		var viewModels = ViewModels.Where(m => m.HasChanged);
-
-		List<string> urls = ["duckduckgo.com"];
-
-		foreach (var viewModel in viewModels) {
+		foreach (var viewModel in ViewModels.Where(m => m.HasChanged)) {
 			viewModel.SaveUrlFromViewText();
-			urls.Add(viewModel.DefaultUrl);
 		}
 
-		IoC.SetJsonValue(urls.ToArray(), "DefaultHomePageSettings");
+		IoC.SetJsonValue(ViewModels.Select(v => v.DefaultUrl).ToArray(), "DefaultHomePageSettings");
 	}
 
 	[RelayCommand]

@@ -81,8 +81,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Common",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Controls.Settings.Functional", "Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.Settings.Functional\Chameleon.Avalonia.Controls.Settings.Functional.csproj", "{8A7AFB12-CF43-4F52-A820-8DEBAFB90A72}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Modules.Auth", "src\Chameleon.Modules.Auth\Chameleon.Modules.Auth.csproj", "{32B6A9E6-7F66-4B06-A010-30D5FDD2D315}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia", "Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj", "{8C417AF0-D948-4637-B38B-DDC6E058C83D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.Common", "..\chameleon-lib\Chameleon.lib.Common\Chameleon.lib.Common.csproj", "{AF1C7B0B-6DF8-4F2A-ABA9-E257A6292B24}"
@@ -97,7 +95,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.WebBrowser", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "chameleon.assets", "..\chameleon-lib\Chameleon.Assets\chameleon.assets.csproj", "{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.app.Avalonia.Community.lib", "Chameleon.app.Avalonia.Community.lib\Chameleon.app.Avalonia.Community.lib.csproj", "{8B0E0C0A-5899-4F36-A589-FA393301BDF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia.Community", "Chameleon.app.Avalonia.Community.lib\Chameleon.app.Avalonia.Community.csproj", "{8B0E0C0A-5899-4F36-A589-FA393301BDF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.app.lib", "Chameleon.app.lib\Chameleon.app.lib.csproj", "{A93651D8-EE59-450B-BD33-75E2C8ABCD43}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.Api", "..\chameleon-lib\Chameleon.lib.Api\Chameleon.lib.Api.csproj", "{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.app.Avalonia.lib", "Chameleon.app.Avalonia.lib\Chameleon.app.Avalonia.lib.csproj", "{914C9958-F3B8-4EA5-ACE5-E1F15B57A41D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -189,10 +193,6 @@ Global
 		{8A7AFB12-CF43-4F52-A820-8DEBAFB90A72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A7AFB12-CF43-4F52-A820-8DEBAFB90A72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A7AFB12-CF43-4F52-A820-8DEBAFB90A72}.Release|Any CPU.Build.0 = Release|Any CPU
-		{32B6A9E6-7F66-4B06-A010-30D5FDD2D315}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{32B6A9E6-7F66-4B06-A010-30D5FDD2D315}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{32B6A9E6-7F66-4B06-A010-30D5FDD2D315}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{32B6A9E6-7F66-4B06-A010-30D5FDD2D315}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -225,6 +225,18 @@ Global
 		{8B0E0C0A-5899-4F36-A589-FA393301BDF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B0E0C0A-5899-4F36-A589-FA393301BDF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B0E0C0A-5899-4F36-A589-FA393301BDF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A93651D8-EE59-450B-BD33-75E2C8ABCD43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A93651D8-EE59-450B-BD33-75E2C8ABCD43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A93651D8-EE59-450B-BD33-75E2C8ABCD43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A93651D8-EE59-450B-BD33-75E2C8ABCD43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{914C9958-F3B8-4EA5-ACE5-E1F15B57A41D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{914C9958-F3B8-4EA5-ACE5-E1F15B57A41D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{914C9958-F3B8-4EA5-ACE5-E1F15B57A41D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{914C9958-F3B8-4EA5-ACE5-E1F15B57A41D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -261,9 +273,10 @@ Global
 		{61A73058-5D30-48C4-90BF-5814A6584B06} = {31D09692-9476-4B2B-A3D0-04C8F71BA830}
 		{87EF0DE8-2435-413F-88F2-B9321DFB2DCA} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
 		{8A7AFB12-CF43-4F52-A820-8DEBAFB90A72} = {9E366904-BF6B-4E48-88AC-AA8FE97659AA}
-		{32B6A9E6-7F66-4B06-A010-30D5FDD2D315} = {DD2E432A-BC2B-432B-BC89-0777702DB877}
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
 		{8B0E0C0A-5899-4F36-A589-FA393301BDF0} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
+		{A93651D8-EE59-450B-BD33-75E2C8ABCD43} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
+		{914C9958-F3B8-4EA5-ACE5-E1F15B57A41D} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

@@ -1,8 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
-namespace Chameleon.app.Avalonia.Community.lib;
+namespace Chameleon.app.Avalonia.Community;
 
 public partial class MboxTitleUserControl : UserControl
 {

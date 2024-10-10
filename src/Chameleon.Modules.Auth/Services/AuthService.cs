@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 
+using Chameleon.app.lib.Models;
 using Chameleon.Auth.Api;
 using Chameleon.Auth.Api.Response;
 using Chameleon.Common.Helpers;
@@ -11,6 +12,7 @@ using Chameleon.Interfaces.Dialogs.ViewModels;
 using Chameleon.Interfaces.Dialogs.Views;
 using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.Settings;
+using Chameleon.lib.Common;
 using Chameleon.Prism.Events;
 
 namespace Chameleon.Auth.Services {
@@ -58,6 +60,7 @@ namespace Chameleon.Auth.Services {
 			} finally {
 				if (loginResult is not null) {
 					OnAuthenticateSuccess(loginResult);
+					IoC.SetJsonValue<LoginSettings>(new (loginResult.UserName, _appSettings.Login.LicenseKey, true), nameof(LoginSettings));
 					//_pollingTimer = new System.Timers.Timer(TimeSpan.FromSeconds(loginResult.ExpireInSeconds));
 					//_pollingTimer.Elapsed += async (s, e) =>
 					//{

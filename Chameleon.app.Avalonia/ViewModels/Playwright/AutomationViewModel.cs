@@ -8,6 +8,7 @@ using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.Common.Helpers;
 using Chameleon.app.Avalonia.Models.Playwright;
+using Chameleon.app.Avalonia.lib;
 
 namespace Chameleon.app.Avalonia.ViewModels.Playwright;
 
@@ -46,7 +47,7 @@ public partial class AutomationViewModel
 	[RelayCommand]
 	private async Task SelectUserScriptFolder()
 	{
-		var dialog = ApplicationHelper.GetMainWindow()?.StorageProvider;
+		var dialog = AppLayers.GetMainWindow()?.StorageProvider;
 		if (dialog == null) {
 			return;
 		}
@@ -74,15 +75,15 @@ public partial class AutomationViewModel
 	{
 		BundlesScripts.Clear();
 
-		BundlesScripts.AddMapped(repository.GetBundledScrits(), (Func<lib.Playwright.Models.PlaywriteRunScriptOptions, AutomationScriptModel>)(b => {
+		BundlesScripts.AddMapped(repository.GetBundledScrits(), b => {
 			var viewModel = new AutomationScriptModel(b);
-			viewModel.Parameters.AddRange((IEnumerable<lib.Playwright.Models.PlaywrightDescriptionParam>)b.Description?.Parameters!);
+			viewModel.Parameters.AddRange(b.Description?.Parameters!);
 			viewModel.OnOpenEdit += scriptTitle => {
 				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
 			};
 
 			return viewModel;
-		}));
+		});
 
 		SelectedBundledScript = BundlesScripts.FirstOrDefault();
 	}

@@ -449,7 +449,7 @@ public partial class UserProxySettingsViewModel
     }
     private async void PurchaseMessage()
     {
-        if(await Mbox.ShowAsync("No Proxy Credit","You have no proxy to set. Purchase them on Proxy Credit tab"))
+        if(await Mbox.Show("No Proxy Credit","You have no proxy to set. Purchase them on Proxy Credit tab"))
         {
             var args = new ChangeSelectedTabIndexEventArgs() { SelectedIndex = 2 };
             EventAggregator

@@ -386,7 +386,7 @@ public partial class UserProfilesViewModel
 	[RelayCommand]
 	private async Task Delete()
 	{
-		if (await Mbox.ShowAsync("Delete User Profiles",
+		if (await Mbox.Show("Delete User Profiles",
 				$"Are you sure you want to delete {SelectedCount} profiles?",
 				MBoxButtons.OkCancel,
 				"DeleteLines")) {
@@ -574,7 +574,7 @@ public partial class UserProfilesViewModel
 
 			// Check if the browser process is not null and hasn't exited
 			if (browserWasNotOpened) {
-				await ProUtil.TryKillProcess(profile.SBI[SelectedBrowserItem.SystemBrowserType]?.Brocess);
+				await ProUtil.TryKillProcess(profile.SBI[SelectedBrowserItem.SystemBrowserType]?.Settings.Brocess);
 			}
 
 			// Stop loop if canceled

@@ -126,8 +126,8 @@ public partial class MainView : UserControl {
 
 		if (ContainerServiceHelper.Current.ContainerProvider is not null) {
 			DataContext = ContainerServiceHelper.Resolve<IMainViewViewModel>() as MainViewViewModel;
-			await AppStartup.Instance.RunAsync();
 			_ = ContainerServiceHelper.Resolve<IApplicationStartup>();
+			await AppStartup.Instance.RunAsync();
 		}
 		Toaster.ShowSuccess("Welcome to Chameleon!");
 

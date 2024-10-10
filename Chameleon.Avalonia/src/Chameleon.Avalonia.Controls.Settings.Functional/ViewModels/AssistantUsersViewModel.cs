@@ -160,7 +160,7 @@ public partial class AssistantUsersViewModel
     }
     private async void ShowOutOfLimitPopup()
     {
-        if(await Mbox.ShowAsync("USERS LIMIT REACHED", "You have reached the maximum number of users."))
+        if(await Mbox.Show("USERS LIMIT REACHED", "You have reached the maximum number of users."))
             ProUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
     }
     private void SendLicenceKey(string emailAddress, string password)

@@ -93,7 +93,6 @@
 				</Border>
 			</Border>
 			
-
 			<Border Padding="20" Background="{StaticResource SurfaceStrokeColorDefaultBrush}" Height="530" Width="600">
 				<Border BorderBrush="{StaticResource AccentControlElevationBorderBrush}" BorderThickness="1">
 					<ui:ContentDialog CloseButtonText="close"
@@ -117,21 +116,15 @@
 						</ui:ContentDialog.Title>
 						<ui:ContentDialog.Content>
 							<dilgs:ChameleonDialogControl>
-								<dilgs:ChameleonDialogControl.Header>
+								<!--<dilgs:ChameleonDialogControl.Header>
 									<StackPanel>
 										<TextBlock Text="Sample Header"/>
 									</StackPanel>
-								</dilgs:ChameleonDialogControl.Header>
+								</dilgs:ChameleonDialogControl.Header>-->
 								<dilgs:ChameleonDialogControl.DialogInputs>
 									<dilgs:DialogInputHost TextLabel="Email:" Text="email@email.com" />
 									<dilgs:DialogInputHost TextLabel="Listences:" Text="email@email.com" />
-
 								</dilgs:ChameleonDialogControl.DialogInputs>
-
-								<!--<StackPanel>
-								<Button Content="hi" />
-							</StackPanel>-->
-
 							</dilgs:ChameleonDialogControl>
 						</ui:ContentDialog.Content>
 					</ui:ContentDialog>

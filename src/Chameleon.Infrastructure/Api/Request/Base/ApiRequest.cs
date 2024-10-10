@@ -1,24 +1,16 @@
 ﻿using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Environments;
-using System;
-using System.IO;
 using System.Net;
 using System.Text;
 using System.Security.Authentication;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Net.Security;
 using System.Text.Json;
 using System.Net.Http;
-using Chameleon.Core.Util;
 using Polly;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Common.Helpers;
 using Polly.CircuitBreaker;
-using Chameleon.Auth.Api;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Chameleon.lib.Common.ServiceManagers;
+using Chameleon.lib.Api;
 
 namespace Chameleon.Infrastructure.Api
 {
@@ -175,16 +167,17 @@ namespace Chameleon.Infrastructure.Api
                     {
 											Toaster.ShowErr($"Request Failed: Retry {retryAttempt}: {outcome.Result?.StatusCode}");
 
-                        var refresh = await AuthApiClient.Instance.RefreshTokenAsync(session.AuthToken, session.AuthRefreshToken, 0) ?? throw new UnauthorizedAccessException("Refresh token failed");
-                        session.AuthToken = refresh.NewAccessToken;
-                        session.AuthRefreshToken = refresh.NewRefreshToken;
-                        session.ExpireInSeconds = refresh.ExpireInSeconds;
+											//var refresh = await AuthApiClient.Instance.RefreshTokenAsync(session.AuthToken, session.AuthRefreshToken, 0) ?? throw new UnauthorizedAccessException("Refresh token failed");
+											var response = await Auther.RefreshTokenAsync(session.AuthToken, session.AuthRefreshToken);
+											session.AuthToken = response.NewAccessToken!;
+											session.AuthRefreshToken = response.NewRefreshToken!;
+                      session.ExpireInSeconds = response.ExpireInSeconds;
                     });
 
                 var circuitBreakerPolicy = Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
                     .Or<HttpRequestException>()
                     .CircuitBreakerAsync(
-                        handledEventsAllowedBeforeBreaking: _retryCount,
+                        handledEventsAllowedBeforeBreaking: 5,
                         durationOfBreak: TimeSpan.FromSeconds(30),
                         onBreak: (outcome, breakDelay) =>
                         {

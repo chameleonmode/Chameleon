@@ -146,7 +146,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 	[RelayCommand]
 	private async Task DeleteUserProfile()
 	{
-		if (await Mbox.ShowAsync("Delete User Profile",
+		if (await Mbox.Show("Delete User Profile",
 			$"Are you sure you want to delete {UserProfile.Title}?",
 			MBoxButtons.OkCancel,
 			"DeleteLines"))

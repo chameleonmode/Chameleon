@@ -2,7 +2,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Chameleon.app.Avalonia.Community.lib.ViewModels;
+namespace Chameleon.app.Avalonia.Community.ViewModels;
 public partial class MBoxViewModel : ObservableObject {
 	[ObservableProperty]
 	private string title = Consts.AppName;

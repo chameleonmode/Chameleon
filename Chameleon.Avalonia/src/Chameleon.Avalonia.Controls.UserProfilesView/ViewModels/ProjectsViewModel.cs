@@ -141,7 +141,7 @@ public partial class ProjectsViewModel : PageViewModelBase,
 			EventAggregator.Push<ChangeProfilesInFavoriteFolderEvent, ChangeProfilesInFavoriteFolderEventArgs>(new ChangeProfilesInFavoriteFolderEventArgs(p.FolderId ?? 0, false, p));
 		} catch (Exception ex) {
 			if (ex.Message == "limit_ex") {
-				if (await Mbox.ShowAsync("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
+				if (await Mbox.Show("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
 					ProUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
 			} else {
 				Toaster.ShowErr("Wooopsy?", ex.Message);

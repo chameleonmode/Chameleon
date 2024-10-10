@@ -115,7 +115,7 @@ public partial class UserProfileFolderViewModel : SubPageViewModelBase {
 	[RelayCommand]
 	private async Task Delete()
 	{
-		if (await Mbox.ShowAsync("Delete Folder",
+		if (await Mbox.Show("Delete Folder",
 				$"Are you sure you want to delete {UserProfileFolder.Title} folder? This will not affect individual profiles within the folder.",
 				Enums.MBoxButtons.OkCancel,
 				"DeleteLines")) {

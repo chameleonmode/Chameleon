@@ -1,19 +1,16 @@
 ﻿using Chameleon.Authorization;
 using Chameleon.CT.Common.Base;
-using Chameleon.Interfaces.App.ImportExport.Views;
-using Chameleon.Interfaces.App.ProxyCredit.Views;
-using Chameleon.Interfaces.App.UserSettings.View;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.UserSettings;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Styling;
 using Avalonia;
 using FluentAvalonia.Styling;
 using Avalonia.Media;
-using System.ComponentModel;
 using System.Reflection;
+using Chameleon.lib.Common;
+using Chameleon.app.lib.Models;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -106,7 +103,6 @@ public partial class SettingsViewModel(IApplicationUser user, IApplicationSettin
 	[ObservableProperty]
 	private Color? _listBoxColor;
 
-
 	[ObservableProperty]
 	private string _liscencedTo = "xxx";
 
@@ -137,6 +133,8 @@ public partial class SettingsViewModel(IApplicationUser user, IApplicationSettin
 	public async Task Logout()
 	{
 		await _settingsService.Logout();
+		var login = IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) ?? new(_settings!.Login.LoginName, _settings.Login.LicenseKey, false);
+		IoC.SetJsonValue(new LoginSettings(login.LoginName, login.LicenseKey, false), nameof(LoginSettings));
 	}
 
 	//TODO: refactor

@@ -125,7 +125,7 @@ public partial class AssistantUserViewModel(
     [RelayCommand]
     private async Task DeleteAssistant()
     {
-        if (await Mbox.ShowAsync(_deleteUserDialogTitle, $"Are you sure you want to delete {Username}", fontIconInfo: "Delete"))
+        if (await Mbox.Show(_deleteUserDialogTitle, $"Are you sure you want to delete {Username}", fontIconInfo: "Delete"))
             try
             {
                 userAssistantService.DeleteAssistant(UserAssistant);
@@ -255,7 +255,7 @@ public partial class AssistantUserViewModel(
             return;
         }
 
-        if (await Mbox.ShowAsync(_unshareProfileDialogTitle, $"Are you sure you want to unshare {args.AssistantProfile.ProfileName}? This will not affect other profiles."))
+        if (await Mbox.Show(_unshareProfileDialogTitle, $"Are you sure you want to unshare {args.AssistantProfile.ProfileName}? This will not affect other profiles."))
             try
             {
                 userAssistantService.DeleteAssistantProfile(args.AssistantProfile);
@@ -279,7 +279,7 @@ public partial class AssistantUserViewModel(
             return;
         }
 
-        if (await Mbox.ShowAsync(_unshareFolderDialogTitle, $"Are you sure you want to unshare {args.AssistantFolder.FolderName}? This will not affect other folders."))
+        if (await Mbox.Show(_unshareFolderDialogTitle, $"Are you sure you want to unshare {args.AssistantFolder.FolderName}? This will not affect other folders."))
             try
             {
                 shareFoldersService.Delete(args.AssistantFolder.Id);

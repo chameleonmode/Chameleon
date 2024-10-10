@@ -4,9 +4,8 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 
-using Chameleon.app.Avalonia.Community.lib.Services;
+using Chameleon.app.Avalonia.Community.Services;
 using Chameleon.app.Avalonia.Services;
-using Chameleon.Auth.Services;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Views;
 using Chameleon.Avalonia.Controls.UserProfilesView;
@@ -20,6 +19,7 @@ using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.Automation.Views;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Views.List;
+using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Interfaces.Modules;
@@ -45,6 +45,21 @@ using System.Reflection;
 
 namespace Chameleon.Av.Fluent;
 
+[Obsolete("Added for compatibility with corrent infrastructure project until _authSession refactoed out only")]
+public class AuthSession : IAuthSession {
+	public long UserId { get; set; }
+	public long? CreatorUserId { get; set; }
+	public string UserName { get; set; }
+	public string AuthToken { get; set; }
+	public bool HasAuthToken => !string.IsNullOrEmpty(AuthToken);
+	public long ExpireInSeconds { get; set; }
+	public string EncryptedAccessToken { get; set; }
+	public string AuthRefreshToken { get; set; }
+	public string[] Permissions { get; set; }
+	public ILimits Limits { get; set; }
+	public bool TookGuidedTour { get; set; }
+	public bool CanCreateProfiles { get; set; }
+}
 public partial class App : PrismApplication {
 	public static Action<MainWindow>? OnFramworkInitComplete;
 
@@ -90,7 +105,7 @@ public partial class App : PrismApplication {
 		cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
 
 		containerRegistry.RegisterSingleton<IIocManager, IocManager>();
-		containerRegistry.RegisterSingleton<IExtensionLoaderService, ExtensionLoaderService>();
+		//containerRegistry.RegisterSingleton<IExtensionLoaderService, ExtensionLoaderService>();
 
 		Container.AddInfrastructure();
 
@@ -99,7 +114,6 @@ public partial class App : PrismApplication {
 		Container.RegisterTypesFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);
 		Container.RegisterMapperFrom(typeof(Chameleon.Application.AssemblyResolver).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Common.AssemblyResolver).Assembly);
-		Container.RegisterTypesFrom(typeof(AuthService).Assembly);
 		Container.RegisterTypesFrom(Assembly.GetExecutingAssembly());
 
 		// cr.RegisterSingleton<ITaskDialogAware, MainAppSplashContent>();
@@ -142,7 +156,7 @@ public partial class App : PrismApplication {
 			containerRegistry.Register<IAutomationView, Chameleon.app.Avalonia.Views.Playwright.AutomationView>();
 			containerRegistry.RegisterInstance(IoC.GetService<IPlaywriteService>());
 			containerRegistry.RegisterInstance(IoC.GetService<IPlaywrightScriptRepository>());
-			containerRegistry.RegisterInstance(IoC.GetService<IExtensionLoaderService>());
+			//containerRegistry.RegisterInstance(IoC.GetService<IExtensionLoaderService>());
 			containerRegistry.RegisterInstance(IoC.GetService<ISysBrowserService>());
 			containerRegistry.RegisterInstance(IoC.GetService<ICopyPastaService>());
 		}
@@ -154,7 +168,6 @@ public partial class App : PrismApplication {
 				.AddEnvironmentVariables()
 				.Build(), 
 				Path.Combine(Chameleon.lib.Common.Constants.Consts.AppDataDir, Chameleon.lib.Common.Constants.Consts.AppSettingsFileName));
-
 		}, (services) => {
 			_ = services
 			.AddSingleton<IDispatchService, DispatchService>()
@@ -168,7 +181,7 @@ public partial class App : PrismApplication {
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, Chameleon.lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
 			.AddSingleton<Chameleon.app.Avalonia.ViewModels.Playwright.AutomationViewModel>()
 			//SysBrowser
-			.AddSingleton<IExtensionLoaderService, ExtensionLoaderService>()
+			//.AddSingleton<IExtensionLoaderService, ExtensionLoaderService>()
 			.AddSingleton<ISysBrowserService, SysBrowserService>();
 		});
 		// Setup IoC
