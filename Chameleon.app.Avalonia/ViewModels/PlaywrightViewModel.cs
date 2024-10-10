@@ -4,15 +4,13 @@ using Chameleon.lib.Common;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.Avalonia.Common.Collections;
-using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.Common.Helpers;
 using Chameleon.app.Avalonia.Models.Playwright;
 using Chameleon.app.Avalonia.lib;
 
-namespace Chameleon.app.Avalonia.ViewModels.Playwright;
+namespace Chameleon.app.Avalonia.ViewModels;
 
-public partial class AutomationViewModel
+public partial class PlaywrightViewModel
 			: ViewModelObjectBase {
 	private readonly IPlaywrightScriptRepository repository;
 	private FileSystemWatcher? watcher;
@@ -30,7 +28,7 @@ public partial class AutomationViewModel
 	[ObservableProperty]
 	private string _userScriptsDirectory = "";
 
-	public AutomationViewModel(IPlaywrightScriptRepository repository) : base("Bundled Playwright Scripts")
+	public PlaywrightViewModel(IPlaywrightScriptRepository repository) : base("Bundled Playwright Scripts")
 	{
 		this.repository = repository;
 

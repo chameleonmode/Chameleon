@@ -55,6 +55,5 @@
 	  <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfilesView\Chameleon.Avalonia.Controls.UserProfilesView.csproj" />
 	  <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj" />
 	  <ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
-	  <ProjectReference Include="..\Chameleon.Avalonia.Controls.Settings\Chameleon.Avalonia.Controls.Settings.csproj" />
 	</ItemGroup>
 </Project>

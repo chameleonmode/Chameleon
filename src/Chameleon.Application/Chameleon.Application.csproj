@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Chameleon.app.lib\Chameleon.app.lib.csproj" />
+    <ProjectReference Include="..\..\Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj" />
     <ProjectReference Include="..\Chameleon.Common\Chameleon.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Core\Chameleon.Core.csproj" />
     <ProjectReference Include="..\Chameleon.Domain\Chameleon.Domain.csproj" />

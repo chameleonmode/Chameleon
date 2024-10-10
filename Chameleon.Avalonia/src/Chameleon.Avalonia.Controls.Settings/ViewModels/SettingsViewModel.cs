@@ -9,8 +9,6 @@ using Avalonia;
 using FluentAvalonia.Styling;
 using Avalonia.Media;
 using System.Reflection;
-using Chameleon.lib.Common;
-using Chameleon.app.lib.Models;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels;
 
@@ -133,8 +131,8 @@ public partial class SettingsViewModel(IApplicationUser user, IApplicationSettin
 	public async Task Logout()
 	{
 		await _settingsService.Logout();
-		var login = IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) ?? new(_settings!.Login.LoginName, _settings.Login.LicenseKey, false);
-		IoC.SetJsonValue(new LoginSettings(login.LoginName, login.LicenseKey, false), nameof(LoginSettings));
+		//var login = IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) ?? new(_settings!.Login.LoginName, _settings.Login.LicenseKey, false);
+		//IoC.SetJsonValue(new LoginSettings(login.LoginName, login.LicenseKey, false), nameof(LoginSettings));
 	}
 
 	//TODO: refactor

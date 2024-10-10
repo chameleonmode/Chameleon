@@ -10,24 +10,16 @@ using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.ViewModels;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces;
-using Chameleon.Interfaces.App.Automation.Views;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.Dashboard;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.Startup;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Navigation;
 using FluentAvalonia.UI.Windowing;
-using System.Xml.Linq;
-using System.Linq;
 using Chameleon.Avalonia.Common.Helpers;
-using static System.Net.Mime.MediaTypeNames;
 using Avpplication = Avalonia.Application;
 using Chameleon.Interfaces.FunctionalSettings;
-using Chameleon.lib.Common;
-using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.app.Avalonia;
 using Chameleon.lib.Common.ServiceManagers;
 
@@ -60,7 +52,7 @@ public partial class MainView : UserControl {
 						{
 								 NavHeader = "Automation",
 								IconKey = "AutomationIcon",
-								Tag = typeof(IAutomationView)
+								Tag = typeof(Chameleon.app.Avalonia.Views.PlaywrightView)
 						}
 				},
 				{
@@ -80,7 +72,7 @@ public partial class MainView : UserControl {
 								NavHeader = "Settings",
 								IconKey = "SettingsIcon",
 								ShowsInFooter = true,
-								Tag = typeof(ISettingsView)
+								Tag = typeof(Chameleon.app.Avalonia.Views.SettingsView)
 						}
 				}
 		};

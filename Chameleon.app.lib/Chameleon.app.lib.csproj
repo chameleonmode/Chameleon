@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\Auth\" />
+    <Folder Include="Models\Settings\" />
+    <Folder Include="Services\Auth\" />
     <Folder Include="Services\Settings\" />
   </ItemGroup>
 

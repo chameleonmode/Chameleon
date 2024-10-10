@@ -1,5 +1,4 @@
 ﻿using Chameleon.app.Avalonia.Models.Playwright;
-using Chameleon.app.Avalonia.ViewModels.Playwright;
 using Chameleon.Avalonia.Common.Collections;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Common.Helpers;
@@ -16,7 +15,6 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;

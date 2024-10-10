@@ -40,6 +40,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Prism.DryIoc;
+using Prism.Ioc;
 
 using System.Reflection;
 
@@ -127,7 +128,6 @@ public partial class App : PrismApplication {
 		cr.Register<IUserProfileSidePanelViewModel, UserProfileSidePanelViewModel>();
 
 		// Views - Viewmodels
-		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.ViewModels.SettingsViewModel).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.Functional.ViewModels.FunctionalSettingsViewModel).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfilesView.ViewModels.ProjectsViewModel).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Av.Fluent.ViewModels.MainViewViewModel).Assembly);
@@ -152,8 +152,8 @@ public partial class App : PrismApplication {
 			containerRegistry.RegisterInstance(IoC.GetService<ILoggerFactory>());
 			containerRegistry.Register(typeof(ILogger<>), typeof(Logger<>));
 
-
-			containerRegistry.Register<IAutomationView, Chameleon.app.Avalonia.Views.Playwright.AutomationView>();
+			containerRegistry.RegisterInstance(IoC.GetService<Chameleon.app.Avalonia.Views.PlaywrightView>());
+			containerRegistry.RegisterInstance(IoC.GetService<Chameleon.app.Avalonia.Views.SettingsView>());
 			containerRegistry.RegisterInstance(IoC.GetService<IPlaywriteService>());
 			containerRegistry.RegisterInstance(IoC.GetService<IPlaywrightScriptRepository>());
 			//containerRegistry.RegisterInstance(IoC.GetService<IExtensionLoaderService>());
@@ -174,15 +174,18 @@ public partial class App : PrismApplication {
 			.AddSingleton<IToasterService, ToasterService>()
 			.AddSingleton<IMboxService, MboxService>()
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
+			//SysBrowser
+			.AddSingleton<ISysBrowserService, SysBrowserService>()
+			//Settings
+			.AddSingleton<Chameleon.app.Avalonia.Views.SettingsView>()
+			.AddSingleton<Chameleon.app.Avalonia.ViewModels.SettingsViewModel>()
 			//Playwright
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.ICompileScriptService, Chameleon.lib.Playwright.Services.CompileScriptService>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywriteService, Chameleon.lib.Playwright.Services.PlaywriteService>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywrightScriptRepository, Chameleon.lib.Playwright.Services.PlaywrightScriptRepository>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, Chameleon.lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.Playwright.AutomationViewModel>()
-			//SysBrowser
-			//.AddSingleton<IExtensionLoaderService, ExtensionLoaderService>()
-			.AddSingleton<ISysBrowserService, SysBrowserService>();
+			.AddSingleton<Chameleon.app.Avalonia.ViewModels.PlaywrightViewModel>()
+			.AddSingleton<Chameleon.app.Avalonia.Views.PlaywrightView>();
 		});
 		// Setup IoC
 		IoC.Instance.Init(action: setup);

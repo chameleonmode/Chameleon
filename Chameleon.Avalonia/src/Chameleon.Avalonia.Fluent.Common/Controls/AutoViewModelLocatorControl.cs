@@ -5,6 +5,7 @@ using Chameleon.Common.Helpers;
 using Chameleon.Core.Attributes;
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces;
+using Chameleon.lib.Common;
 using Chameleon.lib.Common.Interfaces.Sys;
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -28,8 +29,10 @@ public class AutoViewModelLocatorControl : UserControl {
 	private object? AutoLocateVM()
 	{
 		var viewType = GetType();
+		if(viewType.GetCustomAttribute<Chameleon.lib.Common.Attributes.ViewModelAttribute>()?.Type is Type t)
+			return IoC.GetService(t);
 
-		Type? vmt =
+		var vmt =
 				viewType.GetCustomAttribute<ViewModelAttribute>()?.Type ??
 				Type.GetType($"{viewType.Namespace}.ViewModels.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}") ??
 				Type.GetType($"{viewType.Namespace.Replace(".Views", ".ViewModels")}.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}");
