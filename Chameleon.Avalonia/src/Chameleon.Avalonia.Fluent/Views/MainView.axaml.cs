@@ -167,8 +167,10 @@ public partial class MainView : UserControl {
 	{
 		var page = pages.SingleOrDefault(
 						p => p.Value.Tag.Name[1..] == (e.Content as Control).GetType().Name).Value;
-		page ??= e.Content.GetType().FullName.StartsWith("Chameleon.Avalonia.Controls.Settings") ?
+		page ??= e.Content.GetType().FullName.StartsWith("Chameleon.app.Avalonia.Views.Settings") ?
 				pages["Settings"] :
+				e.Content.GetType().FullName.StartsWith("Chameleon.app.Avalonia.Views.Playwright") ?
+				pages["Automation"] :
 				pages["Profiles"];
 
 		foreach (var nvi in from NavigationViewItem nvi in ((List<NavigationViewItemBase>)NavView.MenuItemsSource).Concat((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource)
