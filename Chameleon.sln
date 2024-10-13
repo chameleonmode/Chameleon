@@ -93,11 +93,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.WebBrowser", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "chameleon.assets", "..\chameleon-lib\Chameleon.Assets\chameleon.assets.csproj", "{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia.Community", "Chameleon.app.Avalonia.Community.lib\Chameleon.app.Avalonia.Community.csproj", "{8B0E0C0A-5899-4F36-A589-FA393301BDF0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.Api", "..\chameleon-lib\Chameleon.lib.Api\Chameleon.lib.Api.csproj", "{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.app.Avalonia.lib", "Chameleon.app.Avalonia.lib\Chameleon.app.Avalonia.lib.csproj", "{914C9958-F3B8-4EA5-ACE5-E1F15B57A41D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia.lib", "Chameleon.app.Avalonia.lib\Chameleon.app.Avalonia.lib.csproj", "{914C9958-F3B8-4EA5-ACE5-E1F15B57A41D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -213,10 +211,6 @@ Global
 		{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8B0E0C0A-5899-4F36-A589-FA393301BDF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B0E0C0A-5899-4F36-A589-FA393301BDF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B0E0C0A-5899-4F36-A589-FA393301BDF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8B0E0C0A-5899-4F36-A589-FA393301BDF0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -261,7 +255,6 @@ Global
 		{87EF0DE8-2435-413F-88F2-B9321DFB2DCA} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
 		{8A7AFB12-CF43-4F52-A820-8DEBAFB90A72} = {9E366904-BF6B-4E48-88AC-AA8FE97659AA}
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
-		{8B0E0C0A-5899-4F36-A589-FA393301BDF0} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
 		{914C9958-F3B8-4EA5-ACE5-E1F15B57A41D} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

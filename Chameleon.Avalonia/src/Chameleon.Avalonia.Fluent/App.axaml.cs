@@ -4,7 +4,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 
-using Chameleon.app.Avalonia.Community.Services;
+using Chameleon.app.Avalonia.lib.Community.Services;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Views;
@@ -16,7 +16,6 @@ using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Infrastructure.Ioc;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Infrastructure.Repositories;
-using Chameleon.Interfaces.App.Automation.Views;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Views.List;
 using Chameleon.Interfaces.Auth;

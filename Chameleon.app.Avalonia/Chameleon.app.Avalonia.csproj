@@ -11,7 +11,6 @@
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Common\Chameleon.lib.Common.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.CommunityToolkit\Chameleon.lib.CommunityToolkit.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Playwright\Chameleon.lib.Playwright.csproj" />
-    <ProjectReference Include="..\Chameleon.app.Avalonia.Community.lib\Chameleon.app.Avalonia.Community.csproj" />
     <ProjectReference Include="..\Chameleon.app.Avalonia.lib\Chameleon.app.Avalonia.lib.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />

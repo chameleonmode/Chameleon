@@ -1,5 +1,5 @@
-﻿using Chameleon.app.Avalonia.Community;
-using Chameleon.app.Avalonia.Community.ViewModels;
+﻿using Chameleon.app.Avalonia.lib.Community.Controls;
+using Chameleon.app.Avalonia.lib.Community.ViewModels;
 using Chameleon.app.Avalonia.Models;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Auth;
@@ -38,7 +38,7 @@ public class AppStartup {
 				}
 			}
 			if (!success) {
-				var res = await Mbox.ShowTaskDialog(() => loginvm, new MboxLoginUserControl(), "User Login", "Enter the provided activation information", symbas: Enums.Symbas.Account, btns: Enums.MBoxButtons.OkCancel);
+				var res = await Mbox.ShowTaskDialog(() => loginvm, new MboxLoginUserControl(), "User Login", "Enter the provided activation information", symbas: Enums.Symbas.ContactInfo, btns: Enums.MBoxButtons.OkCancel);
 				if (res == Enums.TaskDialogResult.Cancel)
 					return success;
 				ArgumentNullException.ThrowIfNull(loginvm.UserName, "UserName");

@@ -7,6 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-  	<PackageReference Include="Avalonia" />
+	<PackageReference Include="Avalonia" />
+	<PackageReference Include="FluentAvaloniaUI" />
+	<PackageReference Include="CommunityToolkit.Mvvm" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.Assets\chameleon.assets.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Common\Chameleon.lib.Common.csproj" />
+    <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Community\Controls\MboxLoginUserControl.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Community\Controls\MboxTitleUserControl.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
