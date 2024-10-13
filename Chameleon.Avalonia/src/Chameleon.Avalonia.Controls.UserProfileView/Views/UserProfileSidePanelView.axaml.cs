@@ -6,7 +6,7 @@ using Chameleon.Interfaces.UserProfiles;
 
 namespace Chameleon.Avalonia.Controls.UserProfileView;
 
-public partial class UserProfileSidePanelView : AutoViewModelLocatorControl, IUserProfileSidePanelView
+public partial class UserProfileSidePanelView : UserControl
 {
     public UserProfileSidePanelView()
     {

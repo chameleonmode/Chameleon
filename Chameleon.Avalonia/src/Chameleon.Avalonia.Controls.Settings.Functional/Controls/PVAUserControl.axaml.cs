@@ -5,7 +5,7 @@ using Chameleon.Av.Fluent.Common.Controls;
 
 namespace Chameleon.Avalonia.Controls.Settings.Functional;
 
-public partial class PVAUserControl : UserControl, IPVApiView
+public partial class PVAUserControl : UserControl
 {
     public PVAUserControl()
     {

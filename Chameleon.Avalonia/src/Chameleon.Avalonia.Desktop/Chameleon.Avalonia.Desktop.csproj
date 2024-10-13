@@ -56,13 +56,11 @@
     <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Settings.Functional\Chameleon.Avalonia.Controls.Settings.Functional.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Dialogs\Chameleon.Avalonia.Fluent.Dialogs.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent\Chameleon.Avalonia.Fluent.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Dashboard\Chameleon.Avalonia.Controls.Dashboard.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfilesView\Chameleon.Avalonia.Controls.UserProfilesView.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfileView\Chameleon.Avalonia.Controls.UserProfileView.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
   </ItemGroup>
 	

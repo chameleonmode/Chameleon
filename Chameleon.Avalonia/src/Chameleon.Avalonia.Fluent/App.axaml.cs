@@ -120,19 +120,18 @@ public partial class App : PrismApplication {
 
 		// Dialogs
 		// //Chameleon.Av.Fluent.Dialogs
-		Container.RegisterTypesFrom(typeof(Chameleon.Av.Fluent.Dialogs.AssemblyResolver).Assembly);
 		cr.Register<IMoveUserProfilesPopupView, MoveUserProfilesPopupView>();
 		cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();
-		cr.Register<IUserProfileSidePanelView, UserProfileSidePanelView>();
-		cr.Register<IUserProfileSidePanelViewModel, UserProfileSidePanelViewModel>();
+		//cr.Register<IUserProfileSidePanelView, UserProfileSidePanelView>();
+		//cr.Register<IUserProfileSidePanelViewModel, UserProfileSidePanelViewModel>();
 
 		// Views - Viewmodels
 		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.Functional.ViewModels.FunctionalSettingsViewModel).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfilesView.ViewModels.ProjectsViewModel).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Av.Fluent.ViewModels.MainViewViewModel).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Dashboard.ViewModels.DashboardViewModel).Assembly);
-		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfileView.ViewModels.UserProfileIdentityViewModel).Assembly);
-		Container.RegisterMapperFrom(typeof(Chameleon.Avalonia.Controls.UserProfileView.ViewModels.UserProfileIdentityViewModel).Assembly);
+		//Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfileView.ViewModels.UserProfileIdentityViewModel).Assembly);
+		Container.RegisterMapperFrom(typeof(Chameleon.Avalonia.Controls.UserProfilesView.ViewModels.ProjectsViewModel).Assembly);
 	}
 
 	private void RegisterIocContainer(IContainerRegistry containerRegistry)
@@ -172,6 +171,7 @@ public partial class App : PrismApplication {
 			.AddSingleton<IDispatchService, DispatchService>()
 			.AddSingleton<IToasterService, ToasterService>()
 			.AddSingleton<IMboxService, MboxService>()
+			.AddSingleton<IShowWindowService, ShowWindowService>()
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
 			//SysBrowser
 			.AddSingleton<ISysBrowserService, SysBrowserService>()

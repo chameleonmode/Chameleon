@@ -6,6 +6,11 @@ using Chameleon.app.Avalonia.lib.Community.ViewModels;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.app.Avalonia.lib.Community.Controls;
+using Avalonia.Controls;
+using Chameleon.Common.Helpers;
+using Chameleon.Interfaces.Dialogs;
+using Chameleon.Interfaces;
+using Chameleon.Avalonia.Common.Helpers;
 
 namespace Chameleon.app.Avalonia.lib.Community.Services;
 public class MboxService(IDispatchService dispatcher) : IMboxService {
@@ -30,6 +35,38 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 			var res = await dialog.ShowAsync();
 			return (Enums.MboxResult)res;
 		});
+	}
+
+	public async Task<Enums.MboxResult> ShowContentDialog<TView, TViewModel>(Action<TViewModel> initialize)
+	{
+		if (ContainerServiceHelper.Resolve<TView>() is Control view) {
+			var viewModel = (TViewModel)view.DataContext!;
+
+			initialize?.Invoke(viewModel);
+
+			var title = viewModel is IPageViewModel pvm ? pvm.Title : Consts.AppName;
+
+			var btns = Enums.MBoxButtons.OkCancel;
+
+			var dialog = new ContentDialog() {
+				Title = title,
+				Content = view,
+				PrimaryButtonText = btns.PrimaryBtnText(),
+				SecondaryButtonText = btns.SecondaryBtnText(),
+				CloseButtonText = btns.CloseBtnText(),
+				DefaultButton = ContentDialogButton.Primary,
+			};
+
+			if (viewModel is IContentDialogViewModel cdvm) {
+				dialog.Closing += (s, e) => {
+					cdvm.OnDialogClosing((IContentDialogResult)e.Result);
+				};
+			}
+			var res = await dialog.ShowAsync(ApplicationHelper.GetMainWindow());
+			return (Enums.MboxResult)res;
+		}
+
+		throw new ArgumentNullException("TView");
 	}
 
 	public async Task<Enums.TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Consts.AppName, object? footer = null, Enums.Symbas symbas = Enums.Symbas.Alert, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo)
@@ -114,7 +151,7 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 				XamlRoot = AppLayers.GetMainWindow()
 			};
 
-			var result = await td.ShowAsync();
+			var result = await td.ShowAsync(true);
 			return result switch {
 				"myResult" => Enums.TaskDialogResult.OK,
 				TaskDialogStandardResult.Cancel => Enums.TaskDialogResult.Cancel,

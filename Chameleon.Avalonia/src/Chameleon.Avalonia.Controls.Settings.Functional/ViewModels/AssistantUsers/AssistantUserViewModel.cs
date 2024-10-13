@@ -139,7 +139,7 @@ public partial class AssistantUserViewModel(
     [RelayCommand]
     private void AddMoreProfiles()
     {
-        ContentDialogService.ShowAsync<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
+		Mbox.ShowContentDialog<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
             viewModel =>
             {
                 viewModel.Title = "Add Profiles";

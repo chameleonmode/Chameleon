@@ -1,4 +1,6 @@
 ﻿using Chameleon.Authorization;
+using Chameleon.Av.Fluent.Dialogs.ViewModels;
+using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 using Chameleon.Common.Helpers;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
@@ -74,7 +76,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 		_applicationUser = applicationUser;
 		_userProfile = userProfile;
 
-		Title = _userProfile.Title;
+		Title = userProfile.Title ?? "xxx";
 
 		IsChromeRunning = _userProfile.IsChromeRunning;
 		IsBraveRunning = _userProfile.IsBraveRunning;
@@ -115,7 +117,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 	[RelayCommand]
 	private void ShowViewProfile()
 	{
-		ContainerServiceHelper.Resolve<IWindowDialogService>()?.ShowTopmost<IUserProfileSidePanelView, IUserProfileSidePanelViewModel>(vm => {
+		WShower.ShowTopmost<UserProfileSidePanelView, UserProfileSidePanelViewModel>(vm => {
 			vm.UserProfile = UserProfile;
 		}, null, "Copy Pasta", 156);
 	}
@@ -168,7 +170,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 	[RelayCommand]
 	public void OpenUserBrowser()
 	{
-		ContainerServiceHelper.Resolve<IWindowDialogService>()?.ShowTopmost<ITopMostSidePanelView, ITopMostSidePanelViewModel>(
+		WShower.ShowTopmost(TopMostSidePanelViewModel.Instance, TopMostSidePanelView.Instance,
 				vm => {
 					if (!vm.RunningList.Contains(this))
 						vm.RunningList.Add(this);

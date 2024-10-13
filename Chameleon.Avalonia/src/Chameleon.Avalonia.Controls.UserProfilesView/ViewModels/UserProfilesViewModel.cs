@@ -15,6 +15,7 @@ using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
@@ -441,11 +442,11 @@ public partial class UserProfilesViewModel
 		if (_folder?.Id == 0)
 			return;
 
-		if (await ContentDialogService.ShowAsync<IAddUserProfilesPopupView, IAddUserProfilesPopupViewModel>(
+		if (await Mbox.ShowContentDialog<IAddUserProfilesPopupView, IAddUserProfilesPopupViewModel>(
 				viewModel => {
 					viewModel.Title = "Add Profiles";
 					viewModel.Folder = _folder;
-				}) == IContentDialogResult.Primary) {
+				}) == Enums.MboxResult.Primary) {
 			Filter = p => p.FolderId == _folder.Id;
 			OnHandleUserEvent();
 		}
@@ -458,11 +459,11 @@ public partial class UserProfilesViewModel
 				.Select(p => (IUserProfile)p.UserProfile)
 				.ToList();
 
-		if (await ContentDialogService.ShowAsync<IMoveUserProfilesPopupView, IMoveUserProfilesPopupViewModel>(
+		if (await Mbox.ShowContentDialog<IMoveUserProfilesPopupView, IMoveUserProfilesPopupViewModel>(
 				 viewModel => {
 					 viewModel.Title = "Add To Folder";
 					 viewModel.Profiles = selectedUserProfiles;
-				 }) == IContentDialogResult.Primary) {
+				 }) == Enums.MboxResult.Primary) {
 			if (_folder?.Id != 0) {
 				Filter = p => p.FolderId == _folder?.Id;
 				OnHandleUserEvent();

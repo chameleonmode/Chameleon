@@ -15,7 +15,6 @@
     <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Dialogs\Chameleon.Avalonia.Fluent.Dialogs.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Views\AssistantUsersView.axaml.cs">

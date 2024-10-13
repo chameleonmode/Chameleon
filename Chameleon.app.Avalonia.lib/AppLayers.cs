@@ -34,4 +34,25 @@ public static class AppLayers {
 	{
 		return GetMainWindow()?.GetVisualRoot() as Visual;
 	}
+
+	//TODO: implement
+	//public static void InitializeExceptionHandlerLayer()
+	//{
+	//	AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+	//			OnUnhandledException(
+	//					(Exception)e.ExceptionObject,
+	//					nameof(AppDomain.CurrentDomain.UnhandledException)
+	//					);
+
+	//	//TODO: ? Application.Current.DispatcherUnhandledException += (s, e) =>
+	//	//    e.Handled = OnUnhandledException(
+	//	//        e.Exception,
+	//	//        nameof(Application.Current.DispatcherUnhandledException)
+	//	//        );
+
+	//	TaskScheduler.UnobservedTaskException += (s, e) =>
+	//	{
+	//		e.SetObserved();
+	//	};
+	//}
 }

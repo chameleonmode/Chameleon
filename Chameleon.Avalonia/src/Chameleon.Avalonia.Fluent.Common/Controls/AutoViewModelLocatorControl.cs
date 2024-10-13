@@ -13,8 +13,19 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Reflection;
 
 namespace Chameleon.Av.Fluent.Common.Controls;
+public class AutoViewModelInitControl : UserControl {
+	protected override async void OnLoaded(RoutedEventArgs e)
+	{
+		base.OnLoaded(e);
+		if (DataContext is IHaveInitialize sp) {
+			await sp.InvokeInitializeAsyncCommand(e);
+		} else if (DataContext is IAmInitializer i) {
+			await i.InitializeAsync(e);
+		}
+	}
+}
 
-public class AutoViewModelLocatorControl : UserControl {
+public class AutoViewModelLocatorControl : AutoViewModelInitControl {
 	public AutoViewModelLocatorControl()
 	{
 		DataContext = AutoLocateVM() ??
@@ -39,16 +50,6 @@ public class AutoViewModelLocatorControl : UserControl {
 
 
 		return ContainerServiceHelper.Resolve(vmt);
-	}
-
-	protected override async void OnLoaded(RoutedEventArgs e)
-	{
-		base.OnLoaded(e);
-		if (DataContext is IHaveInitialize sp) {
-			await sp.InvokeInitializeAsyncCommand(e);
-		} else if (DataContext is IAmInitializer i) {
-			await i.InitializeAsync(e);
-		}
 	}
 }
 

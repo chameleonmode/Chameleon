@@ -3,6 +3,7 @@
 using Chameleon.Core.Util;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Records;
+using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.ThirdParty.SMSapi.Codesverify;
 using Chameleon.lib.ThirdParty.SMSapi.Interfaces;
@@ -127,9 +128,7 @@ public partial class PVApiModel
 
 	public void Popout()
 	{
-		var windowDialogService = ContainerServiceHelper.Resolve<IWindowDialogService>();
-
-		windowDialogService?.ShowTopmost<IPVApiView, IPVApiModel>(new PVApiModel(_pnapinstance) { HasCancel = HasCancel }, async vm => {
+		WShower.ShowTopmost<PVAUserControl, PVApiModel>(new PVApiModel(_pnapinstance) { HasCancel = HasCancel }, async vm => {
 			vm.IsVisibleSave = false;
 			_ = await vm.LoadedTCS.Task;
 		}, null, Title!, 560);

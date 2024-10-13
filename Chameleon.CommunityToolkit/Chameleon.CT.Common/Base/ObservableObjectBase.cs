@@ -12,8 +12,6 @@ public abstract partial class ObservableObjectBase : ObservableObject,
     IPageViewModel
 	{
     private readonly IEventAggregator eventAggregator;
-    private readonly IContentDialogService _cntentDialogService;
-    private readonly IWindowDialogService _iWindowDialogService;
 
     private long _isBusy;
     public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
@@ -32,9 +30,7 @@ public abstract partial class ObservableObjectBase : ObservableObject,
 
     public ObservableObjectBase()
     {
-        _cntentDialogService = ContainerServiceHelper.Resolve<IContentDialogService>();
         eventAggregator = ContainerServiceHelper.Resolve<IEventAggregator>() ?? new EventAggregator();
-        _iWindowDialogService = ContainerServiceHelper.Resolve<IWindowDialogService>();
 
 
         InitializeAsyncCommand = new AsyncRelayCommand<object>(
@@ -46,9 +42,7 @@ public abstract partial class ObservableObjectBase : ObservableObject,
             },
             AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
     }
-    public IContentDialogService ContentDialogService => _cntentDialogService;
     public IEventAggregator EventAggregator => eventAggregator;
-    public IWindowDialogService WindowDialogService => _iWindowDialogService;
     public IAsyncRelayCommand InitializeAsyncCommand { get; }
 
     public virtual Task InitAsync(object? param)

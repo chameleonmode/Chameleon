@@ -2,6 +2,5 @@
 
 public interface IDialogViewModelBase
 {
-    IContentDialogService ContentDialogService { get; }
     Task<IContentDialogResult> ShowAsync();
 }

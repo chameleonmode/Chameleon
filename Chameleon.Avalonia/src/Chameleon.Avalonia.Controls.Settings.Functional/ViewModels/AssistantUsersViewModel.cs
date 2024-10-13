@@ -123,7 +123,7 @@ public partial class AssistantUsersViewModel
         }
         else
         {
-            ContentDialogService.ShowAsync<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
+			Mbox.ShowContentDialog<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
                 viewModel =>
                 {
                     viewModel.Title = "Invite User";
