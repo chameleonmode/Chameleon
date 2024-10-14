@@ -1,4 +1,4 @@
-﻿using Chameleon.app.Avalonia.Models.Playwright;
+﻿using Chameleon.app.Avalonia.Models;
 using Chameleon.Avalonia.Common.Collections;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Common.Helpers;
@@ -95,11 +95,11 @@ public partial class UserProfilesViewModel
 		}
 	}
 
-	public AvList<AutomationScriptModel> PlaywrightScripts { get; } = [];
+	public AvList<PlaywrightScript> PlaywrightScripts { get; } = [];
 
 	public bool IsSelectedScript => SelectedPlaywrightScript != null;
-	private AutomationScriptModel? _selectedPlaywrightScript;
-	public AutomationScriptModel? SelectedPlaywrightScript {
+	private PlaywrightScript? _selectedPlaywrightScript;
+	public PlaywrightScript? SelectedPlaywrightScript {
 		get { return _selectedPlaywrightScript; }
 		set {
 			if (value != null && _selectedPlaywrightScript != value) {
@@ -273,8 +273,8 @@ public partial class UserProfilesViewModel
 	{
 		void AddMappedScripts(IEnumerable<PlaywriteRunScriptOptions> scripts)
 		{
-			PlaywrightScripts.AddMapped(scripts, (Func<PlaywriteRunScriptOptions, AutomationScriptModel>)(b => {
-				var viewModel = new AutomationScriptModel(b);
+			PlaywrightScripts.AddMapped(scripts, (Func<PlaywriteRunScriptOptions, PlaywrightScript>)(b => {
+				var viewModel = new PlaywrightScript(b);
 				viewModel.Parameters.AddRange((IEnumerable<PlaywrightDescriptionParam>)b.Description!.Parameters);
 				return viewModel;
 			}));

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Chameleon.Controls.AssistantUsers.Interfaces;
 using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.Assistants.Events;
@@ -11,6 +12,7 @@ using Chameleon.Interfaces.App.Permissions.ProfileFolderPermission;
 using Chameleon.Interfaces.App.ShareFolders;
 
 using Chameleon.Interfaces.App.Users.AssistantUser.Events;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 public partial class ProfileViewModel

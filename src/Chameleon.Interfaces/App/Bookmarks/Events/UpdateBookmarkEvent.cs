@@ -1,8 +1,9 @@
 ﻿
 
-namespace Chameleon.Interfaces.Bookmarks
-{
-    public class UpdateBookmarkEvent
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.Bookmarks {
+	public class UpdateBookmarkEvent
         : PubSubEvent<BookmarkEventArgs>
     {
     }

@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
+
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserSettings;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 
-namespace Chameleon.Infrastructure.UserSettings
-{
-    public class UserDefaultSettingsRepository
+namespace Chameleon.Infrastructure.UserSettings {
+	public class UserDefaultSettingsRepository
          : Repository<UserDefaultSetting,
             IUserDefaultSetting,
             int,

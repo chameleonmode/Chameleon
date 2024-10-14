@@ -1,7 +1,8 @@
 ﻿using System;
 
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Interfaces.Auth
-{
-    public class LoginCancelEvent : PubSubEvent<EventArgs> { }
+
+namespace Chameleon.Interfaces.Auth {
+	public class LoginCancelEvent : PubSubEvent<EventArgs> { }
 }

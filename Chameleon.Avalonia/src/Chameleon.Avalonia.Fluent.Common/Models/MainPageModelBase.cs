@@ -5,20 +5,21 @@ namespace Chameleon.Av.Fluent.Common.Models;
 
 public class MainPageModelBase
 {
-    public Type Tag { get; set; }
+    public Type? Tag { get; set; }
 
     public string? NavHeader { get; set; }
 
-    public string? IconKey { get; set; }
+    public string IconKey { get; set; } = "HomeIcon"; // Default to "HomeIcon
 
-    public bool ShowsInFooter { get; set; }
+
+	public bool ShowsInFooter { get; set; }
     public NavigationViewItemBase GetNavigationViewItemBase(UserControl c)
     {
         var nvi = new NavigationViewItem
         {
             Content = NavHeader,
             Tag = this,
-            IconSource = (IconSource)c.FindResource(IconKey),
+            IconSource = (IconSource)c.FindResource(IconKey)!,
         };
         nvi.Classes.Add("MainAppNav");
         return nvi;

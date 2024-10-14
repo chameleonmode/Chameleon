@@ -9,7 +9,6 @@ global using Chameleon.Interfaces.App.UserSettings.View;
 global using Chameleon.Av.Fluent.Common.Pages;
 global using Chameleon.Interfaces.UserProfiles;
 global using Chameleon.Interfaces.UserSettings;
-global using Chameleon.Prism.Events;
 global using Chameleon.Core.Collections;
 global using Chameleon.Interfaces.Dialogs.ViewModels;
 global using Chameleon.Interfaces.Dialogs;

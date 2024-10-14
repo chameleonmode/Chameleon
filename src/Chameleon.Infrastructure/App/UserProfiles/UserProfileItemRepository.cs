@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+
 using Chameleon.Infrastructure.Api;
 using Chameleon.Infrastructure.Dto;
 using Chameleon.Infrastructure.Repositories;
@@ -6,15 +7,15 @@ using Chameleon.Interfaces.Api;
 using Chameleon.Interfaces.Entities;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Chameleon.Infrastructure.Profiles
-{
-    public class StaticUPFactory
+namespace Chameleon.Infrastructure.Profiles {
+	public class StaticUPFactory
     {
         public static UserProfileItemRepository<
         TEntity, TEntityInterface,

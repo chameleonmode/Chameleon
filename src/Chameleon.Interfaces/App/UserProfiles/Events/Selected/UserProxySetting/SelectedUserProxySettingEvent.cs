@@ -1,8 +1,9 @@
 ﻿
 
-namespace Chameleon.Interfaces.UserProfiles
-{
-    public class SelectedUserProxySettingEvent
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.UserProfiles {
+	public class SelectedUserProxySettingEvent
         : PubSubEvent<SelectedUserProxySettingEventArgs>
     {
 

@@ -6,10 +6,10 @@ using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.Interfaces.Dialogs;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 namespace Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 

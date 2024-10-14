@@ -1,9 +1,10 @@
 ﻿
 using System;
 
-namespace Chameleon.Interfaces.UserProfiles
-{
-    public class UserProxySetFolderIdEvent
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.UserProfiles {
+	public class UserProxySetFolderIdEvent
         : PubSubEvent<UserProxySetFolderIdEventArgs>
     {
 

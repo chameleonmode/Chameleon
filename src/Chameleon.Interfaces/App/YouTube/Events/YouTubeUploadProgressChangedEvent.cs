@@ -1,8 +1,9 @@
 ﻿
 
-namespace Chameleon.Interfaces.YouTube
-{
-    public class YouTubeUploadProgressChangedEvent
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.YouTube {
+	public class YouTubeUploadProgressChangedEvent
         : PubSubEvent<YouTubeUploadProgressChangedEventArgs>
     {
     }

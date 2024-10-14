@@ -3,6 +3,7 @@ using Chameleon.Infrastructure.Users;
 using Chameleon.Interfaces.App.Assistants;
 using Chameleon.Interfaces.App.Assistants.Events;
 using Chameleon.Interfaces.Assistants;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 

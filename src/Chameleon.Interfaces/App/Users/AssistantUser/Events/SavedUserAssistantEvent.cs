@@ -2,9 +2,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace Chameleon.Interfaces.App.Assistants.Events
-{
-    public class SavedUserAssistantEventArgs 
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.App.Assistants.Events {
+	public class SavedUserAssistantEventArgs 
         : EventArgs
     {
         public long Id { get; }

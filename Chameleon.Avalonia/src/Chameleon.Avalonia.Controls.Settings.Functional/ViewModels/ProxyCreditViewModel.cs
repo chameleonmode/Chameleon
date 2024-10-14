@@ -1,4 +1,5 @@
-﻿using Chameleon.lib.Common.ServiceManagers;
+﻿using Chameleon.lib.Common.Interfaces.Sys;
+using Chameleon.lib.Common.ServiceManagers;
 
 namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 

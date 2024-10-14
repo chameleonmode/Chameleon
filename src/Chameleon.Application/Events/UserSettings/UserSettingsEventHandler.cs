@@ -4,11 +4,10 @@ using Chameleon.Interfaces.Settings;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.UserSettings;
 using Chameleon.Interfaces.Windows;
-using Chameleon.Prism.Events;
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Application.Events
-{
-    public class UserSettingsEventHandler 
+namespace Chameleon.Application.Events {
+	public class UserSettingsEventHandler 
         : IUserSettingsEventHandler
     {
         private readonly IMainWindow _mainWindow;

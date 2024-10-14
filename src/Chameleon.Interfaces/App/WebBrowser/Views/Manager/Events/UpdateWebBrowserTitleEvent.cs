@@ -1,8 +1,9 @@
 ﻿
 
-namespace Chameleon.Interfaces.App.WebBrowser.Views.Manager.Events
-{
-    public class UpdateWebBrowserTitleEvent : PubSubEvent<UpdateWebBrowserTitleEventArgs>
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.App.WebBrowser.Views.Manager.Events {
+	public class UpdateWebBrowserTitleEvent : PubSubEvent<UpdateWebBrowserTitleEventArgs>
     {
     }
 

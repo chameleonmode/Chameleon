@@ -1,4 +1,5 @@
 ﻿using Chameleon.Domain.Entities;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
 

@@ -1,9 +1,8 @@
 ﻿using Chameleon.Interfaces.CookiesExcluded;
-using Chameleon.Prism.Events;
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Application.Events
-{
-    public class CookiesExcludedDomainEventHandler
+namespace Chameleon.Application.Events {
+	public class CookiesExcludedDomainEventHandler
         : ICookiesExcludedDomainEventHandler
     {
         private readonly IEventAggregator _eventAggregator;

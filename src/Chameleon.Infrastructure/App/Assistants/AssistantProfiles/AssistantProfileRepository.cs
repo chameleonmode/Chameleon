@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
+
 using Chameleon.Domain.Entities.Assistants;
 using Chameleon.Infrastructure.App.Assistants.AssistantProfiles.Api;
 using Chameleon.Infrastructure.App.Assistants.AssistantProfiles.Api.Dto;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.Assistants;
 using Chameleon.Interfaces.Repository;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Chameleon.Infrastructure.App.Assistants.AssistantProfiles
-{
-    public class AssistantProfileRepository
+namespace Chameleon.Infrastructure.App.Assistants.AssistantProfiles {
+	public class AssistantProfileRepository
         : Repository<AssistantProfile,
             IAssistantProfile,
             long,

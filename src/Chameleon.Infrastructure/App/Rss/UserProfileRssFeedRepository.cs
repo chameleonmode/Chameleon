@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
+
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.Rss;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 
-namespace Chameleon.Infrastructure.Rss
-{
-    public class UserProfileRssFeedRepository
+namespace Chameleon.Infrastructure.Rss {
+	public class UserProfileRssFeedRepository
         : Repository<
             UserProfileRssFeed,
             IUserProfileRssFeed,

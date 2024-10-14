@@ -2,13 +2,12 @@
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
-using Chameleon.Prism.Events;
 using Chameleon.Common.Helpers;
 using Chameleon.lib.Common.ServiceManagers;
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Application.Events
-{
-    public class UserProfileEventHandler : IUserProfileEventHandler
+namespace Chameleon.Application.Events {
+	public class UserProfileEventHandler : IUserProfileEventHandler
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly IUserProfileService _userProfileService;

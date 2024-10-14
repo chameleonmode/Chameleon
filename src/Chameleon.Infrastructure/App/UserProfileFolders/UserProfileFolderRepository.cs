@@ -5,10 +5,10 @@ using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.UserProfileFolders;
 
 using Chameleon.Interfaces.Repository;
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Infrastructure.Profiles
-{
-    public class UserProfileFolderRepository 
+namespace Chameleon.Infrastructure.Profiles {
+	public class UserProfileFolderRepository 
         : Repository<UserProfileFolder,
             IUserProfileFolder,
             int, 

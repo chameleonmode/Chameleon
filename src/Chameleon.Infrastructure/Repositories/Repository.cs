@@ -8,11 +8,11 @@ using Chameleon.Infrastructure.Dto;
 using Chameleon.Interfaces.Entities;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Infrastructure.Repositories
-{
-    //<,,,,,,>
-    public class StaticRepositoryFactory
+namespace Chameleon.Infrastructure.Repositories {
+	//<,,,,,,>
+	public class StaticRepositoryFactory
     {
         public static IRepository<T1, T2, T3> Create<T1, T2, T3>() where T3 : GetAllRequestDto
         {

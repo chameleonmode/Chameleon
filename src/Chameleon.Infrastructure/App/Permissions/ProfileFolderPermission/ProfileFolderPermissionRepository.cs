@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
+
 using Chameleon.Infrastructure.App.Permissions.ProfileFolderPermission.Api;
 using Chameleon.Infrastructure.App.Permissions.ProfileFolderPermission.Api.Dto;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.Permissions.ProfileFolderPermission;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 
-namespace Chameleon.Infrastructure.App.Permissions.ProfileFolderPermission
-{
-    public class ProfileFolderPermissionRepository
+namespace Chameleon.Infrastructure.App.Permissions.ProfileFolderPermission {
+	public class ProfileFolderPermissionRepository
         : Repository<Domain.Entities.Permissions.ProfileFolderPermission.ProfileFolderPermission,
             IProfileFolderPermission,
             ProfileFolderPermissionDto

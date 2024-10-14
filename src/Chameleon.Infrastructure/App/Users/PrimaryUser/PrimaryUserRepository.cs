@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
+
 using Chameleon.Infrastructure.App.Users.PrimaryUser.Api;
 using Chameleon.Infrastructure.App.Users.PrimaryUser.Api.Dto;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.Users.PrimaryUser;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 
-namespace Chameleon.Infrastructure.App.Users.PrimaryUser
-{
-    public class PrimaryUserRepository 
+namespace Chameleon.Infrastructure.App.Users.PrimaryUser {
+	public class PrimaryUserRepository 
         : Repository<Domain.Entities.Users.PrimaryUser.PrimaryUser,
             IPrimaryUser,
             PrimaryUserDto

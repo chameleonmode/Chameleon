@@ -1,9 +1,8 @@
 ﻿using Chameleon.Interfaces.Bookmarks;
-using Chameleon.Prism.Events;
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Application.Events
-{
-    public class BookmarkEventHandler
+namespace Chameleon.Application.Events {
+	public class BookmarkEventHandler
         : IBookmarkEventHandler
     {
         private readonly IEventAggregator _eventAggregator;

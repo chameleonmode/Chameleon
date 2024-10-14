@@ -35,6 +35,11 @@ public static class AppLayers {
 		return GetMainWindow()?.GetVisualRoot() as Visual;
 	}
 
+	public static T? FindResource<T>(object key) where T : class
+	{
+		return Application.Current?.FindResource(key) as T ?? default;
+	}
+
 	//TODO: implement
 	//public static void InitializeExceptionHandlerLayer()
 	//{

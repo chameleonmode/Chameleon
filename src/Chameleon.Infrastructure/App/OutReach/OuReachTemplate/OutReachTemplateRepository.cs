@@ -6,10 +6,10 @@ using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.OutReach.Api.Dto;
 using Chameleon.Infrastructure.OutReach.Api;
 using Chameleon.Interfaces.OutReach;
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Infrastructure.OutReach
-{
-    public class OutReachTemplateRepository
+namespace Chameleon.Infrastructure.OutReach {
+	public class OutReachTemplateRepository
          : Repository<OutReachTemplate,
             IOutReachTemplate,
             int,

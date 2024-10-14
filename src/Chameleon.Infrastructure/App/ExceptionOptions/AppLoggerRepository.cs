@@ -5,10 +5,10 @@ using AutoMapper;
 
 using Chameleon.Interfaces.ExceptionOptions;
 using System.Collections.Concurrent;
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Infrastructure.ExceptionOptions
-{
-    public class AppLoggerRepository
+namespace Chameleon.Infrastructure.ExceptionOptions {
+	public class AppLoggerRepository
      : Repository<AppLogger,
             IAppLogger,
             int,

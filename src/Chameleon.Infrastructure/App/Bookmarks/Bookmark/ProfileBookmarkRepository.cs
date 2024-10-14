@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
+
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Interfaces.Bookmarks;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 using System;
 using System.Collections.Concurrent;
 
-namespace Chameleon.Infrastructure.Bookmarks
-{
-    public class ProfileBookmarkRepository
+namespace Chameleon.Infrastructure.Bookmarks {
+	public class ProfileBookmarkRepository
     : UserProfileItemRepository<
            ProfileBookmark,
            IProfileBookmark,

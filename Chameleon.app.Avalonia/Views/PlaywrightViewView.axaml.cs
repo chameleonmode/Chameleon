@@ -5,8 +5,7 @@ namespace Chameleon.app.Avalonia.Views;
 
 [Chameleon.lib.Common.Attributes.ViewModel(typeof(PlaywrightViewModel))]
 public partial class PlaywrightView
-		: ViewControlBase<PlaywrightViewModel>
-{
+		: AutoViewModelLocatorControl {
     public PlaywrightView()
     {
         InitializeComponent();

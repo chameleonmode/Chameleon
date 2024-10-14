@@ -1,5 +1,4 @@
 ﻿using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 

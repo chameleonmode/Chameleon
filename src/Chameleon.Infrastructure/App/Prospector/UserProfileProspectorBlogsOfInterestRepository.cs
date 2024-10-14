@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+
 using Chameleon.Core.Extensions;
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Profiles;
@@ -6,11 +7,11 @@ using Chameleon.Infrastructure.Prospector.Api;
 using Chameleon.Infrastructure.Prospector.Api.Dto;
 using Chameleon.Interfaces.App.Prospector;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 
-namespace Chameleon.Infrastructure.Prospector
-{
-    public class UserProfileProspectorBlogsOfInterestRepository
+namespace Chameleon.Infrastructure.Prospector {
+	public class UserProfileProspectorBlogsOfInterestRepository
        : UserProfileItemRepository<
            UserProfileProspectorBlogsOfInterest,
            IUserProfileProspectorBlogsOfInterest,

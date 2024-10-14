@@ -1,8 +1,9 @@
 ﻿
 
-namespace Chameleon.Interfaces.CookiesExcluded
-{
-    public class UpdateCookiesExcludedDomainEvent
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.CookiesExcluded {
+	public class UpdateCookiesExcludedDomainEvent
         : PubSubEvent<CookiesExcludedDomainEventArgs>
     {
     }

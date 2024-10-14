@@ -1,8 +1,8 @@
 ﻿using Chameleon.Interfaces.Views;
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Interfaces.SidePanel
-{
-    public class ShowSidePanelEvent : PubSubEvent<SidePanelEventArgs>
+namespace Chameleon.Interfaces.SidePanel {
+	public class ShowSidePanelEvent : PubSubEvent<SidePanelEventArgs>
     {
     }
 

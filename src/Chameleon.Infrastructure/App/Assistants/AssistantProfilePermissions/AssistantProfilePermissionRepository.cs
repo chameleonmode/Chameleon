@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
+
 using Chameleon.Domain.Entities.Assistants;
 using Chameleon.Infrastructure.App.Assistants.AssistantProfilePermissions.Api;
 using Chameleon.Infrastructure.App.Assistants.AssistantProfilePermissions.Api.Dto;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.Assistants;
 using Chameleon.Interfaces.Repository;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Chameleon.Infrastructure.App.Assistants.AssistantProfilePermissions
-{
-    public class AssistantProfilePermissionRepository
+namespace Chameleon.Infrastructure.App.Assistants.AssistantProfilePermissions {
+	public class AssistantProfilePermissionRepository
         : Repository<AssistantProfilePermission,
             IAssistantProfilePermission,
             int,

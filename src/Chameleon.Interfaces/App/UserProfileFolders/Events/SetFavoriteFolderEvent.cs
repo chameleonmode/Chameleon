@@ -1,8 +1,9 @@
 ﻿
 
-namespace Chameleon.Interfaces.App.UserProfileFolders.Events
-{
-    public class SetFavoriteFolderEvent 
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.App.UserProfileFolders.Events {
+	public class SetFavoriteFolderEvent 
         : PubSubEvent<SetFavoriteFolderEventArgs>
     {
     }

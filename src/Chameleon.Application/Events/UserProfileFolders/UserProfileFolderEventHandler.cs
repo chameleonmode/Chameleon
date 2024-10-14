@@ -1,11 +1,11 @@
 ﻿using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
+using Chameleon.lib.Common.Interfaces.Sys;
+
 using System.Linq;
 
-namespace Chameleon.Application.Events
-{
-    public class UserProfileFolderEventHandler : IUserProfileFolderEventHandler
+namespace Chameleon.Application.Events {
+	public class UserProfileFolderEventHandler : IUserProfileFolderEventHandler
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly IUserProfileFolderService _userProfileFolderService;

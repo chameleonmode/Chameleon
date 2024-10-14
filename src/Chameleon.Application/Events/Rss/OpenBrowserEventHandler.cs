@@ -5,12 +5,12 @@ using Chameleon.Interfaces.SocialNetwork;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.WebBrowser;
 using Chameleon.Interfaces.Windows;
-using Chameleon.Prism.Events;
+using Chameleon.lib.Common.Interfaces.Sys;
+
 using System;
 
-namespace Chameleon.Application.Events
-{
-    public class OpenBrowserEventHandler
+namespace Chameleon.Application.Events {
+	public class OpenBrowserEventHandler
         : IOpenBrowserEventHandler
     {
         //private readonly IMainWindow _mainWindow;

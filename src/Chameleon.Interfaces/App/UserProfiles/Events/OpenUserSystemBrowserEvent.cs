@@ -1,10 +1,10 @@
 ﻿using Chameleon.Interfaces.WebBrowser;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 using System;
 
-namespace Chameleon.Interfaces.UserProfiles
-{
-    public class UserProfileSystemBrowserEventArgs : UserProfileEventArgs
+namespace Chameleon.Interfaces.UserProfiles {
+	public class UserProfileSystemBrowserEventArgs : UserProfileEventArgs
     {
         public bool SignIn { get; }
 

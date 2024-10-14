@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
+
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Interfaces.CookiesExcluded;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Infrastructure.CookiesExcluded
-{
-    public class CookiesExcludedDomainRepository
+namespace Chameleon.Infrastructure.CookiesExcluded {
+	public class CookiesExcludedDomainRepository
         : UserProfileItemRepository<
             CookiesExcludedDomain,
             ICookiesExcludedDomain,

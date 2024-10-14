@@ -2,11 +2,8 @@
 using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.App.UserProfiles.Events;
-using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Reactive.Linq;
@@ -17,7 +14,6 @@ public partial class FolderViewModel : SubPageViewModelBase
 {
     private readonly IUserProfileService _userProfileService;
     private readonly IUserProfileFolderService _userProfileFolderService;
-    private readonly INavigationService _navigationService;
 
     [ObservableProperty]
     private bool _isFavorite;
@@ -31,13 +27,11 @@ public partial class FolderViewModel : SubPageViewModelBase
     public FolderViewModel(
         IUserProfileFolder folder,
         IUserProfileService userProfileService,
-        IUserProfileFolderService userProfileFolderService,
-        INavigationService nav)
+        IUserProfileFolderService userProfileFolderService)
     {
         _folder = folder;
         _userProfileService = userProfileService;
         _userProfileFolderService = userProfileFolderService;
-        _navigationService = nav;
 
         Title = _folder.Title;
         IsFavorite = _folder.IsFavorite;
@@ -64,7 +58,7 @@ public partial class FolderViewModel : SubPageViewModelBase
     private void ViewGroup()
     {
         _folder.Navigated = false;
-        _navigationService.NavigateToType(typeof(IProjectsView), _folder);
+        NavigationService?.NavigateToType(typeof(IProjectsView), _folder);
     }
 
     [RelayCommand]

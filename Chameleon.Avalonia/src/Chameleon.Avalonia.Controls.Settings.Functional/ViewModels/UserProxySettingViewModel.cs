@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+
 using Chameleon.Core.Extensions;
 using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
+using Chameleon.lib.Common.Interfaces.Sys;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 

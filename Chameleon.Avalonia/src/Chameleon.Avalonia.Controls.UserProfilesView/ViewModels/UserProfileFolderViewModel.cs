@@ -1,6 +1,4 @@
-﻿using Chameleon.Application.Events;
-using Chameleon.Common.Helpers;
-using Chameleon.CT.Common.Base;
+﻿using Chameleon.CT.Common.Base;
 using Chameleon.Domain.Entities;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using Chameleon.Interfaces.App.UserProfileFolders.Events;

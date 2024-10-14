@@ -15,6 +15,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.Assets\chameleon.assets.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Common\Chameleon.lib.Common.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.CommunityToolkit\Chameleon.lib.CommunityToolkit.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Playwright\Chameleon.lib.Playwright.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
   </ItemGroup>
 

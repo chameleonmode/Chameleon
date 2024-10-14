@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
+
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Interfaces.OutReach;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Chameleon.Infrastructure.OutReachLink
-{
-    public class ProfileOutReachLinkRepository
+namespace Chameleon.Infrastructure.OutReachLink {
+	public class ProfileOutReachLinkRepository
         : UserProfileItemRepository<
            ProfileOutReachLink,
            IProfileOutReachLink,

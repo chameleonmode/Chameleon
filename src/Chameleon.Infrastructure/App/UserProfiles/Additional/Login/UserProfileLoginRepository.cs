@@ -7,10 +7,10 @@ using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.UserProfiles.Additional;
 
 using Chameleon.Core.Extensions;
+using Chameleon.lib.Common.Interfaces.Sys;
 
-namespace Chameleon.Infrastructure.UserProfiles
-{
-    public class UserProfileLoginRepository
+namespace Chameleon.Infrastructure.UserProfiles {
+	public class UserProfileLoginRepository
         : UserProfileItemRepository<
             UserProfileLogin,
             IUserProfileLogin,

@@ -1,6 +1,7 @@
-﻿namespace Chameleon.Interfaces.App.ContentDiscoverey
-{
-    public class RestrictContentDiscoveryTabsEventArgs : EventArgs
+﻿using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.App.ContentDiscoverey {
+	public class RestrictContentDiscoveryTabsEventArgs : EventArgs
     {
         public bool IsProspectorVisible { get; }
         public bool IsRssVisible { get; }

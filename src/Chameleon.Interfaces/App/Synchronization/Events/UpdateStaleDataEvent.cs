@@ -1,6 +1,7 @@
-﻿namespace Chameleon.Interfaces.App.Synchronization.Events
-{
-    public class UpdateStaleDataEvent 
+﻿using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.App.Synchronization.Events {
+	public class UpdateStaleDataEvent 
         : PubSubEvent
     {
     }

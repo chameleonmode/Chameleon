@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
+
 using Chameleon.Domain.Entities.ShareFolders;
 using Chameleon.Infrastructure.App.ShareFolders.Api;
 using Chameleon.Infrastructure.App.ShareFolders.Api.Dto;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.ShareFolders;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 using System.Collections.Generic;
 
-namespace Chameleon.Infrastructure.App.ShareFolders
-{
-    public class ShareFoldersRepository
+namespace Chameleon.Infrastructure.App.ShareFolders {
+	public class ShareFoldersRepository
         : Repository<ShareFolder,
             IShareFolder,
             int,

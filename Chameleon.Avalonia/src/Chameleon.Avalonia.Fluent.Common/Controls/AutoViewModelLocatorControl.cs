@@ -44,17 +44,11 @@ public class AutoViewModelLocatorControl : AutoViewModelInitControl {
 			return IoC.GetService(t);
 
 		var vmt =
-				viewType.GetCustomAttribute<ViewModelAttribute>()?.Type ??
-				Type.GetType($"{viewType.Namespace}.ViewModels.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}") ??
-				Type.GetType($"{viewType.Namespace.Replace(".Views", ".ViewModels")}.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}");
+			Type.GetType($"{viewType.Namespace}.ViewModels.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}") ??
+			Type.GetType($"{viewType.Namespace?.Replace(".Views", ".ViewModels")}.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}");
 
+		ArgumentNullException.ThrowIfNull(vmt, nameof(vmt));
 
 		return ContainerServiceHelper.Resolve(vmt);
 	}
-}
-
-public abstract class ViewControlBase<TViewModel>
-		: AutoViewModelLocatorControl
-		where TViewModel : ObservableObject {
-	public TViewModel ViewModel => (TViewModel)DataContext;
 }

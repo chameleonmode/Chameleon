@@ -177,7 +177,6 @@ public class ChameleonPageBase : AutoViewModelLocatorControl
             var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
             svc.PrepareToAnimate("BackAnimation", await TaskUtil.AwaitFor(() => AnimateVisual != null, 1) ? AnimateVisual : (Control)_previewImageHost.Parent);
         }, 2);
-        ContainerServiceHelper.Resolve<INavigationService>().PreviousPage = this;
     }
 
     private async void FrameNavigatedTo(object sender, NavigationEventArgs e)

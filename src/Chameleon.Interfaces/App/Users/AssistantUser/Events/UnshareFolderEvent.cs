@@ -1,9 +1,9 @@
 ﻿using Chameleon.Interfaces.App.ShareFolders;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 
-namespace Chameleon.Interfaces.App.Users.AssistantUser.Events
-{
-    public class UnshareFolderEvent
+namespace Chameleon.Interfaces.App.Users.AssistantUser.Events {
+	public class UnshareFolderEvent
         : PubSubEvent<UnshareFolderEventArgs>
     {
     }

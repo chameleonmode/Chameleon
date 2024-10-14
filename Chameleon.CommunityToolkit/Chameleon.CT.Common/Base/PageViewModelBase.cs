@@ -1,16 +1,15 @@
 ﻿using Chameleon.Interfaces;
-using Chameleon.Prism.Events;
+using Chameleon.lib.Common.Interfaces.Services;
+using Chameleon.lib.Common.ServiceManagers;
 
 namespace Chameleon.CT.Common.Base;
 
 public class PageViewModelBase : ObservableObjectBase
 {
     private readonly IMainViewViewModel? mvvm;
-    private readonly INavigationService? _navigationService;
     public PageViewModelBase()
     {                                                            
         mvvm = ContainerServiceHelper.Resolve<IMainViewViewModel>();
-        _navigationService = ContainerServiceHelper.Resolve<INavigationService>();
     }
 
     public PageViewModelBase(string title) : this()
@@ -24,6 +23,6 @@ public class PageViewModelBase : ObservableObjectBase
     }
 
     public IMainViewViewModel? MVVM => mvvm;
-    public INavigationService? NavigationService => _navigationService;
+    public INavigationService? NavigationService => Navigator.Instance.NavigationService;
 
 }

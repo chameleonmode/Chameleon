@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
+
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.Assistants;
 using Chameleon.Interfaces.App.Assistants.Events;
 using Chameleon.Interfaces.Repository;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 
-namespace Chameleon.Infrastructure.Users
-{
-    public class UserAssistantRepository
+namespace Chameleon.Infrastructure.Users {
+	public class UserAssistantRepository
          : Repository<UserAssistant,
             IUserAssistant,
             long,

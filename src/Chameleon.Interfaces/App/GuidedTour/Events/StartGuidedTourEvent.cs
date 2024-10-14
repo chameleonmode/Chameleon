@@ -1,6 +1,7 @@
-﻿namespace Chameleon.Interfaces.App.GuidedTour.Events
-{
-    public class StartGuidedTourEventArgs 
+﻿using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.App.GuidedTour.Events {
+	public class StartGuidedTourEventArgs 
         : EventArgs
     {
         public bool ValidateUser { get; }

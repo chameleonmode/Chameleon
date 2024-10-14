@@ -3,12 +3,12 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.DialogWindows;
 using Chameleon.Interfaces.Prospector;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Prism.Events;
+using Chameleon.lib.Common.Interfaces.Sys;
+
 using System;
 
-namespace Chameleon.Application.Events
-{
-    public class ProspectorEventHandler : IProspectorEventHandler
+namespace Chameleon.Application.Events {
+	public class ProspectorEventHandler : IProspectorEventHandler
     {
         //private readonly IDialogWindowsService _dialogWindowsService;
         //private readonly IBlogOfInterestView _blogOfInterestView;

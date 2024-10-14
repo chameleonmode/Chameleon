@@ -1,8 +1,9 @@
 ﻿
 
-namespace Chameleon.Interfaces.Auth.Events
-{
-    public class SubmitAsyncEvent : PubSubEvent
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.Auth.Events {
+	public class SubmitAsyncEvent : PubSubEvent
     {
     }
 }

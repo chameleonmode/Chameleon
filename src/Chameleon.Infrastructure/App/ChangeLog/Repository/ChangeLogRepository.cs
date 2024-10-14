@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
+
 using Chameleon.Infrastructure.App.ChangeLog.Api;
 using Chameleon.Infrastructure.App.ChangeLog.Api.Dto;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.App.ChangeLog;
 using Chameleon.Interfaces.Repository;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 
-namespace Chameleon.Infrastructure.App.ChangeLog.Repository
-{
-    public interface IChangeLogRepository
+namespace Chameleon.Infrastructure.App.ChangeLog.Repository {
+	public interface IChangeLogRepository
         : IRepository<IChangeLog>
     {
     }

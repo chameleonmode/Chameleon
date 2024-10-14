@@ -4,7 +4,6 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.ExceptionOptions;
 using Chameleon.Interfaces.Logger;
 using Chameleon.Interfaces.Services;
-using Chameleon.Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Net;

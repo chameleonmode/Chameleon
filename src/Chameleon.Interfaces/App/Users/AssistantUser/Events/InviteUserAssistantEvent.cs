@@ -1,10 +1,10 @@
 ﻿using Chameleon.Interfaces.App.Users.AssistantUser.Events.Base;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 using System.Collections.Generic;
 
-namespace Chameleon.Interfaces.App.Assistants.Events
-{
-    public class InviteUserAssistantEventArgs
+namespace Chameleon.Interfaces.App.Assistants.Events {
+	public class InviteUserAssistantEventArgs
         : InviteUserOrAddProfilesEventArgs
     {
         public string AssistantName { get; }

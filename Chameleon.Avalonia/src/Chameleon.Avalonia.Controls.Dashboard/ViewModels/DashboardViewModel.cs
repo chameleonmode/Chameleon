@@ -163,7 +163,7 @@ public partial class DashboardViewModel
         var folders = await _userProfileFolderService.GetAllAsync();
 
         _folderMapping = new ObservableCollection<IUserProfileFolder, FolderViewModel>(
-            folders, folder => new FolderViewModel(folder, _userProfileService, _userProfileFolderService, NavigationService));
+            folders, folder => new FolderViewModel(folder, _userProfileService, _userProfileFolderService));
         _folderMapping.CollectionChanged += FolderMapping_CollectionChanged;
 
         OnPropertyChanged(nameof(FolderViewModels));

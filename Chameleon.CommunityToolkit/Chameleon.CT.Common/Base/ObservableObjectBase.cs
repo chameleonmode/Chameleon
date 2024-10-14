@@ -2,8 +2,9 @@
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Views;
+using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.lib.Common.ServiceManagers;
-using Chameleon.Prism.Events;
+
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.CT.Common.Base;

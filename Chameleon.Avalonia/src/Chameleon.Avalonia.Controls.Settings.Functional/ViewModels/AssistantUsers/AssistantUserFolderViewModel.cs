@@ -5,8 +5,8 @@ using Chameleon.Core.Collections.Views;
 using Chameleon.Interfaces.App.ShareFolders;
 using Chameleon.Interfaces.App.Users.AssistantUser.Events;
 using Chameleon.Interfaces.Dialogs;
-using Chameleon.Prism.Events;
 using CommunityToolkit.Mvvm.Input;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 namespace Chameleon.Avalonia.Controls.Settings.ViewModels.AssistantUsers;
 

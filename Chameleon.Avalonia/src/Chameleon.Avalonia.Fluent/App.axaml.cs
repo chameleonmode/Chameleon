@@ -99,9 +99,8 @@ public partial class App : PrismApplication {
 
 		var cr = Container.Resolve<IHaveContainerRegistry>();
 		cr.RegisterSingleton<IHaveContainerProvider, HasContainerProviderService>(true);
-		cr.RegisterSingleton<INavigationService, NavigationService>();
 
-		cr.RegisterSingleton<Prism.Events.IEventAggregator, Prism.Events.EventAggregator>();
+		//cr.RegisterSingleton<lib.Common.Interfaces.Sys.IEventAggregator, lib.Common.Interfaces.Sys.EventAggregator>();
 		cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
 
 		containerRegistry.RegisterSingleton<IIocManager, IocManager>();
@@ -129,7 +128,7 @@ public partial class App : PrismApplication {
 		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.Functional.ViewModels.FunctionalSettingsViewModel).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfilesView.ViewModels.ProjectsViewModel).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Av.Fluent.ViewModels.MainViewViewModel).Assembly);
-		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Dashboard.ViewModels.DashboardViewModel).Assembly);
+		//Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Dashboard.ViewModels.DashboardViewModel).Assembly);
 		//Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfileView.ViewModels.UserProfileIdentityViewModel).Assembly);
 		Container.RegisterMapperFrom(typeof(Chameleon.Avalonia.Controls.UserProfilesView.ViewModels.ProjectsViewModel).Assembly);
 	}
@@ -150,13 +149,15 @@ public partial class App : PrismApplication {
 			containerRegistry.RegisterInstance(IoC.GetService<ILoggerFactory>());
 			containerRegistry.Register(typeof(ILogger<>), typeof(Logger<>));
 
-			containerRegistry.RegisterInstance(IoC.GetService<Chameleon.app.Avalonia.Views.PlaywrightView>());
-			containerRegistry.RegisterInstance(IoC.GetService<Chameleon.app.Avalonia.Views.SettingsView>());
 			containerRegistry.RegisterInstance(IoC.GetService<IPlaywriteService>());
 			containerRegistry.RegisterInstance(IoC.GetService<IPlaywrightScriptRepository>());
-			//containerRegistry.RegisterInstance(IoC.GetService<IExtensionLoaderService>());
 			containerRegistry.RegisterInstance(IoC.GetService<ISysBrowserService>());
 			containerRegistry.RegisterInstance(IoC.GetService<ICopyPastaService>());
+			containerRegistry.RegisterInstance(IoC.GetService<INavigationService>());
+			containerRegistry.RegisterInstance(IoC.GetService<Chameleon.lib.Common.Interfaces.Sys.IEventAggregator>());
+
+			containerRegistry.RegisterInstance(IoC.GetService<Chameleon.app.Avalonia.Views.PlaywrightView>());
+			containerRegistry.RegisterInstance(IoC.GetService<Chameleon.app.Avalonia.Views.SettingsView>());
 		}
 
 		IoC.Instance.Configure(() => {
@@ -173,8 +174,13 @@ public partial class App : PrismApplication {
 			.AddSingleton<IMboxService, MboxService>()
 			.AddSingleton<IShowWindowService, ShowWindowService>()
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
+			.AddSingleton<INavigationService, NavigationService>()
+			.AddSingleton<Chameleon.lib.Common.Interfaces.Sys.IEventAggregator, Chameleon.lib.Common.Interfaces.Sys.EventAggregator>()
 			//SysBrowser
 			.AddSingleton<ISysBrowserService, SysBrowserService>()
+			//Dash
+			.AddSingleton<Chameleon.app.Avalonia.Views.DashboardView>()
+			.AddSingleton<Chameleon.app.Avalonia.ViewModels.DashboardViewModel>()
 			//Settings
 			.AddSingleton<Chameleon.app.Avalonia.Views.SettingsView>()
 			.AddSingleton<Chameleon.app.Avalonia.ViewModels.SettingsViewModel>()

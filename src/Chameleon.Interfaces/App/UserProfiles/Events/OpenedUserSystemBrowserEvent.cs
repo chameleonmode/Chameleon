@@ -1,11 +1,11 @@
 ﻿using Chameleon.Interfaces.WebBrowser;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 using System;
 using System.Diagnostics;
 
-namespace Chameleon.Interfaces.UserProfiles
-{
-    public class UserProfileSystemBrowserProcessEventArgs
+namespace Chameleon.Interfaces.UserProfiles {
+	public class UserProfileSystemBrowserProcessEventArgs
         : UserProfileSystemBrowserEventArgs
     {
         public Process? Process { get; }

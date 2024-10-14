@@ -1,9 +1,10 @@
 ﻿
 using System;
 
-namespace Chameleon.Interfaces.UserProfileFolders
-{
-    public class CreateUserProfileFolderEvent : PubSubEvent 
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.UserProfileFolders {
+	public class CreateUserProfileFolderEvent : PubSubEvent 
     { }
 
     public class AfterCreateOrRemoveFolderEvent : PubSubEvent

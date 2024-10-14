@@ -1,8 +1,9 @@
 ﻿
 
-namespace Chameleon.Interfaces.OutReach
-{
-    public class RssFeedOpenEvent
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.OutReach {
+	public class RssFeedOpenEvent
         : PubSubEvent<RssFeedsEventArgs>
     { }
 }

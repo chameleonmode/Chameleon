@@ -1,12 +1,12 @@
 ﻿using Chameleon.Interfaces.App.Users.AssistantUser.Events.Base;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 using System.Collections.Generic;
 
-namespace Chameleon.Interfaces.App.Assistants.Events
-{
-    public class AddProfilesEventArgs
+namespace Chameleon.Interfaces.App.Assistants.Events {
+	public class AddProfilesEventArgs
         : InviteUserOrAddProfilesEventArgs
     {
         public long AssistantId { get; }

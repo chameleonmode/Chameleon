@@ -6,12 +6,10 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Chameleon.Av.Fluent.Common.Models;
 using Chameleon.Av.Fluent.Common.Pages;
-using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.ViewModels;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Startup;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
@@ -26,57 +24,58 @@ using Chameleon.lib.Common.ServiceManagers;
 namespace Chameleon.Av.Fluent.Views;
 
 public partial class MainView : UserControl {
-	readonly Dictionary<string, MainPageModelBase> pages = new Dictionary<string, MainPageModelBase>()
+	private readonly Dictionary<string, MainPageModelBase> _pages = new()
 	{
+		{
+				"Dashboard",
+				new()
 				{
-						"Dashboard",
-						new()
-						{
-								NavHeader = "Dashboard",
-								IconKey = "HomeIcon",
-								Tag = typeof(IDashboardView)
-						}
-				},
-				{
-						"Profiles",
-						new()
-						{
-								NavHeader = "Profiles",
-								IconKey = "ContactIcon",
-								Tag = typeof(IProjectsView)
-						}
-				},
-				{
-						"Automation",
-						new()
-						{
-								 NavHeader = "Automation",
-								IconKey = "AutomationIcon",
-								Tag = typeof(Chameleon.app.Avalonia.Views.PlaywrightView)
-						}
-				},
-				{
-						"General",
-						new()
-						{
-								NavHeader = "General",
-								IconKey = "CoreControlsIcon",
-								ShowsInFooter = true,
-								Tag = typeof(IFunctionalSettingsView)
-						}
-				},
-				{
-						"Settings",
-						new()
-						{
-								NavHeader = "Settings",
-								IconKey = "SettingsIcon",
-								ShowsInFooter = true,
-								Tag = typeof(Chameleon.app.Avalonia.Views.SettingsView)
-						}
+						NavHeader = "Dashboard",
+						IconKey = "HomeIcon",
+						Tag = typeof(Chameleon.app.Avalonia.Views.DashboardView)
 				}
-		};
+		},
+		{
+				"Profiles",
+				new()
+				{
+						NavHeader = "Profiles",
+						IconKey = "ContactIcon",
+						Tag = typeof(IProjectsView)
+				}
+		},
+		{
+				"Automation",
+				new()
+				{
+						 NavHeader = "Automation",
+						IconKey = "AutomationIcon",
+						Tag = typeof(Chameleon.app.Avalonia.Views.PlaywrightView)
+				}
+		},
+		{
+				"General",
+				new()
+				{
+						NavHeader = "General",
+						IconKey = "CoreControlsIcon",
+						ShowsInFooter = true,
+						Tag = typeof(IFunctionalSettingsView)
+				}
+		},
+		{
+				"Settings",
+				new()
+				{
+						NavHeader = "Settings",
+						IconKey = "SettingsIcon",
+						ShowsInFooter = true,
+						Tag = typeof(Chameleon.app.Avalonia.Views.SettingsView)
+				}
+		}
+	};
 
+	public MainViewViewModel MVVM => (DataContext as MainViewViewModel)!;
 	public MainView()
 	{
 		InitializeComponent();
@@ -112,9 +111,7 @@ public partial class MainView : UserControl {
 	{
 		App.OnFramworkInitComplete -= OnFrameworkInit;
 
-		TooltipManager.Attach(Avpplication.Current, NavView);
-
-
+		TooltipManager.Attach(Avpplication.Current!, NavView);
 
 		if (ContainerServiceHelper.Current.ContainerProvider is not null) {
 			DataContext = ContainerServiceHelper.Resolve<IMainViewViewModel>() as MainViewViewModel;
@@ -123,16 +120,14 @@ public partial class MainView : UserControl {
 		}
 		Toaster.ShowSuccess("Welcome to Chameleon!");
 
-		//InitializeNavigationPages();
-		FrameView.NavigationPageFactory = NavigationService.Instance.NavigationFactory;
-		NavigationService.Instance.SetFrame(FrameView);
+		FrameView.NavigationPageFactory = MVVM.NavigationFactory;
+		Navigator.SetFrame(FrameView);
 
 		Dispatcher.UIThread.Post(() => {
-			NavView.MenuItemsSource = pages.Where(p => !p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
-			NavView.FooterMenuItemsSource = pages.Where(p => p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
+			NavView.MenuItemsSource = _pages.Where(p => !p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
+			NavView.FooterMenuItemsSource = _pages.Where(p => p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
 
-			FrameView.NavigateToType(pages["Dashboard"].Tag, null, null);
-			//FrameView.NavigateFromObject((NavView.MenuItemsSource.ElementAt(0) as Control).Tag);
+			_ = FrameView.NavigateToType(_pages["Dashboard"].Tag, null, null);
 		});
 
 		FrameView.Navigated += OnFrameViewNavigated;
@@ -158,20 +153,20 @@ public partial class MainView : UserControl {
 					new SuppressNavigationTransitionInfo() :
 					e.RecommendedNavigationTransitionInfo;
 
-			NavigationService.Instance.NavigateToType((nvi.Tag as MainPageModelBase).Tag, info);
-			//NavigationService.Instance.NavigateFromContext(nvi.Tag, info);
-			//(ContainerServiceHelper.Resolve<INavigationService>() as NavigationService).NavigateFromContext(nvi.Tag, info);
+			Navigator.NavigateToType((nvi.Tag as MainPageModelBase)?.Tag!, info);
 		}
 	}
 	private void OnFrameViewNavigated(object sender, NavigationEventArgs e)
 	{
-		var page = pages.SingleOrDefault(
-						p => p.Value.Tag.Name[1..] == (e.Content as Control).GetType().Name).Value;
+		var page = _pages
+			.SingleOrDefault(p => p.Value.Tag?.Name == e.Content.GetType().Name).Value;
+		page ??= _pages.SingleOrDefault(
+						p => p.Value.Tag?.Name[1..] == (e.Content as Control).GetType().Name).Value;
 		page ??= e.Content.GetType().FullName.StartsWith("Chameleon.app.Avalonia.Views.Settings") ?
-				pages["Settings"] :
+				_pages["Settings"] :
 				e.Content.GetType().FullName.StartsWith("Chameleon.app.Avalonia.Views.Playwright") ?
-				pages["Automation"] :
-				pages["Profiles"];
+				_pages["Automation"] :
+				_pages["Profiles"];
 
 		foreach (var nvi in from NavigationViewItem nvi in ((List<NavigationViewItemBase>)NavView.MenuItemsSource).Concat((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource)
 												let set = nvi.Tag == page
@@ -189,7 +184,7 @@ public partial class MainView : UserControl {
 		}
 	}
 
-	private void SetNVIIcon(NavigationViewItem item, bool selected)
+	private void SetNVIIcon(NavigationViewItem? item, bool selected)
 	{
 		// Technically, yes you could set up binding and converters and whatnot to let the icon change
 		// between filled and unfilled based on selection, but this is so much simpler 
@@ -198,7 +193,7 @@ public partial class MainView : UserControl {
 
 		if (item.Tag is MainPageModelBase m) {
 			item.IconSource = this.TryFindResource(selected ? $"{m.IconKey}Filled" : m.IconKey, out var value) ?
-					(IconSource)value : null;
+					(IconSource)value! : null;
 		} else {
 			//TODO: :P
 		}

@@ -1,9 +1,10 @@
 ﻿
 using System;
 
-namespace Chameleon.Interfaces.OutReach
-{
-    public class OpenChangeProxiesEvent
+using Chameleon.lib.Common.Interfaces.Sys;
+
+namespace Chameleon.Interfaces.OutReach {
+	public class OpenChangeProxiesEvent
         : PubSubEvent<OpenChangeProxiesEventArgs>
     {
     }

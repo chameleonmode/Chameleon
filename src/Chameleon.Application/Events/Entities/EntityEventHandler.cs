@@ -1,12 +1,11 @@
 ﻿
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Repository;
+using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.lib.Common.ServiceManagers;
-using Chameleon.Prism.Events;
 
-namespace Chameleon.Application.Events
-{
-    public class EntityEventHandler : IEntityEventHandler
+namespace Chameleon.Application.Events {
+	public class EntityEventHandler : IEntityEventHandler
     {
         private readonly IEventAggregator _eventAggregator;
 

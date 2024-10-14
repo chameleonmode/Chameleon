@@ -3,12 +3,11 @@ using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.Interfaces.Windows;
+using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.lib.Common.ServiceManagers;
-using Chameleon.Prism.Events;
 
-namespace Chameleon.Application.Events.SyncChanges
-{
-    public class SyncChangesEventHandler
+namespace Chameleon.Application.Events.SyncChanges {
+	public class SyncChangesEventHandler
         : ISyncChangesEventHandler
     {
         private readonly IEventAggregator _eventAggregator;

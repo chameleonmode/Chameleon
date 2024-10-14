@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
+
 using Chameleon.Domain.Entities;
 using Chameleon.Infrastructure.Api;
 using Chameleon.Infrastructure.Repositories;
 using Chameleon.Interfaces.Repository;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 using System.Collections.Generic;
 
-namespace Chameleon.Infrastructure.Profiles
-{
-    public class UserProfileRepository
+namespace Chameleon.Infrastructure.Profiles {
+	public class UserProfileRepository
         : Repository<UserProfile,
             IUserProfile,
             int,
