@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DynamicData" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Api\Chameleon.lib.Api.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Common\Chameleon.lib.Common.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.CommunityToolkit\Chameleon.lib.CommunityToolkit.csproj" />

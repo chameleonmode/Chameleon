@@ -152,9 +152,7 @@ public partial class UserProfileViewModel : SubPageViewModelBase, IUserProfileAc
 			$"Are you sure you want to delete {UserProfile.Title}?",
 			MBoxButtons.OkCancel,
 			"DeleteLines"))
-			EventAggregator
-			 .GetEvent<DeleteUserProfileEvent>()
-			 .Publish(new UserProfileEventArgs(UserProfile));
+			EventAggregator.GetEvent<DeleteUserProfileEvent>().Publish(new UserProfileEventArgs(UserProfile));
 	}
 	public void Open()
 	{

@@ -1,7 +1,4 @@
-﻿using Chameleon.Application.Events.SyncChanges;
-using Chameleon.Interfaces.App.GuidedTour;
-
-namespace Chameleon.Application.Events
+﻿namespace Chameleon.Application.Events
 {
     public class ApplicationEventHandlers : IApplicationEventHandlers
     {
@@ -10,14 +7,14 @@ namespace Chameleon.Application.Events
             IEntityEventHandler entityEventHandler,
             //IOutReachEventHandler outReachEventHandler,
             //IBookmarkEventHandler bookmarkEventHandler,
-            IUserProfileEventHandler userProfileEventHandler,
+            IUserProfileEventHandler userProfileEventHandler
             //IUserSettingsEventHandler userSettingsEvantHandler,
-            IOpenBrowserEventHandler userProfileRssEventHandler,
-            IUserProfileFolderEventHandler userProfileFolderEventHandler,
+            //IOpenBrowserEventHandler userProfileRssEventHandler
+            //IUserProfileFolderEventHandler userProfileFolderEventHandler
             //IProspectorEventHandler prospectorEventHandler,
             //ICookiesExcludedDomainEventHandler cookiesExcludedDomainEventHandler,
             //ITourHandler tourHandler,
-            ISyncChangesEventHandler syncChangesEventHandler
+            //ISyncChangesEventHandler syncChangesEventHandler
             )
         {
         }

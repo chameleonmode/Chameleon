@@ -20,8 +20,9 @@ namespace Chameleon.Infrastructure.Favorites
 
         private bool IsUserProfilesHasNoFavorites()
         {
-            _userProfiles = _userProfileService.GetAll();
-            return !_userProfiles.Any(x => x.IsFavourite);
+            //_userProfiles = _userProfileService.GetAll();
+            //return !_userProfiles.Any(x => x.IsFavourite);
+						throw new NotImplementedException();
         }
     }
 }

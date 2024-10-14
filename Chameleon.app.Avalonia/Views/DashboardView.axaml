@@ -4,20 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="1101"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:converter="using:Chameleon.Common.ValueConverters"
+			 xmlns:data="using:FluentAvalonia.UI.Data"
              xmlns:userProfiles="using:Chameleon.Avalonia.Controls.UserProfilesView"
              xmlns:appControls="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
 			 x:DataType="vm:DashboardViewModel"
-			 x:CompileBindings="True"
+			 x:CompileBindings="False"
              x:Class="Chameleon.app.Avalonia.Views.DashboardView">
 	<UserControl.Resources>
-		<converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
+		<data:CollectionViewSource 
+			Source="{Binding Profiles^}"
+			Filter="{Binding ProfilesFilter}"
+			x:Key="ProfilesSource"/>
+		<data:CollectionViewSource 
+			Source="{Binding Folders^}"
+			Filter="{Binding FoldersFilter}"
+			x:Key="FoldersSource"/>
 	</UserControl.Resources>
 
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
-		<StackPanel>
+		<Grid RowDefinitions="Auto,*">
 			<afv:PageHeaderControl
 				TextType="Dashboard"
 				Classes="smallest">
@@ -26,23 +33,11 @@
 				</afv:PageHeaderControl.ContentObject>
 			</afv:PageHeaderControl>
 
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-				<!--<TextBox Grid.Row="1"
-						 HorizontalAlignment="Center"
-								 Margin="0 0 0 12"
-								 Width="300"
-								 Text="{Binding SearchText}" />-->
-
+			<Grid RowDefinitions="Auto,Auto"
+				  Grid.Row="1">
 				<afv:ChameleonContentControl
-					Grid.Row="2"
 					Title="Favorite Profiles"
-					TitleDescription="{Binding ViewModels.Count, StringFormat='You have {0} favorited profiles.'}">
+					TitleDescription="{Binding #lbProfiles.ItemCount, StringFormat='You have {0} favorited profiles.'}">
 					<afv:ChameleonContentControl.Options>
 						<ui:FAComboBox
 							Header="Sort by:"
@@ -51,12 +46,11 @@
 							SelectedItem="{Binding SortSelected}"
 							IsEditable="False"/>
 					</afv:ChameleonContentControl.Options>
-
 					<afv:ChameleonContentControl.Content>
 						<Panel>
 							<ListBox
 								Name="lbProfiles"
-								ItemsSource="{Binding ViewModels}"
+								ItemsSource="{Binding Source={StaticResource ProfilesSource}, Path=View}"
 								VerticalAlignment="Top"
 								Theme="{StaticResource ListBoxNoScroller}"
 								ItemContainerTheme="{StaticResource GridViewItem}">
@@ -72,16 +66,16 @@
 								</ListBox.ItemTemplate>
 							</ListBox>
 
-							<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
-													Header="No favorite profiles selected yet"/>
+							<!--<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+													Header="No favorite profiles selected yet"/>-->
 						</Panel>
 					</afv:ChameleonContentControl.Content>
 				</afv:ChameleonContentControl>
 
 				<afv:ChameleonContentControl
-					Grid.Row="3"
+					Grid.Row="1"
 					Title="Favorite Folders"
-					TitleDescription="{Binding FoldersCount, StringFormat='You have {0} favorited folders.'}">
+					TitleDescription="{Binding #lbFolders.ItemCount, StringFormat='You have {0} favorited folders.'}">
 					<afv:ChameleonContentControl.Options>
 						<ui:FAComboBox Header="Sort by:"
 									   HorizontalAlignment="Right"
@@ -89,11 +83,11 @@
 									   SelectedItem="{Binding FolderSortSelected}"
 									   IsEditable="False"/>
 					</afv:ChameleonContentControl.Options>
-
 					<afv:ChameleonContentControl.Content>
 						<Panel>
 							<ListBox
-								ItemsSource="{Binding FolderViewModels}"
+								Name="lbFolders"
+								ItemsSource="{Binding Source={StaticResource FoldersSource}, Path=View}"
 								Theme="{StaticResource ListBoxNoScroller}"
 								ItemContainerTheme="{StaticResource GridViewItem}"
 								Grid.Row="1"
@@ -111,15 +105,13 @@
 								</ListBox.ItemTemplate>
 							</ListBox>
 
-							<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+							<!--<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
 													Header="No favorite folders selected yet"
-													IsVisible="{Binding HasNoFolderItems}" />
+													IsVisible="{Binding HasNoFolderItems}" />-->
 						</Panel>
 					</afv:ChameleonContentControl.Content>
 				</afv:ChameleonContentControl>
-
-
 			</Grid>
-		</StackPanel>
+		</Grid>
 	</ScrollViewer>
 </UserControl>

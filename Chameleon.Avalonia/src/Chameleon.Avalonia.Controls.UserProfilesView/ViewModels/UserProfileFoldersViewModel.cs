@@ -36,10 +36,6 @@ public partial class UserProfileFoldersViewModel
         EventAggregator
            .GetEvent<UpdateStaleDataEvent>()
            .Subscribe(LoadAsync);
-
-        EventAggregator
-            .GetEvent<OpenUserProfileFolderEvent>()
-            .Subscribe(async args => await OnNavigatingTo(args.UserProfileFolder));
     }
 
 
@@ -64,10 +60,14 @@ public partial class UserProfileFoldersViewModel
     [RelayCommand]
     private void Create()
     {
-        EventAggregator
-            .GetEvent<CreateUserProfileFolderEvent>()
-            .Publish();
-    }
+		var folder = _userProfileFolderService.Create();
+
+		EventAggregator
+				.GetEvent<AfterCreateOrRemoveFolderEvent>()
+				.Publish();
+
+		_ = OnNavigatingTo(folder);
+		}
 
     public IApplicationUser CurrentUser => _currentUser;
     public bool IsCreateBtnEnabled => !CurrentUser?.IsAssistant ?? false;

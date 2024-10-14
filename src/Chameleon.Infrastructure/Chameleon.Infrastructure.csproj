@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
-	 <PackageReference Include="Polly" />
+	<PackageReference Include="Polly" />
+	<PackageReference Include="DynamicData" />
   </ItemGroup>
 </Project>

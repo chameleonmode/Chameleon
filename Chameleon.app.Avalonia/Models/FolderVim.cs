@@ -37,7 +37,7 @@ public partial class FolderVim : ViewModelObjectBase {
 		CommandMap["ViewGroup"] = ViewGroup;
 	}
 
-	private void OnChangeProfilesInFavoriteFolder(int folderId)
+	private async void OnChangeProfilesInFavoriteFolder(int folderId)
 	{
 		if (Folder.Id != folderId) {
 			return;

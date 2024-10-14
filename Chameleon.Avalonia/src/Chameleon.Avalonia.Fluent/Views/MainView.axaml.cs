@@ -119,7 +119,6 @@ public partial class MainView : UserControl {
 			await AppStartup.Instance.RunAsync();
 		}
 		Toaster.ShowSuccess("Welcome to Chameleon!");
-
 		FrameView.NavigationPageFactory = MVVM.NavigationFactory;
 		Navigator.SetFrame(FrameView);
 

@@ -34,14 +34,18 @@ public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewMode
 
 	public MainViewViewModel()
 	{
-		AppStartup.Instance.OnLoginSuccess += () => IsSplashVisible = false;
+		AppStartup.Instance.OnLoginSuccess += OnLoginSuccess;
 		NavigationFactory = new NavigationFactory(this);
 	}
 
+	private async void OnLoginSuccess()
+	{
+		IsSplashVisible = false;
+	}
 
 	public void BuildSearchTerms(List<MainAppSearchItem> items)
 	{
-		SearchTerms.Clear();
+		//SearchTerms.Clear();
 		SearchTerms.AddRange(items);
 	}
 
