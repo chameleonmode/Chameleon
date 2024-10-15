@@ -18,6 +18,10 @@ using Chameleon.Av.Fluent.Common.Models;
 using Chameleon.Interfaces.Dashboard;
 using Chameleon.Interfaces.Settings;
 using Chameleon.lib.Common.ServiceManagers;
+using Chameleon.lib.Api.Repos;
+using Chameleon.app.Avalonia.Com.DynamicData;
+using Chameleon.app.Avalonia.Models;
+using DynamicData;
 
 namespace Chameleon.Av.Fluent.ViewModels;
 
@@ -28,6 +32,8 @@ public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewMode
 	[ObservableProperty]
 	private bool isSplashVisible = true;
 
+	private readonly IList<UserProfileVim> _boundProfilesList;
+	private readonly IList<FolderVim> _boundFoldersList;
 	public AvaloniaList<MainAppSearchItem> SearchTerms { get; } = [];
 
 	public NavigationFactory NavigationFactory { get; }
@@ -36,8 +42,53 @@ public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewMode
 	{
 		AppStartup.Instance.OnLoginSuccess += OnLoginSuccess;
 		NavigationFactory = new NavigationFactory(this);
-	}
 
+		_ = UserProfilesRepo
+			.Connect()
+			.Transform(i => new UserProfileVim(i))
+			.SortAndBind(out var plist, Compares.UserProfileVimCompares.AscendingComparer)
+			.Subscribe((i) => {
+				foreach (var c in i) {
+					if (_boundProfilesList?.Contains(c.Current) == false && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is MainAppSearchItem st) {
+						SearchTerms.Remove(st);
+					} else if (_boundProfilesList?.Contains(c.Current) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is null) {
+						SearchTerms.Add(new() {
+							Header = c.Current.Title ?? "xxx",
+							Namespace = "Profile",
+							ViewModel = c.Current,
+							PageType = this.GetType()
+						});
+					} else if (_boundProfilesList?.Contains(c.Current) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is MainAppSearchItem str) {
+						str.Header = c.Current.Title ?? "xxx";
+						str.ViewModel = c.Current;
+					}
+				}
+			});
+		_boundProfilesList = plist;
+
+		_ = UserProfilesFolderRepo
+			.Connect()
+			.Transform(i => new FolderVim(i))
+			.SortAndBind(out var flist, Compares.FolderVimCompares.AscendingComparer)
+			.Subscribe((i) => {
+				foreach (var c in i) {
+					if (_boundFoldersList?.Contains(c.Current) == false && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is MainAppSearchItem st) {
+						SearchTerms.Remove(st);
+					} else if (_boundFoldersList?.Contains(c.Current) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is null) {
+						SearchTerms.Add(new() {
+							Header = c.Current.Title ?? "xxx",
+							Namespace = "Folder",
+							ViewModel = c.Current,
+							PageType = this.GetType()
+						});
+					} else if (_boundFoldersList?.Contains(c.Current) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is MainAppSearchItem str) {
+						str.Header = c.Current.Title ?? "xxx";
+						str.ViewModel = c.Current;
+					}
+				}
+			});
+		_boundFoldersList = flist;
+	}
 	private async void OnLoginSuccess()
 	{
 		IsSplashVisible = false;

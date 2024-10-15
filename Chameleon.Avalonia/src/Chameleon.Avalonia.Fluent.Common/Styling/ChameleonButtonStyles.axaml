@@ -63,8 +63,8 @@
 		<Setter Property="Margin" Value="6" />
 		<Setter Property="Width" Value="36" />
 		<Setter Property="Height" Value="36" />
-		<Setter Property="IsVisible" Value="{Binding IsSyncChangesBtnVisible}" />
-		<Setter Property="Command" Value="{Binding SyncChangesCommand}" />
+		<!--<Setter Property="IsVisible" Value="{Binding IsSyncChangesBtnVisible}" />
+		<Setter Property="Command" Value="{Binding SyncChangesCommand}" />-->
 		
 		<Setter Property="Template">
 			<ControlTemplate>

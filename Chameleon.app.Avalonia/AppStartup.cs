@@ -4,6 +4,7 @@ using Chameleon.app.Avalonia.Models;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Auth;
 using Chameleon.lib.Api;
+using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
@@ -21,6 +22,7 @@ public class AppStartup {
 			Environment.Exit(0);
 		} else {
 			OnLoginSuccess?.Invoke();
+			await LoadSink();
 		}
 	}
 	public async Task<bool> RunAsync(int trys)
@@ -59,6 +61,39 @@ public class AppStartup {
 		return success;
 	}
 
+	public async Task LoadSink()
+	{
+		await UserProfilesRepo.Instance.Load();
+		await UserProfilesFolderRepo.Instance.Load();
+	}
+
+	public static AppStartup Instance { get; } = new AppStartup();
+	private AppStartup()
+	{
+		_authSession = ContainerServiceHelper.Resolve<IAuthSession>();
+		HttpApiClient.Instance.OnRetry += (e) => {
+				Toaster.ShowErr("Error", e);
+		};
+		HttpApiClient.Instance.OnAuthError += async() => {
+			try {
+				if (_authSession is not null) {
+					var acessToken = _authSession.AuthToken;
+					var refreshToken = _authSession.AuthRefreshToken;
+					var delayInSeconds = _authSession.ExpireInSeconds;
+					var response = await Auther.RefreshTokenAsync(acessToken, refreshToken);
+					_authSession.AuthToken = response.NewAccessToken!;
+					_authSession.AuthRefreshToken = response.NewRefreshToken!;
+					_authSession.ExpireInSeconds = response.ExpireInSeconds;
+				}
+			} catch {
+				Toaster.ShowErr("AuthRefreshToken Err");
+			}
+		};
+		HttpApiClient.Instance.OnCircuitBreaker += (e) => {
+			Toaster.ShowErr("CircuitBreaker", e);
+		};
+	}
+
 	[Obsolete("Added for compatibility with corrent infrastructure project until _authSession refactoed out only")]
 	private async Task<bool> Login(string user, string pass)
 	{
@@ -91,33 +126,6 @@ public class AppStartup {
 			return true;
 		}
 		return false;
-	}
-
-	public static AppStartup Instance { get; } = new AppStartup();
-	private AppStartup()
-	{
-		_authSession = ContainerServiceHelper.Resolve<IAuthSession>();
-		HttpApiClient.Instance.OnRetry += (e) => {
-				Toaster.ShowErr("Error", e);
-		};
-		HttpApiClient.Instance.OnAuthError += async() => {
-			try {
-				if (_authSession is not null) {
-					var acessToken = _authSession.AuthToken;
-					var refreshToken = _authSession.AuthRefreshToken;
-					var delayInSeconds = _authSession.ExpireInSeconds;
-					var response = await Auther.RefreshTokenAsync(acessToken, refreshToken);
-					_authSession.AuthToken = response.NewAccessToken!;
-					_authSession.AuthRefreshToken = response.NewRefreshToken!;
-					_authSession.ExpireInSeconds = response.ExpireInSeconds;
-				}
-			} catch {
-				Toaster.ShowErr("AuthRefreshToken Err");
-			}
-		};
-		HttpApiClient.Instance.OnCircuitBreaker += (e) => {
-			Toaster.ShowErr("CircuitBreaker", e);
-		};
 	}
 }
 

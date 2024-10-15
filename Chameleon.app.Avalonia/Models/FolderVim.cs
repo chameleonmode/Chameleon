@@ -1,33 +1,26 @@
-﻿using Chameleon.Interfaces.App.UserProfileFolders.Events;
+﻿using Chameleon.Infrastructure.UserProfileFolders;
+using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.UserProfileFolders;
-using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Api.Repos;
+using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.app.Avalonia.Models;
-public partial class FolderVim : ViewModelObjectBase {
-	private readonly IUserProfileService _userProfileService;
-	private readonly IUserProfileFolderService _userProfileFolderService;
-
+public partial class FolderVim : Vim<UPFolderDto> {
 	[ObservableProperty]
 	private bool isFavorite;
 	[ObservableProperty]
 	private int profilesCount;
-	public IUserProfileFolder Folder { get; private set; }
 
-	public FolderVim(IUserProfileFolder folder, IUserProfileService userProfileService, IUserProfileFolderService userProfileFolderService)
-			: base(folder.Title)
+	public FolderVim(UPFolderDto folder)
+			: base(folder.title)
 	{
-		_userProfileService = userProfileService;
-		_userProfileFolderService = userProfileFolderService;
-
-		this.Folder = folder;
-		isFavorite = Folder.IsFavorite;
-		profilesCount = Folder.ProfilesCount;
+		Dto = folder;
+		isFavorite = Dto.isFavorite;
+		profilesCount = Dto.profilesCount;
 
 		_ = EventAggregator
 				.GetEvent<ChangeProfilesInFavoriteFolderEvent>()
@@ -39,29 +32,25 @@ public partial class FolderVim : ViewModelObjectBase {
 
 	private async void OnChangeProfilesInFavoriteFolder(int folderId)
 	{
-		if (Folder.Id != folderId) {
+		if (Dto.id != folderId) {
 			return;
 		}
-		Folder = _userProfileFolderService.Get(folderId);
-		ProfilesCount = _userProfileService.GetAll().Count(a => a.FolderId == folderId);
-		IsFavorite = Folder.IsFavorite;
+		Dto = await UserProfilesFolderRepo.Instance.Get<UPFolderDto>(folderId);
+		ProfilesCount = UserProfilesRepo.Instance.ObservableCache.Items.Count(a => a.id == folderId);
+		IsFavorite = Dto.isFavorite;
 		OnPropertyChanged(nameof(ProfilesCount));
 	}
 
 	private void ViewGroup()
 	{
-		Folder.Navigated = false;
-		Navigator.NavigateToType(typeof(IProjectsView), Folder);
+		Navigator.NavigateToType(typeof(IProjectsView), Dto);
 	}
 
 	private void SetFavoriteFolder()
 	{
 		IsFavorite = !IsFavorite;
 
-		Folder.IsFavorite = IsFavorite;
-		_userProfileFolderService.Save(Folder);
-
-		EventAggregator.GetEvent<UpdateFavoriteFolderEvent>().Publish();
-		EventAggregator.GetEvent<UpdateUserProfileFolderEvent>().Publish(new UserProfileFolderEventArgs(Folder));
+		Dto.isFavorite = IsFavorite;
+		_ = UserProfilesFolderRepo.Instance.Put(Dto);
 	}
 }

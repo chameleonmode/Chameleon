@@ -1,0 +1,148 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:avCommon="using:Chameleon.Avalonia.Common"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:dt="using:Chameleon.app.Avalonia.Models"
+			 x:DataType="dt:UserProfileVim"
+			 x:CompileBindings="True"
+             x:Class="Chameleon.app.Avalonia.Controls.UserProfileUserControl">
+	<UserControl.Resources>
+		<conv:IsActiveBackgroundConverter x:Key="activebgConv" />
+
+	</UserControl.Resources>
+
+	<UserControl.Styles>
+		<Style Selector=":is(Button)[Tag=True]">
+			<Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}"/>
+		</Style>
+		<Style Selector=":is(Button)[Tag=Error]">
+			<Setter Property="Background" Value="{DynamicResource SystemFillColorCautionBackgroundBrush}"/>
+		</Style>
+		<Style Selector=":is(Border)[Tag=True]">
+			<Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}"/>
+		</Style>
+		<Style Selector=":is(Border)[Tag=False]">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+	</UserControl.Styles>
+
+	<Border Tag="{Binding IsForeground}"
+			ToolTip.Tip="{Binding Title, FallbackValue=Cannot find name}"
+			Padding="6">
+		<Grid ColumnDefinitions="Auto,Auto,*,Auto">
+			<StackPanel Grid.Column="0"
+						Orientation="Horizontal">
+
+				<CheckBox Margin="6 0 -6 0"
+						  IsChecked="{Binding IsSelected}"
+							  IsVisible="{Binding IsShowCheckboxColumn}"
+							  IsEnabled="{Binding IsEnabledCheckboxColumn}">
+				</CheckBox>
+
+				<Panel
+					  Name="IconHost"
+					  Tag="{Binding Dto}"
+					  VerticalAlignment="Center">
+					<Border Background="{StaticResource AccentFillColorDefaultBrush}"
+							BorderBrush="{StaticResource ControlStrokeColorOnAccentDefaultBrush}"
+							CornerRadius="180"
+							BorderThickness="1"
+							Width="34"
+							Height="34"
+							ToolTip.Tip="{Binding Title, FallbackValue=Cannot find name}">
+
+						<TextBlock Text="{Binding Code,FallbackValue=N}"
+								   HorizontalAlignment="Center"
+								   VerticalAlignment="Center"
+								   TextAlignment="Center"
+								   Margin="0 0 0 0"
+								   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+								   Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+					</Border>
+
+					<Panel IsVisible="{Binding IsSharedProfile}"
+						  Width="8"
+						  Height="8"
+						  VerticalAlignment="Bottom"
+						  HorizontalAlignment="Right">
+
+						<Ellipse Fill="{StaticResource ControlOnImageFillColorDefaultBrush}"/>
+
+						<ui:SymbolIcon Symbol="Share" FontSize="8" />
+					</Panel>
+				</Panel>
+			</StackPanel>
+
+			<TextBlock Grid.Column="1"
+					   IsVisible="{Binding IsShowGlyph}"
+					   Margin="12 0 0 0"
+					   HorizontalAlignment="Left"
+					   Text="{Binding Title, FallbackValue=Cannot find name}"
+					   VerticalAlignment="Center"
+					   ToolTip.Tip="{Binding Title}"
+					   Theme="{StaticResource BodyStrongTextBlockStyle}">
+			</TextBlock>
+
+
+
+			<UniformGrid Grid.Column="3"
+						 HorizontalAlignment="Right"
+						 Rows="1">
+				<Button
+					Content="chrome"
+					ToolTip.Tip="Open In System Chrome"
+					Tag="{Binding IsChromeRunning}"
+					Command="{Binding OpenChromeCommand}"
+					Theme="{StaticResource SvgIconButton}" />
+				<Button
+					Content="firefox"
+					ToolTip.Tip="Open In System Firefox"
+					Tag="{Binding IsFFRunning}"
+					Command="{Binding OpenFirefoxCommand}"
+					Theme="{StaticResource SvgIconButton}" />
+				<Button
+					Content="brave"
+					ToolTip.Tip="Open In System Brave"
+					Tag="{Binding IsBraveRunning}"
+					Command="{Binding OpenBraveCommand}"
+					Theme="{StaticResource SvgIconButton}"/>
+
+				<Button
+					Content="chameleon-logo"
+					IsVisible="{Binding IsShowC}"
+					ToolTip.Tip="Open In Chameleon Browser"
+					Theme="{StaticResource SvgIconButton}"
+					Command="{Binding OpenUserBrowserCommand}"/>
+
+				<Button Content="copy"
+						ToolTip.Tip="Open copy-paste window"
+						Theme="{StaticResource SvgIconButton}"
+						Command="{Binding ShowViewProfileCommand}"/>
+
+				<Button Content="three-dots"
+					IsVisible="{Binding IsShowD}"
+						ToolTip.Tip="Details"
+						Theme="{StaticResource SvgIconButton}">
+					<Button.Flyout>
+						<ui:FAMenuFlyout Placement="Bottom">
+							<ui:MenuFlyoutItem Text="Delete"
+											   IconSource="Delete"
+											   IsVisible="{Binding IsDeleteProfileBtnVisible}"
+											   Command="{Binding DeleteUserProfileCommand}" />
+						</ui:FAMenuFlyout>
+					</Button.Flyout>
+				</Button>
+
+				<Button Grid.Column="3"
+					IsVisible="{Binding IsShowF}"
+						Theme="{StaticResource FavoriteButton}"
+						Command="{Binding FavoriteCommand}"/>
+			</UniformGrid>
+		</Grid>
+	</Border>
+</UserControl>

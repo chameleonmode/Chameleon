@@ -1,165 +1,92 @@
 ﻿using System.ComponentModel;
 using Chameleon.Interfaces.App.Synchronization.Events;
-using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.UserProfileFolders;
-using Chameleon.Interfaces.UserProfiles;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.Common.Helpers;
-using Chameleon.Avalonia.Controls.UserProfilesView.ViewModels;
 using DynamicData.Binding;
-using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using DynamicData;
-using System;
-using Microsoft.VisualBasic;
-using AutoMapper;
-using Chameleon.Domain.Entities;
-using Chameleon.Interfaces;
 using Chameleon.app.Avalonia.Models;
+using Chameleon.lib.Api.Repos;
+using System.Collections.ObjectModel;
+using Chameleon.lib.Common.Constants;
+using Chameleon.app.Avalonia.Com.DynamicData;
+using Chameleon.lib.Common.Models.Dto;
+using Chameleon.Core.Extensions;
+using AutoMapper;
+using System;
+using System.Reactive.Subjects;
+using DynamicData.Tests;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class DashboardViewModel
 			 : ViewModelObjectBase {
-
-	private readonly IUserProfileService _userProfileService;
-	private readonly IUserProfileFolderService _userProfileFolderService;
-	private readonly IApplicationUser _applicationUser;
+	private readonly BehaviorSubject<IComparer<UserProfileVim>> _profilesCompareObservable;
+	private readonly BehaviorSubject<IComparer<FolderVim>> _foldersCompareObservable;
 
 	[ObservableProperty]
 	private bool isSyncChangesBtnVisible = true;
 	[ObservableProperty]
-	private ListSortDirection sortSelected = ListSortDirection.Ascending;
+	private Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
 	[ObservableProperty]
-	private ListSortDirection folderSortSelected = ListSortDirection.Ascending;
+	private Enums.ChangeComparereOption folderSortSelected = Enums.ChangeComparereOption.Ascending;
 
-	public ListSortDirection[] Sorts { get; } = (ListSortDirection[])Enum.GetValues(typeof(ListSortDirection));
+	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
 
-	public Predicate<object> ProfilesFilter => (obj) => obj is UserProfileViewModel fii && fii.UserProfile.IsFavourite;
-	public Task<List<UserProfileViewModel>> Profiles => GetProfiles();
-	private async Task<List<UserProfileViewModel>> GetProfiles()
-	{
-		var userProfiles = await _userProfileService.GetAllAsync();
-		var profiles = new List<UserProfileViewModel>();
-		List<MainAppSearchItem> items = [];
-		foreach (var profile in userProfiles) {
-			var vm = new UserProfileViewModel(_userProfileService, (profile as UserProfile)!, _applicationUser, false);
-			profiles.Add(vm);
-			items.Add(new() {
-				Header = vm.Title,
-				Namespace = "Profile",
-				ViewModel = vm.UserProfile,
-				PageType = this.GetType()
-			});
-		}
-		ContainerServiceHelper.Resolve<IMainViewViewModel>()?.BuildSearchTerms(items);
-		return profiles;
-	}
+	public ReadOnlyObservableCollection<UserProfileVim> Profiles { get; }
+	public ReadOnlyObservableCollection<FolderVim> Folders { get; }
 
-	public Predicate<object> FoldersFilter => (obj) => obj is FolderVim fii && fii.Folder.IsFavorite;
-	public Task<List<FolderVim>> Folders => GetFolders();
-	private async Task<List<FolderVim>> GetFolders()
-	{
-		var all = await _userProfileFolderService.GetAllAsync();
-		var folders = new List<FolderVim>();
-		List<MainAppSearchItem> items = [];
-		foreach (var folder in all) {
-			var vm = new FolderVim(folder, _userProfileService, _userProfileFolderService);
-			folders.Add(vm);
-			items.Add(new() {
-				Header = vm.Title ?? "xxx",
-				Namespace = "Profiles " + vm.ProfilesCount,
-				ViewModel = vm.Folder,
-				PageType = this.GetType()
-			});
-		}
-		ContainerServiceHelper.Resolve<IMainViewViewModel>()?.BuildSearchTerms(items);
-		return folders;
-	}
-
-	//[ObservableProperty]
-	//private readonly ObservableCollectionExtended<UserProfileViewModel> profiles = [];
+	public bool HasNoFolderItems => Folders.Count == 0;
+	public bool HasNoItems => Profiles.Count == 0;
 
 	public DashboardViewModel() 
 		: base("Dashboard")
 	{
-		//TODO: change
-		_userProfileService = ContainerServiceHelper.Resolve<IUserProfileService>()!;
-		_userProfileFolderService = ContainerServiceHelper.Resolve<IUserProfileFolderService>()!;
-		_applicationUser = ContainerServiceHelper.Resolve<IApplicationUser>()!;
-		//var myObservableChangeSet = _userProfileService.Cache.Connect().Filter(p=>p.IsFavourite);
-		////Dynamic data is an extension of reactive so subscribe at the end of the chain
-		//var loader = _userProfileService.Cache.Connect()
-		//	.Transform(profile => new UserProfileViewModel(_userProfileService, (profile as UserProfile)!, _applicationUser, false))
-		//.Bind(profiles)
-		//.Subscribe();
+		//OnSortSelectedChanged(Enums.ChangeComparereOption.Ascending);
+		_profilesCompareObservable = new BehaviorSubject<IComparer<UserProfileVim>>(Compares.UserProfileVimCompares.AscendingComparer);
+		_ = UserProfilesRepo
+			.Connect(i => i.isFavourite)
+			.Transform(i => new UserProfileVim(i, false))
+			.SortAndBind(out var list, _profilesCompareObservable)
+			.Subscribe((i) => {
+				OnPropertyChanged(nameof(HasNoItems)); 
+			});
+		Profiles = list;
 
-		//_systemBrowserManager = systemBrowserManager;
+		//OnFolderSortSelectedChanged(Enums.ChangeComparereOption.Ascending);
+		_foldersCompareObservable = new BehaviorSubject<IComparer<FolderVim>>(Compares.FolderVimCompares.AscendingComparer);
+		_ = UserProfilesFolderRepo
+			.Connect(i => i.isFavorite)
+			.Transform(i => new FolderVim(i))
+			.SortAndBind(out var flist, _foldersCompareObservable)
+			.Subscribe((i) => {
+				OnPropertyChanged(nameof(HasNoFolderItems));
+			});
+		Folders = flist;
 
-		//EventAggregator
-		//	 .GetEvent<DeleteUserProfileEvent>()
-		//	 .Subscribe(OnUpdateViewModel);
-
-		//EventAggregator
-		//		.GetEvent<FavoriteUserProfileEvent>()
-		//		.Subscribe(OnUpdateViewModel);
-
-		//EventAggregator
-		//		.GetEvent<UnfavoriteUserProfileEvent>()
-		//		.Subscribe(OnUpdateViewModel);
-
-		//EventAggregator
-		//		.GetEvent<SavedUserProfileEvent>()
-		//		.Subscribe(OnUpdateViewModel);
-
-		//EventAggregator
-		//		.GetEvent<UpdateFavoriteFolderEvent>()
-		//		.Subscribe(()=> OnPropertyChanged(nameof(Folders)));
-	}
-	public override async Task InitAsync(object? param)
-	{
-		if (!Loaded) {
-			await base.InitAsync(param);
-		}
-
-		OnPropertyChanged(nameof(ProfilesFilter));
-		OnPropertyChanged(nameof(FoldersFilter));
+		AsyncCommandMap["SyncChanges"] = SyncChanges;
 	}
 
-	partial void OnFolderSortSelectedChanged(ListSortDirection value)
+	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value)
 	{
+		_profilesCompareObservable.OnNext(value switch { 
+			Enums.ChangeComparereOption.Descending => Compares.UserProfileVimCompares.DescendingComparer,
+			_ => Compares.UserProfileVimCompares.AscendingComparer
+		});
 	}
-	partial void OnSortSelectedChanged(ListSortDirection value)
-	{
 
+  partial void OnFolderSortSelectedChanged(Enums.ChangeComparereOption value)
+	{
+		_foldersCompareObservable.OnNext(value switch {
+			Enums.ChangeComparereOption.Descending => Compares.FolderVimCompares.DescendingComparer,
+			_ => Compares.FolderVimCompares.AscendingComparer
+		});
 	}
 
-	//public ListSortDirection SortSelected {
-	//	get => _sortSelected;
-	//	set {
-	//		if (SetProperty(ref _sortSelected, value)) {
-	//			ViewModels.Ascending = value == ListSortDirection.Ascending;
-	//		}
-	//	}
-	//}
-
-	//public ListSortDirection FolderSortSelected {
-	//	get => _folderSortSelected;
-	//	set {
-	//		if (SetProperty(ref _folderSortSelected, value)) {
-	//			FolderViewModels.Ascending = value == ListSortDirection.Ascending;
-	//		}
-	//	}
-	//}
-
-	[RelayCommand]
-	private void SyncChanges()
+	private async Task SyncChanges()
 	{
-		EventAggregator
-				.GetEvent<SyncChangesEvent>()
-				.Publish();
+		await AppStartup.Instance.LoadSink();
 	}
 }
 
