@@ -1,29 +1,19 @@
-﻿using System.ComponentModel;
-using Chameleon.Interfaces.App.Synchronization.Events;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using DynamicData.Binding;
 using System.Reactive.Linq;
 using DynamicData;
-using Chameleon.app.Avalonia.Models;
 using Chameleon.lib.Api.Repos;
 using System.Collections.ObjectModel;
 using Chameleon.lib.Common.Constants;
 using Chameleon.app.Avalonia.Com.DynamicData;
-using Chameleon.lib.Common.Models.Dto;
-using Chameleon.Core.Extensions;
-using AutoMapper;
-using System;
 using System.Reactive.Subjects;
-using DynamicData.Tests;
+using Chameleon.app.Avalonia.Models.Observable;
 
 namespace Chameleon.app.Avalonia.ViewModels;
-public partial class DashboardViewModel
-			 : ViewModelObjectBase {
-	private readonly BehaviorSubject<IComparer<UserProfileVim>> _profilesCompareObservable;
-	private readonly BehaviorSubject<IComparer<FolderVim>> _foldersCompareObservable;
+public partial class DashboardViewModel : ViewModelObjectBase {
+	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.UserProfileVimCompares.AscendingComparer);
+	private readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Compares.FolderVimCompares.AscendingComparer);
 
 	[ObservableProperty]
 	private bool isSyncChangesBtnVisible = true;
@@ -34,8 +24,8 @@ public partial class DashboardViewModel
 
 	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
 
-	public ReadOnlyObservableCollection<UserProfileVim> Profiles { get; }
-	public ReadOnlyObservableCollection<FolderVim> Folders { get; }
+	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
+	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 
 	public bool HasNoFolderItems => Folders.Count == 0;
 	public bool HasNoItems => Profiles.Count == 0;
@@ -44,22 +34,20 @@ public partial class DashboardViewModel
 		: base("Dashboard")
 	{
 		//OnSortSelectedChanged(Enums.ChangeComparereOption.Ascending);
-		_profilesCompareObservable = new BehaviorSubject<IComparer<UserProfileVim>>(Compares.UserProfileVimCompares.AscendingComparer);
 		_ = UserProfilesRepo
 			.Connect(i => i.isFavourite)
-			.Transform(i => new UserProfileVim(i, false))
-			.SortAndBind(out var list, _profilesCompareObservable)
+			.Transform(i => new ObsProfile(i, false))
+			.SortAndBind(out var list, profilesCompareObservable)
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasNoItems)); 
 			});
 		Profiles = list;
 
 		//OnFolderSortSelectedChanged(Enums.ChangeComparereOption.Ascending);
-		_foldersCompareObservable = new BehaviorSubject<IComparer<FolderVim>>(Compares.FolderVimCompares.AscendingComparer);
 		_ = UserProfilesFolderRepo
 			.Connect(i => i.isFavorite)
-			.Transform(i => new FolderVim(i))
-			.SortAndBind(out var flist, _foldersCompareObservable)
+			.Transform(i => new ObsFolder(i))
+			.SortAndBind(out var flist, foldersCompareObservable)
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasNoFolderItems));
 			});
@@ -70,7 +58,7 @@ public partial class DashboardViewModel
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value)
 	{
-		_profilesCompareObservable.OnNext(value switch { 
+		profilesCompareObservable.OnNext(value switch { 
 			Enums.ChangeComparereOption.Descending => Compares.UserProfileVimCompares.DescendingComparer,
 			_ => Compares.UserProfileVimCompares.AscendingComparer
 		});
@@ -78,7 +66,7 @@ public partial class DashboardViewModel
 
   partial void OnFolderSortSelectedChanged(Enums.ChangeComparereOption value)
 	{
-		_foldersCompareObservable.OnNext(value switch {
+		foldersCompareObservable.OnNext(value switch {
 			Enums.ChangeComparereOption.Descending => Compares.FolderVimCompares.DescendingComparer,
 			_ => Compares.FolderVimCompares.AscendingComparer
 		});

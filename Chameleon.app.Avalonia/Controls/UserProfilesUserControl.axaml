@@ -2,21 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="800"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:userProfiles="using:Chameleon.Avalonia.Controls.UserProfilesView"
+             xmlns:local="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:pagnator="using:Chameleon.Avalonia.Controls.Paginator"
 			 xmlns:converter="using:Chameleon.Common.ValueConverters"
-			 xmlns:vm="using:Chameleon.Avalonia.Controls.UserProfilesView.ViewModels"
+			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels.Controllers"
 			 x:DataType="vm:UserProfilesViewModel"
 			 x:CompileBindings="True"
-             x:Class="Chameleon.Avalonia.Controls.UserProfilesView.UserProfilesView">
-
-	<!--<UserControl.Resources>
-		<converter:ListSortDirectionToNameConverter x:Key="ListSortDirectionToName"/>
-	</UserControl.Resources>
-
+             x:Class="Chameleon.app.Avalonia.Controls.UserProfilesUserControl">
 	<UserControl.Styles>
 		<Style Selector="ui|SymbolIcon.spinner">
 			<Style.Animations>
@@ -144,7 +139,7 @@
 					ItemsSource="{Binding Sorts}"
 					SelectedItem="{Binding SortSelected}" />
 
-				--><!--<ToggleSplitButton 
+				<!--<ToggleSplitButton 
 					Width="200"
 					IsChecked="{Binding IsVisibleStopButton}"
 					Command="{Binding RunAutomationCommand}">
@@ -178,10 +173,10 @@
 							</ListBox>
 						</Flyout>
 					</ToggleSplitButton.Flyout>
-				</ToggleSplitButton>--><!--
-				
-				--><!--Automation Section in Options container--><!--
-				--><!--Scripts--><!--
+				</ToggleSplitButton>-->
+
+				<!--Automation Section in Options container-->
+				<!--Scripts-->
 				<ui:FAComboBox
 							  PlaceholderText="Select an automation..."
 							  IsEditable="False"
@@ -202,9 +197,9 @@
 						</DataTemplate>
 					</ui:FAComboBox.ItemTemplate>
 				</ui:FAComboBox>
-				
+
 				<Grid ColumnDefinitions="Auto,Auto,Auto">
-					--><!--Select Browser--><!--
+					<!--Select Browser-->
 					<ui:FAComboBox
 						MaxWidth="66"
 						HorizontalAlignment="Left"
@@ -224,7 +219,7 @@
 						</ui:FAComboBox.ItemTemplate>
 					</ui:FAComboBox>
 
-					<ToggleButton 
+					<ToggleButton
 						Margin="20 0 6 0"
 						Grid.Column="1"
 						IsChecked="{Binding IsRecordSelected}"
@@ -234,10 +229,10 @@
 							Height="20" />
 					</ToggleButton>
 
-					<Panel 
+					<Panel
 						Grid.Column="2"
 						HorizontalAlignment="Right">
-						--><!--Run Button--><!--
+						<!--Run Button-->
 						<Button
 							Classes="accent"
 							Width="72"
@@ -251,7 +246,7 @@
 									Text="Run"/>
 							</StackPanel>
 						</Button>
-						--><!--Stop Button--><!--
+						<!--Stop Button-->
 						<Button
 							Classes="accent"
 							Width="72"
@@ -265,7 +260,7 @@
 							</StackPanel>
 						</Button>
 
-						--><!--Wait Buttom--><!--
+						<!--Wait Buttom-->
 						<Button
 							Classes="accent"
 							Width="72"
@@ -277,7 +272,7 @@
 						</Button>
 					</Panel>
 
-					--><!--<DropDownButton
+					<!--<DropDownButton
 						HorizontalAlignment="Right"
 						Grid.Row="1"
 						Grid.Column="1"
@@ -322,7 +317,7 @@
 								</ListBox>
 							</Flyout>
 						</DropDownButton.Flyout>
-					</DropDownButton>--><!--
+					</DropDownButton>-->
 				</Grid>
 
 			</StackPanel>
@@ -339,7 +334,7 @@
 					</Panel.IsVisible>
 					<ListBox
 								  Name="lbProfiles"
-								  ItemsSource="{Binding ViewModels}"
+								  ItemsSource="{Binding Profiles}"
 								  Theme="{StaticResource ListBoxNoScroller}"
 								  ItemContainerTheme="{StaticResource GridViewItem}">
 						<ListBox.ItemsPanel>
@@ -349,7 +344,7 @@
 						</ListBox.ItemsPanel>
 						<ListBox.ItemTemplate>
 							<DataTemplate>
-								<userProfiles:UserProfileView HorizontalAlignment="Stretch" />
+								<local:UserProfileUserControl HorizontalAlignment="Stretch" />
 							</DataTemplate>
 						</ListBox.ItemTemplate>
 					</ListBox>
@@ -365,43 +360,19 @@
 								  IconName="not-profiles"
 								  Width="128"
 								  Margin="0 0 0 178" />
-					--><!--<TextBlock
-							Margin="0 35 0 0"
-							Text="No Profiles yet created"
-							Theme="{StaticResource SubtitleTextBlockStyle}"
-							HorizontalAlignment="Center"
-							IsVisible="{Binding !HasFolder}"/>--><!--
-					--><!--<TextBlock
-							Margin="0 12 0 12"
-							Text="No Profiles yet in this folder"
-							Theme="{StaticResource SubtitleTextBlockStyle}"
-							HorizontalAlignment="Center">
-							<TextBlock.IsVisible>
-								<MultiBinding Converter="{x:Static BoolConverters.And}">
-									<Binding Path="HasNoItems" />
-									<Binding Path="IsProfilesExist"/>
-								</MultiBinding>
-							</TextBlock.IsVisible>
-						</TextBlock>--><!--
-					--><!--<Button
-						Theme="{StaticResource SvgIconTextButton}"
-						HorizontalAlignment="Center"
-						Content="plus-in-circle"
-						Tag="Add profile"
-						Command="{Binding AddProfilesToFolderCommand}" />--><!--
 				</Panel>
-				--><!--</Panel>--><!--
+				<!--</Panel>-->
 
-				--><!--<wait:WaitIndicatorView
+				<!--<wait:WaitIndicatorView
 					Grid.Row="1"
 					DataContext="{Binding}"
-					IsIndicatorVisible="{Binding IsWaiting}"/>--><!--
+					IsIndicatorVisible="{Binding IsWaiting}"/>-->
 			</Panel>
 		</afv:ChameleonContentControl.Content>
 
-		--><!--<afv:ChameleonContentControl.Footer>
+		<!--<afv:ChameleonContentControl.Footer>
 			<pagnator:PaginatorView
 				DataContext="{Binding PaginatorViewModel}" />
-		</afv:ChameleonContentControl.Footer>--><!--
-	</afv:ChameleonContentControl>-->
+		</afv:ChameleonContentControl.Footer>-->
+	</afv:ChameleonContentControl>
 </UserControl>

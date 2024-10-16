@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia;
 using Chameleon.lib.Common.Interfaces.Services;
-using Chameleon.app.Avalonia.lib;
+using Chameleon.app.Avalonia.app;
 
 namespace Chameleon.app.Avalonia.Services;
 public class ToasterService(IDispatchService dispatcher)

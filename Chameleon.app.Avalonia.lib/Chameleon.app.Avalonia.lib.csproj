@@ -21,11 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Community\Controls\MboxLoginUserControl.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="Community\Controls\MboxTitleUserControl.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
+    <Folder Include="Community\Controls\" />
+    <Folder Include="Community\Services\" />
+    <Folder Include="Community\ViewModels\" />
+    <Folder Include="ViewModelObjrcts\" />
   </ItemGroup>
 </Project>

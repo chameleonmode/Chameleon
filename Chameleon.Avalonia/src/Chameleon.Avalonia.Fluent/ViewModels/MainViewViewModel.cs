@@ -20,8 +20,8 @@ using Chameleon.Interfaces.Settings;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Api.Repos;
 using Chameleon.app.Avalonia.Com.DynamicData;
-using Chameleon.app.Avalonia.Models;
 using DynamicData;
+using Chameleon.app.Avalonia.Models.Observable;
 
 namespace Chameleon.Av.Fluent.ViewModels;
 
@@ -32,8 +32,8 @@ public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewMode
 	[ObservableProperty]
 	private bool isSplashVisible = true;
 
-	private readonly IList<UserProfileVim> _boundProfilesList;
-	private readonly IList<FolderVim> _boundFoldersList;
+	private readonly IList<ObsProfile> _boundProfilesList;
+	private readonly IList<ObsFolder> _boundFoldersList;
 	public AvaloniaList<MainAppSearchItem> SearchTerms { get; } = [];
 
 	public NavigationFactory NavigationFactory { get; }
@@ -45,7 +45,7 @@ public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewMode
 
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i => new UserProfileVim(i))
+			.Transform(i => new ObsProfile(i))
 			.SortAndBind(out var plist, Compares.UserProfileVimCompares.AscendingComparer)
 			.Subscribe((i) => {
 				foreach (var c in i) {
@@ -68,7 +68,7 @@ public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewMode
 
 		_ = UserProfilesFolderRepo
 			.Connect()
-			.Transform(i => new FolderVim(i))
+			.Transform(i => new ObsFolder(i))
 			.SortAndBind(out var flist, Compares.FolderVimCompares.AscendingComparer)
 			.Subscribe((i) => {
 				foreach (var c in i) {

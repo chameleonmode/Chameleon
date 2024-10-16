@@ -5,8 +5,8 @@ using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.Avalonia.Common.Collections;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.app.Avalonia.lib;
 using Chameleon.app.Avalonia.Models;
+using Chameleon.app.Avalonia.app;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 

@@ -1,5 +1,4 @@
-﻿using Chameleon.app.Avalonia.Models;
-using Chameleon.Avalonia.Common.Collections;
+﻿using Chameleon.Avalonia.Common.Collections;
 using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Collections;
@@ -12,7 +11,6 @@ using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Views.List;
 using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.lib.Common.Constants;
@@ -95,24 +93,24 @@ public partial class UserProfilesViewModel
 		}
 	}
 
-	public AvList<PlaywrightScript> PlaywrightScripts { get; } = [];
+	//public AvList<PlaywrightScript> PlaywrightScripts { get; } = [];
 
-	public bool IsSelectedScript => SelectedPlaywrightScript != null;
-	private PlaywrightScript? _selectedPlaywrightScript;
-	public PlaywrightScript? SelectedPlaywrightScript {
-		get { return _selectedPlaywrightScript; }
-		set {
-			if (value != null && _selectedPlaywrightScript != value) {
-				_ = SetProperty(ref _selectedPlaywrightScript, value);
-				OnPropertyChanged(nameof(IsSelectedScript));
-				RunAutomationCommand.NotifyCanExecuteChanged();
+	//public bool IsSelectedScript => SelectedPlaywrightScript != null;
+	//private PlaywrightScript? _selectedPlaywrightScript;
+	//public PlaywrightScript? SelectedPlaywrightScript {
+	//	get { return _selectedPlaywrightScript; }
+	//	set {
+	//		if (value != null && _selectedPlaywrightScript != value) {
+	//			_ = SetProperty(ref _selectedPlaywrightScript, value);
+	//			OnPropertyChanged(nameof(IsSelectedScript));
+	//			RunAutomationCommand.NotifyCanExecuteChanged();
 
-				var cur = lib.Common.IoC.GetValue<string>("LastRunScriptId");
-				if(cur != value.Title)
-					lib.Common.IoC.SetValue(value.Title, "LastRunScriptId");
-			}
-		}
-	}
+	//			var cur = lib.Common.IoC.GetValue<string>("LastRunScriptId");
+	//			if(cur != value.Title)
+	//				lib.Common.IoC.SetValue(value.Title, "LastRunScriptId");
+	//		}
+	//	}
+	//}
 
 	private string _searchText = string.Empty;
 	public string SearchText {
@@ -271,25 +269,25 @@ public partial class UserProfilesViewModel
 
 	private async Task InitializeScripts()
 	{
-		void AddMappedScripts(IEnumerable<PlaywriteRunScriptOptions> scripts)
-		{
-			PlaywrightScripts.AddMapped(scripts, (Func<PlaywriteRunScriptOptions, PlaywrightScript>)(b => {
-				var viewModel = new PlaywrightScript(b);
-				viewModel.Parameters.AddRange((IEnumerable<PlaywrightDescriptionParam>)b.Description!.Parameters);
-				return viewModel;
-			}));
-		}
+		//void AddMappedScripts(IEnumerable<PlaywriteRunScriptOptions> scripts)
+		//{
+		//	PlaywrightScripts.AddMapped(scripts, (Func<PlaywriteRunScriptOptions, PlaywrightScript>)(b => {
+		//		var viewModel = new PlaywrightScript(b);
+		//		viewModel.Parameters.AddRange((IEnumerable<PlaywrightDescriptionParam>)b.Description!.Parameters);
+		//		return viewModel;
+		//	}));
+		//}
 
-		PlaywrightScripts.Clear();
+		//PlaywrightScripts.Clear();
 
-		AddMappedScripts(_plawrightRepository.GetBundledScrits());
+		//AddMappedScripts(_plawrightRepository.GetBundledScrits());
 
-		var usd = lib.Common.IoC.GetValue<string>("UserScriptsDirectory");
-		if (usd.Is() && Directory.Exists(usd)) {
-			AddMappedScripts(await _plawrightRepository.GetUserScripts(usd));
-		}
+		//var usd = lib.Common.IoC.GetValue<string>("UserScriptsDirectory");
+		//if (usd.Is() && Directory.Exists(usd)) {
+		//	AddMappedScripts(await _plawrightRepository.GetUserScripts(usd));
+		//}
 
-		OnPropertyChanged(nameof(SelectedBrowserItem));
+		//OnPropertyChanged(nameof(SelectedBrowserItem));
 	}
 
 	private void InintializeLastSelectedAutomation()
@@ -301,7 +299,7 @@ public partial class UserProfilesViewModel
 			? BrowserItems[0]
 			: BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
 
-		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Title == lib.Common.IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
+		//SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Title == lib.Common.IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
 	}
 
 	private void OnHandleUserEvent()
@@ -541,51 +539,51 @@ public partial class UserProfilesViewModel
 	[RelayCommand]
 	private async Task RunAutomation()
 	{
-		if (!ViewModels.Any(p => p.IsSelected == true)) {
-			Toaster.ShowErr("Select one or more profiles to run the automation.");
-			return;
-		}
-		if (SelectedPlaywrightScript == null) {
-			Toaster.ShowErr("Select an automation.");
-			return;
-		}
+		//if (!ViewModels.Any(p => p.IsSelected == true)) {
+		//	Toaster.ShowErr("Select one or more profiles to run the automation.");
+		//	return;
+		//}
+		//if (SelectedPlaywrightScript == null) {
+		//	Toaster.ShowErr("Select an automation.");
+		//	return;
+		//}
 
-		IsVisibleRunButton = false;
-		IsVisibleStopButton = true;
+		//IsVisibleRunButton = false;
+		//IsVisibleStopButton = true;
 
-		var token = RecreateCancellationToken;
-		foreach (var profile in GetSelectedProfiles) {
-			var browserWasNotOpened = profile.SBI![SelectedBrowserItem.SystemBrowserType] == null;
-			if (browserWasNotOpened) {
-				await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(token);
-        if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || !await profile.SBI![SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))
-					continue;
-			}
-			var options = SelectedPlaywrightScript.RunOptions;
-			options.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
-			options.Record = IsRecordSelected;
-			try {
-				await _playwriteService.RunScript(SelectedPlaywrightScript.RunOptions, token);
-			} catch (Exception ex) {
-				// Log or handle the exception if closing the process fails
-				Toaster.ShowErr($"{ex.Message}");
-			}
+		//var token = RecreateCancellationToken;
+		//foreach (var profile in GetSelectedProfiles) {
+		//	var browserWasNotOpened = profile.SBI![SelectedBrowserItem.SystemBrowserType] == null;
+		//	if (browserWasNotOpened) {
+		//		await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(token);
+  //      if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || !await profile.SBI![SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))
+		//			continue;
+		//	}
+		//	var options = SelectedPlaywrightScript.RunOptions;
+		//	options.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
+		//	options.Record = IsRecordSelected;
+		//	try {
+		//		await _playwriteService.RunScript(SelectedPlaywrightScript.RunOptions, token);
+		//	} catch (Exception ex) {
+		//		// Log or handle the exception if closing the process fails
+		//		Toaster.ShowErr($"{ex.Message}");
+		//	}
 
-			// Check if the browser process is not null and hasn't exited
-			if (browserWasNotOpened) {
-				await ProUtil.TryKillProcess(profile.SBI[SelectedBrowserItem.SystemBrowserType]?.Settings.Brocess);
-			}
+		//	// Check if the browser process is not null and hasn't exited
+		//	if (browserWasNotOpened) {
+		//		await ProUtil.TryKillProcess(profile.SBI[SelectedBrowserItem.SystemBrowserType]?.Settings.Brocess);
+		//	}
 
-			// Stop loop if canceled
-			if (token.IsCancellationRequested) {
-				break;
-			}
-		}
-		_playwriteService.Dispose();
+		//	// Stop loop if canceled
+		//	if (token.IsCancellationRequested) {
+		//		break;
+		//	}
+		//}
+		//_playwriteService.Dispose();
 
-		IsVisibleRunButton = true;
-		IsVisibleStopButton = false;
-		IsVisibleWaitButton = false;
+		//IsVisibleRunButton = true;
+		//IsVisibleStopButton = false;
+		//IsVisibleWaitButton = false;
 	}
 
 

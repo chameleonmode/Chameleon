@@ -1,6 +1,6 @@
-﻿using Chameleon.Authorization;
-using Chameleon.Avalonia.Controls.UserProfilesView;
-using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
+﻿using Chameleon.app.Avalonia.Controls;
+using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.Authorization;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.UserProfiles;
@@ -20,9 +20,9 @@ using CommunityToolkit.Mvvm.Input;
 
 using static Chameleon.lib.Common.Constants.Enums;
 
-namespace Chameleon.app.Avalonia.Models;
-public partial class UserProfileVim : Vim<UserProfileDto> {
-	private readonly IApplicationUser _applicationUser = ContainerServiceHelper.Resolve<IApplicationUser>()!;
+namespace Chameleon.app.Avalonia.Models.Observable;
+public partial class ObsProfile : Vim<UserProfileDto> {
+	private readonly IAuthSession _authSession = ContainerServiceHelper.Resolve<IAuthSession>()!;
 	private readonly ISysBrowserService? SysBrowserServiceBase = IoC.GetService<ISysBrowserService>();
 
 	[ObservableProperty]
@@ -50,8 +50,8 @@ public partial class UserProfileVim : Vim<UserProfileDto> {
 
 	public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
 	public bool IsFavorite => Dto?.isFavourite ?? false;
-	public bool IsDeleteProfileBtnVisible => !IsSharedProfile && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
-	public bool IsOutreachBtnEnabled => !IsSharedProfile || _applicationUser.HasPemission(PermissionNames.Pages_Outreach);
+	public bool IsDeleteProfileBtnVisible => !IsSharedProfile;
+	//public bool IsOutreachBtnEnabled => !IsSharedProfile || _applicationUser.HasPemission(PermissionNames.Pages_Outreach);
 
 	public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI { get; set; } = new Dictionary<SystemBrowserType, ISysBrowserInstance?>(){
 			{ SystemBrowserType.Chrome, null },
@@ -59,7 +59,7 @@ public partial class UserProfileVim : Vim<UserProfileDto> {
 			{ SystemBrowserType.Brave, null }
 		};
 
-	public UserProfileVim(
+	public ObsProfile(
 			UserProfileDto userProfile,
 			bool isShowCheckboxColumn = true,
 			bool isShowGlyph = true,
@@ -77,9 +77,9 @@ public partial class UserProfileVim : Vim<UserProfileDto> {
 		IsShowD = isShowD;
 		IsShowC = isShowC;
 		IsShowF = isShowF;
-		IsShowCheckboxColumn = isShowCheckboxColumn && _applicationUser.HasPemission(PermissionNames.Pages_DeleteProfiles);
-		IsEnabledCheckboxColumn = userProfile?.creatorUserId != ContainerServiceHelper.Resolve<IAuthSession>()?.UserId && userProfile?.creatorUserId != null;
-		IsSharedProfile = userProfile?.creatorUserId != ContainerServiceHelper.Resolve<IAuthSession>()?.UserId && userProfile?.creatorUserId != null;
+		IsShowCheckboxColumn = isShowCheckboxColumn;
+		IsEnabledCheckboxColumn = userProfile?.creatorUserId != _authSession.UserId;
+		IsSharedProfile = userProfile?.creatorUserId != _authSession.UserId;
 
 		if (SysBrowserServiceBase != null) {
 			async Task setEvents()
@@ -110,7 +110,7 @@ public partial class UserProfileVim : Vim<UserProfileDto> {
 	[RelayCommand]
 	private void ShowViewProfile()
 	{
-		WShower.ShowTopmost<UserProfileSidePanelView, UserProfileSidePanelViewModel>(vm => {
+		WShower.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(new UserProfileSidePanelViewModel(Dto!), vm => {
 			//vm.UserProfile = Dto;
 		}, null, "Copy Pasta", 156);
 	}
@@ -148,16 +148,14 @@ public partial class UserProfileVim : Vim<UserProfileDto> {
 	[RelayCommand]
 	public void OpenUserBrowser()
 	{
-		//WShower.ShowTopmost(TopMostSidePanelViewModel.Instance, TopMostSidePanelView.Instance,
-		//		vm => {
-		//			if (!vm.RunningList.Contains(this))
-		//				vm.RunningList.Add(this);
-
-		//			vm.Update();
-		//		},
-		//		vm => {
-		//			vm.RunningList.Clear();
-		//		}, "SCP", 172);
+		WShower.ShowTopmost(SnapCracklePopViewModel.Instance, SnapCracklePopUserControl.Instance,
+				vm => {
+					if (!vm.RunningList.Contains(this))
+						vm.RunningList.Add(this);
+				},
+				vm => {
+					vm.RunningList.Clear();
+				}, "SCP", 172);
 	}
 	[RelayCommand]
 	private async Task OpenFirefox()

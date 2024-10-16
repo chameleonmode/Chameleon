@@ -4,7 +4,6 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 
-using Chameleon.app.Avalonia.lib.Community.Services;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Views;
@@ -45,7 +44,6 @@ using System.Reflection;
 
 namespace Chameleon.Av.Fluent;
 
-[Obsolete("Added for compatibility with corrent infrastructure project until _authSession refactoed out only")]
 public class AuthSession : IAuthSession {
 	public long UserId { get; set; }
 	public long? CreatorUserId { get; set; }

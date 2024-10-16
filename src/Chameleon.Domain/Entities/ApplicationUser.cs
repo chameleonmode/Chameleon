@@ -18,8 +18,9 @@ namespace Chameleon.Domain.Entities
         public string Email => _authSession.UserName;
         public bool IsAssistant => _authSession.CreatorUserId.HasValue;
         public bool TookGuidedTour => _authSession.TookGuidedTour;
+		public long id => _authSession.UserId;
 
-        public bool HasPemission(string permissionName)
+		public bool HasPemission(string permissionName)
         {
             return _authSession.Permissions.Contains(permissionName);
         }

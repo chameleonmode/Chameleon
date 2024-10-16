@@ -2,7 +2,6 @@
 
 using chameleon.assets;
 
-using Chameleon.app.Avalonia.lib.Community.ViewModels;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.app.Avalonia.lib.Community.Controls;
@@ -11,8 +10,10 @@ using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces;
 using Chameleon.Avalonia.Common.Helpers;
+using Chameleon.app.Avalonia.app;
+using Chameleon.app.Avalonia.ViewModels.Controllers;
 
-namespace Chameleon.app.Avalonia.lib.Community.Services;
+namespace Chameleon.app.Avalonia.Services;
 public class MboxService(IDispatchService dispatcher) : IMboxService {
 	public async Task<Enums.MboxResult> Show(string title, string content, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo, string icon = "Info")
 	{

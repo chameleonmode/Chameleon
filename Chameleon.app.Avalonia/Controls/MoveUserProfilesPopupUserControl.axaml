@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
+             x:Class="Chameleon.app.Avalonia.Controls.MoveUserProfilesPopupUserControl">
+	<UserControl.Resources>
+		<DataTemplate x:Key="FoldersListViewTemplate">
+			<Border
+                x:Name="Border"
+                BorderThickness="1"
+                Height="56">
+				<RadioButton
+					Content="{Binding Title}"
+					Grid.Column="0"
+					Margin="12 0 0 0"
+					GroupName="FolderGroup"
+					IsChecked="{Binding SelectedFolder}"
+					Height="19"
+					Width="19"
+					Command="{Binding SelectFolderCommand}"
+					CommandParameter="{Binding}"
+					Cursor="Hand">
+				</RadioButton>
+			</Border>
+		</DataTemplate>
+	</UserControl.Resources>
+	<dialogs:ChameleonDialogControl TitleDescription="{Binding Profiles.Count,
+											StringFormat='Select a folder to move the {0} selected profiles:'}">
+		<dialogs:ChameleonDialogControl.Content>
+			<StackPanel Margin="10"
+						Spacing="6">
+				<TextBlock  Text="{Binding SelectedFolder.Title,FallbackValue=Select a Folder}"
+							IsVisible="{Binding SelectedFolder.Title, Converter={x:Static ObjectConverters.IsNull}}"
+							Padding="4"
+							Theme="{StaticResource SubtitleTextBlockStyle}"
+						   HorizontalAlignment="Left"
+						VerticalAlignment="Center">
+				</TextBlock>
+
+				<ui:FAComboBox HorizontalAlignment="Stretch"
+							   DisplayMemberBinding="{Binding Title}"
+							   SelectedItem="{Binding SelectedFolder}"
+							   ItemsSource="{Binding Folders}"
+							   IsTextSearchEnabled="True" />
+
+
+				<!--Folders List-->
+			</StackPanel>
+		</dialogs:ChameleonDialogControl.Content>
+	</dialogs:ChameleonDialogControl>
+</UserControl>

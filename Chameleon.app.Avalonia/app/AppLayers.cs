@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.VisualTree;
 
-namespace Chameleon.app.Avalonia.lib;
+namespace Chameleon.app.Avalonia.app;
 
 public static class AppLayers {
 	public static Window? GetMainWindow()

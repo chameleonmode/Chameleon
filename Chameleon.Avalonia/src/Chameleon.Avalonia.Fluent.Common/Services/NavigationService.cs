@@ -1,21 +1,9 @@
 ﻿using Avalonia.Controls;
-using Chameleon.Av.Fluent.Common.Models;
-using Chameleon.Av.Fluent.Common.Pages;
-using Chameleon.Avalonia.Common.Helpers;
-using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.Dashboard;
-using Chameleon.Interfaces.Ioc;
-using Chameleon.Interfaces.Services;
-using Chameleon.Interfaces.Settings;
-using Chameleon.Interfaces.UserProfiles;
 using Chameleon.lib.Common.Interfaces.Services;
 
 using FluentAvalonia.UI.Controls;
-using FluentAvalonia.UI.Controls.Primitives;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Navigation;
-using System.Configuration;
 
 namespace Chameleon.Av.Fluent.Common.Services;
 
@@ -70,12 +58,10 @@ public class NavigationService : INavigationService
     private Frame? _frame;
     private Panel? _overlayHost;
 
-    public Task PopAsync()
+    public void Pop()
     {
         //TODO: implement other back possibilitys when they come up
         if (_frame?.CanGoBack == true && _frame.Content.GetType().Name == "UserProfileIdentityView")
             _frame?.GoBack();
-
-        return Task.CompletedTask;
     }
 }

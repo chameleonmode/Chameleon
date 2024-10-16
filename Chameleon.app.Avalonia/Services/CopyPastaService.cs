@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-using Chameleon.app.Avalonia.lib;
+using Chameleon.app.Avalonia.app;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.lib.Common.ServiceManagers;
 

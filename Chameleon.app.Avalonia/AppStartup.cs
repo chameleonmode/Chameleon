@@ -1,6 +1,6 @@
 ﻿using Chameleon.app.Avalonia.lib.Community.Controls;
-using Chameleon.app.Avalonia.lib.Community.ViewModels;
 using Chameleon.app.Avalonia.Models;
+using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.Common.Helpers;
 using Chameleon.Interfaces.Auth;
 using Chameleon.lib.Api;

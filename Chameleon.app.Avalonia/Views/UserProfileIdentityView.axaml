@@ -3,13 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:ups="using:Chameleon.Avalonia.Controls.UserProfilesView"
-			 xmlns:vm="using:Chameleon.Avalonia.Controls.UserProfileView.ViewModels"
+		     xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+             xmlns:appuc="using:Chameleon.app.Avalonia.Controls"
+			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
 			 x:DataType="vm:UserProfileIdentityViewModel"
 			 x:CompileBindings="True"
 			 Name="UC"
-             x:Class="Chameleon.Avalonia.Controls.UserProfileView.UserProfileIdentityView">
+             x:Class="Chameleon.app.Avalonia.Views.UserProfileIdentityView">
 	<UserControl.Resources>
 		<ControlTheme x:Key="TheseTabHeaderPanels"
 					  TargetType="HeaderedContentControl">
@@ -98,7 +98,7 @@
 	</UserControl.Styles>
 	<Grid RowDefinitions="Auto,*">
 		<Grid ColumnDefinitions="*,Auto">
-			<ups:UserProfileView Name="UPView" DataContext="{Binding ProfileVM}" />
+			<appuc:UserProfileUserControl Name="UPView" DataContext="{Binding ProfileVM}" />
 
 			<StackPanel Grid.Column="1"
 						Orientation="Horizontal"
@@ -136,20 +136,20 @@
 				<TabItem.Content>
 					<StackPanel Spacing="18">
 						<afv:HeaderdInputFieldsControl Title="PROFILE NAME"
-													   Text="{Binding UserProfileModel.Title, FallbackValue=NAME}" />
+													   Text="{Binding UserProfile.title, FallbackValue=NAME}" />
 
 						<afv:HeaderdInputFieldsControl Title="PROXY CONFIGURATION"
 													   Header="False">
 							<afv:HeaderdInputFieldsControl.TextBoxes>
-								<TextBox Text="{Binding Path=UserProfileModel.Proxy.Host}" />
-								<TextBox Text="{Binding Path=UserProfileModel.Proxy.PortString}"  />
-								<TextBox Text="{Binding Path=UserProfileModel.Proxy.UserName}" />
-								<TextBox Text="{Binding Path=UserProfileModel.Proxy.Password}"  />
+								<TextBox Text="{Binding Path=UserProfile.proxy.host}" />
+								<TextBox Text="{Binding Path=UserProfile.proxy.port}"  />
+								<TextBox Text="{Binding Path=UserProfile.proxy.userName}" />
+								<TextBox Text="{Binding Path=UserProfile.proxy.password}"  />
 							</afv:HeaderdInputFieldsControl.TextBoxes>
 						</afv:HeaderdInputFieldsControl>
 
 						<afv:HeaderdInputFieldsControl Title="NOTES"
-													   Text="{Binding UserProfileModel.Notes, FallbackValue=Notes}" />
+													   Text="{Binding UserProfile.notes, FallbackValue=Notes}" />
 
 						<!--<afv:HeaderdInputFieldsControl Title="CANVAS VALUE"
 													   Text="{Binding UserProfileModel.WebBrowser.Canvas, FallbackValue=Canvas}" />-->
@@ -189,7 +189,7 @@
 				<TabItem.Content>
 					<Panel>
 						<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
-												IsVisible="{Binding !HasNoItems}" />
+												IsVisible="{Binding !HasPersons}" />
 						<Grid RowDefinitions="Auto,*">
 							<HeaderedContentControl
 								Theme="{StaticResource TheseOptionsHeaderPanels}"
@@ -204,7 +204,7 @@
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																					 Text="{Binding Title, FallbackValue=Title}" />
+																					 Text="{Binding title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="Name first, middle, last"
 																					 Header="False">
@@ -274,7 +274,7 @@
 				<TabItem.Content>
 					<Panel>
 						<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
-												IsVisible="{Binding !HasNoBusinessItems}" />
+												IsVisible="{Binding !HasBusiness}" />
 						<Grid RowDefinitions="Auto,*">
 							<HeaderedContentControl
 								Theme="{StaticResource TheseOptionsHeaderPanels}"
@@ -288,8 +288,8 @@
 									<DataTemplate>
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
-												<afv:HeaderdInputFieldsControl Title="Title"
-																			   Text="{Binding Title, FallbackValue=Title}" />
+												<afv:HeaderdInputFieldsControl Title="title"
+																			   Text="{Binding title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="Company Name"
 																			   Text="{Binding CompanyName, FallbackValue=CompanyName}" />
@@ -327,7 +327,7 @@
 				<TabItem.Content>
 					<Panel>
 						<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
-												IsVisible="{Binding !HasNoAddressesItems}" />
+												IsVisible="{Binding !HasAddresses}" />
 						<Grid RowDefinitions="Auto,*">
 							<HeaderedContentControl
 								Theme="{StaticResource TheseOptionsHeaderPanels}"
@@ -342,7 +342,7 @@
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																			   Text="{Binding Title, FallbackValue=Title}" />
+																			   Text="{Binding title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="AddressLine1"
 																			   Text="{Binding AddressLine1, FallbackValue=AddressLine1}" />
@@ -395,7 +395,7 @@
 				<TabItem.Content>
 					<Panel>
 						<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
-												IsVisible="{Binding !HasNoLoginsItems}" />
+												IsVisible="{Binding !HasLogins}" />
 						<Grid RowDefinitions="Auto,*">
 							<HeaderedContentControl
 								Theme="{StaticResource TheseOptionsHeaderPanels}"
@@ -410,7 +410,7 @@
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																			   Text="{Binding Title, FallbackValue=Title}" />
+																			   Text="{Binding title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="WebSite"
 																			   Text="{Binding WebSite, FallbackValue=WebSite}" />

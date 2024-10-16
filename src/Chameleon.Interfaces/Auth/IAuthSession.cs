@@ -2,7 +2,8 @@
 
 namespace Chameleon.Interfaces.Auth
 {
-    public interface IAuthSession 
+	[Obsolete("Added for compatibility with corrent infrastructure project until _authSession refactoed out only")]
+	public interface IAuthSession 
         : IAuthUser
         , IAuthUserToken
         , IAuthLimits

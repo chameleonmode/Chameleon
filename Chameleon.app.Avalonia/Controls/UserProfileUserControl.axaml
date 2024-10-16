@@ -7,8 +7,8 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:avCommon="using:Chameleon.Avalonia.Common"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:dt="using:Chameleon.app.Avalonia.Models"
-			 x:DataType="dt:UserProfileVim"
+			 xmlns:dt="using:Chameleon.app.Avalonia.Models.Observable"
+			 x:DataType="dt:ObsProfile"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Controls.UserProfileUserControl">
 	<UserControl.Resources>

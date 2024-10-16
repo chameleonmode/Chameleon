@@ -94,7 +94,7 @@ public partial class UserProfileIdentityViewModel : SubPageViewModelBase,
         EventAggregator.GetEvent<SavedUserAssistantEvent>().Subscribe(args => SyncBtnVisibilityChange());
         EventAggregator.GetEvent<DeletedUserAssistantEvent>().Subscribe(args => SyncBtnVisibilityChange());
         EventAggregator.GetEvent<UserProfileTabChangedEvent>().Subscribe(Discard);
-        EventAggregator.GetEvent<DeleteUserProfileEvent>().Subscribe(a => NavigationService?.PopAsync());
+        EventAggregator.GetEvent<DeleteUserProfileEvent>().Subscribe(a => NavigationService?.Pop());
     }
 
     private void InitializeCommands()
