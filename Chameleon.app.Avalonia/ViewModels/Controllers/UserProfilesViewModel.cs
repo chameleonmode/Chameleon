@@ -28,7 +28,6 @@ using System.Reactive.Subjects;
 using DynamicData;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.Avalonia.Controls.Paginator.ViewModels;
 using Chameleon.app.Avalonia.Controls;
 using FluentAvalonia.Core;
 

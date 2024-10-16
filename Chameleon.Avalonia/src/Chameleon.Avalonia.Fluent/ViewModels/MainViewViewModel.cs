@@ -4,7 +4,6 @@ using Avalonia.Controls;
 using Chameleon.app.Avalonia;
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Extensions;
-using Chameleon.CT.Common.Base;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.App;
 using Chameleon.Interfaces.App.UserProfiles;
@@ -22,6 +21,7 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.app.Avalonia.Com.DynamicData;
 using DynamicData;
 using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.lib.CommunityToolkit.MvvM;
 
 namespace Chameleon.Av.Fluent.ViewModels;
 

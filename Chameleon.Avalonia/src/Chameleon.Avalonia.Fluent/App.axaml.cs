@@ -7,22 +7,17 @@ using Avalonia.Styling;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Av.Fluent.Views;
-using Chameleon.Avalonia.Controls.UserProfilesView;
-using Chameleon.Avalonia.Controls.UserProfileView;
-using Chameleon.Avalonia.Controls.UserProfileView.ViewModels;
 using Chameleon.Avalonia.Prism.Infrastructure.Extensions;
 using Chameleon.Avalonia.Prism.Infrastructure.Services;
 using Chameleon.Infrastructure.Ioc;
 using Chameleon.Infrastructure.Profiles;
 using Chameleon.Infrastructure.Repositories;
-using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.App.UserProfiles.Views.List;
 using Chameleon.Interfaces.Auth;
 using Chameleon.Interfaces.Dialogs;
 using Chameleon.Interfaces.Ioc;
 using Chameleon.Interfaces.Modules;
 using Chameleon.Interfaces.Repository;
-using Chameleon.Interfaces.Services;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Interfaces.Services;
@@ -99,7 +94,7 @@ public partial class App : PrismApplication {
 		cr.RegisterSingleton<IHaveContainerProvider, HasContainerProviderService>(true);
 
 		//cr.RegisterSingleton<lib.Common.Interfaces.Sys.IEventAggregator, lib.Common.Interfaces.Sys.EventAggregator>();
-		cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
+		//cr.RegisterSingleton<ITaskDialogService, TaskDialogService>();
 
 		containerRegistry.RegisterSingleton<IIocManager, IocManager>();
 		//containerRegistry.RegisterSingleton<IExtensionLoaderService, ExtensionLoaderService>();
@@ -117,18 +112,18 @@ public partial class App : PrismApplication {
 
 		// Dialogs
 		// //Chameleon.Av.Fluent.Dialogs
-		cr.Register<IMoveUserProfilesPopupView, MoveUserProfilesPopupView>();
-		cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();
+		//cr.Register<IMoveUserProfilesPopupView, MoveUserProfilesPopupView>();
+		//cr.Register<IAddUserProfilesPopupView, AddUserProfilesPopupView>();
 		//cr.Register<IUserProfileSidePanelView, UserProfileSidePanelView>();
 		//cr.Register<IUserProfileSidePanelViewModel, UserProfileSidePanelViewModel>();
 
 		// Views - Viewmodels
-		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.Functional.ViewModels.FunctionalSettingsViewModel).Assembly);
-		Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfilesView.ViewModels.ProjectsViewModel).Assembly);
+		//Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Settings.Functional.ViewModels.FunctionalSettingsViewModel).Assembly);
+		//Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfilesView.ViewModels.ProjectsViewModel).Assembly);
 		Container.RegisterTypesFrom(typeof(Chameleon.Av.Fluent.ViewModels.MainViewViewModel).Assembly);
 		//Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.Dashboard.ViewModels.DashboardViewModel).Assembly);
 		//Container.RegisterTypesFrom(typeof(Chameleon.Avalonia.Controls.UserProfileView.ViewModels.UserProfileIdentityViewModel).Assembly);
-		Container.RegisterMapperFrom(typeof(Chameleon.Avalonia.Controls.UserProfilesView.ViewModels.ProjectsViewModel).Assembly);
+		//Container.RegisterMapperFrom(typeof(Chameleon.Avalonia.Controls.UserProfilesView.ViewModels.ProjectsViewModel).Assembly);
 	}
 
 	private void RegisterIocContainer(IContainerRegistry containerRegistry)

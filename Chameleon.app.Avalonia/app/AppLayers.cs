@@ -40,6 +40,15 @@ public static class AppLayers {
 		return Application.Current?.FindResource(key) as T ?? default;
 	}
 
+	public static T? TryGetResource<T>(object key) where T : class
+	{
+		return Application.Current != null &&
+				Application.Current.TryGetResource(key, null, out var icon) &&
+				icon is T i
+			? i
+			: default;
+	}
+
 	//TODO: implement
 	//public static void InitializeExceptionHandlerLayer()
 	//{

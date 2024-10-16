@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
+             xmlns:contrls="using:Chameleon.Av.Fluent.Common.Controls"
+			 x:DataType="vm:FunctionalSettingsViewModel"
+			 x:CompileBindings="True"
+             x:Class="Chameleon.app.Avalonia.Views.FunctionalSettingsView">
+	<UserControl.Resources>
+		<ControlTheme x:Key="TabItemStyle"
+                      TargetType="TabStripItem">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="Padding" Value="{StaticResource TabItemHeaderMargin}" />
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Name="PART_LayoutRoot"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            ToolTip.Tip="{TemplateBinding Content}">
+						<Panel>
+							<Viewbox Width="28"
+                                     Height="28"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center"
+                                     Margin="12 6">
+								<ui:IconSourceElement IconSource="{TemplateBinding Tag}" />
+							</Viewbox>
+							<Rectangle Name="PART_SelectedPipe"
+                                       Fill="{DynamicResource AccentFillColorDefaultBrush}"
+                                       RadiusX="2"
+                                       RadiusY="2"
+                                       VerticalAlignment="Bottom"
+                                       Opacity="0"
+                                       Height="{DynamicResource TabItemPipeThickness}"
+                                       Margin="0 0 0 2"
+                                       HorizontalAlignment="Stretch"/>
+						</Panel>
+					</Border>
+				</ControlTemplate>
+			</Setter>
+
+			<Style Selector="^:pointerover /template/ Rectangle#PART_SelectedPipe">
+				<Setter Property="Opacity" Value="0.2" />
+				<Setter Property="Fill" Value="{DynamicResource ControlStrongFillColorDefaultBrush}" />
+			</Style>
+
+			<Style Selector="^:selected">
+				<Style Selector="^ /template/ Rectangle#PART_SelectedPipe">
+					<Setter Property="Opacity" Value="1" />
+				</Style>
+
+				<Style Selector="^:pointerover /template/ Rectangle#PART_SelectedPipe">
+					<Setter Property="Opacity" Value="0.75" />
+					<Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+				</Style>
+			</Style>
+		</ControlTheme>
+
+		<ItemsPanelTemplate x:Key="DefaultPanel">
+			<StackPanel Orientation="Horizontal" />
+		</ItemsPanelTemplate>
+	</UserControl.Resources>
+	<Panel>
+		<TabStrip ItemContainerTheme="{StaticResource TabItemStyle}"
+                  Background="{DynamicResource ControlOnImageFillColorDefaultBrush}"
+                  CornerRadius="{StaticResource ControlCornerRadius}"
+                  Margin="4"
+                  Name="TabStrip1"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Top"
+                  ZIndex="100">
+			<TabStrip.ItemsPanel>
+				<OnFormFactor Default="{StaticResource DefaultPanel}">
+					<On Options="Mobile">
+						<ItemsPanelTemplate>
+							<StackPanel />
+						</ItemsPanelTemplate>
+					</On>
+				</OnFormFactor>
+			</TabStrip.ItemsPanel>
+			<TabStripItem
+				Content="Proxy"
+				Tag="{StaticResource Proxy}"/>
+			<TabStripItem
+				Content="Default Launch Settings"
+				Tag="{StaticResource DefaultSettingsPageIcon}"/>
+			<TabStripItem
+				Content="Phone Verification"
+				Tag="{StaticResource CellPhone}"/>
+			<TabStripItem
+				Content="Proxy Credit"
+				Tag="{StaticResource ProxyCred}"/>
+			<TabStripItem
+				Content="Virtual Taskforce"
+				Tag="{StaticResource User}">
+			</TabStripItem>
+		</TabStrip>
+
+		<ui:Frame Name="InnerNavFrame"
+                  IsNavigationStackEnabled="False"/>
+	</Panel>
+</UserControl>

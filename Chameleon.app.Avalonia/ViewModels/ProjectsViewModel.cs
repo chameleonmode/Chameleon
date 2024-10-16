@@ -1,16 +1,9 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Views;
-using Chameleon.Authorization;
-using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.Common.Helpers;
 using Chameleon.Core.Settings;
-using Chameleon.Interfaces.App.UserProfileFolders.Events;
 using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.Common;
-using Chameleon.Interfaces.UserProfileFolders;
-using Chameleon.Interfaces.UserProfiles;
-using Chameleon.lib.Common;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;

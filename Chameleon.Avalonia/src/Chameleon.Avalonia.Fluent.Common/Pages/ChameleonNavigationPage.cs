@@ -6,11 +6,11 @@ using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
 using Chameleon.Av.Fluent.Common.Controls;
-using Chameleon.Core.Util;
 using Chameleon.Interfaces;
 using Chameleon.Interfaces.App.UserProfiles;
 using Chameleon.Interfaces.UserProfileFolders;
 using Chameleon.Interfaces.UserProfiles;
+using Chameleon.lib.Common.Util;
 
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;

@@ -2,8 +2,20 @@
 using Chameleon.Interfaces.Paginator;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
-namespace Chameleon.Avalonia.Controls.Paginator.ViewModels;
+using CommunityToolkit.Mvvm.Input;
 
+namespace Chameleon.app.Avalonia.ViewModels;
+public class PaginatorButtonViewModel {
+	public int Index { get; }
+	public string Text => (Index + 1).ToString();
+
+	public PaginatorButtonViewModel(int index)
+	{
+		Index = index;
+	}
+
+
+}
 public partial class PaginatorViewModel
     : ViewModelObjectBase
 		, IPaginatorViewModel

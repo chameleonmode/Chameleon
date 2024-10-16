@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="DynamicData" />
+	<PackageReference Include="CommunityToolkit.Mvvm" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,9 +18,8 @@
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.CommunityToolkit\Chameleon.lib.CommunityToolkit.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Playwright\Chameleon.lib.Playwright.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
-    <ProjectReference Include="..\src\Chameleon.Domain\Chameleon.Domain.csproj" />
+    <ProjectReference Include="..\src\Chameleon.Core\Chameleon.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,8 +29,26 @@
     <Compile Update="Controls\MboxTitleUserControl.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
+    <Compile Update="Views\AssistantUsersView.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PaginatorView.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PhoneVerificationView.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
     <Compile Update="Views\PlaywrightViewView.axaml.cs">
       <DependentUpon>PlaywrightViewView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ProxyCreditView.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\UserDefaultSettingsView.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\UserProxySettingsView.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
   </ItemGroup>
 

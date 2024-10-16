@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="490"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:local="using:Chameleon.app.Avalonia.Controls"
+			 x:DataType="vm:PhoneVerificationViewModel"
+			 x:CompileBindings="True"
+             x:Class="Chameleon.app.Avalonia.Views.PhoneVerificationView">
+			<ItemsControl ItemsSource="{Binding PVApis}">
+				<!--<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<UniformGrid Rows="2" Columns="2"  />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>-->
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<local:PVAUserControl VerticalAlignment="Top"  />
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+</UserControl>

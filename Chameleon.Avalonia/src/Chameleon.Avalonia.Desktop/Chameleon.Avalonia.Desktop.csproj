@@ -44,7 +44,6 @@
 	
   <ItemGroup>
     <ProjectReference Include="..\..\..\Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj" />
-    <ProjectReference Include="..\..\..\Chameleon.CommunityToolkit\Chameleon.CT.Common\Chameleon.CT.Common.csproj" />
     <ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
     <ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Core.Shared\Chameleon.Core.Shared.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Application\Chameleon.Application.csproj" />
@@ -53,12 +52,9 @@
     <ProjectReference Include="..\..\..\src\Chameleon.Domain\Chameleon.Domain.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Controls.Settings.Functional\Chameleon.Avalonia.Controls.Settings.Functional.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent\Chameleon.Avalonia.Fluent.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Controls.Paginator\Chameleon.Avalonia.Controls.Paginator.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Controls.UserProfilesView\Chameleon.Avalonia.Controls.UserProfilesView.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
   </ItemGroup>
 	

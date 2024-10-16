@@ -1,0 +1,166 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
+             mc:Ignorable="d"
+			 x:CompileBindings="True"
+			 x:DataType="vm:PaginatorViewModel"
+             x:Class="Chameleon.app.Avalonia.Views.PaginatorView">
+
+	<UserControl.Resources>
+		<ControlTheme TargetType="ListBoxItem"
+					  x:Key="PagenerListBoxItem"
+				  BasedOn="{StaticResource {x:Type ListBoxItem}}">
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="MaxWidth" Value="1" />
+			<Setter Property="FontFamily" Value="Open Sans" />
+			<Setter Property="FontSize" Value="12" />
+			<Setter Property="FontWeight" Value="Normal" />
+			<Setter Property="Padding" Value="16,0,12,0" />
+		</ControlTheme>
+	</UserControl.Resources>
+	<Grid x:Name="ParentGrid"
+		  Margin="0 0 0 6"
+		  HorizontalAlignment="Right"
+		  ColumnDefinitions="Auto,Auto,*,Auto">
+		<StackPanel
+			VerticalAlignment="Center"
+			x:Name="SpTotalInfo"
+			Orientation="Horizontal"
+			HorizontalAlignment="Left"
+			Margin="0 0 0 0">
+			<TextBlock Text="{Binding FirstVisibleElementNumber}"/>
+			<TextBlock Text="-"/>
+			<TextBlock Text="{Binding LastVisibleElementNumber}"/>
+			<TextBlock Text=" out of "/>
+			<TextBlock Text="{Binding TotalCount}"/>
+		</StackPanel>
+
+		<Button
+			Grid.Column="1"
+			Theme="{DynamicResource TransparentButton}"
+			x:Name="BtnPrev"
+			IsEnabled="{Binding PrevButtonIsEnabled}"
+			Command="{Binding PrevPageCommand}">
+			<StackPanel
+				Orientation="Horizontal">
+				<ui:SymbolIcon 
+					Symbol="Previous"
+					Margin="3"/>
+				<TextBlock Text="Prev" />
+			</StackPanel>
+		</Button>
+
+		<ListBox
+			Grid.Column="2"
+			x:Name="LbPaginationButtons"
+			ItemsSource="{Binding Buttons}"
+			SelectedIndex="{Binding PageIndex}"
+			Margin="5 0">
+			<!--<ListBox.Items>
+				<ListBoxItem>
+					<Border>
+						<TextBlock
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+						Text="1"/>
+					</Border>
+				</ListBoxItem>
+				<ListBoxItem>
+					<TextBlock
+						VerticalAlignment="Center"
+						HorizontalAlignment="Center"
+						Text="2"/>
+				</ListBoxItem>
+				<ListBoxItem>
+					<Border>
+						<TextBlock
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+						Text="1"/>
+					</Border>
+				</ListBoxItem>
+				<ListBoxItem>
+					<TextBlock
+						VerticalAlignment="Center"
+						HorizontalAlignment="Center"
+						Text="2"/>
+				</ListBoxItem>
+				<ListBoxItem>
+					<Border>
+						<TextBlock
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+						Text="1"/>
+					</Border>
+				</ListBoxItem>
+				<ListBoxItem>
+					<TextBlock
+						VerticalAlignment="Center"
+						HorizontalAlignment="Center"
+						Text="2"/>
+				</ListBoxItem>
+				<ListBoxItem>
+					<Border>
+						<TextBlock
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+						Text="1"/>
+					</Border>
+				</ListBoxItem>
+				<ListBoxItem>
+					<TextBlock
+						VerticalAlignment="Center"
+						HorizontalAlignment="Center"
+						Text="2"/>
+				</ListBoxItem>
+				<ListBoxItem>
+					<Border>
+						<TextBlock
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+						Text="1"/>
+					</Border>
+				</ListBoxItem>
+				<ListBoxItem>
+					<TextBlock
+						VerticalAlignment="Center"
+						HorizontalAlignment="Center"
+						Text="2"/>
+				</ListBoxItem>
+			</ListBox.Items>-->
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Border>
+						<TextBlock
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							Text="{Binding Text}"/>
+					</Border>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Horizontal" />
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
+		</ListBox>
+
+		<Button
+			Grid.Column="3"
+			Theme="{DynamicResource TransparentButton}"
+			x:Name="BtnNext"
+			IsEnabled="{Binding NextButtonIsEnabled}"
+			Command="{Binding NextPageCommand}"
+			Margin="0 0 0 0">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Next" />
+
+				<ui:SymbolIcon Symbol="Next"
+							   Margin="3"/>
+			</StackPanel>
+		</Button>
+	</Grid>
+</UserControl>

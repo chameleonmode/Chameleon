@@ -6,7 +6,7 @@
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:local="using:Chameleon.app.Avalonia.Controls"
-			 xmlns:pagnator="using:Chameleon.Avalonia.Controls.Paginator"
+			 xmlns:pagnator="using:Chameleon.app.Avalonia.Views"
 			 xmlns:converter="using:Chameleon.Common.ValueConverters"
 			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels.Controllers"
 			 x:DataType="vm:UserProfilesViewModel"
