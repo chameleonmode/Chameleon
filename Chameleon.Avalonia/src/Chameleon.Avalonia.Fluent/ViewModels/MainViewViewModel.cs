@@ -46,7 +46,7 @@ public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewMode
 		_ = UserProfilesRepo
 			.Connect()
 			.Transform(i => new ObsProfile(i))
-			.SortAndBind(out var plist, Compares.UserProfileVimCompares.AscendingComparer)
+			.SortAndBind(out var plist, Compares.ObsProfileCompares.AscendingComparer)
 			.Subscribe((i) => {
 				foreach (var c in i) {
 					if (_boundProfilesList?.Contains(c.Current) == false && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is MainAppSearchItem st) {
@@ -69,7 +69,7 @@ public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewMode
 		_ = UserProfilesFolderRepo
 			.Connect()
 			.Transform(i => new ObsFolder(i))
-			.SortAndBind(out var flist, Compares.FolderVimCompares.AscendingComparer)
+			.SortAndBind(out var flist, Compares.ObsFolderCompares.AscendingComparer)
 			.Subscribe((i) => {
 				foreach (var c in i) {
 					if (_boundFoldersList?.Contains(c.Current) == false && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is MainAppSearchItem st) {

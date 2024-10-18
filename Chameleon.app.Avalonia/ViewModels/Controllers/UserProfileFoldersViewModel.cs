@@ -28,7 +28,7 @@ public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 		_ = UserProfilesFolderRepo
 		.Connect(i => i.isFavorite)
 		.Transform(i => new ObsFolder(i))
-		.SortAndBind(out var flist, Compares.FolderVimCompares.AscendingComparer)
+		.SortAndBind(out var flist, Compares.ObsFolderCompares.AscendingComparer)
 		.Subscribe((i) => {
 		});
 		Folders = flist;

@@ -91,7 +91,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	];
 
 	//
-	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.UserProfileVimCompares.AscendingComparer);
+	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
 	private readonly ISubject<IPageRequest> pageRequests = new BehaviorSubject<IPageRequest>(new PageRequest(0, 25));
 
 	[ObservableProperty]
@@ -140,13 +140,16 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value)
 	{
 		profilesCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => Compares.UserProfileVimCompares.DescendingComparer,
-			_ => Compares.UserProfileVimCompares.AscendingComparer
+			Enums.ChangeComparereOption.Descending => Compares.ObsProfileCompares.DescendingComparer,
+			_ => Compares.ObsProfileCompares.AscendingComparer
 		});
 	}
 
-	partial void OnSelectedBrowserItemChanged(SystemBrovserItemViewModel value)
+	partial void OnSelectedBrowserItemChanged(SystemBrovserItemViewModel? value)
 	{
+		if (value == null)
+			return;
+
 		var cur = IoC.GetValue<string>("LastSelectedBrowser");
 		if (cur != value.SystemBrowserType.ToString())
 			IoC.SetValue(value.SystemBrowserType.ToString(), "LastSelectedBrowser");
@@ -537,7 +540,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 		var token = RecreateCancellationToken;
 		foreach (var profile in GetSelectedProfiles) {
-			var browserWasNotOpened = profile.SBI![SelectedBrowserItem.SystemBrowserType] == null;
+			var browserWasNotOpened = profile.SBI![SelectedBrowserItem!.SystemBrowserType] == null;
 			if (browserWasNotOpened) {
 				await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(token);
 				if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || !await profile.SBI![SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))

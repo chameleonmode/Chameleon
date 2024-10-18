@@ -44,7 +44,6 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 		.Where(profiles => profiles.folderId == Dto!.id)
 		.Any();
 
-
 	public ObsFolder(UPFolderDto folder, UserProfileFoldersViewModel? foldervm = null)
 			: base(folder.title)
 	{
@@ -137,7 +136,7 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 					.GetEvent<AfterCreateOrRemoveFolderEvent>()
 					.Publish();
 
-			await foldervm.AllProfiles.Open();
+			await foldervm!.AllProfiles.Open();
 		}
 	}
 
@@ -151,7 +150,7 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 	[RelayCommand]
 	private void ChangeProxies()
 	{
-		Navigator.NavigateToType(typeof(IFunctionalSettingsView), Dto);
+		Navigator.NavigateToType(typeof(IFunctionalSettingsView), this);
 	}
 
 	[RelayCommand]

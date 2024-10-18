@@ -12,8 +12,8 @@ using Chameleon.app.Avalonia.Models.Observable;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class DashboardViewModel : ViewModelObjectBase {
-	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.UserProfileVimCompares.AscendingComparer);
-	private readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Compares.FolderVimCompares.AscendingComparer);
+	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
+	private readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Compares.ObsFolderCompares.AscendingComparer);
 
 	[ObservableProperty]
 	private bool isSyncChangesBtnVisible = true;
@@ -59,16 +59,16 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value)
 	{
 		profilesCompareObservable.OnNext(value switch { 
-			Enums.ChangeComparereOption.Descending => Compares.UserProfileVimCompares.DescendingComparer,
-			_ => Compares.UserProfileVimCompares.AscendingComparer
+			Enums.ChangeComparereOption.Descending => Compares.ObsProfileCompares.DescendingComparer,
+			_ => Compares.ObsProfileCompares.AscendingComparer
 		});
 	}
 
   partial void OnFolderSortSelectedChanged(Enums.ChangeComparereOption value)
 	{
 		foldersCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => Compares.FolderVimCompares.DescendingComparer,
-			_ => Compares.FolderVimCompares.AscendingComparer
+			Enums.ChangeComparereOption.Descending => Compares.ObsFolderCompares.DescendingComparer,
+			_ => Compares.ObsFolderCompares.AscendingComparer
 		});
 	}
 

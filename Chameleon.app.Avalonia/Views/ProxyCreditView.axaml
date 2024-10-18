@@ -109,7 +109,6 @@
 										Width="135"
 										Height="46"
 										HorizontalAlignment="Left"
-										IsEnabled="{Binding HasSelectedCreditPlan}"
 										Command="{Binding PurchaseCreditCommand}">
 									<Button.Content>
 										<StackPanel Orientation="Horizontal" 
@@ -219,7 +218,7 @@
 											<Button Grid.Column="1"
 													VerticalAlignment="Top"
 													Theme="{DynamicResource TransparentButton}"
-													Command="{Binding CopyUrlCommand}">
+													Command="{Binding CopyCommand}">
 												<afv:SvgIconControl
 				                                    IconName="copy"
 				                                    Width="17"
