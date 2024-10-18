@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
-using Avalonia.Collections;
 using Chameleon.Authorization;
-using Chameleon.Interfaces.App.UserProfiles.Events.Common;
 using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.Common;
 using Chameleon.Interfaces.UserProfiles;
 using Chameleon.lib.Common.ServiceManagers;
-using System.Collections.Specialized;
 
 using Chameleon.lib.CommunityToolkit.MvvM;
 
@@ -16,13 +12,10 @@ using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.app.Avalonia.app;
 using Chameleon.Common.Helpers;
 using Chameleon.lib.Api.Repos;
 using System.Collections.ObjectModel;
 using DynamicData;
-using System;
-using Chameleon.Core.Extensions;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class UserProfileIdentityViewModel : ViewModelObjectBase {

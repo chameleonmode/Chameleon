@@ -2,8 +2,8 @@
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.Common.Helpers;
-using Chameleon.Core.Settings;
 using Chameleon.Interfaces.Auth;
+using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -100,7 +100,7 @@ public partial class ProjectsViewModel : ViewModelObjectBase {
 		} catch (Exception ex) {
 			if (ex.Message == "limit_ex") {
 				if (await Mbox.Show("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
-					ProUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
+					ProUtil.GoToUrlDefault(Consts.GlobalSettings.PricingUrl);
 			} else {
 				Toaster.ShowErr("Wooopsy?", ex.Message);
 			}

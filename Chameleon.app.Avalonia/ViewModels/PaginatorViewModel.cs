@@ -1,4 +1,5 @@
-﻿using Chameleon.Core.Collections.Views;
+﻿using System.Collections.ObjectModel;
+
 using Chameleon.Interfaces.Paginator;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
@@ -39,8 +40,8 @@ public partial class PaginatorViewModel
         PageIndex--;
     }
 
-    private ObservableCollectionView<PaginatorButtonViewModel> _buttons;
-    public ObservableCollectionView<PaginatorButtonViewModel> Buttons
+    private ObservableCollection<PaginatorButtonViewModel> _buttons;
+    public ObservableCollection<PaginatorButtonViewModel> Buttons
     {
         get
         {

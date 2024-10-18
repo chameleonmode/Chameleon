@@ -1,10 +1,10 @@
 ﻿using Avalonia.Collections;
 
 using Chameleon.app.Avalonia.Controls;
-using Chameleon.Core.Util;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Records;
 using Chameleon.lib.Common.ServiceManagers;
+using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.ThirdParty.SMSapi.Codesverify;
 using Chameleon.lib.ThirdParty.SMSapi.Interfaces;

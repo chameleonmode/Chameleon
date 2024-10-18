@@ -2,9 +2,6 @@
 using Chameleon.Common.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json;
-
-using Chameleon.Core.Collections;
-using Chameleon.Core.Collections.Views;
 using Chameleon.Interfaces.Settings;
 using Chameleon.lib.Common;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -13,25 +10,18 @@ using Chameleon.lib.WebBrowser.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.lib.Common.Interfaces.Sys;
+using System.Collections.ObjectModel;
+using Chameleon.lib.Common.Models.Dto;
+using Chameleon.lib.Api.Repos;
+using DynamicData;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class UserDefaultSettingViewModel : ViewModelObjectBase {
-	private readonly IEventAggregator _eventAggregator;
-	private readonly IUserDefaultSetting _userDefaultSetting;
-	private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
-
+	BrowserSettingDto _userDefaultSetting;
 	public UserDefaultSettingViewModel(
-			IEventAggregator eventAggregator,
-			IUserDefaultSetting userDefaultSetting,
-			IUserDefaultSettingsService userDefaultsSettingsService
-			)
+			BrowserSettingDto userDefaultSetting)
 	{
-		_eventAggregator = eventAggregator;
-		_userDefaultSetting = userDefaultSetting;
-		_userDefaultsSettingsService = userDefaultsSettingsService;
-
-		_defaultUrl = _userDefaultSetting.DefaultUrl;
+		_defaultUrl = userDefaultSetting.DefaultUrl;
 	}
 
 
@@ -64,13 +54,13 @@ public partial class UserDefaultSettingViewModel : ViewModelObjectBase {
 
 	private void ChangeSelected()
 	{
-		_eventAggregator
+		EventAggregator
 								.GetEvent<SelectedUserDefaultSettingEvent>()
 								.Publish(new SelectedUserDefaultSettingEventArgs(_isChecked));
 	}
 
 	[RelayCommand]
-	public void SaveUrlFromViewText()
+	public async Task SaveUrlFromViewText()
 	{
 		if (string.IsNullOrWhiteSpace(DefaultUrl)) {
 			return;
@@ -79,13 +69,13 @@ public partial class UserDefaultSettingViewModel : ViewModelObjectBase {
 		HasChanged = false;
 
 		_userDefaultSetting.DefaultUrl = DefaultUrl;
-		_userDefaultsSettingsService.Save(_userDefaultSetting);
+		await BrowserSettingsRepo.Instance.Create(_userDefaultSetting);
 	}
 
 	[RelayCommand]
-	public void DeleteDefaultSettings()
+	public async Task DeleteDefaultSettings()
 	{
-		_userDefaultsSettingsService.Delete(_userDefaultSetting);
+		_ = await BrowserSettingsRepo.Instance.Delete(_userDefaultSetting.id);
 		ChangeSelected();
 	}
 }
@@ -93,22 +83,8 @@ public partial class UserDefaultSettingViewModel : ViewModelObjectBase {
 public partial class UserDefaultSettingsViewModel
 			 : ViewModelObjectBase {
 	private const char BulkAddSeparator = ',';
-
-	private readonly IUserDefaultSettingsService _userDefaultSettingsService;
-	private readonly IUserDefaultSettingsService _userDefaultsSettingsService;
-
-	private ObservableCollection<IUserDefaultSetting, UserDefaultSettingViewModel> _mapping;
-	private List<UserDefaultSettingViewModel> _selectedDefaultSetting;
-
-	private ObservableCollectionView<UserDefaultSettingViewModel> _viewModels;
-	public ObservableCollectionView<UserDefaultSettingViewModel> ViewModels {
-		get {
-			if (_viewModels == null && _mapping != null) {
-				_viewModels = new ObservableCollectionView<UserDefaultSettingViewModel>(_mapping);
-			}
-			return _viewModels;
-		}
-	}
+	private readonly ReadOnlyObservableCollection<UserDefaultSettingViewModel> settings;
+	public ObservableCollection<UserDefaultSettingViewModel> ViewModels { get; }
 
 	private int _selectedCount;
 	public int SelectedCount {
@@ -125,32 +101,24 @@ public partial class UserDefaultSettingsViewModel
 	[ObservableProperty]
 	BrowserDefaultLaunchSettings thesebrowserDefaultLaunchSettings;
 
-	public UserDefaultSettingsViewModel(
-			IUserDefaultSettingsService userDefaultsSettingsService,
-			IUserDefaultSettingsService userDefaultSettingsService
-			)
+	public UserDefaultSettingsViewModel() : base("Default Browser Settings")
 	{
-		Title = "Default Browser Settings";
+		_ = BrowserSettingsRepo.Instance.ObservableCache
+			.Connect()
+			.Transform(p=> new UserDefaultSettingViewModel(p))
+			.Bind(out settings)
+			.Subscribe();
 
-		_userDefaultSettingsService = userDefaultSettingsService;
-		_userDefaultsSettingsService = userDefaultsSettingsService;
-
-		//EventAggregator
-		//	 .GetEvent<SelectedUserDefaultSettingEvent>()
-		//	 .Subscribe(_ => OnSelectedChanged());
+		EventAggregator
+			 .GetEvent<SelectedUserDefaultSettingEvent>()
+			 .Subscribe(_ => OnSelectedChanged());
 	}
 	public override async Task InitAsync(object? param)
 	{
 		await base.InitAsync(param);
 
 		if (!Loaded) {
-			var userSettings = _userDefaultsSettingsService.GetAll();
-
-			_mapping = new ObservableCollection<IUserDefaultSetting, UserDefaultSettingViewModel>(
-					userSettings, userSetting => new UserDefaultSettingViewModel(EventAggregator, userSetting, _userDefaultsSettingsService));
-
 			ThesebrowserDefaultLaunchSettings = await BrowserDefaultLaunchSettings.Instance();
-			OnPropertyChanged(nameof(ViewModels));
 		}
 	}
 
@@ -190,20 +158,21 @@ public partial class UserDefaultSettingsViewModel
 	[RelayCommand]
 	private void UnselectItems()
 	{
-		foreach (var setting in _mapping) {
+		foreach (var setting in ViewModels) {
 			setting.IsChecked = false;
 		}
 	}
 
 	[RelayCommand]
-	private void RemoveSelectedItems()
+	private async Task RemoveSelectedItems()
 	{
-		if (_selectedDefaultSetting == null || _selectedDefaultSetting.Count == 0) {
+		var _selectedDefaultSetting = ViewModels.Where(v => v.IsChecked);
+		if (_selectedDefaultSetting == null || _selectedDefaultSetting.Count() == 0) {
 			return;
 		}
 
 		foreach (var setting in _selectedDefaultSetting) {
-			setting.DeleteDefaultSettings();
+			await setting.DeleteDefaultSettings();
 		}
 		OnSelectedChanged();
 	}
@@ -211,7 +180,7 @@ public partial class UserDefaultSettingsViewModel
 	[RelayCommand]
 	private async Task CreateNewDefaultSettings()
 	{
-		_ = await Task.Run(_userDefaultSettingsService.Create);
+		_ = await BrowserSettingsRepo.Instance.Create(new BrowserSettingDto());
 	}
 
 	[RelayCommand]
@@ -241,11 +210,12 @@ public partial class UserDefaultSettingsViewModel
 
 	private void OnSelectedChanged()
 	{
-		_selectedDefaultSetting = _mapping
-				.Where(setting => setting.IsChecked)
-				.ToList();
+		var _selectedDefaultSetting = ViewModels.Where(v => v.IsChecked);
+		if (_selectedDefaultSetting == null) {
+			return;
+		}
 
-		SelectedCount = _selectedDefaultSetting.Count;
+		SelectedCount = _selectedDefaultSetting.Count();
 	}
 }
 

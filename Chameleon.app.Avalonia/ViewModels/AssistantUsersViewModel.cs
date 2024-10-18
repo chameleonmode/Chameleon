@@ -1,78 +1,36 @@
 ﻿using Chameleon.Controls.AssistantUsers.Interfaces;
-using Chameleon.Core.Util;
 using Chameleon.Interfaces.App.Assistants;
 using Chameleon.Interfaces.App.Assistants.Events;
 using Chameleon.Interfaces.App.ShareFolders;
 using Chameleon.Interfaces.Auth;
-using Chameleon.Core.Settings;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.Interfaces.Assistants;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Core.Collections;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.Authorization;
-using Chameleon.Core.Collections.Views;
 using Chameleon.Interfaces.App.Users.AssistantUser.Events;
 using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.Interfaces.App.Synchronization.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
+using Chameleon.lib.Common.Models.Dto;
+using Chameleon.lib.Api.Repos;
+using Chameleon.lib.Common.Constants;
+using Microsoft.VisualBasic;
+using DynamicData;
+using Chameleon.app.Avalonia.Models.Observable;
+using AutoMapper;
+using Chameleon.lib.Common.Util;
+using Chameleon.Common.Helpers;
+using System.Reactive.Subjects;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 
-public interface IUserAssistantService
-		: Chameleon.lib.Common.Interfaces.Systemics.ISingletonDependency {
-	ICollection<IUserAssistant> Get();
-	Task<ICollection<IUserAssistant>> GetAsync();
-	void Save(IUserAssistant userAssistant);
-	void DeleteAssistant(IUserAssistant userAssistant);
-	IList<IAssistantProfile> GetAllAssistantProfilesById(long assistantId);
-	void DeleteAssistantProfile(IAssistantProfile assistantProfile);
-	IList<IAssistantProfilePermission> GetAllProfilePermissions(long assistantId, int profileId);
-	void UpdateProfilePermission(IAssistantProfilePermission assistantProfilePermission);
-	void ShareUserProfile(int profileId, IList<long> assistantUserIds, IList<string> permissionNames);
-	void AddProfiles(IUserAssistant userAssistant);
-	void SetCanCreateProfiles(long assistantId, bool canCreateProfiles);
-}
-public class UserAssistant
-		: IUserAssistant {
-	public long Id { get; set; }
-	public string UserName { get; set; }
-	public string EmailAddress { get; set; }
-	public string Password { get; set; }
-	public bool CanCreateProfiles { get; set; }
-	public IList<int> ProfileIds { get; set; }
-	public IList<int> ProfilePermissionIds { get; set; }
-	public IList<int> FolderIds { get; set; }
-	public IList<int> FolderPermissionIds { get; set; }
-}
-
-public class AssistantProfile
-		: IAssistantProfile {
-	public long Id { get; set; }
-	public int ProfileId { get; set; }
-	public string ProfileName { get; set; }
-}
-
-public partial class AssistantFolderPermissionViewModel
-			 : ViewModelObjectBase {
-	private readonly IShareFoldersService _shareFoldersService;
-
-	public AssistantFolderPermissionViewModel(
-			IShareFoldersService shareFoldersService,
-			IShareFolderPermission shareFolderPermission,
-			IShareFolder shareFolder)
-	{
-		_shareFoldersService = shareFoldersService;
-
-		ShareFolderPermission = shareFolderPermission;
-		ShareFolder = shareFolder;
-	}
-
-	public IShareFolderPermission ShareFolderPermission { get; }
-	public IShareFolder ShareFolder { get; }
-
-	public string PermissionName => ShareFolderPermission.PermissionName;
+public partial class AssistantFolderPermissionViewModel(AssisShareFolderPermission shareFolderPermission, AssisShareFolderDto shareFolder) : ViewModelObjectBase {
+	public AssisShareFolderPermission ShareFolderPermission { get; } = shareFolderPermission;
+	public AssisShareFolderDto ShareFolder { get; } = shareFolder;
+	public string? PermissionName => ShareFolderPermission.PermissionName;
 	public bool IsGranted {
 		get => ShareFolderPermission.IsGranted;
 		set {
@@ -84,13 +42,13 @@ public partial class AssistantFolderPermissionViewModel
 	}
 
 	[RelayCommand]
-	private void UpdatePermission()
+	private async Task UpdatePermission()
 	{
 		try {
 			if (IsGranted) {
-				_shareFoldersService.AddPermission(ShareFolder.Id, ShareFolderPermission.PermissionId);
+				await ShareFoldersRepo.AddPermission(ShareFolder.id, ShareFolderPermission.PermissionId);
 			} else {
-				_shareFoldersService.DeletePermission(ShareFolder.Id, ShareFolderPermission.PermissionId);
+				await ShareFoldersRepo.DeletePermission(ShareFolder.id, ShareFolderPermission.PermissionId);
 			}
 
 			Toaster.ShowSuccess($"{ShareFolderPermission.DisplayName} was updated successfully");
@@ -101,23 +59,9 @@ public partial class AssistantFolderPermissionViewModel
 		}
 	}
 }
-
-public partial class AssistantProfilePermissionViewModel
-				: ViewModelObjectBase {
-	private readonly IUserAssistantService _userAssistantService;
-
-	public AssistantProfilePermissionViewModel(
-			IUserAssistantService userAssistantService,
-			IAssistantProfilePermission assistantProfilePermission
-			)
-	{
-		_userAssistantService = userAssistantService;
-
-		AssistantProfilePermission = assistantProfilePermission;
-	}
-
-	public IAssistantProfilePermission AssistantProfilePermission { get; }
-	public string PermissionName => AssistantProfilePermission.PermissionName;
+public partial class AssistantProfilePermissionViewModel(AssisProfilePermissionDto assistantProfilePermission) : ViewModelObjectBase {
+	public AssisProfilePermissionDto AssistantProfilePermission { get; } = assistantProfilePermission;
+	public string? PermissionName => AssistantProfilePermission.PermissionName;
 	public bool IsGranted {
 		get => AssistantProfilePermission.IsGranted;
 		set {
@@ -129,184 +73,109 @@ public partial class AssistantProfilePermissionViewModel
 	}
 
 	[RelayCommand]
-	private void UpdatePermission()
+	private async Task UpdatePermission()
 	{
 		try {
-			_userAssistantService.UpdateProfilePermission(AssistantProfilePermission);
+			_ = await UserAssistantRepo.UpdateProfilePermission(AssistantProfilePermission);
 
 			Toaster.ShowSuccess($"{AssistantProfilePermission.DisplayName} was updated successfully");
 		} catch {
 			IsGranted = !IsGranted;
-
 			Toaster.ShowErr($"{AssistantProfilePermission.DisplayName} update failed. Please try again.");
 		}
 	}
 }
-public partial class AssistantUserFolderViewModel
-			: AssistantViewModelBase {
-	private readonly IEventAggregator _eventAggregator;
-	private readonly IShareFoldersService _shareFoldersService;
 
-	private ObservableCollection<IShareFolderPermission, AssistantFolderPermissionViewModel> _permissionMapping;
-
-	public AssistantUserFolderViewModel(
-			IEventAggregator eventAggregator,
-			IShareFoldersService shareFoldersService,
-			IShareFolder shareFolder)
+public partial class AssistantViewModelBase : ViewModelObjectBase {
+	public virtual string? Name => "AssistantViewModelBase";
+	[RelayCommand]
+	public virtual void Unshare() { }
+}
+public partial class AssistantUserFolderViewModel	: AssistantViewModelBase {
+	public event Action<AssisShareFolderDto>? OnUnshareFolder;
+	public AssisShareFolderDto ShareFolder { get; }
+	public ObservableCollection<AssistantFolderPermissionViewModel> PermissionViewModels { get; } = [];
+	public AssistantUserFolderViewModel(AssisShareFolderDto shareFolder)
 	{
-		_eventAggregator = eventAggregator;
-		_shareFoldersService = shareFoldersService;
-
 		ShareFolder = shareFolder;
-
-		InitPermissions();
-	}
-
-	public IShareFolder ShareFolder { get; }
-	public override string Name => ShareFolder.FolderName;
-
-	private ObservableCollectionView<AssistantFolderPermissionViewModel> _permissionViewModels;
-	public ObservableCollectionView<AssistantFolderPermissionViewModel> PermissionViewModels {
-		get {
-			if (_permissionViewModels == null && _permissionMapping != null) {
-				_permissionViewModels = new ObservableCollectionView<AssistantFolderPermissionViewModel>(_permissionMapping);
-			}
-			return _permissionViewModels;
+		foreach (var item in ShareFolder.FolderPermissions) {
+			PermissionViewModels.Add(new(item, ShareFolder));
 		}
-		set => SetProperty(ref _permissionViewModels, value);
 	}
+
+	public override string? Name => ShareFolder.FolderName;
 
 	public AssistantFolderPermissionViewModel Outreach =>
 			PermissionViewModels
-					.Single(a => a.PermissionName == PermissionNames.Pages_Outreach);
+					.Single(a => a.PermissionName == Consts.Permissions.Pages_Outreach);
 
 	public AssistantFolderPermissionViewModel Prospector =>
 			PermissionViewModels
-					.Single(a => a.PermissionName == PermissionNames.Pages_Prospector);
+					.Single(a => a.PermissionName == Consts.Permissions.Pages_Prospector);
 
 	public AssistantFolderPermissionViewModel YouTube =>
 			PermissionViewModels
-					.Single(a => a.PermissionName == PermissionNames.Pages_YouTube);
+					.Single(a => a.PermissionName == Consts.Permissions.Pages_YouTube);
 
 	public AssistantFolderPermissionViewModel RSS =>
 			PermissionViewModels
-					.Single(a => a.PermissionName == PermissionNames.Pages_RSS);
+					.Single(a => a.PermissionName == Consts.Permissions.Pages_RSS);
 
 	public AssistantFolderPermissionViewModel Curate =>
 			PermissionViewModels
-					.Single(a => a.PermissionName == PermissionNames.Pages_Curate);
+					.Single(a => a.PermissionName == Consts.Permissions.Pages_Curate);
 
 	public override void Unshare()
 	{
-		_eventAggregator
-				.GetEvent<UnshareFolderEvent>()
-				.Publish(new UnshareFolderEventArgs(ShareFolder));
-
 		base.Unshare();
-	}
-
-	private void InitPermissions()
-	{
-		_permissionMapping = new ObservableCollection<IShareFolderPermission, AssistantFolderPermissionViewModel>(
-				ShareFolder.FolderPermissions, folderPermission => new AssistantFolderPermissionViewModel(
-						_shareFoldersService,
-						folderPermission,
-						ShareFolder)
-				);
+		OnUnshareFolder?.Invoke(ShareFolder);
 	}
 }
-
 public partial class AssistantUserProfileViewModel
 				: AssistantViewModelBase {
-	private readonly IEventAggregator _eventAggregator;
-	private readonly IUserAssistantService _userAssistantService;
-	private readonly IUserProfileService _userProfileService;
+	public event Action<AssisProfileDto>? OnUnshare;
 
-	private ObservableCollection<IAssistantProfilePermission, AssistantProfilePermissionViewModel> _permissionMapping;
+	private ObservableCollection<AssistantProfilePermissionViewModel> PermissionViewModels { get; } = [];
+	public AssisProfileDto AssistantProfile { get; }
 
-	public AssistantUserProfileViewModel(
-			IEventAggregator eventAggregator,
-			IUserAssistantService userAssistantService,
-			IUserProfileService userProfileService,
-			IAssistantProfile assistantProfile
-			)
+	public override string? Name => AssistantProfile.ProfileName;
+
+	public AssistantUserProfileViewModel(AssisProfileDto assistantProfile)
 	{
-		_eventAggregator = eventAggregator;
-		_userAssistantService = userAssistantService;
-		_userProfileService = userProfileService;
-
 		AssistantProfile = assistantProfile;
-
-		InitPermissions();
-
-		_eventAggregator
-				.GetEvent<UpdateStaleDataEvent>()
-				.Subscribe(RefreshTitle);
-		_eventAggregator
-				.GetEvent<SavedUserProfileEvent>()
-				.Subscribe(args => RefreshTitle());
-	}
-
-	private void RefreshTitle()
-	{
-		var profile = _userProfileService.Get(AssistantProfile.ProfileId);
-		AssistantProfile.ProfileName = profile.Title;
-		OnPropertyChanged(nameof(Name));
-	}
-
-	public IAssistantProfile AssistantProfile { get; }
-	public override string Name => AssistantProfile.ProfileName;
-
-	private ObservableCollectionView<AssistantProfilePermissionViewModel> _permissionViewModels;
-	public ObservableCollectionView<AssistantProfilePermissionViewModel> PermissionViewModels {
-		get {
-			if (_permissionViewModels == null && _permissionMapping != null) {
-				_permissionViewModels = new ObservableCollectionView<AssistantProfilePermissionViewModel>(_permissionMapping);
-			}
-			return _permissionViewModels;
-		}
-		set => SetProperty(ref _permissionViewModels, value);
 	}
 
 	public AssistantProfilePermissionViewModel Outreach =>
 			PermissionViewModels
-					.Single(a => a.PermissionName == PermissionNames.Pages_Outreach);
+					.Single(a => a.PermissionName == Consts.Permissions.Pages_Outreach);
 
 	public AssistantProfilePermissionViewModel Prospector =>
 			PermissionViewModels
-					.Single(a => a.PermissionName == PermissionNames.Pages_Prospector);
+					.Single(a => a.PermissionName == Consts.Permissions.Pages_Prospector);
 
 	public AssistantProfilePermissionViewModel YouTube =>
 			PermissionViewModels
-					.Single(a => a.PermissionName == PermissionNames.Pages_YouTube);
+					.Single(a => a.PermissionName == Consts.Permissions.Pages_YouTube);
 
 	public AssistantProfilePermissionViewModel RSS =>
 			PermissionViewModels
-					.Single(a => a.PermissionName == PermissionNames.Pages_RSS);
+					.Single(a => a.PermissionName == Consts.Permissions.Pages_RSS);
 
 	public AssistantProfilePermissionViewModel Curate =>
 			PermissionViewModels
-					.Single(a => a.PermissionName == PermissionNames.Pages_Curate);
-
+					.Single(a => a.PermissionName == Consts.Permissions.Pages_Curate);
 
 	public override void Unshare()
 	{
-		_eventAggregator
-				.GetEvent<UnshareProfileEvent>()
-				.Publish(new UnshareProfileEventArgs(AssistantProfile));
+		OnUnshare?.Invoke(AssistantProfile);
 
 		base.Unshare();
 	}
 
-	private void InitPermissions()
+	public async Task InitPermissions()
 	{
-		var permissions = _userAssistantService.GetAllProfilePermissions(AssistantProfile.Id, AssistantProfile.ProfileId);
-
-		_permissionMapping = new ObservableCollection<IAssistantProfilePermission, AssistantProfilePermissionViewModel>(
-				permissions, permission => new AssistantProfilePermissionViewModel(
-						_userAssistantService,
-						permission)
-				);
+		var permissions = await UserAssistantRepo.GetAllProfilePermissions(AssistantProfile.id, AssistantProfile.ProfileId);
+		PermissionViewModels.AddRange(permissions.Select(p=>new AssistantProfilePermissionViewModel(p)));
 
 		OnPropertyChanged(nameof(PermissionViewModels));
 		OnPropertyChanged(nameof(Outreach));
@@ -317,22 +186,25 @@ public partial class AssistantUserProfileViewModel
 	}
 }
 
-public partial class AssistantUserViewModel(
-				IUserAssistant userAssistant,
-				IUserAssistantService userAssistantService,
-				IShareFoldersService shareFoldersService,
-				IUserProfileService userProfileService)
-			 : ViewModelObjectBase {
+public partial class AssistantUserViewModel : ViewModelObjectBase {
 	private const string _unshareProfileDialogTitle = "Unshare Profile";
 	private const string _unshareFolderDialogTitle = "Unshare Folder";
 	private const string _deleteUserDialogTitle = "Delete User";
 
-	private ObservableCollection<IAssistantProfile, AssistantUserProfileViewModel> _profileMapping;
-	private ObservableCollection<IShareFolder, AssistantUserFolderViewModel> _folderMapping;
+
+	public ObservableCollection<AssistantUserProfileViewModel> ProfileViewModels { get; } = [];
+	public ObservableCollection<AssistantUserFolderViewModel> FolderViewModels { get; } = [];
 
 	[ObservableProperty]
-	private bool canCreateProfiles = userAssistant.CanCreateProfiles;
+	private bool canCreateProfiles;
 
+	public AssistDto UserAssistant { get; }
+
+	public AssistantUserViewModel(AssistDto userAssistant)
+	{
+		UserAssistant = userAssistant;
+		CanCreateProfiles = userAssistant.CanCreateProfiles;
+	}
 	public override async Task InitAsync(object? param)
 	{
 		await base.InitAsync(param);
@@ -356,66 +228,35 @@ public partial class AssistantUserViewModel(
 	}
 
 	#region Properties
-	public IUserAssistant UserAssistant => userAssistant;
 
-	public long Id {
-		get => UserAssistant.Id;
-		set => UserAssistant.Id = value;
+	public int Id {
+		get => UserAssistant.id;
+		set => UserAssistant.id = value;
 	}
-	public string Username {
+	public string? Username {
 		get => UserAssistant.UserName;
 		set => UserAssistant.UserName = value;
 	}
-	public string Email {
+	public string? Email {
 		get => UserAssistant.EmailAddress;
 		set => UserAssistant.EmailAddress = value;
 	}
 
-	private ObservableCollectionView<AssistantUserProfileViewModel> _profileViewModels;
-	public ObservableCollectionView<AssistantUserProfileViewModel> ProfileViewModels {
-		get {
-			if (_profileViewModels == null && _profileMapping != null) {
-				_profileViewModels = new ObservableCollectionView<AssistantUserProfileViewModel>(_profileMapping);
-			}
-			return _profileViewModels;
-		}
-	}
-
-	private ObservableCollectionView<AssistantUserFolderViewModel> _folderViewModels;
-	public ObservableCollectionView<AssistantUserFolderViewModel> FolderViewModels {
-		get {
-			if (_folderViewModels == null && _folderMapping != null) {
-				_folderViewModels = new ObservableCollectionView<AssistantUserFolderViewModel>(_folderMapping);
-			}
-			return _folderViewModels;
-		}
-	}
-
 	#endregion
-
 
 	#region Methods
 
 	private async Task InitProfiles()
 	{
-		var profiles = await Task.Run(() => userAssistantService.GetAllAssistantProfilesById(UserAssistant.Id));
-
-		_profileMapping = new ObservableCollection<IAssistantProfile, AssistantUserProfileViewModel>(
-				profiles, profile => new AssistantUserProfileViewModel(
-						EventAggregator,
-						userAssistantService,
-						userProfileService,
-						profile));
+		var profiles = await UserAssistantRepo.GetAllAssistantProfilesById(UserAssistant.id);
+		ProfileViewModels
+			.AddRange(profiles.Select(p=>new AssistantUserProfileViewModel(p)));
 	}
 	private async Task InitFolders()
 	{
-		var folders = await Task.Run(() => shareFoldersService.GetAll(UserAssistant.Id));
-
-		_folderMapping = new ObservableCollection<IShareFolder, AssistantUserFolderViewModel>(
-				folders, folder => new AssistantUserFolderViewModel(
-						EventAggregator,
-						shareFoldersService,
-						folder));
+		var folders = await ShareFoldersRepo.GetAll(UserAssistant.id);
+		FolderViewModels
+				.AddRange(folders.Select(p => new AssistantUserFolderViewModel(p)));
 	}
 
 	[RelayCommand]
@@ -423,7 +264,7 @@ public partial class AssistantUserViewModel(
 	{
 		if (await Mbox.Show(_deleteUserDialogTitle, $"Are you sure you want to delete {Username}", fontIconInfo: "Delete"))
 			try {
-				userAssistantService.DeleteAssistant(UserAssistant);
+				await UserAssistantRepo.Instance.Delete(UserAssistant.id);
 			} catch {
 				Toaster.ShowErr($"Failed to delete {UserAssistant.UserName}. Please try again.");
 			}
@@ -437,7 +278,7 @@ public partial class AssistantUserViewModel(
 							viewModel.Title = "Add Profiles";
 							viewModel.TitleText = "Add access to specific Profiles or whole Folders for this user";
 							viewModel.ShowInviteinfo = false;
-							viewModel.AssistantId = UserAssistant.Id;
+							viewModel.AssistantId = UserAssistant.id;
 						});
 	}
 
@@ -446,27 +287,13 @@ public partial class AssistantUserViewModel(
 	{
 		await CopyPasta.Copy($"{UserAssistant.EmailAddress} {UserAssistant.UserName} {UserAssistant.Password}");
 	}
-	private void AddFolders(AddProfilesEventArgs args)
+	private async Task AddFolders(long assistantId, IList<int> folderIds, IList<int> folderpermissionIds)
 	{
-		var folderIds = args.Folders?
-				.Select(a => a.Id)
-				.ToList();
-
-		if (folderIds == null || folderIds?.Count == 0) {
-			return;
-		}
-
 		try {
-			var newFolders = shareFoldersService.Share(args.AssistantId, folderIds, args.FolderPermissionIds);
+			var newFolders = await ShareFoldersRepo.Share(assistantId, folderIds, folderpermissionIds);
 
 			foreach (var newFolder in newFolders) {
-				var newVm = new AssistantUserFolderViewModel(
-						EventAggregator,
-						shareFoldersService,
-						newFolder
-						);
-
-				FolderViewModels.Add(newVm);
+				FolderViewModels.Add(new AssistantUserFolderViewModel(newFolder));
 			}
 
 			Toaster.ShowSuccess($"{folderIds.Count} folder(s) shared successfully");
@@ -474,44 +301,12 @@ public partial class AssistantUserViewModel(
 			Toaster.ShowErr($"Failed to share folder(s). Please try again.");
 		}
 	}
-	private void AddProfiles(AddProfilesEventArgs args)
+	private async Task AddProfiles(long assistantId, IList<int> profileIds, IList<int> profilePermissions)
 	{
-		var folderIds = args.Folders?
-				.Select(a => a.Id)
-				.ToList();
-
-		var profileIds = args.Profiles?
-				.Select(a => a.Id)
-				.ToList();
-
-		if (profileIds == null || profileIds?.Count == 0) {
-			return;
-		}
-
 		try {
-			userAssistantService.AddProfiles(new UserAssistant {
-				Id = args.AssistantId,
-				ProfileIds = profileIds,
-				ProfilePermissionIds = args.ProfilePermissionIds,
-				FolderIds = folderIds,
-				FolderPermissionIds = args.FolderPermissionIds
-			});
+			var profs = await UserAssistantRepo.AddProfiles(assistantId, profileIds, profilePermissions);
 
-			foreach (var profile in args.Profiles) {
-				var assistantProfile = new AssistantProfile() {
-					Id = args.AssistantId,
-					ProfileId = profile.Id,
-					ProfileName = profile.Title
-				};
-
-				var newProfile = new AssistantUserProfileViewModel(
-						EventAggregator,
-						userAssistantService,
-						userProfileService,
-						assistantProfile);
-
-				ProfileViewModels.Add(newProfile);
-			}
+			ProfileViewModels.AddRange(profs.Select(p=>new AssistantUserProfileViewModel(p)));
 
 			Toaster.ShowSuccess($"{profileIds.Count} profile(s) shared successfully");
 		} catch {
@@ -520,22 +315,22 @@ public partial class AssistantUserViewModel(
 	}
 	private void OnAddProfiles(AddProfilesEventArgs args)
 	{
-		if (UserAssistant.Id != args.AssistantId) {
+		if (UserAssistant.id != args.AssistantId) {
 			return;
 		}
 
-		AddProfiles(args);
-		AddFolders(args);
+		AddProfiles(args.AssistantId, args.Profiles.Select(i=>i.Id).ToList(), args.ProfilePermissionIds);
+		AddFolders(args.AssistantId, args.Folders.Select(f=>f.Id).ToList(), args.FolderPermissionIds);
 	}
 	private async void OnUnshareProfile(UnshareProfileEventArgs args)
 	{
-		if (UserAssistant.Id != args.AssistantProfile.Id) {
+		if (UserAssistant.id != args.AssistantProfile.Id) {
 			return;
 		}
 
 		if (await Mbox.Show(_unshareProfileDialogTitle, $"Are you sure you want to unshare {args.AssistantProfile.ProfileName}? This will not affect other profiles."))
 			try {
-				userAssistantService.DeleteAssistantProfile(args.AssistantProfile);
+				await UserAssistantRepo.DeleteAssistantProfile(UserAssistant.id, args.AssistantProfile.ProfileId);
 
 				var viewModelToDelete = ProfileViewModels
 						.Single(v => v.AssistantProfile.ProfileId == args.AssistantProfile.ProfileId);
@@ -549,13 +344,13 @@ public partial class AssistantUserViewModel(
 	}
 	private async void OnUnshareFolder(UnshareFolderEventArgs args)
 	{
-		if (UserAssistant.Id != args.AssistantFolder.UserId) {
+		if (UserAssistant.id != args.AssistantFolder.UserId) {
 			return;
 		}
 
 		if (await Mbox.Show(_unshareFolderDialogTitle, $"Are you sure you want to unshare {args.AssistantFolder.FolderName}? This will not affect other folders."))
 			try {
-				shareFoldersService.Delete(args.AssistantFolder.Id);
+				ShareFoldersRepo.Instance.Delete(args.AssistantFolder.Id);
 
 				var viewModelToDelete = FolderViewModels
 							 .Single(v => v.ShareFolder.FolderId == args.AssistantFolder.FolderId);
@@ -578,7 +373,7 @@ public partial class AssistantUserViewModel(
 	private void SetCanCreateProfiles()
 	{
 		try {
-			userAssistantService.SetCanCreateProfiles(Id, CanCreateProfiles);
+			UserAssistantRepo.SetCanCreateProfiles(Id, CanCreateProfiles);
 
 			Toaster.ShowSuccess($"Permission to create profiles was successfully {(CanCreateProfiles ? "given" : "taken")}");
 		} catch {
@@ -589,64 +384,31 @@ public partial class AssistantUserViewModel(
 	#endregion
 }
 
-public partial class AssistantViewModelBase : ObservableObject {
-	public virtual string Name => "AssistantViewModelBase";
-
-	[RelayCommand]
-	public virtual void Unshare()
-	{
-		OnPropertyChanged(string.Empty);
-	}
-}
-
 public partial class AssistantUsersViewModel
 			 : ViewModelObjectBase {
-	private readonly IUserAssistantService _userAssistantService;
-	private readonly IAuthSession _authSession;
-	private readonly IShareFoldersService _shareFoldersService;
-	private readonly IUserProfileService _userProfileService;
-
-	private ObservableCollection<IUserAssistant, AssistantUserViewModel> _mapping;
+	private readonly IAuthSession _authSession = ContainerServiceHelper.Resolve<IAuthSession>()!;
+	private readonly ISubject<IPageRequest> pageRequests = new BehaviorSubject<IPageRequest>(new PageRequest(0, 25));
+	private readonly ReadOnlyObservableCollection<AssistantUserViewModel> assistants;
+	public ReadOnlyObservableCollection<AssistantUserViewModel> ViewModels => assistants;
 
 	public AssistantUsersViewModel(
-			IUserAssistantService userAssistantService,
-			IAuthSession authSession,
-			IShareFoldersService shareFoldersService,
-			IUserProfileService userProfileService
-			)
+			): base("User Management")
 	{
-		_userAssistantService = userAssistantService;
-		//_unshareProfilePopupView = unshareProfilePopupView;
-		//_dialogWindowsService = dialogWindowsService;
-		// _inviteUserOrAddProfilesPopupService = inviteUserOrAddProfilesPopupService;
-		// _deleteAssistantUserPopupView = deleteAssistantUserPopupView;
-		_authSession = authSession;
-		//_upgradePlanPopupView = upgradePlanPopupView;
-		_shareFoldersService = shareFoldersService;
-		_userProfileService = userProfileService;
-
-		Title = "User Management";
-	}
-	public override async Task InitAsync(object? param)
-	{
-		await base.InitAsync(param);
-
-		if (Loaded)
-			return;
+		_ = UserAssistantRepo.Instance.ObservableCache
+			.Connect()
+			.Transform(p=> new AssistantUserViewModel(p))
+			.Bind(out assistants)
+			.Subscribe((i) => {
+				if (ViewModels != null) {
+					PaginatorViewModel ??= new PaginatorViewModel(ViewModels.Count);
+					PaginatorViewModel.TotalCount = ViewModels.Count;
+					TotalCount = PaginatorViewModel.TotalCount;
+				}
+			});
 
 		EventAggregator.Sub<InviteUserAssistantEvent, InviteUserAssistantEventArgs>(OnCreate);
-
 		EventAggregator.Sub<SavedUserAssistantEvent, SavedUserAssistantEventArgs>(OnUserAssistantSaved);
-		//.GetEvent<SavedUserAssistantEvent>()
-		//.Subscribe(args => OnUserAssistantSaved(args));
-
-		EventAggregator
-				.GetEvent<DeletedUserAssistantEvent>()
-				.Subscribe(OnUserAssistantDeleted);
-
-		await InitUserAssistantsAsync();
-
-		// OnPropertyChanged(string.Empty);
+		EventAggregator.Sub<DeletedUserAssistantEvent, DeletedUserAssistantEventArgs>(OnUserAssistantDeleted);
 	}
 
 	private int _totalCount;
@@ -659,30 +421,18 @@ public partial class AssistantUsersViewModel
 	public PaginatorViewModel PaginatorViewModel {
 		get => _paginatorViewModel;
 		set {
-			if (SetProperty(ref _paginatorViewModel, value)) _paginatorViewModel.ChangePageIndex += OnChangePage;
-		}
-	}
-
-	private ObservableCollectionView<AssistantUserViewModel> _viewModels;
-	public ObservableCollectionView<AssistantUserViewModel> ViewModels {
-		get {
-			if (_viewModels == null && _mapping != null) {
-				_viewModels = new ObservableCollectionView<AssistantUserViewModel>(_mapping);
-
-				_mapping.CollectionChanged += OnViewModelChange;
-				InitPaginator();
-			}
-
-			return _viewModels;
+			if (SetProperty(ref _paginatorViewModel, value))
+				_paginatorViewModel!.ChangePageIndex += (s, a) => { pageRequests.OnNext(new PageRequest(_paginatorViewModel.PageIndex, 25)); };
 		}
 	}
 
 	[RelayCommand]
-	private void CreateNewUserAssistant()
+	private async Task CreateNewUserAssistant()
 	{
-		if (_viewModels?.Items.Count >= _authSession.Limits.MaxAssistantsCount) ShowOutOfLimitPopup();
-		else {
-			Mbox.ShowContentDialog<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
+		if (ViewModels.Count >= _authSession.Limits.MaxAssistantsCount) {
+			ShowOutOfLimitPopup();
+		} else {
+			_ = await Mbox.ShowContentDialog<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
 								viewModel => {
 									viewModel.Title = "Invite User";
 									viewModel.TitleText = "Invite new user and customise their access";
@@ -691,35 +441,10 @@ public partial class AssistantUsersViewModel
 		}
 	}
 
-	private async Task InitUserAssistantsAsync()
-	{
-		var assistants = await Task.Run(() => _userAssistantService.Get());
-
-		_mapping = new ObservableCollection<IUserAssistant, AssistantUserViewModel>(
-				assistants, userAssistant =>
-				new AssistantUserViewModel
-						(userAssistant,
-						_userAssistantService,
-						_shareFoldersService,
-						_userProfileService));
-
-		foreach (var a in _mapping)
-			await a.InvokeInitializeAsyncCommand();
-
-		OnPropertyChanged(nameof(ViewModels));
-	}
-
-	private void InitPaginator()
-	{
-		PaginatorViewModel = new PaginatorViewModel(_viewModels.Count);
-		ViewModels.Offset = PaginatorViewModel.Skip;
-		ViewModels.Limit = PaginatorViewModel.OnPageItems;
-		TotalCount = PaginatorViewModel.TotalCount;
-	}
 	private async void ShowOutOfLimitPopup()
 	{
 		if (await Mbox.Show("USERS LIMIT REACHED", "You have reached the maximum number of users."))
-			ProUtil.GoToUrlDefault(GlobalSettings.PricingUrl);
+			ProUtil.GoToUrlDefault(Consts.GlobalSettings.PricingUrl);
 	}
 	private void SendLicenceKey(string emailAddress, string password)
 	{
@@ -728,45 +453,30 @@ public partial class AssistantUsersViewModel
 	}
 	private void OnUserAssistantDeleted(DeletedUserAssistantEventArgs args)
 	{
-		var itemToRemove = ViewModels
-				.First(v => v.Id == args.Id);
-		ViewModels.Remove(itemToRemove);
+		//var itemToRemove = ViewModels
+		//		.First(v => v.Id == args.Id);
+		//ViewModels.Remove(itemToRemove);
 
-		Toaster.ShowSuccess($"{itemToRemove.Username} was deleted successfully");
+		//Toaster.ShowSuccess($"{itemToRemove.Username} was deleted successfully");
 	}
-	private void OnUserAssistantSaved(SavedUserAssistantEventArgs args)
+	private async void OnUserAssistantSaved(SavedUserAssistantEventArgs args)
 	{
-		var userAssistant = new UserAssistant {
-			Id = args.Id,
+		_ = await UserAssistantRepo.Instance.Put(new AssistDto {
 			UserName = args.AssistantName,
 			EmailAddress = args.AssistantEmail,
-			Password = args.Password,
 			ProfileIds = args.ProfileIds,
-			ProfilePermissionIds = args.ProfilePermissionids
-		};
-
-		var assistantUserViewModel = new AssistantUserViewModel(
-				userAssistant,
-				_userAssistantService,
-				_shareFoldersService,
-				_userProfileService);
-
-		var isExist = ViewModels
-				.Any(v => v.Id == userAssistant.Id);
-
-		if (!isExist) {
-			ViewModels.Add(assistantUserViewModel);
-			SendLicenceKey(userAssistant.EmailAddress, userAssistant.Password);
-		}
+			ProfilePermissionIds = args.ProfilePermissionids,
+			FolderIds = args.FolderIds
+		});
 
 		if (args.ProfileIds?.Count > 0) Toaster.ShowSuccess($"{args.ProfileIds.Count} profile(s) shared successfully");
 
 		if (args.FolderIds?.Count > 0) Toaster.ShowSuccess($"{args.FolderIds.Count} folder(s) shared successfully");
 	}
-	private void OnCreate(InviteUserAssistantEventArgs args)
+	private async void OnCreate(InviteUserAssistantEventArgs args)
 	{
 		try {
-			_userAssistantService.Save(new UserAssistant {
+			_ = await UserAssistantRepo.Instance.Create(new AssistDto {
 				UserName = args.AssistantName,
 				EmailAddress = args.AssistantEmail,
 				ProfileIds = args.ProfileIds,
@@ -777,19 +487,5 @@ public partial class AssistantUsersViewModel
 		} catch {
 			Toaster.ShowErr($"Failed to invite the user. Please try again.");
 		}
-	}
-
-	private void OnChangePage(object sender, EventArgs e)
-	{
-		ViewModels.Offset = PaginatorViewModel.Skip;
-	}
-
-	private void OnViewModelChange(object sender, EventArgs args)
-	{
-		var count = _viewModels.Items.Count;
-		PaginatorViewModel.TotalCount = count;
-		TotalCount = count;
-
-		OnPropertyChanged(nameof(ViewModels));
 	}
 }
