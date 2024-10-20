@@ -13,7 +13,6 @@
              x:Class="Chameleon.app.Avalonia.Controls.UserProfileUserControl">
 	<UserControl.Resources>
 		<conv:IsActiveBackgroundConverter x:Key="activebgConv" />
-
 	</UserControl.Resources>
 
 	<UserControl.Styles>

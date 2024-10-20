@@ -6,12 +6,10 @@ using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.app.Avalonia.lib.Community.Controls;
 using Avalonia.Controls;
-using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces;
-using Chameleon.Avalonia.Common.Helpers;
 using Chameleon.app.Avalonia.app;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.lib.Common;
+using Chameleon.lib.CommunityToolkit.MvvM;
 
 namespace Chameleon.app.Avalonia.Services;
 public class MboxService(IDispatchService dispatcher) : IMboxService {
@@ -40,12 +38,12 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 
 	public async Task<Enums.MboxResult> ShowContentDialog<TView, TViewModel>(Action<TViewModel> initialize)
 	{
-		if (ContainerServiceHelper.Resolve<TView>() is Control view) {
+		if (IoC.GetService<TView>() is Control view) {
 			var viewModel = (TViewModel)view.DataContext!;
 
 			initialize?.Invoke(viewModel);
 
-			var title = viewModel is IPageViewModel pvm ? pvm.Title : Consts.AppName;
+			var title = viewModel is ViewModelObjectBase pvm ? pvm.Title : Consts.AppName;
 
 			var btns = Enums.MBoxButtons.OkCancel;
 
@@ -58,12 +56,12 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 				DefaultButton = ContentDialogButton.Primary,
 			};
 
-			if (viewModel is IContentDialogViewModel cdvm) {
-				dialog.Closing += (s, e) => {
-					cdvm.OnDialogClosing((IContentDialogResult)e.Result);
-				};
-			}
-			var res = await dialog.ShowAsync(ApplicationHelper.GetMainWindow());
+			//if (viewModel is IContentDialogViewModel cdvm) {
+			//	dialog.Closing += (s, e) => {
+			//		cdvm.OnDialogClosing((IContentDialogResult)e.Result);
+			//	};
+			//}
+			var res = await dialog.ShowAsync(AppLayers.GetMainWindow());
 			return (Enums.MboxResult)res;
 		}
 

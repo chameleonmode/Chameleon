@@ -105,12 +105,12 @@
 						HorizontalAlignment="Right"
 						Margin="6 6 12 0"
 						Spacing="4">
-				<Button
+				<!--<Button
 					ToolTip.Tip="Discard changes"
 					Content="Undo"
 					Classes="accent"
 					Theme="{StaticResource AccentSymbleIconButton}"
-					Command="{Binding DiscardCommand}"/>
+					Command="{Binding DiscardCommand}"/>-->
 				<Button
 					ToolTip.Tip="Save Changes"
 					Content="Save"
@@ -124,8 +124,7 @@
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Stretch"
 					Padding="108 18"
-					BorderThickness="0"
-					SelectedIndex="{Binding SelectedTadIndex}">
+					BorderThickness="0">
 			<TabItem>
 				<TabItem.Header>
 					<HeaderedContentControl

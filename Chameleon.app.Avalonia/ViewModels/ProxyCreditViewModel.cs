@@ -14,7 +14,7 @@ using CommunityToolkit.Mvvm.Input;
 
 using DynamicData;
 
-namespace Chameleon.Avalonia.Controls.Settings.Functional.ViewModels;
+namespace Chameleon.app.Avalonia.ViewModels;
 
 public partial class ProxyCreditViewModel
 			: ViewModelObjectBase {

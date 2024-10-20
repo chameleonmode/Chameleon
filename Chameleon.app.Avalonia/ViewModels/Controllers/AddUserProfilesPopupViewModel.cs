@@ -3,11 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using System.Collections.ObjectModel;
-using Chameleon.Interfaces.App.UserProfileFolders.Events;
-using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.Dialogs;
-using Chameleon.Interfaces.UserProfileFolders;
-using Chameleon.Interfaces.UserProfiles;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 

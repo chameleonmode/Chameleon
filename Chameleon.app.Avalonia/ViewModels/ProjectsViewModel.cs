@@ -1,48 +1,27 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Views;
-using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.Auth;
+using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
+using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class ProjectsViewModel : ViewModelObjectBase {
-	private readonly IAuthSession _authSession = ContainerServiceHelper.Resolve<IAuthSession>()!;
+	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;	
 
-	private int sIListView = 1;
+	public UserProfilesViewModel Profiles { get; } = UserProfilesViewModel.Instance;
+	public UserProfileFoldersViewModel Folders { get; } = UserProfileFoldersViewModel.Instance;
 
-	[ObservableProperty]
-	private bool listViewVisible = true;
-	public bool IsCreateProfileBtnVisible => _authSession.CanCreateProfiles;
+	public bool IsCreateProfileBtnVisible => _authSession.CreatorUserId == null || _authSession.CanCreateProfiles;
 
 	public ProjectsViewModel()
-		: base("Profiles") 
+		: base("Profiles & Folders") 
 	{
-	}
-	public int SIListView {
-		get { return sIListView; }
-		set {
-			if (SetProperty(ref sIListView, value)) {
-				switch (value) {
-					case 0:
-						ListViewVisible = false;
-						break;
-
-					case 1:
-						ListViewVisible = true;
-						break;
-
-					default:
-						break;
-				}
-			}
-		}
 	}
 
 	public override async Task OnNavigatedToAsync(object? param)
@@ -50,35 +29,24 @@ public partial class ProjectsViewModel : ViewModelObjectBase {
 		await base.OnNavigatedToAsync(param);
 
 		if (param is ObsFolder folder) {
-			////TODO: wtf
-			//await Task.Delay(500);
-			//EventAggregator
-			//    .GetEvent<OpenUserProfileFolderEvent>()
-			//    .Publish(new UserProfileFolderEventArgs(folder));
-
-			if (!folder.Navigated || UserProfileFoldersViewModel.Instance.SelectedFolder?.Dto?.id == folder.Dto?.id) {
-				await UserProfileFoldersViewModel.Instance.OnNavigatingTo(folder.Dto);
+			if (!folder.Navigated || Folders.SelectedFolder?.Dto?.id == folder.Dto?.id) {
+				await Folders.OnNavigatingTo(folder.Dto);
 				folder.Navigated = true;
 			}
 		} else if (param is ObsProfile up) {
 			if (!up.Navigated) {
-				UserProfilesViewModel.Instance.OnFilterTo(up);
+				Profiles.OnFilterTo(up);
 				up.Navigated = true;
 			}
 		} else {
-			if (UserProfileFoldersViewModel.Instance.SelectedFolder != null)
-				await UserProfileFoldersViewModel.Instance.OnNavigatingTo(UserProfileFoldersViewModel.Instance.SelectedFolder.Dto);
+			if (Folders.SelectedFolder != null)
+				await Folders.OnNavigatingTo(Folders.SelectedFolder.Dto);
 			else
-				await UserProfileFoldersViewModel.Instance.OnNavigatingTo(null);
+				await Folders.OnNavigatingTo(null);
 
 			if (param is string p)
-				UserProfilesViewModel.Instance.SearchText = p;
+				Profiles.SearchText = p;
 		}
-	}
-
-	public override Task InitAsync(object? param)
-	{
-		return base.InitAsync(param);
 	}
 
 	public bool IsDisabledCreateNewProfile = false;
@@ -92,11 +60,8 @@ public partial class ProjectsViewModel : ViewModelObjectBase {
 		//TODO:
 		IsDisabledCreateNewProfile = true;
 		try {
-			var p = await UserProfilesViewModel.Instance.CreateNewProfile();
-			//profiles.Filter = profile => p.Id == profile.Id;
+			var p = await Profiles.CreateNewProfile();
 			Navigator.NavigateToType(typeof(UserProfileIdentityView), p);
-
-			//EventAggregator.Push<ChangeProfilesInFavoriteFolderEvent, ChangeProfilesInFavoriteFolderEventArgs>(new ChangeProfilesInFavoriteFolderEventArgs(p.FolderId ?? 0, false, p));
 		} catch (Exception ex) {
 			if (ex.Message == "limit_ex") {
 				if (await Mbox.Show("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
@@ -105,7 +70,6 @@ public partial class ProjectsViewModel : ViewModelObjectBase {
 				Toaster.ShowErr("Wooopsy?", ex.Message);
 			}
 		} finally {
-			//profiles.Filter = filter;
 			IsDisabledCreateNewProfile = false;
 		}
 	}

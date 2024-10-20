@@ -1,31 +1,152 @@
-﻿using Chameleon.Controls.AssistantUsers.Interfaces;
-using Chameleon.Interfaces.App.Assistants;
-using Chameleon.Interfaces.App.Assistants.Events;
-using Chameleon.Interfaces.App.ShareFolders;
-using Chameleon.Interfaces.Auth;
-using Chameleon.lib.Common.ServiceManagers;
-using Chameleon.Interfaces.Assistants;
+﻿using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.Interfaces.UserProfiles;
 using CommunityToolkit.Mvvm.Input;
-using Chameleon.Authorization;
-using Chameleon.Interfaces.App.Users.AssistantUser.Events;
-using Chameleon.lib.Common.Interfaces.Sys;
-using Chameleon.Interfaces.App.Synchronization.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
-using Microsoft.VisualBasic;
 using DynamicData;
-using Chameleon.app.Avalonia.Models.Observable;
-using AutoMapper;
 using Chameleon.lib.Common.Util;
-using Chameleon.Common.Helpers;
 using System.Reactive.Subjects;
+using Chameleon.lib.Common;
+using Chameleon.lib.Common.Interfaces.Sys;
+using Chameleon.app.Avalonia.Controls;
+using Chameleon.app.Avalonia.ViewModels.Controllers;
 
 namespace Chameleon.app.Avalonia.ViewModels;
+public class UnshareProfileEventArgs
+			: EventArgs {
+	public AssisProfileDto AssistantProfile { get; }
+
+	public UnshareProfileEventArgs(
+			AssisProfileDto assistantProfile)
+	{
+		AssistantProfile = assistantProfile;
+	}
+}
+public class UnshareProfileEvent
+		: PubSubEvent<UnshareProfileEventArgs> {
+}
+public class InviteUserOrAddProfilesEventArgs
+		: EventArgs {
+	public IList<int> ProfilePermissionIds { get; }
+	public IList<int> FolderPermissionIds { get; }
+
+	public InviteUserOrAddProfilesEventArgs(
+			IList<int> profilePermissionIds,
+			IList<int> folderPermissionIds)
+	{
+		ProfilePermissionIds = profilePermissionIds;
+		FolderPermissionIds = folderPermissionIds;
+	}
+}
+
+public class AddProfilesEventArgs : InviteUserOrAddProfilesEventArgs {
+	public long AssistantId { get; }
+	public IList<UserProfileDto> Profiles { get; }
+	public IList<UPFolderDto> Folders { get; }
+	public AddProfilesEventArgs(
+			long assistantId,
+			IList<UserProfileDto> profiles,
+			IList<int> profilePermissionIds,
+			IList<UPFolderDto> folders,
+			IList<int> folderPermissionIds)
+			: base(profilePermissionIds, folderPermissionIds)
+	{
+		AssistantId = assistantId;
+		Profiles = profiles;
+		Folders = folders;
+	}
+}
+public class AddProfilesEvent
+		: PubSubEvent<AddProfilesEventArgs> {
+}
+public class UnshareFolderEvent
+			: PubSubEvent<UnshareFolderEventArgs> {
+}
+
+public class UnshareFolderEventArgs {
+	public AssisShareFolderDto AssistantFolder { get; }
+
+	public UnshareFolderEventArgs(
+			AssisShareFolderDto assistantFolder)
+	{
+		AssistantFolder = assistantFolder;
+	}
+}
+
+public class InviteUserAssistantEventArgs
+			: InviteUserOrAddProfilesEventArgs {
+	public string AssistantName { get; }
+	public string AssistantEmail { get; }
+	public IList<int> ProfileIds { get; }
+	public IList<int> FolderIds { get; }
+
+	public InviteUserAssistantEventArgs(
+			string assistantName,
+			string assistantEmail,
+			IList<int> profileIds,
+			IList<int> profilePermissionIds,
+			IList<int> folderIds,
+			IList<int> folderPermissionIds)
+			: base(profilePermissionIds, folderPermissionIds)
+	{
+		AssistantName = assistantName;
+		AssistantEmail = assistantEmail;
+		ProfileIds = profileIds;
+		FolderIds = folderIds;
+	}
+}
+public class InviteUserAssistantEvent
+		: PubSubEvent<InviteUserAssistantEventArgs> {
+}
+public class SavedUserAssistantEventArgs
+			: EventArgs {
+	public long Id { get; }
+	public string AssistantName { get; }
+	public string AssistantEmail { get; }
+	public string Password { get; }
+	public IList<int> ProfileIds { get; }
+	public IList<int> FolderIds { get; }
+	public IList<int> ProfilePermissionids { get; }
+
+	public SavedUserAssistantEventArgs(
+			long id,
+			string assistantName,
+			string assistantEmail,
+			string password,
+			IList<int> profileIds,
+			IList<int> folderIds,
+			IList<int> profilePermissionids)
+	{
+		Id = id;
+		AssistantName = assistantName;
+		AssistantEmail = assistantEmail;
+		Password = password;
+		ProfileIds = profileIds;
+		FolderIds = folderIds;
+		ProfilePermissionids = profilePermissionids;
+	}
+}
+
+public class SavedUserAssistantEvent
+		: PubSubEvent<SavedUserAssistantEventArgs> {
+
+}
+public class DeletedUserAssistantEventArgs
+			: EventArgs {
+	public long Id { get; }
+
+	public DeletedUserAssistantEventArgs(long id)
+	{
+		Id = id;
+	}
+}
+
+public class DeletedUserAssistantEvent
+		: PubSubEvent<DeletedUserAssistantEventArgs> {
+}
 
 public partial class AssistantFolderPermissionViewModel(AssisShareFolderPermission shareFolderPermission, AssisShareFolderDto shareFolder) : ViewModelObjectBase {
 	public AssisShareFolderPermission ShareFolderPermission { get; } = shareFolderPermission;
@@ -273,13 +394,13 @@ public partial class AssistantUserViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private void AddMoreProfiles()
 	{
-		Mbox.ShowContentDialog<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
-						viewModel => {
-							viewModel.Title = "Add Profiles";
-							viewModel.TitleText = "Add access to specific Profiles or whole Folders for this user";
-							viewModel.ShowInviteinfo = false;
-							viewModel.AssistantId = UserAssistant.id;
-						});
+		//Mbox.ShowContentDialog<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
+		//				viewModel => {
+		//					viewModel.Title = "Add Profiles";
+		//					viewModel.TitleText = "Add access to specific Profiles or whole Folders for this user";
+		//					viewModel.ShowInviteinfo = false;
+		//					viewModel.AssistantId = UserAssistant.id;
+		//				});
 	}
 
 	[RelayCommand]
@@ -319,12 +440,12 @@ public partial class AssistantUserViewModel : ViewModelObjectBase {
 			return;
 		}
 
-		AddProfiles(args.AssistantId, args.Profiles.Select(i=>i.Id).ToList(), args.ProfilePermissionIds);
-		AddFolders(args.AssistantId, args.Folders.Select(f=>f.Id).ToList(), args.FolderPermissionIds);
+		AddProfiles(args.AssistantId, args.Profiles.Select(i=>i.id).ToList(), args.ProfilePermissionIds);
+		AddFolders(args.AssistantId, args.Folders.Select(f=>f.id).ToList(), args.FolderPermissionIds);
 	}
 	private async void OnUnshareProfile(UnshareProfileEventArgs args)
 	{
-		if (UserAssistant.id != args.AssistantProfile.Id) {
+		if (UserAssistant.id != args.AssistantProfile.id) {
 			return;
 		}
 
@@ -350,7 +471,7 @@ public partial class AssistantUserViewModel : ViewModelObjectBase {
 
 		if (await Mbox.Show(_unshareFolderDialogTitle, $"Are you sure you want to unshare {args.AssistantFolder.FolderName}? This will not affect other folders."))
 			try {
-				ShareFoldersRepo.Instance.Delete(args.AssistantFolder.Id);
+				ShareFoldersRepo.Instance.Delete(args.AssistantFolder.id);
 
 				var viewModelToDelete = FolderViewModels
 							 .Single(v => v.ShareFolder.FolderId == args.AssistantFolder.FolderId);
@@ -386,8 +507,8 @@ public partial class AssistantUserViewModel : ViewModelObjectBase {
 
 public partial class AssistantUsersViewModel
 			 : ViewModelObjectBase {
-	private readonly IAuthSession _authSession = ContainerServiceHelper.Resolve<IAuthSession>()!;
-	private readonly ISubject<IPageRequest> pageRequests = new BehaviorSubject<IPageRequest>(new PageRequest(0, 25));
+	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
+	private readonly ISubject<IPageRequest> pageRequests = new BehaviorSubject<IPageRequest>(new PageRequest(0, Consts.PageinationPageItems));
 	private readonly ReadOnlyObservableCollection<AssistantUserViewModel> assistants;
 	public ReadOnlyObservableCollection<AssistantUserViewModel> ViewModels => assistants;
 
@@ -422,7 +543,7 @@ public partial class AssistantUsersViewModel
 		get => _paginatorViewModel;
 		set {
 			if (SetProperty(ref _paginatorViewModel, value))
-				_paginatorViewModel!.ChangePageIndex += (s, a) => { pageRequests.OnNext(new PageRequest(_paginatorViewModel.PageIndex, 25)); };
+				_paginatorViewModel!.ChangePageIndex += (s, a) => { pageRequests.OnNext(new PageRequest(_paginatorViewModel.PageIndex, Consts.PageinationPageItems)); };
 		}
 	}
 
@@ -432,12 +553,18 @@ public partial class AssistantUsersViewModel
 		if (ViewModels.Count >= _authSession.Limits.MaxAssistantsCount) {
 			ShowOutOfLimitPopup();
 		} else {
-			_ = await Mbox.ShowContentDialog<IInviteUserOrAddProfilesView, IInviteUserOrAddProfilesViewModel>(
-								viewModel => {
-									viewModel.Title = "Invite User";
-									viewModel.TitleText = "Invite new user and customise their access";
-									viewModel.ShowInviteinfo = true;
-								});
+			_ = await Mbox.ShowTaskDialog<InviteUserOrAddProfilesViewModel, InviteUserOrAddProfilesUserControl>(
+				() => new InviteUserOrAddProfilesViewModel(),
+				"Invite User",
+				"Invite new user and customise their access");
+
+								//viewModel => {
+								//	InviteUserOrAddProfilesViewModel v = new InviteUserOrAddProfilesViewModel();
+								//	v.Title = "Invite User";
+								//	v.TitleText = "Invite new user and customise their access";
+								//	v.ShowInviteinfo = true;
+								//	return v;
+								//});
 		}
 	}
 

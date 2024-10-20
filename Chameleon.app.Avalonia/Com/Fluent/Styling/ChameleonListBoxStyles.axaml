@@ -1,0 +1,239 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:ui="using:FluentAvalonia.UI.Controls">
+	<Design.PreviewWith>
+		<Border Padding="50" 
+				Width="444"
+				Height="444">
+			<StackPanel Spacing="5">
+				<ListBox
+					Theme="{StaticResource ListBoxNoScroller}"
+					ItemContainerTheme="{StaticResource GridViewItem}">
+					<ListBox.Items>
+						<ListBoxItem>
+							<Border >
+								<Grid ColumnDefinitions="Auto,*,Auto">
+									<Viewbox Width="30"
+											 Height="30"
+											 Margin="12 8"
+											 VerticalAlignment="Center">
+										<ui:SymbolIcon Symbol="Account" />
+									</Viewbox>
+
+									<StackPanel Grid.Column="1"
+												Margin="12 0"
+												Spacing="4"
+												VerticalAlignment="Center">
+										<StackPanel Grid.Column="1"
+													VerticalAlignment="Center">
+											<TextBlock Text="Title"
+													   Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+											<TextBlock Text=" profiles and descriptions.....gjhhhhhhhhhhhh"
+													   Theme="{StaticResource CaptionTextBlockStyle}" />
+										</StackPanel>
+									</StackPanel>
+
+									<StackPanel Grid.Column="2"
+										Margin="12 0"
+										Orientation="Horizontal"
+										Grid.Row="1"
+										Grid.ColumnSpan="3"
+										HorizontalAlignment="Right">
+										<Button
+											Content="View"
+											Theme="{StaticResource TransparentButton}"
+											Command="{Binding ViewGroupCommand}" />
+										<Button Margin="5"
+												Command="{Binding SetFavoriteFolderCommand}"
+												Theme="{StaticResource FavoriteButton}"/>
+
+									</StackPanel>
+								</Grid>
+							</Border>
+
+						</ListBoxItem>
+						<ListBoxItem>
+							<Border>
+								<Grid ColumnDefinitions="Auto,*,Auto">
+									<Viewbox Width="30"
+											 Height="30"
+											 Margin="12 8"
+											 VerticalAlignment="Center">
+										<ui:SymbolIcon Symbol="Account" />
+									</Viewbox>
+
+									<StackPanel Grid.Column="1"
+												Margin="12 0"
+												Spacing="4"
+												VerticalAlignment="Center">
+										<StackPanel Grid.Column="1"
+													VerticalAlignment="Center">
+											<TextBlock Text="Title"
+													   Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+											<TextBlock Text=" profiles and descriptions.....gjhhhhhhhhhhhh"
+													   Theme="{StaticResource CaptionTextBlockStyle}" />
+										</StackPanel>
+									</StackPanel>
+									
+									<StackPanel Grid.Column="2"
+										Margin="12 0"
+										Orientation="Horizontal"
+										Grid.Row="1"
+										Grid.ColumnSpan="3"
+										HorizontalAlignment="Right">
+										<Button
+											Content="View"
+											Theme="{StaticResource TransparentButton}"
+											Command="{Binding ViewGroupCommand}" />
+										<Button Margin="5"
+												Command="{Binding SetFavoriteFolderCommand}"
+												Theme="{StaticResource FavoriteButton}"/>
+
+									</StackPanel>
+								</Grid>
+							</Border>
+
+						</ListBoxItem>
+					</ListBox.Items>
+					<ListBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel Orientation="Vertical" />
+						</ItemsPanelTemplate>
+					</ListBox.ItemsPanel>
+					<ListBox.ItemTemplate>
+						<DataTemplate></DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+
+				<ItemsRepeater>
+					<ItemsRepeater.ItemsSource>
+						
+					</ItemsRepeater.ItemsSource>
+					<ItemsRepeater.Layout>
+						<StackLayout Spacing="40"
+							Orientation="Horizontal" />
+					</ItemsRepeater.Layout>
+					<ItemsRepeater.ItemTemplate>
+						<DataTemplate>
+							<Border BorderBrush="Blue"
+								Margin="0,10,0,0"
+								BorderThickness="1"
+								Padding="5">
+								<TextBlock Text="{Binding Name}"/>
+							</Border>
+						</DataTemplate>
+					</ItemsRepeater.ItemTemplate>
+				</ItemsRepeater>
+
+				<DockPanel>
+					<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" Margin="16" DockPanel.Dock="Top">
+						<TextBlock Grid.Column="0" Grid.Row="0">Rotation</TextBlock>
+						<Slider Name="rotation" Maximum="360" Grid.Column="1" Grid.Row="0"/>
+					</Grid>
+
+					<Grid ColumnDefinitions="24,Auto,24"
+						  RowDefinitions="24,Auto,24"
+						  HorizontalAlignment="Center"
+						  VerticalAlignment="Center">
+						<Border Background="{DynamicResource SystemAccentColor}" Grid.Column="1" Grid.Row="0"/>
+						<Border Background="{DynamicResource SystemAccentColor}" Grid.Column="0" Grid.Row="1"/>
+						<Border Background="{DynamicResource SystemAccentColor}" Grid.Column="2" Grid.Row="1"/>
+						<Border Background="{DynamicResource SystemAccentColor}" Grid.Column="1" Grid.Row="2"/>
+
+						<LayoutTransformControl Name="layoutTransform" Grid.Column="1" Grid.Row="1">
+							<LayoutTransformControl.LayoutTransform>
+								<!--<ScaleTransform ScaleX="{Binding #rotation.Value}" ScaleY="{Binding #rotation.Value}" />-->
+								<RotateTransform Angle="{Binding #rotation.Value}"/>
+							</LayoutTransformControl.LayoutTransform>
+							<Button Background="White">Layout Transform</Button>
+						</LayoutTransformControl>
+					</Grid>
+				</DockPanel>
+				
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+	<ControlTheme
+	TargetType="ListBoxItem"
+	  x:Key="GridViewItem"
+	  BasedOn="{StaticResource {x:Type ListBoxItem}}">
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="Margin" Value="2" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="border"
+						Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="{StaticResource ControlCornerRadius}"
+						BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+						BorderThickness="1">
+					<ContentPresenter Name="PART_ContentPresenter"
+									   ContentTemplate="{TemplateBinding ContentTemplate}"
+									  Content="{TemplateBinding Content}"/>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^:selected">
+			<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Background" Value="{DynamicResource ListViewItemBackground}" />
+			</Style>
+			<Style Selector="^ /template/ ContentPresenter">
+				<Setter Property="Foreground" Value="{DynamicResource ListViewItemForeground}" />
+			</Style>
+			<Style Selector="^ /template/ Rectangle#SelectionIndicator">
+				<Setter Property="IsVisible" Value="False" />
+			</Style>
+			<Style Selector="^:not(:focus) /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Background" Value="{DynamicResource ListViewItemBackground}" />
+			</Style>
+			<Style Selector="^:not(:focus) /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Foreground" Value="{DynamicResource ListViewItemForeground}" />
+			</Style>
+
+
+			<Style Selector="^:pointerover">
+				<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+					<Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundPointerOver}" />
+				</Style>
+				<Style Selector="^ /template/ ContentPresenter">
+					<Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundPointerOver}" />
+				</Style>
+			</Style>
+
+			<Style Selector="^:pressed">
+				<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+					<Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundPressed}" />
+				</Style>
+				<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+					<Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundPressed}" />
+				</Style>
+			</Style>
+		</Style>
+		<Style Selector="^:pointerover">
+			<Style Selector="^ /template/ Border#border">
+				<Setter Property="BorderBrush" Value="{DynamicResource TextControlElevationBorderBrush}" />
+				<!--<Setter Property="Background" Value="{DynamicResource LayerFillColorDefaultBrush}" />-->
+			</Style>
+			<!--<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Background" Value="{DynamicResource LayerFillColorDefaultBrush}" />
+			</Style>-->
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme
+		TargetType="ListBox"
+				  x:Key="ListBoxNoScroller"
+				  BasedOn="{StaticResource {x:Type ListBox}}">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="border"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}">
+					<ItemsPresenter Name="PART_ItemsPresenter"
+									ItemsPanel="{TemplateBinding ItemsPanel}"
+									Margin="{TemplateBinding Padding}"/>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+</ResourceDictionary>

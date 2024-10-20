@@ -1,14 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reactive.Subjects;
 
-using AutoMapper;
-
 using Chameleon.app.Avalonia.Com.DynamicData;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.App.Shared.Proxies;
-using Chameleon.Interfaces.UserProfiles;
-using Chameleon.Interfaces.Views;
 using Chameleon.lib.Api.Repos;
+using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
@@ -26,7 +23,7 @@ public partial class UserProxySettingsViewModel
 	private readonly BehaviorSubject<IComparer<ObsProxySetting>> proxiesCompareObservable = new(Compares.ObsProxySettingCompares.AscendingComparer);
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
 	private readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Compares.ObsFolderCompares.AscendingComparer);
-	private readonly ISubject<IPageRequest> pageRequests = new BehaviorSubject<IPageRequest>(new PageRequest(0, 25));
+	private readonly ISubject<IPageRequest> pageRequests = new BehaviorSubject<IPageRequest>(new PageRequest(0, Consts.PageinationPageItems));
 
 	private readonly ReadOnlyObservableCollection<ObsProxySetting> proxies;
 	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
@@ -57,7 +54,7 @@ public partial class UserProxySettingsViewModel
 		get => _paginatorViewModel;
 		set {
 			if (SetProperty(ref _paginatorViewModel, value)) {
-				_paginatorViewModel.ChangePageIndex += (s, a) => { pageRequests.OnNext(new PageRequest(_paginatorViewModel.PageIndex, 25)); };
+				_paginatorViewModel.ChangePageIndex += (s, a) => { pageRequests.OnNext(new PageRequest(_paginatorViewModel.PageIndex, Consts.PageinationPageItems)); };
 			}
 		}
 	}

@@ -2,11 +2,6 @@
 using Avalonia.Controls;
 
 using Chameleon.app.Avalonia;
-using Chameleon.Common.Helpers;
-using Chameleon.Core.Extensions;
-using Chameleon.Interfaces;
-using Chameleon.Interfaces.App;
-using Chameleon.Interfaces.App.UserProfiles;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,18 +9,20 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Chameleon.lib.Common;
 using Chameleon.Av.Fluent.Common.Models;
-using Chameleon.Interfaces.Dashboard;
-using Chameleon.Interfaces.Settings;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Api.Repos;
 using Chameleon.app.Avalonia.Com.DynamicData;
 using DynamicData;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.lib.Common.Extensions;
+using Chameleon.app.Avalonia.Views;
+using Chameleon.app.Avalonia.Models;
 
 namespace Chameleon.Av.Fluent.ViewModels;
 
-public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewModel {
+public partial class MainViewViewModel : ObservableObjectBase {
 	[ObservableProperty]
 	private MainAppSearchItem? selectedSearchTerm;
 
@@ -38,7 +35,7 @@ public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewMode
 
 	public NavigationFactory NavigationFactory { get; }
 
-	public MainViewViewModel()
+	private MainViewViewModel()
 	{
 		AppStartup.Instance.OnLoginSuccess += OnLoginSuccess;
 		NavigationFactory = new NavigationFactory(this);
@@ -104,27 +101,29 @@ public partial class MainViewViewModel : ObservableObjectBase, IMainViewViewMode
 	{
 		if (newValue is null) return;
 
-		if (newValue.ViewModel is INavigateFromSearch nfs)
+		if (newValue.ViewModel is ViewModelObjectBase nfs)
 			nfs.Navigated = false;
 
-		Navigator.NavigateToType(typeof(IProjectsView), newValue.ViewModel);
+		Navigator.NavigateToType(typeof(ProjectsView), newValue.ViewModel);
 	}
 
 	[RelayCommand]
 	private void ClearSearch()
 	{
 		SelectedSearchTerm = null;
-		ContainerServiceHelper.Resolve<IUserProfilesViewModel>()?.OnFilterTo();
+		UserProfilesViewModel.Instance.OnFilterTo();
 	}
 
 	[RelayCommand]
 	private void ClickSearch(string p)
 	{
-		if (!p.HasAny())
+		if (!p.Is())
 			ClearSearch();
 		else
-			Navigator.NavigateToType(typeof(IProjectsView), p);
+			Navigator.NavigateToType(typeof(ProjectsView), p);
 	}
+
+	public static MainViewViewModel Instance { get; } = new();
 }
 
 public class NavigationFactory(MainViewViewModel owner) : INavigationPageFactory {
@@ -132,7 +131,7 @@ public class NavigationFactory(MainViewViewModel owner) : INavigationPageFactory
 
 	public Control GetPage(Type srcType)
 	{
-		var c = ContainerServiceHelper.Resolve(srcType) as Control ?? IoC.GetService(srcType) as Control;
+		var c = IoC.GetService(srcType) as Control ?? IoC.GetService(srcType) as Control;
 		ArgumentNullException.ThrowIfNull(c, "Could not resolve page from type");
 		return c;
 	}
@@ -142,18 +141,18 @@ public class NavigationFactory(MainViewViewModel owner) : INavigationPageFactory
 		if (target is MainPageModelBase t) {
 			Control? c = null;
 
-			if (t.NavHeader == "Dashboard")
-				c = ContainerServiceHelper.Resolve<IDashboardView>() as Control;
-			else if (t.NavHeader == "Profiles")
-				c = ContainerServiceHelper.Resolve<IProjectsView>() as Control;
-			else if (t.NavHeader == "Automation")
-				c = ContainerServiceHelper.Resolve<IProjectsView>() as Control;
-			else if (t.NavHeader == "Settings")
-				c = ContainerServiceHelper.Resolve<ISettingsView>() as Control;
+			//if (t.NavHeader == "Dashboard")
+			//	c = ContainerServiceHelper.Resolve<IDashboardView>() as Control;
+			//else if (t.NavHeader == "Profiles")
+			//	c = ContainerServiceHelper.Resolve<IProjectsView>() as Control;
+			//else if (t.NavHeader == "Automation")
+			//	c = ContainerServiceHelper.Resolve<IProjectsView>() as Control;
+			//else if (t.NavHeader == "Settings")
+			//	c = ContainerServiceHelper.Resolve<ISettingsView>() as Control;
 
 			return c;
 		} else if (target is string nameOf) {
-			var c = ContainerServiceHelper.Resolve<ISettingsView>() as Control;
+			//var c = ContainerServiceHelper.Resolve<ISettingsView>() as Control;
 			return ResolvePage(nameOf);
 		} else {
 			return ResolvePage(target as PageBaseModel);
@@ -185,6 +184,6 @@ public class NavigationFactory(MainViewViewModel owner) : INavigationPageFactory
 
 	private readonly Dictionary<string, Func<Control?>> SettingsPages = new()
 	{
-				 { nameof(IUserDefaultSettingsView), () =>  ContainerServiceHelper.Resolve<IUserDefaultSettingsView>() as Control },
+				 //{ nameof(IUserDefaultSettingsView), () =>  ContainerServiceHelper.Resolve<IUserDefaultSettingsView>() as Control },
 	};
 }

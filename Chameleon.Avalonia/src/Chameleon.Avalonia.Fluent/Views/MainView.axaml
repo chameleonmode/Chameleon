@@ -6,7 +6,7 @@
 			 xmlns:core="using:FluentAvalonia.Core"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
 			 xmlns:vm="using:Chameleon.Av.Fluent.ViewModels"
-			 xmlns:i="using:Chameleon.Interfaces"
+			 xmlns:m="using:Chameleon.app.Avalonia.Models"
 			 xmlns:local="using:Chameleon.Av.Fluent.Views"
              mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
 			 x:CompileBindings="True"
@@ -20,7 +20,7 @@
               Background="Transparent">
 			<Image Margin="12 6"
                    IsHitTestVisible="False"
-                   Source="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico"
+                   Source="avares://Chameleon.app.Avalonia/Assets/logosymbol.ico"
                    DockPanel.Dock="Left"
                    Name="WindowIcon"
                    RenderOptions.BitmapInterpolationMode="HighQuality">
@@ -51,11 +51,11 @@
                                  MaxWidth="500"
                                  Watermark="Search"
                                  Classes="MainSearchBox"
-                                 ValueMemberBinding="{Binding Header, DataType=i:MainAppSearchItem}"
+                                 ValueMemberBinding="{Binding Header, DataType=m:MainAppSearchItem}"
 								 SelectedItem="{Binding SelectedSearchTerm}"
                                  ItemsSource="{Binding SearchTerms}">
 					<AutoCompleteBox.ItemTemplate>
-						<DataTemplate x:DataType="i:MainAppSearchItem">
+						<DataTemplate x:DataType="m:MainAppSearchItem">
 							<Panel>
 								<StackPanel HorizontalAlignment="Left"
                                             VerticalAlignment="Center">

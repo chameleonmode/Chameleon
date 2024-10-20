@@ -1,9 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
+using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.Av.Fluent.Common.Pages;
-using Chameleon.Interfaces.UserProfileFolders;
 
 using FluentAvalonia.UI.Media.Animation;
 
@@ -20,7 +20,7 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 	{
 		base.OnAfterNavigatedToViewModel(param);
 
-		if (param is IUserProfileFolder) {
+		if (param is ObsFolder) {
 			TabStrip1.SelectionChanged -= TabStrip1SelectionChanged!;
 			TabStrip1.SelectedIndex = 0;
 			NavigateToIndex(0, param);

@@ -1,0 +1,223 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+             x:Class="Chameleon.app.Avalonia.Controls.InviteUserOrAddProfilesUserControl">
+	<UserControl.Resources>
+		<!--<Style x:Key="TitleText"
+               TargetType="TextBlock">
+			<Setter Property="FontFamily"
+                    Value="Open Sans" />
+			<Setter Property="FontSize"
+                    Value="16" />
+			<Setter Property="FontWeight"
+                    Value="DemiBold" />
+			<Setter Property="TextWrapping"
+                    Value="Wrap" />
+		</Style>-->
+		<!--BorderBrush="{StaticResource BorderOutlineButton40}"-->
+		<DataTemplate x:Key="ProfilesListViewTemplate">
+			<Border x:Name="Border"
+				BorderThickness="1"
+				Height="56">
+				<Grid HorizontalAlignment="Stretch">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<Ellipse Grid.Column="0"
+							 Margin="16 0 0 0"
+							 Fill="{StaticResource AccentFillColorDefaultBrush}"
+							 Stroke="{StaticResource FocusStrokeColorOuterBrush}"
+							 Width="28"
+							 Height="28"
+							 VerticalAlignment="Center">
+					</Ellipse>
+					<!--Foreground="{StaticResource PrimaryHueMidBrush}"-->
+					<TextBlock Grid.Column="0"
+							   Margin="16 0 0 0"
+							   Text="{Binding Code}"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+							   FontSize="11"
+							   FontWeight="Bold"
+							   FontFamily="Open Sans" />
+					<!--Foreground="{StaticResource MainBlack}"-->
+					<TextBlock Grid.Column="1"
+							   Margin="8 0 0 0"
+							   Text="{Binding Title}"
+							   VerticalAlignment="Center"
+							   FontFamily="Open Sans"
+                               
+							   FontSize="14"
+							   FontWeight="Normal">
+					</TextBlock>
+					<!--Background="{StaticResource PrimaryHueDarkBrush}"
+                              BorderBrush="{StaticResource PrimaryHueDarkBrush}"-->
+					<CheckBox Grid.Column="2"
+							  Margin="12 0 12 0"
+							  IsChecked="{Binding IsSelected}">
+					</CheckBox>
+				</Grid>
+			</Border>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ProfilesSelectedTemplate">
+			<!--BorderBrush="{StaticResource DividerLine}"
+                    Background="{StaticResource LightPurple}"-->
+			<Border x:Name="Border"
+                    BorderThickness="1"
+                    Height="28"
+                    
+                    CornerRadius="4"
+                    Margin="8 0 0 6">
+				<Grid HorizontalAlignment="Stretch">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<TextBlock Grid.Column="0"
+                               Margin="12 4 0 4"
+                               Text="{Binding Title}"
+                               VerticalAlignment="Center"
+                               FontFamily="Open Sans"
+                               
+                               FontSize="12"
+                               FontWeight="DemiBold">
+					</TextBlock>
+
+					<Button Grid.Column="1"
+                            Command="{Binding UnselectCommand}"
+                            Theme="{DynamicResource TransparentButton}"
+                         
+                            Margin="12 0 10 0"
+                            BorderThickness="0">
+						<afv:SvgIconControl IconName="x"
+                                              Height="10"
+                                              Width="10" />
+					</Button>
+				</Grid>
+			</Border>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ProfilePermissionTemplate">
+			<WrapPanel>
+				<!--Background="{StaticResource PrimaryHueDarkBrush}"
+                          BorderBrush="{StaticResource PrimaryHueDarkBrush}"-->
+				<CheckBox IsChecked="{Binding IsChecked}"
+                          Height="16"
+                          Width="16"
+                          >
+					<CheckBox.Resources>
+						<!--Unchecked state-->
+						<SolidColorBrush x:Key="MaterialDesignCheckBoxOff"
+                                         Color="#6634C2" />
+						<!--Checked state-->
+						<SolidColorBrush x:Key="PrimaryHueMidBrush"
+                                         Color="#7753A6" />
+					</CheckBox.Resources>
+				</CheckBox>
+				<!--Foreground="{StaticResource MainBlack}"-->
+				<TextBlock VerticalAlignment="Center"
+                           Text="{Binding DisplayName}"
+                           FontFamily="Open Sans"
+                           FontWeight="DemiBold"
+                           FontSize="14"
+                           LineHeight="16"
+                           
+                           Margin="11 0 11 0" />
+			</WrapPanel>
+		</DataTemplate>
+	</UserControl.Resources>
+	<dialogs:ChameleonDialogControl TitleDescription="{Binding TitleText, FallbackValue=titletext}">
+		<!--<dialogs:ChameleonDialogControl.Header>
+			<StackPanel>
+				<TextBlock Text="{Binding TitleText, FallbackValue=titletext}" />
+			</StackPanel>
+		</dialogs:ChameleonDialogControl.Header>-->
+		<dialogs:ChameleonDialogControl.DialogInputs>
+			<dialogs:DialogInputHost TextLabel="User name:"
+									 Text="{Binding AssistantName}"
+									 IsVisible="{Binding ShowInviteinfo}" />
+			<dialogs:DialogInputHost TextLabel="Email for invite:"
+									 Text="{Binding AssistantEmail}"
+									 IsVisible="{Binding ShowInviteinfo}"/>
+		</dialogs:ChameleonDialogControl.DialogInputs>
+
+		<dialogs:ChameleonDialogControl.Content>
+			<StackPanel MinHeight="258"
+						Width="410"
+						Margin="10">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Expander Grid.Row="0"
+							  Header="Profiles"
+							  Margin="0 0 0 12">
+						<Grid RowDefinitions="*,Auto">
+							<ItemsControl ItemsSource="{Binding SelectedProfileViewModels}"
+										  ItemTemplate="{StaticResource ProfilesSelectedTemplate}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<WrapPanel Orientation="Horizontal" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+							</ItemsControl>
+
+							<ScrollViewer Grid.Row="1"
+										  MaxHeight="220">
+								<ItemsControl ItemsSource="{Binding ProfileViewModels}"
+											  ItemTemplate="{StaticResource ProfilesListViewTemplate}">
+									<ItemsControl.Items>
+
+									</ItemsControl.Items>
+								</ItemsControl>
+
+							</ScrollViewer>
+						</Grid>
+					</Expander>
+
+					<!--https://github.com/chameleonmode/Chameleon/issues/51
+					<Expander Grid.Row="1"
+							  Header="Folders">
+						<Grid RowDefinitions="*,Auto">
+							<ItemsControl ItemsSource="{Binding SelectedFolderViewModels}"
+										  ItemTemplate="{StaticResource ProfilesSelectedTemplate}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<WrapPanel Orientation="Horizontal" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+							</ItemsControl>
+
+							<ScrollViewer MaxHeight="220"
+										  Grid.Row="1">
+								<ItemsControl ItemsSource="{Binding FolderViewModels}"
+											  ItemTemplate="{StaticResource ProfilesListViewTemplate}" />
+							</ScrollViewer>
+						</Grid>
+					</Expander>-->
+
+				</Grid>
+
+				<TextBlock Grid.Row="10"
+						   Text="{Binding ServerErrorMessage}"
+						   Foreground="{StaticResource Orange}"
+						   FontFamily="Open Sans"
+						   FontSize="16"
+						   LineHeight="24"
+						   Margin="0 20 0 0"
+						   TextWrapping="Wrap"
+						   IsVisible="{Binding HasServerError}"/>
+
+			</StackPanel>
+		</dialogs:ChameleonDialogControl.Content>
+	</dialogs:ChameleonDialogControl>
+</UserControl>

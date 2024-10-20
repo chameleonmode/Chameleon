@@ -5,25 +5,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-	<!--<ItemGroup>
-		<None Remove=".gitignore" />
-	</ItemGroup>-->
-
-	<!--<ItemGroup>
-		<AvaloniaResource Include="Assets\**" />
-	</ItemGroup>-->
 	
-
 	<ItemGroup>
 		<PackageReference Include="Avalonia" />
 		<PackageReference Include="Avalonia.Svg" />
 		<PackageReference Include="Avalonia.Svg.Skia" />
 		<PackageReference Include="FluentAvaloniaUI" />
+		<PackageReference Include="CommunityToolkit.Mvvm" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
-	  <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
+	  <ProjectReference Include="..\..\..\..\chameleon-lib\Chameleon.lib.Common\Chameleon.lib.Common.csproj" />
+	  <ProjectReference Include="..\..\..\..\chameleon-lib\Chameleon.lib.CommunityToolkit\Chameleon.lib.CommunityToolkit.csproj" />
 	</ItemGroup>
 </Project>

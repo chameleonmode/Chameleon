@@ -333,10 +333,10 @@
 						</MultiBinding>
 					</Panel.IsVisible>
 					<ListBox
-								  Name="lbProfiles"
-								  ItemsSource="{Binding Profiles}"
-								  Theme="{StaticResource ListBoxNoScroller}"
-								  ItemContainerTheme="{StaticResource GridViewItem}">
+						Name="lbProfiles"
+						ItemsSource="{Binding Profiles}"
+						Theme="{StaticResource ListBoxNoScroller}"
+						ItemContainerTheme="{StaticResource GridViewItem}">
 						<ListBox.ItemsPanel>
 							<ItemsPanelTemplate>
 								<UniformGrid Columns="1"/>

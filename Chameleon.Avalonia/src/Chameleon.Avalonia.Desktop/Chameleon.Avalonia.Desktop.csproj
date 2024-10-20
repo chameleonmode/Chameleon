@@ -15,6 +15,12 @@
 	  <!--<RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
 	  <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>-->
   </PropertyGroup>
+  <ItemGroup>
+    <AvaloniaXaml Remove="Properties\**" />
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
   <!--<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>1</WarningLevel>
   </PropertyGroup>
@@ -46,19 +52,6 @@
     <ProjectReference Include="..\..\..\Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj" />
     <ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
     <ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Core.Shared\Chameleon.Core.Shared.csproj" />
-    <ProjectReference Include="..\..\..\src\Chameleon.Application\Chameleon.Application.csproj" />
-    <ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
-    <ProjectReference Include="..\..\..\src\Chameleon.Core\Chameleon.Core.csproj" />
-    <ProjectReference Include="..\..\..\src\Chameleon.Domain\Chameleon.Domain.csproj" />
-    <ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
     <ProjectReference Include="..\Chameleon.Avalonia.Fluent\Chameleon.Avalonia.Fluent.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
-  </ItemGroup>
-	
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

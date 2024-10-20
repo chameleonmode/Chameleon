@@ -32,21 +32,11 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
-		<PackageReference Include="Prism.Avalonia" />
-		<PackageReference Include="Prism.DryIoc.Avalonia" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\..\chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj" />
 	  <ProjectReference Include="..\..\..\Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj" />
 	  <ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
-	  <ProjectReference Include="..\..\..\src\Chameleon.Application\Chameleon.Application.csproj" />
-	  <ProjectReference Include="..\..\..\src\Chameleon.Core\Chameleon.Core.csproj" />
-	  <ProjectReference Include="..\..\..\src\Chameleon.Domain\Chameleon.Domain.csproj" />
-	  <ProjectReference Include="..\..\..\src\Chameleon.Infrastructure\Chameleon.Infrastructure.csproj" />
-	  <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
-	  <ProjectReference Include="..\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
-	  <ProjectReference Include="..\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
-	  <ProjectReference Include="..\Chameleon.Avalonia.Prism.Infrastructure\Chameleon.Avalonia.Prism.Infrastructure.csproj" />
 	</ItemGroup>
 </Project>

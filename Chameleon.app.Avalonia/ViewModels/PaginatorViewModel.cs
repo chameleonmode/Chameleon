@@ -1,163 +1,133 @@
 ﻿using System.Collections.ObjectModel;
 
-using Chameleon.Interfaces.Paginator;
+using Chameleon.lib.Common.Constants;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.app.Avalonia.ViewModels;
-public class PaginatorButtonViewModel {
-	public int Index { get; }
+public class PaginatorButtonViewModel(int index) {
+	public int Index { get; } = index;
 	public string Text => (Index + 1).ToString();
-
-	public PaginatorButtonViewModel(int index)
-	{
-		Index = index;
-	}
-
-
 }
 public partial class PaginatorViewModel
-    : ViewModelObjectBase
-		, IPaginatorViewModel
-{
-    public PaginatorViewModel(int totalCount, int onPageItems = 10)
-    {
-        OnPageItems = onPageItems;
-        TotalCount = totalCount;
+		: ViewModelObjectBase {
+	public PaginatorViewModel(int totalCount, int onPageItems = Consts.PageinationPageItems)
+	{
+		OnPageItems = onPageItems;
+		TotalCount = totalCount;
+	}
 
-    }
+	[RelayCommand]
+	private void OnNextPage()
+	{
+		PageIndex++;
+	}
+	[RelayCommand]
+	private void OnPrevPage()
+	{
+		PageIndex--;
+	}
 
+	private ObservableCollection<PaginatorButtonViewModel> _buttons;
+	public ObservableCollection<PaginatorButtonViewModel> Buttons {
+		get {
+			if (_buttons == null) {
+				_buttons = [];
 
-    [RelayCommand]
-    private void OnNextPage()
-    {
-        PageIndex++;
-    }
-    [RelayCommand]
-    private void OnPrevPage()
-    {
-        PageIndex--;
-    }
+				for (int i = 0; i < PageCount; i++) {
+					_buttons.Add(new PaginatorButtonViewModel(i));
+				}
 
-    private ObservableCollection<PaginatorButtonViewModel> _buttons;
-    public ObservableCollection<PaginatorButtonViewModel> Buttons
-    {
-        get
-        {
-            if (_buttons == null)
-            {
-                _buttons = [];
+				UpdateStatus();
+			}
 
-                for (int i = 0; i < PageCount; i++)
-                {
-                    _buttons.Add(new PaginatorButtonViewModel(i));
-                }
+			return _buttons;
+		}
+		set {
+			SetProperty(ref _buttons, value);
+		}
+	}
 
-                UpdateStatus();
-            }
+	public bool PrevButtonIsEnabled => PageIndex > 0;
+	public bool NextButtonIsEnabled => PageIndex < Buttons.Count - 1;
 
-            return _buttons;
-        }
-        set
-        {
-            SetProperty(ref _buttons, value);
-        }
-    }
+	private int _pageIndex;
+	public int PageIndex {
+		get { return _pageIndex; }
+		set {
+			if (SetProperty(ref _pageIndex, value)) {
+				UpdateStatus();
 
-    public bool PrevButtonIsEnabled => PageIndex > 0;
-    public bool NextButtonIsEnabled => PageIndex < Buttons.Count - 1;
+				ChangePageIndex?.Invoke(this, EventArgs.Empty);
+			}
+		}
+	}
 
-    private int _pageIndex;
-    public int PageIndex
-    {
-        get { return _pageIndex; }
-        set
-        {
-            if (SetProperty(ref _pageIndex, value))
-            {
-                UpdateStatus();
+	public EventHandler ChangePageIndex { get; set; }
 
-                ChangePageIndex?.Invoke(this, EventArgs.Empty);
-            }
-        }
-    }
+	private int _pageCount;
+	public int PageCount {
+		get => _pageCount;
+		set {
+			if (SetProperty(ref _pageCount, value)) {
+				UpdateButtons();
+			}
+		}
+	}
 
-    public EventHandler ChangePageIndex { get; set; }
+	private void UpdateButtons()
+	{
+		var currentButtonsCount = Buttons.Count;
 
-    private int _pageCount;
-    public int PageCount
-    {
-        get => _pageCount;
-        set
-        {
-            if (SetProperty(ref _pageCount, value))
-            {
-                UpdateButtons();
-            }
-        }
-    }
+		if (currentButtonsCount < PageCount) {
+			for (var i = currentButtonsCount; i < PageCount; i++) {
+				_buttons.Add(new PaginatorButtonViewModel(i));
+			}
 
-    private void UpdateButtons()
-    {
-        int currentButtonsCount = Buttons.Count;
+			return;
+		}
 
-        if (currentButtonsCount < PageCount)
-        {
-            for (int i = currentButtonsCount; i < PageCount; i++)
-            {
-                _buttons.Add(new PaginatorButtonViewModel(i));
-            }
+		if (PageIndex >= PageCount) {
+			PageIndex = PageCount - 1;
+		}
 
-            return;
-        }
+		for (var i = PageCount; i < currentButtonsCount; i++) {
+			_buttons.Remove(_buttons[PageCount]);
+		}
+	}
 
-        if (PageIndex >= PageCount)
-        {
-            PageIndex = PageCount - 1;
-        }
+	private void UpdatePageCount()
+	{
+		var pageCounts = TotalCount / OnPageItems +
+				(TotalCount % OnPageItems > 0 ? 1 : 0);
 
-        for (int i = PageCount; i < currentButtonsCount; i++)
-        {
-            _buttons.Remove(_buttons[PageCount]);
-        }
-    }
+		PageCount = Math.Max(1, pageCounts);
+	}
 
-    private void UpdatePageCount()
-    {
-        int pageCounts = TotalCount / OnPageItems +
-            (TotalCount % OnPageItems > 0 ? 1 : 0);
+	private void UpdateStatus()
+	{
+		OnPropertyChanged(nameof(PrevButtonIsEnabled));
+		OnPropertyChanged(nameof(NextButtonIsEnabled));
+		OnPropertyChanged(nameof(FirstVisibleElementNumber));
+		OnPropertyChanged(nameof(LastVisibleElementNumber));
+	}
 
-        PageCount = Math.Max(1, pageCounts);
-    }
+	public int FirstVisibleElementNumber => Math.Min(Math.Abs(Skip) + 1, TotalCount);
+	public int LastVisibleElementNumber => Math.Min(Math.Abs(Skip) + OnPageItems, TotalCount);
 
-    private void UpdateStatus()
-    {
-        OnPropertyChanged(nameof(PrevButtonIsEnabled));
-        OnPropertyChanged(nameof(NextButtonIsEnabled));
-        OnPropertyChanged(nameof(FirstVisibleElementNumber));
-        OnPropertyChanged(nameof(LastVisibleElementNumber));
-    }
+	private int _totalCount;
+	public int TotalCount {
+		get => _totalCount;
+		set {
+			if (SetProperty(ref _totalCount, value)) {
+				UpdatePageCount();
+				UpdateStatus();
+			}
+		}
+	}
 
+	public int Skip => PageIndex * OnPageItems;
 
-    public int FirstVisibleElementNumber => Math.Min(Math.Abs(Skip) + 1, TotalCount);
-    public int LastVisibleElementNumber => Math.Min(Math.Abs(Skip) + OnPageItems, TotalCount);
-
-    private int _totalCount;
-    public int TotalCount
-    {
-        get => _totalCount;
-        set
-        {
-            if (SetProperty(ref _totalCount, value))
-            {
-                UpdatePageCount();
-                UpdateStatus();
-            }
-        }
-    }
-
-    public int Skip => PageIndex * OnPageItems;
-
-    public int OnPageItems { get; }
+	public int OnPageItems { get; }
 }

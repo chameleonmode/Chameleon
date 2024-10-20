@@ -1,0 +1,740 @@
+<ResourceDictionary
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
+	xmlns:ui="using:FluentAvalonia.UI.Controls">
+
+	<Design.PreviewWith>
+		<StackPanel>
+			<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" 
+									Header="No favorite profiles selected yet"/>
+			
+			<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
+				<HeaderedContentControl.Header>
+					<StackPanel Orientation="Horizontal">
+						<ui:FAComboBox PlaceholderText="Proxy Country:"
+									   BorderThickness="0"
+									   VerticalAlignment="Center"
+									   Width="150"
+									   IsEditable="False"
+									   IsTextSearchEnabled="True"
+									   ItemsSource="{Binding Countries}"
+									   SelectedItem="{Binding Country}">
+							<ui:FAComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Name}"/>
+								</DataTemplate>
+							</ui:FAComboBox.ItemTemplate>
+						</ui:FAComboBox>
+
+						<Button VerticalAlignment="Center"
+								ToolTip.Tip="Auto Update Proxies:"
+								Margin="4 0 0 0"
+								Theme="{StaticResource TransparentButton}"
+								Command="{Binding FillProxiesCommand}">
+							<ui:SymbolIcon Symbol="Refresh" FontSize="22" />
+						</Button>
+					</StackPanel>
+				</HeaderedContentControl.Header>
+			</HeaderedContentControl>
+
+			<Border Padding="20" Width="800" Height="480">
+				<Grid ColumnDefinitions="*,Auto,0.01*">
+					<ctrls:ChameleonContentControl Title="Some Title"
+												   TitleDescription="some kinda description over here">
+						<ctrls:ChameleonContentControl.TitleContent>
+							<Grid>
+								<ui:CommandBar DefaultLabelPosition="Right">
+									<ui:CommandBar.PrimaryCommands>
+										<ui:CommandBarButton IconSource="Save"
+														 
+															 Label="Save" />
+										<ui:CommandBarSeparator />
+										<ui:CommandBarButton IconSource="Refresh"
+															 Label="Auto Update Proxies" />
+									</ui:CommandBar.PrimaryCommands>
+									<ui:CommandBar.SecondaryCommands>
+										<ui:CommandBarButton IconSource="Cut" Label="Cut" />
+										<ui:CommandBarButton IconSource="Copy" Label="Copy" />
+										<ui:CommandBarButton IconSource="Paste" Label="Paste" />
+										<ui:CommandBarSeparator />
+										<ui:CommandBarToggleButton IconSource="Bold" Label="Bold" />
+										<ui:CommandBarToggleButton IconSource="Italic" Label="Italic" />
+										<ui:CommandBarToggleButton IconSource="Underline" Label="Underline" />
+									</ui:CommandBar.SecondaryCommands>
+								</ui:CommandBar>
+							</Grid>
+						</ctrls:ChameleonContentControl.TitleContent>
+
+						<ctrls:ChameleonContentControl.Header>
+							<Grid IsVisible="{Binding !HasNoItems}">
+								<StackPanel Orientation="Horizontal">
+									<Button Content="select-all"
+											Tag="Select all"
+											Theme="{StaticResource SvgIconTextButton}"
+											Command="{Binding SelectAllCommand}" />
+									<StackPanel
+										Orientation="Horizontal"
+										Margin="2 0 0 0">
+										<StackPanel.IsVisible>
+											<MultiBinding  Converter="{x:Static BoolConverters.Or}">
+												<Binding Path="HasFolder"/>
+												<Binding Path="IsProfilesExist"/>
+											</MultiBinding>
+										</StackPanel.IsVisible>
+										<Button Content="plus-in-circle"
+												Tag="Add profile"
+												Theme="{StaticResource SvgIconTextButton}"
+												Command="{Binding AddProfilesToFolderCommand}"
+												IsEnabled="{Binding IsAddProfilesToFolderCommandEnabled}" />
+										<Button Content="minus-in-circle"
+												Tag="Remove profile!!!"
+												Theme="{StaticResource SvgIconTextButton}"
+												Margin="4 0 0 0"
+												Command="{Binding RemoveProfilesFromFolderCommand}" />
+									</StackPanel>
+								</StackPanel>
+
+								<ui:FAComboBox Width="150"
+											   IsEditable="False"
+											   HorizontalAlignment="Right"
+											   Header="Sort by:"
+											   ItemsSource="{Binding Sorts}"
+											   SelectedItem="{Binding SortSelected}"
+											   IsVisible="{Binding IsProfilesExist}" />
+							</Grid>
+						</ctrls:ChameleonContentControl.Header>
+
+						<ctrls:ChameleonContentControl.Options>
+							<StackPanel Spacing="12"
+										Margin="4">
+								<!--DisplayMemberBinding="{Binding DisplayName, DataType=vm:ComboItem}"
+											<Label Content="{Binding Title}"/>-->
+								<ui:FAComboBox Header="Folder:"
+											   SelectedItem="{Binding SelectedFolder}"
+											   ItemsSource="{Binding FolderViewModels.Items}"
+											   IsEditable="False"
+											   IsTextSearchEnabled="True"
+											  HorizontalAlignment="Stretch"/>
+								<!--DisplayMemberBinding="{Binding DisplayName, DataType=vm:ComboItem}"
+											<Label Content="{Binding Name}"/>-->
+								<ui:FAComboBox Header="Current proxy country:"
+											  ItemsSource="{Binding Countries.Items}"
+											  SelectedItem="{Binding Country}"
+											   IsEditable="False"
+											   IsTextSearchEnabled="True"
+											  HorizontalAlignment="Stretch"/>
+							</StackPanel>
+						</ctrls:ChameleonContentControl.Options>
+						<ctrls:ChameleonContentControl.Content>
+							<Grid RowDefinitions="*,Auto">
+
+								<DataGrid ItemsSource="{Binding ViewModels}"
+										  AutoGenerateColumns="False"
+									  GridLinesVisibility="None"
+									  CanUserResizeColumns="False"
+									  CanUserReorderColumns="False"
+									  SelectionMode="Single"
+									  CanUserSortColumns="True"
+									  BorderThickness="1 0 1 0">
+
+									<DataGrid.Columns>
+										<DataGridTemplateColumn Width="Auto">
+											<DataGridTemplateColumn.Header>
+												<CheckBox HorizontalAlignment="Center"
+											IsChecked="{Binding Path=DataContext.IsSelectedAll,
+                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid, AncestorLevel=1}}"/>
+											</DataGridTemplateColumn.Header>
+											<DataGridTemplateColumn.CellTemplate>
+												<DataTemplate>
+													<CheckBox  HorizontalAlignment="Center"  IsChecked="{Binding IsSelected}"/>
+												</DataTemplate>
+											</DataGridTemplateColumn.CellTemplate>
+										</DataGridTemplateColumn>
+										<DataGridTextColumn IsReadOnly="True"
+															Header="PROJECT NAME"
+															Binding="{Binding InProject}"
+															CanUserSort="True"/>
+										<DataGridTemplateColumn IsReadOnly="True"
+																Width="*"
+																Header="PROFILE">
+											<DataGridTemplateColumn.CellTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Horizontal">
+														<Grid>
+															<Ellipse Grid.Column="1"
+																	 Fill="{StaticResource AccentFillColorSelectedTextBackgroundBrush}"
+																	 Width="28"
+																	 Height="28"
+																	 VerticalAlignment="Center">
+															</Ellipse>
+															<TextBlock Text="{Binding Code}"
+																	   Foreground="{StaticResource TextOnAccentFillColorSelectedTextBrush}"
+																	   VerticalAlignment="Center"
+																	   HorizontalAlignment="Center"  />
+														</Grid>
+														<TextBlock VerticalAlignment="Center"
+																   Margin="13 0 0 0"
+																   Text="{Binding Title}"/>
+													</StackPanel>
+												</DataTemplate>
+											</DataGridTemplateColumn.CellTemplate>
+										</DataGridTemplateColumn>
+										<DataGridTextColumn IsReadOnly="True"
+															Width="Auto"
+															Header="IP"
+															Binding="{Binding UserProfileModel.Proxy.Host}"/>
+										<DataGridTextColumn IsReadOnly="True"
+															Width="Auto"
+															Header="PORT"
+															Binding="{Binding UserProfileModel.Proxy.Port}"/>
+										<DataGridTextColumn IsReadOnly="True"
+															Width="Auto"
+															Header="USERNAME"
+															Binding="{Binding UserProfileModel.Proxy.UserName}"/>
+										<DataGridTextColumn IsReadOnly="True"
+															Header="PASSWORD"
+															Binding="{Binding UserProfileModel.Proxy.Password}"/>
+										<DataGridTemplateColumn IsReadOnly="True" >
+											<DataGridTemplateColumn.CellTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Horizontal"
+																Cursor="Hand"
+																Background="Transparent">
+														<Button Theme="{StaticResource TransparentButton}"
+																Command="{Binding ClickIconChangeProxiesCommand}">
+															<ui:SymbolIcon Symbol="Add" />
+														</Button>
+													</StackPanel>
+												</DataTemplate>
+											</DataGridTemplateColumn.CellTemplate>
+										</DataGridTemplateColumn>
+									</DataGrid.Columns>
+								</DataGrid>
+								<Button Grid.Row="1"
+														 DataContext="{Binding PaginatorViewModel}" />
+								<!--{Binding HasSelectedItems}-->
+								<Border Grid.Row="0"
+										Grid.Column="0"
+										Grid.ColumnSpan="2"
+										Grid.RowSpan="2"
+										IsVisible="False"
+										Background="{StaticResource AccentFillColorDefaultBrush}"
+										Padding="{StaticResource ChameleonControlMargin}"
+										VerticalAlignment="Bottom">
+									<StackPanel Orientation="Horizontal"
+												HorizontalAlignment="Center"
+												Spacing="16">
+										<StackPanel Orientation="Horizontal"
+													VerticalAlignment="Center">
+											<TextBlock Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+													   Text="{Binding SelectedCount}"/>
+											<TextBlock Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+													   Text=" Selected"/>
+										</StackPanel>
+										<Button Content="Unselect"
+												Grid.Column="1"
+												 Classes="accent"
+												Command="{Binding UnselectItemsCommand}" />
+										<Button Content="Change proxies"
+												 Grid.Column="2"
+												 Command="{Binding ChangeProxiesCommand}"/>
+									</StackPanel>
+								</Border>
+							</Grid>
+						</ctrls:ChameleonContentControl.Content>
+
+						<ctrls:ChameleonContentControl.Footer>
+							<Expander Header="PROXIES EDITOR"
+									  VerticalAlignment="Bottom"
+										 Name="SettingsExpander4"
+									  ExpandDirection="Down"
+												 IsExpanded="True">
+								<Grid>
+									<!--{Binding ShowCustomizeProxies}-->
+									<Border CornerRadius="5 0"
+										  Background="{StaticResource LayerFillColorDefaultBrush}"
+										  VerticalAlignment="Bottom"
+										  IsVisible="True">
+										<Grid>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="Auto"/>
+												<RowDefinition Height="*"/>
+											</Grid.RowDefinitions>
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition/>
+													<ColumnDefinition/>
+												</Grid.ColumnDefinitions>
+												<TextBlock Text="CUSTOMIZE PROXIES"
+														   Theme="{StaticResource SubtitleTextBlockStyle}"
+														   Grid.Column="0"
+														   VerticalAlignment="Center"
+														   HorizontalAlignment="Left"
+														   Margin="25 0 0 0"/>
+												<DockPanel Grid.Column="1"
+														   HorizontalAlignment="Right"
+														   VerticalAlignment="Center" >
+													<Button Classes="accent" Command="{Binding HideCustomizeProxiesCommand}">
+														<ui:SymbolIcon Symbol="Clear" />
+													</Button>
+												</DockPanel>
+											</Grid>
+											<Grid  Grid.Row="1">
+												<Grid.RowDefinitions>
+													<RowDefinition Height="Auto"/>
+													<RowDefinition Height="Auto"/>
+													<RowDefinition Height="*"/>
+												</Grid.RowDefinitions>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition/>
+													<ColumnDefinition/>
+												</Grid.ColumnDefinitions>
+												<TextBlock FontSize="14"
+													   Text="Please add your proxies using the format below"
+													   Margin="36 0 0 0"
+													   VerticalAlignment="Center"/>
+												<Button Width="148"
+													Height="46"
+													Margin="0 12 33 10"
+													Content="Apply changes"
+													VerticalAlignment="Center"
+													HorizontalAlignment="Right"
+													Grid.Column="1"
+													Command="{Binding ApplyProxyCommand}"/>
+												<TextBlock Grid.Row="1" Grid.Column="0"
+														   FontSize="14"
+														   Text="NEW PROXY"
+														   Margin="36 0 0 0"
+														   VerticalAlignment="Center"/>
+												<TextBlock Grid.Row="1" Grid.Column="1"
+														   FontSize="14"
+														   Text="CURRENT PROXY"
+														   Margin="36 0 0 0"
+														   VerticalAlignment="Center"/>
+												<StackPanel Grid.Row="2"
+															Grid.Column="0">
+													<TextBox
+															 Margin="24 9 0 0"
+															 AcceptsReturn="True"
+															 TextWrapping="NoWrap"
+															 Height="199"
+															 Text="{Binding ApplingProxy}"
+															 BorderBrush="{StaticResource BorderOutlineButton}">
+													</TextBox>
+													<TextBox
+															 Margin="24 10 0 0"
+															 Text=":"
+															 BorderBrush="{StaticResource BorderOutlineButton}"
+															 IsHitTestVisible="False">
+													</TextBox>
+												</StackPanel>
+												<ListBox Grid.Row="2"
+															  Grid.Column="1"
+															  x:Name="itemsList"
+															  ItemsSource="{Binding ViewModels}"
+															  Margin="16 0 22 0"
+														 IsHitTestVisible="False">
+													<ListBox.ItemTemplate>
+														<DataTemplate>
+															<TextBox IsReadOnly="True"
+																	 VerticalAlignment="Center"
+																	 Margin="0 8 0 0"
+																	 BorderBrush="{StaticResource BorderOutlineButton}">
+																<TextBox.Text>
+																	<MultiBinding Converter="{StaticResource MultiStringJoin}">
+																		<Binding Path="UserProfileModel.Proxy.Host"/>
+																		<Binding Path="UserProfileModel.Proxy.Port" />
+																		<Binding Path="UserProfileModel.Proxy.UserName" />
+																		<Binding Path="UserProfileModel.Proxy.Password" />
+																	</MultiBinding>
+																</TextBox.Text>
+															</TextBox>
+														</DataTemplate>
+													</ListBox.ItemTemplate>
+												</ListBox>
+											</Grid>
+										</Grid>
+									</Border>
+								</Grid>
+							</Expander>
+						</ctrls:ChameleonContentControl.Footer>
+
+					</ctrls:ChameleonContentControl>
+
+					<!--<GridSplitter Grid.Column="1" />-->
+				</Grid>
+			</Border>
+		</StackPanel>
+	</Design.PreviewWith>
+
+
+
+
+	<ControlTheme TargetType="ctrls:ChameleonContentControl"
+                  x:Key="{x:Type ctrls:ChameleonContentControl}">
+		<Setter Property="Margin" Value="12 0 12 12" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid RowDefinitions="Auto,*">
+
+					<!-- Header -->
+					<Grid ColumnDefinitions="Auto,*">
+
+						<TextBlock Text="{TemplateBinding Title}"
+								   Padding="12"
+								   Theme="{StaticResource SubtitleTextBlockStyle}" />
+
+						<ContentPresenter Grid.Column="1"
+										  Name="TitlePresenter"
+								  Content="{TemplateBinding TitleContent}"
+								  HorizontalAlignment="Stretch"
+										  VerticalAlignment="Bottom"/>
+					</Grid>
+
+					<!-- Content Area -->
+					<Border Name="ControlPreviewAreaHost"
+								 Grid.Row="1"
+							BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+							BorderThickness="0"
+							Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+							TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+							CornerRadius="{DynamicResource OverlayCornerRadius}">
+						<Grid RowDefinitions="Auto,*">
+							<Grid RowDefinitions="Auto,*">
+								<StackPanel>
+									<TextBlock Text="{TemplateBinding TitleDescription}"
+											   Padding="6 14 6 0"
+											   Margin="12 0 12 12"
+											   Theme="{StaticResource CaptionTextBlockStyle}"
+											   IsVisible="{TemplateBinding TitleDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+									<ContentPresenter Name="HeaderPresenter"
+													  Padding="0 0 6 0"
+													  Margin="12 0 12 12"
+													  Grid.Row="1"
+													  Content="{TemplateBinding Header}"
+													  ContentTemplate="{TemplateBinding HeaderTemplate}"
+													  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+													  VerticalContentAlignment="Center"
+													  IsVisible="{TemplateBinding Header, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+								</StackPanel>
+
+
+								<Grid Grid.Row="1"
+									  ColumnDefinitions="*,Auto"
+									  RowDefinitions="Auto,*,Auto,Auto">
+									<Rectangle Name="TopRowPlaceholder"
+											   IsHitTestVisible="False"
+											   IsVisible="False"
+											   MinHeight="36" />
+
+									<ContentPresenter Name="ContentsPresenter"
+													  Content="{TemplateBinding Content}"
+													  ContentTemplate="{TemplateBinding ContentTemplate}"
+													  HorizontalAlignment="Stretch"
+													  VerticalAlignment="Stretch"
+													  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+													  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+													  Padding="12 0 12 12"
+													  Grid.ColumnSpan="1"
+													  Grid.Row="1">
+										<ContentPresenter.Transitions>
+											<Transitions>
+												<ThicknessTransition Duration="00:00:00.167"
+																	 Property="Padding" />
+											</Transitions>
+										</ContentPresenter.Transitions>
+									</ContentPresenter>
+
+									<!-- Options Area -->
+									<Border
+										VerticalAlignment="Top"
+										Name="OptionsHost"
+										Margin="12 0 12 12"
+										Padding="12"
+											CornerRadius="{DynamicResource OverlayCornerRadius}"
+											Grid.Column="1"
+											Grid.Row="1"
+											Background="{DynamicResource LayerFillColorDefaultBrush}"
+											BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+											BorderThickness="1"
+											Opacity="1"
+											IsVisible="False">
+										<Border.Transitions>
+											<Transitions>
+												<DoubleTransition Property="Opacity"
+																  Duration="00:00:00.167" />
+											</Transitions>
+										</Border.Transitions>
+										<StackPanel>
+											<DockPanel LastChildFill="False">
+												<TextBlock
+													Text="Options"
+													DockPanel.Dock="Left"
+													HorizontalAlignment="Left"
+													VerticalAlignment="Center"
+													FontWeight="SemiBold"
+													Margin="0 3 0 0" />
+
+												<Button
+													Name="ShowHideOptionsButton"
+													Theme="{StaticResource TransparentButton}"
+													DockPanel.Dock="Right"
+													Margin="6 0 0 0"
+													IsVisible="False">
+													<ui:SymbolIcon Symbol="{TemplateBinding IconShevron}" />
+												</Button>
+											</DockPanel>
+											<ContentPresenter Name="OptionPresenter"
+															   Margin="0 12 0 0"
+															  Content="{TemplateBinding Options}"
+															  HorizontalContentAlignment="Stretch"
+															  VerticalContentAlignment="Stretch"
+															  IsVisible="{TemplateBinding IsOptionsExpanded}"/>
+										</StackPanel>
+									</Border>
+
+								</Grid>
+
+							</Grid>
+
+							<!-- Footer Area -->
+							<ContentPresenter Name="FooterPresenter"
+											  Content="{TemplateBinding Footer}"
+											  HorizontalAlignment="Stretch"
+											  VerticalAlignment="Bottom"
+											  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+											  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+											  Margin="12 0 12 12"
+											  CornerRadius="0 0 8 8"
+											  Grid.ColumnSpan="2"
+											  Grid.Row="2">
+							</ContentPresenter>
+						</Grid>
+					</Border>
+
+
+					<!-- Code Preview -->
+					<!--<Expander CornerRadius="0 0 8 8"
+                              Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                              Name="SourcePreviewArea"
+                              IsVisible="False">-->
+					<!--<Expander.Header>
+							<Panel>
+								<ui:IconSourceElement IconSource="{StaticResource SourceCodeIcon}"
+                                                      Width="20" Height="20"/>
+								<Viewbox Width="20" Height="20"
+                                         Stretch="Uniform"
+                                         HorizontalAlignment="Left">
+									<ui:ImageIcon>
+										<DrawingImage>
+											<DrawingGroup>
+												<GeometryDrawing Brush="{DynamicResource TextFillColorPrimaryBrush}"
+                                                                 Geometry="M 13,13 C 12.577726,13 12.156163,13.160231 11.833984,13.482422 L 2.4824219,22.833984 2.3242188,23.017578 C 1.8449479,23.663499 1.896627,24.580156 2.4824219,25.166016 L 11.833984,34.517578 12.017578,34.675781 C 12.663521,35.155161 13.580222,35.103438 14.166016,34.517578 14.810375,33.873198 14.810375,32.827755 14.166016,32.183594 L 5.984375,24 14.166016,15.816406 14.326172,15.630859 C 14.805443,14.984917 14.751811,14.068194 14.166016,13.482422 13.843837,13.160231 13.422274,13 13,13 Z M 34.884766,13.003906 C 34.501635,13.030534 34.126804,13.189524 33.833984,13.482422 33.189603,14.12678 33.189603,15.172026 33.833984,15.816406 L 42.015625,24 33.833984,32.183594 33.673828,32.369141 C 33.194448,33.015062 33.248123,33.931938 33.833984,34.517578 34.478364,35.161958 35.521636,35.161958 36.166016,34.517578 L 45.517578,25.166016 45.675781,24.982422 C 46.155162,24.336502 46.103439,23.419624 45.517578,22.833984 L 36.166016,13.482422 35.982422,13.324219 C 35.659461,13.084572 35.267896,12.977278 34.884766,13.003906 Z" />
+												<GeometryDrawing Brush="{DynamicResource AccentFillColorDefaultBrush}"
+                                                                 Geometry="M 15.344371,39.275058 29.644335,7.3750199 C 30.017235,6.5434859 30.993375,6.1715759 31.824975,6.5443219 32.587276,6.8860259 32.963256,7.7348519 32.733576,8.5144448 L 32.655696,8.7249188 18.355645,40.624979 C 17.982899,41.45658 17.006604,41.82838 16.17507,41.4557 15.412813,41.114039 15.036789,40.265059 15.266535,39.485599 L 15.344371,39.275058 29.644335,7.3750199 Z" />
+											</DrawingGroup>
+										</DrawingImage>
+									</ui:ImageIcon>
+								</Viewbox>
+								<TextBlock Text="Example source code"
+                                           Margin="32 0 0 0" />
+							</Panel>
+						</Expander.Header>-->
+
+					<!--<StackPanel>-->
+
+					<!-- Xaml source first -->
+					<!--<local:SampleCodePresenter Header="XAML"
+													   Code="{TemplateBinding XamlSource}"
+													   Substitutions="{TemplateBinding Substitutions}"
+													   SampleType="XAML"
+													   Name="XamlPresenter"
+													   IsVisible="False"/>-->
+
+					<!--<Rectangle Fill="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                       Height="1"
+                                       IsVisible="{Binding #XamlPresenter.IsVisible}"
+                                       Margin="0 0 0 8" />-->
+
+					<!--<local:SampleCodePresenter Header="C#"
+													   Code="{TemplateBinding CSharpSource}"
+													   Substitutions="{TemplateBinding Substitutions}"
+													   SampleType="CSharp"
+													   Name="CSharpPresenter"
+													   IsVisible="False"/>-->
+
+					<!--<Rectangle Fill="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                       Height="1"
+                                       IsVisible="{Binding #CSharpPresenter.IsVisible}"
+                                       Margin="0 0 0 8" />-->
+
+					<!--<local:SampleCodePresenter Header="Additional Notes"
+                                                       Code="{TemplateBinding UsageNotes}"
+                                                       Substitutions="{TemplateBinding Substitutions}"
+                                                       SampleType="Text"
+                                                       Name="NotesPresenter"
+                                                       IsVisible="False"/>-->
+
+					<!--</StackPanel>
+					</Expander>-->
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^ /template/ Border#ControlPreviewAreaHost">
+			<Setter Property="CornerRadius" Value="{Binding Source={StaticResource OverlayCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}" />
+		</Style>
+
+		<Style Selector="^:options /template/ Border#OptionsHost">
+			<Setter Property="IsVisible" Value="True" />
+		</Style>
+
+		<Style Selector="^:mediumWidth">
+			<Style Selector="^ /template/ ContentPresenter#ContentsPresenter">
+				<Setter Property="Grid.ColumnSpan" Value="2" />
+				<!--<Setter Property="Padding" Value="12 24 12 12" />-->
+			</Style>
+
+			<Style Selector="^ /template/ Border#OptionsHost">
+				<Setter Property="Grid.Column" Value="0" />
+				<Setter Property="Grid.Row" Value="0" />
+				<Setter Property="Grid.RowSpan" Value="2" />
+				<Setter Property="HorizontalAlignment" Value="Right" />
+				<Setter Property="VerticalAlignment" Value="Top" />
+				<Setter Property="Opacity" Value="0.5" />
+				<Setter Property="Background" Value="{DynamicResource SolidBackgroundFillColorBaseBrush}" />
+			</Style>
+			<Style Selector="^ /template/ Rectangle#TopRowPlaceholder">
+				<Setter Property="IsVisible" Value="True" />
+			</Style>
+			<Style Selector="^ /template/ Button#ShowHideOptionsButton">
+				<Setter Property="IsVisible" Value="True" />
+			</Style>
+
+			<Style Selector="^ /template/ Border#OptionsHost:pointerover">
+				<Setter Property="Opacity" Value="1" />
+			</Style>
+
+			<!-- Small width applies on top of medium width -->
+			<Style Selector="^:smallWidth">
+				<Style Selector="^ /template/ Button#ShowHideOptionsButton">
+					<Setter Property="IsVisible" Value="False" />
+				</Style>
+
+				<Style Selector="^ /template/ Border#OptionsHost">
+					<Setter Property="Grid.Column" Value="0" />
+					<Setter Property="Grid.ColumnSpan" Value="2" />
+					<Setter Property="Grid.Row" Value="2" />
+					<Setter Property="Grid.RowSpan" Value="1" />
+					<Setter Property="HorizontalAlignment" Value="Center" />
+					<Setter Property="VerticalAlignment" Value="Top" />
+					<Setter Property="Opacity" Value="1" />
+					<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+				</Style>
+				<Style Selector="^ /template/ Rectangle#TopRowPlaceholder">
+					<Setter Property="IsVisible" Value="False" />
+				</Style>
+			</Style>
+		</Style>
+
+		<Style Selector="^:optionsfull /template/ ui|SymbolIcon#OptionsChevron">
+			<Setter Property="Symbol" Value="ChevronUp" />
+		</Style>
+
+	</ControlTheme>
+
+	<ControlTheme x:Key="HasSelectedItemsBorder"
+		  TargetType="HeaderedContentControl">
+		<Setter Property="IsVisible" Value="{Binding HasSelectedItems}" />
+		<Setter Property="VerticalAlignment" Value="Bottom" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="MinWidth" Value="420" />
+		<!--<Setter Property="TextElement.Foreground"  />-->
+		<!--Value="{StaticResource TextOnAccentFillColorPrimaryBrush}"-->
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border
+					Background="{StaticResource LayerFillColorDefaultBrush}"
+					HorizontalAlignment="Center"
+					Height="50"
+					CornerRadius="{StaticResource ControlCornerRadius}"
+					Margin="0 0 0 3"
+					BoxShadow="0 8 32 0 #66000000">
+					<Grid Margin="24 0"
+						 ColumnDefinitions="*,Auto">
+						<TextBlock VerticalAlignment="Center">
+							<Run Text="{Binding SelectedCount}" />
+							<Run Text=" Selected" />
+						</TextBlock>
+
+						<StackPanel Orientation="Horizontal"
+									Grid.Column="1">
+							<Border
+								BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+								Margin="18 6"
+								BorderThickness="1 0 0 0"
+								IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+
+							<ContentPresenter Content="{TemplateBinding Header}" />
+
+							<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+									Margin="18 6"
+									BorderThickness="1 0 0 0" />
+
+							<Button Theme="{StaticResource TransparentButton}"
+									Classes="accent"
+									Content="Unselect"
+									Command="{Binding UnselectItemsCommand}" />
+						</StackPanel>
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+	<ControlTheme x:Key="HasNoItemsTheme" TargetType="HeaderedContentControl">
+		<Setter Property="Content" Value="&#xE1D3;" />
+		<Setter Property="IsVisible" Value="{Binding HasNoItems}" />
+		<Setter Property="Margin" Value="6 38 6 6" />
+		<Setter Property="Height" Value="156" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<StackPanel>
+					<!--
+					&#xE155;
+					&#xE178;
+					&#xE1D2;
+					&#xE138;
+					&#xE703;
+					&#xE155;
+					&#xE753;
+					&#xE130; document
+					&#xE188; folder
+					&#xE1D3; library
+					&#xE14C;; list
+					-->
+					<Border CornerRadius="180"
+							Width="90"
+							Height="90"
+							BorderThickness="2"
+							BorderBrush="{StaticResource AccentFillColorTertiaryBrush}"
+							Background="{StaticResource ControlOnImageFillColorDefaultBrush}">
+						<ui:FontIcon
+							Glyph="{TemplateBinding Content}"
+							FontSize="54"
+							Foreground="{StaticResource AccentFillColorTertiaryBrush}"
+							FontFamily="{StaticResource SymbolThemeFontFamily}" />
+					</Border>
+
+					<TextBlock
+						Margin="0 25 0 0"
+						Text="{TemplateBinding Header}"
+						Theme="{StaticResource SubtitleTextBlockStyle}" />
+				</StackPanel>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+</ResourceDictionary>

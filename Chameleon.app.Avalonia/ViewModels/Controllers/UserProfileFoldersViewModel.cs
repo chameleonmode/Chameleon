@@ -1,7 +1,4 @@
-﻿using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.UserProfileFolders;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Api.Repos;
 using Chameleon.app.Avalonia.Models.Observable;
@@ -9,56 +6,45 @@ using System.Collections.ObjectModel;
 using DynamicData;
 using Chameleon.app.Avalonia.Com.DynamicData;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.Common;
-using Chameleon.Common.Helpers;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
-	private readonly IAuthSession _authSession = ContainerServiceHelper.Resolve<IAuthSession>()!;
-
-	private ObsFolder? _allProfiles;
-
 	[ObservableProperty]
 	private ObsFolder? selectedFolder;
 
+	public ObsFolder? AllProfiles { get; private set; }
 	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 
 	private UserProfileFoldersViewModel()
 	{
+		//selectedFolder = AllProfiles;
+		//_ = AllProfiles.Open();
 		_ = UserProfilesFolderRepo
-		.Connect(i => i.isFavorite)
-		.Transform(i => new ObsFolder(i))
+		.Connect()
+		.Transform(i => new ObsFolder(i, this))
 		.SortAndBind(out var flist, Compares.ObsFolderCompares.AscendingComparer)
 		.Subscribe((i) => {
+			if (flist == null || SelectedFolder != null)
+				return;
+			AllProfiles = flist.Count > 0 ? flist[0] : null;
+			SelectedFolder ??= AllProfiles;
+			_ = SelectedFolder.Open();
 		});
 		Folders = flist;
+
+		AsyncCommandMap["Create"] = Create;
 	}
 
-	public ObsFolder AllProfiles {
-		get {
-			_allProfiles ??= new ObsFolder(new UPFolderDto() { title = "All profiles" }) { IsFavoriteButtonVisible = false };
-
-			return _allProfiles;
-		}
-	}
-
-	[RelayCommand]
 	private async Task Create()
 	{
 		var folder = await UserProfilesFolderRepo.CreateFolder($"New Folder - {Folders.Count}");
 
-		EventAggregator
-				.GetEvent<AfterCreateOrRemoveFolderEvent>()
-				.Publish();
-
 		_ = OnNavigatingTo(folder);
 	}
 
-
 	public async Task OnNavigatingTo(UPFolderDto? p = null)
 	{
-		while (!Loaded)
-			await Task.Delay(250);
+		_ = await LoadedTCS.Task;
 
 		if (p != null) {
 			foreach (var item in Folders)
@@ -66,10 +52,10 @@ public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 
 			var pvm = Folders.FirstOrDefault(vm => vm.Dto!.id == p.id);
 			if (pvm != null) {
-				IoC.GetService<UserProfilesViewModel>()?.Open(p);
+				UserProfilesViewModel.Instance.Open(p);
 			}
 		} else {
-			if (!AllProfiles.Navigated) {
+			if (AllProfiles != null && !AllProfiles.Navigated) {
 				AllProfiles.Navigated = true;
 				await AllProfiles.Open();
 			}
@@ -78,8 +64,7 @@ public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 
 	public async void SetSelectedById(int id)
 	{
-		while (!Loaded)
-			await Task.Delay(250);
+		_ = await LoadedTCS.Task;
 
 		await OnNavigatingTo(Folders.FirstOrDefault(m => m.Dto?.id == id)?.Dto);
 	}

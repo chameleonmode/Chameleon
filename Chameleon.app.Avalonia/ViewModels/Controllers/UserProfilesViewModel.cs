@@ -1,10 +1,5 @@
 ﻿using Chameleon.app.Avalonia.Models;
 using Chameleon.Avalonia.Common.Collections;
-using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.App.UserProfileFolders.Events;
-using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.UserProfileFolders;
-using Chameleon.Interfaces.UserProfiles;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
 using System.Collections.ObjectModel;
@@ -30,6 +25,8 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.Controls;
 using FluentAvalonia.Core;
+using System.Reactive.Linq;
+using Chameleon.lib.Common.Interfaces.Sys;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 
@@ -50,7 +47,7 @@ public class SystemBrovserItemViewModel
 }
 
 public partial class UserProfilesViewModel : ViewModelObjectBase {
-	private readonly IAuthSession _authSession = ContainerServiceHelper.Resolve<IAuthSession>()!;
+	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
 
 	private readonly ISysBrowserService _systemBrowserManager = IoC.GetService<ISysBrowserService>()!;
 	private readonly IPlaywrightScriptRepository _plawrightRepository = IoC.GetService<IPlaywrightScriptRepository>()!;
@@ -79,11 +76,9 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 	private List<ObsProfile> GetSelectedProfiles => _selectedProfiles!.ToList();
 	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
-	public bool IsProfilesExist => Profiles.Any() == true;
-	public bool HasNoItems => (!SearchText.Is()) || Profiles.Count == 0;
-	public bool ShowFavoriteIcon => Folder?.id > 0;
+	public bool IsProfilesExist => UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
+	public bool HasNoItems => Profiles.Count == 0;
 	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
-	public bool IsSharedFolder => Folder != null && Folder?.creatorUserId != _authSession?.UserId && Folder?.creatorUserId != null;
 	public string SelectedFolderTitle => Folder?.title ?? "All profiles";
 	public ObservableCollection<SystemBrovserItemViewModel> BrowserItems { get; } = [
 		new SystemBrovserItemViewModel(SystemBrowserType.Brave),
@@ -92,7 +87,8 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 	//
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
-	private readonly ISubject<IPageRequest> pageRequests = new BehaviorSubject<IPageRequest>(new PageRequest(0, 25));
+	private readonly ISubject<IPageRequest> pageRequests = new BehaviorSubject<IPageRequest>(new PageRequest(0, Consts.PageinationPageItems));
+	private readonly ISubject<Func<ObsProfile, bool>> filter;
 
 	[ObservableProperty]
 	private Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
@@ -101,11 +97,16 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 
+	public Func<ObsProfile, bool> FilterPredicate => p => Folder == null || Folder.id == 0 || p.Dto?.folderId == Folder?.id;
 	private UserProfilesViewModel()
 	{
+		//Func<ObsProfile, IObservable<bool>> filterFactory = p => Observable.Return(predicate(p));
+		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i => new ObsProfile(i, false))
+			.Transform(i => new ObsProfile(i, onSelectedChanged: OnSelectedChanged))
+			//.Filter(filter)
+			//.FilterOnObservable(filterFactory)
 			.SortAndPage(profilesCompareObservable, pageRequests)
 						// no sort and bind options. These are extracted from the SortAndPage context
 			.Bind(out var list)
@@ -116,16 +117,28 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 					PaginatorViewModel.TotalCount = Profiles.Count;
 					TotalCount = PaginatorViewModel.TotalCount;
 				}
+				//foreach (var update in i) {
+				//	var curIndex = update.CurrentIndex == -1 ? 0 : update.CurrentIndex;
+				//	var prevIndex = update.PreviousIndex == -1 ? 0 : update.PreviousIndex;
+				//	switch (update.Reason) {
+				//		case ChangeReason.Add:
+				//			Folders.Add(update.Current);
+				//			break;
+				//		case ChangeReason.Remove:
+				//			_ = Folders.Remove(update.Current);
+				//			break;
+				//		case ChangeReason.Moved:
+				//			Folders.Move(prevIndex, curIndex);
+				//			break;
+				//		case ChangeReason.Update:
+				//			//var indx = Folders.IndexOf(update.Current);
+				//			//Folders.RemoveAt(prevIndex);
+				//			//Folders.Insert(curIndex, update.Current);
+				//			break;
+				//	}
+				//}
 			});
 		Profiles = list;
-
-		EventAggregator.Sub<AfterCreateOrRemoveFolderEvent>(OnHandleUserEvent);
-
-		_ = EventAggregator.GetEvent<SelectedChangeUserProfileEvent>()
-				.Subscribe(OnSelectedChanged);
-
-		_ = EventAggregator.GetEvent<SavedUserProfileFolderEvent>()
-				.Subscribe((e) => OnPropertyChanged(nameof(Folder)));
 	}
 	public override async Task InitAsync(object? param)
 	{
@@ -182,16 +195,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		}
 	}
 
-	private Func<IUserProfile, bool>? _filter;
-	public Func<IUserProfile, bool>? Filter {
-		get => _filter;
-		set {
-			if (SetProperty(ref _filter, value)) {
-				SetViewModelsFilter();
-			}
-		}
-	}
-
 	private UPFolderDto? _folder;
 	public UPFolderDto? Folder {
 		get {
@@ -199,25 +202,11 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		}
 		set {
 			if (SetProperty(ref _folder, value)) {
-				//UpdateFolder();
 				SearchText = string.Empty;
-
-				var folderId = value?.id;
-
-				if (folderId == default) {
-					HasFolder = false;
-					Filter = null;
-
-					return;
-				}
-
-				HasFolder = true;
-				Filter = profile => profile.FolderId == folderId;
+				HasFolder = value?.id == default;
+				OnPropertyChanged(nameof(SelectedFolderTitle));
+				SetViewModelsFilter();
 			}
-
-			OnPropertyChanged(nameof(ShowFavoriteIcon));
-			OnPropertyChanged(nameof(IsSharedFolder));
-			OnPropertyChanged(nameof(SelectedFolderTitle));
 		}
 	}
 
@@ -225,7 +214,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		get => _paginatorViewModel;
 		set {
 			if (SetProperty(ref _paginatorViewModel, value)) {
-				_paginatorViewModel!.ChangePageIndex += (s, a) => { pageRequests.OnNext(new PageRequest(_paginatorViewModel.PageIndex, 25)); };
+				_paginatorViewModel!.ChangePageIndex += (s, a) => { pageRequests.OnNext(new PageRequest(_paginatorViewModel.PageIndex, Consts.PageinationPageItems)); };
 			}
 		}
 	}
@@ -277,6 +266,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 	private void OnHandleUserEvent()
 	{
+		OnPropertyChanged(nameof(PaginatorViewModel));
 		OnPropertyChanged(nameof(HasNoItems));
 		OnPropertyChanged(nameof(IsProfilesExist));
 		OnPropertyChanged(nameof(HasSelectedItems));
@@ -291,7 +281,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		OnHandleUserEvent();
 	}
 
-	private void OnSelectedChanged(SelectedUserProfileEventArgs? arr = null)
+	private void OnSelectedChanged()
 	{
 		_selectedProfiles = Profiles.Where(profile => profile.IsSelected);
 		SelectedCount = _selectedProfiles.Count();
@@ -350,9 +340,8 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 					profile.IsSelected = false;
 				}
 			}
-			ChangeProfilesInFavoriteFolder();
 			OnSelectedChanged();
-			OnHandleUserEvent();
+			SetViewModelsFilter();
 		}
 	}
 
@@ -371,9 +360,8 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 		var res = await UserProfilesRepo.MoveUserProfileToFolder(ids, null);
 		if (res.success) {
-			Filter = p => p.FolderId == _folder?.id;
-			OnHandleUserEvent();
-			ChangeProfilesInFavoriteFolder();
+			//Filter = p => p.FolderId == _folder?.id;
+			SetViewModelsFilter();
 		}
 	}
 
@@ -453,16 +441,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 				//OnHandleUserEvent();
 			}
 		}
-	}
-
-	private void ChangeProfilesInFavoriteFolder()
-	{
-		var folderId = Folder?.id;
-		if (folderId == null) return;
-
-		EventAggregator
-				.GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-				.Publish(new ChangeProfilesInFavoriteFolderEventArgs((int)folderId));
 	}
 
 	public async Task<UserProfileDto?> CreateNewProfile()
@@ -584,17 +562,11 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 	private void SetViewModelsFilter()
 	{
-		//if (_viewModels == null) {
-		//	return;
-		//}
-
-		//if (_filter == null) {
-		//	_viewModels.Filter = null;
-		//} else {
-		//	_viewModels.Filter = (viewModel) => _filter(viewModel.UserProfile);
-		//}
-
-		//OnViewModelChange(this, EventArgs.Empty);
+		filter.OnNext(FilterPredicate);
+		PaginatorViewModel = new PaginatorViewModel(Profiles.Count);
+		PaginatorViewModel.TotalCount = Profiles.Count;
+		TotalCount = PaginatorViewModel.TotalCount;
+		OnHandleUserEvent();
 	}
 
 	private void ApplySearchFilter()
@@ -603,53 +575,28 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		var hasSearchText = !string.IsNullOrWhiteSpace(SearchText);
 		var isInCurrentFolder = Folder?.creatorUserId != null;
 
-		Filter = profile => FilterByFolder(profile, hasSearchText, isInCurrentFolder, searchText);
+		if(SearchText.Is())
+			filter.OnNext(p => p.Title?.Contains(searchText!, StringComparison.CurrentCultureIgnoreCase) == true);
+		else
+			filter.OnNext(FilterPredicate);
 
-		OnPropertyChanged(nameof(ViewModels));
-		OnPropertyChanged(nameof(IsProfilesExist));
-		OnPropertyChanged(nameof(HasNoItems));
-	}
-
-	private bool FilterByFolder(IUserProfile profile, bool hasSearchText, bool isInCurrentFolder, string searchText)
-	{
-		if (!hasSearchText && isInCurrentFolder) {
-			return profile.FolderId == Folder?.id;
-		}
-		if (hasSearchText && isInCurrentFolder) {
-			return profile.FolderId == Folder?.id && FilterByUserProfile(profile, searchText);
-		}
-		if (hasSearchText) {
-			return FilterByUserProfile(profile, searchText);
-		}
-
-		return true;
-	}
-
-	private static bool FilterByUserProfile(IUserProfile profile, string searchText)
-	{
-		return profile.Title.Contains(searchText, StringComparison.CurrentCultureIgnoreCase);
+		OnHandleUserEvent();
 	}
 
 	public async void OnFilterTo(ObsProfile? p = null)
 	{
-		while (!Loaded)
-			await Task.Delay(250);
+		_ = await LoadedTCS.Task;
 
 		if (p != null) {
 			if (p.Dto?.folderId is int fid && fid != 0)
 				UserProfileFoldersViewModel.Instance.SetSelectedById(fid);
 			else
 				await UserProfileFoldersViewModel.Instance.OnNavigatingTo(null);
-
-			//Filter = profile => p.Dto.id == profile.id;
 		} else {
-			//Filter = profile => 0 == profile.Id;
 			UserProfileFoldersViewModel.Instance.SetSelectedById(0);
-			Filter = null;
-			//ContainerServiceHelper.Resolve<IUserProfileFoldersViewModel>().OnNavigatingTo(null);
 		}
 
-		OnHandleUserEvent();
+		SetViewModelsFilter();
 	}
 
 	public static UserProfilesViewModel Instance { get; } = new UserProfilesViewModel();

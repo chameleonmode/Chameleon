@@ -1,12 +1,11 @@
 ﻿using Chameleon.app.Avalonia.Controls;
+using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
-using Chameleon.Authorization;
-using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.UserProfiles;
+using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
+using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.lib.Common.Models;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
@@ -22,7 +21,8 @@ using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : Vim<UserProfileDto> {
-	private readonly IAuthSession _authSession = ContainerServiceHelper.Resolve<IAuthSession>()!;
+	public event Action? OnSelectedChanged;
+	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
 	private readonly ISysBrowserService? SysBrowserServiceBase = IoC.GetService<ISysBrowserService>();
 
 	[ObservableProperty]
@@ -45,13 +45,12 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 	private bool _isSelected;
 
 	public bool IsShowCheckboxColumn { get; }
-	public bool IsEnabledCheckboxColumn { get; }
+	public bool IsEnabledCheckboxColumn { get; } = true;
 	public bool IsSharedProfile { get; }
 
 	public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
 	public bool IsFavorite => Dto?.isFavourite ?? false;
 	public bool IsDeleteProfileBtnVisible => !IsSharedProfile;
-	//public bool IsOutreachBtnEnabled => !IsSharedProfile || _applicationUser.HasPemission(PermissionNames.Pages_Outreach);
 
 	public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI { get; set; } = new Dictionary<SystemBrowserType, ISysBrowserInstance?>(){
 			{ SystemBrowserType.Chrome, null },
@@ -65,9 +64,11 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 			bool isShowGlyph = true,
 			bool isShowC = true,
 			bool isShowD = true,
-			bool isShowF = true)
+			bool isShowF = true,
+			Action? onSelectedChanged = default)
 		: base(userProfile.title ?? "xxx")
 	{
+		OnSelectedChanged = onSelectedChanged;
 		Dto = userProfile;
 
 		//IsChromeRunning = _userProfile.IsChromeRunning;
@@ -78,7 +79,6 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 		IsShowC = isShowC;
 		IsShowF = isShowF;
 		IsShowCheckboxColumn = isShowCheckboxColumn;
-		IsEnabledCheckboxColumn = userProfile?.creatorUserId != _authSession.UserId;
 		IsSharedProfile = userProfile?.creatorUserId != _authSession.UserId;
 
 		if (SysBrowserServiceBase != null) {
@@ -96,15 +96,11 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 			}
 			_ = setEvents();
 		}
+	}
 
-
-		_ = EventAggregator.GetEvent<SavedUserProfileEvent>().Subscribe(a => {
-			if (a.UserProfile.Id == Dto!.id) {
-				Title = Dto.title;
-				OnPropertyChanged(nameof(Title));
-				OnPropertyChanged(nameof(Code));
-			}
-		});
+	partial void OnIsSelectedChanged(bool value)
+	{
+		OnSelectedChanged?.Invoke();
 	}
 
 	[RelayCommand]
@@ -136,7 +132,7 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 	}
 	public void Open()
 	{
-		Navigator.NavigateToType(typeof(IUserProfileIdentityView), Dto);
+		Navigator.NavigateToType(typeof(UserProfileIdentityView), Dto);
 		//OpenUserProfile();
 	}
 

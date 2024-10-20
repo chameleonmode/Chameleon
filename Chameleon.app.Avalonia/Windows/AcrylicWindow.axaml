@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
-        Icon="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico"
+        Icon="avares://Chameleon.app.Avalonia/Assets/logosymbol.ico"
         Title="Copy Pasta"
 		SizeToContent="Height"
 		TransparencyLevelHint="AcrylicBlur"

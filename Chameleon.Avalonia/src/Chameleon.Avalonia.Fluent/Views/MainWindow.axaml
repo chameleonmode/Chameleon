@@ -6,6 +6,6 @@
         xmlns:views="using:Chameleon.Av.Fluent.Views"
         x:Class="Chameleon.Av.Fluent.Views.MainWindow"
         Title="Chameleon"
-		Icon="avares://Chameleon.Avalonia.Common/Assets/logosymbol.ico">
-	<views:MainView />
+		Icon="avares://Chameleon.app.Avalonia/Assets/logosymbol.ico">
+	<views:MainView Name="MainView" />
 </Window>

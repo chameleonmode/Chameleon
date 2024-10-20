@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.UserProfiles;
+using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -29,7 +28,7 @@ public partial class UserProfileSidePanelViewModel
 	[ObservableProperty]
 	private UPAddressDto? selectedAddress;
 	[ObservableProperty]
-	private IUserProfile? userProfile;
+	private ObsProfile? userProfile;
 
 	public string? CountryName => Countries?.FirstOrDefault(x => SelectedAddress?.CountryId == x.id)?.Name;
 	public bool HasPersons => ProfilePersons.Count > 0;
@@ -63,6 +62,7 @@ public partial class UserProfileSidePanelViewModel
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasAddresses));
 			});
+		userProfile = new ObsProfile(up);
 	}
 
 	private async Task Loader()
@@ -81,7 +81,7 @@ public partial class UserProfileSidePanelViewModel
 	}
 
 	partial void OnSelectedAddressChanged(UPAddressDto? value) => OnPropertyChanged(nameof(CountryName));
-	partial void OnUserProfileChanged(IUserProfile? value)
+	partial void OnUserProfileChanged(ObsProfile? value)
 	{
 		if (value != null && Loaded) {
 			_ = Loader();

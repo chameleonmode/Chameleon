@@ -1,11 +1,10 @@
 ﻿using Chameleon.app.Avalonia.ViewModels.Controllers;
-using Chameleon.Interfaces.App.Synchronization.Events;
-using Chameleon.Interfaces.App.UserProfileFolders.Events;
-using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.FunctionalSettings;
-using Chameleon.Interfaces.UserProfileFolders;
+using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api.Repos;
+using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
+using Chameleon.lib.Common.Extensions;
+using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -15,6 +14,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsFolder : Vim<UPFolderDto> {
+	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
 	private readonly UserProfileFoldersViewModel? foldervm;
 
 	[ObservableProperty]
@@ -22,23 +22,13 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 	[ObservableProperty]
 	private int profilesCount;
 	[ObservableProperty]
-	private bool isFavoriteButtonVisible = true;
-	[ObservableProperty]
 	private bool isRenamed;
+	[ObservableProperty]
+	private bool isSelected;
 
-	private bool _isSelected;
-
-	public bool IsSelected {
-		get => _isSelected;
-		set {
-			SetProperty(ref _isSelected, value);
-			if (value == false) {
-				IsRenamed = false;
-			} else {
-				//foldervm.SelectedFolder = this;
-			}
-		}
-	}
+	public bool ShowFavoriteIcon => Dto?.id > 0;
+	public bool IsSharedFolder => Dto?.creatorUserId != null &&  Dto?.creatorUserId != _authSession?.UserId;
+	public bool IsContextMenuItemEnabled => _authSession.CreatorUserId != null;
 
 	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items
 		.Where(profiles => profiles.folderId == Dto!.id)
@@ -53,29 +43,21 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 		isFavorite = Dto.isFavorite;
 		profilesCount = Dto.profilesCount;
 
-		_ = EventAggregator
-				.GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-				.Subscribe(args => OnChangeProfilesInFavoriteFolder(args.FolderId));
-
 		CommandMap["SetFavoriteFolder"] = SetFavoriteFolder;
 		CommandMap["ViewGroup"] = ViewGroup;
 		this.foldervm = foldervm;
 	}
-
-	private async void OnChangeProfilesInFavoriteFolder(int folderId)
+	partial void OnIsSelectedChanged(bool value)
 	{
-		if (Dto?.id != folderId) {
-			return;
+		if (value == false) {
+			IsRenamed = false;
+		} else {
+			//foldervm.SelectedFolder = this;
 		}
-		Dto = await UserProfilesFolderRepo.Instance.Get<UPFolderDto>(folderId);
-		ProfilesCount = UserProfilesRepo.Instance.ObservableCache.Items.Count(a => a.id == folderId);
-		IsFavorite = Dto.isFavorite;
-		OnPropertyChanged(nameof(ProfilesCount));
 	}
-
 	private void ViewGroup()
 	{
-		Navigator.NavigateToType(typeof(IProjectsView), Dto);
+		Navigator.NavigateToType(typeof(ProjectsView), Dto);
 	}
 
 	private void SetFavoriteFolder()
@@ -101,14 +83,7 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 
 		Dto!.isFavorite = IsFavorite;
 
-		var res = await UserProfilesFolderRepo.Instance.Put(Dto);
-		EventAggregator
-				.GetEvent<UpdateFavoriteFolderEvent>()
-				.Publish();
-
-		EventAggregator
-				.GetEvent<ChangeProfilesInFavoriteFolderEvent>()
-				.Publish(new ChangeProfilesInFavoriteFolderEventArgs(Dto.id));
+		_ = await UserProfilesFolderRepo.Instance.Put(Dto);
 
 		OnPropertyChanged(nameof(Dto));
 	}
@@ -132,11 +107,7 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 				var res = await UserProfilesFolderRepo.Instance.Delete(Dto!.id);
 			});
 
-			EventAggregator
-					.GetEvent<AfterCreateOrRemoveFolderEvent>()
-					.Publish();
-
-			await foldervm!.AllProfiles.Open();
+			await foldervm!.AllProfiles!.Open();
 		}
 	}
 
@@ -150,13 +121,13 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 	[RelayCommand]
 	private void ChangeProxies()
 	{
-		Navigator.NavigateToType(typeof(IFunctionalSettingsView), this);
+		Navigator.NavigateToType(typeof(FunctionalSettingsView), this);
 	}
 
 	[RelayCommand]
 	private async Task SaveRename()
 	{
-		if (string.IsNullOrEmpty(Title)) {
+		if (!Title.Is()) {
 			return;
 		}
 
@@ -164,10 +135,9 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 		try {
 			Dto.title = Title;
 			var res = await UserProfilesFolderRepo.Instance.Put(Dto);
-
-			EventAggregator
-					.GetEvent<RenameFolderEvent>()
-					.Publish(new RenameFolderEventArgs(Dto.id, Dto.title));
+			if (res != null) {
+				IsRenamed = false;
+			}
 		} catch {
 			Dto.title = orignalTitle;
 		}
@@ -175,9 +145,5 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 		Title = Dto.title;
 
 		IsRenamed = false;
-
-		EventAggregator
-			 .GetEvent<SyncChangesEvent>()
-			 .Publish();
 	}
 }

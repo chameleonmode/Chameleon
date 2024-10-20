@@ -7,17 +7,12 @@ using Avalonia.Threading;
 using Chameleon.Av.Fluent.Common.Models;
 using Chameleon.Av.Fluent.Common.Pages;
 using Chameleon.Av.Fluent.ViewModels;
-using Chameleon.Common.Helpers;
-using Chameleon.Interfaces;
-using Chameleon.Interfaces.App.UserProfiles;
-using Chameleon.Interfaces.Startup;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Navigation;
 using FluentAvalonia.UI.Windowing;
 using Chameleon.Avalonia.Common.Helpers;
 using Avpplication = Avalonia.Application;
-using Chameleon.Interfaces.FunctionalSettings;
 using Chameleon.app.Avalonia;
 using Chameleon.lib.Common.ServiceManagers;
 
@@ -41,7 +36,7 @@ public partial class MainView : UserControl {
 				{
 						NavHeader = "Profiles",
 						IconKey = "ContactIcon",
-						Tag = typeof(IProjectsView)
+						Tag = typeof(Chameleon.app.Avalonia.Views.ProjectsView)
 				}
 		},
 		{
@@ -60,7 +55,7 @@ public partial class MainView : UserControl {
 						NavHeader = "General",
 						IconKey = "CoreControlsIcon",
 						ShowsInFooter = true,
-						Tag = typeof(IFunctionalSettingsView)
+						Tag = typeof(Chameleon.app.Avalonia.Views.FunctionalSettingsView)
 				}
 		},
 		{
@@ -94,8 +89,6 @@ public partial class MainView : UserControl {
 	{
 		base.OnAttachedToVisualTree(e);
 
-		App.OnFramworkInitComplete += OnFrameworkInit;
-
 		//if (e.Root is AppWindow aw && aw.SplashScreen is MainAppSplashScreen mass)
 		//{
 		//    mass.InitApp += async () =>
@@ -105,19 +98,16 @@ public partial class MainView : UserControl {
 		//else
 		//{
 		//}
+		OnFrameworkInit();
 	}
 
-	public async void OnFrameworkInit(AppWindow aw)
+	public async void OnFrameworkInit()
 	{
-		App.OnFramworkInitComplete -= OnFrameworkInit;
-
 		TooltipManager.Attach(Avpplication.Current!, NavView);
 
-		if (ContainerServiceHelper.Current.ContainerProvider is not null) {
-			DataContext = ContainerServiceHelper.Resolve<IMainViewViewModel>() as MainViewViewModel;
-			_ = ContainerServiceHelper.Resolve<IApplicationStartup>();
-			await AppStartup.Instance.RunAsync();
-		}
+		DataContext = MainViewViewModel.Instance;
+		await AppStartup.Instance.RunAsync();
+
 		Toaster.ShowSuccess("Welcome to Chameleon!");
 		FrameView.NavigationPageFactory = MVVM.NavigationFactory;
 		Navigator.SetFrame(FrameView);

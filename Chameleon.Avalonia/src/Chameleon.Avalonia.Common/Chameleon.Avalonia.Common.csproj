@@ -11,6 +11,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AvaloniaXaml Remove="Controls\**" />
+	  <AvaloniaXaml Remove="Converters\ValueConverters\Visibility\**" />
+	  <AvaloniaXaml Remove="Util\**" />
+	  <Compile Remove="Controls\**" />
+	  <Compile Remove="Converters\ValueConverters\Visibility\**" />
+	  <Compile Remove="Util\**" />
+	  <EmbeddedResource Remove="Controls\**" />
+	  <EmbeddedResource Remove="Converters\ValueConverters\Visibility\**" />
+	  <EmbeddedResource Remove="Util\**" />
+	  <None Remove="Controls\**" />
+	  <None Remove="Converters\ValueConverters\Visibility\**" />
+	  <None Remove="Util\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Assets\Images\FAHeader2.png" />
 	  <None Remove="Assets\Images\FAHeader2_Dark.png" />
 	  <None Remove="Assets\Images\FAHeaderBackground.png" />
@@ -269,15 +284,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Chameleon.Common\Chameleon.Common.csproj" />
-    <ProjectReference Include="..\..\..\src\Chameleon.Interfaces\Chameleon.Interfaces.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Assets\Addons\WebGLAddon\data\icons\" />
-    <Folder Include="Controls\" />
-    <Folder Include="Converters\ValueConverters\Visibility\" />
-    <Folder Include="Util/" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 
 using Chameleon.app.Avalonia.Windows;
-using Chameleon.Common.Helpers;
 using Chameleon.lib.Common.Interfaces.Services;
 
 namespace Chameleon.app.Avalonia.Services;
@@ -23,7 +22,7 @@ public class ShowWindowService : IShowWindowService {
 
 			w.Closed += (s, e) => {
 				w.MainPanel.Children.Remove(view);
-				windows.Remove(viewModel);
+				_ = windows.Remove(viewModel!);
 				onClosed?.Invoke(viewModel);
 			};
 			w.MainPanel.Children.Add(view);

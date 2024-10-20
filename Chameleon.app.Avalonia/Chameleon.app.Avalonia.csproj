@@ -6,10 +6,21 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>
+
   <ItemGroup>
+	<PackageReference Include="Avalonia" />
+	<PackageReference Include="Avalonia.Svg" />
+	<PackageReference Include="Avalonia.Svg.Skia" />
+	<PackageReference Include="FluentAvaloniaUI" />
+	<PackageReference Include="Avalonia.Xaml.Behaviors" />
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="DynamicData" />
 	<PackageReference Include="CommunityToolkit.Mvvm" />
+	<PackageReference Include="System.Configuration.ConfigurationManager" />
+	  
   </ItemGroup>
 
   <ItemGroup>
@@ -17,8 +28,8 @@
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Common\Chameleon.lib.Common.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.CommunityToolkit\Chameleon.lib.CommunityToolkit.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Playwright\Chameleon.lib.Playwright.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Avalonia.Common\Chameleon.Avalonia.Common.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia\src\Chameleon.Avalonia.Fluent.Common\Chameleon.Avalonia.Fluent.Common.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.ThirdParty\Chameleon.lib.ThirdParty.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,8 +48,8 @@
     <Compile Update="Views\PhoneVerificationView.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="Views\PlaywrightViewView.axaml.cs">
-      <DependentUpon>PlaywrightViewView.axaml</DependentUpon>
+    <Compile Update="Views\PlaywrightView.axaml.cs">
+      <DependentUpon>PlaywrightView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\ProxyCreditView.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>

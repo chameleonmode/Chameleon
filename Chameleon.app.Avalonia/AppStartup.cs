@@ -1,20 +1,18 @@
 ﻿using Chameleon.app.Avalonia.lib.Community.Controls;
 using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
-using Chameleon.Common.Helpers;
-using Chameleon.Interfaces.Auth;
-using Chameleon.Interfaces.Settings;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
+using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.lib.Common.ServiceManagers;
 
 namespace Chameleon.app.Avalonia;
 public class AppStartup {
 	public event Action? OnLoginSuccess;
 
-	private readonly IAuthSession? _authSession;
+	public IAuthSession? _authSession;
 
 	public async Task RunAsync()
 	{
@@ -91,7 +89,7 @@ public class AppStartup {
 				}
 			}
 		}
-		_authSession = ContainerServiceHelper.Resolve<IAuthSession>();
+		_authSession = IoC.GetService<IAuthSession>();
 		HttpApiClient.Instance.OnRetry += (e) => {
 				Toaster.ShowErr("Error", e);
 		};
@@ -166,14 +164,11 @@ public class TheseContentDiscoveryLimits : IContentDiscoveryLimits {
 	public bool HasSocialsContent { get; set; }
 	public int MaxRssCount { get; set; }
 }
-public class TheseApplicationSettings : IApplicationSettings {
+public class TheseApplicationSettings  {
 	public TheseLoginSettings Login { get; set; } = new TheseLoginSettings();
 	public TheseSettingsSettings Settings { get; set; } = new TheseSettingsSettings();
-	ILoginSettings IApplicationSettings.Login => Login;
-
-	ISettingsSettings IApplicationSettings.Settings => Settings;
 }
-public class TheseSettingsSettings : ISettingsSettings {
+public class TheseSettingsSettings {
 	public string CurrentAppTheme { get; set; } = "System";
 	public string CustomAccentColor { get; set; }
 	public bool UseCustomAccentColor { get; set; }
@@ -182,7 +177,7 @@ public class TheseSettingsSettings : ISettingsSettings {
 	public string UserScriptsDirectory { get; set; }
 	public string SMSPoolApiKey { get; set; }
 }
-public class TheseLoginSettings : ILoginSettings {
+public class TheseLoginSettings {
 	public string LoginName { get; set; } = string.Empty;
 	public string LicenseKey { get; set; } = string.Empty;
 
@@ -191,4 +186,19 @@ public class TheseLoginSettings : ILoginSettings {
 		LoginName = loginName ?? string.Empty;
 		LicenseKey = licenseKey ?? string.Empty;
 	}
+}
+
+public class ThisAuthSession : IAuthSession {
+	public long UserId { get; set; }
+	public long? CreatorUserId { get; set; }
+	public string UserName { get; set; }
+	public string AuthToken { get; set; }
+	public bool HasAuthToken => !string.IsNullOrEmpty(AuthToken);
+	public long ExpireInSeconds { get; set; }
+	public string EncryptedAccessToken { get; set; }
+	public string AuthRefreshToken { get; set; }
+	public string[] Permissions { get; set; }
+	public ILimits Limits { get; set; }
+	public bool TookGuidedTour { get; set; }
+	public bool CanCreateProfiles { get; set; }
 }
