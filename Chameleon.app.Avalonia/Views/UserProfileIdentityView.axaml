@@ -53,7 +53,7 @@
 							Theme="{StaticResource SvgIconTextButton}"
 							Tag="{TemplateBinding Content}"
 							CommandParameter="{TemplateBinding Tag}"
-							Command="{Binding CfromVCommand}" />
+							Command="{Binding AsyncCfromVCommand}" />
 					</Grid>
 				</ControlTemplate>
 			</Setter>
@@ -69,7 +69,7 @@
 		</Style>
 		<Style Selector="Expander.TheseExpanders">
 			<Setter Property="IsExpanded" Value="{ReflectionBinding IsOpenSearchParameters, FallbackValue=True}" />
-			<Setter Property="Header" Value="{ReflectionBinding Title}" />
+			<Setter Property="Header" Value="{ReflectionBinding title}" />
 			<Setter Property="Margin" Value="0 0 0 6" />
 			<Setter Property="Background" Value="{StaticResource LayerFillColorDefaultBrush}" />
 		</Style>
@@ -224,23 +224,6 @@
 													<ListBox ItemsSource="{ReflectionBinding GenderTypeList}"
 															 SelectedItem="{Binding Gender}"
 															 Classes="RadioButtonListBox"/>
-													<!--<Border HorizontalAlignment="Stretch" Padding="15 0 22 0">
-														<RadioButton
-															GroupName="rbgGender"
-															IsChecked="{Binding GenderMale}">
-															<RadioButton.Content>
-																<TextBlock Text="Male"  />
-															</RadioButton.Content>
-														</RadioButton>
-													</Border>
-													<Border Grid.Column="1" Padding="15 0 22 0">
-														<RadioButton GroupName="rbgGender"
-															IsChecked="{Binding GenderFeMale}">
-															<RadioButton.Content>
-																<TextBlock Text="Female"  />
-															</RadioButton.Content>
-														</RadioButton>
-													</Border>-->
 												</UniformGrid>
 
 												<DatePicker SelectedDate="{Binding BirthDateOffset, FallbackValue=1/2/23}"
@@ -341,37 +324,37 @@
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																			   Text="{Binding title, FallbackValue=Title}" />
+																			   Text="{Binding Dto.title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="AddressLine1"
-																			   Text="{Binding AddressLine1, FallbackValue=AddressLine1}" />
+																			   Text="{Binding Dto.AddressLine1, FallbackValue=AddressLine1}" />
 
 												<afv:HeaderdInputFieldsControl Title="AddressLine2"
-																			   Text="{Binding AddressLine2, FallbackValue=AddressLine2}" />
+																			   Text="{Binding Dto.AddressLine2, FallbackValue=AddressLine2}" />
 
 												<afv:HeaderdInputFieldsControl Title="City"
-																			   Text="{Binding City, FallbackValue=City}" />
+																			   Text="{Binding Dto.City, FallbackValue=City}" />
 
 												<afv:HeaderdInputFieldsControl Title="State"
-																			   Text="{Binding State, FallbackValue=State}" />
+																			   Text="{Binding Dto.State, FallbackValue=State}" />
 
 												<afv:HeaderdInputFieldsControl Title="Zip"
-																			   Text="{Binding Zip, FallbackValue=Zip}" />
+																			   Text="{Binding Dto.Zip, FallbackValue=Zip}" />
 
-												<ComboBox ItemsSource="{ReflectionBinding Path=$parent[ItemsControl].DataContext.Countries}"
-														  SelectedItem="{ReflectionBinding SelectedCountry}"
+												<ComboBox ItemsSource="{Binding Countries}"
+														  SelectedItem="{Binding SelectedCountry}"
 														  Margin="0 0 6 0"
 														  PlaceholderText="Country"
 														  HorizontalAlignment="Stretch">
 													<ComboBox.ItemTemplate>
 														<DataTemplate>
-															<TextBlock Text="{ReflectionBinding Name}" />
+															<TextBlock Text="{Binding Name}" />
 														</DataTemplate>
 													</ComboBox.ItemTemplate>
 												</ComboBox>
 
 												<afv:HeaderdInputFieldsControl Title="Notes"
-																			   Text="{Binding Notes, FallbackValue=Notes}" />
+																			   Text="{Binding Dto.Notes, FallbackValue=Notes}" />
 
 												<Button Classes="TheseDeleteBtns"
 														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteAddressCommand}" />

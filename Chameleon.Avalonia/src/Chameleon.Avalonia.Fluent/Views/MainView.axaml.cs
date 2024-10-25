@@ -69,8 +69,6 @@ public partial class MainView : UserControl {
 				}
 		}
 	};
-
-	public MainViewViewModel MVVM => (DataContext as MainViewViewModel)!;
 	public MainView()
 	{
 		InitializeComponent();
@@ -109,7 +107,7 @@ public partial class MainView : UserControl {
 		await AppStartup.Instance.RunAsync();
 
 		Toaster.ShowSuccess("Welcome to Chameleon!");
-		FrameView.NavigationPageFactory = MVVM.NavigationFactory;
+		FrameView.NavigationPageFactory = MainViewViewModel.Instance.NavigationFactory;
 		Navigator.SetFrame(FrameView);
 
 		Dispatcher.UIThread.Post(() => {
@@ -149,15 +147,16 @@ public partial class MainView : UserControl {
 	{
 		var page = _pages
 			.SingleOrDefault(p => p.Value.Tag?.Name == e.Content.GetType().Name).Value;
-		page ??= _pages.SingleOrDefault(
-						p => p.Value.Tag?.Name[1..] == (e.Content as Control).GetType().Name).Value;
-		page ??= e.Content.GetType().FullName.StartsWith("Chameleon.app.Avalonia.Views.Settings") ?
-				_pages["Settings"] :
-				e.Content.GetType().FullName.StartsWith("Chameleon.app.Avalonia.Views.Playwright") ?
-				_pages["Automation"] :
-				_pages["Profiles"];
+		//page ??= _pages
+		//	.SingleOrDefault(p => p.Value.Tag?.Name[1..] == (e.Content as Control).GetType().Name).Value;
+		//page ??= e.Content.GetType().FullName.StartsWith("Chameleon.app.Avalonia.Views.Settings") ?
+		//		_pages["Settings"] :
+		//		e.Content.GetType().FullName.StartsWith("Chameleon.app.Avalonia.Views.Playwright") ?
+		//		_pages["Automation"] :
+		//		_pages["Profiles"];
 
-		foreach (var nvi in from NavigationViewItem nvi in ((List<NavigationViewItemBase>)NavView.MenuItemsSource).Concat((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource)
+		foreach (var nvi in from NavigationViewItem nvi in 
+													((List<NavigationViewItemBase>)NavView.MenuItemsSource).Concat((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource)
 												let set = nvi.Tag == page
 												where set
 												select nvi
@@ -197,25 +196,25 @@ public partial class MainView : UserControl {
 				Duration = TimeSpan.FromMilliseconds(250),
 				FillMode = FillMode.Forward,
 				Children =
+				{
+					new KeyFrame
 					{
-										new KeyFrame
-										{
-												Cue = new Cue(0d),
-												Setters =
-												{
-														new Setter(MarginProperty, new Thickness(12, 4, 12, 4))
-												}
-										},
-										new KeyFrame
-										{
-												Cue = new Cue(1d),
-												KeySpline = new KeySpline(0,0,0,1),
-												Setters =
-												{
-														new Setter(MarginProperty, new Thickness(48,4,12,4))
-												}
-										}
-								}
+							Cue = new Cue(0d),
+							Setters =
+							{
+									new Setter(MarginProperty, new Thickness(12, 4, 12, 4))
+							}
+					},
+					new KeyFrame
+					{
+							Cue = new Cue(1d),
+							KeySpline = new KeySpline(0,0,0,1),
+							Setters =
+							{
+									new Setter(MarginProperty, new Thickness(48,4,12,4))
+							}
+					}
+				}
 			};
 
 			await ani.RunAsync(WindowIcon);
@@ -228,25 +227,25 @@ public partial class MainView : UserControl {
 				Duration = TimeSpan.FromMilliseconds(250),
 				FillMode = FillMode.Forward,
 				Children =
+				{
+					new KeyFrame
 					{
-										new KeyFrame
-										{
-												Cue = new Cue(0d),
-												Setters =
-												{
-														new Setter(MarginProperty, new Thickness(48, 4, 12, 4))
-												}
-										},
-										new KeyFrame
-										{
-												Cue = new Cue(1d),
-												KeySpline = new KeySpline(0,0,0,1),
-												Setters =
-												{
-														new Setter(MarginProperty, new Thickness(12,4,12,4))
-												}
-										}
-								}
+							Cue = new Cue(0d),
+							Setters =
+							{
+									new Setter(MarginProperty, new Thickness(48, 4, 12, 4))
+							}
+					},
+					new KeyFrame
+					{
+							Cue = new Cue(1d),
+							KeySpline = new KeySpline(0,0,0,1),
+							Setters =
+							{
+									new Setter(MarginProperty, new Thickness(12,4,12,4))
+							}
+					}
+				}
 			};
 
 			await ani.RunAsync(WindowIcon);

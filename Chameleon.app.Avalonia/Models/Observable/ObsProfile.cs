@@ -1,5 +1,4 @@
 ﻿using Chameleon.app.Avalonia.Controls;
-using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api.Repos;
@@ -11,7 +10,6 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.WebBrowser.Interfaces;
-using Chameleon.lib.WebBrowser.Models;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -52,11 +50,12 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 	public bool IsFavorite => Dto?.isFavourite ?? false;
 	public bool IsDeleteProfileBtnVisible => !IsSharedProfile;
 
-	public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI { get; set; } = new Dictionary<SystemBrowserType, ISysBrowserInstance?>(){
-			{ SystemBrowserType.Chrome, null },
-			{ SystemBrowserType.Firefox, null },
-			{ SystemBrowserType.Brave, null }
-		};
+	//public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI { get; set; } = new Dictionary<SystemBrowserType, ISysBrowserInstance?>(){
+	//		{ SystemBrowserType.Chrome, null },
+	//		{ SystemBrowserType.Firefox, null },
+	//		{ SystemBrowserType.Brave, null }
+	//	};
+	public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI => Dto!.SBI;
 
 	public ObsProfile(
 			UserProfileDto userProfile,
@@ -102,6 +101,11 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 	{
 		OnSelectedChanged?.Invoke();
 	}
+	public void Open()
+	{
+		Navigator.NavigateToType(typeof(UserProfileIdentityView), Dto);
+		//OpenUserProfile();
+	}
 
 	[RelayCommand]
 	private void ShowViewProfile()
@@ -110,7 +114,6 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 			//vm.UserProfile = Dto;
 		}, null, "Copy Pasta", 156);
 	}
-
 	[RelayCommand]
 	private async Task Favorite()
 	{
@@ -130,12 +133,11 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 			_ = await UserProfilesRepo.Instance.Delete(Dto.id);
 		}
 	}
-	public void Open()
+	[RelayCommand]
+	private void Unselect()
 	{
-		Navigator.NavigateToType(typeof(UserProfileIdentityView), Dto);
-		//OpenUserProfile();
+		IsSelected = false;
 	}
-
 	[RelayCommand]
 	private void OpenUserProfile()
 	{
@@ -146,8 +148,8 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 	{
 		WShower.ShowTopmost(SnapCracklePopViewModel.Instance, SnapCracklePopUserControl.Instance,
 				vm => {
-					if (!vm.RunningList.Contains(this))
-						vm.RunningList.Add(this);
+					if (!vm.RunningList.Any(p=> p.Dto?.id == this.Dto?.id))
+						vm.RunningList.Add(new ObsProfile(this.Dto!,false,false,false,false,false));
 				},
 				vm => {
 					vm.RunningList.Clear();

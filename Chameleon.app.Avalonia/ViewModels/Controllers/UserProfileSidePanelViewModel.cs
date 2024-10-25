@@ -12,12 +12,11 @@ namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 public partial class UserProfileSidePanelViewModel
 	: ViewModelObjectBase {
 	private readonly ReadOnlyObservableCollection<UPAddressDto> addresses;
-	private readonly ReadOnlyObservableCollection<CountryzDto> countries;
 	private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
 	private readonly ReadOnlyObservableCollection<UPPersonDto> persons;
 
+	public ObservableCollection<CountryzDto> Countries { get; } = new ObservableCollection<CountryzDto>(CountryzRepo.Instance.Countryz);
 	public ReadOnlyObservableCollection<UPAddressDto> ProfileAddresses => addresses;
-	public ReadOnlyObservableCollection<CountryzDto> Countries => countries;
 	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins => logins;
 	public ReadOnlyObservableCollection<UPPersonDto> ProfilePersons => persons;
 
@@ -37,11 +36,6 @@ public partial class UserProfileSidePanelViewModel
 
 	public UserProfileSidePanelViewModel(UserProfileDto up)
 	{
-		_ = UPAdditionalDataRepo.Instance.Countryz
-			.Connect(i => i.ProfileId == up.id)
-			.Bind(out countries)
-			.Subscribe();
-		//
 		_ = UPAdditionalDataRepo.Instance.Personz
 			.Connect(i => i.ProfileId == up.id)
 			.Bind(out persons)
@@ -65,26 +59,5 @@ public partial class UserProfileSidePanelViewModel
 		userProfile = new ObsProfile(up);
 	}
 
-	private async Task Loader()
-	{
-		if (UserProfile == null)
-			return;
-
-		//ProfileLogins = (await userProfileAdditionalDataService!.GetLoginsAsync(UserProfile.Id, false)).ToList();
-		//SelectedLogin = ProfileLogins.FirstOrDefault();
-
-		//ProfilePersons = (await userProfileAdditionalDataService.GetPersonsAsync(UserProfile.Id, false)).ToList();
-		//SelectedPerson = ProfilePersons.FirstOrDefault();
-
-		//ProfileAddresses = (await userProfileAdditionalDataService.GetAddressesAsync(UserProfile.Id, false)).ToList();
-		//SelectedAddress = ProfileAddresses.FirstOrDefault();
-	}
-
 	partial void OnSelectedAddressChanged(UPAddressDto? value) => OnPropertyChanged(nameof(CountryName));
-	partial void OnUserProfileChanged(ObsProfile? value)
-	{
-		if (value != null && Loaded) {
-			_ = Loader();
-		}
-	}
 }

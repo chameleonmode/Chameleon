@@ -1,5 +1,4 @@
-﻿using Chameleon.Authorization;
-using Chameleon.lib.Common.ServiceManagers;
+﻿using Chameleon.lib.Common.ServiceManagers;
 
 using Chameleon.lib.CommunityToolkit.MvvM;
 
@@ -19,7 +18,8 @@ using System.Reactive.Linq;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
-	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
+	private readonly BehaviorSubject<Func<UP, bool>> filter;
+	private readonly BehaviorSubject<Func<ObsAddressDto, bool>> adrezfilter;
 
 	[ObservableProperty]
 	private bool isSaving;
@@ -28,41 +28,29 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private UserProfileDto? userProfile;
 
-	private readonly ISubject<Func<UP, bool>> filter;
-	public Func<UP, bool> FilterPredicate => p => p.ProfileId == UserProfile?.id;
-
-	//public ObservableCollection<UPAddressDto> Addresses { get; } = [];
-	//public ObservableCollection<UPBusinessDto> Businesses { get; } = [];
-	//public ObservableCollection<UPLoginDto> Logins { get; } = [];
-	//public ObservableCollection<UPPersonDto> Persons { get; } = [];
-
-	private readonly ReadOnlyObservableCollection<UPAddressDto> addresses;
+	private readonly ReadOnlyObservableCollection<ObsAddressDto> addresses;
 	private readonly ReadOnlyObservableCollection<UPBusinessDto> businesses;
-	private readonly ReadOnlyObservableCollection<CountryzDto> countries;
 	private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
 	private readonly ReadOnlyObservableCollection<UPPersonDto> persons;
 
-	public ReadOnlyObservableCollection<UPAddressDto> Addresses => addresses;
+	public ReadOnlyObservableCollection<ObsAddressDto> Addresses => addresses;
+	public bool HasAddresses => Addresses?.Count > 0;
 	public ReadOnlyObservableCollection<UPBusinessDto> Businesses => businesses;
-	public ReadOnlyObservableCollection<CountryzDto> Countries => countries;
+	public bool HasBusiness => Businesses?.Count > 0;
 	public ReadOnlyObservableCollection<UPLoginDto> Logins => logins;
+	public bool HasLogins => Logins?.Count > 0;
 	public ReadOnlyObservableCollection<UPPersonDto> Persons => persons;
+	public bool HasPersons => Persons?.Count > 0;
 
 	public int UserProfileId => UserProfile?.id ?? 0;
-	public bool HasPersons => Persons?.Count > 0;
-	public bool HasLogins => Logins?.Count > 0;
-	public bool HasBusiness => Businesses?.Count > 0;
-	public bool HasAddresses => Persons?.Count > 0;
+	public Func<UP, bool> FilterPredicate => p => p.ProfileId == UserProfile?.id;
+	public Func<ObsAddressDto, bool> AdrezFilterPredicate => p => p.Dto?.ProfileId == UserProfile?.id;
 
 	public UserProfileIdentityViewModel()
 	{
 		filter = new BehaviorSubject<Func<UP, bool>>(FilterPredicate);
+		adrezfilter = new BehaviorSubject<Func<ObsAddressDto, bool>>(AdrezFilterPredicate);
 
-		_ = UPAdditionalDataRepo.Instance.Countryz
-			.Connect()
-			.Bind(out countries)
-			.Subscribe();
-		//
 		_ = UPAdditionalDataRepo.Instance.Personz
 			.Connect()
 			.Filter(filter)
@@ -89,7 +77,8 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 		//
 		_ = UPAdditionalDataRepo.Instance.Addrez
 			.Connect()
-			.Filter(filter)
+			.Transform(a => new ObsAddressDto(a))
+			.Filter(adrezfilter)
 			.Bind(out addresses)
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasAddresses));
@@ -101,23 +90,15 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 		AsyncCommandMap["AddLogin"] = OnAddLogin;
 	}
 
-	public override async Task InitAsync(object? param)
-	{
-		await base.InitAsync(param);
-		if(!Loaded) {
-			await UPAdditionalDataRepo.Instance.Countryz.Load();
-			await LoadReload();
-		}
-	}
-
 	public override async Task OnNavigatedToAsync(object? param)
 	{
 		await base.OnNavigatedToAsync(param);
-		//_ = await LoadedTCS.Task;
+
 		if (param is UserProfileDto up) {
 			UserProfile = up;
 			ProfileVM = new ObsProfile(up, false);
-			_ = filter.Next();
+			filter.OnNext(FilterPredicate);
+			adrezfilter.OnNext(AdrezFilterPredicate);
 			Title = ProfileVM?.Title;
 		}
 	}
@@ -128,16 +109,15 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 		await LoadReload();
 	}
 
-	private async Task LoadReload()
+	public static async Task LoadReload()
 	{
 		await Task.WhenAll([
-		  UPAdditionalDataRepo.Instance.Personz.Load(),
+			UPAdditionalDataRepo.Instance.Personz.Load(),
 		  UPAdditionalDataRepo.Instance.Loginz.Load(),
 		  UPAdditionalDataRepo.Instance.Biz.Load(),
 		  UPAdditionalDataRepo.Instance.Addrez.Load()
 		]);
 	}
-	#region UserProfile
 
 	[RelayCommand]
 	private async Task SaveChanges()
@@ -152,7 +132,7 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 			//
 			Persons.ForEach(async l => await OnSavePerson(l));
 			//
-			Addresses.ForEach(async l => await OnSaveAddress(l));
+			Addresses.ForEach(async l => await OnSaveAddress(l.Dto!));
 			//
 			Businesses.ForEach(async l => await OnSaveBusiness(l));
 
@@ -173,9 +153,6 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 			IsSaving = false;
 		}
 	}
-
-
-	#endregion
 
 	#region Persons
 
@@ -275,4 +252,6 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 		OnPropertyChanged(nameof(HasLogins));
 	}
 	#endregion
+
+	public static UserProfileIdentityViewModel Instance { get; } = IoC.GetService<UserProfileIdentityViewModel>()!;
 }

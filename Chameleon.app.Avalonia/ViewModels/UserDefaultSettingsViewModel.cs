@@ -2,7 +2,6 @@
 using System.Text.Json;
 using Chameleon.lib.Common;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.lib.WebBrowser.Models;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,13 +13,13 @@ using Chameleon.lib.Common.Constants;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Configuration;
+using Chameleon.lib.Common.Models;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class UserDefaultSettingViewModel : ViewModelObjectBase {
 	public event Action OnSelectedChanged;
 	BrowserSettingDto _userDefaultSetting;
-	public UserDefaultSettingViewModel(BrowserSettingDto userDefaultSetting,
-		 Action onSelectedChanged)
+	public UserDefaultSettingViewModel(BrowserSettingDto userDefaultSetting, Action onSelectedChanged)
 	{
 		OnSelectedChanged = onSelectedChanged;
 		_defaultUrl = userDefaultSetting.DefaultUrl;

@@ -98,9 +98,6 @@
 						<HeaderedContentControl Header="PhoneNumber"
 												Tag="{Binding SelectedPerson.PhoneNumber}"
 												Theme="{StaticResource CopyPasta}" />
-						<HeaderedContentControl Header="Email"
-												Tag="{Binding SelectedPerson.Email}"
-												Theme="{StaticResource CopyPasta}" />
 						<HeaderedContentControl Header="BirthDate"
 												Tag="{Binding SelectedPerson.BirthDate, StringFormat=yyyy/MM/dd}"
 												Theme="{StaticResource CopyPasta}" />

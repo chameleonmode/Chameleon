@@ -30,22 +30,6 @@ using Chameleon.lib.Common.Interfaces.Sys;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 
-public class SystemBrovserItemViewModel
-		: ObservableObjectBase {
-	public SystemBrovserItemViewModel(SystemBrowserType systemBrowserType)
-	{
-		SystemBrowserType = systemBrowserType;
-	}
-
-	private SystemBrowserType _systemBrowserType;
-	public SystemBrowserType SystemBrowserType {
-		get => _systemBrowserType;
-		set => SetProperty(ref _systemBrowserType, value);
-	}
-
-	public string IconName => SystemBrowserType.ToString().ToLower();
-}
-
 public partial class UserProfilesViewModel : ViewModelObjectBase {
 	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
 
@@ -57,7 +41,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	public AvList<PlaywrightScript> PlaywrightScripts { get; } = [];
 
 	[ObservableProperty]
-	private SystemBrovserItemViewModel? selectedBrowserItem;
+	private SystemBrovserItem? selectedBrowserItem;
 	[ObservableProperty]
 	private int totalCount;
 	[ObservableProperty]
@@ -70,22 +54,51 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	private bool isVisibleWaitButton;
 	[ObservableProperty]
 	private bool isRecordSelected;
+	[ObservableProperty]
+	private PlaywrightScript? selectedPlaywrightScript;
+	[ObservableProperty]
+	private string searchText = string.Empty;
+	[ObservableProperty]
+	private UPFolderDto? folder;
+	[ObservableProperty]
+	private int selectedCount;
 
 	private CancellationTokenSource? _cts;
 	private IEnumerable<ObsProfile>? _selectedProfiles;
 
+	public ObservableCollection<SystemBrovserItem> BrowserItems { get; } = [
+		new SystemBrovserItem(SystemBrowserType.Brave),
+		new SystemBrovserItem(SystemBrowserType.Chrome)
+	];
+	private CancellationToken RecreateCancellationToken {
+		get {
+			if (_cts != null) {
+				_cts.Cancel();
+				_cts.Dispose();
+			}
+
+			_cts = new CancellationTokenSource();
+			return _cts.Token;
+		}
+	}
+	public PaginatorViewModel? PaginatorViewModel {
+		get => _paginatorViewModel;
+		set {
+			if (SetProperty(ref _paginatorViewModel, value)) {
+				_paginatorViewModel!.ChangePageIndex += (s, a) => { pageRequests.OnNext(new PageRequest(_paginatorViewModel.PageIndex, Consts.PageinationPageItems)); };
+			}
+		}
+	}
+	
 	private List<ObsProfile> GetSelectedProfiles => _selectedProfiles!.ToList();
 	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
 	public bool IsProfilesExist => UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
 	public bool HasNoItems => Profiles.Count == 0;
 	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
 	public string SelectedFolderTitle => Folder?.title ?? "All profiles";
-	public ObservableCollection<SystemBrovserItemViewModel> BrowserItems { get; } = [
-		new SystemBrovserItemViewModel(SystemBrowserType.Brave),
-		new SystemBrovserItemViewModel(SystemBrowserType.Chrome)
-	];
-
 	//
+	public Func<ObsProfile, bool> FilterPredicate => p => Folder == null || Folder.id == 0 || (Folder != null && Folder.id != 0 && p.Dto?.folderId == Folder?.id);
+
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
 	private readonly ISubject<IPageRequest> pageRequests = new BehaviorSubject<IPageRequest>(new PageRequest(0, Consts.PageinationPageItems));
 	private readonly ISubject<Func<ObsProfile, bool>> filter;
@@ -97,7 +110,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 
-	public Func<ObsProfile, bool> FilterPredicate => p => Folder == null || Folder.id == 0 || p.Dto?.folderId == Folder?.id;
 	private UserProfilesViewModel()
 	{
 		//Func<ObsProfile, IObservable<bool>> filterFactory = p => Observable.Return(predicate(p));
@@ -105,18 +117,17 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		_ = UserProfilesRepo
 			.Connect()
 			.Transform(i => new ObsProfile(i, onSelectedChanged: OnSelectedChanged))
-			//.Filter(filter)
+			.Filter(filter)
 			//.FilterOnObservable(filterFactory)
-			.SortAndPage(profilesCompareObservable, pageRequests)
-						// no sort and bind options. These are extracted from the SortAndPage context
-			.Bind(out var list)
+			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
+			.SortAndBind(out var list, profilesCompareObservable)
 			.Subscribe((i) => {
-				OnHandleUserEvent();
 				if (Profiles != null) {
 					PaginatorViewModel ??= new PaginatorViewModel(Profiles.Count);
 					PaginatorViewModel.TotalCount = Profiles.Count;
 					TotalCount = PaginatorViewModel.TotalCount;
 				}
+				OnHandleUserEvent();
 				//foreach (var update in i) {
 				//	var curIndex = update.CurrentIndex == -1 ? 0 : update.CurrentIndex;
 				//	var prevIndex = update.PreviousIndex == -1 ? 0 : update.PreviousIndex;
@@ -144,9 +155,32 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	{
 		await base.InitAsync(param);
 
-		await InitializeScripts();
-		InintializeLastSelectedAutomation();
+		//await InitializeScripts();
+		void AddMappedScripts(IEnumerable<PlaywriteRunScriptOptions> scripts)
+		{
+			PlaywrightScripts.AddMapped(scripts, (Func<PlaywriteRunScriptOptions, PlaywrightScript>)(b => {
+				var viewModel = new PlaywrightScript(b);
+				viewModel.Parameters.AddRange((IEnumerable<PlaywrightDescriptionParam>)b.Description!.Parameters);
+				return viewModel;
+			}));
+		}
+		PlaywrightScripts.Clear();
+		AddMappedScripts(_plawrightRepository.GetBundledScrits());
 
+		var usd = IoC.GetValue<string>("UserScriptsDirectory");
+		if (usd.Is() && Directory.Exists(usd)) {
+			AddMappedScripts(await _plawrightRepository.GetUserScripts(usd));
+		}
+
+		//InintializeLastSelectedAutomation();
+		var lastSelectedBrowserString = IoC.GetValue<string>("LastSelectedBrowser");
+		SelectedBrowserItem = !lastSelectedBrowserString.Is() ||
+				!Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum)
+			? BrowserItems[0]
+			: BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
+		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
+
+		OnPropertyChanged(nameof(SelectedBrowserItem));
 		OnHandleUserEvent();
 	}
 
@@ -157,8 +191,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			_ => Compares.ObsProfileCompares.AscendingComparer
 		});
 	}
-
-	partial void OnSelectedBrowserItemChanged(SystemBrovserItemViewModel? value)
+	partial void OnSelectedBrowserItemChanged(SystemBrovserItem? value)
 	{
 		if (value == null)
 			return;
@@ -167,101 +200,65 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		if (cur != value.SystemBrowserType.ToString())
 			IoC.SetValue(value.SystemBrowserType.ToString(), "LastSelectedBrowser");
 	}
-
-	public bool IsSelectedScript => SelectedPlaywrightScript != null;
-	private PlaywrightScript? _selectedPlaywrightScript;
-	public PlaywrightScript? SelectedPlaywrightScript {
-		get { return _selectedPlaywrightScript; }
-		set {
-			if (value != null && _selectedPlaywrightScript != value) {
-				_ = SetProperty(ref _selectedPlaywrightScript, value);
-				OnPropertyChanged(nameof(IsSelectedScript));
-				RunAutomationCommand.NotifyCanExecuteChanged();
-
-				var cur = IoC.GetValue<string>("LastRunScriptId");
-				if (cur != value.Title)
-					IoC.SetValue(value.Title, "LastRunScriptId");
-			}
-		}
-	}
-
-	private string _searchText = string.Empty;
-	public string SearchText {
-		get => _searchText;
-		set {
-			if (SetProperty(ref _searchText, value)) {
-				ApplySearchFilter();
-			}
-		}
-	}
-
-	private UPFolderDto? _folder;
-	public UPFolderDto? Folder {
-		get {
-			return _folder;
-		}
-		set {
-			if (SetProperty(ref _folder, value)) {
-				SearchText = string.Empty;
-				HasFolder = value?.id == default;
-				OnPropertyChanged(nameof(SelectedFolderTitle));
-				SetViewModelsFilter();
-			}
-		}
-	}
-
-	public PaginatorViewModel? PaginatorViewModel {
-		get => _paginatorViewModel;
-		set {
-			if (SetProperty(ref _paginatorViewModel, value)) {
-				_paginatorViewModel!.ChangePageIndex += (s, a) => { pageRequests.OnNext(new PageRequest(_paginatorViewModel.PageIndex, Consts.PageinationPageItems)); };
-			}
-		}
-	}
-
-	private int _selectedCount;
-	public int SelectedCount {
-		get => _selectedCount;
-		set {
-			if (SetProperty(ref _selectedCount, value)) {
-				OnPropertyChanged(nameof(HasSelectedItems));
-			}
-		}
-	}
-
-	private async Task InitializeScripts()
+	partial void OnSelectedPlaywrightScriptChanged(PlaywrightScript? value)
 	{
-		void AddMappedScripts(IEnumerable<PlaywriteRunScriptOptions> scripts)
-		{
-			PlaywrightScripts.AddMapped(scripts, (Func<PlaywriteRunScriptOptions, PlaywrightScript>)(b => {
-				var viewModel = new PlaywrightScript(b);
-				viewModel.Parameters.AddRange((IEnumerable<PlaywrightDescriptionParam>)b.Description!.Parameters);
-				return viewModel;
-			}));
-		}
+		var cur = IoC.GetValue<string>("LastRunScriptId");
+		if (value!= null && cur != value.Title)
+			IoC.SetValue(value.Title, "LastRunScriptId");
+	}
+	partial void OnSearchTextChanged(string value)
+	{
+		if (value.Is())
+			filter.OnNext(p => p.Title?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true);
+		else
+			filter.OnNext(FilterPredicate);
 
-		PlaywrightScripts.Clear();
-
-		AddMappedScripts(_plawrightRepository.GetBundledScrits());
-
-		var usd = IoC.GetValue<string>("UserScriptsDirectory");
-		if (usd.Is() && Directory.Exists(usd)) {
-			AddMappedScripts(await _plawrightRepository.GetUserScripts(usd));
-		}
-
-		OnPropertyChanged(nameof(SelectedBrowserItem));
+		OnHandleUserEvent();
+	}
+	partial void OnFolderChanged(UPFolderDto? value)
+	{
+		SearchText = string.Empty;
+		HasFolder = value?.id != default && value?.id != 0;
+		OnPropertyChanged(nameof(SelectedFolderTitle));
+		SetViewModelsFilter();
+	}
+	partial void OnSelectedCountChanged(int value)
+	{
+		OnPropertyChanged(nameof(HasSelectedItems));
 	}
 
-	private void InintializeLastSelectedAutomation()
+	public void Open(UPFolderDto? folder)
 	{
-		var lastSelectedBrowserString = IoC.GetValue<string>("LastSelectedBrowser");
+		Folder = folder;
 
-		SelectedBrowserItem = !lastSelectedBrowserString.Is() ||
-				!Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum)
-			? BrowserItems[0]
-			: BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
+		UnselectItems();
+		OnHandleUserEvent();
+	}
+	public async Task<UserProfileDto?> CreateNewProfile()
+	{
+		var folderId = HasFolder ? Folder?.id : null;
 
-		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
+		var res = await UserProfilesRepo.CreateProfile($"New Profile - {Profiles.Count}", folderId);
+		if (res != null) {
+			OnHandleUserEvent();
+		}
+
+		return res;
+	}
+	public async void OnFilterTo(ObsProfile? p = null)
+	{
+		_ = await LoadedTCS.Task;
+
+		if (p != null) {
+			if (p.Dto?.folderId is int fid && fid != 0)
+				UserProfileFoldersViewModel.Instance.SetSelectedById(fid);
+			else
+				await UserProfileFoldersViewModel.Instance.OnNavigatingTo(null);
+		} else {
+			UserProfileFoldersViewModel.Instance.SetSelectedById(0);
+		}
+
+		SetViewModelsFilter();
 	}
 
 	private void OnHandleUserEvent()
@@ -272,19 +269,19 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(HasProfileWithoutFolder));
 	}
-
-	public void Open(UPFolderDto? folder)
-	{
-		Folder = folder;
-
-		UnselectItems();
-		OnHandleUserEvent();
-	}
-
 	private void OnSelectedChanged()
 	{
 		_selectedProfiles = Profiles.Where(profile => profile.IsSelected);
 		SelectedCount = _selectedProfiles.Count();
+	}
+	private void SetViewModelsFilter()
+	{
+		filter.OnNext(FilterPredicate);
+		PaginatorViewModel = new PaginatorViewModel(Profiles.Count) {
+			TotalCount = Profiles.Count
+		};
+		TotalCount = PaginatorViewModel.TotalCount;
+		OnHandleUserEvent();
 	}
 
 	[RelayCommand]
@@ -348,7 +345,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task RemoveProfilesFromFolder()
 	{
-		if (_folder?.id == 0 ||
+		if (Folder?.id == 0 ||
 				_selectedProfiles == null ||
 				!_selectedProfiles.Any()) {
 			return;
@@ -374,18 +371,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		var addvm = new AddUserProfilesPupViewModel {
 			Title = "Add Profiles"
 		};
-
-		PupUserProfileViewModel CreatePup(ObsProfile p)
-		{
-			var pup = new PupUserProfileViewModel(p);
-			pup.OnSelectedChange += () => {
-				addvm.SelectedViewModels = addvm.Profiles.Where(p => p.IsSelected).ToList();
-			};
-			return pup;
-		}
-		addvm.Profiles.AddRange(Profiles
-							.Where(p => p.Dto!.folderId == null)
-							.Select(CreatePup));
 		
 
 		if (await Mbox.ShowTaskDialog<AddUserProfilesPupViewModel, AddUserProfilesPopupUserControl>(() => addvm, 
@@ -394,7 +379,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			symbas: Enums.Symbas.Folder, 
 			btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK) {
 			var ids = addvm.SelectedViewModels?
-				.Select(a => a.UserProfile.Dto!.id)
+				.Select(a => a.Dto!.id)
 				.ToList();
 			if (ids == null || !ids.Any()) {
 				return;
@@ -419,9 +404,8 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		var addvm = new MoveUserProfilesPopupViewModel {
 			Title = "Add To Folder"
 		};
-
 		addvm.Profiles.AddRange(selectedProfiles);
-
+		addvm.Folders.AddRange(UserProfileFoldersViewModel.Instance.Folders);
 
 		if (await Mbox.ShowTaskDialog<MoveUserProfilesPopupViewModel, MoveUserProfilesPopupUserControl>(() => addvm,
 			header: addvm.Title,
@@ -442,19 +426,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			}
 		}
 	}
-
-	public async Task<UserProfileDto?> CreateNewProfile()
-	{
-		var folderId = HasFolder ? Folder?.id : null;
-
-		var res = await UserProfilesRepo.CreateProfile($"New Profile - {Profiles.Count}", folderId);
-		if (res != null) {
-			OnHandleUserEvent();
-		}
-
-		return res;
-	}
-
 
 	[RelayCommand]
 	private void OpenChameleonBrowser()
@@ -487,18 +458,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		GetSelectedProfiles.ForEach(async (selectedProfile) => {
 			await selectedProfile.OpenSystemBrowser(browserType);
 		});
-	}
-
-	private CancellationToken RecreateCancellationToken {
-		get {
-			if (_cts != null) {
-				_cts.Cancel();
-				_cts.Dispose();
-			}
-
-			_cts = new CancellationTokenSource();
-			return _cts.Token;
-		}
 	}
 
 	[RelayCommand]
@@ -551,52 +510,12 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		IsVisibleWaitButton = false;
 	}
 
-
 	[RelayCommand]
 	private void StopAutomation()
 	{
 		IsVisibleStopButton = false;
 		IsVisibleWaitButton = true;
 		_cts?.Cancel();
-	}
-
-	private void SetViewModelsFilter()
-	{
-		filter.OnNext(FilterPredicate);
-		PaginatorViewModel = new PaginatorViewModel(Profiles.Count);
-		PaginatorViewModel.TotalCount = Profiles.Count;
-		TotalCount = PaginatorViewModel.TotalCount;
-		OnHandleUserEvent();
-	}
-
-	private void ApplySearchFilter()
-	{
-		var searchText = SearchText?.ToLower();
-		var hasSearchText = !string.IsNullOrWhiteSpace(SearchText);
-		var isInCurrentFolder = Folder?.creatorUserId != null;
-
-		if(SearchText.Is())
-			filter.OnNext(p => p.Title?.Contains(searchText!, StringComparison.CurrentCultureIgnoreCase) == true);
-		else
-			filter.OnNext(FilterPredicate);
-
-		OnHandleUserEvent();
-	}
-
-	public async void OnFilterTo(ObsProfile? p = null)
-	{
-		_ = await LoadedTCS.Task;
-
-		if (p != null) {
-			if (p.Dto?.folderId is int fid && fid != 0)
-				UserProfileFoldersViewModel.Instance.SetSelectedById(fid);
-			else
-				await UserProfileFoldersViewModel.Instance.OnNavigatingTo(null);
-		} else {
-			UserProfileFoldersViewModel.Instance.SetSelectedById(0);
-		}
-
-		SetViewModelsFilter();
 	}
 
 	public static UserProfilesViewModel Instance { get; } = new UserProfilesViewModel();

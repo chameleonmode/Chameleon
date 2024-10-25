@@ -1,5 +1,6 @@
 ﻿using Chameleon.app.Avalonia.lib.Community.Controls;
 using Chameleon.app.Avalonia.Models;
+using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
@@ -20,8 +21,8 @@ public class AppStartup {
 			_ = await Mbox.ShowErrorAsync("Error Logging In", "There was an error validationg the login information that was provided.");
 			Environment.Exit(0);
 		} else {
-			OnLoginSuccess?.Invoke();
 			await LoadSink();
+			OnLoginSuccess?.Invoke();
 		}
 	}
 	public async Task<bool> RunAsync(int trys)
@@ -60,10 +61,11 @@ public class AppStartup {
 		return success;
 	}
 
-	public async Task LoadSink()
+	public static async Task LoadSink()
 	{
 		await UserProfilesRepo.Instance.Load();
 		await UserProfilesFolderRepo.Instance.Load();
+		await UserProfileIdentityViewModel.LoadReload();
 	}
 
 	public static AppStartup Instance { get; } = new AppStartup();

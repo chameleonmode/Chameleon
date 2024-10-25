@@ -23,14 +23,10 @@ public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 		.Connect()
 		.Transform(i => new ObsFolder(i, this))
 		.SortAndBind(out var flist, Compares.ObsFolderCompares.AscendingComparer)
-		.Subscribe((i) => {
-			if (flist == null || SelectedFolder != null)
-				return;
-			AllProfiles = flist.Count > 0 ? flist[0] : null;
-			SelectedFolder ??= AllProfiles;
-			_ = SelectedFolder.Open();
-		});
+		.Subscribe();
+		SelectedFolder = AllProfiles = flist[0];
 		Folders = flist;
+		_ = SelectedFolder.Open();
 
 		AsyncCommandMap["Create"] = Create;
 	}

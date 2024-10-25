@@ -109,7 +109,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 					.FirstOrDefault();
 			_animationPage = _animationPageParent?
 					.GetVisualDescendants()?
-					.Where(x => x is ListBoxItem b && b.DataContext is Vim<UserProfileDto> dc && dc.Dto == iprofile)?
+					.Where(x => x is ListBoxItem b && b.DataContext is Vim<UserProfileDto> dc && dc.Dto?.id == iprofile.id)?
 					.FirstOrDefault();
 			if (_animationPage == null && _animationPageParent is ListBox l && l.Items.Count >= 10) {
 					_animationPage = _animationPageParent?
@@ -118,14 +118,14 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 					  .FirstOrDefault();
 			}
 			_animationPage ??= _animationPageParent;
-		} else if (navParam is UPFolderDto) {
+		} else if (navParam is UPFolderDto f) {
 			_animationPageParent = this
 					.GetVisualDescendants()
 					.Where(x => x.DataContext is Vim<UPFolderDto>)?
 					.FirstOrDefault();
 			_animationPage = _animationPageParent?
 						.GetVisualDescendants()?
-					 .Where(x => x.Name == "IconHost" && (x as Control)?.Tag == navParam)?
+					 .Where(x => x.Name == "IconHost" && ((x as Control)?.Tag as UPFolderDto)?.id == f.id)?
 					 .FirstOrDefault();
 		}
 	}
