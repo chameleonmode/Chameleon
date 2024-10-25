@@ -2,13 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="1480"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
 			 xmlns:interfaces="using:Chameleon.Interfaces.Proxies"
 			 xmlns:paginator="using:Chameleon.app.Avalonia.Views"
 			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-             mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="1480"
+			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
 			 x:DataType="vm:UserProxySettingsViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Views.UserProxySettingsView">
@@ -18,11 +18,10 @@
 	</UserControl.Resources>
 	<Grid RowDefinitions="*,Auto">
 				<afv:ChameleonContentControl Title="Proxies list"
-												   TitleDescription="Select proxies to edit them">
+											 TitleDescription="Select proxies to edit them">
 					<afv:ChameleonContentControl.TitleContent>
 						<paginator:PaginatorView Grid.Row="1"
-						 DataContext="{Binding PaginatorViewModel}" />
-						<!---->
+												 DataContext="{Binding PaginatorViewModel}" />
 					</afv:ChameleonContentControl.TitleContent>
 
 					<afv:ChameleonContentControl.Header>
@@ -97,7 +96,7 @@
 										<DataTemplate>
 											<Grid Margin="6"
 												  ColumnDefinitions="Auto,Auto,*,Auto">
-													<CheckBox IsChecked="{Binding IsSelected}"
+													<CheckBox IsChecked="{Binding ObsProfile.IsSelected}"
 															  Margin="6 0 0 0" />
 													
 													<Border Grid.Column="1"
@@ -106,7 +105,7 @@
 															CornerRadius="180"
 															Width="30"
 															Height="30">
-														<TextBlock Text="{Binding Code}"
+														<TextBlock Text="{Binding ObsProfile.Code}"
 																   Margin="0 0 0 0"
 																   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
 																   VerticalAlignment="Center"
@@ -115,7 +114,7 @@
 
 													<Grid Grid.Column="2"
 														  Margin="12 0">
-														<afv:HeaderdInputFieldsControl Title="{Binding Title}"
+														<afv:HeaderdInputFieldsControl Title="{Binding ObsProfile.Title}"
 																							 Header="False">
 															<afv:HeaderdInputFieldsControl.TextBoxes>
 																<TextBox Text="{Binding Path=Host}"
@@ -202,8 +201,8 @@
 											</ItemsControl.ItemsPanel>
 											<ItemsControl.ItemTemplate>
 												<DataTemplate>
-													<afv:HeaderdInputFieldsControl Title="{Binding Title}"
-																				   IsVisible="{Binding IsSelected}"
+													<afv:HeaderdInputFieldsControl Title="{Binding ObsProfile.Title}"
+																				   IsVisible="{Binding ObsProfile.IsSelected}"
 																				   Header="False">
 														<afv:HeaderdInputFieldsControl.TextBoxes>
 															<TextBox Text="{Binding Path=Host}" />

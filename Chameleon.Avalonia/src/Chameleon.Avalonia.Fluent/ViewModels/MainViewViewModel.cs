@@ -19,6 +19,7 @@ using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.app.Avalonia.Models;
+using System.Collections.ObjectModel;
 
 namespace Chameleon.Av.Fluent.ViewModels;
 
@@ -29,44 +30,46 @@ public partial class MainViewViewModel : ObservableObjectBase {
 	[ObservableProperty]
 	private bool isSplashVisible = true;
 
-	private readonly IList<ObsProfile> _boundProfilesList;
-	private readonly IList<ObsFolder> _boundFoldersList;
-	public AvaloniaList<MainAppSearchItem> SearchTerms { get; } = [];
+	private readonly ReadOnlyObservableCollection<ObsProfile> _boundProfilesList;
+	private readonly ReadOnlyObservableCollection<ObsFolder> _boundFoldersList;
+	public ObservableCollection<MainAppSearchItem> SearchTerms { get; } = [];
 
 	public NavigationFactory NavigationFactory { get; }
 
 	private MainViewViewModel()
 	{
-		AppStartup.Instance.OnLoginSuccess += OnLoginSuccess;
+		AppStartup.Instance.OnLoginSuccess += () => { IsSplashVisible = false; };
+
 		NavigationFactory = new NavigationFactory(this);
 
 		_ = UserProfilesRepo
 			.Connect()
 			.Transform(i => new ObsProfile(i))
-			.SortAndBind(out var plist, Compares.ObsProfileCompares.AscendingComparer)
+			.SortAndBind(out _boundProfilesList, Compares.ObsProfileCompares.AscendingComparer)
 			.Subscribe((i) => {
-				foreach (var c in i) {
-					if (_boundProfilesList?.Contains(c.Current) == false && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is MainAppSearchItem st) {
-						SearchTerms.Remove(st);
-					} else if (_boundProfilesList?.Contains(c.Current) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is null) {
-						SearchTerms.Add(new() {
-							Header = c.Current.Title ?? "xxx",
-							Namespace = "Profile",
-							ViewModel = c.Current,
-							PageType = this.GetType()
-						});
-					} else if (_boundProfilesList?.Contains(c.Current) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is MainAppSearchItem str) {
-						str.Header = c.Current.Title ?? "xxx";
-						str.ViewModel = c.Current;
+				if (_boundProfilesList != null) {
+					foreach (var profile in _boundProfilesList) {
+						if (_boundProfilesList?.Contains(profile) == false && SearchTerms.FirstOrDefault(a => a.ViewModel == profile) is MainAppSearchItem st) {
+							_ = SearchTerms.Remove(st);
+						} else if (_boundProfilesList?.Contains(profile) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == profile) is null) {
+							SearchTerms.Add(new() {
+								Header = profile.Title ?? "xxx",
+								Namespace = "Profile",
+								ViewModel = profile,
+								PageType = this.GetType()
+							});
+						} else if (_boundProfilesList?.Contains(profile) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == profile) is MainAppSearchItem str) {
+							str.Header = profile.Title ?? "xxx";
+							str.ViewModel = profile;
+						}
 					}
 				}
 			});
-		_boundProfilesList = plist;
 
 		_ = UserProfilesFolderRepo
 			.Connect()
 			.Transform(i => new ObsFolder(i))
-			.SortAndBind(out var flist, Compares.ObsFolderCompares.AscendingComparer)
+			.SortAndBind(out _boundFoldersList, Compares.ObsFolderCompares.AscendingComparer)
 			.Subscribe((i) => {
 				foreach (var c in i) {
 					if (_boundFoldersList?.Contains(c.Current) == false && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is MainAppSearchItem st) {
@@ -84,11 +87,6 @@ public partial class MainViewViewModel : ObservableObjectBase {
 					}
 				}
 			});
-		_boundFoldersList = flist;
-	}
-	private async void OnLoginSuccess()
-	{
-		IsSplashVisible = false;
 	}
 
 	public void BuildSearchTerms(List<MainAppSearchItem> items)

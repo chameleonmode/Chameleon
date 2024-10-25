@@ -57,12 +57,7 @@ public partial class ProxyCreditViewModel
 		if (Loaded)
 			return;
 
-		await InitializeCountriesAsync();
-		await UpdateBalanceAsync();
-	}
-
-	private async Task InitializeCountriesAsync()
-	{
+		//await InitializeCountriesAsync();
 		var countries = await ProxyAccessRepo.GetCountries();
 		Countries.Clear();
 
@@ -70,6 +65,9 @@ public partial class ProxyCreditViewModel
 			Name = "Random Country"
 		});
 		Countries.AddRange(countries);
+		Country = Countries[0];
+
+		await UpdateBalanceAsync();
 	}
 
 	private async Task UpdateBalanceAsync()
@@ -78,7 +76,7 @@ public partial class ProxyCreditViewModel
 		Balance = credits.Amount;
 	}
 
-	[RelayCommand]
+	[RelayCommand]//
 	public async Task CopyAllUrls()
 	{
 		var list = Accesses.Select(a => a.Url);

@@ -2,9 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="350"
+			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
+			 x:DataType="vm:ProxyCreditViewModel"
+			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Views.ProxyCreditView">
 		<StackPanel Spacing="8">
 			<afv:ChameleonContentControl Title="Residential Proxies"
@@ -73,24 +76,10 @@
 											<StackPanel Orientation="Horizontal"/>
 										</ItemsPanelTemplate>
 									</ItemsControl.ItemsPanel>
-									<!--<ItemsControl.Items>
-										<RadioButton GroupName="PurchaseCredit"
-													 VerticalContentAlignment="Center"
-													 IsChecked="{Binding IsChecked}">
-											<RadioButton.Content>
-												<TextBlock>
-													<Run Text="fgh " Theme="{StaticResource BodyTextBlockStyle}" />
-													<Run Text=" $"  Theme="{StaticResource BodyStrongTextBlockStyle}"/>
-													<Run Text="33" Theme="{StaticResource BodyStrongTextBlockStyle}"/>
-												</TextBlock>
-											</RadioButton.Content>
-										</RadioButton>
-									</ItemsControl.Items>-->
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
-											<!--Style="{StaticResource RadioButtonBorder}"-->
-											<RadioButton  Margin="0 0 16 0"
-														  GroupName="PurchaseCredit"
+											<RadioButton Margin="0 0 16 0"
+														 GroupName="PurchaseCredit"
 														 VerticalContentAlignment="Center"
 														 IsChecked="{Binding IsChecked}">
 												<RadioButton.Content>
@@ -132,7 +121,6 @@
 
 			<afv:ChameleonContentControl Title="Proxies"
 										   TitleDescription="Manage your proxies here">
-
 				<afv:ChameleonContentControl.Options>
 					<StackPanel Spacing="6">
 						<StackPanel Orientation="Horizontal">
@@ -142,7 +130,7 @@
 								Width="150"
 								IsTextSearchEnabled="True"
 								SelectedItem="{Binding Country}"
-								ItemsSource="{Binding Countries.Items}"
+								ItemsSource="{Binding Countries}"
 								DisplayMemberBinding="{Binding Name}" />
 
 							<Button VerticalAlignment="Bottom"
@@ -178,7 +166,6 @@
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="*"/>
 						</Grid.RowDefinitions>
-						<!--Style="{StaticResource MaterialDesignOutlinedComboBox}"-->
 						<Grid Grid.Row="0"
 							  Margin="0 12 0 12"
 							  VerticalAlignment="Center"
@@ -188,15 +175,15 @@
 								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
 							<Button Grid.Column="1"
-									 Command="{Binding CopyAllUrlsCommand}"
-									   Content="Copy all"
-									   VerticalAlignment="Center"
-									   HorizontalAlignment="Right"
+									Command="{Binding CopyAllUrlsCommand}"
+									Content="Copy all"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Right"
 									Theme="{DynamicResource TransparentButton}">
 							</Button>
 						</Grid>
 						<ItemsControl Grid.Row="1"
-									  ItemsSource="{Binding Access}"
+									  ItemsSource="{Binding Accesses}"
 									  HorizontalAlignment="Stretch">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
@@ -207,7 +194,6 @@
 												<ColumnDefinition Width="*"/>
 												<ColumnDefinition Width="Auto"/>
 											</Grid.ColumnDefinitions>
-											<!--materialDesign:TextFieldAssist.DecorationVisibility="Hidden"-->
 											<TextBox
 												Grid.Column="0"
 												Text="{Binding Url}"
@@ -218,6 +204,7 @@
 											<Button Grid.Column="1"
 													VerticalAlignment="Top"
 													Theme="{DynamicResource TransparentButton}"
+													CommandParameter="{Binding Url}"
 													Command="{Binding CopyCommand}">
 												<afv:SvgIconControl
 				                                    IconName="copy"

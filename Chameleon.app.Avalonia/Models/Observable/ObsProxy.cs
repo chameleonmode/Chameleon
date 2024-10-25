@@ -5,8 +5,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProxySetting : ViewModelObjectBase{
-	public event Action? OnSelectedChanged;
-
 	[ObservableProperty]
 	private string? host;
 	[ObservableProperty]
@@ -16,25 +14,7 @@ public partial class ObsProxySetting : ViewModelObjectBase{
 	[ObservableProperty]
 	private string? password;
 	[ObservableProperty]
-	private bool isSelected;
-	[ObservableProperty]
 	private ObsProfile obsProfile;
-
-	public bool CanUse => Host?.Length > 0;
-	public string? Server => CanUse ? $"{HostForRequest}:{Port}" : null;
-	public string? ServerForRequest => CanUse ? $"http://{Server}" : null;
-	public string? HostForRequest => CanUse ? Host!.Contains(Consts.Http.ChameleonModeHost) ? Consts.Http.PacketStreamHost : Host : null;
-	public string UserProfileTitle => ObsProfile.Title ?? "XX";
-	public string? Code {
-		get {
-			var list = UserProfileTitle
-						.Split(" ")
-						.Select(a => a.Trim().ToUpper()[0]);
-
-			return list != null ? list.Count() > 2 ? list.Take(2).ToString() : string.Join("", list) : UserProfileTitle;
-
-		}
-	}
 
 	public ObsProxySetting(ObsProfile profile)
 	{
@@ -43,10 +23,6 @@ public partial class ObsProxySetting : ViewModelObjectBase{
 		port = obsProfile.Dto.proxy.port;
 		userName = obsProfile.Dto.proxy.userName;
 		password = obsProfile.Dto.proxy.password;
-	}
-	partial void OnIsSelectedChanged(bool value)
-	{
-		OnSelectedChanged?.Invoke();
 	}
 
 	partial void OnPortChanged(int value)

@@ -100,15 +100,16 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	public Func<ObsProfile, bool> FilterPredicate => p => Folder == null || Folder.id == 0 || (Folder != null && Folder.id != 0 && p.Dto?.folderId == Folder?.id);
 
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
-	private readonly ISubject<IPageRequest> pageRequests = new BehaviorSubject<IPageRequest>(new PageRequest(0, Consts.PageinationPageItems));
-	private readonly ISubject<Func<ObsProfile, bool>> filter;
+	private readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, Consts.PageinationPageItems));
+	private readonly BehaviorSubject<Func<ObsProfile, bool>> filter;
 
 	[ObservableProperty]
 	private Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
 
 	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
 
-	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
+	private readonly ReadOnlyObservableCollection<ObsProfile> profiles;
+	public ReadOnlyObservableCollection<ObsProfile> Profiles => profiles;
 
 	private UserProfilesViewModel()
 	{
@@ -120,7 +121,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			.Filter(filter)
 			//.FilterOnObservable(filterFactory)
 			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
-			.SortAndBind(out var list, profilesCompareObservable)
+			.SortAndBind(out profiles, profilesCompareObservable)
 			.Subscribe((i) => {
 				if (Profiles != null) {
 					PaginatorViewModel ??= new PaginatorViewModel(Profiles.Count);
@@ -149,7 +150,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 				//	}
 				//}
 			});
-		Profiles = list;
 	}
 	public override async Task InitAsync(object? param)
 	{

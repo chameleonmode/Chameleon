@@ -13,7 +13,8 @@ public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 	private ObsFolder? selectedFolder;
 
 	public ObsFolder? AllProfiles { get; private set; }
-	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
+	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
+	public ReadOnlyObservableCollection<ObsFolder> Folders => folders;
 
 	private UserProfileFoldersViewModel()
 	{
@@ -22,10 +23,9 @@ public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 		_ = UserProfilesFolderRepo
 		.Connect()
 		.Transform(i => new ObsFolder(i, this))
-		.SortAndBind(out var flist, Compares.ObsFolderCompares.AscendingComparer)
+		.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
 		.Subscribe();
-		SelectedFolder = AllProfiles = flist[0];
-		Folders = flist;
+		SelectedFolder = AllProfiles = folders[0];
 		_ = SelectedFolder.Open();
 
 		AsyncCommandMap["Create"] = Create;
