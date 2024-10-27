@@ -23,9 +23,9 @@ public class NavigationService : INavigationService
     {
         _frame?.Navigate(t);
     }
-    public void NavigateToType(Type t, object? parameter = null)
+    public void NavigateToType(Type t, object? parameter = null, object? transitionInfo = null)
     {
-        NavigateToType(t, parameter, null);
+        NavigateToType(t, parameter, transitionInfo as NavigationTransitionInfo);
     }
     public void NavigateToType(Type t,object? parameter = null, NavigationTransitionInfo? transitionInfo = null)
     {

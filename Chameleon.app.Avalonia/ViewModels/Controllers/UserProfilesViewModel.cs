@@ -189,7 +189,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			: BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
 		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
 
-		OnHandleUserEvent();
+		//SetViewModelsFilter();
 	}
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value)
@@ -224,10 +224,11 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			filter.OnNext(FilterPredicate);
 		}
 
-		OnHandleUserEvent();
+		SetViewModelsFilter();
 	}
 	partial void OnFolderChanged(UPFolderDto? value)
 	{
+		UserProfileFoldersViewModel.Instance.SetSelectedFolder(value);
 		SearchText = string.Empty;
 		HasFolder = value?.id != default && value?.id != 0;
 		OnPropertyChanged(nameof(SelectedFolderTitle));
@@ -239,7 +240,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		Folder = folder;
 
 		UnselectItems();
-		OnHandleUserEvent();
+		SetViewModelsFilter();
 	}
 	public async Task<UserProfileDto?> CreateNewProfile()
 	{
@@ -252,7 +253,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 		var res = await UserProfilesRepo.CreateProfile(pname, folderId);
 		if (res != null) {
-			OnHandleUserEvent();
+			SetViewModelsFilter();
 		}
 
 		return res;
@@ -272,9 +273,10 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 		SetViewModelsFilter();
 	}
-
-	private void OnHandleUserEvent()
+	public void SetViewModelsFilter()
 	{
+		filter.OnNext(FilterPredicate);
+		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
 		//private List<ObsProfile> GetSelectedProfiles => _selectedProfiles!.ToList();
 		//public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
 		//public bool IsProfilesExist => UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
@@ -285,12 +287,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		OnPropertyChanged(nameof(IsProfilesExist));
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(HasProfileWithoutFolder));
-	}
-	private void SetViewModelsFilter()
-	{
-		filter.OnNext(FilterPredicate);
-		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
-		OnHandleUserEvent();
 	}
 
 	[RelayCommand]

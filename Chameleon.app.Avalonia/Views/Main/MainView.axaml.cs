@@ -14,6 +14,7 @@ using Chameleon.Avalonia.Common.Helpers;
 using Avpplication = Avalonia.Application;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.app.Avalonia.ViewModels;
+using Chameleon.lib.Common;
 
 namespace Chameleon.app.Avalonia.Views.Main;
 
@@ -108,13 +109,12 @@ public partial class MainView : UserControl {
 		Toaster.ShowSuccess("Welcome to Chameleon!");
 		FrameView.NavigationPageFactory = AppMainViewViewModel.Instance.NavigationFactory;
 		Navigator.SetFrame(FrameView);
+		await IoC.GetService<ProjectsViewModel>()!.InitializeAsync(null!);
 
-		Dispatcher.UIThread.Post(() => {
-			NavView.MenuItemsSource = _pages.Where(p => !p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
-			NavView.FooterMenuItemsSource = _pages.Where(p => p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
+		NavView.MenuItemsSource = _pages.Where(p => !p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
+		NavView.FooterMenuItemsSource = _pages.Where(p => p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
 
-			_ = FrameView.NavigateToType(_pages["Dashboard"].Tag, null, null);
-		});
+		_ = FrameView.NavigateToType(_pages["Dashboard"].Tag, null, null);
 
 		FrameView.Navigated += OnFrameViewNavigated;
 		NavView.ItemInvoked += OnNavigationViewItemInvoked;
@@ -131,28 +131,19 @@ public partial class MainView : UserControl {
 		SetNVIIcon(sender as NavigationViewItem, false);
 
 		if (e.InvokedItemContainer is NavigationViewItem nvi) {
-			NavigationTransitionInfo info;
-
 			// Keep the frame navigation when not using connected animation but suppress it
 			// if we have a connected animation binding two pages
-			info = FrameView.Content is ChameleonPageBase ?
+			var info = FrameView.Content is ChameleonPageBase ?
 					new SuppressNavigationTransitionInfo() :
 					e.RecommendedNavigationTransitionInfo;
 
-			Navigator.NavigateToType((nvi.Tag as MainPageModelBase)?.Tag!, info);
+			Navigator.NavigateToType((nvi.Tag as MainPageModelBase)?.Tag!, null, info);
 		}
 	}
 	private void OnFrameViewNavigated(object sender, NavigationEventArgs e)
 	{
 		var page = _pages
 			.SingleOrDefault(p => p.Value.Tag?.Name == e.Content.GetType().Name).Value;
-		//page ??= _pages
-		//	.SingleOrDefault(p => p.Value.Tag?.Name[1..] == (e.Content as Control).GetType().Name).Value;
-		//page ??= e.Content.GetType().FullName.StartsWith("Chameleon.app.Avalonia.Views.Settings") ?
-		//		_pages["Settings"] :
-		//		e.Content.GetType().FullName.StartsWith("Chameleon.app.Avalonia.Views.Playwright") ?
-		//		_pages["Automation"] :
-		//		_pages["Profiles"];
 
 		foreach (var nvi in from NavigationViewItem nvi in 
 													((List<NavigationViewItemBase>)NavView.MenuItemsSource).Concat((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource)

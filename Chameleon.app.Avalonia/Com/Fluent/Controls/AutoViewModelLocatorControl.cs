@@ -8,6 +8,14 @@ using System.Reflection;
 
 namespace Chameleon.Av.Fluent.Common.Controls;
 public class AutoViewModelInitControl : UserControl {
+	public AutoViewModelInitControl()
+	{
+		//Loaded += async (s, e) => {
+		//	if (DataContext is IAmInitializer i) {
+		//		await i.InitializeAsync(e);
+		//	}
+		//};
+	}
 	protected override async void OnLoaded(RoutedEventArgs e)
 	{
 		base.OnLoaded(e);

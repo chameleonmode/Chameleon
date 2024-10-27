@@ -131,6 +131,8 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 			MBoxButtons.OkCancel,
 			"DeleteLines")) {
 			_ = await UserProfilesRepo.Instance.Delete(Dto.id);
+			Navigator.Pop();
+			UserProfilesViewModel.Instance.SetViewModelsFilter();
 		}
 	}
 	[RelayCommand]

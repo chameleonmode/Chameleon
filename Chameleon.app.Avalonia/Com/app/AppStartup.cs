@@ -112,6 +112,24 @@ public class AppStartup {
 		HttpApiClient.Instance.OnCircuitBreaker += (e) => {
 			Toaster.ShowErr("CircuitBreaker", e);
 		};
+		HttpApiClient.Instance.OnSendSeccess += (m) => {
+			//switch(m) {
+			//	case HttpMethod.Get:
+			//		Toaster.ShowInfo($"Request {m} was successful.");
+			//		break;
+			//	case HttpMethod.Post:
+			//		Toaster.ShowSuccess($"Request {m} was successful.");
+			//		break;
+			//	case HttpMethod.Put:
+			//		Toaster.ShowSuccess($"Request {m} was successful.");
+			//		break;
+			//	case HttpMethod.Delete:
+			//		Toaster.ShowSuccess($"Request {m} was successful.");
+			//		break;
+			//}
+			//if(m == HttpMethod.Put)
+			//	Toaster.ShowSuccess($"Update was successful.");
+		};
 	}
 
 	[Obsolete("Added for compatibility with corrent infrastructure project until _authSession refactoed out only")]

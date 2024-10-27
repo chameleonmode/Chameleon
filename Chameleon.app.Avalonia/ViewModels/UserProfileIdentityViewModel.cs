@@ -92,12 +92,11 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	public override async Task InitAsync(object? param)
 	{
 		await base.InitAsync(param);
+		await LoadReload();
 	}
 	public override async Task OnNavigatedToAsync(object? param)
 	{
 		await base.OnNavigatedToAsync(param);
-
-		await LoadReload();
 
 		if (param is UserProfileDto up) {
 			UserProfile = up;
@@ -139,6 +138,7 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 			if (res != null) {
 				UserProfile = res;
 				ProfileVM = new ObsProfile(UserProfile, false);
+				Toaster.ShowSuccess($"Update was successful.");
 			}
 		} catch (Exception ex) {
 			// Handle the exception (e.g., log it, show a notification, etc.)

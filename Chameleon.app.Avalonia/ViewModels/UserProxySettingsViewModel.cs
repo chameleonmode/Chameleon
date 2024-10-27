@@ -148,6 +148,7 @@ public partial class UserProxySettingsViewModel
 
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedCount));
+		Toaster.ShowSuccess($"Update was successful.");
 	}
 	[RelayCommand]
 	public async Task ApplyProxy()
@@ -175,6 +176,7 @@ public partial class UserProxySettingsViewModel
 
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedCount));
+		Toaster.ShowSuccess($"Update was successful.");
 	}
 	private static async Task ApplyProxy(List<ProxDto> proxies, List<ObsProxySetting> models)
 	{

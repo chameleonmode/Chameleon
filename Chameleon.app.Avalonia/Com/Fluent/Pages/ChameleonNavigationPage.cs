@@ -32,8 +32,6 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 		//DoubleTapped += OnPageTapped;
 	}
 
-
-
 	public virtual void OnAfterNavigatedToViewModel(object param) { }
 	private async void OnNavigatedTo(object? sender, NavigationEventArgs e)
 	{

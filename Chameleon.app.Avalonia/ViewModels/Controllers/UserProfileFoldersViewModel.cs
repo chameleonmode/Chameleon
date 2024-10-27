@@ -6,15 +6,13 @@ using System.Collections.ObjectModel;
 using DynamicData;
 using Chameleon.app.Avalonia.Com.DynamicData;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.Common.Interfaces.Sys;
-using Chameleon.lib.Common;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 	[ObservableProperty]
-	private ObsFolder? selectedFolder;
+	private ObsFolder selectedFolder;
 
-	public ObsFolder? AllProfiles { get; }
+	public ObsFolder AllProfiles { get; }
 	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
 	public ReadOnlyObservableCollection<ObsFolder> Folders => folders;
 
@@ -67,6 +65,14 @@ public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 		_ = await LoadedTCS.Task;
 
 		await OnNavigatingTo(Folders.FirstOrDefault(m => m.Dto?.id == id)?.Dto);
+	}
+
+	internal void SetSelectedFolder(UPFolderDto? value)
+	{
+		if (value == null)
+			SelectedFolder = AllProfiles;
+		else
+			SelectedFolder = Folders.FirstOrDefault(vm => vm.Dto!.id == value.id) ?? AllProfiles;
 	}
 
 	public static UserProfileFoldersViewModel Instance { get; } = new UserProfileFoldersViewModel();
