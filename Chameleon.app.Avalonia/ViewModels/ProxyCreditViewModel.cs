@@ -2,7 +2,6 @@
 
 using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.App.Shared.Proxies;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
@@ -13,6 +12,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using DynamicData;
+
+using static Chameleon.lib.Common.Constants.Enums.Api;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 

@@ -111,7 +111,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	private readonly ReadOnlyObservableCollection<ObsProfile> profiles;
 	public ReadOnlyObservableCollection<ObsProfile> Profiles => profiles;
 
-	private UserProfilesViewModel()
+	public UserProfilesViewModel()
 	{
 		//Func<ObsProfile, IObservable<bool>> filterFactory = p => Observable.Return(predicate(p));
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);

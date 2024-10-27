@@ -3,7 +3,6 @@ using System.Reactive.Subjects;
 
 using Chameleon.app.Avalonia.Com.DynamicData;
 using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.App.Shared.Proxies;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Extensions;
@@ -15,6 +14,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using DynamicData;
+
+using static Chameleon.lib.Common.Constants.Enums.Api;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 

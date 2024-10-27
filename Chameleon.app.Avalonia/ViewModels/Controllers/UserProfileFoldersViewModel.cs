@@ -12,14 +12,12 @@ public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private ObsFolder? selectedFolder;
 
-	public ObsFolder? AllProfiles { get; private set; }
+	public ObsFolder? AllProfiles { get; }
 	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
 	public ReadOnlyObservableCollection<ObsFolder> Folders => folders;
 
-	private UserProfileFoldersViewModel()
+	public UserProfileFoldersViewModel()
 	{
-		//selectedFolder = AllProfiles;
-		//_ = AllProfiles.Open();
 		_ = UserProfilesFolderRepo
 		.Connect()
 		.Transform(i => new ObsFolder(i, this))

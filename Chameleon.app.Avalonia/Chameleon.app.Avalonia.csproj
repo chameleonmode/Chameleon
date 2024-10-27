@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>	  
   </PropertyGroup>
 
 	<ItemGroup>
@@ -14,13 +15,22 @@
 	<PackageReference Include="Avalonia" />
 	<PackageReference Include="Avalonia.Svg" />
 	<PackageReference Include="Avalonia.Svg.Skia" />
-	<PackageReference Include="FluentAvaloniaUI" />
 	<PackageReference Include="Avalonia.Xaml.Behaviors" />
-    <PackageReference Include="AutoMapper" />
+	<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
+	<PackageReference Include="FluentAvaloniaUI" />
     <PackageReference Include="DynamicData" />
 	<PackageReference Include="CommunityToolkit.Mvvm" />
 	<PackageReference Include="System.Configuration.ConfigurationManager" />
-	  
+	<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+	<PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
+	<PackageReference Include="Microsoft.Extensions.Logging.Console" />
+	<PackageReference Include="Microsoft.IdentityModel.LoggingExtensions" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +43,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="App.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
     <Compile Update="Controls\MboxLoginUserControl.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
@@ -40,6 +53,12 @@
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
     <Compile Update="Views\AssistantUsersView.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Main\MainView.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Main\MainWindow.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
     <Compile Update="Views\PaginatorView.axaml.cs">

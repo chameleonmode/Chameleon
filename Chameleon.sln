@@ -2,14 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Architecture", "Architecture", "{EDA2D604-6596-49E3-B16D-010515BD81FA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Application.Shared", "Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj", "{6981B91B-2C62-488A-9447-DA5015B2CC60}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{E57F56C7-ACF8-48E2-9406-DD7C25779808}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Core.Shared", "Chameleon.Web\aspnet-core\src\Chameleon.Core.Shared\Chameleon.Core.Shared.csproj", "{CD38C5E1-3856-411D-B4DA-AE8ECE10B751}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -19,13 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia", "Avalonia", "{DE63877A-8B12-433C-B53C-8A03A5F3A071}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{CE5E137F-ECF3-42D0-99BB-18BA964E56EF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Desktop", "Chameleon.Avalonia\src\Chameleon.Avalonia.Desktop\Chameleon.Avalonia.Desktop.csproj", "{ABEAB877-7688-494A-84DF-7B44989A2F3E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Fluent", "Chameleon.Avalonia\src\Chameleon.Avalonia.Fluent\Chameleon.Avalonia.Fluent.csproj", "{AD9B695F-B074-4788-9D4C-645719EA0716}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia", "Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj", "{8C417AF0-D948-4637-B38B-DDC6E058C83D}"
 EndProject
@@ -43,28 +29,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "chameleon.assets", "..\cham
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.Api", "..\chameleon-lib\Chameleon.lib.Api\Chameleon.lib.Api.csproj", "{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{0B86C57C-40CF-4737-8F82-864548769102}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6981B91B-2C62-488A-9447-DA5015B2CC60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6981B91B-2C62-488A-9447-DA5015B2CC60}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6981B91B-2C62-488A-9447-DA5015B2CC60}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6981B91B-2C62-488A-9447-DA5015B2CC60}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD38C5E1-3856-411D-B4DA-AE8ECE10B751}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD38C5E1-3856-411D-B4DA-AE8ECE10B751}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD38C5E1-3856-411D-B4DA-AE8ECE10B751}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD38C5E1-3856-411D-B4DA-AE8ECE10B751}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD9B695F-B074-4788-9D4C-645719EA0716}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD9B695F-B074-4788-9D4C-645719EA0716}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD9B695F-B074-4788-9D4C-645719EA0716}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD9B695F-B074-4788-9D4C-645719EA0716}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -102,13 +78,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{6981B91B-2C62-488A-9447-DA5015B2CC60} = {E57F56C7-ACF8-48E2-9406-DD7C25779808}
-		{E57F56C7-ACF8-48E2-9406-DD7C25779808} = {EDA2D604-6596-49E3-B16D-010515BD81FA}
-		{CD38C5E1-3856-411D-B4DA-AE8ECE10B751} = {E57F56C7-ACF8-48E2-9406-DD7C25779808}
-		{CE5E137F-ECF3-42D0-99BB-18BA964E56EF} = {DE63877A-8B12-433C-B53C-8A03A5F3A071}
-		{ABEAB877-7688-494A-84DF-7B44989A2F3E} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
-		{AD9B695F-B074-4788-9D4C-645719EA0716} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D} = {CE5E137F-ECF3-42D0-99BB-18BA964E56EF}
+		{ABEAB877-7688-494A-84DF-7B44989A2F3E} = {0B86C57C-40CF-4737-8F82-864548769102}
+		{8C417AF0-D948-4637-B38B-DDC6E058C83D} = {0B86C57C-40CF-4737-8F82-864548769102}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

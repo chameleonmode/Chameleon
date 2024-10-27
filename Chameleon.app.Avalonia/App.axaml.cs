@@ -4,11 +4,9 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 
-using Chameleon.app.Avalonia;
 using Chameleon.app.Avalonia.Services;
-using Chameleon.app.Avalonia.Views;
+using Chameleon.app.Avalonia.Views.Main;
 using Chameleon.Av.Fluent.Common.Services;
-using Chameleon.Av.Fluent.Views;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.lib.Common.Interfaces.Sys;
@@ -21,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using AvApplication = Avalonia.Application;
 
-namespace Chameleon.Av.Fluent;
+namespace Chameleon.app.Avalonia;
 
 public partial class App : AvApplication {
 	private MainWindow? _mainWindow;

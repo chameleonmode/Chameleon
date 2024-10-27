@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <!--If you are willing to use Windows/MacOS native APIs you will need to create 3 projects.
-    One for Windows with net7.0-windows TFM, one for MacOS with net7.0-macos and one with net7.0 TFM for Linux.-->
-    <TargetFrameworks>net8.0</TargetFrameworks> <!--need to now use TargetFrameworks instead of TargetFramework some net8 bug with xamrin fixed in net9 -->
+    <TargetFrameworks>net8.0</TargetFrameworks> 
 	<Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -21,23 +19,9 @@
     <EmbeddedResource Remove="Properties\**" />
     <None Remove="Properties\**" />
   </ItemGroup>
-  <!--<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <WarningLevel>1</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <WarningLevel>1</WarningLevel>
-  </PropertyGroup>-->
   <ItemGroup>
     <None Remove="logosymbol.ico" />
   </ItemGroup>
-	<!-- <ItemGroup>
-		<Content Include="BrowserExtensions\**">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup> -->
-  <!--<ItemGroup>
-  	<TrimmerRootDescriptor Include="Roots.xml" />
-  </ItemGroup>-->
 	
   <ItemGroup>
 	  <PackageReference Include="Avalonia" />
@@ -50,8 +34,5 @@
 	
   <ItemGroup>
     <ProjectReference Include="..\..\..\Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj" />
-    <ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Application.Shared\Chameleon.Application.Shared.csproj" />
-    <ProjectReference Include="..\..\..\Chameleon.Web\aspnet-core\src\Chameleon.Core.Shared\Chameleon.Core.Shared.csproj" />
-    <ProjectReference Include="..\Chameleon.Avalonia.Fluent\Chameleon.Avalonia.Fluent.csproj" />
   </ItemGroup>
 </Project>

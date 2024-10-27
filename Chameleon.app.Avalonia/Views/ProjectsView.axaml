@@ -30,21 +30,15 @@
 				</afv:PageHeaderControl.ContentObject>
 			</afv:PageHeaderControl>
 
-			<Grid RowDefinitions="Auto,*" ColumnDefinitions="3*,*">
+			<Grid ColumnDefinitions="3*,*">
 				<appuc:UserProfilesUserControl
-					DataContext="{Binding Profiles}"
 					Grid.Column="0"
-					Grid.Row="1"
-					x:Name="profilesView">
-				</appuc:UserProfilesUserControl>
+					DataContext="{Binding Profiles}" />
 
 				<appuc:FoldersUserControl
-					DataContext="{Binding Folders}"
 					Grid.Column="1"
-					Grid.Row="1"
-					x:Name="foldersView"
-					BorderThickness="1 0 0 0">
-				</appuc:FoldersUserControl>
+					BorderThickness="1 0 0 0"
+					DataContext="{Binding Folders}"/>
 			</Grid>
 		</StackPanel>
 	</ScrollViewer>
