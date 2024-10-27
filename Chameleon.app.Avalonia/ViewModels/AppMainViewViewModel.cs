@@ -19,6 +19,7 @@ using Chameleon.lib.Common;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class AppMainViewViewModel : ObservableObjectBase {
+	public event Action<ObsProfile>? OnBoundProfilesProfileSelectedChanged;
 	[ObservableProperty]
 	private MainAppSearchItem? selectedSearchTerm;
 
@@ -26,6 +27,8 @@ public partial class AppMainViewViewModel : ObservableObjectBase {
 	private bool isSplashVisible = true;
 
 	private readonly ReadOnlyObservableCollection<ObsProfile> _boundProfilesList;
+	public IList<ObsProfile> BoundProfilesList => _boundProfilesList;
+
 	private readonly ReadOnlyObservableCollection<ObsFolder> _boundFoldersList;
 	public ObservableCollection<MainAppSearchItem> SearchTerms { get; } = [];
 
@@ -39,7 +42,7 @@ public partial class AppMainViewViewModel : ObservableObjectBase {
 
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i => new ObsProfile(i))
+			.Transform(i => new ObsProfile(i, onSelectedChanged: OnBoundProfilesProfileSelectedChanged))
 			.SortAndBind(out _boundProfilesList, Compares.ObsProfileCompares.AscendingComparer)
 			.Subscribe((i) => {
 				if (_boundProfilesList != null) {

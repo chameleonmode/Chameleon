@@ -19,7 +19,7 @@ using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : Vim<UserProfileDto> {
-	public event Action? OnSelectedChanged;
+	public event Action<ObsProfile>? OnSelectedChanged;
 	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
 	private readonly ISysBrowserService? SysBrowserServiceBase = IoC.GetService<ISysBrowserService>();
 
@@ -64,7 +64,7 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 			bool isShowC = true,
 			bool isShowD = true,
 			bool isShowF = true,
-			Action? onSelectedChanged = default)
+			Action<ObsProfile>? onSelectedChanged = default)
 		: base(userProfile.title ?? "xxx")
 	{
 		OnSelectedChanged = onSelectedChanged;
@@ -99,7 +99,7 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 
 	partial void OnIsSelectedChanged(bool value)
 	{
-		OnSelectedChanged?.Invoke();
+		OnSelectedChanged?.Invoke(this);
 	}
 	public void Open()
 	{

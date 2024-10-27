@@ -59,5 +59,10 @@ public partial class UserProfileSidePanelViewModel
 		userProfile = new ObsProfile(up);
 	}
 
+	public override async Task InitAsync(object? param)
+	{
+		await UserProfileIdentityViewModel.LoadReload();
+	}
+
 	partial void OnSelectedAddressChanged(UPAddressDto? value) => OnPropertyChanged(nameof(CountryName));
 }

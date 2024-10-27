@@ -30,7 +30,7 @@ public partial class AddUserProfilesPupViewModel : ViewModelObjectBase {
 		}
 	}
 
-	private void OnSelectedChanged() => SelectedViewModels = Profiles.Where(i => i.IsSelected);
+	private void OnSelectedChanged(ObsProfile _) => SelectedViewModels = Profiles.Where(i => i.IsSelected);
 	partial void OnSelectedViewModelsChanged(IEnumerable<ObsProfile>? value) => OnPropertyChanged(nameof(HasSelected));
 }
 

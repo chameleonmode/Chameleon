@@ -20,7 +20,7 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 	[ObservableProperty]
 	private int totalCount;
 
-	public int OnPageItems { get; } = onPageItems;
+	public int OnPageItems { get; private set; } = onPageItems;
 
 	public ObservableCollection<PaginatorButtonViewModel> Buttons { get; } = [];
 
@@ -46,7 +46,7 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 	}
 	partial void OnTotalCountChanged(int value)
 	{
-		UpdatePageCount();
+		UpdatePageCount(OnPageItems);
 		UpdateStatus();
 	}
 
@@ -61,12 +61,16 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 		PageIndex--;
 	}
 
-	private void UpdatePageCount()
+	public void UpdatePageCount(int opi)
 	{
-		var pageCounts = TotalCount / OnPageItems +
+		OnPageItems = opi;
+
+		var pageCounts = OnPageItems == 0 ? 1 : TotalCount / OnPageItems +
 				(TotalCount % OnPageItems > 0 ? 1 : 0);
 
 		PageCount = Math.Max(1, pageCounts);
+		PageIndex = 0;
+		ChangePageIndex(this);
 	}
 
 	private void UpdateStatus()

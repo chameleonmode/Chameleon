@@ -30,15 +30,13 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase
 			.Subscribe();
 	}
 
-	private void OnSelectedChanged()
+	private void OnSelectedChanged(ObsProfile p)
 	{
-		foreach (var item in profiles) {
-			if (item.IsSelected) {
-				if (!SelectedProfiles.Contains(item))
-					SelectedProfiles.Add(item);
-			} else {
-				_ = SelectedProfiles.Remove(item);
-			}
+		if (p.IsSelected) {
+			if (!SelectedProfiles.Contains(p))
+				SelectedProfiles.Add(p);
+		} else {
+			_ = SelectedProfiles.Remove(p);
 		}
 	}
 }

@@ -89,10 +89,15 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 		AsyncCommandMap["AddAddress"] = OnAddAddress;
 		AsyncCommandMap["AddLogin"] = OnAddLogin;
 	}
-
+	public override async Task InitAsync(object? param)
+	{
+		await base.InitAsync(param);
+	}
 	public override async Task OnNavigatedToAsync(object? param)
 	{
 		await base.OnNavigatedToAsync(param);
+
+		await LoadReload();
 
 		if (param is UserProfileDto up) {
 			UserProfile = up;
@@ -106,17 +111,7 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task Discard()
 	{
-		await LoadReload();
-	}
-
-	public static async Task LoadReload()
-	{
-		await Task.WhenAll([
-			UPAdditionalDataRepo.Instance.Personz.Load(),
-		  UPAdditionalDataRepo.Instance.Loginz.Load(),
-		  UPAdditionalDataRepo.Instance.Biz.Load(),
-		  UPAdditionalDataRepo.Instance.Addrez.Load()
-		]);
+		await LoadReload(true);
 	}
 
 	[RelayCommand]
@@ -254,4 +249,20 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	#endregion
 
 	public static UserProfileIdentityViewModel Instance { get; } = IoC.GetService<UserProfileIdentityViewModel>()!;
+
+	public static bool LoadedIniit { get; private set; }
+	public static async Task LoadReload(bool force = false)
+	{
+		if (LoadedIniit && !force)
+			return;
+
+		await Task.WhenAll([
+			UPAdditionalDataRepo.Instance.Personz.Load(),
+			UPAdditionalDataRepo.Instance.Loginz.Load(),
+			UPAdditionalDataRepo.Instance.Biz.Load(),
+			UPAdditionalDataRepo.Instance.Addrez.Load()
+		]);
+
+		LoadedIniit = true;
+	}
 }

@@ -27,8 +27,6 @@ using Chameleon.app.Avalonia.Controls;
 using FluentAvalonia.Core;
 using System.Reactive.Linq;
 using Chameleon.lib.Common.Interfaces.Sys;
-using System.Linq;
-using Chameleon.lib.Common.Models.Interfaces;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 
@@ -63,11 +61,9 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	private string searchText = string.Empty;
 	[ObservableProperty]
 	private UPFolderDto? folder;
-	[ObservableProperty]
-	private int selectedCount;
 
 	private CancellationTokenSource? _cts;
-	private IEnumerable<ObsProfile>? _selectedProfiles;
+	//private IEnumerable<ObsProfile>? _selectedProfiles;
 
 	public ObservableCollection<SystemBrovserItem> BrowserItems { get; } = [
 		new SystemBrovserItem(SystemBrowserType.Brave),
@@ -88,12 +84,16 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	//	get => _paginatorViewModel;
 	//	set {
 	//		if (SetProperty(ref _paginatorViewModel, value)) {
-			
+
 	//		}
 	//	}
 	//}
-	
-	private List<ObsProfile> GetSelectedProfiles => _selectedProfiles!.ToList();
+
+	private IEnumerable<ObsProfile>? GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
+	public int SelectedCount => GetSelectedProfiles?.Count() ?? 0;
+	public int MaxInFolderItems => Folder == null || Folder!.id == 0
+	? UserProfilesRepo.Instance.ObservableCache.Count
+	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.id);
 	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
 	public bool IsProfilesExist => UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
 	public bool HasNoItems => Profiles.Count == 0;
@@ -120,13 +120,15 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i => new ObsProfile(i, onSelectedChanged: OnSelectedChanged))
+			.Transform(i => new ObsProfile(i, onSelectedChanged: p => {
+				OnPropertyChanged(nameof(HasSelectedItems));
+				OnPropertyChanged(nameof(SelectedCount));
+			}))
 			.Filter(filter)
-			//.FilterOnObservable(filterFactory)
 			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
 			.SortAndBind(out profiles, profilesCompareObservable)
 			.Subscribe((i) => {
-				OnHandleUserEvent();
+				//OnHandleUserEvent();
 				//foreach (var update in i) {
 				//	var curIndex = update.CurrentIndex == -1 ? 0 : update.CurrentIndex;
 				//	var prevIndex = update.PreviousIndex == -1 ? 0 : update.PreviousIndex;
@@ -151,11 +153,12 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		PaginatorViewModel = new PaginatorViewModel((p) => {
 			if (p.PageIndex < 0)
 				return;
-			pageRequests.OnNext(new PageRequest(p.PageIndex + 1, Consts.PageinationPageItems));
+			pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems));
 		}) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
 		TotalCount = PaginatorViewModel.TotalCount;
+		//AppMainViewViewModel.Instance.OnBoundProfilesProfileSelectedChanged += OnSelectedChanged;
 	}
 	public override async Task InitAsync(object? param)
 	{
@@ -186,7 +189,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			: BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
 		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
 
-		OnPropertyChanged(nameof(SelectedBrowserItem));
 		OnHandleUserEvent();
 	}
 
@@ -209,15 +211,18 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	partial void OnSelectedPlaywrightScriptChanged(PlaywrightScript? value)
 	{
 		var cur = IoC.GetValue<string>("LastRunScriptId");
-		if (value!= null && cur != value.Title)
+		if (value != null && cur != value.Title)
 			IoC.SetValue(value.Title, "LastRunScriptId");
 	}
 	partial void OnSearchTextChanged(string value)
 	{
-		if (value.Is())
-			filter.OnNext(p => p.Title?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true);
-		else
+		if (value.Is()) {
+			PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
+			filter.OnNext(p => p.Title?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true && ((Folder == null || Folder?.id == 0) || (p.Dto!.folderId == Folder!.id)));
+		} else {
+			PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
 			filter.OnNext(FilterPredicate);
+		}
 
 		OnHandleUserEvent();
 	}
@@ -227,10 +232,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		HasFolder = value?.id != default && value?.id != 0;
 		OnPropertyChanged(nameof(SelectedFolderTitle));
 		SetViewModelsFilter();
-	}
-	partial void OnSelectedCountChanged(int value)
-	{
-		OnPropertyChanged(nameof(HasSelectedItems));
 	}
 
 	public void Open(UPFolderDto? folder)
@@ -274,27 +275,21 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 	private void OnHandleUserEvent()
 	{
-	//		private List<ObsProfile> GetSelectedProfiles => _selectedProfiles!.ToList();
-	//public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
-	//public bool IsProfilesExist => UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
-	//public bool HasNoItems => Profiles.Count == 0;
-	//public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
-	//public string SelectedFolderTitle => Folder?.title ?? "All profiles";
-	OnPropertyChanged(nameof(HasNoItems));
+		//private List<ObsProfile> GetSelectedProfiles => _selectedProfiles!.ToList();
+		//public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
+		//public bool IsProfilesExist => UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
+		//public bool HasNoItems => Profiles.Count == 0;
+		//public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
+		//public string SelectedFolderTitle => Folder?.title ?? "All profiles";
+		OnPropertyChanged(nameof(HasNoItems));
 		OnPropertyChanged(nameof(IsProfilesExist));
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(HasProfileWithoutFolder));
 	}
-	private void OnSelectedChanged()
-	{
-		_selectedProfiles = Profiles.Where(profile => profile.IsSelected);
-		SelectedCount = _selectedProfiles.Count();
-	}
 	private void SetViewModelsFilter()
 	{
 		filter.OnNext(FilterPredicate);
-		TotalCount = PaginatorViewModel.TotalCount = Folder == null || Folder.id == 0 ? UserProfilesRepo.Instance.ObservableCache.Count : UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder?.id);
-		PaginatorViewModel.PageIndex = 0;
+		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
 		OnHandleUserEvent();
 	}
 
@@ -304,37 +299,28 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		foreach (var profile in Profiles) {
 			profile.IsSelected = true;
 		}
-
-		SelectedCount = Profiles.Count;
 	}
 
 	[RelayCommand]
 	private void SelectAllProfilesFromFolder()
 	{
-		var profiles = Profiles
-				.Where(p => p.Dto?.folderId == Folder?.id || Folder?.id == 0)
-				.ToList();
-
-		profiles.ForEach(p => p.IsSelected = true);
-		SelectedCount = profiles.Count;
+		PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
+		SelectAll();
 	}
 
 	[RelayCommand]
 	private void UnselectItems()
 	{
-		if (_selectedProfiles == null) {
-			return;
-		}
-
-		foreach (var profile in _selectedProfiles) {
+		foreach (var profile in Profiles) {
 			profile.IsSelected = false;
 		}
+		PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
 	}
 
 	[RelayCommand]
 	private async Task Delete()
 	{
-		if (_selectedProfiles == null) {
+		if (GetSelectedProfiles == null) {
 			return;
 		}
 
@@ -342,16 +328,14 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 				$"Are you sure you want to delete {SelectedCount} profiles?",
 				MBoxButtons.OkCancel,
 				"DeleteLines")) {
-			var profiles = _selectedProfiles.ToList();
+			var profiles = GetSelectedProfiles.ToList();
 
 			foreach (var profile in profiles) {
-				//await Task.Run(() => _userProfileService.Delete(profile.UserProfile));
 				var res = await UserProfilesRepo.Instance.Delete(profile.Dto!.id);
-				if (res.success) {
+				if (!res.success) {
 					profile.IsSelected = false;
 				}
 			}
-			OnSelectedChanged();
 			SetViewModelsFilter();
 		}
 	}
@@ -360,20 +344,20 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	private async Task RemoveProfilesFromFolder()
 	{
 		if (Folder?.id == 0 ||
-				_selectedProfiles == null ||
-				!_selectedProfiles.Any()) {
+				GetSelectedProfiles == null ||
+				!GetSelectedProfiles.Any()) {
 			return;
 		}
 
-		var ids = _selectedProfiles
+		var ids = GetSelectedProfiles
 				.Select(a => a.Dto!.id)
 				.ToList();
 
 		var res = await UserProfilesRepo.MoveUserProfileToFolder(ids, null);
 		if (!res.success) {
-			//Filter = p => p.FolderId == _folder?.id;
-			//SetViewModelsFilter();
 		}
+
+		SetViewModelsFilter();
 	}
 
 	[RelayCommand]
@@ -385,12 +369,11 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		var addvm = new AddUserProfilesPupViewModel {
 			Title = "Add Profiles"
 		};
-		
 
-		if (await Mbox.ShowTaskDialog<AddUserProfilesPupViewModel, AddUserProfilesPopupUserControl>(() => addvm, 
-			header: addvm.Title, 
-			subHeader: $"Select profiles you want to add to {Folder!.title} folder:", 
-			symbas: Enums.Symbas.Folder, 
+		if (await Mbox.ShowTaskDialog<AddUserProfilesPupViewModel, AddUserProfilesPopupUserControl>(() => addvm,
+			header: addvm.Title,
+			subHeader: $"Select profiles you want to add to {Folder!.title} folder:",
+			symbas: Enums.Symbas.Folder,
 			btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK) {
 			var ids = addvm.SelectedViewModels?
 				.Select(a => a.Dto!.id)
@@ -402,6 +385,8 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			if (!res.success) {
 			}
 		}
+
+		SetViewModelsFilter();
 	}
 
 	[RelayCommand]
@@ -432,17 +417,19 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 				.ToList();
 
 			var res = await UserProfilesRepo.MoveUserProfileToFolder(ids, addvm.SelectedFolder.Dto!.id);
-			if (res.success) {
+			if (!res.success) {
 				//Filter = p => p.FolderId == _folder?.id;
 				//OnHandleUserEvent();
 			}
 		}
+
+		SetViewModelsFilter();
 	}
 
 	[RelayCommand]
 	private void OpenChameleonBrowser()
 	{
-		GetSelectedProfiles.ForEach(profile => {
+		GetSelectedProfiles?.ForEach(profile => {
 			profile.OpenUserBrowser();
 		});
 	}
@@ -467,7 +454,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 	private void OpenSystemBrowser(SystemBrowserType browserType)
 	{
-		GetSelectedProfiles.ForEach(async (selectedProfile) => {
+		GetSelectedProfiles?.ForEach(async (selectedProfile) => {
 			await selectedProfile.OpenSystemBrowser(browserType);
 		});
 	}
@@ -475,7 +462,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task RunAutomation()
 	{
-		if (!Profiles.Any(p => p.IsSelected == true)) {
+		if (GetSelectedProfiles == null) {
 			Toaster.ShowErr("Select one or more profiles to run the automation.");
 			return;
 		}

@@ -65,7 +65,6 @@ public class AppStartup {
 	{
 		await UserProfilesRepo.Instance.Load();
 		await UserProfilesFolderRepo.Instance.Load();
-		await UserProfileIdentityViewModel.LoadReload();
 	}
 
 	public static AppStartup Instance { get; } = new AppStartup();

@@ -35,8 +35,6 @@ public partial class UserProxySettingsViewModel
 	private string? applingProxy;
 	[ObservableProperty]
 	private int totalCount;
-	[ObservableProperty] 
-	private bool isSelectedAll;
 	[ObservableProperty]
 	private PaginatorViewModel paginatorViewModel;
 
@@ -49,13 +47,18 @@ public partial class UserProxySettingsViewModel
 	public List<ObsProxySetting> SelectedProfiles => Proxies.Where(p => p.ObsProfile.IsSelected).ToList();
 	public bool HasSelectedItems => Proxies.Any(setting => setting.ObsProfile.IsSelected);
 	public int SelectedCount => Proxies.Count(setting => setting.ObsProfile.IsSelected);
+	public int MaxInFolderItems => SelectedFolder == null || SelectedFolder.Dto!.id == 0 
+		? UserProfilesRepo.Instance.ObservableCache.Count 
+		: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == SelectedFolder.Dto!.id);
 	public UserProxySettingsViewModel() : base("Proxy")
 	{
 		filter = new BehaviorSubject<Func<ObsProxySetting, bool>>(FilterPredicate);
 
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i=> new ObsProxySetting(new ObsProfile(i, false, onSelectedChanged: () => {
+			.Transform(i=> new ObsProxySetting(new ObsProfile(i, false, onSelectedChanged: (p) => {
+				//PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
+				//PaginatorViewModel.UpdatePageCount(Math.Max(Consts.PageinationPageItems, Proxies.Count(p => p.ObsProfile.IsSelected)));
 				OnPropertyChanged(nameof(HasSelectedItems));
 				OnPropertyChanged(nameof(SelectedCount));
 			})))
@@ -72,7 +75,7 @@ public partial class UserProxySettingsViewModel
 		PaginatorViewModel = new PaginatorViewModel((p) => {
 			if (p.PageIndex < 0)
 				return;
-			pageRequests.OnNext(new PageRequest(p.PageIndex + 1, Consts.PageinationPageItems));
+			pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems));
 		}) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
@@ -104,19 +107,16 @@ public partial class UserProxySettingsViewModel
 			SelectedFolder = Folders.FirstOrDefault(f=>f.Dto!.id == folderId.Dto!.id) ?? Folders[0];
 		}
 	}
-	
-	partial void OnIsSelectedAllChanged(bool value)
-	{
-		foreach (var item in Proxies) {
-			item.ObsProfile.IsSelected = value;
-		}
-	}
+
 	partial void OnSelectedFolderChanged(ObsFolder? value)
 	{
-		IsSelectedAll = false;
+		UnselectItems();
 		filter.OnNext(FilterPredicate);
-		TotalCount = PaginatorViewModel.TotalCount = value == null || value.Dto!.id == 0 ? UserProfilesRepo.Instance.ObservableCache.Count : UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == value.Dto!.id);
-		PaginatorViewModel.PageIndex = 0;
+		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
+		//PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
+		//PaginatorViewModel.UpdatePageCount(Math.Max(Consts.PageinationPageItems, Proxies.Count(p => p.ObsProfile.IsSelected)));
+		//OnPropertyChanged(nameof(HasSelectedItems));
+		//OnPropertyChanged(nameof(SelectedCount));
 	}
 	
 	[RelayCommand]
@@ -235,10 +235,10 @@ public partial class UserProxySettingsViewModel
 	[RelayCommand]
 	private void UnselectItems()
 	{
-		IsSelectedAll = false;
 		foreach (var model in Proxies) {
 			model.ObsProfile.IsSelected = false;
 		}
+		PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
 	}
 	[RelayCommand]
 	private void SelectAll()
@@ -250,6 +250,7 @@ public partial class UserProxySettingsViewModel
 	[RelayCommand]
 	private void SelectAllFromFolder()
 	{
-		IsSelectedAll = true;
+		PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
+		SelectAll();
 	}
 }
