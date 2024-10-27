@@ -50,7 +50,7 @@ ln -s ../Resources/.playwright .playwright
 
 cd "/Users/dev/Projects/Chameleon/Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop"
 
-echo "[INFO] Switch provisionprofile to AppStore"
+#echo "[INFO] Switch provisionprofile to AppStore"
 cp -R -f Chameleonmodes.provisionprofile "App/Chameleon.app/Contents/embedded.provisionprofile"
 
 #echo "[INFO] Fix libuv.dylib architectures"
@@ -58,15 +58,15 @@ cp -R -f Chameleonmodes.provisionprofile "App/Chameleon.app/Contents/embedded.pr
 
 find "$APP_NAME/Contents/Frameworks"|while read fname; do
     if [[ -f $fname ]]; then
-        echo "[INFO] Signing $fname"
+        #echo "[INFO] Signing $fname"
         codesign --force --sign "$APP_SIGNING_IDENTITY" "$fname"
     fi
 done
 
-echo "[INFO] Signing app executable"
+#echo "[INFO] Signing app executable"
 codesign --force --timestamp --options=runtime --entitlements "$APP_ENTITLEMENTS" --sign "$APP_SIGNING_IDENTITY" "App/Chameleon.app/Contents/MacOS/Chameleon"
 
-echo "[INFO] Signing app bundle"
+#echo "[INFO] Signing app bundle"
 codesign --force --timestamp --options=runtime --entitlements "$APP_ENTITLEMENTS" --sign "$APP_SIGNING_IDENTITY" "$APP_NAME"
 
 #echo "[INFO] Creating Chameleon.pkg"
