@@ -85,14 +85,14 @@
 				</OnFormFactor>
 			</TabStrip.ItemsPanel>
 			<TabStripItem
-				Content="Proxy"
-				Tag="{StaticResource Proxy}"/>
-			<TabStripItem
 				Content="Default Launch Settings"
 				Tag="{StaticResource DefaultSettingsPageIcon}"/>
 			<TabStripItem
 				Content="Phone Verification"
 				Tag="{StaticResource CellPhone}"/>
+			<TabStripItem
+				Content="Proxy"
+				Tag="{StaticResource Proxy}"/>
 			<TabStripItem
 				Content="Proxy Credit"
 				Tag="{StaticResource ProxyCred}"/>

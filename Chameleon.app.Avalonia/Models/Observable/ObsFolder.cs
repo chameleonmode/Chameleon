@@ -15,7 +15,6 @@ using CommunityToolkit.Mvvm.Input;
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsFolder : Vim<UPFolderDto> {
 	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
-	private readonly UserProfileFoldersViewModel? foldervm;
 
 	[ObservableProperty]
 	private bool isFavorite;
@@ -28,24 +27,26 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 
 	public bool ShowFavoriteIcon => Dto?.id > 0;
 	public bool IsSharedFolder => Dto?.creatorUserId != null &&  Dto?.creatorUserId != _authSession?.UserId;
-	public bool IsContextMenuItemEnabled => _authSession.CreatorUserId != null;
+	public bool IsContextMenuItemEnabled => _authSession.CreatorUserId == null;
+	public bool IsContextMenuVisible => Dto!.id != 0;
+	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => p.folderId == Dto!.id); 
 
-	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items
-		.Where(profiles => profiles.folderId == Dto!.id)
-		.Any();
-
-	public ObsFolder(UPFolderDto folder, UserProfileFoldersViewModel? foldervm = null)
+	public ObsFolder(UPFolderDto folder)
 			: base(folder.title)
 	{
 		Dto = folder;
-		this.foldervm = foldervm;
 
 		isFavorite = Dto.isFavorite;
 		profilesCount = Dto.profilesCount;
 
 		CommandMap["SetFavoriteFolder"] = SetFavoriteFolder;
 		CommandMap["ViewGroup"] = ViewGroup;
-		this.foldervm = foldervm;
+
+		UserProfilesRepo.Instance.OnProfileChanged += (profile) => {
+			if (profile.folderId == Dto!.id) {
+				ProfilesCount = UserProfilesRepo.Instance.ObservableCache.Items.Count(p => p.folderId == Dto!.id);
+			}
+		};
 	}
 	partial void OnIsSelectedChanged(bool value)
 	{
@@ -57,7 +58,7 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 	}
 	private void ViewGroup()
 	{
-		Navigator.NavigateToType(typeof(ProjectsView), Dto);
+		Navigator.NavigateToType(typeof(ProjectsView), this);
 	}
 
 	private void SetFavoriteFolder()
@@ -71,16 +72,14 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 	[RelayCommand]
 	public async Task Open()
 	{
-		if(foldervm != null)
-			await foldervm.OnNavigatingTo(Dto);
-			IsSelected = true;
+		await UserProfileFoldersViewModel.Instance.OnNavigatingTo(Dto);
+		IsSelected = true;
 	}
 
 	[RelayCommand]
 	private async Task SetFavorite()
 	{
 		IsFavorite = !IsFavorite;
-
 		Dto!.isFavorite = IsFavorite;
 
 		_ = await UserProfilesFolderRepo.Instance.Put(Dto);
@@ -96,18 +95,18 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 				Enums.MBoxButtons.OkCancel,
 				"DeleteLines")) {
 
-			await Task.Run(async () => {
-				var userProfiles = UserProfilesRepo.Instance.ObservableCache.Items;
-				var deletes = new List<Task>();
-				foreach (var item in userProfiles) {
-					item.folderId = null;
-					deletes.Add(Task.Run(() => UserProfilesRepo.Instance.Put(item)));
-				}
-				await Task.WhenAll(deletes);
-				var res = await UserProfilesFolderRepo.Instance.Delete(Dto!.id);
-			});
+			var userProfiles = UserProfilesRepo.Instance.ObservableCache.Items.Where(p=> p.folderId == Dto!.id);
+			var deletes = new List<Task>();
+			foreach (var item in userProfiles) {
+				item.folderId = null;
+				deletes.Add(UserProfilesRepo.Instance.Put(item));
+			}
+			await Task.WhenAll(deletes);
+			var res = await UserProfilesFolderRepo.Instance.Delete(Dto!.id);
+			if (!res.success) {
 
-			await foldervm!.AllProfiles!.Open();
+			}
+			await UserProfileFoldersViewModel.Instance.AllProfiles!.Open();
 		}
 	}
 

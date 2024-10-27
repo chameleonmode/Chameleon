@@ -20,8 +20,7 @@
 				<afv:ChameleonContentControl Title="Proxies list"
 											 TitleDescription="Select proxies to edit them">
 					<afv:ChameleonContentControl.TitleContent>
-						<paginator:PaginatorView Grid.Row="1"
-												 DataContext="{Binding PaginatorViewModel}" />
+						<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
 					</afv:ChameleonContentControl.TitleContent>
 
 					<afv:ChameleonContentControl.Header>
@@ -137,9 +136,7 @@
 					<afv:ChameleonContentControl.Footer>
 						<ui:SettingsExpander Header="PROXIES EDITOR"
 											 VerticalAlignment="Bottom"
-											 IsVisible="{Binding ShowCustomizeProxies}"
-											 IsExpanded="True"
-									 IconSource="Image">
+											 IconSource="Image">
 							<ui:SettingsExpanderItem>
 								<Grid>
 									<Grid.RowDefinitions>

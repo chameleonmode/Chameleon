@@ -1,6 +1,48 @@
-﻿using Chameleon.lib.CommunityToolkit.MvvM;
+﻿using Chameleon.app.Avalonia.Models.Observable;
+using System.Collections.ObjectModel;
+
+using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.app.Avalonia.Com.DynamicData;
+using Chameleon.lib.Api.Repos;
+using DynamicData;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
+public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase
+{
+	[ObservableProperty]
+	private string? assistantName;
+	[ObservableProperty]
+	private string? assistantEmail;
+	[ObservableProperty]
+	private bool showInviteinfo;
+
+	private readonly ReadOnlyObservableCollection<ObsProfile> profiles;
+	public ReadOnlyObservableCollection<ObsProfile> Profiles => profiles;
+	public ObservableCollection<ObsProfile> SelectedProfiles { get; } = [];
+
+	public InviteUserOrAddProfilesViewModel()
+	{
+		_ = UserProfilesRepo
+			.Connect()
+			.Transform(i => new ObsProfile(i, onSelectedChanged: OnSelectedChanged))
+			.SortAndBind(out profiles, Compares.ObsProfileCompares.AscendingComparer)
+			.Subscribe();
+	}
+
+	private void OnSelectedChanged()
+	{
+		foreach (var item in profiles) {
+			if (item.IsSelected) {
+				if (!SelectedProfiles.Contains(item))
+					SelectedProfiles.Add(item);
+			} else {
+				_ = SelectedProfiles.Remove(item);
+			}
+		}
+	}
+}
+
 //public partial class ProfileViewModel
 //	 : ObservableObject {
 //	private readonly IEventAggregator EventAggregator;
@@ -575,8 +617,3 @@ namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 //		}
 //	}
 //}
-
-public class InviteUserOrAddProfilesViewModel : ViewModelObjectBase
-{
-
-}

@@ -27,6 +27,8 @@ using Chameleon.app.Avalonia.Controls;
 using FluentAvalonia.Core;
 using System.Reactive.Linq;
 using Chameleon.lib.Common.Interfaces.Sys;
+using System.Linq;
+using Chameleon.lib.Common.Models.Interfaces;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 
@@ -37,9 +39,10 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	private readonly IPlaywrightScriptRepository _plawrightRepository = IoC.GetService<IPlaywrightScriptRepository>()!;
 	private readonly IPlaywriteService _playwriteService = IoC.GetService<IPlaywriteService>()!;
 
-	private PaginatorViewModel? _paginatorViewModel;
 	public AvList<PlaywrightScript> PlaywrightScripts { get; } = [];
 
+	[ObservableProperty]
+	private PaginatorViewModel paginatorViewModel;
 	[ObservableProperty]
 	private SystemBrovserItem? selectedBrowserItem;
 	[ObservableProperty]
@@ -81,14 +84,14 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			return _cts.Token;
 		}
 	}
-	public PaginatorViewModel? PaginatorViewModel {
-		get => _paginatorViewModel;
-		set {
-			if (SetProperty(ref _paginatorViewModel, value)) {
-				_paginatorViewModel!.ChangePageIndex += (s, a) => { pageRequests.OnNext(new PageRequest(_paginatorViewModel.PageIndex, Consts.PageinationPageItems)); };
-			}
-		}
-	}
+	//public PaginatorViewModel? PaginatorViewModel {
+	//	get => _paginatorViewModel;
+	//	set {
+	//		if (SetProperty(ref _paginatorViewModel, value)) {
+			
+	//		}
+	//	}
+	//}
 	
 	private List<ObsProfile> GetSelectedProfiles => _selectedProfiles!.ToList();
 	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
@@ -123,11 +126,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
 			.SortAndBind(out profiles, profilesCompareObservable)
 			.Subscribe((i) => {
-				if (Profiles != null) {
-					PaginatorViewModel ??= new PaginatorViewModel(Profiles.Count);
-					PaginatorViewModel.TotalCount = Profiles.Count;
-					TotalCount = PaginatorViewModel.TotalCount;
-				}
 				OnHandleUserEvent();
 				//foreach (var update in i) {
 				//	var curIndex = update.CurrentIndex == -1 ? 0 : update.CurrentIndex;
@@ -150,6 +148,14 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 				//	}
 				//}
 			});
+		PaginatorViewModel = new PaginatorViewModel((p) => {
+			if (p.PageIndex < 0)
+				return;
+			pageRequests.OnNext(new PageRequest(p.PageIndex + 1, Consts.PageinationPageItems));
+		}) {
+			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
+		};
+		TotalCount = PaginatorViewModel.TotalCount;
 	}
 	public override async Task InitAsync(object? param)
 	{
@@ -238,7 +244,12 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	{
 		var folderId = HasFolder ? Folder?.id : null;
 
-		var res = await UserProfilesRepo.CreateProfile($"New Profile - {Profiles.Count}", folderId);
+		var pcount = UserProfilesRepo.Instance.ObservableCache.Items.Count;
+		var pname = $"New Profile - {pcount}";
+		while (UserProfilesRepo.Instance.ObservableCache.Items.Any(i => i.title == pname))
+			pname = $"New Profile - {++pcount}";
+
+		var res = await UserProfilesRepo.CreateProfile(pname, folderId);
 		if (res != null) {
 			OnHandleUserEvent();
 		}
@@ -263,8 +274,13 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 	private void OnHandleUserEvent()
 	{
-		OnPropertyChanged(nameof(PaginatorViewModel));
-		OnPropertyChanged(nameof(HasNoItems));
+	//		private List<ObsProfile> GetSelectedProfiles => _selectedProfiles!.ToList();
+	//public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
+	//public bool IsProfilesExist => UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
+	//public bool HasNoItems => Profiles.Count == 0;
+	//public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
+	//public string SelectedFolderTitle => Folder?.title ?? "All profiles";
+	OnPropertyChanged(nameof(HasNoItems));
 		OnPropertyChanged(nameof(IsProfilesExist));
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(HasProfileWithoutFolder));
@@ -277,10 +293,8 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	private void SetViewModelsFilter()
 	{
 		filter.OnNext(FilterPredicate);
-		PaginatorViewModel = new PaginatorViewModel(Profiles.Count) {
-			TotalCount = Profiles.Count
-		};
-		TotalCount = PaginatorViewModel.TotalCount;
+		TotalCount = PaginatorViewModel.TotalCount = Folder == null || Folder.id == 0 ? UserProfilesRepo.Instance.ObservableCache.Count : UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder?.id);
+		PaginatorViewModel.PageIndex = 0;
 		OnHandleUserEvent();
 	}
 
@@ -356,9 +370,9 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 				.ToList();
 
 		var res = await UserProfilesRepo.MoveUserProfileToFolder(ids, null);
-		if (res.success) {
+		if (!res.success) {
 			//Filter = p => p.FolderId == _folder?.id;
-			SetViewModelsFilter();
+			//SetViewModelsFilter();
 		}
 	}
 
@@ -381,13 +395,11 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			var ids = addvm.SelectedViewModels?
 				.Select(a => a.Dto!.id)
 				.ToList();
-			if (ids == null || !ids.Any()) {
+			if (ids == null || ids.Count == 0) {
 				return;
 			}
 			var res = await UserProfilesRepo.MoveUserProfileToFolder(ids, Folder!.id);
-			if (res.success) {
-				//Filter = p => p.FolderId == _folder?.id;
-				//OnHandleUserEvent();
+			if (!res.success) {
 			}
 		}
 	}

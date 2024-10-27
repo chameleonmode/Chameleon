@@ -26,61 +26,33 @@
 				<afv:ChameleonContentControl.Content>
 					<StackPanel>
 						<UniformGrid Columns="2">
-							<!--<CheckBox
-								Content="Block CSS Exfil"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.BlockCSSExfil}" />-->
-							<!--<CheckBox
-								Content="Block Media Devices"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.BlockMediaDevices}" />-->
 							<CheckBox
 								Content="Resist Canvas Fingerprint"
-								IsChecked="{Binding Path=ThesebrowserDefaultLaunchSettings.Options.SpoofCanvasFingerprint}" />
+								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofCanvasFingerprint}" />
 							<CheckBox
 								Content="Resist WebGl Fingerprint"
-								IsChecked="{Binding Path=ThesebrowserDefaultLaunchSettings.Options.SpoofWebGLFingerprint}" />
-							<!--<CheckBox
-								Content="Spoof WebGPU Fingerprint"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofWebGPUFingerprint}" />-->
-							<!--<CheckBox
-								Content="Spoof Audio Context"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofAudioContext}" />-->
+								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofWebGLFingerprint}" />
 							<CheckBox
 								Content="Resist Client Rects"
-								IsChecked="{Binding Path=ThesebrowserDefaultLaunchSettings.Options.SpoofClientRects}" />
+								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofClientRects}" />
 							<CheckBox
 								Content="Resist Font Fingerprint"
-								IsChecked="{Binding Path=ThesebrowserDefaultLaunchSettings.Options.SpoofFontFingerprint}" />
-							<!--<CheckBox
-								Content="Spoof Media Devices"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.SpoofMediaDevices}" />-->
+								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofFontFingerprint}" />
 							<CheckBox
 								Content="Resist Geo Location"
-								IsChecked="{Binding Path=ThesebrowserDefaultLaunchSettings.Options.SpoofGeoLocation}" />
+								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofGeoLocation}" />
 							<CheckBox
 								Content="Disable WebRtc"
-								IsChecked="{Binding Path=ThesebrowserDefaultLaunchSettings.Options.DisableWebRTC}" />
-							<!--<CheckBox Content="Do Not Track"
-									  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.Tracking}" />
-							<CheckBox Content="Flash"
-									  IsChecked="{Binding Path=!UserProfileModel.WebBrowser.Flash}" />-->
+								IsChecked="{Binding Path=DefaultEmulationOptions.DisableWebRTC}" />
 							<CheckBox
 								Content="Auto Timezone"
-								IsChecked="{Binding Path=ThesebrowserDefaultLaunchSettings.Options.AutoTimezone}" />
-							<!--<CheckBox
-								Content="Limit History"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.LimitHistory}" />-->
-							<!--<CheckBox
-								Content="Protect Keyboad Fingerprint"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.ProtectKBFingerprint.Enabled}" />-->
-							<!--<CheckBox
-								Content="Protect Window Name"
-								IsChecked="{Binding Path=BrowserDefaultLaunchSettings.Options.ProtectWinName}" />-->
+								IsChecked="{Binding Path=DefaultEmulationOptions.AutoTimezone}" />
 						</UniformGrid>
 					</StackPanel>
 				</afv:ChameleonContentControl.Content>
 			</afv:ChameleonContentControl>
 			
-			<afv:ChameleonContentControl Title="Default Home Pages"
+			<afv:ChameleonContentControl Title="Default Launch Pages"
 							   TitleDescription="Select and edit default saved pages">
 				<afv:ChameleonContentControl.TitleContent>
 					<ui:CommandBar DefaultLabelPosition="Right"
@@ -89,10 +61,6 @@
 							<ui:CommandBarButton IconSource="Add"
 												 Label="New"
 												 Command="{Binding CreateNewDefaultSettingsCommand}"/>
-							<!--TODO: implement smoother functionality
-							<ui:CommandBarButton IconSource="Page"
-												 Label="Add pages"
-												 Command="{Binding BulkAddPagesCommand}"/>-->
 							<ui:CommandBarButton IconSource="Save"
 												 Label="Save"
 												 Command="{Binding SaveCommand}"/>

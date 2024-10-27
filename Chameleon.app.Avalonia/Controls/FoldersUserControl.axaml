@@ -48,14 +48,11 @@
 											IsVisible="{Binding IsSharedFolder}"
 											VerticalAlignment="Bottom"
 											HorizontalAlignment="Right">
-
 											<Ellipse Fill="{StaticResource ControlOnImageFillColorDefaultBrush}"/>
-
 											<ui:SymbolIcon Symbol="Share" FontSize="8" />
 										</Grid>
 									</Grid>
 								</Viewbox>
-
 
 								<TextBlock
 									VerticalAlignment="Center"
@@ -97,6 +94,7 @@
 						IsVisible="{Binding !IsRenamed}"
 						HorizontalAlignment="Right">
 						<Button
+							IsVisible="{Binding IsContextMenuVisible}"
 							Grid.Column="1"
 							Content="three-dots"
 							ToolTip.Tip="Details"

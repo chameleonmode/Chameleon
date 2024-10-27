@@ -22,8 +22,8 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 
 		if (param is ObsFolder) {
 			TabStrip1.SelectionChanged -= TabStrip1SelectionChanged!;
-			TabStrip1.SelectedIndex = 0;
-			NavigateToIndex(0, param);
+			TabStrip1.SelectedIndex = 2;
+			NavigateToIndex(2, param);
 			TabStrip1.SelectionChanged += TabStrip1SelectionChanged!;
 		}
 	}
@@ -46,9 +46,9 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 			return;
 
 		InnerNavFrame.Navigate(idx switch {
-			0 => typeof(UserProxySettingsView),
-			1 => typeof(UserDefaultSettingsView),
-			2 => typeof(PhoneVerificationView),
+			0 => typeof(UserDefaultSettingsView),
+			1 => typeof(PhoneVerificationView),
+			2 => typeof(UserProxySettingsView),
 			3 => typeof(ProxyCreditView),
 			4 => typeof(AssistantUsersView),
 			_ => throw new Exception()

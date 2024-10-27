@@ -35,20 +35,10 @@ public partial class UserProxySettingsViewModel
 	private string? applingProxy;
 	[ObservableProperty]
 	private int totalCount;
-	[ObservableProperty]
-	private bool showCustomizeProxies;
 	[ObservableProperty] 
 	private bool isSelectedAll;
-
-	private PaginatorViewModel? _paginatorViewModel;
-	public PaginatorViewModel? PaginatorViewModel {
-		get => _paginatorViewModel;
-		set {
-			if (SetProperty(ref _paginatorViewModel, value)) {
-				_paginatorViewModel!.ChangePageIndex += (s, a) => { pageRequests.OnNext(new PageRequest(_paginatorViewModel.PageIndex, Consts.PageinationPageItems)); };
-			}
-		}
-	}
+	[ObservableProperty]
+	private PaginatorViewModel paginatorViewModel;
 
 	public ObservableCollection<ProxCountryDto> Countries { get; } = [];
 	public ReadOnlyObservableCollection<ObsFolder> Folders => folders;
@@ -70,20 +60,23 @@ public partial class UserProxySettingsViewModel
 				OnPropertyChanged(nameof(SelectedCount));
 			})))
 			.Filter(filter)
-			.SortAndBind(out proxies, Compares.ObsProxySettingCompares.AscendingComparer)
-			.Subscribe(i => {
-				if (Proxies != null) {
-					PaginatorViewModel ??= new PaginatorViewModel(Proxies.Count);
-					PaginatorViewModel.TotalCount = Proxies.Count;
-					TotalCount = PaginatorViewModel.TotalCount;
-				}
-			});
+			.SortAndPage(Compares.ObsProxySettingCompares.AscendingComparer, pageRequests)
+			.Bind(out proxies)
+			.Subscribe();
 
 		_ = UserProfilesFolderRepo
 			.Connect()
 			.Transform(i => new ObsFolder(i))
 			.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
 			.Subscribe();
+		PaginatorViewModel = new PaginatorViewModel((p) => {
+			if (p.PageIndex < 0)
+				return;
+			pageRequests.OnNext(new PageRequest(p.PageIndex + 1, Consts.PageinationPageItems));
+		}) {
+			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
+		};
+		TotalCount = PaginatorViewModel.TotalCount;
 		SelectedFolder = folders[0];
 	}
 	public override async Task InitAsync(object? param)
@@ -122,6 +115,8 @@ public partial class UserProxySettingsViewModel
 	{
 		IsSelectedAll = false;
 		filter.OnNext(FilterPredicate);
+		TotalCount = PaginatorViewModel.TotalCount = value == null || value.Dto!.id == 0 ? UserProfilesRepo.Instance.ObservableCache.Count : UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == value.Dto!.id);
+		PaginatorViewModel.PageIndex = 0;
 	}
 	
 	[RelayCommand]
@@ -157,16 +152,16 @@ public partial class UserProxySettingsViewModel
 	[RelayCommand]
 	public async Task ApplyProxy()
 	{
-		var models = SelectedProfiles;
-		if(models.Count == 0) {
+		if(SelectedProfiles.Count == 0) {
 			return;
 		}
 
 		if (!ApplingProxy.Is()) {
-			if (models != null) {
-				foreach (var model in models) {
-					if (model.ObsProfile.Dto!.proxy.host != model.Host ||
-						model.Port != model.ObsProfile.Dto!.proxy.port ||
+			if (SelectedProfiles != null) {
+				foreach (var model in SelectedProfiles) {
+					if (
+						model.ObsProfile.Dto!.proxy.host != model.Host ||
+					  model.ObsProfile.Dto!.proxy.port != model.Port ||
 						model.ObsProfile.Dto!.proxy.userName != model.UserName ||
 						model.ObsProfile.Dto!.proxy.password != model.Password) {
 						await ApplyProxy(null, model);
@@ -174,15 +169,14 @@ public partial class UserProxySettingsViewModel
 				}
 			}
 		} else {
-			await ApplyProxy(ParseProxiesSettings(
-				ApplingProxy!.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)), 
-				models);
+			var proxies = ParseProxiesSettings(ApplingProxy!.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries));
+			await ApplyProxy(proxies,	SelectedProfiles);
 		}
 
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedCount));
 	}
-	private async Task ApplyProxy(List<ProxDto> proxies, List<ObsProxySetting> models)
+	private static async Task ApplyProxy(List<ProxDto> proxies, List<ObsProxySetting> models)
 	{
 		if (proxies.Count == 1) {
 			for (var i = 0; i < models.Count; ++i) {
@@ -208,7 +202,6 @@ public partial class UserProxySettingsViewModel
 		}
 		model.SetProfile();
 		_ = await UserProfilesRepo.Instance.Put(model.ObsProfile.Dto!);
-		//model.ObsProfile.IsSelected = true;
 	}
 	private static List<ProxDto> ParseProxiesSettings(string[] proxyList)
 	{
@@ -258,10 +251,5 @@ public partial class UserProxySettingsViewModel
 	private void SelectAllFromFolder()
 	{
 		IsSelectedAll = true;
-	}
-	[RelayCommand]
-	private void HideCustomizeProxies()
-	{
-		ShowCustomizeProxies = false;
 	}
 }

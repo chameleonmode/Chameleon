@@ -28,10 +28,6 @@
 					  Title="{Binding Title}"
 					  TitleDescription="{Binding TotalCount, StringFormat='You have {0} scripts.'}">
 
-				<!--<afv:ChameleonContentControl.TitleContent>
-					<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
-				</afv:ChameleonContentControl.TitleContent>-->
-
 				<afv:ChameleonContentControl.Options>
 					<Grid RowDefinitions="*, Auto">
 						<ui:CommandBar Grid.Row="1"
@@ -161,10 +157,6 @@
 			  Grid.Row="1"
 			  Title="Your Scripts"
 			  TitleDescription="Directory path to load your local scripts from.">
-
-				<!--<afv:ChameleonContentControl.TitleContent>
-				<paginator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
-			</afv:ChameleonContentControl.TitleContent>-->
 
 				<afv:ChameleonContentControl.Header>
 					<Grid

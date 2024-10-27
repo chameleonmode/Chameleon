@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using DynamicData;
 using Chameleon.app.Avalonia.Com.DynamicData;
 using Chameleon.lib.Common.Models.Dto;
+using Chameleon.lib.Common.Interfaces.Sys;
+using Chameleon.lib.Common;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
@@ -20,18 +22,22 @@ public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 	{
 		_ = UserProfilesFolderRepo
 		.Connect()
-		.Transform(i => new ObsFolder(i, this))
+		.Transform(i => new ObsFolder(i))
 		.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
 		.Subscribe();
 		SelectedFolder = AllProfiles = folders[0];
-		_ = SelectedFolder.Open();
 
 		AsyncCommandMap["Create"] = Create;
 	}
 
 	private async Task Create()
 	{
-		var folder = await UserProfilesFolderRepo.CreateFolder($"New Folder - {Folders.Count}");
+		var pcount = UserProfilesFolderRepo.Instance.ObservableCache.Items.Count;
+		var pname = $"New Folder - {pcount}";
+		while (UserProfilesRepo.Instance.ObservableCache.Items.Any(i => i.title == pname))
+			pname = $"New Folder - {++pcount}";
+
+		var folder = await UserProfilesFolderRepo.CreateFolder(pname);
 
 		_ = OnNavigatingTo(folder);
 	}

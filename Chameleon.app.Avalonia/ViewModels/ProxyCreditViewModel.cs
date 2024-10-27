@@ -81,7 +81,7 @@ public partial class ProxyCreditViewModel
 	public async Task CopyAllUrls()
 	{
 		var list = Accesses.Select(a => a.Url);
-		await CopyPasta.Copy(string.Join("\n", list));
+		await CopyPasta.Copy(string.Join(Environment.NewLine, list));
 	}
 	[RelayCommand]
 	private async Task PurchaseCredit()

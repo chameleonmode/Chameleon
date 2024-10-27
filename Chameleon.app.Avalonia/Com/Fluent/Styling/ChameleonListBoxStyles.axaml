@@ -105,7 +105,7 @@
 					</ListBox.ItemTemplate>
 				</ListBox>
 
-				<ItemsRepeater>
+				<!--<ItemsRepeater>
 					<ItemsRepeater.ItemsSource>
 						
 					</ItemsRepeater.ItemsSource>
@@ -123,7 +123,7 @@
 							</Border>
 						</DataTemplate>
 					</ItemsRepeater.ItemTemplate>
-				</ItemsRepeater>
+				</ItemsRepeater>-->
 
 				<DockPanel>
 					<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" Margin="16" DockPanel.Dock="Top">
@@ -236,4 +236,8 @@
 			</ControlTemplate>
 		</Setter>
 	</ControlTheme>
+
+	<ItemsPanelTemplate x:Key="HorizontalWrapPanelTemplate">
+		<WrapPanel Orientation="Horizontal" />
+	</ItemsPanelTemplate>
 </ResourceDictionary>

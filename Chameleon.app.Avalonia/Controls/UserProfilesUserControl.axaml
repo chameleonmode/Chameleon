@@ -369,10 +369,5 @@
 					IsIndicatorVisible="{Binding IsWaiting}"/>-->
 			</Panel>
 		</afv:ChameleonContentControl.Content>
-
-		<!--<afv:ChameleonContentControl.Footer>
-			<pagnator:PaginatorView
-				DataContext="{Binding PaginatorViewModel}" />
-		</afv:ChameleonContentControl.Footer>-->
 	</afv:ChameleonContentControl>
 </UserControl>
