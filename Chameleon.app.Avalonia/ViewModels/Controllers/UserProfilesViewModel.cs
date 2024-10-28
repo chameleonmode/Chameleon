@@ -205,13 +205,13 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	{
 		if (value.Is()) {
 			PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
-			filter.OnNext(p => p.Title?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true && ((Folder == null || Folder?.id == 0) || (p.Dto!.folderId == Folder!.id)));
+			filter.OnNext(p => p.Title?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true && (Folder == null || Folder.id == 0 || (Folder != null && Folder.id != 0 && p.Dto?.folderId == Folder?.id)));
 		} else {
 			PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
 			filter.OnNext(FilterPredicate);
 		}
 
-		SetViewModelsFilter();
+		SetViewModelsFilter(false);
 	}
 	partial void OnFolderChanged(UPFolderDto? value)
 	{
@@ -260,9 +260,10 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 		SetViewModelsFilter();
 	}
-	public void SetViewModelsFilter()
+	public void SetViewModelsFilter(bool onext = true)
 	{
-		filter.OnNext(FilterPredicate);
+		if(onext)
+			filter.OnNext(FilterPredicate);
 		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
 		//private List<ObsProfile> GetSelectedProfiles => _selectedProfiles!.ToList();
 		//public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);

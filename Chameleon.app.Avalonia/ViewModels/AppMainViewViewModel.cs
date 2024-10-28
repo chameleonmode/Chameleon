@@ -27,7 +27,6 @@ public partial class AppMainViewViewModel : ObservableObjectBase {
 	private bool isSplashVisible = true;
 
 	private readonly ReadOnlyObservableCollection<ObsProfile> _boundProfilesList;
-	public IList<ObsProfile> BoundProfilesList => _boundProfilesList;
 
 	private readonly ReadOnlyObservableCollection<ObsFolder> _boundFoldersList;
 	public ObservableCollection<MainAppSearchItem> SearchTerms { get; } = [];
