@@ -16,11 +16,11 @@ public class AutoViewModelInitControl : UserControl {
 		//	}
 		//};
 	}
-	protected override async void OnLoaded(RoutedEventArgs e)
+	protected override void OnLoaded(RoutedEventArgs e)
 	{
 		base.OnLoaded(e);
 		if (DataContext is IAmInitializer i) {
-			await i.InitializeAsync(e);
+			_ = i.InitializeAsync(e);
 		}
 	}
 }

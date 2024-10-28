@@ -42,8 +42,6 @@ public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 
 	public async Task OnNavigatingTo(UPFolderDto? p = null)
 	{
-		_ = await LoadedTCS.Task;
-
 		if (p != null) {
 			foreach (var item in Folders)
 				item.IsSelected = item.Dto!.id == p.id;

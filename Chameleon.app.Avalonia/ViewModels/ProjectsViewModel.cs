@@ -2,9 +2,7 @@
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api;
-using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
-using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -23,10 +21,22 @@ public partial class ProjectsViewModel : ViewModelObjectBase {
 	{
 	}
 
+	public override async Task InitAsync(object? param)
+	{
+		await base.InitAsync(param);
+		//if (!Loaded) {
+		//	await Folders.InitializeAsync(param);
+		//	await Profiles.InitializeAsync(param);
+		//}
+	}
+
 	public override async Task OnNavigatedToAsync(object? param)
 	{
 		await base.OnNavigatedToAsync(param);
-
+		if (!Loaded) {
+			//await Folders.InitializeAsync(param);
+			//await Profiles.InitializeAsync(param);
+		}
 		if (param is ObsFolder folder) {
 			if (!folder.Navigated || Folders.SelectedFolder?.Dto?.id == folder.Dto?.id) {
 				await Folders.OnNavigatingTo(folder.Dto);

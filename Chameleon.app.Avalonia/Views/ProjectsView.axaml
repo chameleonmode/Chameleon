@@ -31,14 +31,19 @@
 			</afv:PageHeaderControl>
 
 			<Grid ColumnDefinitions="3*,*">
-				<appuc:UserProfilesUserControl
+				<ContentControl Name="ProfilesPanel"
+					   DataContext= "{Binding Profiles}"/>
+				<ContentControl Name="FoldersPanel" 
+					   Grid.Column="1"
+					   DataContext= "{Binding Folders}"/>
+				<!--<appuc:UserProfilesUserControl
 					Grid.Column="0"
-					DataContext="{Binding Profiles}" />
+					DataContext= "{Binding Profiles}" />
 
 				<appuc:FoldersUserControl
-					Grid.Column="1"
-					BorderThickness="1 0 0 0"
-					DataContext="{Binding Folders}"/>
+					Grid.Column= "1"
+					BorderThickness= "1 0 0 0"
+					DataContext= "{Binding Folders}" />-->
 			</Grid>
 		</StackPanel>
 	</ScrollViewer>

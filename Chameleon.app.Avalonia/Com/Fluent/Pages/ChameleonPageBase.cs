@@ -64,9 +64,9 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 
 	protected override void OnLoaded(RoutedEventArgs e)
 	{
-		base.OnLoaded(e);
 		_hasLoaded = true;
 		SetDetailsAnimation();
+		base.OnLoaded(e);
 	}
 
 	protected override void OnUnloaded(RoutedEventArgs e)

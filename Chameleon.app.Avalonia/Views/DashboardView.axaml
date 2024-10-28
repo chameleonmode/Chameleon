@@ -43,20 +43,10 @@
 							<ListBox
 								Name="lbProfiles"
 								ItemsSource="{Binding Profiles}"
-								VerticalAlignment="Top"
 								Theme="{StaticResource ListBoxNoScroller}"
-								ItemContainerTheme="{StaticResource GridViewItem}">
-								<ListBox.ItemsPanel>
-									<ItemsPanelTemplate>
-										<UniformGrid Columns="1"/>
-									</ItemsPanelTemplate>
-								</ListBox.ItemsPanel>
-								<ListBox.ItemTemplate>
-									<DataTemplate>
-										<appuc:UserProfileUserControl HorizontalAlignment="Stretch" />
-									</DataTemplate>
-								</ListBox.ItemTemplate>
-							</ListBox>
+								ItemContainerTheme="{StaticResource GridViewItem}"
+								ItemsPanel="{StaticResource SingleColumnHUniformGridTemplate}"
+								ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}" />
 
 							<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
 													Header="No favorite profiles selected yet"/>

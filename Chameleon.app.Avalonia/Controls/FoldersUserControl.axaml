@@ -146,14 +146,9 @@
 						Command="{Binding AsyncCfromVCommand}"/>
 			</StackPanel>
 		</afv:ChameleonContentControl.TitleContent>
-		<Panel VerticalAlignment="Top">
 			<ItemsControl
-				x:Name="itemsList"
 				ItemsSource="{Binding Folders}"
-				ItemTemplate="{StaticResource FoldersListViewTemplate}"
-				VerticalAlignment="Top"
-				HorizontalAlignment="Stretch"/>
-		</Panel>
+				ItemTemplate="{StaticResource FoldersListViewTemplate}"/>
 	</afv:ChameleonContentControl>
 </UserControl>
 

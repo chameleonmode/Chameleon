@@ -333,21 +333,11 @@
 						</MultiBinding>
 					</Panel.IsVisible>
 					<ListBox
+						ItemContainerTheme="{StaticResource GridViewItem}"
+						ItemsPanel="{StaticResource SingleColumnHUniformGridTemplate}"
 						Name="lbProfiles"
 						ItemsSource="{Binding Profiles}"
-						Theme="{StaticResource ListBoxNoScroller}"
-						ItemContainerTheme="{StaticResource GridViewItem}">
-						<ListBox.ItemsPanel>
-							<ItemsPanelTemplate>
-								<UniformGrid Columns="1"/>
-							</ItemsPanelTemplate>
-						</ListBox.ItemsPanel>
-						<ListBox.ItemTemplate>
-							<DataTemplate>
-								<local:UserProfileUserControl HorizontalAlignment="Stretch" />
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
+						ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}" />
 				</Panel>
 				<Panel>
 					<Panel.IsVisible>

@@ -33,41 +33,44 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 	}
 
 	public virtual void OnAfterNavigatedToViewModel(object param) { }
+	public virtual void OnAfterNavigatedTo() { }
 	private async void OnNavigatedTo(object? sender, NavigationEventArgs e)
 	{
 		if (DataContext is ViewModelObjectBase pageViewModel) {
+			await Task.Delay(64);
 			await pageViewModel.OnNavigatedToAsync(e.Parameter);
 			OnAfterNavigatedToViewModel(e.Parameter);
 		}
-		if (_animationPage == null || _animationPageParent == null)
-			return;
+		if (_animationPage != null && _animationPageParent != null) {
+			ExUtil.TryCatch(() => {
+				var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
+				var anim = svc.GetAnimation("BackAnimation");
 
-		ExUtil.TryCatch(() => {
-			var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-			var anim = svc.GetAnimation("BackAnimation");
+				if (anim == null)
+					return;
 
-			if (anim == null)
-				return;
+				GetNavAnimationVisuals(_navParam);
 
-			GetNavAnimationVisuals(_navParam);
+				if (_animationPage == null) return;
 
-			if (_animationPage == null) return;
+				// In WinUI, ConnectedAnimation is somehow exempt from all clipping behaviors
+				// Here, we are not, so disable ClipToBounds on all elements in the SettingsExpander
+				// The rest are taken care of in the xaml.
+				// NOTE: The ScrollViewer is not changed here as that's important for scrolling - thus
+				// the animation will be cut off, but the back animation is pretty fast and mostly is
+				// only visible closer to the element so we're ok, I think
+				var x = _animationPage.GetVisualParent();
+				while (x is not ScrollContentPresenter && x != null) {
+					x.ClipToBounds = false;
+					x = x.GetVisualParent();
+				}
 
-			// In WinUI, ConnectedAnimation is somehow exempt from all clipping behaviors
-			// Here, we are not, so disable ClipToBounds on all elements in the SettingsExpander
-			// The rest are taken care of in the xaml.
-			// NOTE: The ScrollViewer is not changed here as that's important for scrolling - thus
-			// the animation will be cut off, but the back animation is pretty fast and mostly is
-			// only visible closer to the element so we're ok, I think
-			var x = _animationPage.GetVisualParent();
-			while (x is not ScrollContentPresenter && x != null) {
-				x.ClipToBounds = false;
-				x = x.GetVisualParent();
-			}
+				anim.Configuration = new DirectConnectedAnimationConfiguration();
+				_ = anim.TryStart(_animationPage);
+			});
+		}
 
-			anim.Configuration = new DirectConnectedAnimationConfiguration();
-			_ = anim.TryStart(_animationPage);
-		});
+		OnAfterNavigatedTo();
 	}
 
 	private void OnNavigatingFrom(object? sender, NavigatingCancelEventArgs e)

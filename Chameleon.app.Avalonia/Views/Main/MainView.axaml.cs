@@ -109,16 +109,16 @@ public partial class MainView : UserControl {
 		Toaster.ShowSuccess("Welcome to Chameleon!");
 		FrameView.NavigationPageFactory = AppMainViewViewModel.Instance.NavigationFactory;
 		Navigator.SetFrame(FrameView);
-		await IoC.GetService<ProjectsViewModel>()!.InitializeAsync(null!);
+		//await IoC.GetService<ProjectsViewModel>()!.InitializeAsync(null!);
 
 		NavView.MenuItemsSource = _pages.Where(p => !p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
 		NavView.FooterMenuItemsSource = _pages.Where(p => p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
 
-		_ = FrameView.NavigateToType(_pages["Dashboard"].Tag, null, null);
-
 		FrameView.Navigated += OnFrameViewNavigated;
 		NavView.ItemInvoked += OnNavigationViewItemInvoked;
 		NavView.BackRequested += OnNavigationViewBackRequested;
+
+		_ = FrameView.NavigateToType(_pages["Dashboard"].Tag, null, null);
 	}
 
 	private void OnNavigationViewBackRequested(object? sender, NavigationViewBackRequestedEventArgs e)

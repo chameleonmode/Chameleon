@@ -25,29 +25,31 @@ public class AppStartup {
 	}
 	public async Task<bool> RunAsync(int trys)
 	{
-		var loginvm = new MboxLoginViewModel();
 		try {
-			if (IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) is LoginSettings login) {
-				try {
-					loginvm.UserName = login.LoginName;
-					loginvm.LicenceKey = login.LicenseKey;
-					await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
-				} catch {
-					Toaster.ShowErr("Error Logging In", "There was an error validationg the login information that was provided.");
-				}
-			}
-			if (Auther.AuthSession is null) {
-				var res = await Mbox.ShowTaskDialog<MboxLoginViewModel, MboxLoginUserControl>(() => loginvm, "User Login", "Enter the provided activation information", symbas: Enums.Symbas.ContactInfo, btns: Enums.MBoxButtons.OkCancel);
-				if (res == Enums.TaskDialogResult.Cancel)
-					return false;
-				ArgumentNullException.ThrowIfNull(loginvm.UserName, "UserName");
-				ArgumentNullException.ThrowIfNull(loginvm.LicenceKey, "LicenceKey");
+			var loginSetings = IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) ?? new("", "", false);
+			var loginvm = new MboxLoginViewModel {
+				UserName = loginSetings.LoginName,
+				LicenceKey = loginSetings.LicenseKey,
+				AutoLogin = true
+			};
 
-				await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
-				if (Auther.AuthSession is not null) {
-					IoC.SetJsonValue(new LoginSettings(loginvm.UserName, loginvm.LicenceKey, true), nameof(LoginSettings));
-					return true;
-				}
+			if (!loginSetings.AutoLogin && 
+				await Mbox.ShowTaskDialog<MboxLoginViewModel, MboxLoginUserControl>(() => loginvm, 
+					"User Login", 
+					"Enter the provided activation information", 
+					symbas: Enums.Symbas.ContactInfo, 
+					btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.Cancel) {
+				return false;
+			}
+			ArgumentNullException.ThrowIfNull(loginvm.UserName, "UserName");
+			ArgumentNullException.ThrowIfNull(loginvm.LicenceKey, "LicenceKey");
+
+			await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
+			if (Auther.AuthSession is not null &&
+				(loginvm.UserName   != loginSetings.LoginName || 
+				 loginvm.LicenceKey != loginSetings.LicenseKey)) {
+				IoC.SetJsonValue(new LoginSettings(loginvm.UserName, loginvm.LicenceKey, loginvm.AutoLogin), nameof(LoginSettings));
+				return true;
 			}
 		} catch (Exception ex) {
 			_ = await Mbox.ShowErrorAsync("Error Logging In", ex.Message);
@@ -58,13 +60,16 @@ public class AppStartup {
 		return Auther.AuthSession is not null;
 	}
 
-	public static async Task LoadSink(bool reload = false)
+	public static Task LoadSink(bool reload = false)
 	{
-		await UserProfilesRepo.Instance.Load();
-		await UserProfilesFolderRepo.Instance.Load();
+		var tasks = new List<Task>() {
+			UserProfilesRepo.Instance.Load(),
+			UserProfilesFolderRepo.Instance.Load()
+		};
 		if (reload) {
-			await UPAdditionalDataRepo.Instance.LoadReload(true);
+			tasks.Add(UPAdditionalDataRepo.Instance.LoadReload(true));
 		}
+		return Task.WhenAll(tasks);
 	}
 
 	public static AppStartup Instance { get; } = new AppStartup();

@@ -7,4 +7,7 @@ public partial class MboxLoginViewModel : ObservableObject {
 
 	[ObservableProperty]
 	private string? userName;
+
+	[ObservableProperty]
+	private bool autoLogin;
 }

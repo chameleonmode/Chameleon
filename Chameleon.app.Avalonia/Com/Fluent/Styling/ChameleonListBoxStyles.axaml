@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+					xmlns:local="using:Chameleon.app.Avalonia.Controls"
 					xmlns:ui="using:FluentAvalonia.UI.Controls">
 	<Design.PreviewWith>
 		<Border Padding="50" 
@@ -222,8 +223,8 @@
 
 	<ControlTheme
 		TargetType="ListBox"
-				  x:Key="ListBoxNoScroller"
-				  BasedOn="{StaticResource {x:Type ListBox}}">
+		x:Key="ListBoxNoScroller"
+		BasedOn="{StaticResource {x:Type ListBox}}">
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border Name="border"
@@ -240,4 +241,10 @@
 	<ItemsPanelTemplate x:Key="HorizontalWrapPanelTemplate">
 		<WrapPanel Orientation="Horizontal" />
 	</ItemsPanelTemplate>
+	<ItemsPanelTemplate x:Key="SingleColumnHUniformGridTemplate">
+		<UniformGrid Columns="1"/>
+	</ItemsPanelTemplate>
+	<DataTemplate x:Key="UserProfileUserControlDataTemplate">
+		<local:UserProfileUserControl HorizontalAlignment="Stretch" />
+	</DataTemplate>
 </ResourceDictionary>

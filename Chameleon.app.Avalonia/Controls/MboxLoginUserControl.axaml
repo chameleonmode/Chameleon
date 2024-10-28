@@ -12,5 +12,10 @@
 			<afvDialogs:DialogInputHost TextLabel="Licence Key:"
 									 Text="{Binding LicenceKey}" />
 		</afvDialogs:ChameleonDialogControl.DialogInputs>
+		<afvDialogs:ChameleonDialogControl.Content>
+			<CheckBox Margin="0 18 0 0"
+					  Content="Auto Login" 
+					  IsChecked="{Binding AutoLogin}" />
+		</afvDialogs:ChameleonDialogControl.Content>
 	</afvDialogs:ChameleonDialogControl>
 </UserControl>
