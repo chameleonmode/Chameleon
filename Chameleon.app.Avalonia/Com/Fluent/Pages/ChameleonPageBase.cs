@@ -37,9 +37,9 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 	}
 
 	#region dp
-	public static readonly StyledProperty<IconSource> PreviewImageProperty =
-			AvaloniaProperty.Register<ChameleonPageBase, IconSource>(nameof(PreviewImage));
-	public IconSource PreviewImage {
+	public static readonly StyledProperty<IconSource?> PreviewImageProperty =
+			AvaloniaProperty.Register<ChameleonPageBase, IconSource?>(nameof(PreviewImage));
+	public IconSource? PreviewImage {
 		get => GetValue(PreviewImageProperty);
 		set => SetValue(PreviewImageProperty, value);
 	}
@@ -203,20 +203,19 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 	//	});
 	//}
 
-	private async void FrameNavigatingFrom(object sender, NavigatingCancelEventArgs e)
+	private async void FrameNavigatingFrom(object? sender, NavigatingCancelEventArgs e)
 	{
 		if (_previewImageHost == null)
 			return;
 
 		// Only setup the ConnectedAnimation if it makes sense
-		await TaskUtil.TryAwaitFor(async () =>
-		{
+		_ = await TaskUtil.TryAwaitFor(async () => {
 			var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-			svc.PrepareToAnimate("BackAnimation", await TaskUtil.AwaitFor(() => AnimateVisual != null, 1) ? AnimateVisual : (Control)_previewImageHost.Parent);
+			_ = svc.PrepareToAnimate("BackAnimation", await TaskUtil.AwaitFor(() => AnimateVisual != null, 1) ? AnimateVisual : _previewImageHost.Parent as Control);
 		}, 2);
 	}
 
-	private async void FrameNavigatedTo(object sender, NavigationEventArgs e)
+	private async void FrameNavigatedTo(object? sender, NavigationEventArgs e)
 	{
 		if (DataContext is ViewModelObjectBase pageViewModel) {
 			await pageViewModel.OnNavigatedToAsync(e.Parameter);
@@ -233,10 +232,12 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 			// PreviewImageHost is inside a Viewbox which can really mess with the Composition 
 			// animation - use the viewbox directly for the animation to ensure it works correctly
 			if (await TaskUtil.AwaitFor(() => AnimateVisual != null, 1)) {
-				_detailsPanel.IsVisible = false;
-				animation.TryStart(AnimateVisual, [_scroller]);
+				if (_detailsPanel != null)
+					_detailsPanel.IsVisible = false;
+
+				_ = animation.TryStart(AnimateVisual, [_scroller]);
 			} else
-				animation.TryStart((Control)_previewImageHost.Parent, [_detailsHost, _scroller]);
+				_ = animation.TryStart(_previewImageHost?.Parent as Control, [_detailsHost, _scroller]);
 
 		}
 	}

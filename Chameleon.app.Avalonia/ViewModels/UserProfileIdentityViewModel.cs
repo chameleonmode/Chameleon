@@ -42,7 +42,6 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	public ReadOnlyObservableCollection<UPPersonDto> Persons => persons;
 	public bool HasPersons => Persons?.Count > 0;
 
-	public int UserProfileId => UserProfile?.id ?? 0;
 	public Func<UP, bool> FilterPredicate => p => p.ProfileId == UserProfile?.id;
 	public Func<ObsAddressDto, bool> AdrezFilterPredicate => p => p.Dto?.ProfileId == UserProfile?.id;
 
@@ -92,7 +91,7 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	public override async Task InitAsync(object? param)
 	{
 		await base.InitAsync(param);
-		await LoadReload();
+		await UPAdditionalDataRepo.Instance.LoadReload();
 	}
 	public override async Task OnNavigatedToAsync(object? param)
 	{
@@ -110,7 +109,7 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task Discard()
 	{
-		await LoadReload(true);
+		await UPAdditionalDataRepo.Instance.LoadReload(true);
 	}
 
 	[RelayCommand]
@@ -155,7 +154,7 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	private async Task AddPerson()
 	{
 		_ = await UPAdditionalDataRepo.Instance.Personz.Create(new UPPersonDto(){
-			ProfileId = UserProfile.id
+			ProfileId = UserProfile?.id
 		});
 		OnPropertyChanged(nameof(HasPersons));
 	}
@@ -180,7 +179,7 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	private async Task OnAddBusiness()
 	{
 		_ = await UPAdditionalDataRepo.Instance.Biz.Create(new UPBusinessDto() {
-			ProfileId = UserProfile.id
+			ProfileId = UserProfile?.id
 		});
 		OnPropertyChanged(nameof(HasBusiness));
 	}
@@ -204,7 +203,7 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	private async Task OnAddAddress()
 	{
 		_ = await UPAdditionalDataRepo.Instance.Addrez.Create(new UPAddressDto() {
-			ProfileId = UserProfile.id
+			ProfileId = UserProfile?.id
 		});
 		OnPropertyChanged(nameof(HasAddresses));
 	}
@@ -229,7 +228,7 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	private async Task OnAddLogin()
 	{
 		_ = await UPAdditionalDataRepo.Instance.Loginz.Create(new UPLoginDto() {
-			ProfileId = UserProfile.id
+			ProfileId = UserProfile?.id
 		});
 		OnPropertyChanged(nameof(HasLogins));
 	}
@@ -249,20 +248,4 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	#endregion
 
 	public static UserProfileIdentityViewModel Instance { get; } = IoC.GetService<UserProfileIdentityViewModel>()!;
-
-	public static bool LoadedIniit { get; private set; }
-	public static async Task LoadReload(bool force = false)
-	{
-		if (LoadedIniit && !force)
-			return;
-
-		await Task.WhenAll([
-			UPAdditionalDataRepo.Instance.Personz.Load(),
-			UPAdditionalDataRepo.Instance.Loginz.Load(),
-			UPAdditionalDataRepo.Instance.Biz.Load(),
-			UPAdditionalDataRepo.Instance.Addrez.Load()
-		]);
-
-		LoadedIniit = true;
-	}
 }

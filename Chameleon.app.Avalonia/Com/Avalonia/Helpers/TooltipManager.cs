@@ -11,18 +11,18 @@ public static class TooltipManager
 
     public static void Attach(Application app, Control control)
     {
-        if (app.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (app.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow != null)
         {
             desktop.MainWindow.Deactivated += OnAppDeactivated;
             desktop.MainWindow.Activated += OnAppActivated;
         }
 
-        void OnAppDeactivated(object sender, System.EventArgs e)
+        void OnAppDeactivated(object? sender, System.EventArgs e)
         {
             BackupAndRemoveTooltips(control);
         }
 
-        void OnAppActivated(object sender, System.EventArgs e)
+        void OnAppActivated(object? sender, System.EventArgs e)
         {
             RestoreTooltips();
         }

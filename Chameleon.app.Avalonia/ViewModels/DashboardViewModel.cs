@@ -74,8 +74,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 
 	private async Task SyncChanges()
 	{
-		await AppStartup.LoadSink();
-		await UserProfileIdentityViewModel.LoadReload(true);
+		await AppStartup.LoadSink(true);
 	}
 }
 

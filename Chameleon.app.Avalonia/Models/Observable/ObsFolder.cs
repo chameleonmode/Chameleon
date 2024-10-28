@@ -1,10 +1,9 @@
 ﻿using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Views;
+using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Extensions;
-using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -14,8 +13,6 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsFolder : Vim<UPFolderDto> {
-	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
-
 	[ObservableProperty]
 	private bool isFavorite;
 	[ObservableProperty]
@@ -26,8 +23,8 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 	private bool isSelected;
 
 	public bool ShowFavoriteIcon => Dto?.id > 0;
-	public bool IsSharedFolder => Dto?.creatorUserId != null &&  Dto?.creatorUserId != _authSession?.UserId;
-	public bool IsContextMenuItemEnabled => _authSession.CreatorUserId == null;
+	public bool IsSharedFolder => Dto?.creatorUserId != null &&  Dto?.creatorUserId != Auther.AuthSession?.UserId;
+	public bool IsContextMenuItemEnabled => Auther.AuthSession?.CreatorUserId == null;
 	public bool IsContextMenuVisible => Dto!.id != 0;
 	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => p.folderId == Dto!.id); 
 

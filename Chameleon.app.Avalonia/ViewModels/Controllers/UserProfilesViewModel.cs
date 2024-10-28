@@ -26,14 +26,10 @@ using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.Controls;
 using FluentAvalonia.Core;
 using System.Reactive.Linq;
-using Chameleon.lib.Common.Interfaces.Sys;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 
 public partial class UserProfilesViewModel : ViewModelObjectBase {
-	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
-
-	private readonly ISysBrowserService _systemBrowserManager = IoC.GetService<ISysBrowserService>()!;
 	private readonly IPlaywrightScriptRepository _plawrightRepository = IoC.GetService<IPlaywrightScriptRepository>()!;
 	private readonly IPlaywriteService _playwriteService = IoC.GetService<IPlaywriteService>()!;
 
@@ -63,7 +59,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	private UPFolderDto? folder;
 
 	private CancellationTokenSource? _cts;
-	//private IEnumerable<ObsProfile>? _selectedProfiles;
 
 	public ObservableCollection<SystemBrovserItem> BrowserItems { get; } = [
 		new SystemBrovserItem(SystemBrowserType.Brave),
@@ -80,14 +75,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			return _cts.Token;
 		}
 	}
-	//public PaginatorViewModel? PaginatorViewModel {
-	//	get => _paginatorViewModel;
-	//	set {
-	//		if (SetProperty(ref _paginatorViewModel, value)) {
-
-	//		}
-	//	}
-	//}
 
 	private IEnumerable<ObsProfile>? GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
 	public int SelectedCount => GetSelectedProfiles?.Count() ?? 0;

@@ -1,11 +1,7 @@
 ﻿using Avalonia.Controls.Primitives;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia;
-using FluentAvalonia.UI.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
-using Chameleon.Av.Fluent.Common.Controls.Dialogs;
 
 namespace Chameleon.Av.Fluent.Common.Controls.Dialogs;
 
@@ -28,8 +24,7 @@ public partial class ChameleonDialogControl : HeaderedContentControl
         set => SetAndRaise(CommandsProperty, ref _dialogInputs, value);
     }
 
-    public static readonly StyledProperty<string?> TitleDescriptionProperty =
-    AvaloniaProperty.Register<ChameleonDialogControl, string?>(nameof(TitleDescription));
+    public static readonly StyledProperty<string?> TitleDescriptionProperty = AvaloniaProperty.Register<ChameleonDialogControl, string?>(nameof(TitleDescription));
     public string? TitleDescription
     {
         get => GetValue(TitleDescriptionProperty);

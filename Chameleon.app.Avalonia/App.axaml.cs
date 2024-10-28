@@ -4,9 +4,9 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 
+using Chameleon.app.Avalonia.Com.Fluent.Services;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.app.Avalonia.Views.Main;
-using Chameleon.Av.Fluent.Common.Services;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.lib.Common.Interfaces.Sys;
@@ -45,11 +45,6 @@ public partial class App : AvApplication {
 			RequestedThemeVariant = ThemeVariant.Light;
 		}
 
-
-		void setup(bool init)
-		{
-		}
-
 		IoC.Instance.Configure(() => {
 			return new WritableConfiguration(new ConfigurationBuilder()
 				.SetBasePath(Chameleon.lib.Common.Constants.Consts.AppDataDir)
@@ -65,8 +60,7 @@ public partial class App : AvApplication {
 			.AddSingleton<IShowWindowService, ShowWindowService>()
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
 			.AddSingleton<INavigationService, NavigationService>()
-			.AddSingleton<Chameleon.lib.Common.Interfaces.Sys.IEventAggregator, Chameleon.lib.Common.Interfaces.Sys.EventAggregator>()
-			.AddSingleton<IAuthSession, ThisAuthSession>()
+			//.AddSingleton<IAuthSession, ThisAuthSession>()
 			//SysBrowser
 			.AddSingleton<ISysBrowserService, SysBrowserService>()
 			//Dash
@@ -102,7 +96,7 @@ public partial class App : AvApplication {
 			.AddSingleton<Chameleon.app.Avalonia.Views.PlaywrightView>();
 		});
 		// Setup IoC
-		IoC.Instance.Init(action: setup);
+		IoC.Instance.Init(action: (inited) =>{ });
 	}
 
 	public override void OnFrameworkInitializationCompleted()

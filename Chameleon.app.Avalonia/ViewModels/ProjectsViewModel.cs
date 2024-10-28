@@ -1,6 +1,7 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Views;
+using Chameleon.lib.Api;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Interfaces.Sys;
@@ -12,12 +13,10 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class ProjectsViewModel : ViewModelObjectBase {
-	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;	
-
 	public UserProfilesViewModel Profiles { get; } = UserProfilesViewModel.Instance;
 	public UserProfileFoldersViewModel Folders { get; } = UserProfileFoldersViewModel.Instance;
 
-	public bool IsCreateProfileBtnVisible => _authSession.CreatorUserId == null || _authSession.CanCreateProfiles;
+	public bool IsCreateProfileBtnVisible => Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CanCreateProfiles == true;
 
 	public ProjectsViewModel()
 		: base("Profiles & Folders") 

@@ -61,7 +61,7 @@ public partial class UserProfileSidePanelViewModel
 
 	public override async Task InitAsync(object? param)
 	{
-		await UserProfileIdentityViewModel.LoadReload();
+		await UPAdditionalDataRepo.Instance.LoadReload();
 	}
 
 	partial void OnSelectedAddressChanged(UPAddressDto? value) => OnPropertyChanged(nameof(CountryName));

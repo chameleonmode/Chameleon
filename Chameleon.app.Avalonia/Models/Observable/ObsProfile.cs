@@ -1,6 +1,7 @@
 ﻿using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Views;
+using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
@@ -20,7 +21,6 @@ using static Chameleon.lib.Common.Constants.Enums;
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : Vim<UserProfileDto> {
 	public event Action<ObsProfile>? OnSelectedChanged;
-	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
 	private readonly ISysBrowserService? SysBrowserServiceBase = IoC.GetService<ISysBrowserService>();
 
 	[ObservableProperty]
@@ -78,7 +78,7 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 		IsShowC = isShowC;
 		IsShowF = isShowF;
 		IsShowCheckboxColumn = isShowCheckboxColumn;
-		IsSharedProfile = userProfile?.creatorUserId != _authSession.UserId;
+		IsSharedProfile = userProfile?.creatorUserId != Auther.AuthSession?.UserId;
 
 		if (SysBrowserServiceBase != null) {
 			async Task setEvents()

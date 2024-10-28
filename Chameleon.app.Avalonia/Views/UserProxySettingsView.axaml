@@ -12,10 +12,6 @@
 			 x:DataType="vm:UserProxySettingsViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Views.UserProxySettingsView">
-	<UserControl.Resources>
-		<conv:MultiStringJoinConverter x:Key="MultiStringJoin" />
-		<!--<converter:MultiStringJoinConverter x:Key="MultiStringJoin"/>-->
-	</UserControl.Resources>
 	<Grid RowDefinitions="*,Auto">
 				<afv:ChameleonContentControl Title="Proxies list"
 											 TitleDescription="Select proxies to edit them">

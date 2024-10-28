@@ -13,8 +13,6 @@ namespace Chameleon.app.Avalonia;
 public class AppStartup {
 	public event Action? OnLoginSuccess;
 
-	public IAuthSession? _authSession;
-
 	public async Task RunAsync()
 	{
 		if (!await RunAsync(0)) {
@@ -27,29 +25,28 @@ public class AppStartup {
 	}
 	public async Task<bool> RunAsync(int trys)
 	{
-		var success = false;
-	  var loginvm = new MboxLoginViewModel();
+		var loginvm = new MboxLoginViewModel();
 		try {
 			if (IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) is LoginSettings login) {
 				try {
 					loginvm.UserName = login.LoginName;
 					loginvm.LicenceKey = login.LicenseKey;
-					success = await Login(loginvm.UserName, loginvm.LicenceKey);
+					await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
 				} catch {
 					Toaster.ShowErr("Error Logging In", "There was an error validationg the login information that was provided.");
 				}
 			}
-			if (!success) {
+			if (Auther.AuthSession is null) {
 				var res = await Mbox.ShowTaskDialog<MboxLoginViewModel, MboxLoginUserControl>(() => loginvm, "User Login", "Enter the provided activation information", symbas: Enums.Symbas.ContactInfo, btns: Enums.MBoxButtons.OkCancel);
 				if (res == Enums.TaskDialogResult.Cancel)
-					return success;
+					return false;
 				ArgumentNullException.ThrowIfNull(loginvm.UserName, "UserName");
 				ArgumentNullException.ThrowIfNull(loginvm.LicenceKey, "LicenceKey");
 
-				success = await Login(loginvm.UserName, loginvm.LicenceKey);
-				if (success) {
+				await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
+				if (Auther.AuthSession is not null) {
 					IoC.SetJsonValue(new LoginSettings(loginvm.UserName, loginvm.LicenceKey, true), nameof(LoginSettings));
-					return success;
+					return true;
 				}
 			}
 		} catch (Exception ex) {
@@ -58,53 +55,50 @@ public class AppStartup {
 				return await RunAsync(trys++);
 		}
 
-		return success;
+		return Auther.AuthSession is not null;
 	}
 
-	public static async Task LoadSink()
+	public static async Task LoadSink(bool reload = false)
 	{
 		await UserProfilesRepo.Instance.Load();
 		await UserProfilesFolderRepo.Instance.Load();
+		if (reload) {
+			await UPAdditionalDataRepo.Instance.LoadReload(true);
+		}
 	}
 
 	public static AppStartup Instance { get; } = new AppStartup();
 	private AppStartup()
 	{
 		// for migration
-		if (IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) is null || IoC.GetJsonValue<AppSettings>(nameof(AppSettings)) is null) {
-			var _settingsFilePath = Path.Combine(
-					Consts.AppDataLocalDir,
-					"settings.json"
-					);
-			if (File.Exists(_settingsFilePath)) {
-				var json = File.ReadAllText(_settingsFilePath);
-				var _settings = System.Text.Json.JsonSerializer.Deserialize<TheseApplicationSettings>(json);
-				if (_settings is not null) {
-					if (_settings.Login is not null)
-						IoC.SetJsonValue(new LoginSettings(_settings.Login.LoginName, _settings.Login.LicenseKey, true),
-							nameof(LoginSettings));
+		//if (IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) is null || IoC.GetJsonValue<AppSettings>(nameof(AppSettings)) is null) {
+		//	var _settingsFilePath = Path.Combine(
+		//			Consts.AppDataLocalDir,
+		//			"settings.json"
+		//			);
+		//	if (File.Exists(_settingsFilePath)) {
+		//		var json = File.ReadAllText(_settingsFilePath);
+		//		var _settings = System.Text.Json.JsonSerializer.Deserialize<TheseApplicationSettings>(json);
+		//		if (_settings is not null) {
+		//			if (_settings.Login is not null) {
+		//				IoC.SetJsonValue(new LoginSettings(_settings.Login.LoginName, _settings.Login.LicenseKey, true),
+		//					nameof(LoginSettings));
+		//			}
 
-					if (_settings.Settings is not null)
-						IoC.SetJsonValue(new AppSettings(_settings.Settings.CurrentAppTheme, _settings.Settings.CustomAccentColor?.ToString(), _settings.Settings.UseCustomAccentColor),
-							nameof(AppSettings));
-				}
-			}
-		}
-		_authSession = IoC.GetService<IAuthSession>();
+		//			if (_settings.Settings is not null) {
+		//				IoC.SetJsonValue(new AppSettings(_settings.Settings.CurrentAppTheme, _settings.Settings.CustomAccentColor?.ToString(), _settings.Settings.UseCustomAccentColor),
+		//					nameof(AppSettings));
+		//			}
+		//		}
+		//	}
+		//}
+		//_authSession = IoC.GetService<IAuthSession>();
 		HttpApiClient.Instance.OnRetry += (e) => {
-				Toaster.ShowErr("Error", e);
+			Toaster.ShowErr("Error", e);
 		};
-		HttpApiClient.Instance.OnAuthError += async() => {
+		HttpApiClient.Instance.OnAuthError += async () => {
 			try {
-				if (_authSession is not null) {
-					var acessToken = _authSession.AuthToken;
-					var refreshToken = _authSession.AuthRefreshToken;
-					var delayInSeconds = _authSession.ExpireInSeconds;
-					var response = await Auther.RefreshTokenAsync(acessToken, refreshToken);
-					_authSession.AuthToken = response.NewAccessToken!;
-					_authSession.AuthRefreshToken = response.NewRefreshToken!;
-					_authSession.ExpireInSeconds = response.ExpireInSeconds;
-				}
+				await Auther.RefreshTokenAsync();
 			} catch {
 				Toaster.ShowErr("AuthRefreshToken Err");
 			}
@@ -131,93 +125,93 @@ public class AppStartup {
 			//	Toaster.ShowSuccess($"Update was successful.");
 		};
 	}
+}
+//	[Obsolete("Added for compatibility with corrent infrastructure project until _authSession refactoed out only")]
+//	private async Task<bool> Login(string user, string pass)
+//	{
+//		var authResult = await Auther.LoginAsync(user, pass);
+//		if (authResult is not null && _authSession is not null) {
+//			_authSession.UserName = user;
+//			_authSession.AuthToken = authResult.AccessToken!;
+//			_authSession.AuthRefreshToken = authResult.AccessToken!;
+//			_authSession.UserId = authResult.UserId;
+//			_authSession.CreatorUserId = authResult.CreatorUserId;
+//			_authSession.ExpireInSeconds = authResult.ExpireInSeconds;
+//			_authSession.EncryptedAccessToken = authResult.EncryptedAccessToken ?? string.Empty;
+//			_authSession.Permissions = authResult.Permissions;
+//			_authSession.Limits = new TheseLimits() {
+//				HasOutreach = authResult.LicenseLimits.HasOutreach,
+//				HasYouTube = authResult.LicenseLimits.HasYouTube,
+//				HasWordPress = authResult.LicenseLimits.HasWordPress,
+//				MaxProfilesCount = authResult.LicenseLimits.MaxProfilesCount,
+//				MaxAssistantsCount = authResult.LicenseLimits.MaxAssistantsCount,
+//				ContentDiscoveryLimits = new TheseContentDiscoveryLimits() {
+//					HasProspector = authResult.LicenseLimits.ContentDiscoveryLimits.HasProspector,
+//					HasProspectorContent = authResult.LicenseLimits.ContentDiscoveryLimits.HasProspectorContent,
+//					HasSocials = authResult.LicenseLimits.ContentDiscoveryLimits.HasSocials,
+//					HasSocialsContent = authResult.LicenseLimits.ContentDiscoveryLimits.HasSocialsContent,
+//					MaxRssCount = authResult.LicenseLimits.ContentDiscoveryLimits.MaxRssCount
+//				},
+//			};
+//			_authSession.TookGuidedTour = authResult.TookGuidedTour;
+//			_authSession.CanCreateProfiles = authResult.CanCreateProfiles;
+//			return true;
+//		}
+//		return false;
+//	}
+//}
 
-	[Obsolete("Added for compatibility with corrent infrastructure project until _authSession refactoed out only")]
-	private async Task<bool> Login(string user, string pass)
-	{
-		var authResult = await Auther.LoginAsync(user, pass);
-		if (authResult is not null && _authSession is not null) {
-			_authSession.UserName = user;
-			_authSession.AuthToken = authResult.AccessToken!;
-			_authSession.AuthRefreshToken = authResult.AccessToken!;
-			_authSession.UserId = authResult.UserId;
-			_authSession.CreatorUserId = authResult.CreatorUserId;
-			_authSession.ExpireInSeconds = authResult.ExpireInSeconds;
-			_authSession.EncryptedAccessToken = authResult.EncryptedAccessToken ?? string.Empty;
-			_authSession.Permissions = authResult.Permissions;
-			_authSession.Limits = new TheseLimits() {
-				HasOutreach = authResult.LicenseLimits.HasOutreach,
-				HasYouTube = authResult.LicenseLimits.HasYouTube,
-				HasWordPress = authResult.LicenseLimits.HasWordPress,
-				MaxProfilesCount = authResult.LicenseLimits.MaxProfilesCount,
-				MaxAssistantsCount = authResult.LicenseLimits.MaxAssistantsCount,
-				ContentDiscoveryLimits = new TheseContentDiscoveryLimits() {
-					HasProspector = authResult.LicenseLimits.ContentDiscoveryLimits.HasProspector,
-					HasProspectorContent = authResult.LicenseLimits.ContentDiscoveryLimits.HasProspectorContent,
-					HasSocials = authResult.LicenseLimits.ContentDiscoveryLimits.HasSocials,
-					HasSocialsContent = authResult.LicenseLimits.ContentDiscoveryLimits.HasSocialsContent,
-					MaxRssCount = authResult.LicenseLimits.ContentDiscoveryLimits.MaxRssCount
-				},
-			};
-			_authSession.TookGuidedTour = authResult.TookGuidedTour;
-			_authSession.CanCreateProfiles = authResult.CanCreateProfiles;
-			return true;
-		}
-		return false;
-	}
-}
+//public class TheseLimits : ILimits {
+//	public bool HasOutreach { get; set; }
+//	public bool HasYouTube { get; set; }
+//	public bool HasWordPress { get; set; }
+//	public int MaxProfilesCount { get; set; }
+//	public int MaxAssistantsCount { get; set; }
+//	public TheseContentDiscoveryLimits ContentDiscoveryLimits { get; set; } = new TheseContentDiscoveryLimits();
+//	IContentDiscoveryLimits ILimits.ContentDiscoveryLimits => ContentDiscoveryLimits;
+//}
+//public class TheseContentDiscoveryLimits : IContentDiscoveryLimits {
+//	public bool HasProspector { get; set; }
+//	public bool HasProspectorContent { get; set; }
+//	public bool HasSocials { get; set; }
+//	public bool HasSocialsContent { get; set; }
+//	public int MaxRssCount { get; set; }
+//}
+//public class TheseApplicationSettings  {
+//	public TheseLoginSettings Login { get; set; } = new TheseLoginSettings();
+//	public TheseSettingsSettings Settings { get; set; } = new TheseSettingsSettings();
+//}
+//public class TheseSettingsSettings {
+//	public string CurrentAppTheme { get; set; } = "System";
+//	public string? CustomAccentColor { get; set; }
+//	public bool UseCustomAccentColor { get; set; }
+//	public bool AutoLogin { get; set; } = true;
+//	public string? CodesverifyApiKey { get; set; }
+//	public string? UserScriptsDirectory { get; set; }
+//	public string? SMSPoolApiKey { get; set; }
+//}
+//public class TheseLoginSettings {
+//	public string LoginName { get; set; } = string.Empty;
+//	public string LicenseKey { get; set; } = string.Empty;
 
-public class TheseLimits : ILimits {
-	public bool HasOutreach { get; set; }
-	public bool HasYouTube { get; set; }
-	public bool HasWordPress { get; set; }
-	public int MaxProfilesCount { get; set; }
-	public int MaxAssistantsCount { get; set; }
-	public TheseContentDiscoveryLimits ContentDiscoveryLimits { get; set; } = new TheseContentDiscoveryLimits();
-	IContentDiscoveryLimits ILimits.ContentDiscoveryLimits => ContentDiscoveryLimits;
-}
-public class TheseContentDiscoveryLimits : IContentDiscoveryLimits {
-	public bool HasProspector { get; set; }
-	public bool HasProspectorContent { get; set; }
-	public bool HasSocials { get; set; }
-	public bool HasSocialsContent { get; set; }
-	public int MaxRssCount { get; set; }
-}
-public class TheseApplicationSettings  {
-	public TheseLoginSettings Login { get; set; } = new TheseLoginSettings();
-	public TheseSettingsSettings Settings { get; set; } = new TheseSettingsSettings();
-}
-public class TheseSettingsSettings {
-	public string CurrentAppTheme { get; set; } = "System";
-	public string CustomAccentColor { get; set; }
-	public bool UseCustomAccentColor { get; set; }
-	public bool AutoLogin { get; set; } = true;
-	public string CodesverifyApiKey { get; set; }
-	public string UserScriptsDirectory { get; set; }
-	public string SMSPoolApiKey { get; set; }
-}
-public class TheseLoginSettings {
-	public string LoginName { get; set; } = string.Empty;
-	public string LicenseKey { get; set; } = string.Empty;
+//	public void Set(string loginName, string licenseKey)
+//	{
+//		LoginName = loginName ?? string.Empty;
+//		LicenseKey = licenseKey ?? string.Empty;
+//	}
+//}
 
-	public void Set(string loginName, string licenseKey)
-	{
-		LoginName = loginName ?? string.Empty;
-		LicenseKey = licenseKey ?? string.Empty;
-	}
-}
-
-public class ThisAuthSession : IAuthSession {
-	public long UserId { get; set; }
-	public long? CreatorUserId { get; set; }
-	public string UserName { get; set; }
-	public string AuthToken { get; set; }
-	public bool HasAuthToken => !string.IsNullOrEmpty(AuthToken);
-	public long ExpireInSeconds { get; set; }
-	public string EncryptedAccessToken { get; set; }
-	public string AuthRefreshToken { get; set; }
-	public string[] Permissions { get; set; }
-	public ILimits Limits { get; set; }
-	public bool TookGuidedTour { get; set; }
-	public bool CanCreateProfiles { get; set; }
-}
+//public class ThisAuthSession : IAuthSession {
+//	public long UserId { get; set; }
+//	public long? CreatorUserId { get; set; }
+//	public string? UserName { get; set; }
+//	public string? AuthToken { get; set; }
+//	public bool HasAuthToken => !string.IsNullOrEmpty(AuthToken);
+//	public long ExpireInSeconds { get; set; }
+//	public string? EncryptedAccessToken { get; set; }
+//	public string? AuthRefreshToken { get; set; }
+//	public string[]? Permissions { get; set; }
+//	public ILimits? Limits { get; set; }
+//	public bool TookGuidedTour { get; set; }
+//	public bool CanCreateProfiles { get; set; }
+//}

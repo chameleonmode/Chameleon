@@ -8,19 +8,15 @@ using Chameleon.lib.Common.Constants;
 using DynamicData;
 using Chameleon.lib.Common.Util;
 using System.Reactive.Subjects;
-using Chameleon.lib.Common;
-using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.lib.Api;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 
 public partial class AssistantUsersViewModel
 			 : ViewModelObjectBase {
-	private readonly IAuthSession _authSession = IoC.GetService<IAuthSession>()!;
-	private readonly ISubject<IPageRequest> pageRequests = new BehaviorSubject<IPageRequest>(new PageRequest(0, Consts.PageinationPageItems));
-
 	[ObservableProperty]
 	private int totalCount;
 	private readonly ReadOnlyObservableCollection<ObsAssistantUser> assistants;
@@ -55,7 +51,7 @@ public partial class AssistantUsersViewModel
 
 	private async Task CreateNewUserAssistant()
 	{
-		if (Assistantz.Count >= _authSession.Limits.MaxAssistantsCount) {
+		if (Assistantz.Count >= Auther.AuthSession?.LicenseLimits.MaxAssistantsCount) {
 			if (await Mbox.Show("USERS LIMIT REACHED", "You have reached the maximum number of users."))
 				ProUtil.GoToUrlDefault(Consts.GlobalSettings.PricingUrl);
 		} else {

@@ -11,10 +11,6 @@
 			 x:DataType="dt:ObsProfile"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Controls.UserProfileUserControl">
-	<UserControl.Resources>
-		<conv:IsActiveBackgroundConverter x:Key="activebgConv" />
-	</UserControl.Resources>
-
 	<UserControl.Styles>
 		<Style Selector=":is(Button)[Tag=True]">
 			<Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}"/>
