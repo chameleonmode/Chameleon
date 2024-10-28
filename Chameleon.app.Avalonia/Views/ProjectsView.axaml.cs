@@ -22,14 +22,14 @@ public partial class ProjectsView : ChameleonNavigationPage {
 	{
 		base.OnAfterNavigatedTo();
 		if (foldersUserControl == null) {
-			await Task.Delay(64);
+			await Task.Delay(54);
 			foldersUserControl = new FoldersUserControl();
 			FoldersPanel.Content = foldersUserControl;
 		}
 		//_ = UserProfileFoldersViewModel.Instance.InitializeAsync(this);
 
 		if (userProfilesUserControl == null) {
-			await Task.Delay(64);
+			await Task.Delay(54);
 			userProfilesUserControl = new UserProfilesUserControl();
 			ProfilesPanel.Content = userProfilesUserControl;
 		}

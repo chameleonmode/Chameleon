@@ -26,70 +26,36 @@ public partial class AppMainViewViewModel : ObservableObjectBase {
 	[ObservableProperty]
 	private bool isSplashVisible = true;
 
-	private readonly ReadOnlyObservableCollection<ObsProfile> _boundProfilesList;
+	public NavigationFactory NavigationFactory { get; } = new NavigationFactory(Instance);
 
-	private readonly ReadOnlyObservableCollection<ObsFolder> _boundFoldersList;
-	public ObservableCollection<MainAppSearchItem> SearchTerms { get; } = [];
-
-	public NavigationFactory NavigationFactory { get; }
+	private readonly ReadOnlyObservableCollection<MainAppSearchItem> _boundProfiles;
+	private readonly ReadOnlyObservableCollection<MainAppSearchItem> _boundFolders;
+	public IEnumerable<MainAppSearchItem> SearchTerms => _boundProfiles.Concat(_boundFolders);
 
 	private AppMainViewViewModel()
 	{
 		AppStartup.Instance.OnLoginSuccess += () => { IsSplashVisible = false; };
-
-		NavigationFactory = new NavigationFactory(this);
-
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i => new ObsProfile(i, onSelectedChanged: OnBoundProfilesProfileSelectedChanged))
-			.SortAndBind(out _boundProfilesList, Compares.ObsProfileCompares.AscendingComparer)
-			.Subscribe((i) => {
-				if (_boundProfilesList != null) {
-					foreach (var profile in _boundProfilesList) {
-						if (_boundProfilesList?.Contains(profile) == false && SearchTerms.FirstOrDefault(a => a.ViewModel == profile) is MainAppSearchItem st) {
-							_ = SearchTerms.Remove(st);
-						} else if (_boundProfilesList?.Contains(profile) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == profile) is null) {
-							SearchTerms.Add(new() {
-								Header = profile.Title ?? "xxx",
-								Namespace = "Profile",
-								ViewModel = profile,
-								PageType = this.GetType()
-							});
-						} else if (_boundProfilesList?.Contains(profile) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == profile) is MainAppSearchItem str) {
-							str.Header = profile.Title ?? "xxx";
-							str.ViewModel = profile;
-						}
-					}
-				}
-			});
+			.Transform(i => new MainAppSearchItem() {
+				Header = i.title ?? "xxx",
+				Namespace = "Profile",
+				ViewModel = new ObsProfile(i, onSelectedChanged: OnBoundProfilesProfileSelectedChanged),
+				PageType = this.GetType()
+			})
+			.Bind(out _boundProfiles)
+			.Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
 
 		_ = UserProfilesFolderRepo
 			.Connect()
-			.Transform(i => new ObsFolder(i))
-			.SortAndBind(out _boundFoldersList, Compares.ObsFolderCompares.AscendingComparer)
-			.Subscribe((i) => {
-				foreach (var c in i) {
-					if (_boundFoldersList?.Contains(c.Current) == false && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is MainAppSearchItem st) {
-						SearchTerms.Remove(st);
-					} else if (_boundFoldersList?.Contains(c.Current) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is null) {
-						SearchTerms.Add(new() {
-							Header = c.Current.Title ?? "xxx",
-							Namespace = "Folder",
-							ViewModel = c.Current,
-							PageType = this.GetType()
-						});
-					} else if (_boundFoldersList?.Contains(c.Current) == true && SearchTerms.FirstOrDefault(a => a.ViewModel == c.Current) is MainAppSearchItem str) {
-						str.Header = c.Current.Title ?? "xxx";
-						str.ViewModel = c.Current;
-					}
-				}
-			});
-	}
-
-	public void BuildSearchTerms(List<MainAppSearchItem> items)
-	{
-		//SearchTerms.Clear();
-		SearchTerms.AddRange(items);
+			.Transform(i => new MainAppSearchItem() {
+				Header = i.title ?? "xxx",
+				Namespace = "Folder",
+				ViewModel = new ObsFolder(i),
+				PageType = this.GetType()
+			})
+			.Bind(out _boundFolders)
+			.Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
 	}
 
 	partial void OnSelectedSearchTermChanged(MainAppSearchItem? oldValue, MainAppSearchItem? newValue)

@@ -248,17 +248,22 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	public async void OnFilterTo(ObsProfile? p = null)
 	{
 		_ = await LoadedTCS.Task;
+		await Task.Delay(100);
 
 		if (p != null) {
 			if (p.Dto?.folderId is int fid && fid != 0)
 				UserProfileFoldersViewModel.Instance.SetSelectedById(fid);
 			else
 				await UserProfileFoldersViewModel.Instance.OnNavigatingTo(null);
+
+			SearchText = p.Title ?? string.Empty;
 		} else {
 			UserProfileFoldersViewModel.Instance.SetSelectedById(0);
+			SearchText = string.Empty;
 		}
 
-		SetViewModelsFilter();
+		OnPropertyChanged(nameof(SearchText));
+		//SetViewModelsFilter();
 	}
 	public void SetViewModelsFilter(bool onext = true)
 	{
