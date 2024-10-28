@@ -47,7 +47,8 @@ public class AppStartup {
 			await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
 			if (Auther.AuthSession is not null &&
 				(loginvm.UserName   != loginSetings.LoginName || 
-				 loginvm.LicenceKey != loginSetings.LicenseKey)) {
+				 loginvm.LicenceKey != loginSetings.LicenseKey ||
+				 loginvm.AutoLogin != loginSetings.AutoLogin)) {
 				IoC.SetJsonValue(new LoginSettings(loginvm.UserName, loginvm.LicenceKey, loginvm.AutoLogin), nameof(LoginSettings));
 				return true;
 			}

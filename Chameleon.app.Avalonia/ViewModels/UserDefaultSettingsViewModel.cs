@@ -86,7 +86,8 @@ public partial class UserDefaultSettingsViewModel
 			return;
 		}
 
-		foreach (var setting in _selectedDefaultSetting) {
+		for (var i = _selectedDefaultSetting.Count() - 1; i >= 0; i--) {
+			var setting = _selectedDefaultSetting.ElementAt(i);
 			await setting.DeleteDefaultSettings();
 		}
 		OnSelectedChanged();
@@ -95,7 +96,7 @@ public partial class UserDefaultSettingsViewModel
 	[RelayCommand]
 	private async Task CreateNewDefaultSettings()
 	{
-		_ = await BrowserSettingsRepo.Instance.Create(new BrowserSettingDto() { DefaultUrl = "duckduckgo.com" });
+		_ = await BrowserSettingsRepo.Instance.Create(new BrowserSettingDto() { DefaultUrl = "https://example.com/" });
 	}
 
 	[RelayCommand]
