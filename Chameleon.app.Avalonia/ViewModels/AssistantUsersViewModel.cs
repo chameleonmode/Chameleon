@@ -53,7 +53,7 @@ public partial class AssistantUsersViewModel
 	{
 		if (Assistantz.Count >= Auther.AuthSession?.LicenseLimits.MaxAssistantsCount) {
 			if (await Mbox.Show("USERS LIMIT REACHED", "You have reached the maximum number of users."))
-				ProUtil.GoToUrlDefault(Consts.GlobalSettings.PricingUrl);
+				ProUtil.GoToUrlDefault(Consts.PricingUrl);
 		} else {
 			var invite = new InviteUserOrAddProfilesViewModel() {
 				ShowInviteinfo = true,

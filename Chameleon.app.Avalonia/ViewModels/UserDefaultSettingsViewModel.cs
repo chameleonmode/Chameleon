@@ -44,7 +44,7 @@ public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action O
 public partial class UserDefaultSettingsViewModel
 			 : ViewModelObjectBase {
 	[ObservableProperty]
-	private EmulationOptions defaultEmulationOptions = IoC.GetValue<EmulationOptions>(nameof(EmulationOptions)) ?? new();
+	private EmulationOptions defaultEmulationOptions = IoC.GetJsonValue<EmulationOptions>(nameof(EmulationOptions)) ?? new();
 
 	private readonly ReadOnlyObservableCollection<UserDefaultSettingViewModel> settings;
 	public ReadOnlyObservableCollection<UserDefaultSettingViewModel> ViewModels => settings;

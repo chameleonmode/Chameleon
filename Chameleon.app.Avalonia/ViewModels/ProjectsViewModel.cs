@@ -74,7 +74,7 @@ public partial class ProjectsViewModel : ViewModelObjectBase {
 		} catch (Exception ex) {
 			if (ex.Message == "limit_ex") {
 				if (await Mbox.Show("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
-					ProUtil.GoToUrlDefault(Consts.GlobalSettings.PricingUrl);
+					ProUtil.GoToUrlDefault(Consts.PricingUrl);
 			} else {
 				Toaster.ShowErr("Wooopsy?", ex.Message);
 			}
