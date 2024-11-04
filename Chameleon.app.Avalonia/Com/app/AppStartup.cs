@@ -8,6 +8,7 @@ using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.lib.Common.ServiceManagers;
+using Chameleon.lib.Common.Util;
 
 namespace Chameleon.app.Avalonia;
 public class AppStartup {
@@ -19,6 +20,7 @@ public class AppStartup {
 			_ = await Mbox.ShowErrorAsync("Error Logging In", "There was an error validationg the login information that was provided.");
 			Environment.Exit(0);
 		} else {
+			await IOtil.DC(Consts.AppTempDir);
 			await LoadSink();
 			OnLoginSuccess?.Invoke();
 		}

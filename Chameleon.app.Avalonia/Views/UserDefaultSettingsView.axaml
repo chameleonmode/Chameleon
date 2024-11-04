@@ -39,11 +39,11 @@
 								Content="Resist Font Fingerprint"
 								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofFontFingerprint}" />
 							<CheckBox
-								Content="Resist Geo Location"
+								Content="Auto Geo Location"
 								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofGeoLocation}" />
-							<CheckBox
+							<!--<CheckBox
 								Content="Disable WebRtc"
-								IsChecked="{Binding Path=DefaultEmulationOptions.DisableWebRTC}" />
+								IsChecked="{Binding Path=DefaultEmulationOptions.DisableWebRTC}" />-->
 							<CheckBox
 								Content="Auto Timezone"
 								IsChecked="{Binding Path=DefaultEmulationOptions.AutoTimezone}" />
