@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.Playwright.Models;
-using Chameleon.lib.WebBrowser.Interfaces;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -226,6 +225,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	{
 		Folder = folder;
 
+		OnPropertyChanged(nameof(SelectedFolderTitle));
 		UnselectItems();
 		SetViewModelsFilter();
 	}
@@ -463,35 +463,39 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		IsVisibleRunButton = false;
 		IsVisibleStopButton = true;
 
-		var token = RecreateCancellationToken;
-		foreach (var profile in GetSelectedProfiles) {
-			var browserWasNotOpened = profile.SBI![SelectedBrowserItem!.SystemBrowserType] == null;
-			if (browserWasNotOpened) {
-				await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(token);
-				if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || !await profile.SBI![SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))
-					continue;
-			}
-			var options = SelectedPlaywrightScript.RunOptions;
-			options.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
-			options.Record = IsRecordSelected;
-			try {
-				await _playwriteService.RunScript(SelectedPlaywrightScript.RunOptions, token);
-			} catch (Exception ex) {
-				// Log or handle the exception if closing the process fails
-				Toaster.ShowErr($"{ex.Message}");
-			}
+		try {
+			var token = RecreateCancellationToken;
+			foreach (var profile in GetSelectedProfiles) {
+				var browserWasNotOpened = profile.SBI![SelectedBrowserItem!.SystemBrowserType] == null;
+				if (browserWasNotOpened) {
+					await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(token);
+					if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || !await profile.SBI![SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))
+						continue;
+				}
+				var options = SelectedPlaywrightScript.RunOptions;
+				options.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
+				options.Record = IsRecordSelected;
+				try {
+					await _playwriteService.RunScript(SelectedPlaywrightScript.RunOptions, token);
+				} catch (Exception ex) {
+					// Log or handle the exception if closing the process fails
+					Toaster.ShowErr($"{ex.Message}");
+				}
 
-			// Check if the browser process is not null and hasn't exited
-			if (browserWasNotOpened) {
-				await ProUtil.TryKillProcess(profile.SBI[SelectedBrowserItem.SystemBrowserType]?.Settings.Brocess);
-			}
+				// Check if the browser process is not null and hasn't exited
+				if (browserWasNotOpened) {
+					await ProUtil.TryKillProcess(profile.SBI[SelectedBrowserItem.SystemBrowserType]?.Settings.Brocess);
+				}
 
-			// Stop loop if canceled
-			if (token.IsCancellationRequested) {
-				break;
+				// Stop loop if canceled
+				if (token.IsCancellationRequested) {
+					break;
+				}
 			}
+			_playwriteService.Dispose();
+		} catch (Exception ex) {
+			Toaster.ShowErr($"{ex.Message}");
 		}
-		_playwriteService.Dispose();
 
 		IsVisibleRunButton = true;
 		IsVisibleStopButton = false;

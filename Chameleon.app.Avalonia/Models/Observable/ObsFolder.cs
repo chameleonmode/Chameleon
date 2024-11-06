@@ -127,6 +127,7 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 			return;
 		}
 
+		var wasSelected = IsSelected;
 		var orignalTitle = Dto!.title;
 		try {
 			Dto.title = Title;
@@ -141,5 +142,9 @@ public partial class ObsFolder : Vim<UPFolderDto> {
 		Title = Dto.title;
 
 		IsRenamed = false;
+
+		if (wasSelected) {
+			await Open();
+		}
 	}
 }

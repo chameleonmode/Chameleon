@@ -183,9 +183,9 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 			if (browser == null) {
 				browser = await SysBrowserServiceBase.Open(new SysBrowserOpenOptions(
 				browserType,
-				new UserProfileModel() {
+				new SysBrowserProfile() {
 					Id = Dto!.id,
-					Proxy = new ProxySettingsModel() {
+					Proxy = new SysBrowserProxy() {
 						Host = Dto.proxy?.host,
 						Port = Dto.proxy?.port ?? 0,
 						UserName = Dto.proxy?.userName,

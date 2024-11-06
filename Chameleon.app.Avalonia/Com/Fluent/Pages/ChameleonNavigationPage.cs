@@ -42,16 +42,16 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 			OnAfterNavigatedToViewModel(e.Parameter);
 		}
 		if (_animationPage != null && _animationPageParent != null) {
-			ExUtil.TryCatch(() => {
+			_ = ExUtil.TryCatch(() => {
 				var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
 				var anim = svc.GetAnimation("BackAnimation");
 
 				if (anim == null)
-					return;
+					return false;
 
 				GetNavAnimationVisuals(_navParam);
 
-				if (_animationPage == null) return;
+				if (_animationPage == null) return false;
 
 				// In WinUI, ConnectedAnimation is somehow exempt from all clipping behaviors
 				// Here, we are not, so disable ClipToBounds on all elements in the SettingsExpander
@@ -67,6 +67,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 
 				anim.Configuration = new DirectConnectedAnimationConfiguration();
 				_ = anim.TryStart(_animationPage);
+				return true;
 			});
 		}
 

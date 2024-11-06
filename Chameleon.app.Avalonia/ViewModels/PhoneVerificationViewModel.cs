@@ -77,8 +77,10 @@ public partial class PVApiModel
 	}
 	public async Task Save()
 	{
-		_pnapinstance.ApiKey = ApiKey;
-		await _pnapinstance.Save();
+		await MakeRequest(async () => {
+			_pnapinstance.ApiKey = ApiKey;
+			await _pnapinstance.Save();
+		}, e => Toaster.ShowErr(e));
 	}
 
 	public async Task GetNumber()
@@ -130,7 +132,9 @@ public partial class PVApiModel
 
 	public void Popout()
 	{
-		WShower.ShowTopmost<PVAUserControl, PVApiModel>(new PVApiModel(_pnapinstance) { HasCancel = HasCancel }, async vm => {
+		WShower.ShowTopmost<PVAUserControl, PVApiModel>(new PVApiModel(_pnapinstance) { 
+			HasCancel = HasCancel
+		}, async vm => {
 			vm.IsVisibleSave = false;
 			_ = await vm.LoadedTCS.Task;
 		}, null, Title!, 560);
