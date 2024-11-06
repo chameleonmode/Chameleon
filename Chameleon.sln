@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		Directory.Packages.props = Directory.Packages.props
+		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -30,6 +31,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.Api", "..\chameleon-lib\Chameleon.lib.Api\Chameleon.lib.Api.csproj", "{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{0B86C57C-40CF-4737-8F82-864548769102}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{AC2F00CB-88A2-44C8-ABDF-DD66EA1E0911}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Developers.md = docs\Developers.md
+		docs\Contributing.md = docs\Contributing.md
+		docs\QA.md = docs\QA.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,6 +88,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{ABEAB877-7688-494A-84DF-7B44989A2F3E} = {0B86C57C-40CF-4737-8F82-864548769102}
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D} = {0B86C57C-40CF-4737-8F82-864548769102}
+		{AC2F00CB-88A2-44C8-ABDF-DD66EA1E0911} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}
