@@ -27,23 +27,24 @@
 					<StackPanel>
 						<UniformGrid Columns="2">
 							<CheckBox
-								Content="Resist Canvas Fingerprint"
+								Content="Canvas Resistance"
 								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofCanvasFingerprint}" />
 							<CheckBox
-								Content="Resist WebGl Fingerprint"
+								Content="WebGl Resistance"
 								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofWebGLFingerprint}" />
 							<CheckBox
-								Content="Resist Client Rects"
+								Content="Client Rects Resistance"
 								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofClientRects}" />
 							<CheckBox
-								Content="Resist Font Fingerprint"
-								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofFontFingerprint}" />
+								Content="Font Resistance"
+								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofFontFingerprint}" />							
+							<CheckBox
+								Content="Audio Resistance"
+								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofAudio}" />
 							<CheckBox
 								Content="Auto Geo Location"
 								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofGeoLocation}" />
-							<!--<CheckBox
-								Content="Disable WebRtc"
-								IsChecked="{Binding Path=DefaultEmulationOptions.DisableWebRTC}" />-->
+
 							<CheckBox
 								Content="Auto Timezone"
 								IsChecked="{Binding Path=DefaultEmulationOptions.AutoTimezone}" />
