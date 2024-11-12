@@ -112,7 +112,7 @@ public class AppStartup {
 			}
 		};
 		HttpApiClient.Instance.OnCircuitBreaker += (e) => {
-			Toaster.ShowErr("CircuitBreaker", e);
+			//Toaster.ShowErr("CircuitBreaker", e);
 		};
 		HttpApiClient.Instance.OnSendSeccess += (m) => {
 			//switch(m) {

@@ -12,6 +12,7 @@ using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api;
+using Chameleon.lib.Common.Extensions;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 
@@ -65,6 +66,8 @@ public partial class AssistantUsersViewModel
 							symbas: Enums.Symbas.AddFriend,
 							btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK) {
 				try {
+					ArgumentNullException.ThrowIfNullOrEmpty(invite.AssistantName); 
+					ArgumentNullException.ThrowIfNullOrEmpty(invite.AssistantEmail);
 					var profileIds = invite.SelectedProfiles.Select(p => p.Dto!.id).ToList();
 					_ = await UserAssistantRepo.Instance.Create(new AssistDto {
 						UserName = invite.AssistantName,

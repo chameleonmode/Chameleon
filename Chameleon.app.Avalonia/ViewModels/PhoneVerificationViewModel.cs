@@ -5,11 +5,11 @@ using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Records;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
+using Chameleon.lib.Common.Util.ThirdParty.SMSapi.Codesverify;
+using Chameleon.lib.Common.Util.ThirdParty.SMSapi.Interfaces;
+using Chameleon.lib.Common.Util.ThirdParty.SMSapi.SMSPool;
+using Chameleon.lib.Common.Util.ThirdParty.SMSapi.SMSPVA;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.lib.ThirdParty.SMSapi.Codesverify;
-using Chameleon.lib.ThirdParty.SMSapi.Interfaces;
-using Chameleon.lib.ThirdParty.SMSapi.SMSPool;
-using Chameleon.lib.ThirdParty.SMSapi.SMSPVA;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
