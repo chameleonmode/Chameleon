@@ -484,7 +484,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 				// Check if the browser process is not null and hasn't exited
 				if (browserWasNotOpened) {
-					await ProUtil.TryKillProcess(profile.SBI[SelectedBrowserItem.SystemBrowserType]?.Settings.Brocess);
+					await ProUtil.TryKillProcess(profile.SBI[SelectedBrowserItem.SystemBrowserType]?.Brocess);
 				}
 
 				// Stop loop if canceled
