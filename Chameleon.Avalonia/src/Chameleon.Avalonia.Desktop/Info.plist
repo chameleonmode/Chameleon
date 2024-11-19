@@ -17,7 +17,7 @@
     <key>CFBundleIconFile</key>
     <string>logo-symbol.icns</string>
     <key>CFBundleShortVersionString</key>
-    <string>2024.1.1.7</string>
+    <string>2024.1.1.8</string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
     <key>NSHighResolutionCapable</key>
