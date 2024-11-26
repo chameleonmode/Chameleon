@@ -125,7 +125,7 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 			//
 			Persons.ForEach(async l => await OnSavePerson(l));
 			//
-			Addresses.ForEach(async l => await OnSaveAddress(l.Dto!));
+			Addresses.ForEach(async l => await OnSaveAddress(l));
 			//
 			Businesses.ForEach(async l => await OnSaveBusiness(l));
 
@@ -209,16 +209,20 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 	}
 
 	[RelayCommand]
-	private async Task OnSaveAddress(UPAddressDto p)
+	private async Task OnSaveAddress(ObsAddressDto p)
 	{
-		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p);
+		if (p.Dto != null) {
+			_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.Dto);
+		}
 	}
 
 	[RelayCommand]
-	private async Task OnDeleteAddress(UPAddressDto p)
+	private async Task OnDeleteAddress(ObsAddressDto p)
 	{
-		_ = await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Addrez, p);
-		OnPropertyChanged(nameof(HasAddresses));
+		if (p.Dto != null) {
+			_ = await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Addrez, p.Dto);
+			OnPropertyChanged(nameof(HasAddresses));
+		}
 	}
 	#endregion
 
