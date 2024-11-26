@@ -194,13 +194,21 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 				})
 			);
 
-				if (browser != null && await browser.LoadedTCS.Task) {
+				var succeeded = false;
+				if (browser != null) {
+					try {
+						succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(8));
+					} catch {
+						succeeded = false;
+					}
+				} 
+				if(!succeeded || browser == null) {
+					IsForeground = false;
+					_ = SetRunning(browserType, null);
+				} else {
 					_ = SetRunning(browserType, true);
 					browser.OnEvent += Browser_OnEvent;
 					SBI[browserType] = browser;
-				} else {
-					IsForeground = false;
-					_ = SetRunning(browserType, null);
 				}
 			} else {
 				browser.InvokeEvent(Enums.SysBrowserEventType.Foreground);
