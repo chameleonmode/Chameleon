@@ -150,8 +150,8 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 	{
 		WShower.ShowTopmost(SnapCracklePopViewModel.Instance, SnapCracklePopUserControl.Instance,
 				vm => {
-					if (!vm.RunningList.Any(p=> p.Dto?.id == this.Dto?.id))
-						vm.RunningList.Add(new ObsProfile(this.Dto!,false,false,false,false,false));
+					if (!vm.RunningList.Any(p => p.Dto?.id == this.Dto?.id))
+						vm.RunningList.Add(new ObsProfile(this.Dto!, false, false, false, false, false));
 				},
 				vm => {
 					vm.RunningList.Clear();
@@ -181,18 +181,21 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 		if (SBI.TryGetValue(browserType, out var browser)) {
 			IsForeground = false;
 			if (browser == null) {
-				browser = await SysBrowserServiceBase.Open(new SysBrowserOpenOptions(
-				browserType,
-				new SysBrowserProfile() {
-					Id = Dto!.id,
-					Proxy = new SysBrowserProxy() {
-						Host = Dto.proxy?.host,
-						Port = Dto.proxy?.port ?? 0,
-						UserName = Dto.proxy?.userName,
-						Password = Dto.proxy?.password
-					}
-				})
-			);
+				try {
+					browser = await SysBrowserServiceBase.Open(new SysBrowserOpenOptions(
+					browserType,
+					new SysBrowserProfile() {
+						Id = Dto!.id,
+						Proxy = new SysBrowserProxy() {
+							Host = Dto.proxy?.host,
+							Port = Dto.proxy?.port ?? 0,
+							UserName = Dto.proxy?.userName,
+							Password = Dto.proxy?.password
+						}
+					})).WaitAsync(TimeSpan.FromSeconds(16));
+				} catch {
+					browser = null;
+				}
 
 				var succeeded = false;
 				if (browser != null) {
@@ -201,8 +204,8 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 					} catch {
 						succeeded = false;
 					}
-				} 
-				if(!succeeded || browser == null) {
+				}
+				if (!succeeded || browser == null) {
 					IsForeground = false;
 					_ = SetRunning(browserType, null);
 				} else {
