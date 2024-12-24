@@ -138,13 +138,13 @@
 	<Styles.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceInclude Source="/Com/Fluent/Styling/ChameleonButtonStyles.axaml" />
-				<ResourceInclude Source="/Com/Fluent/Styling/ChameleonContentControlStyles.axaml" />
-				<ResourceInclude Source="/Com/Fluent/Styling/ChameleonDialogControlStyles.axaml" />
-				<ResourceInclude Source="/Com/Fluent/Styling/ControlThemes.axaml" />
-				<ResourceInclude Source="/Com/Fluent/Styling/SvgIconsResourceDictionary.axaml" />
-				<ResourceInclude Source="/Com/Fluent/Styling/HeaderdInputFieldsResourceDictionary.axaml" />
-				<ResourceInclude Source="/Com/Fluent/Styling/ChameleonListBoxStyles.axaml" />
+				<ResourceInclude Source="/Common/Fluent/Styling/ChameleonButtonStyles.axaml" />
+				<ResourceInclude Source="/Common/Fluent/Styling/ChameleonContentControlStyles.axaml" />
+				<ResourceInclude Source="/Common/Fluent/Styling/ChameleonDialogControlStyles.axaml" />
+				<ResourceInclude Source="/Common/Fluent/Styling/ControlThemes.axaml" />
+				<ResourceInclude Source="/Common/Fluent/Styling/SvgIconsResourceDictionary.axaml" />
+				<ResourceInclude Source="/Common/Fluent/Styling/HeaderdInputFieldsResourceDictionary.axaml" />
+				<ResourceInclude Source="/Common/Fluent/Styling/ChameleonListBoxStyles.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 
@@ -154,7 +154,7 @@
 		<Thickness x:Key="ContentDialogTextboxFieldMargin">12,0,12,12</Thickness>
 	</Styles.Resources>
 
-	<StyleInclude Source="/Com/Fluent/Styling/ControlsPageBaseStyles.axaml" />
+	<StyleInclude Source="/Common/Fluent/Styling/ControlsPageBaseStyles.axaml" />
 
 	<!-- 
          NavView style in MainView for main app navigation

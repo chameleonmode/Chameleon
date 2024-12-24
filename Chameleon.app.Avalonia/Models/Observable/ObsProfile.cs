@@ -50,11 +50,6 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 	public bool IsFavorite => Dto?.isFavourite ?? false;
 	public bool IsDeleteProfileBtnVisible => !IsSharedProfile;
 
-	//public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI { get; set; } = new Dictionary<SystemBrowserType, ISysBrowserInstance?>(){
-	//		{ SystemBrowserType.Chrome, null },
-	//		{ SystemBrowserType.Firefox, null },
-	//		{ SystemBrowserType.Brave, null }
-	//	};
 	public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI => Dto!.SBI;
 
 	public ObsProfile(
@@ -70,9 +65,6 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 		OnSelectedChanged = onSelectedChanged;
 		Dto = userProfile;
 
-		//IsChromeRunning = _userProfile.IsChromeRunning;
-		//IsBraveRunning = _userProfile.IsBraveRunning;
-		//IsFFRunning = _userProfile.IsFFRunning;
 		IsShowGlyph = isShowGlyph;
 		IsShowD = isShowD;
 		IsShowC = isShowC;
@@ -104,14 +96,12 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 	public void Open()
 	{
 		Navigator.NavigateToType(typeof(UserProfileIdentityView), Dto);
-		//OpenUserProfile();
 	}
 
 	[RelayCommand]
 	private void ShowViewProfile()
 	{
 		WShower.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(new UserProfileSidePanelViewModel(Dto!), vm => {
-			//vm.UserProfile = Dto;
 		}, null, "Copy Pasta", 156);
 	}
 	[RelayCommand]

@@ -6,7 +6,7 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceInclude Source="avares://Chameleon.app.Avalonia/Com/Fluent/Styling/Resources.axaml" />
+				<ResourceInclude Source="avares://Chameleon.app.Avalonia/Common/Fluent/Styling/Resources.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 		<FontFamily x:Key="ContentControlThemeFontFamily">avares://Chameleon.app.Avalonia/Assets/Fonts/Nunito#Nunito</FontFamily>
@@ -15,8 +15,8 @@
 	<Application.Styles>
 		<!-- As of preview5, these properties now default to false -->
 		<sty:FluentAvaloniaTheme PreferSystemTheme="True" PreferUserAccentColor="True" TextVerticalAlignmentOverrideBehavior="AlwaysEnabled" />
-		<StyleInclude Source="avares://Chameleon.app.Avalonia/Com/Avalonia/Styles/Icons.axaml" />
-		<StyleInclude Source="avares://Chameleon.app.Avalonia/Com/Fluent/Styling/ChameleonStyles.axaml" />
+		<StyleInclude Source="avares://Chameleon.app.Avalonia/Common/Avalonia/Styles/Icons.axaml" />
+		<StyleInclude Source="avares://Chameleon.app.Avalonia/Common/Fluent/Styling/ChameleonStyles.axaml" />
 		<!--<StyleInclude Source="avares://FAControlsGallery/Styling/ControlsGalleryStyles.axaml" />-->
 	</Application.Styles>
 
