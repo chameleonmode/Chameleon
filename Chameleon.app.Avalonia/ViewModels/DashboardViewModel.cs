@@ -9,24 +9,35 @@ using Chameleon.lib.Common.Constants;
 using Chameleon.app.Avalonia.Com.DynamicData;
 using System.Reactive.Subjects;
 using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.lib.Playwright.Services;
+using Chameleon.lib.Common.ServiceManagers;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class DashboardViewModel : ViewModelObjectBase {
+	// 
+	private readonly PlaywrightCookiesRepo _playwrightCookiesRepo = PlaywrightCookiesRepo.Instance;
+	//
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
 	private readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Compares.ObsFolderCompares.AscendingComparer);
 
+	//
 	[ObservableProperty]
 	private bool isSyncChangesBtnVisible = true;
+	[ObservableProperty]
+	public bool hasCookiesToSync = false;
 	[ObservableProperty]
 	private Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
 	[ObservableProperty]
 	private Enums.ChangeComparereOption folderSortSelected = Enums.ChangeComparereOption.Ascending;
 
+	//
 	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
 
+	//
 	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 
+	//
 	public bool HasNoFolderItems => Folders.Count == 0;
 	public bool HasNoItems => Profiles.Count == 0;
 
@@ -54,6 +65,13 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		Folders = flist;
 
 		AsyncCommandMap["SyncChanges"] = SyncChanges;
+		AsyncCommandMap["SyncCookies"] = SyncCookies;
+	}
+
+	public override async Task OnNavigatedToAsync(object? param)
+	{
+		await base.OnNavigatedToAsync(param);
+		await CheckForCookies();
 	}
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value)
@@ -72,9 +90,28 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		});
 	}
 
+	private async Task CheckForCookies()
+	{
+		try {
+			HasCookiesToSync = await _playwrightCookiesRepo.HasCookies();
+		} catch {
+			HasCookiesToSync = false;
+		}
+	}
+
 	private async Task SyncChanges()
 	{
 		await AppStartup.LoadSink(true);
+	}
+	private async Task SyncCookies()
+	{
+		try {
+			await _playwrightCookiesRepo.SyncCookies(Enums.SystemBrowserType.Chrome);
+			Toaster.ShowSuccess("Cookies Synced");
+		} catch(Exception e) {
+			Toaster.ShowErr("Failed to sync cookies. Please try again. " + e.Message);
+		}
+		await CheckForCookies();
 	}
 }
 

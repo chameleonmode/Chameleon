@@ -60,46 +60,47 @@
 								ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Grid Width="128"
-											  Margin="6">
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="*" />
-												<ColumnDefinition Width="Auto" />
-											</Grid.ColumnDefinitions>
+										<Grid Width="192"
+											  Margin="6"
+											  ColumnDefinitions="*, Auto">
 											<TextBlock Text="{Binding Dto.ProfileName, FallbackValue=name}"
 													   HorizontalAlignment="Left"
 													   VerticalAlignment="Center"
-													   Theme="{StaticResource BodyStrongTextBlockStyle}" />
-
-											<Button Grid.Column="1"
-													Command="{Binding UnshareCommand}"
-													Theme="{DynamicResource TransparentButton}">
-												<afv:SvgIconControl IconName="x" />
-											</Button>
+													   Theme="{StaticResource BodyStrongTextBlockStyle}" 
+											/>
+											<StackPanel Orientation="Horizontal"
+														Spacing="4"
+														VerticalAlignment="Bottom"
+														Grid.Column="1">
+												<Button Content="Share"
+														Command="{Binding SendCookiesCommand}"
+														ToolTip.Tip="Share Cookies"
+														Theme="{DynamicResource AccentSymbleIconButton}"  
+												/>
+												<Button Content="Clear"
+														Command="{Binding UnshareCommand}"
+														ToolTip.Tip="Remove Access"
+														Theme="{DynamicResource AccentSymbleIconButton}" 
+												/>
+											</StackPanel>
 										</Grid>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
 
-							<!--<CheckBox
-									Grid.Column="3"
-									Margin="6"
-									Content="Can Create Profiles"
-									IsChecked="{Binding CanCreateProfiles}"
-									Command="{Binding SetCanCreateProfilesCommand}"/>-->
-
 							<Button
 								Grid.Column="4"
 								Margin="6"
-								ToolTip.Tip="Edit User"
-								Content="three-dots"
-								Theme="{StaticResource SvgIconButton}">
+								Content="More"
+								Classes="accent"
+								Theme="{DynamicResource AccentSymbleIconButton}">
 								<Button.Flyout>
 									<ui:FAMenuFlyout Placement="Bottom">
 										<ui:MenuFlyoutItem
 											Text="Edit profile access"
 											IconSource="Add"
-											Command="{Binding AddMoreProfilesCommand}"/>
+											Command="{Binding AddMoreProfilesCommand}"
+										/>
 										<ui:MenuFlyoutItem
 											Text="Copy licence key"
 											IconSource="Copy"

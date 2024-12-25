@@ -18,10 +18,26 @@
 				TextType="Dashboard"
 				Classes="smallest">
 				<afv:PageHeaderControl.ContentObject>
-					<Button Theme="{StaticResource SyncChangesButton}"
-							Command="{Binding AsyncCfromVCommand}"
-							CommandParameter="SyncChanges"
-							Margin="6 -18 6 6"  />
+					<StackPanel Orientation="Horizontal"
+								Margin="6 -18 6 6">
+						<Button Background="Transparent"
+								BorderBrush="Transparent"
+								Foreground="{DynamicResource AccentButtonBackground}"
+								Theme="{DynamicResource AccentSymbleIconButton}"
+								Content="Sync"
+								ToolTip.Tip="Refresh"
+								Command="{Binding AsyncCfromVCommand}"
+								CommandParameter="SyncChanges" />
+						<Button Background="Transparent"
+								BorderBrush="Transparent"
+								Foreground="{DynamicResource AccentButtonBackground}"
+								IsVisible="{Binding HasCookiesToSync}"
+								ToolTip.Tip="Download"
+								Content="Download"
+								Theme="{DynamicResource AccentSymbleIconButton}"
+								Command="{Binding AsyncCfromVCommand}"
+								CommandParameter="SyncCookies" />
+					</StackPanel>
 				</afv:PageHeaderControl.ContentObject>
 			</afv:PageHeaderControl>
 

@@ -10,7 +10,11 @@
 			<StackPanel Spacing="10" Width="1080">
 				<local:PageHeaderControl Classes="smallest">
 					<local:PageHeaderControl.ContentObject>
-						<Button Theme="{StaticResource SyncChangesButton}" />
+						<Button
+							Content="More"
+							Classes="accent"
+							Theme="{DynamicResource AccentSymbleIconButton}" 
+						/>
 					</local:PageHeaderControl.ContentObject>
 				</local:PageHeaderControl>
 			</StackPanel>
@@ -179,7 +183,6 @@
 									</ui:FAMenuFlyout>
 								</Button.Flyout>
 							</Button>-->
-							<!--<Button Theme="{StaticResource SyncChangesButton}" />-->
 							
 						</StackPanel>
 

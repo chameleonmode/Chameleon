@@ -1,6 +1,7 @@
 ﻿using Chameleon.app.Avalonia.lib.Community.Controls;
 using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.lib.Abs;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common;
@@ -61,7 +62,7 @@ public class AppStartup {
 		return Auther.AuthSession is not null;
 	}
 
-	public static Task LoadSink(bool reload = false)
+	public static async Task LoadSink(bool reload = false)
 	{
 		var tasks = new List<Task>() {
 			UserProfilesRepo.Instance.Load(),
@@ -70,7 +71,7 @@ public class AppStartup {
 		if (reload) {
 			tasks.Add(UPAdditionalDataRepo.Instance.LoadReload(true));
 		}
-		return Task.WhenAll(tasks);
+		await Task.WhenAll(tasks);
 	}
 
 	public static AppStartup Instance { get; } = new AppStartup();

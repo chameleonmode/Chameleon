@@ -18,7 +18,7 @@
 	<PackageReference Include="Avalonia.Svg" />
 	<PackageReference Include="Avalonia.Svg.Skia" />
 	<PackageReference Include="FluentAvaloniaUI" />
-    <PackageReference Include="DynamicData" />
+	<PackageReference Include="DynamicData" />
 	<PackageReference Include="CommunityToolkit.Mvvm" />
 	<PackageReference Include="System.Configuration.ConfigurationManager" />
 	<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
@@ -39,6 +39,7 @@
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.CommunityToolkit\Chameleon.lib.CommunityToolkit.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Playwright\Chameleon.lib.Playwright.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib\Chameleon.lib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

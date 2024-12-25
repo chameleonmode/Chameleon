@@ -7,12 +7,10 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
 using DynamicData;
 using Chameleon.lib.Common.Util;
-using System.Reactive.Subjects;
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api;
-using Chameleon.lib.Common.Extensions;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 
@@ -42,6 +40,7 @@ public partial class AssistantUsersViewModel
 
 		AsyncCommandMap["CreateNewUserAssistant"] = CreateNewUserAssistant;
 	}
+
 	public override async Task InitAsync(object? param)
 	{
 		await base.InitAsync(param);
@@ -83,9 +82,4 @@ public partial class AssistantUsersViewModel
 			}
 		}
 	}
-	//private void SendLicenceKey(string emailAddress, string password)
-	//{
-	//	var url = $"mailto:{emailAddress}?subject=Chameleon invitation&body=You’ve been invited to Chameleon. Your credentials:%0DEmail: {emailAddress}%0DKey: {password}%0D";
-	//	ProUtil.GoToUrlDefault(url);
-	//}
 }

@@ -2,10 +2,13 @@
 
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
+using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Playwright.Services;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -13,18 +16,28 @@ using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
-public partial class ObsAssisProfile(AssisProfileDto dto, Action<ObsAssisProfile> OnUnshare) : Vim<AssisProfileDto>(dto) {
+public partial class ObsAssisProfile(AssisProfileDto dto, Action<ObsAssisProfile> onProfileUnshare, Func<ObsAssisProfile, Task> onSendCookies) : Vim<AssisProfileDto>(dto) {
 	[RelayCommand]
-	public void Unshare() 
+	public void Unshare()
 	{
-		OnUnshare(this);
+		onProfileUnshare(this);
+	}
+
+	[RelayCommand]
+	public async Task SendCookies()
+	{
+		await onSendCookies(this);
 	}
 }
-	public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
+public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
+	private readonly PlaywrightCookiesRepo _playwrightCookiesRepo = PlaywrightCookiesRepo.Instance;
+
 	[ObservableProperty]
 	private bool canCreateProfiles;
 	public ObservableCollection<ObsAssisProfile> Profilez { get; } = [];
 	public ObservableCollection<ObsFolder> Folderz { get; } = [];
+
+	public AssistDto AssistDto => Dto!;
 
 	public override async Task InitAsync(object? param)
 	{
@@ -40,20 +53,45 @@ public partial class ObsAssisProfile(AssisProfileDto dto, Action<ObsAssisProfile
 		AddProfiles(profiles);
 	}
 
-	private void AddProfiles(AssisProfileDto[] profiles) => Profilez.AddRange(profiles.Select(p => new ObsAssisProfile(p, async op =>
-	{
-		if (await Mbox.Show("Unshare Profile", $"Are you sure you want to unshare {p.ProfileName}? This will not affect other profiles.")) {
-			try {
-				_ = await UserAssistantRepo.DeleteAssistantProfile(Dto!.id, op.Dto!.ProfileId);
+	private void AddProfiles(
+		AssisProfileDto[] profiles
+	) => Profilez.AddRange(profiles.Select(p =>
+		new ObsAssisProfile(p
+			, onProfileUnshare: async op => {
+				if (await Mbox.Show("Unshare Profile", $"Are you sure you want to unshare {p.ProfileName}? This will not affect other profiles.")) {
+					try {
+						_ = await UserAssistantRepo.DeleteAssistantProfile(Dto!.id, op.Dto!.ProfileId);
 
-				_ = Profilez.Remove(op);
+						_ = Profilez.Remove(op);
 
-				Toaster.ShowSuccess($"{op.Dto!.ProfileName} was unshared successfully");
-			} catch {
-				Toaster.ShowErr($"Failed to unshare profile. Please try again.");
+						Toaster.ShowSuccess($"{op.Dto!.ProfileName} was unshared successfully");
+					} catch {
+						Toaster.ShowErr($"Failed to unshare profile. Please try again.");
+					}
+				}
 			}
-		}
-	})));
+			, onSendCookies: async op => {
+				try {
+					var userId =
+						AssistDto.id == Auther.AuthSession!.UserId && Auther.AuthSession!.CreatorUserId != null
+							? Auther.AuthSession.CreatorUserId.ToString()
+							: AssistDto.id.ToString();
+
+					if (userId != null) {
+						await _playwrightCookiesRepo.PutChromiumCookies(
+							userId,
+							op.Dto!.ProfileId!.ToString(),
+							Enums.SystemBrowserType.Chrome
+						);
+					} else {
+						Toaster.ShowErr("Failed to send cookies. User ID is null.");
+					}
+				} catch (Exception e) {
+					Toaster.ShowErr($"Failed to send cookies. {e.Message}");
+				}
+			}
+		)
+	));
 
 	partial void OnCanCreateProfilesChanged(bool value)
 	{
