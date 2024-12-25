@@ -34,9 +34,35 @@
 								IsVisible="{Binding HasCookiesToSync}"
 								ToolTip.Tip="Download"
 								Content="Download"
-								Theme="{DynamicResource AccentSymbleIconButton}"
-								Command="{Binding AsyncCfromVCommand}"
-								CommandParameter="SyncCookies" />
+								Theme="{DynamicResource AccentSymbleIconButton}">
+							<Button.Flyout>
+								<ui:FAMenuFlyout Placement="Bottom">
+									<ui:MenuFlyoutItem
+										Text="Into Chrome"
+										CommandParameter="SyncCookiesChrome"
+										Command="{Binding AsyncCfromVCommand}"
+									/>
+									<ui:MenuFlyoutItem
+										Text="Into Brave"
+										CommandParameter="SyncCookiesBrave"
+										Command="{Binding AsyncCfromVCommand}"
+									/>
+									<ui:MenuFlyoutItem
+										Text="Into Firefox"
+										CommandParameter="SyncCookiesFirefox"
+										Command="{Binding AsyncCfromVCommand}"
+									/>
+									
+									<ui:MenuFlyoutSeparator />
+									
+									<ui:MenuFlyoutItem
+										Text="Clear"
+										CommandParameter="SyncCookiesClear"
+										Command="{Binding AsyncCfromVCommand}"
+									/>
+								</ui:FAMenuFlyout>
+							</Button.Flyout>
+						</Button>
 					</StackPanel>
 				</afv:PageHeaderControl.ContentObject>
 			</afv:PageHeaderControl>

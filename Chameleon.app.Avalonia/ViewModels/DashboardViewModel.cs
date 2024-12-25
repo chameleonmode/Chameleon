@@ -11,6 +11,7 @@ using System.Reactive.Subjects;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Common.ServiceManagers;
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class DashboardViewModel : ViewModelObjectBase {
@@ -65,7 +66,10 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		Folders = flist;
 
 		AsyncCommandMap["SyncChanges"] = SyncChanges;
-		AsyncCommandMap["SyncCookies"] = SyncCookies;
+		AsyncCommandMap["SyncCookiesChrome"] = SyncCookiesChrome;
+		AsyncCommandMap["SyncCookiesBrave"] = SyncCookiesBrave;
+		AsyncCommandMap["SyncCookiesFirefox"] = SyncCookiesFirefox;
+		AsyncCommandMap["SyncCookiesClear"] = SyncCookiesClear;
 	}
 
 	public override async Task OnNavigatedToAsync(object? param)
@@ -102,13 +106,29 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	private async Task SyncChanges()
 	{
 		await AppStartup.LoadSink(true);
+		await CheckForCookies();
 	}
-	private async Task SyncCookies()
+
+	private async Task SyncCookies(Enums.SystemBrowserType systemBrowserType)
 	{
 		try {
-			await _playwrightCookiesRepo.SyncCookies(Enums.SystemBrowserType.Chrome);
+			await _playwrightCookiesRepo.SyncCookies(systemBrowserType);
 			Toaster.ShowSuccess("Cookies Synced");
-		} catch(Exception e) {
+		} catch (Exception e) {
+			Toaster.ShowErr("Failed to sync cookies. Please try again. " + e.Message);
+		}
+	}
+	private async Task SyncCookiesChrome() => await SyncCookies(Enums.SystemBrowserType.Chrome);
+	private async Task SyncCookiesBrave() => await SyncCookies(Enums.SystemBrowserType.Brave);
+	private async Task SyncCookiesFirefox() => await SyncCookies(Enums.SystemBrowserType.Firefox);
+
+
+	private async Task SyncCookiesClear()
+	{
+		try {
+			await _playwrightCookiesRepo.SyncCookiesClear();
+			Toaster.ShowSuccess("Cookies Cleared");
+		} catch (Exception e) {
 			Toaster.ShowErr("Failed to sync cookies. Please try again. " + e.Message);
 		}
 		await CheckForCookies();
