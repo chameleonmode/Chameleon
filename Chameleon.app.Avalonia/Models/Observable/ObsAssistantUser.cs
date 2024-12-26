@@ -78,11 +78,13 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 							: AssistDto.id.ToString();
 
 					if (userId != null) {
+						Toaster.ShowInf("Sending cookies...");
 						await _playwrightCookiesRepo.PutChromiumCookies(
 							userId,
 							op.Dto!.ProfileId!.ToString(),
 							Enums.SystemBrowserType.Chrome
 						);
+						Toaster.ShowSuccess("Cookies sent successfully");
 					} else {
 						Toaster.ShowErr("Failed to send cookies. User ID is null.");
 					}

@@ -72,10 +72,14 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		AsyncCommandMap["SyncCookiesClear"] = SyncCookiesClear;
 	}
 
-	public override async Task OnNavigatedToAsync(object? param)
+	public override async Task InitAsync(object? param)
 	{
-		await base.OnNavigatedToAsync(param);
-		await CheckForCookies();
+		await base.InitAsync(param);
+
+		if(!Loaded) {
+			await CheckForCookies();
+			await AppStartup.LoadSink(true);
+		}
 	}
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value)
@@ -97,7 +101,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	private async Task CheckForCookies()
 	{
 		try {
-			HasCookiesToSync = await _playwrightCookiesRepo.HasCookies();
+			HasCookiesToSync = await _playwrightCookiesRepo.GetCookies();
 		} catch {
 			HasCookiesToSync = false;
 		}
