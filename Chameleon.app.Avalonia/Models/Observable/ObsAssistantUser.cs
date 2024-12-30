@@ -16,7 +16,13 @@ using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
-public partial class ObsAssisProfile(AssisProfileDto dto, Action<ObsAssisProfile> onProfileUnshare, Func<ObsAssisProfile, Task> onSendCookies) : Vim<AssisProfileDto>(dto) {
+/// <summary>
+/// 
+/// </summary>
+/// <param name="dto"></param>
+/// <param name="onProfileUnshare"></param>
+/// <param name="onSendCookies"></param>
+public partial class ObsAssisProfile(AssisProfileDto dto, Action<ObsAssisProfile> onProfileUnshare, Func<ObsAssisProfile, Enums.SystemBrowserType, Task> onSendCookies) : Vim<AssisProfileDto>(dto) {
 	[RelayCommand]
 	public void Unshare()
 	{
@@ -24,11 +30,21 @@ public partial class ObsAssisProfile(AssisProfileDto dto, Action<ObsAssisProfile
 	}
 
 	[RelayCommand]
-	public async Task SendCookies()
+	public async Task SendCookies(string param)
 	{
-		await onSendCookies(this);
+		await onSendCookies(this, param switch {
+			"SyncCookiesChrome" => Enums.SystemBrowserType.Chrome,
+			"SyncCookiesFirefox" => Enums.SystemBrowserType.Firefox,
+			"SyncCookiesBrave" => Enums.SystemBrowserType.Brave,
+			_ => Enums.SystemBrowserType.Chrome,
+		});
 	}
 }
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="dto"></param>
 public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 	private readonly PlaywrightCookiesRepo _playwrightCookiesRepo = PlaywrightCookiesRepo.Instance;
 
@@ -70,7 +86,7 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 					}
 				}
 			}
-			, onSendCookies: async op => {
+			, onSendCookies: async (op, to) => {
 				try {
 					var userId =
 						AssistDto.id == Auther.AuthSession!.UserId && Auther.AuthSession!.CreatorUserId != null
@@ -78,18 +94,17 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 							: AssistDto.id.ToString();
 
 					if (userId != null) {
-						Toaster.ShowInf("Sending cookies...");
 						await _playwrightCookiesRepo.PutChromiumCookies(
 							userId,
 							op.Dto!.ProfileId!.ToString(),
-							Enums.SystemBrowserType.Chrome
+							to
 						);
-						Toaster.ShowSuccess("Cookies sent successfully");
 					} else {
-						Toaster.ShowErr("Failed to send cookies. User ID is null.");
+						Toaster.ShowErr("Failed to send cookies. Could not find selected user.");
 					}
 				} catch (Exception e) {
-					Toaster.ShowErr($"Failed to send cookies. {e.Message}");
+					Console.WriteLine(e);
+					Toaster.ShowErr($"Failed to send cookies.");
 				}
 			}
 		)

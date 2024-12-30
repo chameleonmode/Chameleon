@@ -73,10 +73,28 @@
 														VerticalAlignment="Bottom"
 														Grid.Column="1">
 												<Button Content="Share"
-														Command="{Binding SendCookiesCommand}"
 														ToolTip.Tip="Share Cookies"
-														Theme="{DynamicResource AccentSymbleIconButton}"  
-												/>
+														Theme="{DynamicResource AccentSymbleIconButton}">
+													<Button.Flyout>
+														<ui:FAMenuFlyout Placement="Bottom">
+															<ui:MenuFlyoutItem
+																Text="Chrome"
+																CommandParameter="SyncCookiesChrome"
+																Command="{Binding SendCookiesCommand}"
+																/>
+															<ui:MenuFlyoutItem
+																Text="Brave"
+																CommandParameter="SyncCookiesBrave"
+																Command="{Binding SendCookiesCommand}"
+																/>
+															<ui:MenuFlyoutItem
+																Text="Firefox"
+																CommandParameter="SyncCookiesFirefox"
+																Command="{Binding SendCookiesCommand}"
+																/>
+														</ui:FAMenuFlyout>
+													</Button.Flyout>
+												</Button>
 												<Button Content="Clear"
 														Command="{Binding UnshareCommand}"
 														ToolTip.Tip="Remove Access"

@@ -100,11 +100,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 
 	private async Task CheckForCookies()
 	{
-		try {
-			HasCookiesToSync = await _playwrightCookiesRepo.GetCookies();
-		} catch {
-			HasCookiesToSync = false;
-		}
+		HasCookiesToSync = await _playwrightCookiesRepo.GetCookies();
 	}
 
 	private async Task SyncChanges()

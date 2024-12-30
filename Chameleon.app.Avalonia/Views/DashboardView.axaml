@@ -38,17 +38,17 @@
 							<Button.Flyout>
 								<ui:FAMenuFlyout Placement="Bottom">
 									<ui:MenuFlyoutItem
-										Text="Into Chrome"
+										Text="Chrome"
 										CommandParameter="SyncCookiesChrome"
 										Command="{Binding AsyncCfromVCommand}"
 									/>
 									<ui:MenuFlyoutItem
-										Text="Into Brave"
+										Text="Brave"
 										CommandParameter="SyncCookiesBrave"
 										Command="{Binding AsyncCfromVCommand}"
 									/>
 									<ui:MenuFlyoutItem
-										Text="Into Firefox"
+										Text="Firefox"
 										CommandParameter="SyncCookiesFirefox"
 										Command="{Binding AsyncCfromVCommand}"
 									/>
@@ -88,7 +88,8 @@
 								Theme="{StaticResource ListBoxNoScroller}"
 								ItemContainerTheme="{StaticResource GridViewItem}"
 								ItemsPanel="{StaticResource SingleColumnHUniformGridTemplate}"
-								ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}" />
+								ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}"
+								VerticalAlignment="Top" />
 
 							<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
 													Header="No favorite profiles selected yet"/>
