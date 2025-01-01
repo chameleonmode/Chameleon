@@ -45,12 +45,12 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 		if (DataContext is not FunctionalSettingsViewModel vm)
 			return;
 
-		InnerNavFrame.Navigate(idx switch {
+		_ = InnerNavFrame.Navigate(idx switch {
 			0 => typeof(UserDefaultSettingsView),
 			1 => typeof(PhoneVerificationView),
 			2 => typeof(UserProxySettingsView),
 			3 => typeof(ProxyCreditView),
-			4 => typeof(AssistantUsersView),
+			4 => typeof(AssistanTaskforceView),
 			_ => throw new Exception()
 		}, param, GetTransitionInfo(vm.LastSelectedIndex, idx));
 

@@ -1,10 +1,5 @@
-
-using Avalonia;
-using Avalonia.Interactivity;
-
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels;
-using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.Av.Fluent.Common.Pages;
 
 namespace Chameleon.app.Avalonia.Views;

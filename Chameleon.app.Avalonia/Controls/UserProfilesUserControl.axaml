@@ -334,7 +334,7 @@
 					</Panel.IsVisible>
 					<ListBox
 						ItemContainerTheme="{StaticResource GridViewItem}"
-						ItemsPanel="{StaticResource SingleColumnHUniformGridTemplate}"
+						ItemsPanel="{StaticResource SingleColumnUniformGridTemplate}"
 						Name="lbProfiles"
 						ItemsSource="{Binding Profiles}"
 						ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}" />

@@ -35,8 +35,8 @@
 
 				<CheckBox Margin="6 0 -6 0"
 						  IsChecked="{Binding IsSelected}"
-							  IsVisible="{Binding IsShowCheckboxColumn}"
-							  IsEnabled="{Binding IsEnabledCheckboxColumn}">
+						  IsVisible="{Binding IsShowCheckboxColumn}"
+						  IsEnabled="{Binding IsEnabledCheckboxColumn}">
 				</CheckBox>
 
 				<Panel
@@ -86,6 +86,7 @@
 
 
 			<UniformGrid Grid.Column="3"
+						 IsVisible="{Binding IsActionOptionsVisible}"
 						 HorizontalAlignment="Right"
 						 Rows="1">
 				<Button
@@ -120,7 +121,7 @@
 						Command="{Binding ShowViewProfileCommand}"/>
 
 				<Button Content="three-dots"
-					IsVisible="{Binding IsShowD}"
+						IsVisible="{Binding IsShowD}"
 						ToolTip.Tip="Details"
 						Theme="{StaticResource SvgIconButton}">
 					<Button.Flyout>

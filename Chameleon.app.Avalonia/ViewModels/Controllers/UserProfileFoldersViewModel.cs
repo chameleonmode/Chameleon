@@ -67,10 +67,9 @@ public partial class UserProfileFoldersViewModel : ViewModelObjectBase {
 
 	internal void SetSelectedFolder(UPFolderDto? value)
 	{
-		if (value == null)
-			SelectedFolder = AllProfiles;
-		else
-			SelectedFolder = Folders.FirstOrDefault(vm => vm.Dto!.id == value.id) ?? AllProfiles;
+		SelectedFolder = value == null ?
+			AllProfiles
+			: Folders.FirstOrDefault(vm => vm.Dto!.id == value.id) ?? AllProfiles;
 	}
 
 	public static UserProfileFoldersViewModel Instance { get; } = new UserProfileFoldersViewModel();

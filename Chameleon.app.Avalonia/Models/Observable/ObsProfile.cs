@@ -19,7 +19,7 @@ using CommunityToolkit.Mvvm.Input;
 using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
-public partial class ObsProfile : Vim<UserProfileDto> {
+public partial class ObsProfile : Obs<UserProfileDto> {
 	public event Action<ObsProfile>? OnSelectedChanged;
 	private readonly ISysBrowserService? SysBrowserServiceBase = IoC.GetService<ISysBrowserService>();
 
@@ -39,17 +39,16 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 	private bool _isShowF;
 	[ObservableProperty]
 	private bool _isForeground;
-	[ObservableProperty]
-	private bool _isSelected;
 
+	//
 	public bool IsShowCheckboxColumn { get; }
 	public bool IsEnabledCheckboxColumn { get; } = true;
 	public bool IsSharedProfile { get; }
 
+	//
 	public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
 	public bool IsFavorite => Dto?.isFavourite ?? false;
 	public bool IsDeleteProfileBtnVisible => !IsSharedProfile;
-
 	public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI => Dto!.SBI;
 
 	public ObsProfile(
@@ -59,6 +58,7 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 			bool isShowC = true,
 			bool isShowD = true,
 			bool isShowF = true,
+			bool hasActionOptions = true,
 			Action<ObsProfile>? onSelectedChanged = default)
 		: base(userProfile.title ?? "xxx")
 	{
@@ -70,6 +70,7 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 		IsShowC = isShowC;
 		IsShowF = isShowF;
 		IsShowCheckboxColumn = isShowCheckboxColumn;
+		IsActionOptionsVisible = hasActionOptions;
 		IsSharedProfile = userProfile?.creatorUserId != Auther.AuthSession?.UserId;
 
 		if (SysBrowserServiceBase != null) {
@@ -87,9 +88,10 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 			}
 			_ = setEvents();
 		}
+
 	}
 
-	partial void OnIsSelectedChanged(bool value)
+	public override void OnAnyIsSelectedChanged(bool value)
 	{
 		OnSelectedChanged?.Invoke(this);
 	}
@@ -124,11 +126,6 @@ public partial class ObsProfile : Vim<UserProfileDto> {
 			Navigator.Pop();
 			UserProfilesViewModel.Instance.SetViewModelsFilter();
 		}
-	}
-	[RelayCommand]
-	private void Unselect()
-	{
-		IsSelected = false;
 	}
 	[RelayCommand]
 	private void OpenUserProfile()

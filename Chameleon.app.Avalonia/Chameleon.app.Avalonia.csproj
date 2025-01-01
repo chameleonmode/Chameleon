@@ -52,9 +52,6 @@
     <Compile Update="Controls\MboxTitleUserControl.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="Views\AssistantUsersView.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
     <Compile Update="Views\Main\MainView.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>

@@ -15,6 +15,7 @@ using Avpplication = Avalonia.Application;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.lib.Common;
+using Chameleon.Av.Fluent.Common.Startup;
 
 namespace Chameleon.app.Avalonia.Views.Main;
 
@@ -86,30 +87,23 @@ public partial class MainView : UserControl {
 	protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
 	{
 		base.OnAttachedToVisualTree(e);
+		TooltipManager.Attach(Avpplication.Current!, NavView);
 
-		//if (e.Root is AppWindow aw && aw.SplashScreen is MainAppSplashScreen mass)
-		//{
-		//    mass.InitApp += async () =>
-		//    {
-		//    };
-		//}
-		//else
-		//{
+		//if (e.Root is AppWindow aw && aw.SplashScreen is MainAppSplashScreen mass) {
+		//	mass.InitApp += OnFrameworkInit;
+		//} else {
+		//	_ = OnFrameworkInit();
 		//}
 		OnFrameworkInit();
 	}
 
-	public async void OnFrameworkInit()
+	public void OnFrameworkInit()
 	{
-		TooltipManager.Attach(Avpplication.Current!, NavView);
-
 		DataContext = AppMainViewViewModel.Instance;
-		await AppStartup.Instance.RunAsync();
 
 		Toaster.ShowSuccess("Welcome to Chameleon!");
 		FrameView.NavigationPageFactory = AppMainViewViewModel.Instance.NavigationFactory;
 		Navigator.SetFrame(FrameView);
-		//await IoC.GetService<ProjectsViewModel>()!.InitializeAsync(null!);
 
 		NavView.MenuItemsSource = _pages.Where(p => !p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();
 		NavView.FooterMenuItemsSource = _pages.Where(p => p.Value.ShowsInFooter).Select(a => a.Value.GetNavigationViewItemBase(this)).ToList();

@@ -18,7 +18,6 @@ using FluentAvalonia.UI.Navigation;
 namespace Chameleon.Av.Fluent.Common.Pages;
 
 public class ChameleonPageBase : AutoViewModelLocatorControl {
-	//private CancellationTokenSource? _cts;
 	private bool _isSmallWidth2;
 	private bool _hasLoaded;
 
@@ -31,43 +30,64 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 
 	public ChameleonPageBase()
 	{
-		SizeChanged += ControlsPageBaseSizeChanged;
-		AddHandler(Frame.NavigatingFromEvent, FrameNavigatingFrom, RoutingStrategies.Direct);
-		AddHandler(Frame.NavigatedToEvent, FrameNavigatedTo, RoutingStrategies.Direct);
+		SizeChanged += OnSizeChanged;
+		AddHandler(Frame.NavigatingFromEvent, OnNavigatingFrom, RoutingStrategies.Direct);
+		AddHandler(Frame.NavigatedToEvent, OnNavigatedTo, RoutingStrategies.Direct);
 	}
 
 	#region dp
-	public static readonly StyledProperty<IconSource?> PreviewImageProperty =
-			AvaloniaProperty.Register<ChameleonPageBase, IconSource?>(nameof(PreviewImage));
+	// 
 	public IconSource? PreviewImage {
 		get => GetValue(PreviewImageProperty);
 		set => SetValue(PreviewImageProperty, value);
 	}
+	public static readonly StyledProperty<IconSource?> 
+		PreviewImageProperty = AvaloniaProperty.Register<ChameleonPageBase, IconSource?>(nameof(PreviewImage));
 
-	public static readonly StyledProperty<string> ControlNameProperty =
-	AvaloniaProperty.Register<ChameleonPageBase, string>(nameof(ControlName));
+	// 
 	public string ControlName {
 		get => GetValue(ControlNameProperty);
 		set => SetValue(ControlNameProperty, value);
 	}
+	public static readonly StyledProperty<string> 
+		ControlNameProperty = AvaloniaProperty.Register<ChameleonPageBase, string>(nameof(ControlName));
 
-	public static readonly StyledProperty<string> DescriptionProperty =
-	AvaloniaProperty.Register<ChameleonPageBase, string>(nameof(Description));
+	//
 	public string Description {
 		get => GetValue(DescriptionProperty);
 		set => SetValue(DescriptionProperty, value);
 	}
+	public static readonly StyledProperty<string>
+		DescriptionProperty = AvaloniaProperty.Register<ChameleonPageBase, string>(nameof(Description));
 	#endregion
 
 	#region overrides
 	protected override Type StyleKeyOverride => typeof(ChameleonPageBase);
 
-	protected override void OnLoaded(RoutedEventArgs e)
-	{
-		_hasLoaded = true;
-		SetDetailsAnimation();
-		base.OnLoaded(e);
-	}
+  protected override void OnLoaded(RoutedEventArgs e)
+  {
+    _hasLoaded = true;
+    if (_detailsPanel == null)
+      return;
+
+    var ec = ElementComposition.GetElementVisual(_detailsPanel);
+    if (ec?.Compositor == null)
+      return;
+
+    var offsetAnimation = ec.Compositor.CreateVector3KeyFrameAnimation();
+    if (offsetAnimation == null)
+      return;
+
+    offsetAnimation.Target = "Offset";
+    offsetAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue");
+    offsetAnimation.Duration = TimeSpan.FromMilliseconds(250);
+
+    var ani = ec.Compositor.CreateImplicitAnimationCollection();
+    ani["Offset"] = offsetAnimation;
+
+    ec.ImplicitAnimations = ani;
+    base.OnLoaded(e);
+  }
 
 	protected override void OnUnloaded(RoutedEventArgs e)
 	{
@@ -78,40 +98,14 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 	protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
 	{
 		base.OnApplyTemplate(e);
-
-		//ThemeScopeProvider = e.NameScope.Find<ThemeVariantScope>("ThemeScopeProvider");
-
 		_previewImageHost = e.NameScope.Find<IconSourceElement>("PreviewImageElement");
 		_detailsHost = e.NameScope.Find<StackPanel>("DetailsTextHost");
 		_detailsPanel = e.NameScope.Find<Panel>("PageDetails");
 		_scroller = e.NameScope.Find<ScrollViewer>("PageScroller");
 	}
-	private void SetDetailsAnimation()
-	{
-		if(_detailsPanel == null)
-			return;
-		var ec = ElementComposition.GetElementVisual(_detailsPanel);
-		if (ec == null)
-			return;
-		var compositor = ec.Compositor;
-		if (compositor == null)
-			return;
-
-		var offsetAnimation = compositor.CreateVector3KeyFrameAnimation();
-		if (offsetAnimation == null)
-			return;
-		offsetAnimation.Target = "Offset";
-		offsetAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue");
-		offsetAnimation.Duration = TimeSpan.FromMilliseconds(250);
-
-		var ani = compositor.CreateImplicitAnimationCollection();
-		ani["Offset"] = offsetAnimation;
-
-		ec.ImplicitAnimations = ani;
-	}
 	#endregion
 
-	private void ControlsPageBaseSizeChanged(object? sender, SizeChangedEventArgs e)
+	private void OnSizeChanged(object? sender, SizeChangedEventArgs e)
 	{
 		var sz = e.NewSize.Width;
 
@@ -164,46 +158,8 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 			_isSmallWidth2 = false;
 		}
 	}
-
-	//private void FrameNavigatingFrom(object? sender, NavigatingCancelEventArgs e)
-	//{
-	//	if (_previewImageHost == null)
-	//		return;
-	//	ExUtil.TryCatch(() => {
-	//		var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-	//		_ = svc.PrepareToAnimate("BackAnimation", AnimateVisual ?? _previewImageHost.Parent as Control ?? new Control());
-	//	});
-	//}
-
-	//private async void FrameNavigatedTo(object? sender, NavigationEventArgs e)
-	//{
-	//	if (DataContext is ViewModelObjectBase pageViewModel) {
-	//		await pageViewModel.OnNavigatedToAsync(e.Parameter);
-	//		ControlName = pageViewModel.Title ?? "xxx";
-	//	}
-
-	//	ExUtil.TryCatch(() => {
-	//		var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));//await TaskUtil.TryAwaitFor(() => ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this)), 2);   //TODO: might crash if wrong page
-	//		if (svc is null)
-	//			return;
-
-	//		var animation = svc.GetAnimation("ForwardAnimation");
-
-	//		if (animation != null) {
-	//			// PreviewImageHost is inside a Viewbox which can really mess with the Composition 
-	//			// animation - use the viewbox directly for the animation to ensure it works correctly
-	//			if (AnimateVisual != null) {
-	//				if (_detailsPanel != null)
-	//					_detailsPanel.IsVisible = false;
-	//				_ = animation.TryStart(AnimateVisual, [_scroller]);
-	//			} else {
-	//				_ = animation.TryStart(_previewImageHost?.Parent as Control ?? new Control(), [_detailsHost, _scroller]);
-	//			}
-	//		}
-	//	});
-	//}
-
-	private async void FrameNavigatingFrom(object? sender, NavigatingCancelEventArgs e)
+	
+	private async void OnNavigatingFrom(object? sender, NavigatingCancelEventArgs e)
 	{
 		if (_previewImageHost == null)
 			return;
@@ -214,8 +170,8 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 			_ = svc.PrepareToAnimate("BackAnimation", await TaskUtil.AwaitFor(() => AnimateVisual != null, 1) ? AnimateVisual : _previewImageHost.Parent as Control);
 		}, 2);
 	}
-
-	private async void FrameNavigatedTo(object? sender, NavigationEventArgs e)
+	
+	private async void OnNavigatedTo(object? sender, NavigationEventArgs e)
 	{
 		if (DataContext is ViewModelObjectBase pageViewModel) {
 			await pageViewModel.OnNavigatedToAsync(e.Parameter);
@@ -236,9 +192,9 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 					_detailsPanel.IsVisible = false;
 
 				_ = animation.TryStart(AnimateVisual, [_scroller]);
-			} else
+			} else {
 				_ = animation.TryStart(_previewImageHost?.Parent as Control, [_detailsHost, _scroller]);
-
+			}
 		}
 	}
 }

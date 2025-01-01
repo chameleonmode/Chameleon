@@ -1,0 +1,229 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="850"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:paginator="using:Chameleon.app.Avalonia.Views"
+             xmlns:controls="using:Chameleon.app.Avalonia.Controls"
+			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels.General"
+			 x:DataType="vm:AssistantTaskforceViewModel"
+			 x:CompileBindings="True"
+             x:Class="Chameleon.app.Avalonia.AssistanTaskforceView">
+	<Grid RowDefinitions="Auto, *">
+		<afv:ChameleonContentControl Title="Resource Groups"
+									 TitleDescription="Taskforce resource groups to enable user resource access">
+			<!--<afv:ChameleonContentControl.Options>
+				<ui:CommandBar HorizontalAlignment="Right"
+							   DefaultLabelPosition="Right">
+					<ui:CommandBar.PrimaryCommands>
+						<ui:CommandBarButton IconSource="Add"
+											 Label="Invite User"
+											CommandParameter="CreateNewUserAssistant"
+											 Command="{Binding AsyncCfromVCommand}"/>
+					</ui:CommandBar.PrimaryCommands>
+				</ui:CommandBar>
+			</afv:ChameleonContentControl.Options>-->
+
+			<afv:ChameleonContentControl.Content>
+				<StackPanel Spacing="6">
+					<Expander
+						Header="Folders">
+						<ListBox
+							Name="lbFolders"
+							ItemsSource="{Binding Folders}"
+							Theme="{StaticResource ListBoxNoScroller}"
+							ItemContainerTheme="{StaticResource GridViewItem}">
+							<ListBox.ItemsPanel>
+								<ItemsPanelTemplate>
+									<UniformGrid Columns="3" />
+								</ItemsPanelTemplate>
+							</ListBox.ItemsPanel>
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<controls:FolderUserControl HorizontalAlignment="Stretch" />
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</Expander>
+					<Expander 
+						Header="Profiles">
+						<ListBox
+							Theme="{StaticResource ListBoxNoScroller}"
+							ItemsSource="{Binding Profiles}"
+							ItemContainerTheme="{StaticResource GridViewItem}"
+							ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}">
+							<ListBox.ItemsPanel>
+								<ItemsPanelTemplate>
+									<UniformGrid Columns="3" />
+								</ItemsPanelTemplate>
+							</ListBox.ItemsPanel>
+						</ListBox>
+					</Expander>
+				</StackPanel>
+			</afv:ChameleonContentControl.Content>
+		</afv:ChameleonContentControl>
+		<afv:ChameleonContentControl Grid.Row="1"
+									 Title="Users"
+									 TitleDescription="Taskforce users and resource access">
+			<afv:ChameleonContentControl.TitleContent>
+				<ui:CommandBar HorizontalAlignment="Right" DefaultLabelPosition="Right">
+					<ui:CommandBar.PrimaryCommands>
+						<ui:CommandBarButton IconSource="Add"
+											 Label="Invite User"
+											CommandParameter="CreateNewUserAssistant"
+											 Command="{Binding AsyncCfromVCommand}"/>
+					</ui:CommandBar.PrimaryCommands>
+				</ui:CommandBar>
+			</afv:ChameleonContentControl.TitleContent>
+
+			<afv:ChameleonContentControl.Content>
+				<ItemsControl Grid.Row="1" 
+								  ItemsSource="{Binding Assistantz}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Grid Margin="0 3"
+									  RowDefinitions="Auto, Auto, *"
+									  ColumnDefinitions="*, Auto">
+									<TextBlock
+										VerticalAlignment="Top"
+										Theme="{StaticResource BodyStrongTextBlockStyle}"
+										Classes="NoWrap">
+										<Run Text="{Binding Dto.UserName, FallbackValue=username}" />
+										<Run Text=" - " />
+										<Run Text="{Binding Dto.EmailAddress,FallbackValue=email@email.com}" />
+									</TextBlock>
+									<!--https://github.com/chameleonmode/Chameleon/issues/51
+								<ItemsControl ItemsSource="{Binding FolderViewModels}"
+											  Padding="{DynamicResource CheckBoxPadding}"
+											  ItemTemplate="{StaticResource SelectedItemTemplate}"
+											  ItemsPanel="{StaticResource StackPanelTemplate}"/>-->
+									<ui:CommandBar DefaultLabelPosition="Right"
+												   Grid.Column="1">
+											<ui:CommandBar.SecondaryCommands>
+												<ui:CommandBarButton
+													IconSource="Edit"
+													Label="Edit Access"
+													Command="{Binding AddMoreProfilesCommand}" />
+												<ui:CommandBarButton
+													IconSource="Copy"
+													Label="Copy licence key"
+													Command="{Binding SendLicenceKeyCommand}" />
+
+												<ui:CommandBarSeparator />
+
+												<!--<ui:CommandBarToggleButton
+													IconSource="Contact"
+													Label="Can Create Profiles"
+													IsChecked="{Binding CanCreateProfiles}"/>
+												<ui:CommandBarSeparator />-->
+												<ui:CommandBarButton
+													IconSource="Delete"
+													Label="Delete"
+													Command="{Binding DeleteAssistantCommand}"/>
+											</ui:CommandBar.SecondaryCommands>
+									</ui:CommandBar>
+									<!--<Button
+										VerticalAlignment="Top"
+										Grid.Column="1"
+										Margin="0 3"
+										Content="More"
+										Theme="{DynamicResource AccentSymbleIconButton}">
+										<Button.Flyout>
+											<ui:FAMenuFlyout Placement="Bottom">
+												<ui:MenuFlyoutItem
+													Text="Edit profile access"
+													IconSource="Add"
+													Command="{Binding AddMoreProfilesCommand}" />
+												<ui:MenuFlyoutItem
+													Text="Copy licence key"
+													IconSource="Copy"
+													Command="{Binding SendLicenceKeyCommand}" />
+												<ui:MenuFlyoutItem
+													Text="Delete user"
+													IconSource="Delete"
+													Command="{Binding DeleteAssistantCommand}" />
+
+												<ui:MenuFlyoutSeparator />
+
+												<ui:MenuFlyoutSubItem Text="Options">
+													<ui:RadioMenuFlyoutItem
+														IconSource="Contact"
+														Text="Can Create Profiles"
+														GroupName="rpCreateProfiles"
+														IsChecked="{Binding CanCreateProfiles}"/>
+												</ui:MenuFlyoutSubItem>
+											</ui:FAMenuFlyout>
+										</Button.Flyout>
+									</Button>-->
+									<StackPanel Grid.Row="1"
+												Margin="3 0 6 0"
+												Grid.ColumnSpan="2">
+										<Expander Header="Profiles"
+												  IsExpanded="True">
+											<ScrollViewer
+												VerticalScrollBarVisibility="Auto"
+												MaxHeight="220">
+												<ItemsControl
+													ItemsSource="{Binding Profilez}"
+													ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}">
+													<ItemsControl.ItemTemplate>
+														<DataTemplate>
+															<StackPanel
+																Spacing="3"
+																Margin="3 0"
+																Orientation="Horizontal">
+																<TextBlock
+																	Text="{Binding Dto.ProfileName, FallbackValue=name}"
+																	HorizontalAlignment="Left"
+																	VerticalAlignment="Center"
+																	Theme="{StaticResource BodyStrongTextBlockStyle}" />
+																<Button Content="More"
+																		BorderBrush="Transparent"
+																		Background="Transparent"
+																		Theme="{DynamicResource AccentSymbleIconButton}">
+																	<Button.Flyout>
+																		<ui:FAMenuFlyout>
+																			<ui:MenuFlyoutSubItem IconSource="Share"
+																								  Text="Share Cookies">
+																				<ui:MenuFlyoutItem
+																					Text="Chrome"
+																					CommandParameter="SyncCookiesChrome"
+																					Command="{Binding AsyncCfromVCommand}" />
+																				<ui:MenuFlyoutItem
+																					Text="Brave"
+																					CommandParameter="SyncCookiesBrave"
+																					Command="{Binding AsyncCfromVCommand}" />
+																				<ui:MenuFlyoutItem
+																					Text="Firefox"
+																					CommandParameter="SyncCookiesFirefox"
+																					Command="{Binding AsyncCfromVCommand}" />
+																			</ui:MenuFlyoutSubItem>
+
+																			<ui:MenuFlyoutSeparator />
+
+																			<ui:MenuFlyoutItem
+																				Text="Remove Access"
+																				IconSource="Clear"
+																				CommandParameter="SyncCookiesFirefox"
+																				Command="{Binding AsyncCfromVCommand}" />
+																		</ui:FAMenuFlyout>
+																	</Button.Flyout>
+																</Button>
+															</StackPanel>
+														</DataTemplate>
+													</ItemsControl.ItemTemplate>
+												</ItemsControl>
+											</ScrollViewer>
+
+										</Expander>
+									</StackPanel>
+								</Grid>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+			</afv:ChameleonContentControl.Content>
+		</afv:ChameleonContentControl>
+	</Grid>
+</UserControl>

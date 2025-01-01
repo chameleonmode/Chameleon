@@ -1,9 +1,9 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
-		xmlns:dilgs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
+					xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
+					xmlns:dilgs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
                     xmlns:core="using:FluentAvalonia.Core"
-		xmlns:ui="using:FluentAvalonia.UI.Controls">
+					xmlns:ui="using:FluentAvalonia.UI.Controls">
 	<x:Double x:Key="DefaultContentDialogIconSize">10</x:Double>
 	<Thickness x:Key="DefaultContentTaskDialogIconMargin">12</Thickness>
 	<Thickness x:Key="ContentDialogPadding">8 8 8 8</Thickness>
@@ -164,6 +164,7 @@
 
 						<!-- Area -->
 						<Border Name="ControlPreviewAreaHost"
+								Margin="0 6 0 0"
 								BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
 								BorderThickness="0"
 								TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"

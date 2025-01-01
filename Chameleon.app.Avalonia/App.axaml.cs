@@ -6,10 +6,8 @@ using Avalonia.Styling;
 
 using Chameleon.app.Avalonia.Com.Fluent.Services;
 using Chameleon.app.Avalonia.Services;
-using Chameleon.app.Avalonia.Views.Main;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Interfaces.Services;
-using Chameleon.lib.Common.Interfaces.Sys;
 using Chameleon.lib.Common.Types;
 using Chameleon.lib.WebBrowser.Interfaces;
 using Chameleon.lib.WebBrowser.Services;
@@ -22,8 +20,8 @@ using AvApplication = Avalonia.Application;
 namespace Chameleon.app.Avalonia;
 
 public partial class App : AvApplication {
-	private MainWindow? _mainWindow;
-	public MainWindow MainAppWindow {
+	private Views.Main.MainWindow? _mainWindow;
+	public Views.Main.MainWindow MainAppWindow {
 		get {
 			_mainWindow ??= new();
 			return _mainWindow;
@@ -60,54 +58,62 @@ public partial class App : AvApplication {
 			.AddSingleton<IShowWindowService, ShowWindowService>()
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
 			.AddSingleton<INavigationService, NavigationService>()
-			//.AddSingleton<IAuthSession, ThisAuthSession>()
-			//SysBrowser
 			.AddSingleton<ISysBrowserService, SysBrowserService>()
-			//Dash
-			.AddSingleton<Chameleon.app.Avalonia.Views.DashboardView>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.DashboardViewModel>()
-			//Projects
-			.AddSingleton<Chameleon.app.Avalonia.Views.ProjectsView>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.ProjectsViewModel>()
-			.AddSingleton<Chameleon.app.Avalonia.Views.UserProfileIdentityView>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.UserProfileIdentityViewModel>()
+			// Main
+			.AddSingleton<Views.Main.MainView>()
+			.AddSingleton(ViewModels.AppMainViewViewModel.Instance)
+			// Dash
+			.AddSingleton<Views.DashboardView>()
+			.AddSingleton<ViewModels.DashboardViewModel>()
+			// Projects
+			.AddSingleton<Views.ProjectsView>()
+			.AddSingleton<ViewModels.ProjectsViewModel>()
+			.AddSingleton<Views.UserProfileIdentityView>()
+			.AddSingleton<ViewModels.UserProfileIdentityViewModel>()
+			// General
+			.AddSingleton<AssistanTaskforceView>()
+			.AddSingleton<ViewModels.General.AssistantTaskforceViewModel>()
 			//FunctionalSettings
-			.AddSingleton<Chameleon.app.Avalonia.Views.FunctionalSettingsView>()
-			.AddSingleton<Chameleon.app.Avalonia.Views.UserProxySettingsView>()
-			.AddSingleton<Chameleon.app.Avalonia.Views.UserDefaultSettingsView>()
-			.AddSingleton<Chameleon.app.Avalonia.Views.PhoneVerificationView>()
-			.AddSingleton<Chameleon.app.Avalonia.Views.ProxyCreditView>()
-			.AddSingleton<Chameleon.app.Avalonia.Views.AssistantUsersView>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.FunctionalSettingsViewModel>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.UserProxySettingsViewModel>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.UserDefaultSettingsViewModel>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.PhoneVerificationViewModel>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.ProxyCreditViewModel>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.AssistantUsersViewModel>()
+			.AddSingleton<Views.FunctionalSettingsView>()
+			.AddSingleton<Views.UserProxySettingsView>()
+			.AddSingleton<Views.UserDefaultSettingsView>()
+			.AddSingleton<Views.PhoneVerificationView>()
+			.AddSingleton<Views.ProxyCreditView>()
+			.AddSingleton<ViewModels.FunctionalSettingsViewModel>()
+			.AddSingleton<ViewModels.UserProxySettingsViewModel>()
+			.AddSingleton<ViewModels.UserDefaultSettingsViewModel>()
+			.AddSingleton<ViewModels.PhoneVerificationViewModel>()
+			.AddSingleton<ViewModels.ProxyCreditViewModel>()
+			.AddSingleton<ViewModels.AssistantUsersViewModel>()
 			//Settings
-			.AddSingleton<Chameleon.app.Avalonia.Views.SettingsView>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.SettingsViewModel>()
+			.AddSingleton<Views.SettingsView>()
+			.AddSingleton<ViewModels.SettingsViewModel>()
 			//Playwright
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.ICompileScriptService, Chameleon.lib.Playwright.Services.CompileScriptService>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywriteService, Chameleon.lib.Playwright.Services.PlaywriteService>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywrightScriptRepository, Chameleon.lib.Playwright.Services.PlaywrightScriptRepository>()
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, Chameleon.lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
-			.AddSingleton<Chameleon.app.Avalonia.ViewModels.PlaywrightViewModel>()
-			.AddSingleton<Chameleon.app.Avalonia.Views.PlaywrightView>();
+			.AddSingleton<ViewModels.PlaywrightViewModel>()
+			.AddSingleton<Views.PlaywrightView>();
 		});
+
 		// Setup IoC
-		IoC.Instance.Init(action: (inited) =>{ });
+		IoC.Instance.Init(action: async  (inited) => {
+			if (inited) {
+				await AppStartup.Instance.RunAsync();
+			}
+		});
 	}
 
 	public override void OnFrameworkInitializationCompleted()
 	{
+		base.OnFrameworkInitializationCompleted();
+
 		BindingPlugins.DataValidators.RemoveAt(0);
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 			desktop.MainWindow = MainAppWindow;
 		} else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView) {
-			singleView.MainView = new MainView();
+			singleView.MainView = IoC.GetService<Views.Main.MainView>();
 		}
-
-		base.OnFrameworkInitializationCompleted();
 	}
 }

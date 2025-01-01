@@ -18,8 +18,9 @@ public partial class UserProfileUserControl : UserControl {
 	private void OnPageTapped(object? sender, TappedEventArgs e)
 	{
 		if (e.Source is Visual v) {
-			if (v.FindAncestorOfType<Button>(true) is null &&
-					DataContext is ObsProfile up) {
+			if (v.FindAncestorOfType<Button>(true) is null
+				&& DataContext is ObsProfile up 
+				&& up.IsActionOptionsVisible) {
 				up.Open();
 			}
 		}

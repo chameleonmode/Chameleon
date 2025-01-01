@@ -14,12 +14,6 @@ public class MainAppSplashScreen(object splashScreenContent) : IApplicationSplas
 
     public async Task RunTasks(CancellationToken cancellationToken)
     {
-        //if (InitApp == null)
-        //    return Task.CompletedTask;
-
-        //return Task.Run(InitApp, cancellationToken);
-        //await Task.Delay(10000);
-
         if (InitApp != null)
             await InitApp.Invoke();
     }

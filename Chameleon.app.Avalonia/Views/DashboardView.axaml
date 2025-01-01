@@ -87,7 +87,7 @@
 								ItemsSource="{Binding Profiles}"
 								Theme="{StaticResource ListBoxNoScroller}"
 								ItemContainerTheme="{StaticResource GridViewItem}"
-								ItemsPanel="{StaticResource SingleColumnHUniformGridTemplate}"
+								ItemsPanel="{StaticResource SingleColumnUniformGridTemplate}"
 								ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}"
 								VerticalAlignment="Top" />
 
@@ -115,20 +115,10 @@
 								ItemsSource="{Binding Folders}"
 								Theme="{StaticResource ListBoxNoScroller}"
 								ItemContainerTheme="{StaticResource GridViewItem}"
-								Grid.Row="1"
-								VerticalAlignment="Top"
-								IsVisible="{Binding !HasNoFolderItems}">
-								<ListBox.ItemsPanel>
-									<ItemsPanelTemplate>
-										<UniformGrid Columns="2"/>
-									</ItemsPanelTemplate>
-								</ListBox.ItemsPanel>
-								<ListBox.ItemTemplate>
-									<DataTemplate>
-										<appuc:FolderUserControl HorizontalAlignment="Stretch" />
-									</DataTemplate>
-								</ListBox.ItemTemplate>
-							</ListBox>
+								ItemsPanel="{StaticResource DoubleColumnUniformGridTemplate}"
+								ItemTemplate="{StaticResource UserFolderUserControlDataTemplate}"
+								IsVisible="{Binding !HasNoFolderItems}"
+								VerticalAlignment="Top"/>
 
 							<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
 													Header="No favorite folders selected yet"

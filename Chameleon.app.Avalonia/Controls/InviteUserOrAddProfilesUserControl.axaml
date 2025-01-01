@@ -2,8 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="450"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
+             xmlns:controls="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:dt="using:Chameleon.app.Avalonia.ViewModels.Controllers"
 			 x:DataType="dt:InviteUserOrAddProfilesViewModel"
@@ -11,141 +12,44 @@
              x:Class="Chameleon.app.Avalonia.Controls.InviteUserOrAddProfilesUserControl">
 	<dialogs:ChameleonDialogControl>
 		<dialogs:ChameleonDialogControl.DialogInputs>
-			<dialogs:DialogInputHost TextLabel="User name:"
+			<dialogs:DialogInputHost TextLabel="Username:"
 									 Text="{Binding AssistantName}"
-									 IsVisible="{Binding ShowInviteinfo}" />
-			<dialogs:DialogInputHost TextLabel="Email for invite:"
+									 IsVisible="{Binding ShowUserInfo}"/>
+			<dialogs:DialogInputHost TextLabel="Email:"
 									 Text="{Binding AssistantEmail}"
-									 IsVisible="{Binding ShowInviteinfo}"/>
+									 IsVisible="{Binding ShowUserInfo}"/>
 		</dialogs:ChameleonDialogControl.DialogInputs>
 
 		<dialogs:ChameleonDialogControl.Content>
-			<StackPanel MinHeight="258"
-						Width="410"
-						Margin="10">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-					<Expander Grid.Row="0"
-							  Header="Profiles"
-							  Margin="0 0 0 12">
-						<Grid RowDefinitions="*,Auto">
-							<ItemsControl ItemsSource="{Binding SelectedProfiles}"
-										  ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}">
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<Border x:Name="Border"
-												BorderThickness="1"
-												Height="28"
-                    
-												CornerRadius="4"
-												Margin="8 0 0 6">
-											<Grid HorizontalAlignment="Stretch">
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="*" />
-													<ColumnDefinition Width="Auto" />
-												</Grid.ColumnDefinitions>
-												<TextBlock Grid.Column="0"
-														   Margin="12 4 0 4"
-														   Text="{Binding Title}"
-														   VerticalAlignment="Center"
-														   FontFamily="Open Sans"
-                               
-														   FontSize="12"
-														   FontWeight="DemiBold">
-												</TextBlock>
-
-												<Button Grid.Column="1"
-														Command="{Binding UnselectCommand}"
-														Theme="{DynamicResource TransparentButton}"
-														Margin="12 0 10 0"
-														BorderThickness="0">
-													<afv:SvgIconControl IconName="x"
-																		  Height="10"
-																		  Width="10" />
-												</Button>
-											</Grid>
-										</Border>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-
-							<ScrollViewer Grid.Row="1"
-										  MaxHeight="220">
-								<ItemsControl ItemsSource="{Binding Profiles}">
-									<ItemsControl.ItemTemplate>
-										<DataTemplate>
-											<Border x:Name="Border"
-												BorderThickness="1"
-												Height="56">
-												<Grid HorizontalAlignment="Stretch">
-													<Grid.ColumnDefinitions>
-														<ColumnDefinition Width="Auto" />
-														<ColumnDefinition Width="*" />
-														<ColumnDefinition Width="Auto" />
-													</Grid.ColumnDefinitions>
-													<Ellipse Grid.Column="0"
-															 Margin="16 0 0 0"
-															 Fill="{StaticResource AccentFillColorDefaultBrush}"
-															 Stroke="{StaticResource FocusStrokeColorOuterBrush}"
-															 Width="28"
-															 Height="28"
-															 VerticalAlignment="Center">
-													</Ellipse>
-													<TextBlock Grid.Column="0"
-															   Margin="16 0 0 0"
-															   Text="{Binding Code}"
-															   VerticalAlignment="Center"
-															   HorizontalAlignment="Center"
-															   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
-															   FontSize="11"
-															   FontWeight="Bold"
-															   FontFamily="Open Sans" />
-													<TextBlock Grid.Column="1"
-															   Margin="8 0 0 0"
-															   Text="{Binding Title}"
-															   VerticalAlignment="Center"
-															   FontFamily="Open Sans"
-															   FontSize="14"
-															   FontWeight="Normal">
-													</TextBlock>
-													<CheckBox Grid.Column="2"
-															  Margin="12 0 12 0"
-															  IsChecked="{Binding IsSelected}">
-													</CheckBox>
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-
-							</ScrollViewer>
-						</Grid>
-					</Expander>
-
-					<!--https://github.com/chameleonmode/Chameleon/issues/51
-					<Expander Grid.Row="1"
-							  Header="Folders">
-						<Grid RowDefinitions="*,Auto">
-							<ItemsControl ItemsSource="{Binding SelectedFolderViewModels}"
-										  ItemTemplate="{StaticResource ProfilesSelectedTemplate}">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<WrapPanel Orientation="Horizontal" />
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-							</ItemsControl>
-
-							<ScrollViewer MaxHeight="220"
-										  Grid.Row="1">
-								<ItemsControl ItemsSource="{Binding FolderViewModels}"
-											  ItemTemplate="{StaticResource ProfilesListViewTemplate}" />
-							</ScrollViewer>
-						</Grid>
-					</Expander>-->
-				</Grid>
+			<StackPanel Spacing="6">
+				<Expander Header="Folders">
+					<StackPanel>
+						<ItemsControl
+								ItemsSource="{Binding SelectedFolders}"
+								ItemTemplate="{StaticResource ObsSelectedTemplate}"
+								ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}"/>
+						<ListBox
+							ItemsSource="{Binding Folders}"
+							ItemTemplate="{StaticResource UserFolderUserControlDataTemplate}"
+							Theme="{StaticResource ListBoxNoScroller}"
+							ItemContainerTheme="{StaticResource GridViewItem}"
+							ItemsPanel="{StaticResource DoubleColumnUniformGridTemplate}"/>
+					</StackPanel>
+				</Expander>
+				<Expander Header="Profiles">
+					<StackPanel>
+						<ItemsControl
+								ItemsSource="{Binding SelectedProfiles}"
+								ItemTemplate="{StaticResource ObsSelectedTemplate}"
+								ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}"/>
+						<ListBox
+							ItemsSource="{Binding Profiles}"
+							ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}"
+							Theme="{StaticResource ListBoxNoScroller}"
+							ItemContainerTheme="{StaticResource GridViewItem}"
+							ItemsPanel="{StaticResource DoubleColumnUniformGridTemplate}"/>
+					</StackPanel>
+				</Expander>
 			</StackPanel>
 		</dialogs:ChameleonDialogControl.Content>
 	</dialogs:ChameleonDialogControl>

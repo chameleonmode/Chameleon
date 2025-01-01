@@ -364,7 +364,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			subHeader: $"Select profiles you want to add to {Folder!.title} folder:",
 			symbas: Enums.Symbas.Folder,
 			btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK) {
-			var ids = addvm.SelectedViewModels?
+			var ids = addvm.SelectedProfiles?
 				.Select(a => a.Dto!.id)
 				.ToList();
 			if (ids == null || ids.Count == 0) {

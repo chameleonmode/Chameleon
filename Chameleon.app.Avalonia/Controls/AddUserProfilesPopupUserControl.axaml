@@ -8,110 +8,27 @@
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
 			 xmlns:vmc="using:Chameleon.app.Avalonia.ViewModels.Controllers"
 			 xmlns:models="using:Chameleon.app.Avalonia.Models.Observable"
+			 xmlns:ct="using:Chameleon.lib.CommunityToolkit.MvvM"
 			 x:DataType="vmc:AddUserProfilesPupViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Controls.AddUserProfilesPopupUserControl">
-	<UserControl.Resources>
-		<DataTemplate x:Key="ProfilesListViewTemplate"
-					  x:DataType="models:ObsProfile">
-			<Border Name="Border"
-				BorderThickness="1"
-				Height="56">
-				<Grid HorizontalAlignment="Stretch"
-					  ColumnDefinitions="Auto,*,Auto">
-					<Ellipse Grid.Column="0"
-							 Margin="16 0 0 0"
-							 Fill="{StaticResource AccentFillColorDefaultBrush}"
-							 Stroke="{StaticResource FocusStrokeColorOuterBrush}"
-							 Width="28"
-							 Height="28"
-							 VerticalAlignment="Center">
-					</Ellipse>
-					<TextBlock Grid.Column="0"
-							   Margin="16 0 0 0"
-							   Text="{Binding Code}"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"
-							   Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}" />
-					<TextBlock Grid.Column="1"
-							   Margin="8 0 0 0"
-							   Text="{Binding Title}"
-							   VerticalAlignment="Center">
-					</TextBlock>
-					<CheckBox Grid.Column="2"
-							  Margin="12 0 12 0"
-							  IsChecked="{Binding IsSelected}">
-					</CheckBox>
-				</Grid>
-			</Border>
-		</DataTemplate>
-
-		<DataTemplate x:Key="ProfilesSelectedTemplate"
-					  x:DataType="models:ObsProfile">
-			<Border
-				BorderThickness="1"
-				Height="28"
-				Background="{StaticResource ControlFillColorDefaultBrush}"
-				BorderBrush="{StaticResource ControlElevationBorderBrush}"
-				CornerRadius="4"
-				Margin="4">
-				<Grid HorizontalAlignment="Stretch"
-					   ColumnDefinitions="Auto,*,Auto">
-					<TextBlock Grid.Column="0"
-							   Margin="12 4 0 4"
-							   Text="{Binding Title}"
-							   VerticalAlignment="Center">
-					</TextBlock>
-
-					<Button Grid.Column="1"
-							Command="{Binding UnselectCommand}"
-							Theme="{DynamicResource TransparentButton}">
-						<afv:SvgIconControl IconName="x"
-											  Height="10"
-											  Width="10" />
-					</Button>
-				</Grid>
-			</Border>
-		</DataTemplate>
-	</UserControl.Resources>
 	<dialogs:ChameleonDialogControl>
 		<dialogs:ChameleonDialogControl.Content>
-			<StackPanel>
-				<Border CornerRadius="2"
-						BorderThickness="0"
-						BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}">
-					<ItemsControl
-							ItemsSource="{Binding SelectedViewModels}"
-							ItemTemplate="{StaticResource ProfilesSelectedTemplate}"
-							VerticalAlignment="Top"
-							ScrollViewer.VerticalScrollBarVisibility="Visible">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<UniformGrid />
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-					</ItemsControl>
-				</Border>
-				<Expander Grid.Row="1"
-						  Header="Profiles"
-						  IsExpanded="True">
-					<Border CornerRadius="0 0 4 4"
-							BorderThickness="0"
-							BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-							Margin="0 2 0 0">
-						<ScrollViewer
-							VerticalScrollBarVisibility="Auto"
-							MaxHeight="220"
-							Padding="0">
-							<ItemsControl
-								ItemsSource="{Binding Profiles}"
-								ItemTemplate="{StaticResource ProfilesListViewTemplate}"
-								VerticalAlignment="Top"
-								Padding="0"/>
-						</ScrollViewer>
-					</Border>
+			<Grid RowDefinitions="Auto,*">
+				<ItemsControl
+						ItemsSource="{Binding SelectedProfiles}"
+						ItemTemplate="{StaticResource ObsSelectedTemplate}"
+						ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}"/>
+				<Expander Header="Profiles"
+						  Grid.Row="1">
+					<ListBox
+						ItemsSource="{Binding Profiles}"
+						ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}"
+						Theme="{StaticResource ListBoxNoScroller}"
+						ItemContainerTheme="{StaticResource GridViewItem}"
+						ItemsPanel="{StaticResource DoubleColumnUniformGridTemplate}"/>
 				</Expander>
-			</StackPanel>
+			</Grid>
 		</dialogs:ChameleonDialogControl.Content>
 	</dialogs:ChameleonDialogControl>
 </UserControl>
