@@ -80,7 +80,7 @@ public partial class PVApiModel
 		await MakeRequest(async () => {
 			_pnapinstance.ApiKey = ApiKey;
 			await _pnapinstance.Save();
-		}, e => Toaster.ShowErr(e));
+		}, e => Toaster.Error(e));
 	}
 
 	public async Task GetNumber()

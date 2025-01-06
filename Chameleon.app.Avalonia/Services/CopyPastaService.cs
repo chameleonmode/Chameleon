@@ -13,10 +13,10 @@ public class CopyPastaService : ICopyPastaService {
 		try {
 			Owner ??= TopLevel.GetTopLevel(AppLayers.GetToplevetVisual());
 			await Owner!.Clipboard!.SetTextAsync(text);
-			Toaster.ShowSuccess("Copied to clipboard");
+			Toaster.Success("Copied to clipboard");
 
 		} catch (Exception ex) {
-			Toaster.ShowErr(ex.Message);
+			Toaster.Error(ex.Message);
 		}
 	}
 }

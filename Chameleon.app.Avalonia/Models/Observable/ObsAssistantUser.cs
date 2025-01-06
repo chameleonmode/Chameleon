@@ -49,23 +49,23 @@ public partial class ObsAssisProfile
 
 		try {
 			if (await Mbox.Show("Unshare Profile", $"Are you sure you want to unshare {Dto.ProfileName}? This will not affect other profiles.")) {
-				Toaster.ShowInf("Unsharing profile...");
+				Toaster.Info("Unsharing profile...");
 				onProfileUnshare(this);
-				Toaster.ShowSuccess($"{Dto.ProfileName} was unshared successfully");
+				Toaster.Success($"{Dto.ProfileName} was unshared successfully");
 			}
 		} catch {
-			Toaster.ShowErr($"Failed to unshare {Dto.ProfileName}. Please try again.");
+			Toaster.Error($"Failed to unshare {Dto.ProfileName}. Please try again.");
 		}
 	}
 
 	public async Task SendCookies(Enums.SystemBrowserType bt)
 	{
 		try {
-			Toaster.ShowInf("Sending cookies...");
+			Toaster.Info("Sending cookies...");
 			await onSendCookies(this, bt);
-			Toaster.ShowSuccess("Cookies sent successfully");
+			Toaster.Success("Cookies sent successfully");
 		} catch {
-			Toaster.ShowErr($"Failed to send cookies.");
+			Toaster.Error($"Failed to send cookies.");
 		}
 	}
 }
@@ -82,12 +82,12 @@ public partial class ObsAssisFolder(
 
 		try {
 			if (await Mbox.Show("Unshare Folder", $"Are you sure you want to unshare {Dto.FolderName}? This will not affect other folders.")) {
-				Toaster.ShowInf("Unsharing folder...");
+				Toaster.Info("Unsharing folder...");
 				onFolderUnshare(this);
-				Toaster.ShowSuccess($"{Dto.FolderName} was unshared successfully");
+				Toaster.Success($"{Dto.FolderName} was unshared successfully");
 			}
 		} catch {
-			Toaster.ShowErr($"Failed to unshare {Dto.FolderName}. Please try again.");
+			Toaster.Error($"Failed to unshare {Dto.FolderName}. Please try again.");
 		}
 	}
 }
@@ -123,17 +123,18 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 		Profilez.Clear();
 		Profilez.AddRange(profiles.Select(p => new ObsAssisProfile(p,
 			onProfileUnshare: async op => {
-				var (userId, dtoId) = EnsureDtoIds(Dto!.id, op.Dto!.ProfileId);
+				var (userId, dtoId) = EnsureDtos(Dto!.id, op.Dto!.ProfileId);
 				_ = await UserAssistantRepo.DeleteAssistantProfile(userId, dtoId);
 				_ = Profilez.Remove(op);
 			},
 			onSendCookies: async (op, bt) => {
-				var (userId, dtoId) = EnsureDtoIds(
+				var (userId, dtoId) = EnsureDtos(
 					Dto!.id == Auther.AuthSession?.UserId && Auther.AuthSession?.CreatorUserId != null
 						? Auther.AuthSession.CreatorUserId
 						: Dto?.id,
-						op.Dto?.ProfileId);
-				await _playwrightCookiesRepo.PutChromiumCookies(userId.ToString(), dtoId.ToString(), bt);
+					op.Dto?.ProfileId
+				);
+				await _playwrightCookiesRepo.PutCookies(userId.ToString(), Dto?.EmailAddress, dtoId.ToString(), bt);
 			}
 		)));
 	}
@@ -144,14 +145,14 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 		Folderz.Clear();
 		Folderz.AddRange(folders.Select(f => new ObsAssisFolder(f,
 			onFolderUnshare: async of => {
-				var (userId, dtoId) = EnsureDtoIds(Dto!.id, of.Dto!.FolderId);
+				var (userId, dtoId) = EnsureDtos(Dto!.id, of.Dto!.FolderId);
 				_ = await ShareFoldersRepo.Instance.Delete(dtoId);
 				_ = Folderz.Remove(of);
 			}
 		)));
 	}
 
-	private static (long userId, int dtoId) EnsureDtoIds(long? user, int? profile)
+	private static (long userId, int dtoId) EnsureDtos(long? user, int? profile)
   {
     ArgumentNullException.ThrowIfNull(user);
     ArgumentNullException.ThrowIfNull(profile);
@@ -171,7 +172,7 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 			try {
 				_ = await UserAssistantRepo.Instance.Delete(Dto!.id);
 			} catch {
-				Toaster.ShowErr($"Failed to delete {Dto!.UserName}. Please try again.");
+				Toaster.Error($"Failed to delete {Dto!.UserName}. Please try again.");
 			}
 		}
 	}
@@ -192,10 +193,10 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 				var profileIds = invite.SelectedProfiles.Select(p => p.Dto!.id).ToList();
 				var result = await UserAssistantRepo.AddProfiles(Dto!.id, profileIds, []);
 				await InitProfiles();
-				Toaster.ShowSuccess($"{profileIds.Count} profile(s) shared successfully");
+				Toaster.Success($"{profileIds.Count} profile(s) shared successfully");
 			}
 		} catch (Exception ex) {
-			Toaster.ShowErr($"Failed to share profile(s). {ex.Message}.");
+			Toaster.Error($"Failed to share profile(s). {ex.Message}.");
 		}
 	}
 
@@ -211,9 +212,9 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 		try {
 			_ = UserAssistantRepo.SetCanCreateProfiles(Dto!.id, Dto!.CanCreateProfiles);
 
-			Toaster.ShowSuccess($"Permission to create profiles was successfully {(Dto!.CanCreateProfiles ? "given" : "taken")}");
+			Toaster.Success($"Permission to create profiles was successfully {(Dto!.CanCreateProfiles ? "given" : "taken")}");
 		} catch {
-			Toaster.ShowErr($"Create profiles permission update failed. Please try again.");
+			Toaster.Error($"Create profiles permission update failed. Please try again.");
 		}
 	}
 }

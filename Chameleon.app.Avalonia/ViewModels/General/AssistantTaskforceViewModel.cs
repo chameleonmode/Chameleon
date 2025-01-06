@@ -110,7 +110,7 @@ public partial class AssistantTaskforceViewModel : ViewModelObjectBase {
 						FolderPermissionIds = []
 					});
 				} catch {
-					Toaster.ShowErr($"Failed to invite the user. Please try again.");
+					Toaster.Error($"Failed to invite the user. Please try again.");
 				}
 			}
 		}

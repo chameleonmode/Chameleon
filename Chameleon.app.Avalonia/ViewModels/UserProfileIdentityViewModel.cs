@@ -137,11 +137,11 @@ public partial class UserProfileIdentityViewModel : ViewModelObjectBase {
 			if (res != null) {
 				UserProfile = res;
 				ProfileVM = new ObsProfile(UserProfile, false);
-				Toaster.ShowSuccess($"Update was successful.");
+				Toaster.Success($"Update was successful.");
 			}
 		} catch (Exception ex) {
 			// Handle the exception (e.g., log it, show a notification, etc.)
-			Toaster.ShowErr($"{ex.Message}");
+			Toaster.Error($"{ex.Message}");
 		} finally {
 			// Code to execute after the task completes, regardless of success or failure
 			IsSaving = false;

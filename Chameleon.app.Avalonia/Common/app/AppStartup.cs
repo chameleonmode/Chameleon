@@ -101,13 +101,13 @@ public class AppStartup {
 		//}
 		//_authSession = IoC.GetService<IAuthSession>();
 		HttpApiClient.Instance.OnRetry += (e) => {
-			Toaster.ShowErr("Error", e);
+			Toaster.Error("Error", e);
 		};
 		HttpApiClient.Instance.OnAuthError += async () => {
 			try {
 				await Auther.RefreshTokenAsync();
 			} catch {
-				Toaster.ShowErr("AuthRefreshToken Err");
+				Toaster.Error("AuthRefreshToken Err");
 			}
 		};
 		HttpApiClient.Instance.OnCircuitBreaker += (e) => {

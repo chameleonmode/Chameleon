@@ -452,11 +452,11 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	private async Task RunAutomation()
 	{
 		if (GetSelectedProfiles == null) {
-			Toaster.ShowErr("Select one or more profiles to run the automation.");
+			Toaster.Error("Select one or more profiles to run the automation.");
 			return;
 		}
 		if (SelectedPlaywrightScript == null) {
-			Toaster.ShowErr("Select an automation.");
+			Toaster.Error("Select an automation.");
 			return;
 		}
 
@@ -479,7 +479,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 					await _playwriteService.RunScript(SelectedPlaywrightScript.RunOptions, token);
 				} catch (Exception ex) {
 					// Log or handle the exception if closing the process fails
-					Toaster.ShowErr($"{ex.Message}");
+					Toaster.Error($"{ex.Message}");
 				}
 
 				// Check if the browser process is not null and hasn't exited
@@ -494,7 +494,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			}
 			_playwriteService.Dispose();
 		} catch (Exception ex) {
-			Toaster.ShowErr($"{ex.Message}");
+			Toaster.Error($"{ex.Message}");
 		}
 
 		IsVisibleRunButton = true;

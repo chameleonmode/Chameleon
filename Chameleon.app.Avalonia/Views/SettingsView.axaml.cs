@@ -21,7 +21,7 @@ public partial class SettingsView : ChameleonNavigationPage {
 		try {
 			ProUtil.GoToUrlDefault(uri.ToString());
 		} catch {
-			Toaster.ShowErr($"Error navigationg to {uri}");
+			Toaster.Error($"Error navigationg to {uri}");
 		}
 	}
 }

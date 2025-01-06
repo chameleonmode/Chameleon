@@ -15,9 +15,9 @@ using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class DashboardViewModel : ViewModelObjectBase {
-	// 
 	private readonly PlaywrightCookiesRepo _playwrightCookiesRepo = PlaywrightCookiesRepo.Instance;
-	//
+
+	// Private fields
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
 	private readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Compares.ObsFolderCompares.AscendingComparer);
 
@@ -45,7 +45,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	public DashboardViewModel() 
 		: base("Dashboard")
 	{
-		//OnSortSelectedChanged(Enums.ChangeComparereOption.Ascending);
+		//
 		_ = UserProfilesRepo
 			.Connect(i => i.isFavourite)
 			.Transform(i => new ObsProfile(i, false))
@@ -55,7 +55,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 			});
 		Profiles = list;
 
-		//OnFolderSortSelectedChanged(Enums.ChangeComparereOption.Ascending);
+		//
 		_ = UserProfilesFolderRepo
 			.Connect(i => i.isFavorite)
 			.Transform(i => new ObsFolder(i))
@@ -77,8 +77,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		await base.InitAsync(param);
 
 		if(!Loaded) {
-			await CheckForCookies();
-			await AppStartup.LoadSink(true);
+			await SyncChanges();
 		}
 	}
 
@@ -98,24 +97,24 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		});
 	}
 
-	private async Task CheckForCookies()
-	{
-		HasCookiesToSync = await _playwrightCookiesRepo.GetCookies();
-	}
-
 	private async Task SyncChanges()
 	{
 		await AppStartup.LoadSink(true);
 		await CheckForCookies();
 	}
 
+	private async Task CheckForCookies()
+	{
+		HasCookiesToSync = await _playwrightCookiesRepo.GetCookies();
+	}
+
 	private async Task SyncCookies(Enums.SystemBrowserType systemBrowserType)
 	{
 		try {
 			await _playwrightCookiesRepo.SyncCookies(systemBrowserType);
-			Toaster.ShowSuccess("Cookies Synced");
+			Toaster.Success("Cookies Synced");
 		} catch (Exception e) {
-			Toaster.ShowErr("Failed to sync cookies. Please try again. " + e.Message);
+			Toaster.Error("Failed to sync cookies. Please try again. " + e.Message);
 		}
 	}
 	private async Task SyncCookiesChrome() => await SyncCookies(Enums.SystemBrowserType.Chrome);
@@ -126,10 +125,10 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	private async Task SyncCookiesClear()
 	{
 		try {
-			await _playwrightCookiesRepo.SyncCookiesClear();
-			Toaster.ShowSuccess("Cookies Cleared");
+			await _playwrightCookiesRepo.ClearCookies();
+			Toaster.Success("Cookies Cleared");
 		} catch (Exception e) {
-			Toaster.ShowErr("Failed to sync cookies. Please try again. " + e.Message);
+			Toaster.Error("Failed to sync cookies. Please try again. " + e.Message);
 		}
 		await CheckForCookies();
 	}

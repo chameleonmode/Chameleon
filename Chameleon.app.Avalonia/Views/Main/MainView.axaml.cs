@@ -101,7 +101,7 @@ public partial class MainView : UserControl {
 	{
 		DataContext = AppMainViewViewModel.Instance;
 
-		Toaster.ShowSuccess("Welcome to Chameleon!");
+		Toaster.Success("Welcome to Chameleon!");
 		FrameView.NavigationPageFactory = AppMainViewViewModel.Instance.NavigationFactory;
 		Navigator.SetFrame(FrameView);
 

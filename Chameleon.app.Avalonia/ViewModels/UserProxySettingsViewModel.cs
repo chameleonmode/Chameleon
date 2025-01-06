@@ -148,7 +148,7 @@ public partial class UserProxySettingsViewModel
 
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedCount));
-		Toaster.ShowSuccess($"Update was successful.");
+		Toaster.Success($"Update was successful.");
 	}
 	[RelayCommand]
 	public async Task ApplyProxy()
@@ -176,7 +176,7 @@ public partial class UserProxySettingsViewModel
 
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedCount));
-		Toaster.ShowSuccess($"Update was successful.");
+		Toaster.Success($"Update was successful.");
 	}
 	private static async Task ApplyProxy(List<ProxDto> proxies, List<ObsProxySetting> models)
 	{
@@ -214,13 +214,13 @@ public partial class UserProxySettingsViewModel
 				.StripPrefix("https://")
 				.Split(':');
 			if (applingProxies.Length != 4) {
-				Toaster.ShowErr($"Not a valid set {applingProxy}");
+				Toaster.Error($"Not a valid set {applingProxy}");
 				continue;
 			}
 			var portStr = applingProxies[1];
 			var isValidPort = int.TryParse(portStr, out var port);
 			if (!isValidPort && portStr.Is()) {
-				Toaster.ShowErr($"Port cann't be text {applingProxy}");
+				Toaster.Error($"Port cann't be text {applingProxy}");
 				continue;
 			}
 
