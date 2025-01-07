@@ -15,7 +15,7 @@ using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class DashboardViewModel : ViewModelObjectBase {
-	private readonly PlaywrightCookiesRepo _playwrightCookiesRepo = PlaywrightCookiesRepo.Instance;
+	private readonly PlaywrightCookiesSyncService playwrightCookiesSyncService = PlaywrightCookiesSyncService.Instance;
 
 	// Private fields
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
@@ -105,13 +105,13 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 
 	private async Task CheckForCookies()
 	{
-		HasCookiesToSync = await _playwrightCookiesRepo.GetCookies();
+		HasCookiesToSync = await playwrightCookiesSyncService.HasCookies;
 	}
 
 	private async Task SyncCookies(Enums.SystemBrowserType systemBrowserType)
 	{
 		try {
-			await _playwrightCookiesRepo.SyncCookies(systemBrowserType);
+			await playwrightCookiesSyncService.SyncCookies(systemBrowserType);
 			Toaster.Success("Cookies Synced");
 		} catch (Exception e) {
 			Toaster.Error("Failed to sync cookies. Please try again. " + e.Message);
@@ -125,7 +125,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	private async Task SyncCookiesClear()
 	{
 		try {
-			await _playwrightCookiesRepo.ClearCookies();
+			await playwrightCookiesSyncService.ClearCookies();
 			Toaster.Success("Cookies Cleared");
 		} catch (Exception e) {
 			Toaster.Error("Failed to sync cookies. Please try again. " + e.Message);

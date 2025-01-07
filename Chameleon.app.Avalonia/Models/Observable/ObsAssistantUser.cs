@@ -98,7 +98,7 @@ public partial class ObsAssisFolder(
 /// <param name="dto"></param>
 public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 	// 
-	private readonly PlaywrightCookiesRepo _playwrightCookiesRepo = PlaywrightCookiesRepo.Instance;
+	private readonly PlaywrightCookiesSyncService _playwrightCookiesRepo = PlaywrightCookiesSyncService.Instance;
 
 	[ObservableProperty]
 	private bool canCreateProfiles;
