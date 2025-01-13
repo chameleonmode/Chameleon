@@ -1,0 +1,90 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:core="using:FluentAvalonia.Core"
+			 xmlns:local="using:Chameleon.app.client"
+			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
+			 xmlns:m="using:Chameleon.app.Avalonia.Models"
+             xmlns:vm="clr-namespace:Chameleon.app.client.ViewModels"
+             x:Class="Chameleon.app.client.Views.MainView"
+             x:DataType="vm:MainViewModel">
+
+	<Grid RowDefinitions="Auto,*">
+
+		<Grid Name="TitleBarHost"
+              ColumnDefinitions="Auto,Auto,*,Auto"
+              Background="Transparent">
+			<Image Margin="12 6"
+                   IsHitTestVisible="False"
+                   Source="avares://Chameleon.app.Avalonia/Assets/logosymbol.ico"
+                   DockPanel.Dock="Left"
+                   Name="WindowLogoIcon"
+                   RenderOptions.BitmapInterpolationMode="HighQuality">
+				<Image.IsVisible>
+					<OnPlatform Default="False">
+						<On Options="Windows" Content="True" />
+						<On Options="macOS" Content="True" />
+					</OnPlatform>
+				</Image.IsVisible>
+			</Image>
+
+			<TextBlock Text="{Binding Title, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+					   Theme="{StaticResource BodyStrongTextBlockStyle}"
+					   Margin="0 4 0 0"
+                       IsHitTestVisible="False"
+                       VerticalAlignment="Center"
+                       Grid.Column="1">
+				<TextBlock.IsVisible>
+					<OnPlatform Default="False">
+						<On Options="Windows" Content="True" />
+						<On Options="macOS" Content="True" />
+					</OnPlatform>
+				</TextBlock.IsVisible>
+			</TextBlock>
+
+			<Border Grid.Column="2" Padding="6">
+				<AutoCompleteBox Name="SearchBox"
+                                 MaxWidth="500"
+                                 Watermark="Search"
+                                 Classes="MainSearchBox"
+                                 ValueMemberBinding="{Binding Header, DataType=m:MainAppSearchItem}"
+								 SelectedItem="{Binding SelectedSearchTerm}"
+                                 ItemsSource="{Binding SearchTerms}">
+					<AutoCompleteBox.ItemTemplate>
+						<DataTemplate x:DataType="m:MainAppSearchItem">
+							<Panel>
+								<StackPanel HorizontalAlignment="Left"
+                                            VerticalAlignment="Center">
+									<TextBlock Text="{Binding Header}" />
+									<TextBlock Text="{Binding Namespace}"
+                                               Theme="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                                               FontStyle="Italic"/>
+								</StackPanel>
+							</Panel>
+						</DataTemplate>
+					</AutoCompleteBox.ItemTemplate>
+				</AutoCompleteBox>
+			</Border>
+		</Grid>
+
+		<ui:NavigationView AlwaysShowHeader="False"
+                           PaneDisplayMode="Left"
+                           Grid.RowSpan="2"
+                           Name="NavView"
+                           IsSettingsVisible="False"
+                           IsBackEnabled="{Binding #FrameView.CanGoBack}"
+						   Classes="MainAppNav">
+			<ui:Frame Name="FrameView" />
+		</ui:NavigationView>
+
+		<local:SplashScreenUC  
+			Name="SplashScreen"
+			Grid.RowSpan="2"
+			IsVisible="False"
+		/>
+	</Grid>
+</UserControl>

@@ -11,68 +11,64 @@
 			 x:DataType="vm:AssistantTaskforceViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.AssistanTaskforceView">
+	<UserControl.Styles>
+		<Style Selector="ListBox.no-scroll">
+			<Setter Property="Theme" Value="{StaticResource ListBoxNoScroller}" />
+			<Setter Property="ItemContainerTheme" Value="{StaticResource GridViewItem}" />
+		</Style>
+		
+		<Style Selector="ListBox.grid3">
+			<Setter Property="ItemsPanel">
+				<ItemsPanelTemplate>
+					<UniformGrid Columns="3" />
+				</ItemsPanelTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="ListBox.folders">
+			<Setter Property="ItemsSource" Value="{Binding Folders}" />
+			<Setter Property="ItemTemplate" Value="{StaticResource UserFolderUserControlDataTemplate}" />
+		</Style>
+
+		<Style Selector="ListBox.profiles">
+			<Setter Property="ItemsSource" Value="{Binding Profiles}" />
+			<Setter Property="ItemTemplate" Value="{StaticResource UserProfileUserControlDataTemplate}" />
+		</Style>
+	</UserControl.Styles>
 	<Grid RowDefinitions="Auto, *">
 		<afv:ChameleonContentControl Title="Resource Groups"
 									 TitleDescription="Taskforce resource groups to enable user resource access">
-			<!--<afv:ChameleonContentControl.Options>
-				<ui:CommandBar HorizontalAlignment="Right"
-							   DefaultLabelPosition="Right">
-					<ui:CommandBar.PrimaryCommands>
-						<ui:CommandBarButton IconSource="Add"
-											 Label="Invite User"
-											CommandParameter="CreateNewUserAssistant"
-											 Command="{Binding AsyncCfromVCommand}"/>
-					</ui:CommandBar.PrimaryCommands>
-				</ui:CommandBar>
-			</afv:ChameleonContentControl.Options>-->
-
+			
 			<afv:ChameleonContentControl.Content>
 				<StackPanel Spacing="6">
-					<Expander
-						Header="Folders">
-						<ListBox
-							Name="lbFolders"
-							ItemsSource="{Binding Folders}"
-							Theme="{StaticResource ListBoxNoScroller}"
-							ItemContainerTheme="{StaticResource GridViewItem}">
-							<ListBox.ItemsPanel>
-								<ItemsPanelTemplate>
-									<UniformGrid Columns="3" />
-								</ItemsPanelTemplate>
-							</ListBox.ItemsPanel>
-							<ListBox.ItemTemplate>
-								<DataTemplate>
-									<controls:FolderUserControl HorizontalAlignment="Stretch" />
-								</DataTemplate>
-							</ListBox.ItemTemplate>
-						</ListBox>
-					</Expander>
-					<Expander 
-						Header="Profiles">
-						<ListBox
-							Theme="{StaticResource ListBoxNoScroller}"
-							ItemsSource="{Binding Profiles}"
-							ItemContainerTheme="{StaticResource GridViewItem}"
-							ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}">
-							<ListBox.ItemsPanel>
-								<ItemsPanelTemplate>
-									<UniformGrid Columns="3" />
-								</ItemsPanelTemplate>
-							</ListBox.ItemsPanel>
-						</ListBox>
-					</Expander>
+					<ui:SettingsExpander Header="Folders"
+										 IconSource="Folder">
+						<ui:SettingsExpanderItem>
+							<ListBox Classes="no-scroll grid3 folders" />
+						</ui:SettingsExpanderItem>
+					</ui:SettingsExpander>
+
+					<ui:SettingsExpander Header="Profiles"
+										 IconSource="Contact">
+						<ui:SettingsExpanderItem>
+							<ListBox Classes="no-scroll grid3 profiles" />
+						</ui:SettingsExpanderItem>
+					</ui:SettingsExpander>
 				</StackPanel>
 			</afv:ChameleonContentControl.Content>
+			
 		</afv:ChameleonContentControl>
+		
 		<afv:ChameleonContentControl Grid.Row="1"
 									 Title="Users"
 									 TitleDescription="Taskforce users and resource access">
+			
 			<afv:ChameleonContentControl.TitleContent>
 				<ui:CommandBar HorizontalAlignment="Right" DefaultLabelPosition="Right">
 					<ui:CommandBar.PrimaryCommands>
 						<ui:CommandBarButton IconSource="Add"
 											 Label="Invite User"
-											CommandParameter="CreateNewUserAssistant"
+											 CommandParameter="CreateNewUserAssistant"
 											 Command="{Binding AsyncCfromVCommand}"/>
 					</ui:CommandBar.PrimaryCommands>
 				</ui:CommandBar>
@@ -224,6 +220,7 @@
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 			</afv:ChameleonContentControl.Content>
+			
 		</afv:ChameleonContentControl>
 	</Grid>
 </UserControl>

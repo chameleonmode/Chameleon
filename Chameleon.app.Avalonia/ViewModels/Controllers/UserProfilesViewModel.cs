@@ -1,5 +1,4 @@
 ﻿using Chameleon.app.Avalonia.Models;
-using Chameleon.Avalonia.Common.Collections;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
 using System.Collections.ObjectModel;
@@ -16,7 +15,6 @@ using static Chameleon.lib.Common.Constants.Enums;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Util;
-using Chameleon.app.Avalonia.Com.DynamicData;
 using Chameleon.lib.Api.Repos;
 using System.Reactive.Subjects;
 using DynamicData;
@@ -25,6 +23,9 @@ using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.Controls;
 using FluentAvalonia.Core;
 using System.Reactive.Linq;
+using Chameleon.app.Avalonia.DynamicData;
+using Avalonia.Collections;
+using Chameleon.app.Avalonia.Extensions;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 
@@ -32,7 +33,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 	private readonly IPlaywrightScriptRepository _plawrightRepository = IoC.GetService<IPlaywrightScriptRepository>()!;
 	private readonly IPlaywriteService _playwriteService = IoC.GetService<IPlaywriteService>()!;
 
-	public AvList<PlaywrightScript> PlaywrightScripts { get; } = [];
+	public AvaloniaList<PlaywrightScript> PlaywrightScripts { get; } = [];
 
 	[ObservableProperty]
 	private PaginatorViewModel paginatorViewModel;
@@ -102,7 +103,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 	public UserProfilesViewModel()
 	{
-		//Func<ObsProfile, IObservable<bool>> filterFactory = p => Observable.Return(predicate(p));
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
 		_ = UserProfilesRepo
 			.Connect()
@@ -114,27 +114,6 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
 			.SortAndBind(out profiles, profilesCompareObservable)
 			.Subscribe((i) => {
-				//OnHandleUserEvent();
-				//foreach (var update in i) {
-				//	var curIndex = update.CurrentIndex == -1 ? 0 : update.CurrentIndex;
-				//	var prevIndex = update.PreviousIndex == -1 ? 0 : update.PreviousIndex;
-				//	switch (update.Reason) {
-				//		case ChangeReason.Add:
-				//			Folders.Add(update.Current);
-				//			break;
-				//		case ChangeReason.Remove:
-				//			_ = Folders.Remove(update.Current);
-				//			break;
-				//		case ChangeReason.Moved:
-				//			Folders.Move(prevIndex, curIndex);
-				//			break;
-				//		case ChangeReason.Update:
-				//			//var indx = Folders.IndexOf(update.Current);
-				//			//Folders.RemoveAt(prevIndex);
-				//			//Folders.Insert(curIndex, update.Current);
-				//			break;
-				//	}
-				//}
 			});
 		PaginatorViewModel = new PaginatorViewModel((p) => {
 			if (p.PageIndex < 0)
@@ -153,11 +132,11 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		//await InitializeScripts();
 		void AddMappedScripts(IEnumerable<PlaywriteRunScriptOptions> scripts)
 		{
-			PlaywrightScripts.AddMapped(scripts, (Func<PlaywriteRunScriptOptions, PlaywrightScript>)(b => {
+			PlaywrightScripts.AddMapped(scripts, b => {
 				var viewModel = new PlaywrightScript(b);
-				viewModel.Parameters.AddRange((IEnumerable<PlaywrightDescriptionParam>)b.Description!.Parameters);
+				viewModel.Parameters.AddRange(b.Description!.Parameters);
 				return viewModel;
-			}));
+			});
 		}
 		PlaywrightScripts.Clear();
 		AddMappedScripts(_plawrightRepository.GetBundledScrits());
@@ -263,19 +242,14 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 		}
 
 		OnPropertyChanged(nameof(SearchText));
-		//SetViewModelsFilter();
 	}
 	public void SetViewModelsFilter(bool onext = true)
 	{
 		if(onext)
 			filter.OnNext(FilterPredicate);
+
 		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
-		//private List<ObsProfile> GetSelectedProfiles => _selectedProfiles!.ToList();
-		//public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
-		//public bool IsProfilesExist => UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
-		//public bool HasNoItems => Profiles.Count == 0;
-		//public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
-		//public string SelectedFolderTitle => Folder?.title ?? "All profiles";
+
 		OnPropertyChanged(nameof(HasNoItems));
 		OnPropertyChanged(nameof(IsProfilesExist));
 		OnPropertyChanged(nameof(HasSelectedItems));

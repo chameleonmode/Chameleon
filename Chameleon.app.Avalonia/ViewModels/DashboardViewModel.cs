@@ -6,12 +6,12 @@ using DynamicData;
 using Chameleon.lib.Api.Repos;
 using System.Collections.ObjectModel;
 using Chameleon.lib.Common.Constants;
-using Chameleon.app.Avalonia.Com.DynamicData;
 using System.Reactive.Subjects;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Common.ServiceManagers;
 using static Chameleon.lib.Common.Constants.Enums;
+using Chameleon.app.Avalonia.DynamicData;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class DashboardViewModel : ViewModelObjectBase {

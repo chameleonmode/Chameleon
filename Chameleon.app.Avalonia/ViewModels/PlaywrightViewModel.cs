@@ -3,10 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Playwright.Interfaces;
-using Chameleon.Avalonia.Common.Collections;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.app.Avalonia.Models;
-using Chameleon.app.Avalonia.app;
+using Avalonia.Collections;
+using Chameleon.app.Avalonia.Extensions;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 
@@ -16,8 +16,8 @@ public partial class PlaywrightViewModel
 	private FileSystemWatcher? watcher;
 	private readonly SemaphoreSlim semaphore = new(1, 1);
 
-	public AvList<PlaywrightScript> UserScripts { get; } = [];
-	public AvList<PlaywrightScript> BundlesScripts { get; } = [];
+	public AvaloniaList<PlaywrightScript> UserScripts { get; } = [];
+	public AvaloniaList<PlaywrightScript> BundlesScripts { get; } = [];
 
 	[ObservableProperty]
 	private PlaywrightScript? _selectedBundledScript;
@@ -73,15 +73,15 @@ public partial class PlaywrightViewModel
 	{
 		BundlesScripts.Clear();
 
-		BundlesScripts.AddMapped(repository.GetBundledScrits(), (Func<Chameleon.lib.Playwright.Models.PlaywriteRunScriptOptions, PlaywrightScript>)(b => {
+		BundlesScripts.AddMapped(repository.GetBundledScrits(), b => {
 			var viewModel = new PlaywrightScript(b);
-			viewModel.Parameters.AddRange((IEnumerable<Chameleon.lib.Playwright.Models.PlaywrightDescriptionParam>)b.Description?.Parameters!);
+			viewModel.Parameters.AddRange(b.Description?.Parameters!);
 			viewModel.OnOpenEdit += scriptTitle => {
 				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
 			};
 
 			return viewModel;
-		}));
+		});
 
 		SelectedBundledScript = BundlesScripts.FirstOrDefault();
 	}

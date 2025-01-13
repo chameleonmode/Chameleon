@@ -2,10 +2,10 @@
 using System.Collections.ObjectModel;
 
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.app.Avalonia.Com.DynamicData;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Chameleon.app.Avalonia.DynamicData;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase

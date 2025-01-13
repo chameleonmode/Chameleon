@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reactive.Subjects;
 
-using Chameleon.app.Avalonia.Com.DynamicData;
+using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;

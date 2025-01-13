@@ -11,7 +11,7 @@ using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api;
-using Chameleon.app.Avalonia.Com.DynamicData;
+using Chameleon.app.Avalonia.DynamicData;
 
 namespace Chameleon.app.Avalonia.ViewModels.General;
 public partial class AssistantTaskforceViewModel : ViewModelObjectBase {

@@ -6,7 +6,6 @@ using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.app.Avalonia.lib.Community.Controls;
 using Avalonia.Controls;
-using Chameleon.app.Avalonia.app;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib.Common;
 using Chameleon.lib.CommunityToolkit.MvvM;

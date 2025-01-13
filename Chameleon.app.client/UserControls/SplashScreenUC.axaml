@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             x:Class="Chameleon.app.client.SplashScreenUC">
+	<Panel Background="{StaticResource CoreSplashScreenBackground}">
+		<StackPanel Spacing="1"
+                    VerticalAlignment="Center">
+			<ui:IconSourceElement IconSource="{StaticResource logo_symbol}"
+								   Width="150"
+								  Height="160"/>
+
+			<ProgressBar Name="TargetProgressBar"
+						 IsIndeterminate="True"
+						 IsVisible="True"
+						 MaxWidth="250"
+						 MaxHeight="200"
+						 Margin="10 20 0 20"
+						 Orientation="Horizontal"
+						 HorizontalAlignment="Stretch"
+						 VerticalAlignment="Stretch" />
+
+			<TextBlock Text="Loading..."
+                       Name="LoadingText"
+                       HorizontalAlignment="Center"
+                       FontSize="20"/>
+		</StackPanel>
+	</Panel>
+</UserControl>

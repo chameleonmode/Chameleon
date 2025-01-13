@@ -1,5 +1,5 @@
-using Chameleon.app.Avalonia.app;
 using Chameleon.Av.Fluent.Common.Pages;
+
 using FluentAvalonia.UI.Controls;
 
 namespace Chameleon.app.Avalonia.Views;

@@ -34,5 +34,6 @@
 	
   <ItemGroup>
     <ProjectReference Include="..\..\..\Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj" />
+    <ProjectReference Include="..\..\..\Chameleon.app.client\Chameleon.app.client.csproj" />
   </ItemGroup>
 </Project>

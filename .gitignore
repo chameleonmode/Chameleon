@@ -29,7 +29,6 @@ x86/
 bld/
 [Bb]in/
 [Oo]bj/
-[Oo]ut/
 [Ll]og/
 [Ll]ogs/
 
@@ -62,6 +61,9 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+
+# Tye
+.tye/
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
@@ -361,22 +363,92 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+##
+## Visual studio for Mac
+##
+
+
+# globs
+Makefile.in
+*.userprefs
+*.usertasks
+config.make
+config.status
+aclocal.m4
+install-sh
+autom4te.cache/
+*.tar.gz
+tarballs/
+test-results/
+
+# Mac bundle stuff
+*.dmg
+*.app
+
+# content below from: https://github.com/github/gitignore/blob/master/Global/macOS.gitignore
+# General
 .DS_Store
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/Chameleon.pkg
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/App/
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/Applications/
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/App/ad12574c-e0f5-46ca-b1b2-dbd08cbb759d/Chameleon.zip
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/Chameleon.zip
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/chamelionairbundlepp.provisionprofile
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/App/Chameleon.zip
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/App/a1430797-3224-43d6-a5d4-aa7ffd62cf3b/Chameleon.zip
-.aider*
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/App/2d28b7e1-510c-477b-a24e-3eac0b8a04cd /Chameleon.zip
-get-pip.py
-/Chameleon.Web/aws/Chameleon.Web.AWS/Chameleon.Web.AWS.Serverless/appsettings.json
-BrowserExtensions/spoof_geolocation-0.1.1.xpi
-BrowserExtensions/GEO-location.zip
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/macnotorize.sh
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/pacamac.sh
-Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/macnotorize.sh
-appsettings.json
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# content below from: https://github.com/github/gitignore/blob/master/Global/Windows.gitignore
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+##
+## Visual Studio Code
+##
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

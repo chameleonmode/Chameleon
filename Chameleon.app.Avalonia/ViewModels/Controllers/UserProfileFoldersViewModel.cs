@@ -4,8 +4,8 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.app.Avalonia.Models.Observable;
 using System.Collections.ObjectModel;
 using DynamicData;
-using Chameleon.app.Avalonia.Com.DynamicData;
 using Chameleon.lib.Common.Models.Dto;
+using Chameleon.app.Avalonia.DynamicData;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 public partial class UserProfileFoldersViewModel : ViewModelObjectBase {

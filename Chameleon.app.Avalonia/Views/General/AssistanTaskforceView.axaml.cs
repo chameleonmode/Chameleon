@@ -1,4 +1,3 @@
-using Chameleon.app.Avalonia.app;
 using Chameleon.app.Avalonia.ViewModels.General;
 using Chameleon.Av.Fluent.Common.Pages;
 

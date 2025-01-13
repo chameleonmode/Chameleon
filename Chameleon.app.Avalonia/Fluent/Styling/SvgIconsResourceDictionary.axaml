@@ -1,0 +1,34 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
+					xmlns:svg="using:Avalonia.Controls.Skia"
+					xmlns:conv="using:Chameleon.app.Avalonia.Converters.ValueConverters"                
+					xmlns:local="using:Chameleon.Av.Fluent.Common.Controls"
+                    xmlns:ui="using:FluentAvalonia.UI.Controls"
+                    xmlns:sty="using:FluentAvalonia.Styling">
+	<conv:SvgNameToDataConverter x:Key="dataConv" />
+	<Design.PreviewWith>
+		<!---->
+		<ThemeVariantScope RequestedThemeVariant="Light">
+			<StackPanel Spacing="10" Margin="50" Width="500">
+				<local:SvgIconControl IconName="not-profiles" />
+			</StackPanel>
+		</ThemeVariantScope>
+	</Design.PreviewWith>
+
+	<ControlTheme TargetType="local:SvgIconControl"
+				  x:Key="{x:Type local:SvgIconControl}">
+		<!--<Setter Property="Foreground" Value="Green" />-->
+		<!--<Setter Property="Height" Value="50" />
+		<Setter Property="Width" Value="50" />-->
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Panel>
+				<!--<Svg Name="SvgHost" 
+					 Path="{TemplateBinding IconName, Converter={StaticResource conv}}" />-->
+					<Svg Name="svgString" 
+						 Source="{TemplateBinding IconName, Converter={StaticResource dataConv}}" />
+				</Panel>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+</ResourceDictionary>

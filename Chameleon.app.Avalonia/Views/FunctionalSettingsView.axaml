@@ -26,10 +26,11 @@
 						<Panel>
 							<Viewbox Width="28"
                                      Height="28"
-                                     HorizontalAlignment="Left"
-                                     VerticalAlignment="Center"
-                                     Margin="12 6">
-								<ui:IconSourceElement IconSource="{TemplateBinding Tag}" />
+                                     Margin="14 6">
+								<ui:IconSourceElement IconSource="{TemplateBinding Tag}"
+													  MinHeight="12"
+													  MinWidth="12"
+													  />
 							</Viewbox>
 							<Rectangle Name="PART_SelectedPipe"
                                        Fill="{DynamicResource AccentFillColorDefaultBrush}"
@@ -89,7 +90,7 @@
 				Tag="{StaticResource DefaultSettingsPageIcon}"/>
 			<TabStripItem
 				Content="Phone Verification"
-				Tag="{StaticResource CellPhone}"/>
+				Tag="{StaticResource Phone}"/>
 			<TabStripItem
 				Content="Proxy"
 				Tag="{StaticResource Proxy}"/>
