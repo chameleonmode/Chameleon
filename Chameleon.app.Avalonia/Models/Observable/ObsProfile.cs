@@ -179,7 +179,7 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 							UserName = Dto.proxy?.userName,
 							Password = Dto.proxy?.password
 						}
-					})).WaitAsync(TimeSpan.FromSeconds(16));
+					})).WaitAsync(TimeSpan.FromSeconds(21));
 				} catch {
 					browser = null;
 				}
@@ -187,7 +187,7 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 				var succeeded = false;
 				if (browser != null) {
 					try {
-						succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(8));
+						succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(SysBrowserServiceBase.TimeOut));
 					} catch {
 						succeeded = false;
 					}
