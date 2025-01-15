@@ -36,7 +36,7 @@
 		</Style>
 	</UserControl.Styles>
 	<Grid RowDefinitions="Auto, *">
-		<afv:ChameleonContentControl Title="Resource Groups"
+		<!--<afv:ChameleonContentControl Title="Resource Groups"
 									 TitleDescription="Taskforce resource groups to enable user resource access">
 			
 			<afv:ChameleonContentControl.Content>
@@ -57,7 +57,7 @@
 				</StackPanel>
 			</afv:ChameleonContentControl.Content>
 			
-		</afv:ChameleonContentControl>
+		</afv:ChameleonContentControl>-->
 		
 		<afv:ChameleonContentControl Grid.Row="1"
 									 Title="Users"

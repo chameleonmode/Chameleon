@@ -5,7 +5,7 @@
 		xmlns:ui="using:FluentAvalonia.UI.Controls">
   <Design.PreviewWith>
     <Border Width="700" Height="800" Background="{DynamicResource LayerFillColorDefaultBrush}">
-		<pg:ChameleonPageBase PreviewImage="{StaticResource DashboardPageIcon}" 
+		<pg:ChameleonPageBase PreviewImage="{StaticResource CellPhone}" 
 							  ControlName="Dashboard"
 							  Description="Your favorited profiles and folders">
 			<ctrls:ChameleonContentControl Title="S titi"

@@ -284,9 +284,8 @@
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           Content="{TemplateBinding Content}"
                                           FontSize="{StaticResource ControlContentThemeFontSize}"
-                                          FontFamily="{StaticResource ContentControlThemeFontFamily}"
                                           Foreground="{TemplateBinding Foreground}"
-																					Margin="8"
+																  Margin="8"
                                           Grid.Row="1"/>
 											</Grid>
 										</Border>

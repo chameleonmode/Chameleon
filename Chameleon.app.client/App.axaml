@@ -14,11 +14,8 @@
 	</Application.Resources>
 
 	<Application.Styles>
-		<sty:FluentAvaloniaTheme
-			PreferSystemTheme="True"
-			PreferUserAccentColor="True"
-			TextVerticalAlignmentOverrideBehavior="AlwaysEnabled"
-			/>
+		<sty:FluentAvaloniaTheme PreferSystemTheme="True" PreferUserAccentColor="True"
+								 TextVerticalAlignmentOverrideBehavior="AlwaysEnabled" />
 		<StyleInclude Source="avares://Chameleon.app.Avalonia/Fluent/Styling/ChameleonStyles.axaml" />
 	</Application.Styles>
 
