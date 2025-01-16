@@ -69,6 +69,9 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 
 	public async Task<Enums.TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Consts.AppName, object? footer = null, Enums.Symbas symbas = Enums.Symbas.Alert, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo)
 	{
+		while(AppLayers.GetMainWindow() is null) {
+			await Task.Delay(250);
+		}
 		return await dispatcher.InvokeOnUiThread(async () => {
 			var btnsList = new List<TaskDialogButton>();
 			switch (btns) {
