@@ -1,7 +1,6 @@
 ﻿using Avalonia.Media;
 
 using Chameleon.app.Avalonia.lib.Community.Controls;
-using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib;
 using Chameleon.lib.Api;

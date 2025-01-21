@@ -108,7 +108,7 @@
 										Tag="{Binding Dto}"
 										IconSource="Wifi4"
 										CommandParameter="ChangeProxies"
-										Command="{Binding AsyncCfromVCommand}"
+										Command="{Binding CfromVCommand}"
 										IsEnabled="{Binding IsContextMenuItemEnabled}"/>
 									<ui:MenuFlyoutItem
 										Text="Rename folder"
