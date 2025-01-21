@@ -6,11 +6,12 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
 using DynamicData;
-using Chameleon.lib.Common.Util;
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api;
+using Chameleon.lib.Util;
+using Chameleon.lib.Helpers;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 
@@ -53,7 +54,7 @@ public partial class AssistantUsersViewModel
 	{
 		if (Assistantz.Count >= Auther.AuthSession?.LicenseLimits.MaxAssistantsCount) {
 			if (await Mbox.Show("USERS LIMIT REACHED", "You have reached the maximum number of users."))
-				ProUtil.GoToUrlDefault(Consts.PricingUrl);
+				ProcessUtil.OpenBrowser(Consts.PricingUrl);
 		} else {
 			var invite = new InviteUserOrAddProfilesViewModel();
 			if (await Mbox.ShowTaskDialog<InviteUserOrAddProfilesViewModel, InviteUserOrAddProfilesUserControl>(

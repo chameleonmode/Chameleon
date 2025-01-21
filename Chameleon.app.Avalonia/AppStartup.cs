@@ -3,12 +3,13 @@
 using Chameleon.app.Avalonia.lib.Community.Controls;
 using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.lib;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
+using Chameleon.lib.Helpers;
 
 using FluentAvalonia.UI.Windowing;
 

@@ -1,5 +1,4 @@
-﻿using Chameleon.lib.Common;
-using Chameleon.lib.CommunityToolkit.MvvM;
+﻿using Chameleon.lib.CommunityToolkit.MvvM;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -9,6 +8,7 @@ using Chameleon.lib.Api.Repos;
 using DynamicData;
 using Chameleon.lib.Common.Models;
 using Chameleon.lib.Common.Extensions;
+using Chameleon.lib;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action OnSelectedChanged) : ViewModelObjectBase {

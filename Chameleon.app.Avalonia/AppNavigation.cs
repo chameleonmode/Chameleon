@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-using Chameleon.lib.Common;
+using Chameleon.lib;
 
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;

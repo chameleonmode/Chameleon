@@ -6,7 +6,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
 using Chameleon.Av.Fluent.Common.Pages;
-using Chameleon.lib.Common.ServiceManagers;
 
 using FluentAvalonia.UI.Controls;
 
@@ -20,6 +19,7 @@ using Chameleon.app.client.ViewModels;
 using Chameleon.app.Avalonia;
 using Chameleon.app.Avalonia.Helpers;
 using Chameleon.app.Avalonia.MvvM;
+using Chameleon.lib.Helpers;
 
 namespace Chameleon.app.client.Views;
 

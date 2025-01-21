@@ -14,9 +14,9 @@ using Chameleon.app.Avalonia.ViewModels.General;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.app.client.ViewModels;
 using Chameleon.app.client.Views;
-using Chameleon.lib.Common;
+using Chameleon.lib;
 using Chameleon.lib.Common.Interfaces.Services;
-using Chameleon.lib.Common.Types;
+using Chameleon.lib.Interfaces.Services;
 using Chameleon.lib.WebBrowser.Interfaces;
 using Chameleon.lib.WebBrowser.Services;
 

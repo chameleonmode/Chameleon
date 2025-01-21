@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 
-using Chameleon.lib.Common;
+using Chameleon.lib;
 using Chameleon.lib.Common.Interfaces.Sys;
 
 using System.Reflection;

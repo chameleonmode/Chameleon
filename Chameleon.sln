@@ -19,8 +19,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.Common", "..\chameleon-lib\Chameleon.lib.Common\Chameleon.lib.Common.csproj", "{AF1C7B0B-6DF8-4F2A-ABA9-E257A6292B24}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.CommunityToolkit", "..\chameleon-lib\Chameleon.lib.CommunityToolkit\Chameleon.lib.CommunityToolkit.csproj", "{3FC51CF3-2466-4A04-AC05-6C2F6123A0A6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.Playwright", "..\chameleon-lib\Chameleon.lib.Playwright\Chameleon.lib.Playwright.csproj", "{DA3B6225-D7BA-46E8-81E4-B90BCDB4EFF0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.WebBrowser", "..\chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj", "{005D507C-7B09-4091-9CFA-416F76E3CA9B}"
@@ -73,10 +71,6 @@ Global
 		{AF1C7B0B-6DF8-4F2A-ABA9-E257A6292B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF1C7B0B-6DF8-4F2A-ABA9-E257A6292B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF1C7B0B-6DF8-4F2A-ABA9-E257A6292B24}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3FC51CF3-2466-4A04-AC05-6C2F6123A0A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3FC51CF3-2466-4A04-AC05-6C2F6123A0A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3FC51CF3-2466-4A04-AC05-6C2F6123A0A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3FC51CF3-2466-4A04-AC05-6C2F6123A0A6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA3B6225-D7BA-46E8-81E4-B90BCDB4EFF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA3B6225-D7BA-46E8-81E4-B90BCDB4EFF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA3B6225-D7BA-46E8-81E4-B90BCDB4EFF0}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -44,11 +44,11 @@ public abstract partial class ObservableObjectBase : ObservableObject,
 	public virtual Task OnNavigatedToAsync(object? param) => Task.CompletedTask;
 
 	public Task InvokeInitializeAsyncCommand(object? p = null) => InitializeAsyncCommand.ExecuteAsync(p);
+	public Task InitializeAsync(object? param) => InvokeInitializeAsyncCommand(param);
 
 	[RelayCommand]
 	public void CfromV(string what) => CommandMap[what]?.Invoke();
 
 	[RelayCommand]
 	public async Task AsyncCfromV(string what) => await AsyncCommandMap[what]();
-	public Task InitializeAsync(object? param) => InvokeInitializeAsyncCommand(param);
 }

@@ -1,6 +1,4 @@
-﻿using Chameleon.lib.Common.ServiceManagers;
-
-using Chameleon.lib.CommunityToolkit.MvvM;
+﻿using Chameleon.lib.CommunityToolkit.MvvM;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -11,10 +9,11 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Api.Repos;
 using System.Collections.ObjectModel;
 using DynamicData;
-using Chameleon.lib.Common;
 using Chameleon.lib.Common.Interfaces.Sys;
 using System.Reactive.Subjects;
 using System.Reactive.Linq;
+using Chameleon.lib;
+using Chameleon.lib.Helpers;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class UserProfileIdentityViewModel : ViewModelObjectBase {

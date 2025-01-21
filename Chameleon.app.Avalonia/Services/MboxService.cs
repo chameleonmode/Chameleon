@@ -7,8 +7,8 @@ using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.app.Avalonia.lib.Community.Controls;
 using Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
-using Chameleon.lib.Common;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib;
 
 namespace Chameleon.app.Avalonia.Services;
 public class MboxService(IDispatchService dispatcher) : IMboxService {

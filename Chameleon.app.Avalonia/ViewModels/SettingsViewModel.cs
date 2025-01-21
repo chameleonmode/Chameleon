@@ -10,8 +10,8 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.Styling;
 using Avalonia.Media;
 using Avalonia;
-using Chameleon.lib.Common;
 using Chameleon.app.Avalonia.Models;
+using Chameleon.lib;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class SettingsViewModel : ViewModelObjectBase {

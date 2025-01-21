@@ -5,8 +5,8 @@ using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
-using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Util;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -88,7 +88,7 @@ public partial class ProxyCreditViewModel
 	{
 		var res = await ProxyCreditRepo.CreateOrder(SelectedCreditPlan.Amount);
 		if (res?.Url != null) {
-			ProUtil.GoToUrlDefault(res.Url);
+			ProcessUtil.OpenBrowser(res.Url);
 		}
 	}
 
