@@ -16,10 +16,9 @@ namespace Chameleon.app.Avalonia;
 public class AppStartup {
 	public event Action? OnLoginSuccess;
 
-	public async Task RunAsync()
-	{
+	public async Task RunAsync() {
 		if (!await RunAsync(0)) {
-			_ = await Mbox.ShowErrorAsync("Error Logging In", "There was an error validationg the login information that was provided.");
+			Toaster.Info("Login canceled, application closing");
 			Environment.Exit(0);
 		} else {
 			await IOtil.DC(Consts.AppTempDir);
@@ -27,21 +26,20 @@ public class AppStartup {
 			OnLoginSuccess?.Invoke();
 		}
 	}
-	public async Task<bool> RunAsync(int trys)
-	{
+	public async Task<bool> RunAsync(int trys) {
 		try {
 			var loginSetings = IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) ?? new("", "", false);
 			var loginvm = new MboxLoginViewModel {
 				UserName = loginSetings.LoginName,
 				LicenceKey = loginSetings.LicenseKey,
-				AutoLogin = true
+				AutoLogin = loginSetings.AutoLogin
 			};
 
-			if (!loginSetings.AutoLogin && 
-				await Mbox.ShowTaskDialog<MboxLoginViewModel, MboxLoginUserControl>(() => loginvm, 
-					"User Login", 
-					"Enter the provided activation information", 
-					symbas: Enums.Symbas.ContactInfo, 
+			if (!loginSetings.AutoLogin &&
+				await Mbox.ShowTaskDialog<MboxLoginViewModel, MboxLoginUserControl>(() => loginvm,
+					"User Login",
+					"Enter the provided activation information",
+					symbas: Enums.Symbas.ContactInfo,
 					btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.Cancel) {
 				return false;
 			}
@@ -49,10 +47,9 @@ public class AppStartup {
 			ArgumentNullException.ThrowIfNull(loginvm.LicenceKey, "LicenceKey");
 
 			await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
-			if (Auther.AuthSession is not null &&
-				(loginvm.UserName   != loginSetings.LoginName || 
-				 loginvm.LicenceKey != loginSetings.LicenseKey ||
-				 loginvm.AutoLogin != loginSetings.AutoLogin)) {
+
+			var loginDetailsChanged = loginvm.UserName != loginSetings.LoginName || loginvm.LicenceKey != loginSetings.LicenseKey || loginvm.AutoLogin != loginSetings.AutoLogin;
+			if (loginDetailsChanged) {
 				IoC.SetJsonValue(new LoginSettings(loginvm.UserName, loginvm.LicenceKey, loginvm.AutoLogin), nameof(LoginSettings));
 				return true;
 			}
@@ -65,8 +62,7 @@ public class AppStartup {
 		return Auther.AuthSession is not null;
 	}
 
-	public static async Task LoadSink(bool reload = false)
-	{
+	public static async Task LoadSink(bool reload = false) {
 		var tasks = new List<Task>() {
 			UserProfilesRepo.Instance.Load(),
 			UserProfilesFolderRepo.Instance.Load()
@@ -78,8 +74,7 @@ public class AppStartup {
 	}
 
 	public static AppStartup Instance { get; } = new AppStartup();
-	private AppStartup()
-	{
+	private AppStartup() {
 		// for migration
 		//if (IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) is null || IoC.GetJsonValue<AppSettings>(nameof(AppSettings)) is null) {
 		//	var _settingsFilePath = Path.Combine(
@@ -144,8 +139,7 @@ public class AppStartup {
 
 		public Func<Task>? InitApp { get; set; }
 
-		public async Task RunTasks(CancellationToken cancellationToken)
-		{
+		public async Task RunTasks(CancellationToken cancellationToken) {
 			if (InitApp != null)
 				await InitApp.Invoke();
 		}
