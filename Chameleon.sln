@@ -51,6 +51,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{99A4DEF3-5CE7-424B-8811-DF2DEB87EB67}"
 	ProjectSection(SolutionItems) = preProject
 		..\chameleon-lib\.editorconfig = ..\chameleon-lib\.editorconfig
+		..\chameleon-lib\Directory.Build.props = ..\chameleon-lib\Directory.Build.props
+		..\chameleon-lib\Directory.Packages.props = ..\chameleon-lib\Directory.Packages.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.lib.Auth", "..\chameleon-lib\Chameleon.lib.Auth\Chameleon.lib.Auth.csproj", "{3F91C7EF-0174-4B82-88B3-5059CDEB714B}"

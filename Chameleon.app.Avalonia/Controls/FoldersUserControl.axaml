@@ -114,7 +114,7 @@
 										Text="Rename folder"
 										IconSource="Rename"
 										CommandParameter="StartRename"
-										Command="{Binding AsyncCfromVCommand}"
+										Command="{Binding CfromVCommand}"
 										IsEnabled="{Binding IsContextMenuItemEnabled}"
 										IsVisible="{Binding ShowFavoriteIcon}"/>
 									<ui:MenuFlyoutItem

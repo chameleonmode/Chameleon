@@ -12,6 +12,7 @@ using Avalonia.Media;
 using Avalonia;
 using Chameleon.app.Avalonia.Models;
 using Chameleon.lib;
+using Chameleon.lib.Auth;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class SettingsViewModel : ViewModelObjectBase {
@@ -117,8 +118,7 @@ public partial class SettingsViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	public void Logout()
 	{
-		if (IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) is LoginSettings login)
-			IoC.SetJsonValue(new LoginSettings(login.LoginName, login.LicenseKey, false), nameof(LoginSettings));
+		CurrentSession.Logout();
 		Environment.Exit(0);
 	}
 
