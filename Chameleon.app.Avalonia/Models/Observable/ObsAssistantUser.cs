@@ -135,7 +135,7 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 						: Dto?.id,
 					op.Dto?.ProfileId
 				);
-				await _playwrightCookiesRepo.PutCookies(userId.ToString(), Dto?.EmailAddress, dtoId.ToString(), bt);
+				//await _playwrightCookiesRepo.PutCookies(userId.ToString(), Dto?.EmailAddress, dtoId.ToString(), bt);
 			}
 		)));
 	}
