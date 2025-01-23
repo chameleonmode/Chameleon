@@ -39,6 +39,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.lib", "..\chameleon-lib\Chameleon.lib\Chameleon.lib.csproj", "{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CE7FF880-AA75-4AEE-BFA3-B64AB857433B}"
+	ProjectSection(SolutionItems) = preProject
+		..\chameleon-lib\Tests\bin\Debug\net8.0\appsettings.json = ..\chameleon-lib\Tests\bin\Debug\net8.0\appsettings.json
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "main", "main", "{137272C9-D563-4573-A169-39252A4C9F7B}"
 EndProject
@@ -58,6 +61,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.lib.Auth", "..\chameleon-lib\Chameleon.lib.Auth\Chameleon.lib.Auth.csproj", "{3F91C7EF-0174-4B82-88B3-5059CDEB714B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\chameleon-lib\Tests\Tests.csproj", "{D308CCCA-95E9-420B-A9B3-3DB904F11D30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.lib.Abs", "..\chameleon-lib\Chameleon.lib.Abs\Chameleon.lib.Abs.csproj", "{BB8D7DC4-2008-4668-A324-9158C1498374}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +122,10 @@ Global
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB8D7DC4-2008-4668-A324-9158C1498374}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB8D7DC4-2008-4668-A324-9158C1498374}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB8D7DC4-2008-4668-A324-9158C1498374}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB8D7DC4-2008-4668-A324-9158C1498374}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
