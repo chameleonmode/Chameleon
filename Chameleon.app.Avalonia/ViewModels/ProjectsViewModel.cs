@@ -1,6 +1,5 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
-using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
