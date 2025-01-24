@@ -1,11 +1,11 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
-using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using UserProfileIdentityView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.View;
 
 using CommunityToolkit.Mvvm.Input;
 

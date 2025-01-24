@@ -18,6 +18,8 @@ using CommunityToolkit.Mvvm.Input;
 
 using static Chameleon.lib.Common.Constants.Enums;
 
+using UserProfileIdentityView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.View;
+
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : Obs<UserProfileDto> {
 	public event Action<ObsProfile>? OnSelectedChanged;

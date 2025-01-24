@@ -8,6 +8,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 
 using Chameleon.app.Avalonia;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.app.Avalonia.ViewModels.General;
@@ -87,6 +88,8 @@ public partial class App : Application {
 			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, Chameleon.lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
 			.AddSingleton<PlaywrightViewModel>()
 			.AddSingleton<PlaywrightView>();
+
+			new ProfilesAndFolderModule().ConfigureServices(services);
 		});
 
 		// Setup IoC
