@@ -1,21 +1,25 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-using Chameleon.lib.CommunityToolkit.MvvM;
-using System.Reactive.Linq;
 using DynamicData;
-using Chameleon.lib.Api.Repos;
-using System.Collections.ObjectModel;
-using Chameleon.lib.Common.Constants;
+
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Collections.ObjectModel;
+
+using Chameleon.lib.Api.Repos;
+using Chameleon.lib.Common.Constants;
+using Chameleon.lib.Helpers;
+using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Abs.Platformatic;
+
+using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Playwright.Services;
-using static Chameleon.lib.Common.Constants.Enums;
-using Chameleon.app.Avalonia.DynamicData;
-using Chameleon.lib.Helpers;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class DashboardViewModel : ViewModelObjectBase {
-	private readonly PlaywrightCookiesSyncService playwrightCookiesSyncService = PlaywrightCookiesSyncService.Instance;
+	readonly PlatformaticDB platformaticDB = PlatformaticDB.Instance;
+	readonly PlaywrightCookiesSyncService playCookySync = PlaywrightCookiesSyncService.Instance;
 
 	// Private fields
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
@@ -76,9 +80,9 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	{
 		await base.InitAsync(param);
 
-		if(!Loaded) {
-			await SyncChanges();
-		}
+		//if(!Loaded) {
+		//	await SyncChanges();
+		//}
 	}
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value)
@@ -103,15 +107,19 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		await CheckForCookies();
 	}
 
-	private async Task CheckForCookies()
-	{
-		//HasCookiesToSync = await playwrightCookiesSyncService.HasCookies;
+	private async Task CheckForCookies() {
+		HasCookiesToSync = false;
+		try {
+			HasCookiesToSync = await playCookySync.HasCookies();
+		} catch (Exception e) {
+			Toaster.Error("Failed to check for cookies. Please try again. " + e.Message);
+		}
 	}
 
 	private async Task SyncCookies(Enums.SystemBrowserType systemBrowserType)
 	{
 		try {
-			await playwrightCookiesSyncService.SyncCookies(systemBrowserType);
+			await playCookySync.SyncCookies(systemBrowserType);
 			Toaster.Success("Cookies Synced");
 		} catch (Exception e) {
 			Toaster.Error("Failed to sync cookies. Please try again. " + e.Message);
@@ -125,7 +133,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	private async Task SyncCookiesClear()
 	{
 		try {
-			await playwrightCookiesSyncService.ClearCookies();
+			await platformaticDB.DeleteDataInteractions();
 			Toaster.Success("Cookies Cleared");
 		} catch (Exception e) {
 			Toaster.Error("Failed to sync cookies. Please try again. " + e.Message);

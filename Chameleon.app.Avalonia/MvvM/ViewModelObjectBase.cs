@@ -1,8 +1,5 @@
-﻿using System.Diagnostics.Eventing.Reader;
-
-using Chameleon.lib.Auth;
+﻿using Chameleon.lib.Auth;
 using Chameleon.lib.Common.Interfaces.Services;
-using Chameleon.lib.Common.Interfaces.Sys;
 
 using CommunityToolkit.Mvvm.Input;
 

@@ -116,9 +116,9 @@ public partial class SettingsViewModel : ViewModelObjectBase {
 	}
 
 	[RelayCommand]
-	public void Logout()
+	public async Task Logout()
 	{
-		CurrentSession.Logout();
+		await CurrentSession.Logout();
 		Environment.Exit(0);
 	}
 

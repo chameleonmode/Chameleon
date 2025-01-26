@@ -21,6 +21,7 @@
 	<PackageReference Include="DynamicData" />
 	<PackageReference Include="CommunityToolkit.Mvvm" />
 	<PackageReference Include="System.Configuration.ConfigurationManager" />
+	<PackageReference Include="Microsoft.Playwright" />
 	<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 	<PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
 	<PackageReference Include="Microsoft.Extensions.Logging.Console" />

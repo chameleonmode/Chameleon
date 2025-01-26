@@ -2,6 +2,7 @@
 
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -9,6 +10,7 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
+using Chameleon.lib.Playwright;
 using Chameleon.lib.Playwright.Services;
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -32,9 +34,8 @@ public partial class ObsAssisProfile
 	public ObsAssisProfile(
 		AssisProfileDto dto,
 		Action<ObsAssisProfile> onProfileUnshare,
-		Func<ObsAssisProfile, Enums.SystemBrowserType, Task> onSendCookies) 
-		: base(dto)
-	{
+		Func<ObsAssisProfile, Enums.SystemBrowserType, Task> onSendCookies)
+		: base(dto) {
 		this.onProfileUnshare = onProfileUnshare;
 		this.onSendCookies = onSendCookies;
 
@@ -44,8 +45,7 @@ public partial class ObsAssisProfile
 		AsyncCommandMap["SyncCookiesFirefox"] = () => SendCookies(Enums.SystemBrowserType.Firefox);
 	}
 
-	private async Task Unshare()
-	{
+	private async Task Unshare() {
 		if (Dto == null) return;
 
 		try {
@@ -59,12 +59,10 @@ public partial class ObsAssisProfile
 		}
 	}
 
-	public async Task SendCookies(Enums.SystemBrowserType bt)
-	{
+	public async Task SendCookies(Enums.SystemBrowserType bt) {
 		try {
 			Toaster.Info("Sending cookies...");
 			await onSendCookies(this, bt);
-			Toaster.Success("Cookies sent successfully");
 		} catch {
 			Toaster.Error($"Failed to send cookies.");
 		}
@@ -77,8 +75,7 @@ public partial class ObsAssisFolder(
 	: Vim<AssisShareFolderDto>(dto) {
 
 	[RelayCommand]
-	public async Task Unshare()
-	{
+	public async Task Unshare() {
 		if (Dto == null) return;
 
 		try {
@@ -98,6 +95,7 @@ public partial class ObsAssisFolder(
 /// </summary>
 /// <param name="dto"></param>
 public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
+	readonly PlatformaticDB platformaticDB = PlatformaticDB.Instance;
 	// 
 	private readonly PlaywrightCookiesSyncService _playwrightCookiesRepo = PlaywrightCookiesSyncService.Instance;
 
@@ -109,8 +107,7 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 	public ObservableCollection<ObsAssisFolder> Folderz { get; } = [];
 
 	//
-	public override async Task InitAsync(object? param)
-	{
+	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
 		if (!Loaded) {
 			await InitProfiles();
@@ -118,8 +115,7 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 		}
 	}
 
-	private async Task InitProfiles()
-	{
+	private async Task InitProfiles() {
 		var profiles = await UserAssistantRepo.GetAllAssistantProfilesById(Dto!.id);
 		Profilez.Clear();
 		Profilez.AddRange(profiles.Select(p => new ObsAssisProfile(p,
@@ -129,19 +125,31 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 				_ = Profilez.Remove(op);
 			},
 			onSendCookies: async (op, bt) => {
-				var (userId, dtoId) = EnsureDtos(
-					Dto!.id == Auther.AuthSession?.UserId && Auther.AuthSession?.CreatorUserId != null
-						? Auther.AuthSession.CreatorUserId
-						: Dto?.id,
-					op.Dto?.ProfileId
-				);
-				//await _playwrightCookiesRepo.PutCookies(userId.ToString(), Dto?.EmailAddress, dtoId.ToString(), bt);
+				//var (user, dtoId) = EnsureDtos(
+				//	Dto!.id == Auther.AuthSession?.UserId && Auther.AuthSession?.CreatorUserId != null
+				//		? Auther.AuthSession.CreatorUserId
+				//		: Dto?.id,
+				//	op.Dto?.ProfileId
+				//);
+				var cookies = await PlaywrightUtil.GetCookies("25541", Enums.SystemBrowserType.Chrome);
+				if (cookies.Count > 0) {
+					var email = Dto!.id == Auther.AuthSession?.UserId
+					? platformaticDB.DBusers.SingleOrDefault(u => u.licenseKey != null)?.email
+					: Dto!.EmailAddress;
+					var data = await platformaticDB.SendCookies(email!, op.Dto!.ProfileId.ToString(), cookies);
+					if (data != null) {
+						Toaster.Success($"Cookies sent successfully");
+					} else {
+						Toaster.Error($"Failed to send cookies");
+					}
+				} else {
+					Toaster.Info("No cookies to send in the local profile cache");
+				}
 			}
 		)));
 	}
 
-	private async Task InitFolders()
-	{
+	private async Task InitFolders() {
 		var folders = await ShareFoldersRepo.GetAll(Dto!.id);
 		Folderz.Clear();
 		Folderz.AddRange(folders.Select(f => new ObsAssisFolder(f,
@@ -153,22 +161,19 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 		)));
 	}
 
-	private static (long userId, int dtoId) EnsureDtos(long? user, int? profile)
-  {
-    ArgumentNullException.ThrowIfNull(user);
-    ArgumentNullException.ThrowIfNull(profile);
-    return (user.Value, profile.Value);
-  }
+	private static (long userId, int dtoId) EnsureDtos(long? user, int? profile) {
+		ArgumentNullException.ThrowIfNull(user);
+		ArgumentNullException.ThrowIfNull(profile);
+		return (user.Value, profile.Value);
+	}
 
-	partial void OnCanCreateProfilesChanged(bool value)
-	{
+	partial void OnCanCreateProfilesChanged(bool value) {
 		Dto!.CanCreateProfiles = value;
 		SetCanCreateProfiles();
 	}
 
 	[RelayCommand]
-	private async Task DeleteAssistant()
-	{
+	private async Task DeleteAssistant() {
 		if (await Mbox.Show("Delete User", $"Are you sure you want to delete {Dto!.UserName}", fontIconInfo: "Delete")) {
 			try {
 				_ = await UserAssistantRepo.Instance.Delete(Dto!.id);
@@ -179,8 +184,7 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 	}
 
 	[RelayCommand]
-	private async Task AddMoreProfiles()
-	{
+	private async Task AddMoreProfiles() {
 		try {
 			var invite = new InviteUserOrAddProfilesViewModel() {
 				ShowUserInfo = false,
@@ -202,14 +206,12 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 	}
 
 	[RelayCommand]
-	private async Task SendLicenceKey()
-	{
+	private async Task SendLicenceKey() {
 		await CopyPasta.Copy($"{Dto!.EmailAddress} {Dto!.UserName} {Dto!.Password}");
 	}
 
 	[RelayCommand]
-	private void SetCanCreateProfiles()
-	{
+	private void SetCanCreateProfiles() {
 		try {
 			_ = UserAssistantRepo.SetCanCreateProfiles(Dto!.id, Dto!.CanCreateProfiles);
 
