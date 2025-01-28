@@ -11,7 +11,7 @@ using Chameleon.lib.Common.Models;
 using Chameleon.lib.Common.Extensions;
 
 namespace Chameleon.app.Avalonia.ViewModels;
-public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action OnSelectedChanged) : ViewModelObjectBase {
+public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action OnSelectedChanged, Action<BrowserSettingDto> OnSettingsDeleted) : ViewModelObjectBase {
 	[ObservableProperty]
 	public string? defaultUrl = bsd.DefaultUrl;
 	[ObservableProperty]
@@ -38,6 +38,7 @@ public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action O
 	{
 		_ = await BrowserSettingsRepo.Instance.Delete(bsd.id);
 		OnSelectedChanged();
+		OnSettingsDeleted(bsd);
 	}
 }
 
@@ -56,7 +57,7 @@ public partial class UserDefaultSettingsViewModel
 	{
 		_ = BrowserSettingsRepo.Instance.ObservableCache
 			.Connect()
-			.Transform(p=> new UserDefaultSettingViewModel(p, OnSelectedChanged))
+			.Transform(p=> new UserDefaultSettingViewModel(p, OnSelectedChanged, OnSettingsDeleted))
 			.Bind(out settings)
 			.Subscribe();
 	}
@@ -105,8 +106,7 @@ public partial class UserDefaultSettingsViewModel
 		foreach (var viewModel in settings.ToArray()) {
 			await viewModel.SaveUrlFromViewText();
 		}
-
-		IoC.SetJsonValue(settings.Select(v => v.DefaultUrl).ToArray(), "DefaultHomePageSettings");
+		SetDefaultBrowserSettings();
 	}
 
 	[RelayCommand]
@@ -115,9 +115,17 @@ public partial class UserDefaultSettingsViewModel
 		IoC.SetJsonValue(DefaultEmulationOptions, nameof(EmulationOptions));
 	}
 
+	private void SetDefaultBrowserSettings() {
+		IoC.SetJsonValue(settings.Select(v => v.DefaultUrl).ToArray(), "DefaultHomePageSettings");
+	}
+
 	private void OnSelectedChanged()
 	{
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedCount));
+	}
+
+	private void OnSettingsDeleted(BrowserSettingDto _) {
+		SetDefaultBrowserSettings();
 	}
 }
