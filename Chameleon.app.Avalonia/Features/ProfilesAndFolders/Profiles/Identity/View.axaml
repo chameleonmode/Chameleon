@@ -127,20 +127,20 @@
 				<TabItem.Content>
 					<StackPanel Spacing="18">
 						<afv:HeaderdInputFieldsControl Title="PROFILE NAME"
-													   Text="{Binding UserProfile.title, FallbackValue=NAME}" />
+													   Text="{Binding UserProfile.Title, FallbackValue=NAME}" />
 
 						<afv:HeaderdInputFieldsControl Title="PROXY CONFIGURATION"
 													   Header="False">
 							<afv:HeaderdInputFieldsControl.TextBoxes>
-								<TextBox Text="{Binding Path=UserProfile.proxy.host}" />
-								<TextBox Text="{Binding Path=UserProfile.proxy.port}"  />
-								<TextBox Text="{Binding Path=UserProfile.proxy.userName}" />
-								<TextBox Text="{Binding Path=UserProfile.proxy.password}"  />
+								<TextBox Text="{Binding Path=UserProfile.Proxy.Host}" />
+								<TextBox Text="{Binding Path=UserProfile.Proxy.Port}"  />
+								<TextBox Text="{Binding Path=UserProfile.Proxy.UserName}" />
+								<TextBox Text="{Binding Path=UserProfile.Proxy.Password}"  />
 							</afv:HeaderdInputFieldsControl.TextBoxes>
 						</afv:HeaderdInputFieldsControl>
 
 						<afv:HeaderdInputFieldsControl Title="NOTES"
-													   Text="{Binding UserProfile.notes, FallbackValue=Notes}" />
+													   Text="{Binding UserProfile.Notes, FallbackValue=Notes}" />
 					</StackPanel>
 				</TabItem.Content>
 			</TabItem>
@@ -169,7 +169,7 @@
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																					 Text="{Binding title, FallbackValue=Title}" />
+																					 Text="{Binding Title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="Name first, middle, last"
 																					 Header="False">
