@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" />
-	<PackageReference Include="Avalonia.Desktop" />
 	<PackageReference Include="Avalonia.Fonts.Inter" />
 	<PackageReference Include="Avalonia.Svg" />
 	<PackageReference Include="Avalonia.Svg.Skia" />

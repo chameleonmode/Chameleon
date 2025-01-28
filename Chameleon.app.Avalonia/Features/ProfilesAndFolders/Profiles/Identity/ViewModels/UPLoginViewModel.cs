@@ -5,9 +5,17 @@ using ReactiveValidation.Extensions;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 public partial class UPLoginViewModel: ObservableObjectBase {
+	[ObservableProperty]
+	public int id;
 
 	[ObservableProperty]
-	private string? webSite;
+	public string? title;
+
+	[ObservableProperty]
+	public int? profileId;
+
+	[ObservableProperty]
+	public string? webSite;
 
 	[ObservableProperty]
 	public string? email;

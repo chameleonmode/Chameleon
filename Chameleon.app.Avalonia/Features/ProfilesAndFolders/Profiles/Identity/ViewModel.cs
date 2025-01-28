@@ -24,12 +24,12 @@ public partial class ViewModel: ViewModelObjectBase {
 	[ObservableProperty]
 	private ObsProfile? profileVM;
 	[ObservableProperty]
-	private UserProfileDto? userProfile;
+	private UserProfileViewModel? userProfile;
 
 	private readonly ReadOnlyObservableCollection<ObsAddressDto> addresses;
 	private readonly ReadOnlyObservableCollection<UPBusinessDto> businesses;
 	private readonly ReadOnlyObservableCollection<UPLoginViewModel> logins;
-	private readonly ReadOnlyObservableCollection<UPPersonDto> persons;
+	private readonly ReadOnlyObservableCollection<UPPersonViewModel> persons;
 
 	public ReadOnlyObservableCollection<ObsAddressDto> Addresses => addresses;
 	public bool HasAddresses => Addresses?.Count > 0;
@@ -37,11 +37,11 @@ public partial class ViewModel: ViewModelObjectBase {
 	public bool HasBusiness => Businesses?.Count > 0;
 	public ReadOnlyObservableCollection<UPLoginViewModel> Logins => logins;
 	public bool HasLogins => Logins?.Count > 0;
-	public ReadOnlyObservableCollection<UPPersonDto> Persons => persons;
+	public ReadOnlyObservableCollection<UPPersonViewModel> Persons => persons;
 	public bool HasPersons => Persons?.Count > 0;
 
-	public Func<UP, bool> FilterPredicate => p => p.ProfileId == UserProfile?.id;
-	public Func<ObsAddressDto, bool> AdrezFilterPredicate => p => p.Dto?.ProfileId == UserProfile?.id;
+	public Func<UP, bool> FilterPredicate => p => p.ProfileId == UserProfile?.Id;
+	public Func<ObsAddressDto, bool> AdrezFilterPredicate => p => p.Dto?.ProfileId == UserProfile?.Id;
 
 	public ViewModel() {
 		filter = new BehaviorSubject<Func<UP, bool>>(FilterPredicate);
@@ -50,6 +50,7 @@ public partial class ViewModel: ViewModelObjectBase {
 		_ = UPAdditionalDataRepo.Instance.Personz
 			.Connect()
 			.Filter(filter)
+			.Transform(x => x.Adapt<UPPersonViewModel>())
 			.Bind(out persons)
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasPersons));
@@ -94,7 +95,7 @@ public partial class ViewModel: ViewModelObjectBase {
 		await base.OnNavigatedToAsync(param);
 
 		if (param is UserProfileDto up) {
-			UserProfile = up;
+			UserProfile = up.Adapt<UserProfileViewModel>();
 			ProfileVM = new ObsProfile(up, false);
 			filter.OnNext(FilterPredicate);
 			adrezfilter.OnNext(AdrezFilterPredicate);
@@ -109,8 +110,6 @@ public partial class ViewModel: ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task SaveChanges() {
-		if (!ProfileVM!.Title.Is())
-			return;
 
 		IsSaving = true;
 
@@ -129,8 +128,8 @@ public partial class ViewModel: ViewModelObjectBase {
 			//await Task.Run(() => _userProfileService.Save(userProfile));
 			var res = await UserProfilesRepo.Instance.Put(UserProfile!);
 			if (res != null) {
-				UserProfile = res;
-				ProfileVM = new ObsProfile(UserProfile, false);
+				UserProfile = res.Adapt<UserProfileViewModel>();
+				ProfileVM = new ObsProfile(UserProfile.Adapt<UserProfileDto>(), false);
 				Toaster.Success($"Update was successful.");
 			}
 		} catch (Exception ex) {
@@ -147,19 +146,19 @@ public partial class ViewModel: ViewModelObjectBase {
 	[RelayCommand]
 	private async Task AddPerson() {
 		_ = await UPAdditionalDataRepo.Instance.Personz.Create(new UPPersonDto() {
-			ProfileId = UserProfile?.id
+			ProfileId = UserProfile?.Id
 		});
 		OnPropertyChanged(nameof(HasPersons));
 	}
 
 	[RelayCommand]
-	private async Task OnSavePerson(UPPersonDto p) {
-		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Personz, p);
+	private async Task OnSavePerson(UPPersonViewModel p) {
+		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Personz, p.Adapt<UPPersonDto>());
 	}
 
 	[RelayCommand]
-	private async Task DeletePerson(UPPersonDto p) {
-		_ = await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Personz, p);
+	private async Task DeletePerson(UPPersonViewModel p) {
+		_ = await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Personz, p.Adapt<UPPersonDto>());
 		OnPropertyChanged(nameof(HasPersons));
 	}
 	#endregion
@@ -169,7 +168,7 @@ public partial class ViewModel: ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnAddBusiness() {
 		_ = await UPAdditionalDataRepo.Instance.Biz.Create(new UPBusinessDto() {
-			ProfileId = UserProfile?.id
+			ProfileId = UserProfile?.Id
 		});
 		OnPropertyChanged(nameof(HasBusiness));
 	}
@@ -190,7 +189,7 @@ public partial class ViewModel: ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnAddAddress() {
 		_ = await UPAdditionalDataRepo.Instance.Addrez.Create(new UPAddressDto() {
-			ProfileId = UserProfile?.id
+			ProfileId = UserProfile?.Id
 		});
 		OnPropertyChanged(nameof(HasAddresses));
 	}
@@ -215,10 +214,16 @@ public partial class ViewModel: ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task OnAddLogin() {
+
+		if(logins.Any(x => x.Id == 0)) {
+			Toaster.Error("Please complete the avialable login form");
+			return;
+		}
+
 		var login = new UPLoginDto() {
-			ProfileId = UserProfile?.id
+			ProfileId = UserProfile?.Id
 		};
-		_ = await UPAdditionalDataRepo.Instance.Loginz.Create(login);
+		_ = await UPAdditionalDataRepo.Instance.Loginz.Initialize(login);
 		OnPropertyChanged(nameof(HasLogins));
 	}
 
@@ -232,8 +237,12 @@ public partial class ViewModel: ViewModelObjectBase {
 	}
 
 	[RelayCommand]
-	private async Task OnDeleteLogin(UPLoginDto p) {
-		_ = await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Loginz, p);
+	private async Task OnDeleteLogin(UPLoginViewModel p) {
+
+		_ = p.Id == 0 
+			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Loginz, p.Adapt<UPLoginDto>())
+			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Loginz, p.Adapt<UPLoginDto>());
+
 		OnPropertyChanged(nameof(HasLogins));
 	}
 	#endregion
