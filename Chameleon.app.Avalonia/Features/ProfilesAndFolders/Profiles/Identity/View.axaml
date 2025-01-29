@@ -108,7 +108,8 @@
 					Content="Save"
 					Classes="accent"
 					Theme="{StaticResource AccentSymbleIconButton}"
-					Command="{Binding SaveChangesCommand}"/>
+					Command="{Binding AsyncCfromVCommand}"
+					CommandParameter="SaveChanges"/>
 			</StackPanel>
 		</Grid>
 
@@ -365,7 +366,7 @@
 
 												<afv:HeaderdInputFieldsControl Title="Email"
 																			   Text="{Binding Email, FallbackValue=Email}" />
-												
+
 												<afv:HeaderdInputFieldsControl Title="UserName"
 																			   Text="{Binding UserName, FallbackValue=UserName}" />
 
