@@ -86,6 +86,7 @@ public partial class ViewModel: ViewModelObjectBase {
 		AsyncCommandMap["AddBusiness"] = OnAddBusiness;
 		AsyncCommandMap["AddAddress"] = OnAddAddress;
 		AsyncCommandMap["AddLogin"] = OnAddLogin;
+		AsyncCommandMap["SaveChanges"] = SaveChanges;
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
@@ -108,7 +109,6 @@ public partial class ViewModel: ViewModelObjectBase {
 		await UPAdditionalDataRepo.Instance.LoadReload(true);
 	}
 
-	[RelayCommand]
 	private async Task SaveChanges() {
 
 		IsSaving = true;
@@ -126,7 +126,7 @@ public partial class ViewModel: ViewModelObjectBase {
 			//UserProfile userProfile = _mapper.Map<UserProfile>(UserProfileModel);
 
 			//await Task.Run(() => _userProfileService.Save(userProfile));
-			var res = await UserProfilesRepo.Instance.Put(UserProfile!);
+			var res = await UserProfilesRepo.Instance.Put(UserProfile.Adapt<UserProfileDto>());
 			if (res != null) {
 				UserProfile = res.Adapt<UserProfileViewModel>();
 				ProfileVM = new ObsProfile(UserProfile.Adapt<UserProfileDto>(), false);
