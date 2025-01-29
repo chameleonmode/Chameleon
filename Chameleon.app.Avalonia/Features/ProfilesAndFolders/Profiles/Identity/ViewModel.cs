@@ -15,9 +15,9 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity;
-public partial class ViewModel: ViewModelObjectBase {
+public partial class ViewModel : ViewModelObjectBase {
 	private readonly BehaviorSubject<Func<UP, bool>> filter;
-	private readonly BehaviorSubject<Func<ObsAddressDto, bool>> adrezfilter;
+	private readonly BehaviorSubject<Func<ObsAddressViewModel, bool>> adrezfilter;
 
 	[ObservableProperty]
 	private bool isSaving;
@@ -26,14 +26,14 @@ public partial class ViewModel: ViewModelObjectBase {
 	[ObservableProperty]
 	private UserProfileViewModel? userProfile;
 
-	private readonly ReadOnlyObservableCollection<ObsAddressDto> addresses;
-	private readonly ReadOnlyObservableCollection<UPBusinessDto> businesses;
+	private readonly ReadOnlyObservableCollection<ObsAddressViewModel> addresses;
+	private readonly ReadOnlyObservableCollection<UPBusinessViewModel> businesses;
 	private readonly ReadOnlyObservableCollection<UPLoginViewModel> logins;
 	private readonly ReadOnlyObservableCollection<UPPersonViewModel> persons;
 
-	public ReadOnlyObservableCollection<ObsAddressDto> Addresses => addresses;
+	public ReadOnlyObservableCollection<ObsAddressViewModel> Addresses => addresses;
 	public bool HasAddresses => Addresses?.Count > 0;
-	public ReadOnlyObservableCollection<UPBusinessDto> Businesses => businesses;
+	public ReadOnlyObservableCollection<UPBusinessViewModel> Businesses => businesses;
 	public bool HasBusiness => Businesses?.Count > 0;
 	public ReadOnlyObservableCollection<UPLoginViewModel> Logins => logins;
 	public bool HasLogins => Logins?.Count > 0;
@@ -41,11 +41,11 @@ public partial class ViewModel: ViewModelObjectBase {
 	public bool HasPersons => Persons?.Count > 0;
 
 	public Func<UP, bool> FilterPredicate => p => p.ProfileId == UserProfile?.Id;
-	public Func<ObsAddressDto, bool> AdrezFilterPredicate => p => p.Dto?.ProfileId == UserProfile?.Id;
+	public Func<ObsAddressViewModel, bool> AdrezFilterPredicate => p => p.Dto?.ProfileId == UserProfile?.Id;
 
 	public ViewModel() {
 		filter = new BehaviorSubject<Func<UP, bool>>(FilterPredicate);
-		adrezfilter = new BehaviorSubject<Func<ObsAddressDto, bool>>(AdrezFilterPredicate);
+		adrezfilter = new BehaviorSubject<Func<ObsAddressViewModel, bool>>(AdrezFilterPredicate);
 
 		_ = UPAdditionalDataRepo.Instance.Personz
 			.Connect()
@@ -68,6 +68,7 @@ public partial class ViewModel: ViewModelObjectBase {
 		_ = UPAdditionalDataRepo.Instance.Biz
 			.Connect()
 			.Filter(filter)
+			.Transform(x => x.Adapt<UPBusinessViewModel>())
 			.Bind(out businesses)
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasBusiness));
@@ -75,7 +76,7 @@ public partial class ViewModel: ViewModelObjectBase {
 		//
 		_ = UPAdditionalDataRepo.Instance.Addrez
 			.Connect()
-			.Transform(a => new ObsAddressDto(a))
+			.Transform(a => new ObsAddressViewModel(a.Adapt<UPAddressViewModel>()))
 			.Filter(adrezfilter)
 			.Bind(out addresses)
 			.Subscribe((i) => {
@@ -122,10 +123,11 @@ public partial class ViewModel: ViewModelObjectBase {
 			//
 			Businesses.ForEach(async l => await OnSaveBusiness(l));
 
-			//TODO: check valid for saving only valid data (postoped / agreed)
-			//UserProfile userProfile = _mapper.Map<UserProfile>(UserProfileModel);
+			if (UserProfile?.Validator?.IsValid == false) {
+				Toaster.Error("User profile has validation errors");
+				return;
+			}
 
-			//await Task.Run(() => _userProfileService.Save(userProfile));
 			var res = await UserProfilesRepo.Instance.Put(UserProfile.Adapt<UserProfileDto>());
 			if (res != null) {
 				UserProfile = res.Adapt<UserProfileViewModel>();
@@ -145,7 +147,13 @@ public partial class ViewModel: ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task AddPerson() {
-		_ = await UPAdditionalDataRepo.Instance.Personz.Create(new UPPersonDto() {
+
+		if (persons.Any(x => x.Id == 0)) {
+			Toaster.Error("Please complete the avialable person form");
+			return;
+		}
+
+		_ = await UPAdditionalDataRepo.Instance.Personz.Initialize(new UPPersonDto() {
 			ProfileId = UserProfile?.Id
 		});
 		OnPropertyChanged(nameof(HasPersons));
@@ -153,12 +161,20 @@ public partial class ViewModel: ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task OnSavePerson(UPPersonViewModel p) {
+
+		if (p.Validator?.IsValid == false) {
+			Toaster.Error("Person form is not valid");
+			return;
+		}
+
 		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Personz, p.Adapt<UPPersonDto>());
 	}
 
 	[RelayCommand]
 	private async Task DeletePerson(UPPersonViewModel p) {
-		_ = await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Personz, p.Adapt<UPPersonDto>());
+		_ = p.Id == 0
+			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Personz, p.Adapt<UPPersonDto>())
+			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Personz, p.Adapt<UPPersonDto>());
 		OnPropertyChanged(nameof(HasPersons));
 	}
 	#endregion
@@ -167,20 +183,32 @@ public partial class ViewModel: ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task OnAddBusiness() {
-		_ = await UPAdditionalDataRepo.Instance.Biz.Create(new UPBusinessDto() {
+		if (businesses.Any(x => x.Id == 0)) {
+			Toaster.Error("Please complete the avialable business form");
+			return;
+		}
+		_ = await UPAdditionalDataRepo.Instance.Biz.Initialize(new UPBusinessDto() {
 			ProfileId = UserProfile?.Id
 		});
 		OnPropertyChanged(nameof(HasBusiness));
 	}
 
 	[RelayCommand]
-	private async Task OnSaveBusiness(UPBusinessDto p) {
-		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Biz, p);
+	private async Task OnSaveBusiness(UPBusinessViewModel p) {
+
+		if (p.Validator?.IsValid == false) {
+			Toaster.Error("Business form is not valid");
+			return;
+		}
+
+		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Biz, p.Adapt<UPBusinessDto>());
 	}
 
 	[RelayCommand]
-	private async Task DeleteBusiness(UPBusinessDto p) {
-		_ = await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Biz, p);
+	private async Task DeleteBusiness(UPBusinessViewModel p) {
+		_ = p.Id == 0
+			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Biz, p.Adapt<UPBusinessDto>())
+			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Biz, p.Adapt<UPBusinessDto>());
 		OnPropertyChanged(nameof(HasBusiness));
 	}
 	#endregion
@@ -188,6 +216,12 @@ public partial class ViewModel: ViewModelObjectBase {
 	#region Addresses
 	[RelayCommand]
 	private async Task OnAddAddress() {
+
+		if (addresses.Any(x => x.Id == 0)) {
+			Toaster.Error("Please complete the avialable address form");
+			return;
+		}
+
 		_ = await UPAdditionalDataRepo.Instance.Addrez.Create(new UPAddressDto() {
 			ProfileId = UserProfile?.Id
 		});
@@ -195,16 +229,24 @@ public partial class ViewModel: ViewModelObjectBase {
 	}
 
 	[RelayCommand]
-	private async Task OnSaveAddress(ObsAddressDto p) {
+	private async Task OnSaveAddress(ObsAddressViewModel p) {
+
+		if (p.Validator?.IsValid == false) {
+			Toaster.Error("Address form is not valid");
+			return;
+		}
+
 		if (p.Dto != null) {
-			_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.Dto);
+			_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.Dto.Adapt<UPAddressDto>());
 		}
 	}
 
 	[RelayCommand]
-	private async Task OnDeleteAddress(ObsAddressDto p) {
+	private async Task OnDeleteAddress(ObsAddressViewModel p) {
 		if (p.Dto != null) {
-			_ = await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Addrez, p.Dto);
+			_ = p.Dto.Id == 0
+				? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Addrez, p.Dto.Adapt<UPAddressDto>())
+				: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Addrez, p.Dto.Adapt<UPAddressDto>());
 			OnPropertyChanged(nameof(HasAddresses));
 		}
 	}
@@ -215,7 +257,7 @@ public partial class ViewModel: ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnAddLogin() {
 
-		if(logins.Any(x => x.Id == 0)) {
+		if (logins.Any(x => x.Id == 0)) {
 			Toaster.Error("Please complete the avialable login form");
 			return;
 		}
@@ -229,7 +271,7 @@ public partial class ViewModel: ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task OnSaveLogin(UPLoginViewModel p) {
-		if(!p.Validator!.IsValid) {
+		if (p.Validator?.IsValid == false) {
 			Toaster.Error("Login form is not valid");
 			return;
 		}
@@ -239,7 +281,7 @@ public partial class ViewModel: ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnDeleteLogin(UPLoginViewModel p) {
 
-		_ = p.Id == 0 
+		_ = p.Id == 0
 			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Loginz, p.Adapt<UPLoginDto>())
 			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Loginz, p.Adapt<UPLoginDto>());
 
