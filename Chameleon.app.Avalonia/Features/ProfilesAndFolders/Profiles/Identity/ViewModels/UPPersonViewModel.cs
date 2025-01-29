@@ -12,6 +12,9 @@ public partial class UPPersonViewModel: ObservableObjectBase {
 	public int? profileId;
 
 	[ObservableProperty]
+	public string? title;
+
+	[ObservableProperty]
 	private string? firstName;
 
 	[ObservableProperty]

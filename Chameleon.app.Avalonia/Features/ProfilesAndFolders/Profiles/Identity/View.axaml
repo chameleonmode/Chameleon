@@ -237,8 +237,8 @@
 									<DataTemplate>
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
-												<afv:HeaderdInputFieldsControl Title="title"
-																			   Text="{Binding title, FallbackValue=Title}" />
+												<afv:HeaderdInputFieldsControl Title="Title"
+																			   Text="{Binding Title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="Company Name"
 																			   Text="{Binding CompanyName, FallbackValue=CompanyName}" />
@@ -291,7 +291,7 @@
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																			   Text="{Binding Dto.title, FallbackValue=Title}" />
+																			   Text="{Binding Dto.Title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="AddressLine1"
 																			   Text="{Binding Dto.AddressLine1, FallbackValue=AddressLine1}" />
