@@ -1,4 +1,5 @@
-﻿using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
+﻿using Chameleon.app.Avalonia.Extensions;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common;
@@ -30,6 +31,7 @@ public partial class ViewModel : ViewModelObjectBase {
 	private readonly ReadOnlyObservableCollection<UPBusinessViewModel> businesses;
 	private readonly ReadOnlyObservableCollection<UPLoginViewModel> logins;
 	private readonly ReadOnlyObservableCollection<UPPersonViewModel> persons;
+	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
 
 	public ReadOnlyObservableCollection<ObsAddressViewModel> Addresses => addresses;
 	public bool HasAddresses => Addresses?.Count > 0;
@@ -98,6 +100,8 @@ public partial class ViewModel : ViewModelObjectBase {
 
 		if (param is UserProfileDto up) {
 			UserProfile = up.Adapt<UserProfileViewModel>();
+			UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString())
+											   .ToStringAsync();
 			ProfileVM = new ObsProfile(up, false);
 			filter.OnNext(FilterPredicate);
 			adrezfilter.OnNext(AdrezFilterPredicate);
@@ -130,7 +134,11 @@ public partial class ViewModel : ViewModelObjectBase {
 
 			var res = await UserProfilesRepo.Instance.Put(UserProfile.Adapt<UserProfileDto>());
 			if (res != null) {
+
+				await tagsRepo.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList());
+
 				UserProfile = res.Adapt<UserProfileViewModel>();
+				UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync();
 				ProfileVM = new ObsProfile(UserProfile.Adapt<UserProfileDto>(), false);
 				Toaster.Success($"Update was successful.");
 			}

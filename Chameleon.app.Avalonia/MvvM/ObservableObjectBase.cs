@@ -12,6 +12,9 @@ public abstract partial class ObservableObjectBase : ObservableObject,IAmaViewMo
 	private string? title;
 
 	[ObservableProperty]
+	private string? tags;
+
+	[ObservableProperty]
 	private bool loaded;
 
 	private long _isBusy;

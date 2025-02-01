@@ -142,6 +142,8 @@
 
 						<afv:HeaderdInputFieldsControl Title="NOTES"
 													   Text="{Binding UserProfile.Notes, FallbackValue=Notes}" />
+						<afv:HeaderdInputFieldsControl Title="TAGS"
+													   Text="{Binding UserProfile.Tags, FallbackValue=reddit-account}" />
 					</StackPanel>
 				</TabItem.Content>
 			</TabItem>
