@@ -18,6 +18,8 @@ using Chameleon.lib.Abs.Platformatic;
 using System.Threading.Tasks;
 using Chameleon.lib.Helpers;
 
+using ProjectsView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View;
+
 namespace Chameleon.app.client.ViewModels;
 
 public partial class MainViewModel : ObservableObjectBase {

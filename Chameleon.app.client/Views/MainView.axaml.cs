@@ -41,7 +41,7 @@ public partial class MainView : UserControl {
 			{
 				NavHeader = "Profiles",
 				IconKey = "ContactIcon",
-				Tag = typeof(Chameleon.app.Avalonia.Views.ProjectsView)
+				Tag = typeof(Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View)
 			}
 		},
 		{
