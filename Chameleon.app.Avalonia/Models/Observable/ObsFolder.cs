@@ -1,5 +1,4 @@
-﻿using Chameleon.app.Avalonia.ViewModels.Controllers;
-using Chameleon.app.Avalonia.Views;
+﻿using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -11,6 +10,7 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using ProjectsView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View;
+using UserProfileFoldersViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.ViewModel;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsFolder : Obs<UPFolderDto> {

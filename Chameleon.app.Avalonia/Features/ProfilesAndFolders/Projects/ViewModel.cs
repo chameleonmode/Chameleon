@@ -1,5 +1,4 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api;
 using Chameleon.lib.Common.Constants;
@@ -7,6 +6,9 @@ using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.CommunityToolkit.MvvM;
+
+using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
+using UserProfileFoldersViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.ViewModel;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
 public partial class ViewModel : ObservableObjectBase {

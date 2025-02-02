@@ -1,6 +1,6 @@
-using Chameleon.app.Avalonia.Controls;
 using Chameleon.Av.Fluent.Common.Pages;
 using UserProfilesUserControl = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.View;
+using FoldersUserControl = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.View;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
 
@@ -19,13 +19,11 @@ public partial class View : ChameleonNavigationPage {
 			foldersUserControl = new FoldersUserControl();
 			FoldersPanel.Content = foldersUserControl;
 		}
-		//_ = UserProfileFoldersViewModel.Instance.InitializeAsync(this);
 
 		if (userProfilesUserControl == null) {
 			await Task.Delay(54);
 			userProfilesUserControl = new UserProfilesUserControl();
 			ProfilesPanel.Content = userProfilesUserControl;
 		}
-		//_ = UserProfilesViewModel.Instance.InitializeAsync(this);
 	}
 }

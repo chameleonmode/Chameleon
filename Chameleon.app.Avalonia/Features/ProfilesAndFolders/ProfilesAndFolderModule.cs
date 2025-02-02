@@ -10,6 +10,9 @@ using MyProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.P
 using ProjectView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View;
 using ProjectViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.ViewModel;
 
+using Foldersiew = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.View;
+using FoldersViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.ViewModel;
+
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders;
 public class ProfilesAndFolderModule : IBaseModule {
 	public void ConfigureServices(IServiceCollection services) {
@@ -19,6 +22,8 @@ public class ProfilesAndFolderModule : IBaseModule {
 			.AddSingleton<MyProfilesView>()
 			.AddSingleton<MyProfilesViewModel>()
 			.AddSingleton<ProjectView>()
-			.AddSingleton<ProjectViewModel>();
+			.AddSingleton<ProjectViewModel>()
+			.AddSingleton<Foldersiew>()
+			.AddSingleton<FoldersViewModel>();
 	}
 }
