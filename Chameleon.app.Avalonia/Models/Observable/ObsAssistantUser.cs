@@ -95,7 +95,6 @@ public partial class ObsAssisFolder(
 /// </summary>
 /// <param name="dto"></param>
 public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
-	readonly PlatformaticDB platformaticDB = PlatformaticDB.Instance;
 	// 
 	private readonly PlaywrightCookiesSyncService _playwrightCookiesRepo = PlaywrightCookiesSyncService.Instance;
 
@@ -127,6 +126,7 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 			onSendCookies: async (op, bt) => {
 				var cookies = await PlaywrightUtil.GetCookies(op.Dto!.ProfileId.ToString()!, bt);
 				if (cookies.Count > 0) {
+					var platformaticDB = PlatformaticDB.Instance;
 					var email = Dto!.id == Auther.AuthSession?.UserId
 					? platformaticDB.DBusers?.SingleOrDefault(u => u.licenseKey != null)?.email
 					: Dto!.EmailAddress;
