@@ -125,16 +125,10 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 				_ = Profilez.Remove(op);
 			},
 			onSendCookies: async (op, bt) => {
-				//var (user, dtoId) = EnsureDtos(
-				//	Dto!.id == Auther.AuthSession?.UserId && Auther.AuthSession?.CreatorUserId != null
-				//		? Auther.AuthSession.CreatorUserId
-				//		: Dto?.id,
-				//	op.Dto?.ProfileId
-				//);
-				var cookies = await PlaywrightUtil.GetCookies("25541", Enums.SystemBrowserType.Chrome);
+				var cookies = await PlaywrightUtil.GetCookies(op.Dto!.ProfileId.ToString()!, bt);
 				if (cookies.Count > 0) {
 					var email = Dto!.id == Auther.AuthSession?.UserId
-					? platformaticDB.DBusers.SingleOrDefault(u => u.licenseKey != null)?.email
+					? platformaticDB.DBusers?.SingleOrDefault(u => u.licenseKey != null)?.email
 					: Dto!.EmailAddress;
 					var data = await platformaticDB.SendCookies(email!, op.Dto!.ProfileId.ToString(), cookies);
 					if (data != null) {
