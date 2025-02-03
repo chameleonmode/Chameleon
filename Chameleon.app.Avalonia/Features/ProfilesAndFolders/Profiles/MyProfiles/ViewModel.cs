@@ -152,13 +152,6 @@ public partial class ViewModel : ViewModelObjectBase {
 		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
 
 		//SetViewModelsFilter();
-
-		if (Folder is not null) {
-			Folder.Tags = await tagsRepo.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
-			Folder.TagsChanged += async (s, e) => {
-				await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
-			};
-		}
 	}
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
@@ -199,8 +192,15 @@ public partial class ViewModel : ViewModelObjectBase {
 		SetViewModelsFilter();
 	}
 
-	public void Open(UPFolderDto? folder) {
-		Folder = folder?.Adapt<UPFolderViewModel>();
+	public async Task OpenAsync(UPFolderDto? folder) {
+
+		if (folder is not null) {
+			Folder = folder.Adapt<UPFolderViewModel>();
+			Folder.Tags = await tagsRepo.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
+			Folder.TagsChanged += async (s, e) => {
+				await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
+			};
+		}
 
 		OnPropertyChanged(nameof(SelectedFolderTitle));
 		UnselectItems();
