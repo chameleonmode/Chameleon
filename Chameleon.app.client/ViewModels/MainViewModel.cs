@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Chameleon.lib.Helpers;
 
 using ProjectsView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View;
+using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
 
 namespace Chameleon.app.client.ViewModels;
 

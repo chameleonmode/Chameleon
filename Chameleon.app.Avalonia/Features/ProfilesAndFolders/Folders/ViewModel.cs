@@ -5,19 +5,15 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
-using DynamicData.Binding;
 using System.Collections.ObjectModel;
-using System.Reactive.Linq;
 using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
 public partial class ViewModel : ViewModelObjectBase {
-
 	[ObservableProperty]
-	private ObsFolder selectedFolder = null!;
+	private ObsFolder selectedFolder;
 
-	public ObsFolder AllProfiles { get; private set; } = null!;
-
+	public ObsFolder AllProfiles { get; }
 	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
 	public ReadOnlyObservableCollection<ObsFolder> Folders => folders;
 
@@ -27,12 +23,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		.Transform(i => new ObsFolder(i))
 		.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
 		.Subscribe();
-
-		_ = this.WhenValueChanged(x => x.Folders)
-			.Where(x => x != null && x.Count > 0)
-			.Subscribe(folders => {
-				SelectedFolder ??= AllProfiles = folders![0];
-			});
+		SelectedFolder = AllProfiles = folders[0];
 
 		AsyncCommandMap["Create"] = Create;
 	}
@@ -55,7 +46,7 @@ public partial class ViewModel : ViewModelObjectBase {
 
 			var pvm = Folders.FirstOrDefault(vm => vm.Dto!.id == p.id);
 			if (pvm != null) {
-				await UserProfilesViewModel.Instance.OpenAsync(p);
+				UserProfilesViewModel.Instance.Open(p);
 			}
 		} else {
 			if (AllProfiles != null && !AllProfiles.Navigated) {
@@ -79,3 +70,4 @@ public partial class ViewModel : ViewModelObjectBase {
 
 	public static ViewModel Instance { get; } = new ViewModel();
 }
+

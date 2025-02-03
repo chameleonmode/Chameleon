@@ -1,6 +1,7 @@
 using Chameleon.Av.Fluent.Common.Pages;
-using UserProfilesUserControl = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.View;
+
 using FoldersUserControl = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.View;
+using UserProfilesUserControl = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.View;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
 

@@ -21,6 +21,8 @@ using Chameleon.app.Avalonia.Helpers;
 using Chameleon.app.Avalonia.MvvM;
 using Chameleon.lib.Helpers;
 
+using ProjectsView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View;
+
 namespace Chameleon.app.client.Views;
 
 public partial class MainView : UserControl {
@@ -41,7 +43,7 @@ public partial class MainView : UserControl {
 			{
 				NavHeader = "Profiles",
 				IconKey = "ContactIcon",
-				Tag = typeof(Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View)
+				Tag = typeof(ProjectsView)
 			}
 		},
 		{

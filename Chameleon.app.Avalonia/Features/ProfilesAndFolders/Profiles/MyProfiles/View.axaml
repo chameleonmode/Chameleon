@@ -2,15 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:local="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:pagnator="using:Chameleon.app.Avalonia.Views"
 			 xmlns:converter="using:Chameleon.Common.ValueConverters"
 			 xmlns:vm="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles"
-			 xmlns:folder="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles"
-			 x:DataType="folder:ViewModel"
+			 x:DataType="vm:ViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.View">
 	<UserControl.Styles>
@@ -139,7 +138,6 @@
 					Header="Sort by:"
 					ItemsSource="{Binding Sorts}"
 					SelectedItem="{Binding SortSelected}" />
-				<afv:HeaderdInputFieldsControl Title="Tags" Text="{Binding Folder.Tags, Mode=TwoWay}" />
 
 				<!--Automation Section in Options container-->
 				<!--Scripts-->

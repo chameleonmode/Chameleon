@@ -3,11 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-             xmlns:appuc="using:Chameleon.app.Avalonia.Controls"
-			 xmlns:vm="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects"
-			 x:DataType="vm:ViewModel"
+			 xmlns:folder="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects"
+			 x:DataType="folder:ViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View">
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">

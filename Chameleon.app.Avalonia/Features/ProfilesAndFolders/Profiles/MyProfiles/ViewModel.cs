@@ -1,38 +1,34 @@
 ﻿using Avalonia.Collections;
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.DynamicData;
-using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.app.Avalonia.Extensions;
 using Chameleon.app.Avalonia.Models;
-using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels;
+using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib.Api.Repos;
+using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
+using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.Playwright.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
-using static Chameleon.lib.Common.Constants.Enums;
 using System.Collections.ObjectModel;
 using System.Reactive.Subjects;
-using Chameleon.lib.Common;
-using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.app.Avalonia.Extensions;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModels;
-using Mapster;
+using static Chameleon.lib.Common.Constants.Enums;
+
 using UserProfileFoldersViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.ViewModel;
-using DynamicData.Binding;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 public partial class ViewModel : ViewModelObjectBase {
-
 	private readonly IPlaywrightScriptRepository _plawrightRepository = IoC.GetService<IPlaywrightScriptRepository>()!;
 	private readonly IPlaywriteService _playwriteService = IoC.GetService<IPlaywriteService>()!;
-	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
 
 	public AvaloniaList<PlaywrightScript> PlaywrightScripts { get; } = [];
 
@@ -57,7 +53,7 @@ public partial class ViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private string searchText = string.Empty;
 	[ObservableProperty]
-	private UPFolderViewModel? folder;
+	private UPFolderDto? folder;
 
 	private CancellationTokenSource? _cts;
 
@@ -79,27 +75,16 @@ public partial class ViewModel : ViewModelObjectBase {
 
 	private IEnumerable<ObsProfile>? GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
 	public int SelectedCount => GetSelectedProfiles?.Count() ?? 0;
-	public int MaxInFolderItems => Folder == null || Folder!.Id == 0
+	public int MaxInFolderItems => Folder == null || Folder!.id == 0
 	? UserProfilesRepo.Instance.ObservableCache.Count
-	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.Id);
-
-	[ObservableProperty]
-	private bool isProfilesExist;
-
-	[ObservableProperty]
-	private bool hasSelectedItems = false;
-
-	[ObservableProperty]
-	private bool hasNoItems;
-
-	[ObservableProperty]
-	private bool hasProfileWithoutFolder;
-
-	[ObservableProperty]
-	private string selectedFolderTitle = "All profiles";
-
+	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.id);
+	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
+	public bool IsProfilesExist => UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
+	public bool HasNoItems => Profiles.Count == 0;
+	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
+	public string SelectedFolderTitle => Folder?.title ?? "All profiles";
 	//
-	public Func<ObsProfile, bool> FilterPredicate => p => Folder == null || Folder.Id == 0 || (Folder != null && Folder.Id != 0 && p.Dto?.folderId == Folder?.Id);
+	public Func<ObsProfile, bool> FilterPredicate => p => Folder == null || Folder.id == 0 || (Folder != null && Folder.id != 0 && p.Dto?.folderId == Folder?.id);
 
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
 	private readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, Consts.PageinationPageItems));
@@ -134,16 +119,7 @@ public partial class ViewModel : ViewModelObjectBase {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
 		TotalCount = PaginatorViewModel.TotalCount;
-
-		_ = this.WhenValueChanged(x => x.Folder)
-			.Subscribe(folder => SelectedFolderTitle = folder?.Title ?? "All profiles");
-		_ = this.WhenValueChanged(x => x.Profiles)
-			.Subscribe(profiles => {
-				HasSelectedItems = Profiles.Any(v => v.IsSelected);
-				HasNoItems = Profiles.Count == 0;
-				HasProfileWithoutFolder = Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
-				IsProfilesExist = UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
-			});
+		//AppMainViewViewModel.Instance.OnBoundProfilesProfileSelectedChanged += OnSelectedChanged;
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
@@ -205,27 +181,23 @@ public partial class ViewModel : ViewModelObjectBase {
 
 		SetViewModelsFilter(false);
 	}
-	partial void OnFolderChanged(UPFolderViewModel? value) {
-		UserProfileFoldersViewModel.Instance.SetSelectedFolder(value.Adapt<UPFolderDto>());
+	partial void OnFolderChanged(UPFolderDto? value) {
+		UserProfileFoldersViewModel.Instance.SetSelectedFolder(value);
 		SearchText = string.Empty;
 		HasFolder = value?.id != default && value?.id != 0;
+		OnPropertyChanged(nameof(SelectedFolderTitle));
 		SetViewModelsFilter();
 	}
 
-	public async Task OpenAsync(UPFolderDto? folder) {
-		if (folder is not null) {
-			Folder = folder.Adapt<UPFolderViewModel>();
-			//Folder.Tags = await tagsRepo.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
-			Folder.Tags = "Tags";
-			Folder.TagsChanged += async (s, e) => {
-				await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
-			};
-		}
+	public void Open(UPFolderDto? folder) {
+		Folder = folder;
+
+		OnPropertyChanged(nameof(SelectedFolderTitle));
 		UnselectItems();
 		SetViewModelsFilter();
 	}
 	public async Task<UserProfileDto?> CreateNewProfile() {
-		var folderId = HasFolder ? Folder?.Id : null;
+		var folderId = HasFolder ? Folder?.id : null;
 
 		var pcount = UserProfilesRepo.Instance.ObservableCache.Items.Count;
 		var pname = $"New Profile - {pcount}";
@@ -263,7 +235,10 @@ public partial class ViewModel : ViewModelObjectBase {
 
 		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
 
+		OnPropertyChanged(nameof(HasNoItems));
 		OnPropertyChanged(nameof(IsProfilesExist));
+		OnPropertyChanged(nameof(HasSelectedItems));
+		OnPropertyChanged(nameof(HasProfileWithoutFolder));
 	}
 
 	[RelayCommand]
@@ -311,7 +286,7 @@ public partial class ViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task RemoveProfilesFromFolder() {
-		if (Folder?.Id == 0 ||
+		if (Folder?.id == 0 ||
 				GetSelectedProfiles == null ||
 				!GetSelectedProfiles.Any()) {
 			return;
@@ -330,7 +305,7 @@ public partial class ViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task AddProfilesToFolder() {
-		if (Folder == null || Folder.Id == 0)
+		if (Folder == null || Folder.id == 0)
 			return;
 
 		var addvm = new AddUserProfilesPupViewModel {
@@ -339,7 +314,7 @@ public partial class ViewModel : ViewModelObjectBase {
 
 		if (await Mbox.ShowTaskDialog<AddUserProfilesPupViewModel, AddUserProfilesPopupUserControl>(() => addvm,
 			header: addvm.Title,
-			subHeader: $"Select profiles you want to add to {Folder!.Title} folder:",
+			subHeader: $"Select profiles you want to add to {Folder!.title} folder:",
 			symbas: Enums.Symbas.Folder,
 			btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK) {
 			var ids = addvm.SelectedProfiles?
@@ -348,7 +323,7 @@ public partial class ViewModel : ViewModelObjectBase {
 			if (ids == null || ids.Count == 0) {
 				return;
 			}
-			var res = await UserProfilesRepo.MoveUserProfileToFolder(ids, Folder!.Id);
+			var res = await UserProfilesRepo.MoveUserProfileToFolder(ids, Folder!.id);
 			if (!res.success) {
 			}
 		}

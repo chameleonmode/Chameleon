@@ -7,8 +7,8 @@ using Chameleon.lib.Common.Util;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
-using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
 using UserProfileFoldersViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.ViewModel;
+using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
 public partial class ViewModel : ViewModelObjectBase {
@@ -17,10 +17,9 @@ public partial class ViewModel : ViewModelObjectBase {
 
 	public bool IsCreateProfileBtnVisible => Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CanCreateProfiles == true;
 
-	public ViewModel() {
-		Title = "Profiles & Folders";
+	public ViewModel()
+		: base("Profiles & Folders") {
 	}
-
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
 		if (param is ObsFolder folder) {

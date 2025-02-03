@@ -4,14 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using IdentityView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.View;
 using IdentityViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModel;
 
-using MyProfilesView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.View;
-using MyProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
-
 using ProjectView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View;
 using ProjectViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.ViewModel;
-
-using Foldersiew = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.View;
-using FoldersViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.ViewModel;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders;
 public class ProfilesAndFolderModule : IBaseModule {
@@ -19,11 +13,7 @@ public class ProfilesAndFolderModule : IBaseModule {
 		_ = services
 			.AddSingleton<IdentityView>()
 			.AddSingleton<IdentityViewModel>()
-			.AddSingleton<MyProfilesView>()
-			.AddSingleton<MyProfilesViewModel>()
 			.AddSingleton<ProjectView>()
-			.AddSingleton<ProjectViewModel>()
-			.AddSingleton<Foldersiew>()
-			.AddSingleton<FoldersViewModel>();
+			.AddSingleton<ProjectViewModel>();
 	}
 }
