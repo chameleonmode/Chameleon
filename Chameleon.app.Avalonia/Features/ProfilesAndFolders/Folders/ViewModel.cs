@@ -5,17 +5,19 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
+using DynamicData.Binding;
 using System.Collections.ObjectModel;
-
+using System.Reactive.Linq;
 using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
-public partial class ViewModel : ObservableObjectBase {
+public partial class ViewModel : ViewModelObjectBase {
 
 	[ObservableProperty]
-	private ObsFolder selectedFolder;
+	private ObsFolder selectedFolder = null!;
 
-	public ObsFolder AllProfiles { get; }
+	public ObsFolder AllProfiles { get; private set; } = null!;
+
 	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
 	public ReadOnlyObservableCollection<ObsFolder> Folders => folders;
 
@@ -25,7 +27,12 @@ public partial class ViewModel : ObservableObjectBase {
 		.Transform(i => new ObsFolder(i))
 		.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
 		.Subscribe();
-		SelectedFolder = AllProfiles = folders[0];
+
+		_ = this.WhenValueChanged(x => x.Folders)
+			.Where(x => x != null && x.Count > 0)
+			.Subscribe(folders => {
+				SelectedFolder ??= AllProfiles = folders![0];
+			});
 
 		AsyncCommandMap["Create"] = Create;
 	}

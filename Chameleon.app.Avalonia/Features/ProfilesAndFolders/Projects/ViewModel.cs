@@ -11,7 +11,7 @@ using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders
 using UserProfileFoldersViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.ViewModel;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
-public partial class ViewModel : ObservableObjectBase {
+public partial class ViewModel : ViewModelObjectBase {
 	public UserProfilesViewModel Profiles { get; } = UserProfilesViewModel.Instance;
 	public UserProfileFoldersViewModel Folders { get; } = UserProfileFoldersViewModel.Instance;
 
@@ -21,14 +21,8 @@ public partial class ViewModel : ObservableObjectBase {
 		Title = "Profiles & Folders";
 	}
 
-	public override async Task InitAsync(object? param) {
-		await base.InitAsync(param);
-	}
-
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
-		if (!Loaded) {
-		}
 		if (param is ObsFolder folder) {
 			if (!folder.Navigated || Folders.SelectedFolder?.Dto?.id == folder.Dto?.id) {
 				await Folders.OnNavigatingTo(folder.Dto);
