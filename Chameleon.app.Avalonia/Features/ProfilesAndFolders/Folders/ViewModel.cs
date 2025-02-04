@@ -46,7 +46,7 @@ public partial class ViewModel : ViewModelObjectBase {
 
 			var pvm = Folders.FirstOrDefault(vm => vm.Dto!.id == p.id);
 			if (pvm != null) {
-				UserProfilesViewModel.Instance.Open(p);
+				await UserProfilesViewModel.Instance.OpenAsync(p);
 			}
 		} else {
 			if (AllProfiles != null && !AllProfiles.Navigated) {

@@ -2,6 +2,7 @@
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.app.Avalonia.Extensions;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModels;
 using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels;
@@ -21,7 +22,10 @@ using Chameleon.lib.Playwright.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
+using DynamicData.Binding;
+using Mapster;
 using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using static Chameleon.lib.Common.Constants.Enums;
 
@@ -31,6 +35,7 @@ namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles
 public partial class ViewModel : ViewModelObjectBase {
 	private readonly IPlaywrightScriptRepository _plawrightRepository = IoC.GetService<IPlaywrightScriptRepository>()!;
 	private readonly IPlaywriteService _playwriteService = IoC.GetService<IPlaywriteService>()!;
+	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
 
 	public AvaloniaList<PlaywrightScript> PlaywrightScripts { get; } = [];
 
@@ -55,7 +60,7 @@ public partial class ViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private string searchText = string.Empty;
 	[ObservableProperty]
-	private UPFolderDto? folder;
+	private UPFolderViewModel? folder;
 
 	private CancellationTokenSource? _cts;
 
@@ -77,16 +82,16 @@ public partial class ViewModel : ViewModelObjectBase {
 
 	private IEnumerable<ObsProfile>? GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
 	public int SelectedCount => GetSelectedProfiles?.Count() ?? 0;
-	public int MaxInFolderItems => Folder == null || Folder!.id == 0
+	public int MaxInFolderItems => Folder == null || Folder!.Id == 0
 	? UserProfilesRepo.Instance.ObservableCache.Count
-	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.id);
+	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.Id);
 	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
 	public bool IsProfilesExist => UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
 	public bool HasNoItems => Profiles.Count == 0;
 	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
-	public string SelectedFolderTitle => Folder?.title ?? "All profiles";
+	public string SelectedFolderTitle => Folder?.Title ?? "All profiles";
 	//
-	public Func<ObsProfile, bool> FilterPredicate => p => Folder == null || Folder.id == 0 || (Folder != null && Folder.id != 0 && p.Dto?.folderId == Folder?.id);
+	public Func<ObsProfile, bool> FilterPredicate => p => Folder == null || Folder.Id == 0 || (Folder != null && Folder.Id != 0 && p.Dto?.folderId == Folder?.Id);
 
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
 	private readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, Consts.PageinationPageItems));
@@ -122,6 +127,13 @@ public partial class ViewModel : ViewModelObjectBase {
 		};
 		TotalCount = PaginatorViewModel.TotalCount;
 		//AppMainViewViewModel.Instance.OnBoundProfilesProfileSelectedChanged += OnSelectedChanged;
+
+		_ = this.WhenValueChanged(x => x.Folder!.Tags)
+			.Throttle(TimeSpan.FromSeconds(1))
+			.Where(_ => Folder is not null)
+			.Subscribe(async tags => {
+				await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), tags.ToTagsList());
+			});
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
@@ -183,23 +195,23 @@ public partial class ViewModel : ViewModelObjectBase {
 
 		SetViewModelsFilter(false);
 	}
-	partial void OnFolderChanged(UPFolderDto? value) {
-		UserProfileFoldersViewModel.Instance.SetSelectedFolder(value);
+	partial void OnFolderChanged(UPFolderViewModel? value) {
+		UserProfileFoldersViewModel.Instance.SetSelectedFolder(value.Adapt<UPFolderDto>());
 		SearchText = string.Empty;
 		HasFolder = value?.id != default && value?.id != 0;
 		OnPropertyChanged(nameof(SelectedFolderTitle));
 		SetViewModelsFilter();
 	}
 
-	public void Open(UPFolderDto? folder) {
-		Folder = folder;
-
+	public async Task OpenAsync(UPFolderDto? folder) {
+		Folder = folder.Adapt<UPFolderViewModel>();
+		Folder.Tags = await tagsRepo.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
 		OnPropertyChanged(nameof(SelectedFolderTitle));
 		UnselectItems();
 		SetViewModelsFilter();
 	}
 	public async Task<UserProfileDto?> CreateNewProfile() {
-		var folderId = HasFolder ? Folder?.id : null;
+		var folderId = HasFolder ? Folder?.Id : null;
 
 		var pcount = UserProfilesRepo.Instance.ObservableCache.Items.Count;
 		var pname = $"New Profile - {pcount}";
@@ -359,11 +371,7 @@ public partial class ViewModel : ViewModelObjectBase {
 				.Select(a => a.Dto!.id)
 				.ToList();
 
-			var res = await UserProfilesRepo.MoveUserProfileToFolder(ids, addvm.SelectedFolder.Dto!.id);
-			if (!res.success) {
-				//Filter = p => p.FolderId == _folder?.id;
-				//OnHandleUserEvent();
-			}
+			await UserProfilesRepo.MoveUserProfileToFolder(ids, addvm.SelectedFolder.Dto!.id);
 		}
 
 		SetViewModelsFilter();

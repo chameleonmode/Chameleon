@@ -130,7 +130,7 @@
 						Theme="{StaticResource SvgIconTextButton}"
 						Command="{Binding AddProfilesToFolderCommand}" />
 				</StackPanel>
-
+				<afv:HeaderdInputFieldsControl Title="Tags" Text="{Binding Folder.Tags, FallbackValue=reddit-account}" />
 				<ui:FAComboBox
 					Width="200"
 					IsEditable="False"
