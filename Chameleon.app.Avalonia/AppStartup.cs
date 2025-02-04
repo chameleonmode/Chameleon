@@ -8,9 +8,12 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
+using Chameleon.lib.Const;
 using Chameleon.lib.Helpers;
 
 using FluentAvalonia.UI.Windowing;
+
+using static Chameleon.lib.Common.Constants.Consts;
 
 namespace Chameleon.app.Avalonia;
 public class AppStartup {
@@ -21,7 +24,9 @@ public class AppStartup {
 			_ = await Mbox.ShowErrorAsync("Error Logging In", "There was an error validationg the login information that was provided.");
 			Environment.Exit(0);
 		} else {
-			await IOtil.DC(Consts.AppTempDir);
+			IOtil.DeleteDExists(Addons.AddonExtentionDir);
+			IOtil.DeleteDExists(Addons.CachedExtentionDir);
+			_ = FilePaths.EnsureDirectoryExists(FilePaths.AppTempDir);
 			await LoadSink();
 			OnLoginSuccess?.Invoke();
 		}

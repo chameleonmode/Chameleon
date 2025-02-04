@@ -9,6 +9,7 @@ using Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib;
+using Chameleon.lib.Const;
 
 namespace Chameleon.app.Avalonia.Services;
 public class MboxService(IDispatchService dispatcher) : IMboxService {
@@ -42,7 +43,7 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 
 			initialize?.Invoke(viewModel);
 
-			var title = viewModel is ViewModelObjectBase pvm ? pvm.Title : Consts.AppName;
+			var title = viewModel is ViewModelObjectBase pvm ? pvm.Title : Variables.AppName;
 
 			var btns = Enums.MBoxButtons.OkCancel;
 
@@ -67,7 +68,7 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 		throw new ArgumentNullException("TView");
 	}
 
-	public async Task<Enums.TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Consts.AppName, object? footer = null, Enums.Symbas symbas = Enums.Symbas.Alert, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo)
+	public async Task<Enums.TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Variables.AppName, object? footer = null, Enums.Symbas symbas = Enums.Symbas.Alert, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo)
 	{
 		while(AppLayers.GetMainWindow() is null) {
 			await Task.Delay(250);

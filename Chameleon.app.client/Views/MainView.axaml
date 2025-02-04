@@ -201,7 +201,24 @@
                            IsSettingsVisible="False"
                            IsBackEnabled="{Binding #FrameView.CanGoBack}"
 						   Classes="MainAppNav">
-			<ui:Frame Name="FrameView" />
+			<Panel>
+				<ui:Frame Name="FrameView" />
+				<ui:InfoBar
+					Severity="Informational"
+					IsClosable="False"
+					VerticalAlignment="Top"
+					Margin="12"
+					Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+					Title="{Binding InfoBarTitle}"
+					Message="{Binding InfoBarMessage}"
+					IsOpen="{Binding InfoBarOpen}">
+					<ui:InfoBar.ActionButton>
+						<Button Content="Download"
+								HorizontalAlignment="Right"
+								Command="{Binding DownloadLatestCommand}"/>
+					</ui:InfoBar.ActionButton>
+				</ui:InfoBar>
+			</Panel>
 		</ui:NavigationView>
 
 		<local:SplashScreenUC  

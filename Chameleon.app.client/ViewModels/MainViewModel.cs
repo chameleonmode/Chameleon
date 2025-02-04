@@ -13,16 +13,26 @@ using System.Collections.ObjectModel;
 using System;
 using DynamicData;
 using System.Linq;
+using System.Reflection;
+using Chameleon.lib.Abs.Platformatic;
+using System.Threading.Tasks;
+using Chameleon.lib.Helpers;
 
 namespace Chameleon.app.client.ViewModels;
 
 public partial class MainViewModel : ObservableObjectBase {
 	public event Action<ObsProfile>? OnBoundProfilesProfileSelectedChanged;
-	[ObservableProperty]
-	private MainAppSearchItem? selectedSearchTerm;
 
 	[ObservableProperty]
+	private MainAppSearchItem? selectedSearchTerm;
+	[ObservableProperty]
 	private bool isSplashVisible = true;
+	[ObservableProperty]
+	private bool infoBarOpen;
+	[ObservableProperty]
+	private string? infoBarMessage;
+	[ObservableProperty]
+	private string? infoBarTitle;
 
 	public NavigationFactory NavigationFactory { get; } = new NavigationFactory();
 
@@ -32,7 +42,17 @@ public partial class MainViewModel : ObservableObjectBase {
 
 	private MainViewModel()
 	{
-		AppStartup.Instance.OnLoginSuccess += () => { IsSplashVisible = false; };
+		AppStartup.Instance.OnLoginSuccess += async () => { 
+			IsSplashVisible = false;
+
+			var current = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
+			var appClientInfo = await PlatformaticDB.Instance.GetLatestVersion;
+			if (appClientInfo != null && appClientInfo.latest != current) {
+				InfoBarTitle = "New Version Available";
+				InfoBarMessage = $"Download the latest version of Chameleon ({appClientInfo.latest})";
+				InfoBarOpen = true;
+			}
+		};
 		_ = UserProfilesRepo
 			.Connect()
 			.Transform(i => new MainAppSearchItem() {
@@ -80,6 +100,14 @@ public partial class MainViewModel : ObservableObjectBase {
 			ClearSearch();
 		else
 			Navigator.NavigateToType(typeof(ProjectsView), p);
+	}
+
+	[RelayCommand]
+	private async Task DownloadLatest() {
+		InfoBarOpen = false;
+		InfoBarOpen = !await PlatformaticDB.Instance.DownloadLatest(Toaster.Info);
+		if (InfoBarOpen)
+			Toaster.Error("Failed to download latest version");
 	}
 
 	public static MainViewModel Instance { get; } = new();
