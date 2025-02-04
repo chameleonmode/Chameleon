@@ -42,15 +42,20 @@ public partial class MainViewModel : ObservableObjectBase {
 
 	private MainViewModel()
 	{
-		AppStartup.Instance.OnLoginSuccess += async () => { 
+		AppStartup.Instance.OnLoginSuccess += async () => {
 			IsSplashVisible = false;
 
-			var current = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
-			var appClientInfo = await PlatformaticDB.Instance.GetLatestVersion;
-			if (appClientInfo != null && appClientInfo.latest != current) {
-				InfoBarTitle = "New Version Available";
-				InfoBarMessage = $"Download the latest version of Chameleon ({appClientInfo.latest})";
-				InfoBarOpen = true;
+			try {
+				var current = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
+				var appClientInfo = await PlatformaticDB.Instance.GetLatestVersion;
+				if (appClientInfo != null && appClientInfo.latest != current) {
+					InfoBarTitle = "New Version Available";
+					InfoBarMessage = $"Download the latest version of Chameleon ({appClientInfo.latest})";
+					InfoBarOpen = true;
+				}
+
+			} catch (Exception e) {
+				Toaster.Error(e.Message);
 			}
 		};
 		_ = UserProfilesRepo
