@@ -1,12 +1,14 @@
 ﻿using Chameleon.app.Avalonia.Extensions;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;

@@ -56,7 +56,6 @@ public abstract partial class ObservableObjectBase : ObservableObject,IAmaViewMo
 
 	[RelayCommand]
 	public async Task AsyncCfromV(string what) => await AsyncCommandMap[what]();
-	public Task InitializeAsync(object? param) => InvokeInitializeAsyncCommand(param);
 
 	private IObjectValidator? _objectValidator;
 	public IObjectValidator? Validator {

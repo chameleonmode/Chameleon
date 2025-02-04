@@ -9,6 +9,7 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 
 using UserProfileFoldersViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.ViewModel;
 using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
+using Chameleon.lib.Helpers;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
 public partial class ViewModel : ViewModelObjectBase {
