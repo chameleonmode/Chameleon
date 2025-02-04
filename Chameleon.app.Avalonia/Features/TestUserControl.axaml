@@ -2,20 +2,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:appuc="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-             x:Class="Chameleon.app.Avalonia.TestUserControl">
-	<Viewbox Margin="20">
-		<Border  BorderThickness="1" BorderBrush="Black" Padding="{DynamicResource ButtonPadding}" CornerRadius="20">
-			<Grid VerticalAlignment="Center" HorizontalAlignment="Center" ColumnDefinitions="*, Auto" >
-				<Label Margin="5,0" VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="60">T</Label>
-				<StackPanel Grid.Column="1" Orientation="Horizontal">
-					<Border Width="2" Background="Black" Margin="0,-6"></Border>
-					<Button Content="close" ToolTip.Tip="Details" Theme="{StaticResource SvgIconButton}"></Button>
+			 xmlns:controls="using:Chameleon.app.Avalonia.Controls"
+             x:Class="Chameleon.app.Avalonia.TestUserControl" BorderThickness="0" Background="Transparent">
+	<Border Background="#EBEBEB" Padding="5" CornerRadius="5">
+		<ScrollViewer>
+			<StackPanel Spacing="5">
+				<StackPanel>
+					<Label FontSize="16">Profiles</Label>
+					<StackPanel Spacing="3">
+						<controls:UserProfileUserControl Background="White"/>
+						<controls:UserProfileUserControl Background="White"/>
+						<controls:UserProfileUserControl Background="White"/>
+						<controls:UserProfileUserControl Background="White"/>
+					</StackPanel>
 				</StackPanel>
-			</Grid>
-		</Border>
-	</Viewbox>
+				<StackPanel>
+					<Label FontSize="16">Folders</Label>
+					<StackPanel Spacing="3">
+						<controls:FolderUserControl Background="White"/>
+						<controls:FolderUserControl Background="White"/>
+						<controls:FolderUserControl Background="White"/>
+						<controls:FolderUserControl Background="White"/>
+					</StackPanel>
+				</StackPanel>
+			</StackPanel>
+		</ScrollViewer>
+	</Border>
 </UserControl>
