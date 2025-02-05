@@ -51,6 +51,9 @@
     <Compile Update="Controls\MboxTitleUserControl.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
+    <Compile Update="Features\ProfilesAndFolders\Search\ByTags\Controls\TagFolderSearchControl.axaml.cs">
+      <DependentUpon>TagFolderSearchControl.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\PaginatorView.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>

@@ -1,4 +1,10 @@
 ﻿namespace Chameleon.app.Avalonia.Models;
+
+public class SearchType {
+	public const string Default = nameof(Default);
+	public const string Tags = nameof(Tags);
+}
+
 public class MainAppSearchItem {
 	public MainAppSearchItem() { }
 
@@ -15,4 +21,8 @@ public class MainAppSearchItem {
 	public string? Namespace { get; set; }
 
 	public Type? PageType { get; set; }
+
+	public string SearchType { get; set; } = Models.SearchType.Default;
+
+	public object? Value { get; set; } 
 }

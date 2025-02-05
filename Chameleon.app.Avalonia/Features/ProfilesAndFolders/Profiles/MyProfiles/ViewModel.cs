@@ -196,6 +196,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		SetViewModelsFilter(false);
 	}
 	partial void OnFolderChanged(UPFolderViewModel? value) {
+
 		UserProfileFoldersViewModel.Instance.SetSelectedFolder(value.Adapt<UPFolderDto>());
 		SearchText = string.Empty;
 		HasFolder = value?.id != default && value?.id != 0;

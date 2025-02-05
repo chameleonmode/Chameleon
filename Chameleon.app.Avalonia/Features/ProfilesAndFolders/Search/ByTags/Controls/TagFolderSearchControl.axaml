@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:folder="using:Chameleon.app.Avalonia.Features.Search.ByTags.Controls"
+			 x:DataType="folder:TagFolderSearchViewModel"
+             x:Class="Chameleon.app.Avalonia.Features.Search.ByTags.Controls.TagFolderSearchControl">
+	<StackPanel>
+		<Label Content="{Binding Type}" FontSize="16"/>
+		<ItemsControl
+				ItemsSource="{Binding Folders}"
+				ItemTemplate="{StaticResource FoldersListViewTemplate}"/>
+	</StackPanel>
+</UserControl>

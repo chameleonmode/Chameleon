@@ -1,9 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Chameleon.lib.Common.Models.Dto;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Search.ByTags;
-class ViewModel {
+public partial class ViewModel : ObservableObject {
+
+	[ObservableProperty]
+	private ObservableCollection<TagItemDto> items = new();
+
+
 }

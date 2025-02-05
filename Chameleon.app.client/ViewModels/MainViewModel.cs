@@ -20,6 +20,7 @@ using Chameleon.lib.Helpers;
 
 using ProjectsView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View;
 using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
+using DynamicData.PLinq;
 
 namespace Chameleon.app.client.ViewModels;
 
@@ -41,10 +42,12 @@ public partial class MainViewModel : ObservableObjectBase {
 
 	private readonly ReadOnlyObservableCollection<MainAppSearchItem> _boundProfiles;
 	private readonly ReadOnlyObservableCollection<MainAppSearchItem> _boundFolders;
-	public IEnumerable<MainAppSearchItem> SearchTerms => _boundProfiles.Concat(_boundFolders);
+	private readonly ReadOnlyObservableCollection<MainAppSearchItem> _boundTags;
+	public IEnumerable<MainAppSearchItem> SearchTerms => _boundProfiles
+		.Concat(_boundFolders)
+		.Concat(_boundTags);
 
-	private MainViewModel()
-	{
+	private MainViewModel() {
 		AppStartup.Instance.OnLoginSuccess += async () => {
 			IsSplashVisible = false;
 
@@ -82,10 +85,22 @@ public partial class MainViewModel : ObservableObjectBase {
 			})
 			.Bind(out _boundFolders)
 			.Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
+
+		_ = TagsRepo
+			.Connect()
+			.Transform(i => new MainAppSearchItem() {
+				Header = $"#{i.Name}",
+				Namespace = "Tag",
+				ViewModel = i,
+				SearchType = SearchType.Tags,
+				Value = i.Items,
+				PageType = this.GetType()
+			})
+			.Bind(out _boundTags)
+			.Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
 	}
 
-	partial void OnSelectedSearchTermChanged(MainAppSearchItem? oldValue, MainAppSearchItem? newValue)
-	{
+	partial void OnSelectedSearchTermChanged(MainAppSearchItem? oldValue, MainAppSearchItem? newValue) {
 		if (newValue is null) return;
 
 		if (newValue.ViewModel is ViewModelObjectBase nfs)
@@ -95,15 +110,13 @@ public partial class MainViewModel : ObservableObjectBase {
 	}
 
 	[RelayCommand]
-	private void ClearSearch()
-	{
+	private void ClearSearch() {
 		SelectedSearchTerm = null;
 		UserProfilesViewModel.Instance.OnFilterTo();
 	}
 
 	[RelayCommand]
-	private void ClickSearch(string p)
-	{
+	private void ClickSearch(string p) {
 		if (!p.Is())
 			ClearSearch();
 		else
