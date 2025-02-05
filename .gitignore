@@ -452,3 +452,8 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+App/
+Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/Chameleon.pkg
+Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/Chameleon.zip
+Chameleon.Avalonia/src/Chameleon.Avalonia.Desktop/chamelionairbundlepp.provisionprofile

@@ -1,12 +1,28 @@
 #!/bin/bash cbwt-aygq-qiup-udlps
 #Build app
-#dotnet publish -r osx-x64 -c Release -f net8.0 --self-contained true -p:DebugType=None -p:DebugSymbols=false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true 
+#bash macnotorize.sh
+dotnet publish -r osx-x64 -c Release -f net8.0 --self-contained true -p:DebugType=None -p:DebugSymbols=false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true 
 bash pacamac.sh
 codesign --verify --verbose App/Chameleon.app/Contents/MacOS/Chameleon
 ditto -c -k --sequesterRsrc --keepParent App/Chameleon.app App/Chameleon.zip
-#xcrun notarytool submit App/Chameleon.zip --keychain-profile "DEV"
+xcrun notarytool submit App/Chameleon.zip --keychain-profile "DEV"
+#xcrun notarytool info  --keychain-profile "DEV"
+#xcrun notarytool info 1feebdb8-de27-4b94-8574-4d7577ed6279 --keychain-profile "DEV"
+#xcrun notarytool info ab24fee0-a443-4761-8470-b8a472393341 --keychain-profile "DEV"
+#xcrun notarytool info ffe1f4de-a239-49b9-a49c-059413ecc7c2 --keychain-profile "DEV"
+#xcrun notarytool info 72a0dc72-a5c8-4770-b471-94a7e4ab23df --keychain-profile "DEV"
+#xcrun notarytool info d7618f34-3fab-489a-b27c-be16c9d23811 --keychain-profile "DEV"
+#xcrun notarytool info f58e3da0-68b5-44c8-9ed5-1ac0e195d5a5 --keychain-profile "DEV"
+#xcrun notarytool info adf91161-98de-4008-aeb8-3e225758e296 --keychain-profile "DEV"
+#xcrun notarytool info d14aa237-10a3-450b-ae13-f10c0dde6765 --keychain-profile "DEV"
+#xcrun notarytool info 95c40c36-da75-49bf-aab1-3f8ed92cd2e4 --keychain-profile "DEV"
+#xcrun notarytool info 17ca6062-0c47-4c9d-b2ce-eb13fde0f776 --keychain-profile "DEV"
+#xcrun notarytool info 8a3bd96e-85da-4aa0-9518-9bd58bb30879 --keychain-profile "DEV"
+#xcrun notarytool info 6b10746d-2229-4312-907f-0bfa0ada2e75 --keychain-profile "DEV"
+#xcrun notarytool info 489bd9dc-4db7-435a-b205-6b6a9d916ccb --keychain-profile "DEV"
+#7d038fd6-2fa8-4554-a66f-5d66167f16b3
 #2294894b-882d-410c-9dd7-5163a1d0bae8
-#xcrun notarytool info ... --keychain-profile "DEV"
+#xcrun notarytool info 7d038fd6-2fa8-4554-a66f-5d66167f16b3 --keychain-profile "DEV"
 #xcrun notarytool info 2294894b-882d-410c-9dd7-5163a1d0bae8 --keychain-profile "DEV"
 #xcrun notarytool info d7c7cf3d-b84d-4643-b7a0-d9e099be269d --keychain-profile "DEV"
 #xcrun stapler staple App/Chameleon.app
