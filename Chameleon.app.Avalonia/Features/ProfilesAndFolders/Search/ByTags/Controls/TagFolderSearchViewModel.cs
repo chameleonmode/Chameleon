@@ -31,6 +31,6 @@ public partial class TagFolderSearchViewModel : TagsSearchViewModelBase {
 
 		_ = this.WhenValueChanged(x => x.SelectedFolder)
 			.Where(folder => folder is not null)
-		.Subscribe(folder => Navigator.NavigateToType(typeof(ProjectsView), folder));
+			.Subscribe(folder => Navigator.NavigateToType(typeof(ProjectsView), folder));
 	}
 }

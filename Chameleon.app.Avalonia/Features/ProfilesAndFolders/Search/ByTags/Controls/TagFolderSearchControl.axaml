@@ -8,7 +8,7 @@
 			 x:DataType="folder:TagFolderSearchViewModel"
              x:Class="Chameleon.app.Avalonia.Features.Search.ByTags.Controls.TagFolderSearchControl">
 	<StackPanel Margin="0,2">
-		<Label Content="{Binding Type}"/>
+		<Label>Folders</Label>
 		<ListBox ItemsSource="{Binding Folders}" SelectedItem="{Binding SelectedFolder}" >
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
