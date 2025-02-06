@@ -185,7 +185,7 @@
 								<defaultSearch:View />
 							</DataTemplate>
 							<DataTemplate x:Key="Tags">
-								<tagSearch:View HashTag="{Binding .}"/>
+								<tagSearch:View />
 							</DataTemplate>
 						</searchFolder:MainSearchTemplateSelector>
 					</AutoCompleteBox.ItemTemplate>

@@ -21,6 +21,10 @@ using Chameleon.lib.Helpers;
 using ProjectsView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View;
 using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
 using DynamicData.PLinq;
+using Chameleon.lib.Common.Models.Dto;
+using Chameleon.app.Avalonia.Features.Search.ByTags.Controls;
+using System.Reactive.Linq;
+using Chameleon.app.Avalonia.Features.Search.ByTags;
 
 namespace Chameleon.app.client.ViewModels;
 
@@ -93,11 +97,22 @@ public partial class MainViewModel : ObservableObjectBase {
 				Namespace = "Tag",
 				ViewModel = i,
 				SearchType = SearchType.Tags,
-				Value = i.Items,
+				Items = i.Items.Select(x => new TagItemDto(x.Key, x.Value))
+					.GroupBy(x => x.Type)
+					.Select(x => x.ToList())
+					.SelectMany(x =>  x.Select(t => TagItemToViewModel(t))),
 				PageType = this.GetType()
 			})
 			.Bind(out _boundTags)
 			.Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
+	}
+	TagsSearchViewModelBase? TagItemToViewModel(TagItemDto tagItem) {
+
+		return tagItem.Type switch {
+			TagItemType.Folder => new TagFolderSearchViewModel(tagItem),
+			TagItemType.Profile => new TagProfilesSearchViewModel(tagItem),
+			_ => null
+		};
 	}
 
 	partial void OnSelectedSearchTermChanged(MainAppSearchItem? oldValue, MainAppSearchItem? newValue) {
