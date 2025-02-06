@@ -10,8 +10,8 @@ public partial class ObsAddressViewModel : UPAddressViewModel {
 
 	[ObservableProperty]
 	private UPAddressViewModel dto;
-	public ObsAddressViewModel(UPAddressViewModel adrez) {
-		dto = adrez;
+	public ObsAddressViewModel(UPAddressDto adrez):base(adrez) {
+		dto = new UPAddressViewModel(adrez);
 		if (adrez.CountryId != null)
 			selectedCountry = Countries.FirstOrDefault(x => x.id == adrez.CountryId);
 	}

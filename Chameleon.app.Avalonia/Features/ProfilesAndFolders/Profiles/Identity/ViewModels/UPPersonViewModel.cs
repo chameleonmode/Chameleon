@@ -1,9 +1,28 @@
 ﻿using Chameleon.lib.Common.Constants;
+using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 public partial class UPPersonViewModel: ObservableObjectBase {
+
+	public UPPersonViewModel(UPPersonDto person) {
+		Id = person.id;
+		ProfileId = person.ProfileId;
+		Title = person.title;
+		FirstName = person.FirstName;
+		LastName = person.LastName;
+		MiddleName = person.MiddleName;
+		Email = person.Email;
+		JobTitle = person.JobTitle;
+		PhoneNumber = person.PhoneNumber;
+		BirthPlace = person.BirthPlace;
+		Notes = person.Notes;
+		Tags = person.Tags;
+		Gender = person.Gender;
+		BirthDate = person.BirthDate;
+	}
 
 	[ObservableProperty]
 	public int id;
@@ -46,4 +65,23 @@ public partial class UPPersonViewModel: ObservableObjectBase {
 	[ObservableProperty]
 	private Enums.GenderType gender = Enums.GenderType.Female;
 	public string Gendertext => Gender.ToString();
+
+	public UPPersonDto ToDto() {
+		return new UPPersonDto() {
+			id = Id,
+			ProfileId = ProfileId,
+			title = Title,
+			FirstName = FirstName,
+			LastName = LastName,
+			MiddleName = MiddleName,
+			Email = Email,
+			JobTitle = JobTitle,
+			PhoneNumber = PhoneNumber,
+			BirthPlace = BirthPlace,
+			Notes = Notes,
+			Tags = Tags,
+			Gender = Gender,
+			BirthDate = BirthDate
+		};
+	}
 }

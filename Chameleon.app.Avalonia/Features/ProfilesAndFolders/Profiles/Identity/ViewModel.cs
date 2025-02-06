@@ -3,16 +3,13 @@ using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewM
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
-using Mapster;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -54,7 +51,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		_ = UPAdditionalDataRepo.Instance.Personz
 			.Connect()
 			.Filter(filter)
-			.Transform(x => x.Adapt<UPPersonViewModel>())
+			.Transform(x => new UPPersonViewModel(x))
 			.Bind(out persons)
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasPersons));
@@ -63,7 +60,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		_ = UPAdditionalDataRepo.Instance.Loginz
 			.Connect()
 			.Filter(filter)
-			.Transform(x => x.Adapt<UPLoginViewModel>())
+			.Transform(x => new UPLoginViewModel(x))
 			.Bind(out logins)
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasLogins));
@@ -72,7 +69,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		_ = UPAdditionalDataRepo.Instance.Biz
 			.Connect()
 			.Filter(filter)
-			.Transform(x => x.Adapt<UPBusinessViewModel>())
+			.Transform(x => new UPBusinessViewModel(x))
 			.Bind(out businesses)
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasBusiness));
@@ -80,7 +77,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		//
 		_ = UPAdditionalDataRepo.Instance.Addrez
 			.Connect()
-			.Transform(a => new ObsAddressViewModel(a.Adapt<UPAddressViewModel>()))
+			.Transform(a => new ObsAddressViewModel(a))
 			.Filter(adrezfilter)
 			.Bind(out addresses)
 			.Subscribe((i) => {
@@ -101,7 +98,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		await base.OnNavigatedToAsync(param);
 
 		if (param is UserProfileDto up) {
-			UserProfile = up.Adapt<UserProfileViewModel>();
+			UserProfile = new UserProfileViewModel(up);
 			UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString())
 											   .ToStringAsync();
 			ProfileVM = new ObsProfile(up, false);
@@ -134,14 +131,14 @@ public partial class ViewModel : ViewModelObjectBase {
 				return;
 			}
 
-			var res = await UserProfilesRepo.Instance.Put(UserProfile.Adapt<UserProfileDto>());
+			var res = await UserProfilesRepo.Instance.Put(UserProfile!.ToDto());
 			if (res != null) {
 
 				await tagsRepo.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList());
 
-				UserProfile = res.Adapt<UserProfileViewModel>();
+				UserProfile = new UserProfileViewModel(res);
 				UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync();
-				ProfileVM = new ObsProfile(UserProfile.Adapt<UserProfileDto>(), false);
+				ProfileVM = new ObsProfile(UserProfile.ToDto(), false);
 				Toaster.Success($"Update was successful.");
 			}
 		} catch (Exception ex) {
@@ -177,14 +174,14 @@ public partial class ViewModel : ViewModelObjectBase {
 			return;
 		}
 
-		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Personz, p.Adapt<UPPersonDto>());
+		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Personz, p.ToDto());
 	}
 
 	[RelayCommand]
 	private async Task DeletePerson(UPPersonViewModel p) {
 		_ = p.Id == 0
-			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Personz, p.Adapt<UPPersonDto>())
-			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Personz, p.Adapt<UPPersonDto>());
+			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Personz, p.ToDto())
+			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Personz, p.ToDto());
 		OnPropertyChanged(nameof(HasPersons));
 	}
 	#endregion
@@ -211,14 +208,14 @@ public partial class ViewModel : ViewModelObjectBase {
 			return;
 		}
 
-		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Biz, p.Adapt<UPBusinessDto>());
+		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Biz, p.ToDto());
 	}
 
 	[RelayCommand]
 	private async Task DeleteBusiness(UPBusinessViewModel p) {
 		_ = p.Id == 0
-			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Biz, p.Adapt<UPBusinessDto>())
-			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Biz, p.Adapt<UPBusinessDto>());
+			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Biz, p.ToDto())
+			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Biz, p.ToDto());
 		OnPropertyChanged(nameof(HasBusiness));
 	}
 	#endregion
@@ -247,7 +244,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		}
 
 		if (p.Dto != null) {
-			_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.Dto.Adapt<UPAddressDto>());
+			_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.Dto.ToDto());
 		}
 	}
 
@@ -255,8 +252,8 @@ public partial class ViewModel : ViewModelObjectBase {
 	private async Task OnDeleteAddress(ObsAddressViewModel p) {
 		if (p.Dto != null) {
 			_ = p.Dto.Id == 0
-				? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Addrez, p.Dto.Adapt<UPAddressDto>())
-				: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Addrez, p.Dto.Adapt<UPAddressDto>());
+				? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Addrez, p.Dto.ToDto())
+				: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Addrez, p.Dto.ToDto());
 			OnPropertyChanged(nameof(HasAddresses));
 		}
 	}
@@ -285,15 +282,15 @@ public partial class ViewModel : ViewModelObjectBase {
 			Toaster.Error("Login form is not valid");
 			return;
 		}
-		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Loginz, p.Adapt<UPLoginDto>());
+		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto());
 	}
 
 	[RelayCommand]
 	private async Task OnDeleteLogin(UPLoginViewModel p) {
 
 		_ = p.Id == 0
-			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Loginz, p.Adapt<UPLoginDto>())
-			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Loginz, p.Adapt<UPLoginDto>());
+			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto())
+			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto());
 
 		OnPropertyChanged(nameof(HasLogins));
 	}

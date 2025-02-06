@@ -9,7 +9,6 @@ using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
@@ -23,7 +22,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 using DynamicData.Binding;
-using Mapster;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -197,7 +195,7 @@ public partial class ViewModel : ViewModelObjectBase {
 	}
 	partial void OnFolderChanged(UPFolderViewModel? value) {
 
-		UserProfileFoldersViewModel.Instance.SetSelectedFolder(value.Adapt<UPFolderDto>());
+		UserProfileFoldersViewModel.Instance.SetSelectedFolder(value?.ToDto());
 		SearchText = string.Empty;
 		HasFolder = value?.id != default && value?.id != 0;
 		OnPropertyChanged(nameof(SelectedFolderTitle));
@@ -205,11 +203,13 @@ public partial class ViewModel : ViewModelObjectBase {
 	}
 
 	public async Task OpenAsync(UPFolderDto? folder) {
-		Folder = folder.Adapt<UPFolderViewModel>();
-		Folder.Tags = await tagsRepo.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
-		OnPropertyChanged(nameof(SelectedFolderTitle));
-		UnselectItems();
-		SetViewModelsFilter();
+		if (folder is not null) {
+			Folder = new UPFolderViewModel(folder!);
+			Folder.Tags = await tagsRepo.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
+			OnPropertyChanged(nameof(SelectedFolderTitle));
+			UnselectItems();
+			SetViewModelsFilter();
+		}
 	}
 	public async Task<UserProfileDto?> CreateNewProfile() {
 		var folderId = HasFolder ? Folder?.Id : null;

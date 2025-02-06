@@ -1,8 +1,23 @@
-﻿using Chameleon.lib.CommunityToolkit.MvvM;
+﻿using Chameleon.lib.Common.Models.Dto;
+using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 public partial class UPAddressViewModel: ObservableObjectBase {
+
+	public UPAddressViewModel(UPAddressDto address) {
+		Id = address.id;
+		ProfileId = address.ProfileId;
+		Title = address.title;
+		Notes = address.Notes;
+		Tags = address.Tags;
+		CountryId = address.CountryId;
+		AddressLine1 = address.AddressLine1;
+		AddressLine2 = address.AddressLine2;
+		City = address.City;
+		State = address.State;
+		Zip = address.Zip;
+	}
 
 	[ObservableProperty]
 	public int id;
@@ -33,4 +48,20 @@ public partial class UPAddressViewModel: ObservableObjectBase {
 
 	[ObservableProperty]
 	private string? notes;
+
+	public UPAddressDto ToDto() {
+		return new UPAddressDto() {
+			id = Id,
+			ProfileId = ProfileId,
+			title = Title,
+			Notes = Notes,
+			Tags = Tags,
+			CountryId = CountryId,
+			AddressLine1 = AddressLine1,
+			AddressLine2 = AddressLine2,
+			City = City,
+			State = State,
+			Zip = Zip
+		};
+	}
 }

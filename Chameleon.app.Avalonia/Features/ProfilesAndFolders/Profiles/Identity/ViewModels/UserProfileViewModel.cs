@@ -1,9 +1,27 @@
 ﻿using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 public partial class UserProfileViewModel : ObservableObjectBase {
+
+	public UserProfileViewModel(UserProfileDto profile) {
+		Id = profile.id;
+		Title = profile.title;
+		Notes = profile.notes;
+		Tags = profile.Tags;
+		FolderId = profile.folderId;
+		IsFavourite = profile.isFavourite;
+		ProxyId = profile.proxyId;
+		LimitCache = profile.limitCache;
+		YoutubeApiKey = profile.youtubeApiKey;
+		YoutubeClientId = profile.youtubeClientId;
+		YoutubeClientSecret = profile.youtubeClientSecret;
+		WordPressSettings = profile.wordPressSettings;
+		Proxy = new(profile.proxy);
+		WebBrowser = new(profile.webBrowser);
+	}
 
 	[ObservableProperty]
 	public string? title;
@@ -42,13 +60,41 @@ public partial class UserProfileViewModel : ObservableObjectBase {
 	public object? wordPressSettings;
 
 	[ObservableProperty]
-	public ProxyViewModel proxy = new();
+	public ProxyViewModel proxy;
 
 	[ObservableProperty]
-	public WebrowserDto webBrowser = new();
+	public WebrowserViewModel webBrowser;
+
+	public UserProfileDto ToDto() {
+		return new UserProfileDto() {
+			id = Id,
+			title = Title,
+			Tags = Tags,
+			folderId = FolderId,
+			isFavourite = IsFavourite,
+			proxyId = ProxyId,
+			limitCache = LimitCache,
+			youtubeApiKey = YoutubeApiKey,
+			youtubeClientId = YoutubeClientId,
+			youtubeClientSecret = YoutubeClientSecret,
+			wordPressSettings = WordPressSettings,
+			proxy = Proxy.ToDto(),
+			webBrowser = WebBrowser.ToDto()
+		};
+	}
 }
 
 public partial class ProxyViewModel : ObservableObjectBase {
+
+	public ProxyViewModel(ProxDto proxy) {
+		Id = proxy.id;
+		Title = proxy.title;
+		Tags = proxy.Tags;
+		Host = proxy.host;
+		Port = proxy.port;
+		UserName = proxy.userName;
+		Password = proxy.password;
+	}
 
 	[ObservableProperty]
 	public int id;
@@ -64,9 +110,30 @@ public partial class ProxyViewModel : ObservableObjectBase {
 
 	[ObservableProperty]
 	public string? password;
+
+	public ProxDto ToDto() {
+		return new ProxDto() {
+			id = Id,
+			title = Title,
+			Tags = Tags,
+			host = Host,
+			port = Port,
+			userName = UserName,
+			password = Password
+		};
+	}
 }
 
 public partial class WebrowserViewModel : ObservableObjectBase {
+	public WebrowserViewModel(WebrowserDto webrowser) {
+		WebRTC = webrowser.webRTC;
+		WebGL = webrowser.webGL;
+		Tracking = webrowser.tracking;
+		Flash = webrowser.flash;
+		Canvas = webrowser.canvas;
+		UserAgentId = webrowser.userAgentId;
+	}
+
 	[ObservableProperty]
 	public bool webRTC;
 
@@ -84,4 +151,15 @@ public partial class WebrowserViewModel : ObservableObjectBase {
 
 	[ObservableProperty]
 	public int? userAgentId;
+
+	public WebrowserDto ToDto() {
+		return new WebrowserDto() {
+			webRTC = WebRTC,
+			webGL = WebGL,
+			tracking = Tracking,
+			flash = Flash,
+			canvas = Canvas,
+			userAgentId = UserAgentId
+		};
+	}
 }
