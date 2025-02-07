@@ -1,4 +1,5 @@
 ﻿using Chameleon.app.Avalonia.Controls;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.lib;
@@ -11,14 +12,9 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.WebBrowser.Interfaces;
-
 using CommunityToolkit.Mvvm.ComponentModel;
-
 using CommunityToolkit.Mvvm.Input;
-
 using static Chameleon.lib.Common.Constants.Enums;
-
-using UserProfileIdentityView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.View;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : Obs<UserProfileDto> {
@@ -99,7 +95,7 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 	}
 	public void Open()
 	{
-		Navigator.NavigateToType(typeof(UserProfileIdentityView), Dto);
+		Navigator.NavigateToType(typeof(IdentityView), Dto);
 	}
 
 	[RelayCommand]

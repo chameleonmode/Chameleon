@@ -6,9 +6,9 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:folder="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects"
-			 x:DataType="folder:ViewModel"
+			 x:DataType="folder:ProjectsViewModel"
 			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View">
+             x:Class="Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView">
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
 		<StackPanel>
 			<afv:PageHeaderControl TextType="Profiles"

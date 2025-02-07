@@ -1,4 +1,5 @@
-﻿using Chameleon.app.Avalonia.Views;
+﻿using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
+using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -6,11 +7,7 @@ using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
-
 using CommunityToolkit.Mvvm.ComponentModel;
-
-using ProjectsView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View;
-using UserProfileFoldersViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.ViewModel;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsFolder : Obs<UPFolderDto> {
@@ -77,7 +74,7 @@ public partial class ObsFolder : Obs<UPFolderDto> {
 	// CommandMap Commands
 	private void ViewGroup()
 	{
-		Navigator.NavigateToType(typeof(ProjectsView), this);
+		Navigator.NavigateToType(typeof(Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView), this);
 	}
 	private void SetFavoriteFolder()
 	{
@@ -99,7 +96,7 @@ public partial class ObsFolder : Obs<UPFolderDto> {
 	// AsyncCommandMap Commands
 	public async Task Open()
 	{
-		await UserProfileFoldersViewModel.Instance.OnNavigatingTo(Dto);
+		await FoldersViewModel.Instance.OnNavigatingTo(Dto);
 		IsSelected = true;
 	}
 	private async Task SetFavorite()
@@ -129,7 +126,7 @@ public partial class ObsFolder : Obs<UPFolderDto> {
 			if (!res.success) {
 
 			}
-			await UserProfileFoldersViewModel.Instance.AllProfiles!.Open();
+			await FoldersViewModel.Instance.AllProfiles!.Open();
 		}
 	}
 	private async Task SaveRename()

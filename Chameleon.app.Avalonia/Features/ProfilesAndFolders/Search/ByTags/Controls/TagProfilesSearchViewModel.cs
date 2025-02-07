@@ -1,4 +1,5 @@
-﻿using Chameleon.app.Avalonia.Models.Observable;
+﻿using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
+using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -6,7 +7,6 @@ using DynamicData;
 using DynamicData.Binding;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
-using ProjectsView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View;
 
 namespace Chameleon.app.Avalonia.Features.Search.ByTags.Controls;
 public partial class TagProfilesSearchViewModel : TagsSearchViewModelBase {

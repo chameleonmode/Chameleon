@@ -3,9 +3,9 @@ using Chameleon.Av.Fluent.Common.Pages;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity;
 
-[Chameleon.lib.Common.Attributes.ViewModel(typeof(ViewModel))]
-public partial class View : ChameleonPageBase {
-    public View()
+[Chameleon.lib.Common.Attributes.ViewModel(typeof(IdentityViewModel))]
+public partial class IdentityView : ChameleonPageBase {
+    public IdentityView()
     {
         InitializeComponent();
     }

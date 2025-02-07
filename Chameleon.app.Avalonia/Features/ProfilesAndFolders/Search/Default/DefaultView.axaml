@@ -5,7 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:models="using:Chameleon.app.Avalonia.Models"
 			 x:DataType="models:MainAppSearchItem"
-             x:Class="Chameleon.app.Avalonia.Features.Search.Default.View">
+             x:Class="Chameleon.app.Avalonia.Features.Search.Default.DefaultView">
 	<Panel>
 		<StackPanel HorizontalAlignment="Left"
 					VerticalAlignment="Center">

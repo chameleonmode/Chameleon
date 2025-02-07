@@ -15,7 +15,8 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity;
-public partial class ViewModel : ViewModelObjectBase {
+public partial class IdentityViewModel : ViewModelObjectBase {
+
 	private readonly BehaviorSubject<Func<UP, bool>> filter;
 	private readonly BehaviorSubject<Func<ObsAddressViewModel, bool>> adrezfilter;
 
@@ -44,7 +45,7 @@ public partial class ViewModel : ViewModelObjectBase {
 	public Func<UP, bool> FilterPredicate => p => p.ProfileId == UserProfile?.Id;
 	public Func<ObsAddressViewModel, bool> AdrezFilterPredicate => p => p.Dto?.ProfileId == UserProfile?.Id;
 
-	public ViewModel() {
+	public IdentityViewModel() {
 		filter = new BehaviorSubject<Func<UP, bool>>(FilterPredicate);
 		adrezfilter = new BehaviorSubject<Func<ObsAddressViewModel, bool>>(AdrezFilterPredicate);
 
@@ -296,5 +297,5 @@ public partial class ViewModel : ViewModelObjectBase {
 	}
 	#endregion
 
-	public static ViewModel Instance { get; } = IoC.GetService<ViewModel>()!;
+	public static IdentityViewModel Instance { get; } = IoC.GetService<IdentityViewModel>()!;
 }

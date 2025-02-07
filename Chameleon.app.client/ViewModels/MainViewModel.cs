@@ -18,8 +18,7 @@ using Chameleon.lib.Abs.Platformatic;
 using System.Threading.Tasks;
 using Chameleon.lib.Helpers;
 
-using ProjectsView = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.View;
-using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
+using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesViewModel;
 using DynamicData.PLinq;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.app.Avalonia.Features.Search.ByTags.Controls;
@@ -121,7 +120,7 @@ public partial class MainViewModel : ObservableObjectBase {
 		if (newValue.ViewModel is ViewModelObjectBase nfs)
 			nfs.Navigated = false;
 
-		Navigator.NavigateToType(typeof(ProjectsView), newValue.ViewModel);
+		Navigator.NavigateToType(typeof(Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView), newValue.ViewModel);
 	}
 
 	[RelayCommand]
@@ -135,7 +134,7 @@ public partial class MainViewModel : ObservableObjectBase {
 		if (!p.Is())
 			ClearSearch();
 		else
-			Navigator.NavigateToType(typeof(ProjectsView), p);
+			Navigator.NavigateToType(typeof(Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView), p);
 	}
 
 	[RelayCommand]

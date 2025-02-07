@@ -6,9 +6,9 @@
              xmlns:appuc="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:vm="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels"
 			 xmlns:folder="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity"
-			 x:DataType="folder:ViewModel"
+			 x:DataType="folder:IdentityViewModel"
 			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.View">
+             x:Class="Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.IdentityView">
 	<UserControl.Resources>
 		<ControlTheme x:Key="TheseTabHeaderPanels"
 					  TargetType="HeaderedContentControl">

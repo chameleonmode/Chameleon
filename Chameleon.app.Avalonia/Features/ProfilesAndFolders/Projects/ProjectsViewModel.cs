@@ -7,18 +7,18 @@ using Chameleon.lib.Common.Util;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
-using UserProfileFoldersViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.ViewModel;
-using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
+using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesViewModel;
 using Chameleon.lib.Helpers;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
-public partial class ViewModel : ViewModelObjectBase {
+public partial class ProjectsViewModel : ViewModelObjectBase {
 	public UserProfilesViewModel Profiles { get; } = UserProfilesViewModel.Instance;
-	public UserProfileFoldersViewModel Folders { get; } = UserProfileFoldersViewModel.Instance;
+	public FoldersViewModel Folders { get; } = FoldersViewModel.Instance;
 
 	public bool IsCreateProfileBtnVisible => Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CanCreateProfiles == true;
 
-	public ViewModel()
+	public ProjectsViewModel()
 		: base("Profiles & Folders") {
 	}
 	public override async Task OnNavigatedToAsync(object? param) {

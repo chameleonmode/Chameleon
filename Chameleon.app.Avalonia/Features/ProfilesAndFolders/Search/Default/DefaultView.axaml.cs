@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace Chameleon.app.Avalonia.Features.Search.Default;
 
-public partial class View : UserControl
+public partial class DefaultView : UserControl
 {
-    public View()
+    public DefaultView()
     {
         InitializeComponent();
     }

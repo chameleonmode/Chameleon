@@ -2,6 +2,7 @@
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.app.Avalonia.Extensions;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModels;
 using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia.Models.Observable;
@@ -27,10 +28,9 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using static Chameleon.lib.Common.Constants.Enums;
 
-using UserProfileFoldersViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders.ViewModel;
-
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
-public partial class ViewModel : ViewModelObjectBase {
+public partial class MyProfilesViewModel : ViewModelObjectBase {
+
 	private readonly IPlaywrightScriptRepository _plawrightRepository = IoC.GetService<IPlaywrightScriptRepository>()!;
 	private readonly IPlaywriteService _playwriteService = IoC.GetService<IPlaywriteService>()!;
 	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
@@ -84,7 +84,7 @@ public partial class ViewModel : ViewModelObjectBase {
 	? UserProfilesRepo.Instance.ObservableCache.Count
 	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.Id);
 	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
-	public bool IsProfilesExist => UserProfileFoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
+	public bool IsProfilesExist => FoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
 	public bool HasNoItems => Profiles.Count == 0;
 	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
 	public string SelectedFolderTitle => Folder?.Title ?? "All profiles";
@@ -103,7 +103,7 @@ public partial class ViewModel : ViewModelObjectBase {
 	private readonly ReadOnlyObservableCollection<ObsProfile> profiles;
 	public ReadOnlyObservableCollection<ObsProfile> Profiles => profiles;
 
-	public ViewModel() {
+	public MyProfilesViewModel() {
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
 		_ = UserProfilesRepo
 			.Connect()
@@ -195,7 +195,7 @@ public partial class ViewModel : ViewModelObjectBase {
 	}
 	partial void OnFolderChanged(UPFolderViewModel? value) {
 
-		UserProfileFoldersViewModel.Instance.SetSelectedFolder(value?.ToDto());
+		FoldersViewModel.Instance.SetSelectedFolder(value?.ToDto());
 		SearchText = string.Empty;
 		HasFolder = value?.id != default && value?.id != 0;
 		OnPropertyChanged(nameof(SelectedFolderTitle));
@@ -232,13 +232,13 @@ public partial class ViewModel : ViewModelObjectBase {
 
 		if (p != null) {
 			if (p.Dto?.folderId is int fid && fid != 0)
-				UserProfileFoldersViewModel.Instance.SetSelectedById(fid);
+				FoldersViewModel.Instance.SetSelectedById(fid);
 			else
-				await UserProfileFoldersViewModel.Instance.OnNavigatingTo(null);
+				await FoldersViewModel.Instance.OnNavigatingTo(null);
 
 			SearchText = p.Title ?? string.Empty;
 		} else {
-			UserProfileFoldersViewModel.Instance.SetSelectedById(0);
+			FoldersViewModel.Instance.SetSelectedById(0);
 			SearchText = string.Empty;
 		}
 
@@ -358,7 +358,7 @@ public partial class ViewModel : ViewModelObjectBase {
 			Title = "Add To Folder"
 		};
 		addvm.Profiles.AddRange(selectedProfiles);
-		addvm.Folders.AddRange(UserProfileFoldersViewModel.Instance.Folders);
+		addvm.Folders.AddRange(FoldersViewModel.Instance.Folders);
 
 		if (await Mbox.ShowTaskDialog<MoveUserProfilesPopupViewModel, MoveUserProfilesPopupUserControl>(() => addvm,
 			header: addvm.Title,
@@ -466,5 +466,5 @@ public partial class ViewModel : ViewModelObjectBase {
 		_cts?.Cancel();
 	}
 
-	public static ViewModel Instance { get; } = new ViewModel();
+	public static MyProfilesViewModel Instance { get; } = new MyProfilesViewModel();
 }

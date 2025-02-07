@@ -6,10 +6,11 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using System.Collections.ObjectModel;
-using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModel;
+using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesViewModel;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
-public partial class ViewModel : ViewModelObjectBase {
+public partial class FoldersViewModel : ViewModelObjectBase {
+
 	[ObservableProperty]
 	private ObsFolder selectedFolder;
 
@@ -17,7 +18,7 @@ public partial class ViewModel : ViewModelObjectBase {
 	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
 	public ReadOnlyObservableCollection<ObsFolder> Folders => folders;
 
-	public ViewModel() {
+	public FoldersViewModel() {
 		_ = UserProfilesFolderRepo
 		.Connect()
 		.Transform(i => new ObsFolder(i))
@@ -68,6 +69,6 @@ public partial class ViewModel : ViewModelObjectBase {
 			: Folders.FirstOrDefault(vm => vm.Dto!.id == value.id) ?? AllProfiles;
 	}
 
-	public static ViewModel Instance { get; } = new ViewModel();
+	public static FoldersViewModel Instance { get; } = new FoldersViewModel();
 }
 

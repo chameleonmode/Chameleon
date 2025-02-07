@@ -182,10 +182,10 @@
 					<AutoCompleteBox.ItemTemplate>
 						<searchFolder:MainSearchTemplateSelector>
 							<DataTemplate x:Key="Default">
-								<defaultSearch:View />
+								<defaultSearch:DefaultView />
 							</DataTemplate>
 							<DataTemplate x:Key="Tags">
-								<tagSearch:View />
+								<tagSearch:TagsView />
 							</DataTemplate>
 						</searchFolder:MainSearchTemplateSelector>
 					</AutoCompleteBox.ItemTemplate>
