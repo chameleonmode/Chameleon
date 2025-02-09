@@ -62,10 +62,10 @@ find "$APP_NAME/Contents/Frameworks"|while read fname; do
 done
 
 echo "[INFO] Signing app executable"
-codesign --force --entitlements "$APP_ENTITLEMENTS_FILE" --sign "$APP_SIGNING_IDENTITY" "$APP_NAME/Contents/MacOS/Chameleon"
+codesign --force --timestamp --options=runtime --entitlements "$APP_ENTITLEMENTS_FILE" --sign "$APP_SIGNING_IDENTITY" "$APP_NAME/Contents/MacOS/Chameleon"
 
 echo "[INFO] Signing app bundle"
-codesign --force --entitlements "$APP_ENTITLEMENTS_FILE" --sign "$APP_SIGNING_IDENTITY" "$APP_NAME"
+codesign --force --timestamp --options=runtime --entitlements "$APP_ENTITLEMENTS_FILE" --sign "$APP_SIGNING_IDENTITY" "$APP_NAME"
 
 #echo "[INFO] Creating Chameleon.pkg"
 #productbuild --component App/Chameleon.app /Applications --sign "$INSTALLER_SIGNING_IDENTITY" Chameleon.pkg
