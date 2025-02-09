@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		..\..\Users\eli\AppData\Roaming\Chameleon\appsettings.json = ..\..\Users\eli\AppData\Roaming\Chameleon\appsettings.json
+		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 		LICENSE = LICENSE
 		README.md = README.md
@@ -55,6 +56,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\chameleon-lib\Tests\Tests.csproj", "{D308CCCA-95E9-420B-A9B3-3DB904F11D30}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Desktop", "Chameleon.Avalonia.Desktop\Chameleon.Avalonia.Desktop.csproj", "{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A0E66BE5-8196-4E24-8CB9-731AFBED22BD}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\macnotorize.sh = scripts\macnotorize.sh
+		scripts\notorizecheck.sh = scripts\notorizecheck.sh
+		scripts\pacamac.sh = scripts\pacamac.sh
+		scripts\svgtoicns.sh = scripts\svgtoicns.sh
+		scripts\svgtoico.sh = scripts\svgtoico.sh
+		scripts\windowsbuild.sh = scripts\windowsbuild.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,6 +125,7 @@ Global
 		{99A4DEF3-5CE7-424B-8811-DF2DEB87EB67} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30} = {CE7FF880-AA75-4AEE-BFA3-B64AB857433B}
 		{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C} = {137272C9-D563-4573-A169-39252A4C9F7B}
+		{A0E66BE5-8196-4E24-8CB9-731AFBED22BD} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

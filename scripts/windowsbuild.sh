@@ -1,4 +1,6 @@
-#cd C:\repos\Chameleon\Chameleon.Avalonia\src\Chameleon.Avalonia.Desktop
+#!/bin/bash
+# Usage cd /Users/dev/Projects/Chameleon/scripts or C:\repos\Chameleon\Chameleon.Avalonia.Desktop
+# bash pacamac.sh
 dotnet publish -r win-x64 -c Release -f net8.0 --self-contained true -p:DebugType=None -p:DebugSymbols=false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true -o "obj/outwin" 
 cd obj/outwin
 7z a Chameleon.7z

@@ -1,16 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
-    <Version>2025.0.0.4</Version>
-    <PublishAot>false</PublishAot>
-    <PublishTrimmed>false</PublishTrimmed>
-    <StripSymbols>false</StripSymbols>
-    <Nullable>enable</Nullable>
-    <AvaloniaVersion>11.2.2</AvaloniaVersion>
-    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Avalonia" Version="11.2.2" />
