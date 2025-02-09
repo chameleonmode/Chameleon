@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
@@ -8,10 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		..\..\Users\eli\AppData\Roaming\Chameleon\appsettings.json = ..\..\Users\eli\AppData\Roaming\Chameleon\appsettings.json
 		Directory.Packages.props = Directory.Packages.props
 		LICENSE = LICENSE
 		README.md = README.md
-		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia", "Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj", "{8C417AF0-D948-4637-B38B-DDC6E058C83D}"
@@ -43,14 +42,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CE7FF880
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "main", "main", "{137272C9-D563-4573-A169-39252A4C9F7B}"
-	ProjectSection(SolutionItems) = preProject
-		scripts\macnotorize.sh = scripts\macnotorize.sh
-		scripts\pacamac.sh = scripts\pacamac.sh
-		scripts\windowsbuild.sh = scripts\windowsbuild.sh
-		scripts\notorizecheck.sh = scripts\notorizecheck.sh
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.lib.Tests", "..\chameleon-lib\Chameleon.lib.Tests\Chameleon.lib.Tests.csproj", "{16E20385-1F2B-4947-BDFD-C1474AF1FDB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.app.client", "Chameleon.app.client\Chameleon.app.client.csproj", "{1975BFAC-B92B-459A-AB8B-A70C53433302}"
 EndProject
@@ -99,10 +90,6 @@ Global
 		{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16E20385-1F2B-4947-BDFD-C1474AF1FDB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16E20385-1F2B-4947-BDFD-C1474AF1FDB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16E20385-1F2B-4947-BDFD-C1474AF1FDB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16E20385-1F2B-4947-BDFD-C1474AF1FDB0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1975BFAC-B92B-459A-AB8B-A70C53433302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1975BFAC-B92B-459A-AB8B-A70C53433302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1975BFAC-B92B-459A-AB8B-A70C53433302}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -123,7 +110,6 @@ Global
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D} = {0B86C57C-40CF-4737-8F82-864548769102}
 		{AC2F00CB-88A2-44C8-ABDF-DD66EA1E0911} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{137272C9-D563-4573-A169-39252A4C9F7B} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
-		{16E20385-1F2B-4947-BDFD-C1474AF1FDB0} = {CE7FF880-AA75-4AEE-BFA3-B64AB857433B}
 		{1975BFAC-B92B-459A-AB8B-A70C53433302} = {0B86C57C-40CF-4737-8F82-864548769102}
 		{99A4DEF3-5CE7-424B-8811-DF2DEB87EB67} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30} = {CE7FF880-AA75-4AEE-BFA3-B64AB857433B}
