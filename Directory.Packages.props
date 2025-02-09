@@ -24,8 +24,10 @@
     <PackageVersion Include="FluentAvaloniaUI" Version="2.2.0" />
     <PackageVersion Include="CommunityToolkit.HighPerformance" Version="8.3.1" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageVersion Include="Mapster" Version="7.4.0" />
+    <PackageVersion Include="ReactiveValidation.Avalonia" Version="2.0.4" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
-	  <PackageVersion Include="Microsoft.Playwright" Version="1.49.0" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.49.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />

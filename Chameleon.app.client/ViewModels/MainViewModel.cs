@@ -18,6 +18,13 @@ using Chameleon.lib.Abs.Platformatic;
 using System.Threading.Tasks;
 using Chameleon.lib.Helpers;
 
+using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesViewModel;
+using DynamicData.PLinq;
+using Chameleon.lib.Common.Models.Dto;
+using Chameleon.app.Avalonia.Features.Search.ByTags.Controls;
+using System.Reactive.Linq;
+using Chameleon.app.Avalonia.Features.Search.ByTags;
+
 namespace Chameleon.app.client.ViewModels;
 
 public partial class MainViewModel : ObservableObjectBase {
@@ -38,10 +45,12 @@ public partial class MainViewModel : ObservableObjectBase {
 
 	private readonly ReadOnlyObservableCollection<MainAppSearchItem> _boundProfiles;
 	private readonly ReadOnlyObservableCollection<MainAppSearchItem> _boundFolders;
-	public IEnumerable<MainAppSearchItem> SearchTerms => _boundProfiles.Concat(_boundFolders);
+	private readonly ReadOnlyObservableCollection<MainAppSearchItem> _boundTags;
+	public IEnumerable<MainAppSearchItem> SearchTerms => _boundProfiles
+		.Concat(_boundFolders)
+		.Concat(_boundTags);
 
-	private MainViewModel()
-	{
+	private MainViewModel() {
 		AppStartup.Instance.OnLoginSuccess += async () => {
 			IsSplashVisible = false;
 
@@ -79,32 +88,53 @@ public partial class MainViewModel : ObservableObjectBase {
 			})
 			.Bind(out _boundFolders)
 			.Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
+
+		_ = TagsRepo
+			.Connect()
+			.Transform(i => new MainAppSearchItem() {
+				Header = $"#{i.Name}",
+				Namespace = "Tag",
+				ViewModel = i,
+				SearchType = SearchType.Tags,
+				Items = i.Items.Select(x => new TagItemDto(x.Key, x.Value))
+					.GroupBy(x => x.Type)
+					.Select(x => x.ToList())
+					.SelectMany(x =>  x.Select(t => TagItemToViewModel(t))),
+				PageType = this.GetType()
+			})
+			.Bind(out _boundTags)
+			.Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
+	}
+	TagsSearchViewModelBase? TagItemToViewModel(TagItemDto tagItem) {
+
+		return tagItem.Type switch {
+			TagItemType.Folder => new TagFolderSearchViewModel(tagItem),
+			TagItemType.Profile => new TagProfilesSearchViewModel(tagItem),
+			_ => null
+		};
 	}
 
-	partial void OnSelectedSearchTermChanged(MainAppSearchItem? oldValue, MainAppSearchItem? newValue)
-	{
+	partial void OnSelectedSearchTermChanged(MainAppSearchItem? oldValue, MainAppSearchItem? newValue) {
 		if (newValue is null) return;
 
 		if (newValue.ViewModel is ViewModelObjectBase nfs)
 			nfs.Navigated = false;
 
-		Navigator.NavigateToType(typeof(ProjectsView), newValue.ViewModel);
+		Navigator.NavigateToType(typeof(Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView), newValue.ViewModel);
 	}
 
 	[RelayCommand]
-	private void ClearSearch()
-	{
+	private void ClearSearch() {
 		SelectedSearchTerm = null;
 		UserProfilesViewModel.Instance.OnFilterTo();
 	}
 
 	[RelayCommand]
-	private void ClickSearch(string p)
-	{
+	private void ClickSearch(string p) {
 		if (!p.Is())
 			ClearSearch();
 		else
-			Navigator.NavigateToType(typeof(ProjectsView), p);
+			Navigator.NavigateToType(typeof(Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView), p);
 	}
 
 	[RelayCommand]
