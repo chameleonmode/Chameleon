@@ -1,16 +1,19 @@
 ﻿using Avalonia.Media;
 
 using Chameleon.app.Avalonia.lib.Community.Controls;
-using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.lib;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
+using Chameleon.lib.Const;
+using Chameleon.lib.Helpers;
 
 using FluentAvalonia.UI.Windowing;
+
+using static Chameleon.lib.Common.Constants.Consts;
 
 namespace Chameleon.app.Avalonia;
 public class AppStartup {
@@ -21,7 +24,9 @@ public class AppStartup {
 			Toaster.Info("Login canceled, application closing");
 			Environment.Exit(0);
 		} else {
-			await IOtil.DC(Consts.AppTempDir);
+			IOtil.DeleteDExists(Addons.AddonExtentionDir);
+			IOtil.DeleteDExists(Addons.CachedExtentionDir);
+			_ = FilePaths.EnsureDirectoryExists(FilePaths.AppTempDir);
 			await LoadSink();
 			OnLoginSuccess?.Invoke();
 		}
@@ -145,92 +150,3 @@ public class AppStartup {
 		}
 	}
 }
-//	[Obsolete("Added for compatibility with corrent infrastructure project until _authSession refactoed out only")]
-//	private async Task<bool> Login(string user, string pass)
-//	{
-//		var authResult = await Auther.LoginAsync(user, pass);
-//		if (authResult is not null && _authSession is not null) {
-//			_authSession.UserName = user;
-//			_authSession.AuthToken = authResult.AccessToken!;
-//			_authSession.AuthRefreshToken = authResult.AccessToken!;
-//			_authSession.UserId = authResult.UserId;
-//			_authSession.CreatorUserId = authResult.CreatorUserId;
-//			_authSession.ExpireInSeconds = authResult.ExpireInSeconds;
-//			_authSession.EncryptedAccessToken = authResult.EncryptedAccessToken ?? string.Empty;
-//			_authSession.Permissions = authResult.Permissions;
-//			_authSession.Limits = new TheseLimits() {
-//				HasOutreach = authResult.LicenseLimits.HasOutreach,
-//				HasYouTube = authResult.LicenseLimits.HasYouTube,
-//				HasWordPress = authResult.LicenseLimits.HasWordPress,
-//				MaxProfilesCount = authResult.LicenseLimits.MaxProfilesCount,
-//				MaxAssistantsCount = authResult.LicenseLimits.MaxAssistantsCount,
-//				ContentDiscoveryLimits = new TheseContentDiscoveryLimits() {
-//					HasProspector = authResult.LicenseLimits.ContentDiscoveryLimits.HasProspector,
-//					HasProspectorContent = authResult.LicenseLimits.ContentDiscoveryLimits.HasProspectorContent,
-//					HasSocials = authResult.LicenseLimits.ContentDiscoveryLimits.HasSocials,
-//					HasSocialsContent = authResult.LicenseLimits.ContentDiscoveryLimits.HasSocialsContent,
-//					MaxRssCount = authResult.LicenseLimits.ContentDiscoveryLimits.MaxRssCount
-//				},
-//			};
-//			_authSession.TookGuidedTour = authResult.TookGuidedTour;
-//			_authSession.CanCreateProfiles = authResult.CanCreateProfiles;
-//			return true;
-//		}
-//		return false;
-//	}
-//}
-
-//public class TheseLimits : ILimits {
-//	public bool HasOutreach { get; set; }
-//	public bool HasYouTube { get; set; }
-//	public bool HasWordPress { get; set; }
-//	public int MaxProfilesCount { get; set; }
-//	public int MaxAssistantsCount { get; set; }
-//	public TheseContentDiscoveryLimits ContentDiscoveryLimits { get; set; } = new TheseContentDiscoveryLimits();
-//	IContentDiscoveryLimits ILimits.ContentDiscoveryLimits => ContentDiscoveryLimits;
-//}
-//public class TheseContentDiscoveryLimits : IContentDiscoveryLimits {
-//	public bool HasProspector { get; set; }
-//	public bool HasProspectorContent { get; set; }
-//	public bool HasSocials { get; set; }
-//	public bool HasSocialsContent { get; set; }
-//	public int MaxRssCount { get; set; }
-//}
-//public class TheseApplicationSettings  {
-//	public TheseLoginSettings Login { get; set; } = new TheseLoginSettings();
-//	public TheseSettingsSettings Settings { get; set; } = new TheseSettingsSettings();
-//}
-//public class TheseSettingsSettings {
-//	public string CurrentAppTheme { get; set; } = "System";
-//	public string? CustomAccentColor { get; set; }
-//	public bool UseCustomAccentColor { get; set; }
-//	public bool AutoLogin { get; set; } = true;
-//	public string? CodesverifyApiKey { get; set; }
-//	public string? UserScriptsDirectory { get; set; }
-//	public string? SMSPoolApiKey { get; set; }
-//}
-//public class TheseLoginSettings {
-//	public string LoginName { get; set; } = string.Empty;
-//	public string LicenseKey { get; set; } = string.Empty;
-
-//	public void Set(string loginName, string licenseKey)
-//	{
-//		LoginName = loginName ?? string.Empty;
-//		LicenseKey = licenseKey ?? string.Empty;
-//	}
-//}
-
-//public class ThisAuthSession : IAuthSession {
-//	public long UserId { get; set; }
-//	public long? CreatorUserId { get; set; }
-//	public string? UserName { get; set; }
-//	public string? AuthToken { get; set; }
-//	public bool HasAuthToken => !string.IsNullOrEmpty(AuthToken);
-//	public long ExpireInSeconds { get; set; }
-//	public string? EncryptedAccessToken { get; set; }
-//	public string? AuthRefreshToken { get; set; }
-//	public string[]? Permissions { get; set; }
-//	public ILimits? Limits { get; set; }
-//	public bool TookGuidedTour { get; set; }
-//	public bool CanCreateProfiles { get; set; }
-//}

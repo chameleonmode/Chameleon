@@ -9,6 +9,9 @@
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
 			 xmlns:m="using:Chameleon.app.Avalonia.Models"
              xmlns:vm="clr-namespace:Chameleon.app.client.ViewModels"
+			 xmlns:searchFolder="using:Chameleon.app.Avalonia.Features.Search"
+			 xmlns:defaultSearch="using:Chameleon.app.Avalonia.Features.Search.Default"
+			 xmlns:tagSearch="using:Chameleon.app.Avalonia.Features.Search.ByTags"
              x:Class="Chameleon.app.client.Views.MainView"
              x:DataType="vm:MainViewModel">
 	<UserControl.Styles>
@@ -177,18 +180,14 @@
 								 SelectedItem="{Binding SelectedSearchTerm}"
                                  ItemsSource="{Binding SearchTerms}">
 					<AutoCompleteBox.ItemTemplate>
-						<DataTemplate x:DataType="m:MainAppSearchItem">
-							<Panel>
-								<StackPanel HorizontalAlignment="Left"
-                                            VerticalAlignment="Center">
-									<TextBlock Text="{Binding Header}" />
-									<TextBlock Text="{Binding Namespace}"
-                                               Theme="{StaticResource CaptionTextBlockStyle}"
-                                               Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
-                                               FontStyle="Italic"/>
-								</StackPanel>
-							</Panel>
-						</DataTemplate>
+						<searchFolder:MainSearchTemplateSelector>
+							<DataTemplate x:Key="Default">
+								<defaultSearch:DefaultView />
+							</DataTemplate>
+							<DataTemplate x:Key="Tags">
+								<tagSearch:TagsView />
+							</DataTemplate>
+						</searchFolder:MainSearchTemplateSelector>
 					</AutoCompleteBox.ItemTemplate>
 				</AutoCompleteBox>
 			</Border>
@@ -201,7 +200,24 @@
                            IsSettingsVisible="False"
                            IsBackEnabled="{Binding #FrameView.CanGoBack}"
 						   Classes="MainAppNav">
-			<ui:Frame Name="FrameView" />
+			<Panel>
+				<ui:Frame Name="FrameView" />
+				<ui:InfoBar
+					Severity="Informational"
+					IsClosable="False"
+					VerticalAlignment="Top"
+					Margin="12"
+					Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+					Title="{Binding InfoBarTitle}"
+					Message="{Binding InfoBarMessage}"
+					IsOpen="{Binding InfoBarOpen}">
+					<ui:InfoBar.ActionButton>
+						<Button Content="Download"
+								HorizontalAlignment="Right"
+								Command="{Binding DownloadLatestCommand}"/>
+					</ui:InfoBar.ActionButton>
+				</ui:InfoBar>
+			</Panel>
 		</ui:NavigationView>
 
 		<local:SplashScreenUC  

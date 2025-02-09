@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>net8.0</TargetFrameworks> 
+	  <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+	  <ApplicationIcon>logo-symbol.ico</ApplicationIcon>
+	  <UseAppHost>true</UseAppHost>
+	  <AssemblyName>Chameleon</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <AvaloniaXaml Remove="Properties\**" />
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	  <PackageReference Include="Avalonia" />
+	  <PackageReference Include="Avalonia.Desktop" />
+	  <PackageReference Include="Avalonia.Svg" />
+	  <PackageReference Include="Avalonia.Svg.Skia" />
+	  <PackageReference Include="Avalonia.Fonts.Inter" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="../Chameleon.app.Avalonia/Chameleon.app.Avalonia.csproj" />
+    <ProjectReference Include="../Chameleon.app.client/Chameleon.app.client.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,5 +1,5 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"					
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:local="using:Chameleon.Av.Fluent.Common.Controls"
                     xmlns:ui="using:FluentAvalonia.UI.Controls"
                     xmlns:core="using:FluentAvalonia.Core"
@@ -47,19 +47,20 @@
 						  ColumnDefinitions="*,Auto">
 
 						<Panel>
-							
-						<TextBox Text="{TemplateBinding Text, Mode=TwoWay}"
-								 MaxLength="10000"/>
 
-						<Button Grid.Column="1"
-								HorizontalAlignment="Right"
-								Margin="0 -6 4 0"
-								Theme="{StaticResource SvgIconButton}"
-								Command="{Binding CopyCommand}"
-								CommandParameter="{TemplateBinding Text}"
-								IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNotNull}}"
-								Content="{TemplateBinding Tag}" />
-						</Panel>
+								<DataValidationErrors Name="PART_DataValidation" Errors="{TemplateBinding (DataValidationErrors.Errors)}">
+									<TextBox Text="{TemplateBinding Text, Mode=TwoWay}" MaxLength="10000"/>
+								</DataValidationErrors>
+
+								<Button Grid.Column="1"
+										HorizontalAlignment="Right"
+										Margin="0 -6 4 0"
+										Theme="{StaticResource SvgIconButton}"
+										Command="{Binding CopyCommand}"
+										CommandParameter="{TemplateBinding Text}"
+										IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNotNull}}"
+										Content="{TemplateBinding Tag}" />
+							</Panel>
 
 						<ItemsControl Grid.Column="1"
 									  Margin="-2 -4 4 0"
@@ -71,10 +72,10 @@
 								</ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
 						</ItemsControl>
-						
+
 					</Grid>
 
-					
+
 					<ItemsControl Name="TextBoxesHost"
 								  HorizontalAlignment="Stretch"
 								  Grid.Row="2"

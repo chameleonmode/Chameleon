@@ -1,12 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Chameleon.lib.Common;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.app.Avalonia.Models;
 using Avalonia.Collections;
 using Chameleon.app.Avalonia.Extensions;
+using Chameleon.lib;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 

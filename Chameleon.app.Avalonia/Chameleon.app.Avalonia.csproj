@@ -20,7 +20,9 @@
 	<PackageReference Include="FluentAvaloniaUI" />
 	<PackageReference Include="DynamicData" />
 	<PackageReference Include="CommunityToolkit.Mvvm" />
+	<PackageReference Include="ReactiveValidation.Avalonia" />
 	<PackageReference Include="System.Configuration.ConfigurationManager" />
+	<PackageReference Include="Microsoft.Playwright" />
 	<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 	<PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
 	<PackageReference Include="Microsoft.Extensions.Logging.Console" />
@@ -47,6 +49,9 @@
     </Compile>
     <Compile Update="Controls\MboxTitleUserControl.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\ProfilesAndFolders\Search\ByTags\Controls\TagFolderSearchControl.axaml.cs">
+      <DependentUpon>TagFolderSearchControl.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\PaginatorView.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>

@@ -1,14 +1,13 @@
-﻿using Chameleon.lib.Common;
+﻿using Chameleon.lib.Auth;
 using Chameleon.lib.Common.Interfaces.Services;
-using Chameleon.lib.Common.Interfaces.Sys;
 
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.lib.CommunityToolkit.MvvM;
 public partial class ViewModelObjectBase : ObservableObjectBase {
+	public Session CurrentSession { get; } = Session.Instance;
 
 	public bool Navigated { get; set; }
-
 	public ViewModelObjectBase()
 	{
 		

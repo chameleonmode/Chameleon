@@ -2,8 +2,8 @@ using Avalonia.Interactivity;
 
 using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.Av.Fluent.Common.Pages;
-using Chameleon.lib.Common.ServiceManagers;
-using Chameleon.lib.Common.Util;
+using Chameleon.lib.Helpers;
+using Chameleon.lib.Util;
 
 namespace Chameleon.app.Avalonia.Views;
 
@@ -19,7 +19,7 @@ public partial class SettingsView : ChameleonNavigationPage {
 	{
 		var uri = new Uri("https://github.com/chameleonmode/chameleon.app-CommunityPipeline");
 		try {
-			ProUtil.GoToUrlDefault(uri.ToString());
+			ProcessUtil.OpenBrowser(uri.ToString());
 		} catch {
 			Toaster.Error($"Error navigationg to {uri}");
 		}

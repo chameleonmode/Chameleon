@@ -4,6 +4,17 @@
         xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives">
   <Design.PreviewWith>
 	  <StackPanel>
+		  <ui:InfoBar 
+			  Title="Update Available"
+			  Message="Message"
+			  IsOpen="True"
+			  IsClosable="False"
+			  Severity="Informational"
+			  Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
+			  <ui:InfoBar.ActionButton>
+				  <Button Content="Update" HorizontalAlignment="Right" />
+			  </ui:InfoBar.ActionButton>
+		  </ui:InfoBar>
 
 		  <AutoCompleteBox Name="SearchBox"
 				   MaxWidth="500"

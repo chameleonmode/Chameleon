@@ -8,15 +8,16 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 
 using Chameleon.app.Avalonia;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.app.Avalonia.ViewModels.General;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.app.client.ViewModels;
 using Chameleon.app.client.Views;
-using Chameleon.lib.Common;
+using Chameleon.lib;
 using Chameleon.lib.Common.Interfaces.Services;
-using Chameleon.lib.Common.Types;
+using Chameleon.lib.Interfaces.Services;
 using Chameleon.lib.WebBrowser.Interfaces;
 using Chameleon.lib.WebBrowser.Services;
 
@@ -82,17 +83,20 @@ public partial class App : Application {
 			.AddSingleton<SettingsViewModel>()
 			//Playwright
 			.AddSingleton<lib.Playwright.Interfaces.ICompileScriptService, lib.Playwright.Services.CompileScriptService>()
-			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywriteService, Chameleon.lib.Playwright.Services.PlaywriteService>()
-			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywrightScriptRepository, Chameleon.lib.Playwright.Services.PlaywrightScriptRepository>()
-			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, Chameleon.lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
+			.AddSingleton<lib.Playwright.Interfaces.IPlaywriteService, lib.Playwright.Services.PlaywriteService>()
+			.AddSingleton<lib.Playwright.Interfaces.IPlaywrightScriptRepository, lib.Playwright.Services.PlaywrightScriptRepository>()
+			.AddSingleton<lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
 			.AddSingleton<PlaywrightViewModel>()
 			.AddSingleton<PlaywrightView>();
+
+			new ProfilesAndFolderModule().ConfigureServices(services);
 		});
 
 		// Setup IoC
 		IoC.Instance.Init(action: async (inited) => {
 			if (inited) {
 				await AppStartup.Instance.RunAsync();
+				IoC.GetService<SettingsViewModel>()?.InitializSettings();
 			}
 		});
 	}

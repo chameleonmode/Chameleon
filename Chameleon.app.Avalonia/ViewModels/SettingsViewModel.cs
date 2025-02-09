@@ -1,17 +1,16 @@
-﻿using Avalonia.Styling;
+﻿using Avalonia;
+using Avalonia.Media;
+using Avalonia.Styling;
 using System.Reflection;
 
+using Chameleon.lib;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.app.Avalonia.Models;
 
 using CommunityToolkit.Mvvm.ComponentModel;
-
 using CommunityToolkit.Mvvm.Input;
 
 using FluentAvalonia.Styling;
-using Avalonia.Media;
-using Avalonia;
-using Chameleon.lib.Common;
-using Chameleon.app.Avalonia.Models;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class SettingsViewModel : ViewModelObjectBase {
@@ -102,6 +101,10 @@ public partial class SettingsViewModel : ViewModelObjectBase {
 
 	public SettingsViewModel()
 	{
+	}
+
+	public void InitializSettings()
+	{
 		if (IoC.GetJsonValue<AppSettings>(nameof(AppSettings)) is AppSettings appSettings) {
 			if (appSettings.UseCustomAccentColor && appSettings.CustomAccentColor is string coler) {
 				UpdateAppAccentColor(Color.Parse(coler));
@@ -115,10 +118,9 @@ public partial class SettingsViewModel : ViewModelObjectBase {
 	}
 
 	[RelayCommand]
-	public void Logout()
+	public async Task Logout()
 	{
-		if (IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) is LoginSettings login)
-			IoC.SetJsonValue(new LoginSettings(login.LoginName, login.LicenseKey, false), nameof(LoginSettings));
+		await CurrentSession.Logout();
 		Environment.Exit(0);
 	}
 

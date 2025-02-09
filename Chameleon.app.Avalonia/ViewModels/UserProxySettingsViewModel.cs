@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Net.Sockets;
 using System.Reactive.Subjects;
 
 using Chameleon.app.Avalonia.DynamicData;
@@ -9,6 +10,7 @@ using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Helpers;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -126,29 +128,28 @@ public partial class UserProxySettingsViewModel
 		if (profiles.Count == 0) {
 			return;
 		}
+		try {
+			var urls = await ProxyAccessRepo.GetAccess(new ProxyAccessRequestDto {
+				HostType = ProxyHostType.Hostname,
+				IpType = ProxyIpType.Sticky,
+				ProtocolType = ProxyProtocolType.Http,
+				CountryId = Country?.id,
+				Count = profiles.Count,
+			});
+			if (urls.Length == 0) {
+				throw new Exception("No Proxy Credit");
+			}
 
-		var request = new ProxyAccessRequestDto {
-			HostType = ProxyHostType.Hostname,
-			IpType = ProxyIpType.Sticky,
-			ProtocolType = ProxyProtocolType.Http,
-			CountryId = Country?.id,
-			Count = profiles.Count,
-		};
+			var proxies = ParseProxiesSettings(urls.Select(p => p.Url).ToArray()!);
+			await ApplyProxy(proxies, profiles);
 
-		var urls = await ProxyAccessRepo.GetAccess(request);
+			OnPropertyChanged(nameof(HasSelectedItems));
+			OnPropertyChanged(nameof(SelectedCount));
 
-		if (urls.Length == 0) {
-			_ = await Mbox.ShowErrorAsync("No Proxy Credit", "You have no proxy to set. Purchase them on Proxy Credit tab");
-			return;
+			Toaster.Success($"Update was successful.");
+		} catch {
+			Toaster.Error("No Proxy Credit");
 		}
-
-		var proxies = ParseProxiesSettings(urls.Select(p=> p.Url).ToArray()!);
-
-		await ApplyProxy(proxies, profiles);
-
-		OnPropertyChanged(nameof(HasSelectedItems));
-		OnPropertyChanged(nameof(SelectedCount));
-		Toaster.Success($"Update was successful.");
 	}
 	[RelayCommand]
 	public async Task ApplyProxy()
