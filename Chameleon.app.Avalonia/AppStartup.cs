@@ -21,7 +21,7 @@ public class AppStartup {
 
 	public async Task RunAsync() {
 		if (!await RunAsync(0)) {
-			_ = await Mbox.ShowErrorAsync("Error Logging In", "There was an error validationg the login information that was provided.");
+			Toaster.Info("Login canceled, application closing");
 			Environment.Exit(0);
 		} else {
 			IOtil.DeleteDExists(Addons.AddonExtentionDir);
@@ -52,10 +52,8 @@ public class AppStartup {
 			ArgumentNullException.ThrowIfNull(loginvm.LicenceKey, "LicenceKey");
 
 			await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
-			var loginDetailsChanged =
-				loginvm.UserName != loginSetings.LoginName
-				|| loginvm.LicenceKey != loginSetings.LicenseKey
-				|| loginvm.AutoLogin != loginSetings.AutoLogin;
+
+			var loginDetailsChanged = loginvm.UserName != loginSetings.LoginName || loginvm.LicenceKey != loginSetings.LicenseKey || loginvm.AutoLogin != loginSetings.AutoLogin;
 			if (loginDetailsChanged) {
 				IoC.SetJsonValue(new LoginSettings(loginvm.UserName, loginvm.LicenceKey, loginvm.AutoLogin), nameof(LoginSettings));
 				return true;

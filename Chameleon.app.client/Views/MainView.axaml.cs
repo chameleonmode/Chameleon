@@ -6,13 +6,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
 using Chameleon.Av.Fluent.Common.Pages;
-
 using FluentAvalonia.UI.Controls;
-
 using FluentAvalonia.UI.Media.Animation;
-
-using FluentAvalonia.UI.Navigation;
-
 using FluentAvalonia.UI.Windowing;
 using System.Linq;
 using Chameleon.app.client.ViewModels;
@@ -41,7 +36,7 @@ public partial class MainView : UserControl {
 			{
 				NavHeader = "Profiles",
 				IconKey = "ContactIcon",
-				Tag = typeof(Chameleon.app.Avalonia.Views.ProjectsView)
+				Tag = typeof(Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView)
 			}
 		},
 		{
