@@ -83,9 +83,9 @@ public partial class App : Application {
 			.AddSingleton<SettingsViewModel>()
 			//Playwright
 			.AddSingleton<lib.Playwright.Interfaces.ICompileScriptService, lib.Playwright.Services.CompileScriptService>()
-			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywriteService, Chameleon.lib.Playwright.Services.PlaywriteService>()
-			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IPlaywrightScriptRepository, Chameleon.lib.Playwright.Services.PlaywrightScriptRepository>()
-			.AddSingleton<Chameleon.lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, Chameleon.lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
+			.AddSingleton<lib.Playwright.Interfaces.IPlaywriteService, lib.Playwright.Services.PlaywriteService>()
+			.AddSingleton<lib.Playwright.Interfaces.IPlaywrightScriptRepository, lib.Playwright.Services.PlaywrightScriptRepository>()
+			.AddSingleton<lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
 			.AddSingleton<PlaywrightViewModel>()
 			.AddSingleton<PlaywrightView>();
 
@@ -96,6 +96,7 @@ public partial class App : Application {
 		IoC.Instance.Init(action: async (inited) => {
 			if (inited) {
 				await AppStartup.Instance.RunAsync();
+				IoC.GetService<SettingsViewModel>()?.InitializSettings();
 			}
 		});
 	}

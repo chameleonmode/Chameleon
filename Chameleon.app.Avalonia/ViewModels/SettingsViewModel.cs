@@ -1,18 +1,16 @@
-﻿using Avalonia.Styling;
+﻿using Avalonia;
+using Avalonia.Media;
+using Avalonia.Styling;
 using System.Reflection;
 
+using Chameleon.lib;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.app.Avalonia.Models;
 
 using CommunityToolkit.Mvvm.ComponentModel;
-
 using CommunityToolkit.Mvvm.Input;
 
 using FluentAvalonia.Styling;
-using Avalonia.Media;
-using Avalonia;
-using Chameleon.app.Avalonia.Models;
-using Chameleon.lib;
-using Chameleon.lib.Auth;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class SettingsViewModel : ViewModelObjectBase {
@@ -102,6 +100,10 @@ public partial class SettingsViewModel : ViewModelObjectBase {
 	private string liscencedTo = "xxx";
 
 	public SettingsViewModel()
+	{
+	}
+
+	public void InitializSettings()
 	{
 		if (IoC.GetJsonValue<AppSettings>(nameof(AppSettings)) is AppSettings appSettings) {
 			if (appSettings.UseCustomAccentColor && appSettings.CustomAccentColor is string coler) {

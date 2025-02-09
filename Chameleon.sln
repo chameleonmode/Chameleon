@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
@@ -7,13 +8,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		..\..\Users\eli\AppData\Roaming\Chameleon\appsettings.json = ..\..\Users\eli\AppData\Roaming\Chameleon\appsettings.json
 		Directory.Packages.props = Directory.Packages.props
 		LICENSE = LICENSE
 		README.md = README.md
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.Avalonia.Desktop", "Chameleon.Avalonia\src\Chameleon.Avalonia.Desktop\Chameleon.Avalonia.Desktop.csproj", "{ABEAB877-7688-494A-84DF-7B44989A2F3E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia", "Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj", "{8C417AF0-D948-4637-B38B-DDC6E058C83D}"
 EndProject
@@ -44,12 +43,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CE7FF880
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "main", "main", "{137272C9-D563-4573-A169-39252A4C9F7B}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\macnotorize.sh = scripts\macnotorize.sh
+		scripts\pacamac.sh = scripts\pacamac.sh
+		scripts\windowsbuild.sh = scripts\windowsbuild.sh
+		scripts\notorizecheck.sh = scripts\notorizecheck.sh
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.lib.Tests", "..\chameleon-lib\Chameleon.lib.Tests\Chameleon.lib.Tests.csproj", "{16E20385-1F2B-4947-BDFD-C1474AF1FDB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.app.client", "Chameleon.app.client\Chameleon.app.client.csproj", "{1975BFAC-B92B-459A-AB8B-A70C53433302}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.app.client.Desktop", "Chameleon.app.client.Desktop\Chameleon.app.client.Desktop.csproj", "{80FFC033-F3F8-43F4-8AF1-86E4F5DF4577}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{99A4DEF3-5CE7-424B-8811-DF2DEB87EB67}"
 	ProjectSection(SolutionItems) = preProject
@@ -60,16 +63,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{99A4DEF3-5CE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\chameleon-lib\Tests\Tests.csproj", "{D308CCCA-95E9-420B-A9B3-3DB904F11D30}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Desktop", "Chameleon.Avalonia.Desktop\Chameleon.Avalonia.Desktop.csproj", "{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABEAB877-7688-494A-84DF-7B44989A2F3E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -106,28 +107,27 @@ Global
 		{1975BFAC-B92B-459A-AB8B-A70C53433302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1975BFAC-B92B-459A-AB8B-A70C53433302}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1975BFAC-B92B-459A-AB8B-A70C53433302}.Release|Any CPU.Build.0 = Release|Any CPU
-		{80FFC033-F3F8-43F4-8AF1-86E4F5DF4577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{80FFC033-F3F8-43F4-8AF1-86E4F5DF4577}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{80FFC033-F3F8-43F4-8AF1-86E4F5DF4577}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{80FFC033-F3F8-43F4-8AF1-86E4F5DF4577}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{ABEAB877-7688-494A-84DF-7B44989A2F3E} = {137272C9-D563-4573-A169-39252A4C9F7B}
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D} = {0B86C57C-40CF-4737-8F82-864548769102}
 		{AC2F00CB-88A2-44C8-ABDF-DD66EA1E0911} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{137272C9-D563-4573-A169-39252A4C9F7B} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{16E20385-1F2B-4947-BDFD-C1474AF1FDB0} = {CE7FF880-AA75-4AEE-BFA3-B64AB857433B}
 		{1975BFAC-B92B-459A-AB8B-A70C53433302} = {0B86C57C-40CF-4737-8F82-864548769102}
-		{80FFC033-F3F8-43F4-8AF1-86E4F5DF4577} = {137272C9-D563-4573-A169-39252A4C9F7B}
 		{99A4DEF3-5CE7-424B-8811-DF2DEB87EB67} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30} = {CE7FF880-AA75-4AEE-BFA3-B64AB857433B}
+		{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C} = {137272C9-D563-4573-A169-39252A4C9F7B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}
