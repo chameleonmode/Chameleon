@@ -457,3 +457,7 @@ build/
 resources/
 scripts/chameleonmodes.provisionprofile
 scripts/chamelionairbundlepp.provisionprofile
+scripts/CertificateSigningRequest.certSigningRequest
+scripts/Developer ID Application: Simon Dadia (5K732WRGK2).cer
+scripts/developer id application.p12
+scripts/developerID_application.cer
