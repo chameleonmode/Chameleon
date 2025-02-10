@@ -128,6 +128,8 @@ public partial class ProxyViewModel : ObservableObjectBase {
 		_ = builder.RuleFor(vm => vm.Title).NotEmpty().MaxLength(50)
 							 .WithMessage("Title is requried");
 
+		_ = builder.RuleFor(vm => vm.Host).NotEmpty().WithMessage("Valid host is requried");
+
 		_ = builder.RuleFor(vm => vm.Port)
 							 .Must(x => x.PropertyValue > 0)
 								.WithMessage("Valid port is requried");

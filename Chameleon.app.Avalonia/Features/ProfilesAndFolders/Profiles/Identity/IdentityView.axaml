@@ -128,7 +128,7 @@
 				<TabItem.Content>
 					<StackPanel Spacing="18">
 						<afv:HeaderdInputFieldsControl Title="PROFILE NAME"
-													   Text="{Binding UserProfile.Title, FallbackValue=NAME}" />
+													   Text="{Binding UserProfile.Title, FallbackValue=NAME, Mode=TwoWay}" />
 
 						<afv:HeaderdInputFieldsControl Title="PROXY CONFIGURATION"
 													   Header="False">
