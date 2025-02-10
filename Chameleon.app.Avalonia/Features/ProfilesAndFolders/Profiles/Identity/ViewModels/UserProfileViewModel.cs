@@ -1,7 +1,9 @@
-﻿using Chameleon.lib.Common.Models.Dto;
+﻿using Chameleon.app.Avalonia.Extensions;
+using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using ReactiveValidation;
+using ReactiveValidation.Extensions;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 public partial class UserProfileViewModel : ObservableObjectBase {
@@ -65,6 +67,15 @@ public partial class UserProfileViewModel : ObservableObjectBase {
 	[ObservableProperty]
 	public WebrowserViewModel webBrowser;
 
+	protected override IObjectValidator GetValidator() {
+		var builder = new ValidationBuilder<UserProfileViewModel>();
+
+		_ = builder.RuleFor(vm => vm.Title).NotEmpty().MaxLength(50)
+							 .WithMessage("Title is requried");
+
+		return builder.Build(this);
+	}
+
 	public UserProfileDto ToDto() {
 		return new UserProfileDto() {
 			id = Id,
@@ -110,6 +121,19 @@ public partial class ProxyViewModel : ObservableObjectBase {
 
 	[ObservableProperty]
 	public string? password;
+
+	protected override IObjectValidator GetValidator() {
+		var builder = new ValidationBuilder<ProxyViewModel>();
+
+		_ = builder.RuleFor(vm => vm.Title).NotEmpty().MaxLength(50)
+							 .WithMessage("Title is requried");
+
+		_ = builder.RuleFor(vm => vm.Port)
+							 .Must(x => x.PropertyValue > 0)
+								.WithMessage("Valid port is requried");
+
+		return builder.Build(this);
+	}
 
 	public ProxDto ToDto() {
 		return new ProxDto() {
