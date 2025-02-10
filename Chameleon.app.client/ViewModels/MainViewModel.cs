@@ -62,7 +62,6 @@ public partial class MainViewModel : ObservableObjectBase {
 					InfoBarMessage = $"Download the latest version of Chameleon ({appClientInfo.latest})";
 					InfoBarOpen = true;
 				}
-
 			} catch (Exception e) {
 				Toaster.Error(e.Message);
 			}

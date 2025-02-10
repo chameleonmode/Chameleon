@@ -102,12 +102,13 @@ public partial class AssistantTaskforceViewModel : ViewModelObjectBase {
 					ArgumentNullException.ThrowIfNullOrEmpty(invite.AssistantName);
 					ArgumentNullException.ThrowIfNullOrEmpty(invite.AssistantEmail);
 					var profileIds = invite.SelectedProfiles.Select(p => p.Dto!.id).ToList();
+					var folderIds = invite.SelectedFolders.Select(f => f.Dto!.id).ToList();
 					_ = await userAssistantRepo.Create(new AssistDto {
 						UserName = invite.AssistantName,
 						EmailAddress = invite.AssistantEmail,
 						ProfileIds = profileIds,
 						ProfilePermissionIds = [],
-						FolderIds = [],
+						FolderIds = folderIds,
 						FolderPermissionIds = []
 					});
 				} catch {
