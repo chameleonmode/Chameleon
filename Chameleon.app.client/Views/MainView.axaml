@@ -223,7 +223,7 @@
 		<local:SplashScreenUC  
 			Name="SplashScreen"
 			Grid.RowSpan="2"
-			IsVisible="False"
+			IsVisible="{Binding IsSplashVisible}" 
 		/>
 	</Grid>
 </UserControl>
