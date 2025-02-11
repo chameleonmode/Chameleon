@@ -148,7 +148,7 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 		Folderz.Clear();
 		Folderz.AddRange(folders.Select(f => new ObsAssisFolder(f,
 			onFolderUnshare: async of => {
-				var (userId, dtoId) = EnsureDtos(Dto!.id, of.Dto!.FolderId);
+				var (userId, dtoId) = EnsureDtos(Dto!.id, of.Dto!.id);
 				_ = await ShareFoldersRepo.Instance.Delete(dtoId);
 				_ = Folderz.Remove(of);
 			}
@@ -189,10 +189,21 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 				subHeader: "Add access to specific Profiles for this user",
 				symbas: Enums.Symbas.AddFriend,
 				btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK) {
+				//
 				var profileIds = invite.SelectedProfiles.Select(p => p.Dto!.id).ToList();
-				var result = await UserAssistantRepo.AddProfiles(Dto!.id, profileIds, []);
-				await InitProfiles();
-				Toaster.Success($"{profileIds.Count} profile(s) shared successfully");
+				if (profileIds.Count != 0) {
+					var result = await UserAssistantRepo.AddProfiles(Dto!.id, profileIds, []);
+					await InitProfiles();
+					Toaster.Success($"{profileIds.Count} profile(s) shared successfully");
+				}
+
+				//
+				var folderIds = invite.SelectedFolders.Select(f => f.Dto!.id).ToList();
+				if (folderIds.Count != 0) {
+					var folderResult = await ShareFoldersRepo.Share(Dto!.id, folderIds, []);
+					await InitFolders();
+					Toaster.Success($"{folderIds.Count} folder(s) shared successfully");
+				}
 			}
 		} catch (Exception ex) {
 			Toaster.Error($"Failed to share profile(s). {ex.Message}.");

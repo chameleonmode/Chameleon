@@ -22,7 +22,7 @@
 
 		<dialogs:ChameleonDialogControl.Content>
 			<StackPanel Spacing="6">
-				<!--<Expander Header="Folders">
+				<Expander Header="Folders">
 					<StackPanel>
 						<ItemsControl
 								ItemsSource="{Binding SelectedFolders}"
@@ -35,7 +35,7 @@
 							ItemContainerTheme="{StaticResource GridViewItem}"
 							ItemsPanel="{StaticResource DoubleColumnUniformGridTemplate}"/>
 					</StackPanel>
-				</Expander>-->
+				</Expander>
 				<Expander Header="Profiles">
 					<StackPanel>
 						<ItemsControl

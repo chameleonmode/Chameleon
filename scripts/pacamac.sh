@@ -1,12 +1,10 @@
 #!/bin/bash
-# Usage cd /Users/dev/Projects/Chameleon/scripts
+# Usage cd /Users/dev/src/Chameleon/scripts
 # bash pacamac.sh
 
 APP_NAME=Chameleon.app
-APP_SIGNING_IDENTITY="Developer ID Application: Simon Dadia (5K732WRGK2)"
-SLN_DIR=/Users/dev/Projects/Chameleon
+SLN_DIR=/Users/dev/src/Chameleon
 CSPROJ=Chameleon.Avalonia.Desktop
-APP_ENTITLEMENTS_FILE=$SLN_DIR/$CSPROJ/chameleonApp.entitlements
 BUILD_DIR=$SLN_DIR/build/osx
 
 #cleanup folders
@@ -48,11 +46,13 @@ for dylib in ../Frameworks/*.dylib; do
 done
 cd $BUILD_DIR
 
-echo "[INFO] Switch provisionprofile to AppStore"
-\cp -R -f $SLN_DIR/scripts/chameleonmodes.provisionprofile $APP_NAME/Contents/embedded.provisionprofile
 
-#echo "[INFO] Fix libuv.dylib architectures"
-#lipo -remove i386 "App/Chameleon.app/Contents/Frameworks/libuv.dylib" "App/Chameleon.app/Contents/Frameworks/libuv.dylib"
+APP_SIGNING_IDENTITY="Developer ID Application: Simon Dadia (5K732WRGK2)"
+APP_ENTITLEMENTS_FILE=$SLN_DIR/$CSPROJ/chameleonApp.entitlements
+APP_PROVISIONINGPROFILE=$SLN_DIR/scripts/chameleonmodes.provisionprofile 
+
+echo "[INFO] Switch provisionprofile to AppStore"
+\cp -R -f $APP_PROVISIONINGPROFILE $APP_NAME/Contents/embedded.provisionprofile
 
 find "$APP_NAME/Contents/Frameworks"|while read fname; do
     if [[ -f $fname ]]; then
