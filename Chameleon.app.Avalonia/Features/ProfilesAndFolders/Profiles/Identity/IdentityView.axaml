@@ -128,7 +128,7 @@
 				<TabItem.Content>
 					<StackPanel Spacing="18">
 						<afv:HeaderdInputFieldsControl Title="PROFILE NAME"
-													   Text="{Binding UserProfile.Title, FallbackValue=NAME}" />
+													   Text="{Binding UserProfile.Title, FallbackValue=NAME, Mode=TwoWay}" />
 
 						<afv:HeaderdInputFieldsControl Title="PROXY CONFIGURATION"
 													   Header="False">
@@ -293,33 +293,30 @@
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																			   Text="{Binding Dto.Title, FallbackValue=Title}" />
+																			   Text="{Binding Title, FallbackValue=Title}" />
 
 												<afv:HeaderdInputFieldsControl Title="AddressLine1"
-																			   Text="{Binding Dto.AddressLine1, FallbackValue=AddressLine1}" />
+																			   Text="{Binding AddressLine1, FallbackValue=AddressLine1}" />
 
 												<afv:HeaderdInputFieldsControl Title="AddressLine2"
-																			   Text="{Binding Dto.AddressLine2, FallbackValue=AddressLine2}" />
+																			   Text="{Binding AddressLine2, FallbackValue=AddressLine2}" />
 
 												<afv:HeaderdInputFieldsControl Title="City"
-																			   Text="{Binding Dto.City, FallbackValue=City}" />
+																			   Text="{Binding City, FallbackValue=City}" />
 
 												<afv:HeaderdInputFieldsControl Title="State"
-																			   Text="{Binding Dto.State, FallbackValue=State}" />
+																			   Text="{Binding State, FallbackValue=State}" />
 
 												<afv:HeaderdInputFieldsControl Title="Zip"
-																			   Text="{Binding Dto.Zip, FallbackValue=Zip}" />
+																			   Text="{Binding Zip, FallbackValue=Zip}" />
 
 												<ComboBox ItemsSource="{Binding Countries}"
-														  SelectedItem="{Binding SelectedCountry}"
 														  Margin="0 0 6 0"
 														  PlaceholderText="Country"
-														  HorizontalAlignment="Stretch">
-													<ComboBox.ItemTemplate>
-														<DataTemplate>
-															<TextBlock Text="{Binding Name}" />
-														</DataTemplate>
-													</ComboBox.ItemTemplate>
+														  HorizontalAlignment="Stretch"
+														  SelectedValue="{Binding CountryId}"
+														  SelectedValueBinding="{Binding id}"
+														  DisplayMemberBinding="{Binding Name}">
 												</ComboBox>
 
 												<afv:HeaderdInputFieldsControl Title="Notes"

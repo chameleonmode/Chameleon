@@ -16,7 +16,7 @@
 			<Setter Property="Theme" Value="{StaticResource ListBoxNoScroller}" />
 			<Setter Property="ItemContainerTheme" Value="{StaticResource GridViewItem}" />
 		</Style>
-		
+
 		<Style Selector="ListBox.grid3">
 			<Setter Property="ItemsPanel">
 				<ItemsPanelTemplate>
@@ -58,11 +58,11 @@
 			</afv:ChameleonContentControl.Content>
 			
 		</afv:ChameleonContentControl>-->
-		
+
 		<afv:ChameleonContentControl Grid.Row="1"
 									 Title="Users"
 									 TitleDescription="Taskforce users and resource access">
-			
+
 			<afv:ChameleonContentControl.TitleContent>
 				<ui:CommandBar HorizontalAlignment="Right" DefaultLabelPosition="Right">
 					<ui:CommandBar.PrimaryCommands>
@@ -75,89 +75,112 @@
 			</afv:ChameleonContentControl.TitleContent>
 
 			<afv:ChameleonContentControl.Content>
-				<ItemsControl Grid.Row="1" 
+				<ItemsControl Grid.Row="1"
 								  ItemsSource="{Binding Assistantz}">
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<Grid Margin="0 3"
-									  RowDefinitions="Auto, Auto, *"
-									  ColumnDefinitions="*, Auto">
-									<TextBlock
-										VerticalAlignment="Top"
-										Theme="{StaticResource BodyStrongTextBlockStyle}"
-										Classes="NoWrap">
-										<Run Text="{Binding Dto.UserName, FallbackValue=username}" />
-										<Run Text=" - " />
-										<Run Text="{Binding Dto.EmailAddress,FallbackValue=email@email.com}" />
-									</TextBlock>
-									<!--https://github.com/chameleonmode/Chameleon/issues/51
-								<ItemsControl ItemsSource="{Binding FolderViewModels}"
-											  Padding="{DynamicResource CheckBoxPadding}"
-											  ItemTemplate="{StaticResource SelectedItemTemplate}"
-											  ItemsPanel="{StaticResource StackPanelTemplate}"/>-->
-									<ui:CommandBar DefaultLabelPosition="Right"
-												   Grid.Column="1">
-											<ui:CommandBar.SecondaryCommands>
-												<ui:CommandBarButton
-													IconSource="Edit"
-													Label="Edit Access"
-													Command="{Binding AddMoreProfilesCommand}" />
-												<ui:CommandBarButton
-													IconSource="Copy"
-													Label="Copy licence key"
-													Command="{Binding SendLicenceKeyCommand}" />
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Grid Margin="0 3"
+								  RowDefinitions="Auto, Auto, *"
+								  ColumnDefinitions="*, Auto">
+								<TextBlock
+									VerticalAlignment="Top"
+									Theme="{StaticResource BodyStrongTextBlockStyle}"
+									Classes="NoWrap">
+									<Run Text="{Binding Dto.UserName, FallbackValue=username}" />
+									<Run Text=" - " />
+									<Run Text="{Binding Dto.EmailAddress,FallbackValue=email@email.com}" />
+								</TextBlock>
+								<ui:CommandBar DefaultLabelPosition="Right"
+											   Grid.Column="1">
+									<ui:CommandBar.SecondaryCommands>
+										<ui:CommandBarButton
+											IconSource="Edit"
+											Label="Edit Access"
+											Command="{Binding AddMoreProfilesCommand}" />
+										<ui:CommandBarButton
+											IconSource="Copy"
+											Label="Copy licence key"
+											Command="{Binding SendLicenceKeyCommand}" />
 
-												<ui:CommandBarSeparator />
+										<ui:CommandBarSeparator />
 
-												<!--<ui:CommandBarToggleButton
+										<!--<ui:CommandBarToggleButton
 													IconSource="Contact"
 													Label="Can Create Profiles"
 													IsChecked="{Binding CanCreateProfiles}"/>
 												<ui:CommandBarSeparator />-->
-												<ui:CommandBarButton
-													IconSource="Delete"
-													Label="Delete"
-													Command="{Binding DeleteAssistantCommand}"/>
-											</ui:CommandBar.SecondaryCommands>
-									</ui:CommandBar>
-									<!--<Button
-										VerticalAlignment="Top"
-										Grid.Column="1"
-										Margin="0 3"
-										Content="More"
-										Theme="{DynamicResource AccentSymbleIconButton}">
-										<Button.Flyout>
-											<ui:FAMenuFlyout Placement="Bottom">
-												<ui:MenuFlyoutItem
-													Text="Edit profile access"
-													IconSource="Add"
-													Command="{Binding AddMoreProfilesCommand}" />
-												<ui:MenuFlyoutItem
-													Text="Copy licence key"
-													IconSource="Copy"
-													Command="{Binding SendLicenceKeyCommand}" />
-												<ui:MenuFlyoutItem
-													Text="Delete user"
-													IconSource="Delete"
-													Command="{Binding DeleteAssistantCommand}" />
+										<ui:CommandBarButton
+											IconSource="Delete"
+											Label="Delete"
+											Command="{Binding DeleteAssistantCommand}"/>
+									</ui:CommandBar.SecondaryCommands>
+								</ui:CommandBar>
 
-												<ui:MenuFlyoutSeparator />
+								<StackPanel Grid.Row="1"
+											Grid.ColumnSpan="2"
+											Spacing="6"
+											Margin="3 0 6 0">
+									<ui:SettingsExpander Header="Folders"
+														 IconSource="Folder">
+										<ui:SettingsExpanderItem>
+											<ScrollViewer
+												VerticalScrollBarVisibility="Auto"
+												MaxHeight="220">
+												<ItemsControl
+													ItemsSource="{Binding Folderz}"
+													ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}">
+													<ItemsControl.ItemTemplate>
+														<DataTemplate>
+															<StackPanel
+																Spacing="3"
+																Margin="3 0"
+																Orientation="Horizontal">
+																<TextBlock
+																	Text="{Binding Dto.FolderName, FallbackValue=name}"
+																	HorizontalAlignment="Left"
+																	VerticalAlignment="Center"
+																	Theme="{StaticResource BodyStrongTextBlockStyle}" />
+																<Button Content="More"
+																		BorderBrush="Transparent"
+																		Background="Transparent"
+																		Theme="{DynamicResource AccentSymbleIconButton}">
+																	<Button.Flyout>
+																		<ui:FAMenuFlyout>
+																			<!--<ui:MenuFlyoutSubItem IconSource="Share"
+																								  Text="Share Cookies">
+																				<ui:MenuFlyoutItem
+																					Text="Chrome"
+																					CommandParameter="SyncCookiesChrome"
+																					Command="{Binding AsyncCfromVCommand}" />
+																				<ui:MenuFlyoutItem
+																					Text="Brave"
+																					CommandParameter="SyncCookiesBrave"
+																					Command="{Binding AsyncCfromVCommand}" />
+																				<ui:MenuFlyoutItem
+																					Text="Firefox"
+																					CommandParameter="SyncCookiesFirefox"
+																					Command="{Binding AsyncCfromVCommand}" />
+																			</ui:MenuFlyoutSubItem>
 
-												<ui:MenuFlyoutSubItem Text="Options">
-													<ui:RadioMenuFlyoutItem
-														IconSource="Contact"
-														Text="Can Create Profiles"
-														GroupName="rpCreateProfiles"
-														IsChecked="{Binding CanCreateProfiles}"/>
-												</ui:MenuFlyoutSubItem>
-											</ui:FAMenuFlyout>
-										</Button.Flyout>
-									</Button>-->
-									<StackPanel Grid.Row="1"
-												Margin="3 0 6 0"
-												Grid.ColumnSpan="2">
-										<Expander Header="Profiles"
-												  IsExpanded="True">
+																			<ui:MenuFlyoutSeparator />-->
+
+																			<ui:MenuFlyoutItem
+																				Text="Remove Access"
+																				IconSource="Clear"
+																				Command="{Binding UnshareCommand}" />
+																		</ui:FAMenuFlyout>
+																	</Button.Flyout>
+																</Button>
+															</StackPanel>
+														</DataTemplate>
+													</ItemsControl.ItemTemplate>
+												</ItemsControl>
+											</ScrollViewer>
+										</ui:SettingsExpanderItem>
+									</ui:SettingsExpander>
+									<ui:SettingsExpander Header="Profiles"
+														 IconSource="Contact">
+										<ui:SettingsExpanderItem>
 											<ScrollViewer
 												VerticalScrollBarVisibility="Auto"
 												MaxHeight="220">
@@ -202,7 +225,7 @@
 																			<ui:MenuFlyoutItem
 																				Text="Remove Access"
 																				IconSource="Clear"
-																				CommandParameter="SyncCookiesFirefox"
+																				CommandParameter="Unshare"
 																				Command="{Binding AsyncCfromVCommand}" />
 																		</ui:FAMenuFlyout>
 																	</Button.Flyout>
@@ -212,15 +235,15 @@
 													</ItemsControl.ItemTemplate>
 												</ItemsControl>
 											</ScrollViewer>
-
-										</Expander>
-									</StackPanel>
-								</Grid>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
+										</ui:SettingsExpanderItem>
+									</ui:SettingsExpander>
+								</StackPanel>
+							</Grid>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
 			</afv:ChameleonContentControl.Content>
-			
+
 		</afv:ChameleonContentControl>
 	</Grid>
 </UserControl>

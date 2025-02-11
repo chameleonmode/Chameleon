@@ -1,7 +1,11 @@
-﻿using Chameleon.lib.Common.Constants;
+﻿using Chameleon.app.Avalonia.Extensions;
+using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
+using ReactiveValidation;
+using ReactiveValidation.Extensions;
 using System;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
@@ -65,6 +69,22 @@ public partial class UPPersonViewModel: ObservableObjectBase {
 	[ObservableProperty]
 	private Enums.GenderType gender = Enums.GenderType.Female;
 	public string Gendertext => Gender.ToString();
+
+	protected override IObjectValidator GetValidator() {
+		var builder = new ValidationBuilder<UPPersonViewModel>();
+
+		_ = builder.RuleFor(vm => vm.Title).NotEmpty().MaxLength(50);
+
+		_ = builder.RuleFor(vm => vm.FirstName).NotEmpty().WithMessage("Firstname is requried");
+
+		_ = builder.RuleFor(vm => vm.LastName).NotEmpty().WithMessage("Lastname is requried");
+
+		_ = builder.RuleFor(vm => vm.PhoneNumber)
+				.Must(context => context.PropertyValue.IsValidPhoneNumber())
+				.WithMessage("Phone number is not valid");
+
+		return builder.Build(this);
+	}
 
 	public UPPersonDto ToDto() {
 		return new UPPersonDto() {

@@ -1,6 +1,8 @@
 ﻿using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
+using ReactiveValidation;
+using ReactiveValidation.Extensions;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 public partial class UPAddressViewModel: ObservableObjectBase {
@@ -48,6 +50,24 @@ public partial class UPAddressViewModel: ObservableObjectBase {
 
 	[ObservableProperty]
 	private string? notes;
+
+	protected override IObjectValidator GetValidator() {
+		var builder = new ValidationBuilder<UPAddressViewModel>();
+
+		_ = builder.RuleFor(vm => vm.Title).NotEmpty().MaxLength(50);
+
+		_ = builder.RuleFor(vm => vm.AddressLine1).NotEmpty().WithMessage("AddressLine is required");
+
+		_ = builder.RuleFor(vm => vm.City).NotEmpty().WithMessage("City is requried");
+
+		_ = builder.RuleFor(vm => vm.State).NotEmpty().WithMessage("State is requried");
+
+		_ = builder.RuleFor(vm => vm.CountryId)
+					.Must(x => x.PropertyValue is not null and not 0)
+					.WithMessage("Country is requried");
+
+		return builder.Build(this);
+	}
 
 	public UPAddressDto ToDto() {
 		return new UPAddressDto() {
