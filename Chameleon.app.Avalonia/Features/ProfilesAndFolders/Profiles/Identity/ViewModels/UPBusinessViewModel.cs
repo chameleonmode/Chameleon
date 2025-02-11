@@ -1,6 +1,9 @@
-﻿using Chameleon.lib.Common.Models.Dto;
+﻿using Chameleon.app.Avalonia.Extensions;
+using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
+using ReactiveValidation;
+using ReactiveValidation.Extensions;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 public partial class UPBusinessViewModel : ObservableObjectBase {
@@ -40,6 +43,24 @@ public partial class UPBusinessViewModel : ObservableObjectBase {
 
 	[ObservableProperty]
 	private string? notes;
+
+	protected override IObjectValidator GetValidator() {
+		var builder = new ValidationBuilder<UPBusinessViewModel>();
+
+		_ = builder.RuleFor(vm => vm.Title).NotEmpty();
+
+		_ = builder.RuleFor(vm => vm.CompanyName).NotEmpty().WithMessage("Company name is requried");
+
+		_ = builder.RuleFor(vm => vm.WebSite)
+				.Must(context => context.PropertyValue.IsValidWebUrl())
+				.WithMessage("Website is not valid");
+
+		_ = builder.RuleFor(vm => vm.PhoneNumber)
+				.Must(context => context.PropertyValue.IsValidPhoneNumber())
+				.WithMessage("Phone number is not valid");
+
+		return builder.Build(this);
+	}
 
 	public UPBusinessDto ToDto() {
 		return new UPBusinessDto() {

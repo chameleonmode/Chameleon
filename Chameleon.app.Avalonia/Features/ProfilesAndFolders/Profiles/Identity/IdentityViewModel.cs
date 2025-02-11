@@ -245,7 +245,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		}
 
 		if (p.Dto != null) {
-			_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.Dto.ToDto());
+			_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.ToDto());
 		}
 	}
 
