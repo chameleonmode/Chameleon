@@ -1,10 +1,10 @@
 #!/bin/bash
-# Usage cd /Users/dev/Projects/Chameleon/scripts
+# Usage cd /Users/dev/src/Chameleon/scripts
 # bash pacamac.sh
 
 APP_NAME=Chameleon.app
 APP_SIGNING_IDENTITY="Developer ID Application: Simon Dadia (5K732WRGK2)"
-SLN_DIR=/Users/dev/Projects/Chameleon
+SLN_DIR=/Users/dev/src/Chameleon
 CSPROJ=Chameleon.Avalonia.Desktop
 APP_ENTITLEMENTS_FILE=$SLN_DIR/$CSPROJ/chameleonApp.entitlements
 BUILD_DIR=$SLN_DIR/build/osx
