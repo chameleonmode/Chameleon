@@ -62,8 +62,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A0E6
 		scripts\macnotorize.sh = scripts\macnotorize.sh
 		scripts\notorizecheck.sh = scripts\notorizecheck.sh
 		scripts\pacamac.sh = scripts\pacamac.sh
-		scripts\svgtoicns.sh = scripts\svgtoicns.sh
-		scripts\svgtoico.sh = scripts\svgtoico.sh
 		scripts\windowsbuild.sh = scripts\windowsbuild.sh
 	EndProjectSection
 EndProject

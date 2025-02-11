@@ -49,7 +49,7 @@ cd $BUILD_DIR
 
 APP_SIGNING_IDENTITY="Developer ID Application: Simon Dadia (5K732WRGK2)"
 APP_ENTITLEMENTS_FILE=$SLN_DIR/$CSPROJ/chameleonApp.entitlements
-APP_PROVISIONINGPROFILE=$SLN_DIR/scripts/chameleonmodes.provisionprofile 
+APP_PROVISIONINGPROFILE=$SLN_DIR/$CSPROJ/chameleonmodes.provisionprofile 
 
 echo "[INFO] Switch provisionprofile to AppStore"
 \cp -R -f $APP_PROVISIONINGPROFILE $APP_NAME/Contents/embedded.provisionprofile
