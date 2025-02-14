@@ -128,7 +128,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			Businesses.ForEach(async l => await OnSaveBusiness(l));
 
 			if (UserProfile?.Validator?.IsValid == false) {
-				Toaster.Error("User profile has validation errors");
 				return;
 			}
 
@@ -157,7 +156,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task AddPerson() {
 
 		if (persons.Any(x => x.Id == 0)) {
-			Toaster.Error("Please complete the avialable person form");
 			return;
 		}
 
@@ -171,7 +169,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnSavePerson(UPPersonViewModel p) {
 
 		if (p.Validator?.IsValid == false) {
-			Toaster.Error("Person form is not valid");
 			return;
 		}
 
@@ -192,7 +189,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnAddBusiness() {
 		if (businesses.Any(x => x.Id == 0)) {
-			Toaster.Error("Please complete the avialable business form");
 			return;
 		}
 		_ = await UPAdditionalDataRepo.Instance.Biz.Initialize(new UPBusinessDto() {
@@ -205,7 +201,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnSaveBusiness(UPBusinessViewModel p) {
 
 		if (p.Validator?.IsValid == false) {
-			Toaster.Error("Business form is not valid");
 			return;
 		}
 
@@ -226,7 +221,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnAddAddress() {
 
 		if (addresses.Any(x => x.Id == 0)) {
-			Toaster.Error("Please complete the avialable address form");
 			return;
 		}
 
@@ -240,7 +234,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnSaveAddress(ObsAddressViewModel p) {
 
 		if (p.Validator?.IsValid == false) {
-			Toaster.Error("Address form is not valid");
 			return;
 		}
 
@@ -266,7 +259,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnAddLogin() {
 
 		if (logins.Any(x => x.Id == 0)) {
-			Toaster.Error("Please complete the avialable login form");
 			return;
 		}
 
@@ -280,7 +272,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnSaveLogin(UPLoginViewModel p) {
 		if (p.Validator?.IsValid == false) {
-			Toaster.Error("Login form is not valid");
 			return;
 		}
 		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto());
