@@ -30,7 +30,7 @@ public class HeaderdInputFieldsControl : HeaderedContentControl {
 			AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(nameof(Title));
 
 	public static readonly StyledProperty<string?> TextProperty =
-			AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(nameof(Text), null, false, BindingMode.TwoWay,enableDataValidation:true);
+			AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(nameof(Text), null, false, BindingMode.TwoWay, enableDataValidation: true);
 
 	public static readonly StyledProperty<string?> TitleDescriptionProperty =
 			AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(nameof(TitleDescription));
@@ -104,12 +104,22 @@ public class HeaderdInputFieldsControl : HeaderedContentControl {
 		}
 	}
 
+	private bool isValidationInitialized = false;
 	protected override void UpdateDataValidation(AvaloniaProperty property, BindingValueType state, Exception? error) {
 		base.UpdateDataValidation(property, state, error);
 
-	if (property == TextProperty) {
+		if (property == TextProperty && state != BindingValueType.DataValidationError) {
 			DataValidationErrors.SetError(this, error);
 		}
+
+		if (property == TextProperty && state == BindingValueType.DataValidationError) {
+			if (isValidationInitialized) {
+				DataValidationErrors.SetError(this, error);
+			} else {
+				isValidationInitialized = true;
+			}
+		}
+
 	}
 
 	//
