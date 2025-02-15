@@ -169,6 +169,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnSavePerson(UPPersonViewModel p) {
 
 		if (p.Validator?.IsValid == false) {
+			p.ShowValidationErrors();
 			return;
 		}
 
@@ -201,6 +202,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnSaveBusiness(UPBusinessViewModel p) {
 
 		if (p.Validator?.IsValid == false) {
+			p.ShowValidationErrors();
 			return;
 		}
 
@@ -234,6 +236,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnSaveAddress(ObsAddressViewModel p) {
 
 		if (p.Validator?.IsValid == false) {
+			p.ShowValidationErrors();
 			return;
 		}
 
@@ -272,6 +275,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnSaveLogin(UPLoginViewModel p) {
 		if (p.Validator?.IsValid == false) {
+			p.ShowValidationErrors();
 			return;
 		}
 		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto());
