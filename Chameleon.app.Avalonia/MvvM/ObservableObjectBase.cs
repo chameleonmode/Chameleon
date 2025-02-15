@@ -4,10 +4,11 @@ using CommunityToolkit.Mvvm.Input;
 using ReactiveValidation;
 using System.Collections;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace Chameleon.lib.CommunityToolkit.MvvM;
 
-public abstract partial class ObservableObjectBase : ObservableObject,IAmaViewModel, IValidatableObject {
+public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewModel, IValidatableObject {
 	[ObservableProperty]
 	private string? title;
 
@@ -26,8 +27,7 @@ public abstract partial class ObservableObjectBase : ObservableObject,IAmaViewMo
 	public IAsyncRelayCommand InitializeAsyncCommand { get; }
 	public TaskCompletionSource<bool> LoadedTCS { get; } = new();
 
-	public ObservableObjectBase()
-	{
+	public ObservableObjectBase() {
 		InitializeAsyncCommand = new AsyncRelayCommand<object>(
 				async (p) => {
 					_ = Interlocked.Increment(ref _isBusy);
@@ -43,7 +43,7 @@ public abstract partial class ObservableObjectBase : ObservableObject,IAmaViewMo
 					_ = LoadedTCS.TrySetResult(false);
 				},
 				AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
-		Validator = GetValidator(); 
+		Validator = GetValidator();
 	}
 	public virtual Task InitAsync(object? param) => Task.CompletedTask;
 	public virtual Task OnNavigatedToAsync(object? param) => Task.CompletedTask;
@@ -87,4 +87,21 @@ public abstract partial class ObservableObjectBase : ObservableObject,IAmaViewMo
 		var builder = new ValidationBuilder<ObservableObjectBase>();
 		return builder.Build(this);
 	}
+
+	public void ShowValidationErrors(){
+		var validationMessages = Validator?.ValidationMessages ?? [];
+		if (!validationMessages.Any()) return;
+
+		var publicPropertyInfos = this.GetType().GetProperties();
+		foreach (var propertyInfo in publicPropertyInfos) {
+			var propertyName = propertyInfo.Name;
+			var proeprtyValidationMessages = Validator?.GetMessages(propertyName) ?? [];
+			foreach (var propertyValidation in proeprtyValidationMessages) {
+				if (validationMessages.Any(x => x.Message == propertyValidation.Message)) {
+					ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+				}
+			}
+		}
+	}
+
 }
