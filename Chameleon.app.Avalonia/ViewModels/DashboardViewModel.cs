@@ -59,7 +59,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		//
 		_ = UserProfilesFolderRepo
 			.Connect(i => i.isFavorite)
-			.Transform(i => new ObsFolder(i))
+			.Transform(i => new ObsFolder(i, true, null))
 			.SortAndBind(out var flist, foldersCompareObservable)
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasNoFolderItems));
