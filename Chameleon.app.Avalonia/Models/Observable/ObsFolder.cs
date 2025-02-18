@@ -22,7 +22,7 @@ public partial class ObsFolder : Obs<UPFolderDto> {
 	[ObservableProperty]
 	private bool isActionOptionsVisible;
 
-	public bool ShowFavoriteIcon => IsContextMenuItemEnabled;
+	public bool ShowFavoriteIcon => IsContextMenuItemEnabled && Dto?.id != 0;
 	public bool IsSharedFolder => Dto?.creatorUserId != null &&  Dto?.creatorUserId != Auther.AuthSession?.UserId;
 	public bool IsContextMenuItemEnabled => Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CreatorUserId == Dto?.creatorUserId;
 	public bool IsContextMenuVisible => Dto!.id != 0;
