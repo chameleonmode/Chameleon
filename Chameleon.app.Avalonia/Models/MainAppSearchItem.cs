@@ -24,5 +24,5 @@ public class MainAppSearchItem {
 
 	public string SearchType { get; set; } = Models.SearchType.Default;
 
-	public object Items { get; set; }
+	public object? Items { get; set; }
 }

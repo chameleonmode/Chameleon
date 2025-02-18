@@ -81,6 +81,7 @@ public partial class UserProfileViewModel : ObservableObjectBase {
 			id = Id,
 			title = Title,
 			Tags = Tags,
+			notes = Notes,
 			folderId = FolderId,
 			isFavourite = IsFavourite,
 			proxyId = ProxyId,

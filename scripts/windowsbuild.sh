@@ -15,7 +15,5 @@ rm -rf /Users/dev/src/Chameleon/build/windows/playwright.ps1
 rm -rf /Users/dev/src/Chameleon/build/windows/.playwright/node/darwin-x64
 
 cd /Users/dev/src/Chameleon/build/windows
-7z a Chameleon.7z
-7z d Chameleon.7z -r "*.DS_Store"
-7z l Chameleon.7z
+7z a -r Chameleon.7z * -x!"*.DS_Store" && 7z l Chameleon.7z
 scp -s Chameleon.7z srv-cugb14aj1k6c738lm0kg@ssh.ohio.render.com:/local/storage/Chameleon.7z

@@ -16,7 +16,6 @@ using System.Reactive.Subjects;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity;
 public partial class IdentityViewModel : ViewModelObjectBase {
-
 	private readonly BehaviorSubject<Func<UP, bool>> filter;
 	private readonly BehaviorSubject<Func<ObsAddressViewModel, bool>> adrezfilter;
 
@@ -100,8 +99,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 		if (param is UserProfileDto up) {
 			UserProfile = new UserProfileViewModel(up);
-			UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString())
-											   .ToStringAsync();
+			UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync();
 			ProfileVM = new ObsProfile(up, false);
 			filter.OnNext(FilterPredicate);
 			adrezfilter.OnNext(AdrezFilterPredicate);
@@ -115,7 +113,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	}
 
 	private async Task SaveChanges() {
-
 		IsSaving = true;
 
 		try {
@@ -128,13 +125,13 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			Businesses.ForEach(async l => await OnSaveBusiness(l));
 
 			if (UserProfile?.Validator?.IsValid == false) {
-				return;
+				//return;
 			}
 
 			var res = await UserProfilesRepo.Instance.Put(UserProfile!.ToDto());
 			if (res != null) {
 
-				await tagsRepo.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList());
+				_ = await tagsRepo.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList());
 
 				UserProfile = new UserProfileViewModel(res);
 				UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync();
@@ -154,7 +151,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task AddPerson() {
-
 		if (persons.Any(x => x.Id == 0)) {
 			return;
 		}
@@ -167,12 +163,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task OnSavePerson(UPPersonViewModel p) {
-
-		if (p.Validator?.IsValid == false) {
-			p.ShowValidationErrors();
-			return;
-		}
-
+		_ = p.IsValidationValid();
 		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Personz, p.ToDto());
 	}
 
@@ -200,12 +191,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task OnSaveBusiness(UPBusinessViewModel p) {
-
-		if (p.Validator?.IsValid == false) {
-			p.ShowValidationErrors();
-			return;
-		}
-
+		_ = p.IsValidationValid();
 		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Biz, p.ToDto());
 	}
 
@@ -221,7 +207,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	#region Addresses
 	[RelayCommand]
 	private async Task OnAddAddress() {
-
 		if (addresses.Any(x => x.Id == 0)) {
 			return;
 		}
@@ -234,12 +219,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task OnSaveAddress(ObsAddressViewModel p) {
-
-		if (p.Validator?.IsValid == false) {
-			p.ShowValidationErrors();
-			return;
-		}
-
+		_ = p.IsValidationValid();
 		if (p.Dto != null) {
 			_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.ToDto());
 		}
@@ -260,34 +240,27 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task OnAddLogin() {
-
 		if (logins.Any(x => x.Id == 0)) {
 			return;
 		}
 
-		var login = new UPLoginDto() {
+		_ = await UPAdditionalDataRepo.Instance.Loginz.Initialize(new UPLoginDto() {
 			ProfileId = UserProfile?.Id
-		};
-		_ = await UPAdditionalDataRepo.Instance.Loginz.Initialize(login);
+		});
 		OnPropertyChanged(nameof(HasLogins));
 	}
 
 	[RelayCommand]
 	private async Task OnSaveLogin(UPLoginViewModel p) {
-		if (p.Validator?.IsValid == false) {
-			p.ShowValidationErrors();
-			return;
-		}
+		_ = p.IsValidationValid();
 		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto());
 	}
 
 	[RelayCommand]
 	private async Task OnDeleteLogin(UPLoginViewModel p) {
-
 		_ = p.Id == 0
 			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto())
 			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto());
-
 		OnPropertyChanged(nameof(HasLogins));
 	}
 	#endregion

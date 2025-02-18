@@ -88,9 +88,9 @@ public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewM
 		return builder.Build(this);
 	}
 
-	public void ShowValidationErrors(){
+	public bool IsValidationValid(){
 		var validationMessages = Validator?.ValidationMessages ?? [];
-		if (!validationMessages.Any()) return;
+		if (!validationMessages.Any()) return Validator?.IsValid ?? true;
 
 		var publicPropertyInfos = this.GetType().GetProperties();
 		foreach (var propertyInfo in publicPropertyInfos) {
@@ -102,6 +102,6 @@ public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewM
 				}
 			}
 		}
+		return false;
 	}
-
 }

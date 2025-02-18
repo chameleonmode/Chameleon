@@ -301,7 +301,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task RemoveProfilesFromFolder() {
-		if (Folder?.id == 0 ||
+		if (Folder?.Id == 0 ||
 				GetSelectedProfiles == null ||
 				!GetSelectedProfiles.Any()) {
 			return;
@@ -320,7 +320,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task AddProfilesToFolder() {
-		if (Folder == null || Folder.id == 0)
+		if (Folder == null || Folder.Id == 0)
 			return;
 
 		var addvm = new AddUserProfilesPupViewModel {
@@ -329,7 +329,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 		if (await Mbox.ShowTaskDialog<AddUserProfilesPupViewModel, AddUserProfilesPopupUserControl>(() => addvm,
 			header: addvm.Title,
-			subHeader: $"Select profiles you want to add to {Folder!.title} folder:",
+			subHeader: $"Select profiles you want to add to {Folder!.Title} folder:",
 			symbas: Enums.Symbas.Folder,
 			btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK) {
 			var ids = addvm.SelectedProfiles?
@@ -338,7 +338,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			if (ids == null || ids.Count == 0) {
 				return;
 			}
-			var res = await UserProfilesRepo.MoveUserProfileToFolder(ids, Folder!.id);
+			var res = await UserProfilesRepo.MoveUserProfileToFolder(ids, Folder!.Id);
 			if (!res.success) {
 			}
 		}

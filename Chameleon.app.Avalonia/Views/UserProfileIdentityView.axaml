@@ -143,7 +143,7 @@
 								<TextBox Text="{Binding Path=UserProfile.proxy.host}" />
 								<TextBox Text="{Binding Path=UserProfile.proxy.port}"  />
 								<TextBox Text="{Binding Path=UserProfile.proxy.userName}" />
-								<TextBox Text="{Binding Path=UserProfile.proxy.password}"  />
+								<TextBox Text="{Binding Path=UserProfile.proxy.password}" />
 							</afv:HeaderdInputFieldsControl.TextBoxes>
 						</afv:HeaderdInputFieldsControl>
 
