@@ -14,6 +14,7 @@ APP_PROVISIONINGPROFILE=$SLN_DIR/$CSPROJ/chameleonmodes.provisionprofile
 
 #cleanup folders
 cd $BUILD_DIR
+rm -rf Chameleon.zip
 rm -rf "$APP_NAME/Contents/MacOS/" 
 rm -rf "$APP_NAME/Contents/CodeResources" 
 rm -rf "$APP_NAME/Contents/_CodeSignature"
