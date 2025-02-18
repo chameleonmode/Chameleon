@@ -142,9 +142,17 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			// Handle the exception (e.g., log it, show a notification, etc.)
 			Toaster.Error($"{ex.Message}");
 		} finally {
+			ShowValidationErrors();
 			// Code to execute after the task completes, regardless of success or failure
 			IsSaving = false;
 		}
+	}
+
+	void ShowValidationErrors() {
+		Logins.ForEach(l => l.IsValidationValid());
+		Persons.ForEach(l => l.IsValidationValid());
+		Addresses.ForEach(l => l.IsValidationValid());
+		Businesses.ForEach(l => l.IsValidationValid());
 	}
 
 	#region Persons
