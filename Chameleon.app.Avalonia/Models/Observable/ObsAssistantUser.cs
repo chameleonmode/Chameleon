@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-
+using System.Diagnostics;
 using Chameleon.app.Avalonia.Controls;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api;
@@ -63,7 +64,7 @@ public partial class ObsAssisProfile
 		try {
 			Toaster.Info("Sending cookies...");
 			await onSendCookies(this, bt);
-		} catch {
+		} catch(Exception ex) {
 			Toaster.Error($"Failed to send cookies.");
 		}
 	}
@@ -124,7 +125,12 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 				_ = Profilez.Remove(op);
 			},
 			onSendCookies: async (op, bt) => {
-				var cookies = await PlaywrightUtil.GetCookies(op.Dto!.ProfileId.ToString()!, bt);
+
+				var profile = GetRunningProfile(op.Dto!.id) ?? await GetNewProfileAsync(op.Dto!.ProfileId);
+				Process? getBrowserProfileProcess() => GetBrowserProfileProcess(profile);
+				Task openBrowserProfile(Enums.SystemBrowserType browserType) => profile.OpenSystemBrowser(browserType);
+
+				var cookies = await PlaywrightUtil.GetCookies(op.Dto!.ProfileId.ToString()!, bt, openBrowserProfile, getBrowserProfileProcess);
 				if (cookies.Count > 0) {
 					var platformaticDB = PlatformaticDB.Instance;
 					var email = Dto!.id == Auther.AuthSession?.UserId
@@ -138,6 +144,20 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 					}
 				} else {
 					Toaster.Info("No cookies to send in the local profile cache");
+				}
+
+				async Task<ObsProfile> GetNewProfileAsync(int profileId) {
+					var profile = await UserProfilesRepo.GetProfileById(profileId);
+					return new ObsProfile(profile);
+				}
+
+				ObsProfile? GetRunningProfile(int profileId) {
+					return MyProfilesViewModel.Instance.Profiles.FirstOrDefault(x => x.Dto!.id == profileId);
+				}
+
+				Process? GetBrowserProfileProcess(ObsProfile profile) {
+					var browser = profile.SBI[bt];
+					return browser?.Brocess;
 				}
 			}
 		)));
