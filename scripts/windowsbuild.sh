@@ -23,7 +23,7 @@ mkdir -p "Resources/.playwright/package"
 cp -a /Users/dev/src/Chameleon/Chameleon.Avalonia.Desktop/bin/Release/net8.0/win-x64/.playwright/package/. "Resources/.playwright/package"
 
 mkdir -p "Resources/.playwright/scripts"
-cp -a /Users/dev/src/chameleon-playwright/dist/. "Resources/.playwright/scripts"
+cp -a /Users/dev/src/chameleon-playwright/dist/. "Resources/.playwright/scripts/dist"
 cp -a /Users/dev/src/chameleon-playwright/node_modules/. "Resources/.playwright/scripts/node_modules"
 cp -a /Users/dev/src/chameleon-playwright/package.json "Resources/.playwright/scripts/package.json"
 
