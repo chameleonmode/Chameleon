@@ -6,7 +6,6 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1920"
         xmlns:views="clr-namespace:Chameleon.app.client.Views"
         x:Class="Chameleon.app.client.Views.MainWindow"
-        Width="1280" Height="720"
         Icon="/Assets/logo-symbol.ico"
         Title="Chameleon">
         <views:MainView />

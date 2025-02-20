@@ -1,17 +1,24 @@
 #!/bin/bash
 # cd /Users/dev/src/Chameleon/scripts
-# bash macnotorize.sh 
+# bash macno.sh 
 
-dotnet publish /Users/dev/src/Chameleon/Chameleon.Avalonia.Desktop/Chameleon.Avalonia.Desktop.csproj \
-  -r osx-x64 -c Release -f net8.0 \
-  --self-contained true \
-  -p:DebugType=None \
-  -p:DebugSymbols=false \
-  -p:PublishSingleFile=true \
-  -p:PublishReadyToRun=true \
-  -p:IncludeNativeLibrariesForSelfExtract=false
+echo "[INFO] Building macOS app"
+cd /Users/dev/src/Chameleon/scripts
+bash buildamac.sh 
 
+echo "[INFO] Packaging macOS app"
+cd /Users/dev/src/Chameleon/scripts
 bash pacamac.sh
+
+echo "[INFO] Signing macOS app"
+cd /Users/dev/src/Chameleon/scripts
+bash signamac.sh
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <upload bool>"
+  exit 1
+fi
+
 cd /Users/dev/src/Chameleon/build/osx
 codesign --verify --verbose Chameleon.app/Contents/MacOS/Chameleon
 codesign --verify --verbose Chameleon.app

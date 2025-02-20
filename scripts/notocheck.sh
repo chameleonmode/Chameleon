@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: bash notorizecheck.sh <notarization UUID>
+# Usage: bash notocheck.sh <notarization UUID>
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <notarization UUID>"
