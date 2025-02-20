@@ -6,7 +6,6 @@
              xmlns:appuc="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:vm="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels"
 			 xmlns:folder="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity"
-			 xmlns:dt="using:Chameleon.app.Avalonia.Models.Observable"
 			 x:DataType="folder:IdentityViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.IdentityView">
