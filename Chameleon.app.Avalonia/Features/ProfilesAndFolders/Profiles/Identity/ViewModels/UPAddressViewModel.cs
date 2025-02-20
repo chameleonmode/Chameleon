@@ -5,7 +5,7 @@ using ReactiveValidation;
 using ReactiveValidation.Extensions;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
-public partial class UPAddressViewModel: ObservableObjectBase {
+public partial class UPAddressViewModel: ViewModelObjectBase {
 
 	public UPAddressViewModel(UPAddressDto address) {
 		Id = address.id;

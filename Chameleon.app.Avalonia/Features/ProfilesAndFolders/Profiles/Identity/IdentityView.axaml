@@ -6,6 +6,7 @@
              xmlns:appuc="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:vm="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels"
 			 xmlns:folder="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity"
+			 xmlns:dt="using:Chameleon.app.Avalonia.Models.Observable"
 			 x:DataType="folder:IdentityViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.IdentityView">
@@ -68,7 +69,7 @@
 		</Style>
 		<Style Selector="Expander.TheseExpanders">
 			<Setter Property="IsExpanded" Value="{ReflectionBinding IsOpenSearchParameters, FallbackValue=True}" />
-			<Setter Property="Header" Value="{ReflectionBinding title}" />
+			<Setter Property="Header" Value="{ReflectionBinding Title}" />
 			<Setter Property="Margin" Value="0 0 0 6" />
 			<Setter Property="Background" Value="{StaticResource LayerFillColorDefaultBrush}" />
 		</Style>
@@ -96,7 +97,9 @@
 	</UserControl.Styles>
 	<Grid RowDefinitions="Auto,*">
 		<Grid ColumnDefinitions="*,Auto">
-			<appuc:UserProfileUserControl Name="UPView" DataContext="{Binding ProfileVM}" />
+			<Border DataContext="{Binding ProfileVM}">
+				<appuc:UserProfileUserControl Name="UPView" />
+			</Border>
 
 			<StackPanel Grid.Column="1"
 						Orientation="Horizontal"
@@ -128,22 +131,22 @@
 				<TabItem.Content>
 					<StackPanel Spacing="18">
 						<afv:HeaderdInputFieldsControl Title="PROFILE NAME"
-													   Text="{Binding UserProfile.Title, FallbackValue=NAME, Mode=TwoWay}" />
+													   Text="{Binding UserProfile.Title, FallbackValue=NAME, Mode=TwoWay}" PlaceholderText="New Profile" />
 
 						<afv:HeaderdInputFieldsControl Title="PROXY CONFIGURATION"
 													   Header="False">
 							<afv:HeaderdInputFieldsControl.TextBoxes>
-								<TextBox Text="{Binding Path=UserProfile.Proxy.Host}" />
-								<TextBox Text="{Binding Path=UserProfile.Proxy.Port}"  />
-								<TextBox Text="{Binding Path=UserProfile.Proxy.UserName}" />
-								<TextBox Text="{Binding Path=UserProfile.Proxy.Password}"  />
+								<TextBox Text="{Binding Path=UserProfile.Proxy.Host, FallbackValue=proxy.example.com}" Watermark="proxy.example.com" />
+								<TextBox Text="{Binding Path=UserProfile.Proxy.Port, FallbackValue=1434}" Watermark="1434" />
+								<TextBox Text="{Binding Path=UserProfile.Proxy.UserName,FallbackValue=tester}" Watermark="tester" />
+								<TextBox Text="{Binding Path=UserProfile.Proxy.Password, FallbackValue=@testing}" Watermark="@testing"  />
 							</afv:HeaderdInputFieldsControl.TextBoxes>
 						</afv:HeaderdInputFieldsControl>
 
 						<afv:HeaderdInputFieldsControl Title="NOTES"
-													   Text="{Binding UserProfile.Notes, FallbackValue=Notes}" />
+													   Text="{Binding UserProfile.Notes, FallbackValue=Notes}" PlaceholderText="Notes" />
 						<afv:HeaderdInputFieldsControl Title="TAGS"
-													   Text="{Binding UserProfile.Tags, FallbackValue=reddit-account}" />
+													   Text="{Binding UserProfile.Tags, FallbackValue=reddit-account}" PlaceholderText="reddit-account}" />
 					</StackPanel>
 				</TabItem.Content>
 			</TabItem>
@@ -172,22 +175,22 @@
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																					 Text="{Binding Title, FallbackValue=Title}" />
+																					 Text="{Binding Title, FallbackValue=Title}" PlaceholderText="Name" />
 
 												<afv:HeaderdInputFieldsControl Title="Name first, middle, last"
 																					 Header="False">
 													<afv:HeaderdInputFieldsControl.TextBoxes>
-														<TextBox  Text="{Binding FirstName,FallbackValue=first}" />
-														<TextBox  Text="{Binding MiddleName,FallbackValue=middle}"  />
-														<TextBox Text="{Binding LastName,FallbackValue=last}" />
+														<TextBox  Text="{Binding FirstName,FallbackValue=first}" Watermark="First" />
+														<TextBox  Text="{Binding MiddleName,FallbackValue=middle}" Watermark="Middle" />
+														<TextBox Text="{Binding LastName,FallbackValue=last}" Watermark="Last"/>
 													</afv:HeaderdInputFieldsControl.TextBoxes>
 												</afv:HeaderdInputFieldsControl>
 
 												<afv:HeaderdInputFieldsControl Title="Job Title"
-																			   Text="{Binding JobTitle, FallbackValue=JobTitle}" />
+																			   Text="{Binding JobTitle, FallbackValue=JobTitle}" PlaceholderText="Job Title" />
 
 												<afv:HeaderdInputFieldsControl Title="Phone Number"
-																			   Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
+																			   Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" PlaceholderText="Phone Number" />
 
 												<UniformGrid Rows="1">
 													<ListBox ItemsSource="{ReflectionBinding GenderTypeList}"
@@ -199,10 +202,10 @@
 															Margin="0"/>
 
 												<afv:HeaderdInputFieldsControl Title="BirthPlace"
-																					 Text="{Binding BirthPlace, FallbackValue=BirthPlace}" />
+																					 Text="{Binding BirthPlace, FallbackValue=BirthPlace}" PlaceholderText="Birth Place" />
 
 												<afv:HeaderdInputFieldsControl Title="Notes"
-																			   Text="{Binding Notes, FallbackValue=Notes}" />
+																			   Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes"/>
 
 												<Button Classes="TheseDeleteBtns"
 														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeletePersonCommand}" />
@@ -240,22 +243,22 @@
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																			   Text="{Binding Title, FallbackValue=Title}" />
+																			   Text="{Binding Title, FallbackValue=Title}" PlaceholderText="Title"/>
 
 												<afv:HeaderdInputFieldsControl Title="Company Name"
-																			   Text="{Binding CompanyName, FallbackValue=CompanyName}" />
+																			   Text="{Binding CompanyName, FallbackValue=CompanyName}" PlaceholderText="Company Name" />
 
 												<afv:HeaderdInputFieldsControl Title="Department"
-																			   Text="{Binding Department, FallbackValue=Department}" />
+																			   Text="{Binding Department, FallbackValue=Department}" PlaceholderText="Department" />
 
 												<afv:HeaderdInputFieldsControl Title="Phone Number"
-																			   Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" />
+																			   Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" PlaceholderText="PhoneNumber"/>
 
 												<afv:HeaderdInputFieldsControl Title="Web Site"
-																			   Text="{Binding WebSite, FallbackValue=WebSite}" />
+																			   Text="{Binding WebSite, FallbackValue=WebSite}" PlaceholderText="Website" />
 
 												<afv:HeaderdInputFieldsControl Title="Notes"
-																			   Text="{Binding Notes, FallbackValue=Notes}" />
+																			   Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes" />
 
 												<Button Classes="TheseDeleteBtns"
 														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteBusinessCommand}" />
@@ -293,22 +296,22 @@
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																			   Text="{Binding Title, FallbackValue=Title}" />
+																			   Text="{Binding Title, FallbackValue=Title}" PlaceholderText="Title" />
 
 												<afv:HeaderdInputFieldsControl Title="AddressLine1"
-																			   Text="{Binding AddressLine1, FallbackValue=AddressLine1}" />
+																			   Text="{Binding AddressLine1, FallbackValue=AddressLine1}" PlaceholderText="AddressLine1" />
 
 												<afv:HeaderdInputFieldsControl Title="AddressLine2"
-																			   Text="{Binding AddressLine2, FallbackValue=AddressLine2}" />
+																			   Text="{Binding AddressLine2, FallbackValue=AddressLine2}" PlaceholderText="AddressLine2" />
 
 												<afv:HeaderdInputFieldsControl Title="City"
-																			   Text="{Binding City, FallbackValue=City}" />
+																			   Text="{Binding City, FallbackValue=City}" PlaceholderText="City"/>
 
 												<afv:HeaderdInputFieldsControl Title="State"
-																			   Text="{Binding State, FallbackValue=State}" />
+																			   Text="{Binding State, FallbackValue=State}" PlaceholderText="State"/>
 
 												<afv:HeaderdInputFieldsControl Title="Zip"
-																			   Text="{Binding Zip, FallbackValue=Zip}" />
+																			   Text="{Binding Zip, FallbackValue=Zip}" PlaceholderText="Zip" />
 
 												<ComboBox ItemsSource="{Binding Countries}"
 														  Margin="0 0 6 0"
@@ -320,7 +323,7 @@
 												</ComboBox>
 
 												<afv:HeaderdInputFieldsControl Title="Notes"
-																			   Text="{Binding Dto.Notes, FallbackValue=Notes}" />
+																			   Text="{Binding Dto.Notes, FallbackValue=Notes}" PlaceholderText="Notes" />
 
 												<Button Classes="TheseDeleteBtns"
 														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteAddressCommand}" />
@@ -358,22 +361,22 @@
 										<Expander Classes="TheseExpanders">
 											<StackPanel Spacing="18">
 												<afv:HeaderdInputFieldsControl Title="Title"
-																			   Text="{Binding Title, FallbackValue=Title}" />
+																			   Text="{Binding Title, FallbackValue=Title}" PlaceholderText="Title" />
 
 												<afv:HeaderdInputFieldsControl Title="WebSite"
-																			   Text="{Binding WebSite, FallbackValue=WebSite}" />
+																			   Text="{Binding WebSite, FallbackValue=WebSite}" PlaceholderText="WebSite" />
 
 												<afv:HeaderdInputFieldsControl Title="Email"
-																			   Text="{Binding Email, FallbackValue=Email}" />
+																			   Text="{Binding Email, FallbackValue=Email}" PlaceholderText="Email" />
 
 												<afv:HeaderdInputFieldsControl Title="UserName"
-																			   Text="{Binding UserName, FallbackValue=UserName}" />
+																			   Text="{Binding UserName, FallbackValue=UserName}" PlaceholderText="UserName" />
 
 												<afv:HeaderdInputFieldsControl Title="Password"
-																			   Text="{Binding Password, FallbackValue=Password}" />
+																			   Text="{Binding Password, FallbackValue=Password}" PlaceholderText="Password" />
 
 												<afv:HeaderdInputFieldsControl Title="Notes"
-																			   Text="{Binding Notes, FallbackValue=Notes}" />
+																			   Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes" />
 
 												<Button Classes="TheseDeleteBtns"
 														Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteLoginCommand}" />

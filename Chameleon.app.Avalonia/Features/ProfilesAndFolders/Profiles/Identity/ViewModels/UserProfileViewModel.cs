@@ -62,7 +62,7 @@ public partial class UserProfileViewModel : ObservableObjectBase {
 	public object? wordPressSettings;
 
 	[ObservableProperty]
-	public ProxyViewModel proxy;
+	public ProxyViewModel proxy = new(new ProxDto());
 
 	[ObservableProperty]
 	public WebrowserViewModel webBrowser;

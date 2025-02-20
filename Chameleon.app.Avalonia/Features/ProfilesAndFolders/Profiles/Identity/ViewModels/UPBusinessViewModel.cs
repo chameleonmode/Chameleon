@@ -6,7 +6,7 @@ using ReactiveValidation;
 using ReactiveValidation.Extensions;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
-public partial class UPBusinessViewModel : ObservableObjectBase {
+public partial class UPBusinessViewModel : ViewModelObjectBase {
 
 	public UPBusinessViewModel(UPBusinessDto business) {
 		Id = business.id;

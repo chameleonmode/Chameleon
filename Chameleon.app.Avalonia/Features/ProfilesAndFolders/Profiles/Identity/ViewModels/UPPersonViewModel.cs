@@ -9,7 +9,7 @@ using ReactiveValidation.Extensions;
 using System;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
-public partial class UPPersonViewModel: ObservableObjectBase {
+public partial class UPPersonViewModel: ViewModelObjectBase {
 
 	public UPPersonViewModel(UPPersonDto person) {
 		Id = person.id;

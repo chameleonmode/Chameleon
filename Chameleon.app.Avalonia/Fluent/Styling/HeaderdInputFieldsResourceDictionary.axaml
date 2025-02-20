@@ -52,7 +52,8 @@
 							<DataValidationErrors Name="PART_DataValidation" Errors="{TemplateBinding (DataValidationErrors.Errors)}">
 								<TextBox Text="{TemplateBinding Text, Mode=TwoWay}" 
 									MaxLength="10000"
-									VerticalAlignment="Top" />
+									VerticalAlignment="Top"
+								    Watermark="{TemplateBinding PlaceholderText}"/>
 							</DataValidationErrors>
 
 							<Button Grid.Column="1"
