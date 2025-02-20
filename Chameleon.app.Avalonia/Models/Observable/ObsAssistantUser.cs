@@ -128,12 +128,17 @@ public partial class ObsAssistantUser(AssistDto dto) : Vim<AssistDto>(dto) {
 
 				var profile = GetRunningProfile(op.Dto!.ProfileId) ?? await GetNewProfileAsync(op.Dto!.ProfileId);
 				Process? getBrowserProfileProcess() => GetBrowserProfileProcess(profile);
-				Task openBrowserProfile(Enums.SystemBrowserType browserType) => browserType switch {
-					Enums.SystemBrowserType.Brave => profile.OpenBraveCommand.ExecuteAsync(null),
-					Enums.SystemBrowserType.Firefox => profile.OpenFirefoxCommand.ExecuteAsync(null),
-					_ => profile.OpenChromeCommand.ExecuteAsync(null)
-
-				};
+				void openBrowserProfile(Enums.SystemBrowserType browserType) {
+					if (browserType == Enums.SystemBrowserType.Firefox) {
+						profile.OpenFirefoxCommand.Execute(null);
+						return;
+					}
+					if (browserType == Enums.SystemBrowserType.Brave) {
+						profile.OpenBraveCommand.Execute(null);
+						return;
+					} 
+					profile.OpenChromeCommand.Execute(null);
+				}
 
 				var cookies = await PlaywrightUtil.GetCookies(op.Dto!.ProfileId.ToString()!, bt, openBrowserProfile, getBrowserProfileProcess);
 				if (cookies.Count > 0) {
