@@ -36,7 +36,9 @@ cd $BUILD_DIR
 cp $SLN_DIR/$CSPROJ/Info.plist $APP_NAME/Contents/Info.plist
 cp $SLN_DIR/$CSPROJ/logo-symbol.icns $APP_NAME/Contents/Resources/logo-symbol.icns
 cp -a $SLN_DIR/resources/BrowserExtensions/. $APP_NAME/Contents/Resources/BrowserExtensions
-cp -a $SLN_DIR/resources/.playwright/scripts/. $APP_NAME/Contents/Resources/.playwright/scripts
+cp -a /Users/dev/src/chameleon-playwright/dist/. $APP_NAME/Contents/Resources/.playwright/scripts
+cp -a /Users/dev/src/chameleon-playwright/node_modules/. $APP_NAME/Contents/Resources/.playwright/scripts
+cp -a /Users/dev/src/chameleon-playwright/node_modules/package.json $APP_NAME/Contents/Resources/.playwright/scripts
 
 #<here is moving your .dylib files to Frameworks folder using relative symlinks>
 find "$APP_NAME/Contents/MacOS" -name '*.dylib' | while read fname; do
