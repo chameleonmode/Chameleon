@@ -24,7 +24,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private ObsProfile? profileVM;
 	[ObservableProperty]
-	private UserProfileViewModel? userProfile;
+	private UserProfileViewModel? userProfile = new(new UserProfileDto());
 
 	private readonly ReadOnlyObservableCollection<ObsAddressViewModel> addresses;
 	private readonly ReadOnlyObservableCollection<UPBusinessViewModel> businesses;

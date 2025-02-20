@@ -147,4 +147,15 @@ public class HeaderdInputFieldsControl : HeaderedContentControl {
 			}
 		}
 	}
+
+	public static readonly StyledProperty<string?> PlaceholderTextProperty =
+		AvaloniaProperty.Register<HeaderdInputFieldsControl, string?>(
+				nameof(PlaceholderText),
+				defaultValue: null
+		);
+
+	public string? PlaceholderText {
+		get => GetValue(PlaceholderTextProperty);
+		set => SetValue(PlaceholderTextProperty, value);
+	}
 }

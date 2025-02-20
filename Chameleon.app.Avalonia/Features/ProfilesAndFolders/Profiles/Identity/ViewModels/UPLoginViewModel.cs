@@ -5,7 +5,7 @@ using ReactiveValidation;
 using ReactiveValidation.Extensions;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
-public partial class UPLoginViewModel : ObservableObjectBase {
+public partial class UPLoginViewModel : ViewModelObjectBase {
 
 	public UPLoginViewModel(UPLoginDto login) {
 		Id = login.id;

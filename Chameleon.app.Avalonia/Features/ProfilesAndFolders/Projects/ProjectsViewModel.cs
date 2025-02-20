@@ -10,6 +10,7 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesViewModel;
 using Chameleon.lib.Helpers;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
 public partial class ProjectsViewModel : ViewModelObjectBase {
@@ -55,7 +56,7 @@ public partial class ProjectsViewModel : ViewModelObjectBase {
 		IsDisabledCreateNewProfile = true;
 		try {
 			var p = await Profiles.CreateNewProfile();
-			Navigator.NavigateToType(typeof(UserProfileIdentityView), p);
+			Navigator.NavigateToType(typeof(IdentityView), p);
 		} catch (Exception ex) {
 			if (ex.Message == "limit_ex") {
 				if (await Mbox.Show("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))

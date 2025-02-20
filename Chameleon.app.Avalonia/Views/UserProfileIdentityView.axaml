@@ -98,7 +98,9 @@
 	</UserControl.Styles>
 	<Grid RowDefinitions="Auto,*">
 		<Grid ColumnDefinitions="*,Auto">
-			<appuc:UserProfileUserControl Name="UPView" DataContext="{Binding ProfileVM}" />
+			<Border DataContext="{Binding ProfileVM}" >
+				<appuc:UserProfileUserControl Name="UPView"/>
+			</Border>
 
 			<StackPanel Grid.Column="1"
 						Orientation="Horizontal"
