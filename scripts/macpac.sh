@@ -1,6 +1,6 @@
 #!/bin/bash
 # Usage cd /Users/dev/src/Chameleon/scripts
-# bash pacamac.sh
+# bash macpac.sh
 
 APP_NAME=Chameleon.app
 

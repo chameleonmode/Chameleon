@@ -1,6 +1,6 @@
 #!/bin/bash
 # cd /Users/dev/src/Chameleon/scripts
-# bash buildamac.sh 
+# bash macbuild.sh 
 
 dotnet publish /Users/dev/src/Chameleon/Chameleon.Avalonia.Desktop/Chameleon.Avalonia.Desktop.csproj \
   -r osx-x64 -c Release -f net8.0 \

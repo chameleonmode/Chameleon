@@ -4,15 +4,15 @@
 
 echo "[INFO] Building macOS app"
 cd /Users/dev/src/Chameleon/scripts
-bash buildamac.sh 
+bash macbuild.sh 
 
 echo "[INFO] Packaging macOS app"
 cd /Users/dev/src/Chameleon/scripts
-bash pacamac.sh
+bash macpac.sh
 
 echo "[INFO] Signing macOS app"
 cd /Users/dev/src/Chameleon/scripts
-bash signamac.sh
+bash macsign.sh
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <upload bool>"

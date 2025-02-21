@@ -1,6 +1,6 @@
 #!/bin/bash
 # Usage cd /Users/dev/src/Chameleon/scripts
-# bash signamac.sh
+# bash macsign.sh
 
 
 SLN_DIR=/Users/dev/src/Chameleon

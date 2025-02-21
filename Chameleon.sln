@@ -59,12 +59,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Desktop"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A0E66BE5-8196-4E24-8CB9-731AFBED22BD}"
 	ProjectSection(SolutionItems) = preProject
-		scripts\pacamac.sh = scripts\pacamac.sh
-		scripts\windowsbuild.sh = scripts\windowsbuild.sh
-		scripts\signamac.sh = scripts\signamac.sh
-		scripts\buildamac.sh = scripts\buildamac.sh
 		scripts\macnoto.sh = scripts\macnoto.sh
-		scripts\notocheck.sh = scripts\notocheck.sh
+		scripts\winbuild.sh = scripts\winbuild.sh
+		scripts\winpload.sh = scripts\winpload.sh
+		scripts\macbuild.sh = scripts\macbuild.sh
+		scripts\macpac.sh = scripts\macpac.sh
+		scripts\macsign.sh = scripts\macsign.sh
+		scripts\macnotocheck.sh = scripts\macnotocheck.sh
 	EndProjectSection
 EndProject
 Global
