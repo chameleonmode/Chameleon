@@ -1,7 +1,5 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.Models;
-using Chameleon.app.Avalonia.ViewModels.Controllers;
-using Chameleon.app.Avalonia.Views;
 using Chameleon.app.Avalonia;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Extensions;
@@ -139,7 +137,7 @@ public partial class MainViewModel : ObservableObjectBase {
 	[RelayCommand]
 	private async Task DownloadLatest() {
 		InfoBarOpen = false;
-		InfoBarOpen = !await PlatformaticDB.Instance.DownloadLatest(Toaster.Info);
+		InfoBarOpen = !await PlatformaticDB.Instance.DownloadLatest((msg) => Toaster.Info(msg));
 		if (InfoBarOpen)
 			Toaster.Error("Failed to download latest version");
 	}

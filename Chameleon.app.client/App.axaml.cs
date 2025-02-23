@@ -51,7 +51,6 @@ public partial class App : Application {
 			.AddSingleton<IMboxService, MboxService>()
 			.AddSingleton<IShowWindowService, ShowWindowService>()
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
-			.AddSingleton<ISysBrowserService, SysBrowserService>()
 			// Main
 			.AddSingleton<MainView>()
 			.AddSingleton(MainViewModel.Instance)

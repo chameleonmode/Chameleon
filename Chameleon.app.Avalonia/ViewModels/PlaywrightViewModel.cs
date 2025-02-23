@@ -1,18 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.Common.Extensions;
-using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.app.Avalonia.Models;
 using Avalonia.Collections;
 using Chameleon.app.Avalonia.Extensions;
 using Chameleon.lib;
+using Chameleon.lib.Playwright.Services;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 
 public partial class PlaywrightViewModel
 			: ViewModelObjectBase {
-	private readonly IPlaywrightScriptRepository repository;
+	private readonly PlaywrightScriptRepository repository;
 	private FileSystemWatcher? watcher;
 	private readonly SemaphoreSlim semaphore = new(1, 1);
 
@@ -28,10 +28,9 @@ public partial class PlaywrightViewModel
 	[ObservableProperty]
 	private string _userScriptsDirectory = "";
 
-	public PlaywrightViewModel(IPlaywrightScriptRepository repository) : base("Bundled Playwright Scripts")
+	public PlaywrightViewModel() : base("Bundled Playwright Scripts")
 	{
-		this.repository = repository;
-
+		repository = PlaywrightScriptRepository.Instance;
 		AsyncCommandMap["Save"] = Save;
 	}
 

@@ -1,7 +1,6 @@
 ﻿using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
-using Chameleon.app.Avalonia.Views;
 using Chameleon.lib;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
@@ -11,15 +10,15 @@ using Chameleon.lib.Common.Models;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.lib.WebBrowser.Interfaces;
+using Chameleon.lib.WebBrowser.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : Obs<UserProfileDto> {
+	private SystemBrowserService SysBrowserService { get; } = SystemBrowserService.Instance;
 	public event Action<ObsProfile>? OnSelectedChanged;
-	private readonly ISysBrowserService? SysBrowserServiceBase = IoC.GetService<ISysBrowserService>();
 
 	[ObservableProperty]
 	private string _isChromeRunning = "False";
@@ -58,8 +57,9 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 			bool isShowF = true,
 			bool hasActionOptions = true,
 			Action<ObsProfile>? onSelectedChanged = default)
-		: base(userProfile.title ?? "xxx")
-	{
+		: base(userProfile.title ?? "xxx") {
+		SysBrowserService = SystemBrowserService.Instance;
+
 		OnSelectedChanged = onSelectedChanged;
 		Dto = userProfile;
 
@@ -71,11 +71,10 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 		IsActionOptionsVisible = hasActionOptions;
 		IsSharedProfile = userProfile?.creatorUserId != Auther.AuthSession?.UserId;
 
-		if (SysBrowserServiceBase != null) {
-			async Task setEvents()
-			{
-				if (SysBrowserServiceBase.OpenTaskCompletionSource != null) {
-					_ = await SysBrowserServiceBase.OpenTaskCompletionSource.Task;
+		if (SysBrowserService != null) {
+			async Task setEvents() {
+				if (SysBrowserService.OpenTaskCompletionSource != null) {
+					_ = await SysBrowserService.OpenTaskCompletionSource.Task;
 				}
 				foreach (var sbi in SBI) {
 					if (sbi.Value != null) {
@@ -89,24 +88,20 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 
 	}
 
-	public override void OnAnyIsSelectedChanged(bool value)
-	{
+	public override void OnAnyIsSelectedChanged(bool value) {
 		OnSelectedChanged?.Invoke(this);
 	}
-	public void Open()
-	{
+	public void Open() {
 		Navigator.NavigateToType(typeof(IdentityView), Dto);
 	}
 
 	[RelayCommand]
-	private void ShowViewProfile()
-	{
+	private void ShowViewProfile() {
 		WShower.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(new UserProfileSidePanelViewModel(Dto!), vm => {
 		}, null, "Copy Pasta", 156);
 	}
 	[RelayCommand]
-	private async Task Favorite()
-	{
+	private async Task Favorite() {
 		Dto!.isFavourite = !IsFavorite;
 
 		_ = await UserProfilesRepo.SetProfileIsFavorite(Dto.id, Dto.isFavourite);
@@ -114,8 +109,7 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 		OnPropertyChanged(nameof(IsFavorite));
 	}
 	[RelayCommand]
-	private async Task DeleteUserProfile()
-	{
+	private async Task DeleteUserProfile() {
 		if (await Mbox.Show("Delete User Profile",
 			$"Are you sure you want to delete {Dto!.title}?",
 			MBoxButtons.OkCancel,
@@ -126,13 +120,11 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 		}
 	}
 	[RelayCommand]
-	private void OpenUserProfile()
-	{
+	private void OpenUserProfile() {
 		Open();
 	}
 	[RelayCommand]
-	public void OpenUserBrowser()
-	{
+	public void OpenUserBrowser() {
 		WShower.ShowTopmost(SnapCracklePopViewModel.Instance, SnapCracklePopUserControl.Instance,
 				vm => {
 					if (!vm.RunningList.Any(p => p.Dto?.id == this.Dto?.id))
@@ -143,31 +135,27 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 				}, "SCP", 172);
 	}
 	[RelayCommand]
-	private async Task OpenFirefox()
-	{
+	private async Task OpenFirefox() {
 		await OpenSystemBrowser(SystemBrowserType.Firefox);
 	}
 	[RelayCommand]
-	private async Task OpenChrome()
-	{
+	private async Task OpenChrome() {
 		await OpenSystemBrowser(SystemBrowserType.Chrome);
 	}
 	[RelayCommand]
-	private async Task OpenBrave()
-	{
+	private async Task OpenBrave() {
 		await OpenSystemBrowser(SystemBrowserType.Brave);
 	}
 	[RelayCommand]
-	public async Task OpenSystemBrowser(SystemBrowserType browserType)
-	{
-		if (SysBrowserServiceBase == null) {
+	public async Task OpenSystemBrowser(SystemBrowserType browserType) {
+		if (SysBrowserService == null) {
 			return;
 		}
 		if (SBI.TryGetValue(browserType, out var browser)) {
 			IsForeground = false;
 			if (browser == null) {
 				try {
-					browser = await SysBrowserServiceBase.Open(new SysBrowserOpenOptions(
+					browser = await SysBrowserService.Open(new SysBrowserOpenOptions(
 					browserType,
 					new SysBrowserProfile() {
 						Id = Dto!.id,
@@ -177,7 +165,18 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 							UserName = Dto.proxy?.userName,
 							Password = Dto.proxy?.password
 						}
-					})).WaitAsync(TimeSpan.FromSeconds(21));
+					}), () => {
+						var urls = IoC.GetJsonValue<string[]>("DefaultHomePageSettings");
+						if (urls is null || urls.Length == 0)
+							urls = [Consts.DefaultHomePage];
+
+						var starturl = urls[new Random().Next(urls.Length)];
+						starturl = Uri.TryCreate(starturl, UriKind.Absolute, out var uriResult)
+							&& (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)
+							? starturl
+							: "https://" + starturl;
+						return starturl;
+					}).WaitAsync(TimeSpan.FromSeconds(21));
 				} catch {
 					browser = null;
 				}
@@ -185,7 +184,7 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 				var succeeded = false;
 				if (browser != null) {
 					try {
-						succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(SysBrowserServiceBase.TimeOut));
+						succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(SysBrowserService.TimeOut));
 					} catch {
 						succeeded = false;
 					}
@@ -199,13 +198,12 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 					SBI[browserType] = browser;
 				}
 			} else {
-				browser.InvokeEvent(Enums.SysBrowserEventType.Foreground);
+				browser.InvokeEvent(SysBrowserEventType.Foreground);
 			}
 		}
 	}
 
-	private void Browser_OnEvent(object sender, SysBrowserEvent args)
-	{
+	private void Browser_OnEvent(object sender, SysBrowserEvent args) {
 		IsForeground = args.EventType == SysBrowserEventType.Foreground;
 		if (!IsForeground && args.EventType != SysBrowserEventType.Background) {
 			var runnin = args.EventType switch {
@@ -218,7 +216,8 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 			if (runnin is "Error" or "False") {
 				SBI[args.OpenOptions.BrowserType] = null;
 			}
-		};
+		}
+		;
 	}
 
 	private string SetRunning(SystemBrowserType args, bool? running) => args switch {

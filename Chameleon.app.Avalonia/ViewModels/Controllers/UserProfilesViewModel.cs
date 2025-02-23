@@ -27,13 +27,11 @@ using Avalonia.Collections;
 using Chameleon.app.Avalonia.Extensions;
 using Chameleon.lib;
 using Chameleon.lib.Helpers;
+using Chameleon.lib.Playwright.Services;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
-
 public partial class UserProfilesViewModel : ViewModelObjectBase {
-	private readonly IPlaywrightScriptRepository _plawrightRepository = IoC.GetService<IPlaywrightScriptRepository>()!;
-	private readonly IPlaywriteService _playwriteService = IoC.GetService<IPlaywriteService>()!;
-
+	private readonly PlaywrightScriptRepository plawrightRepository;
 	public AvaloniaList<PlaywrightScript> PlaywrightScripts { get; } = [];
 
 	[ObservableProperty]
@@ -104,6 +102,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 
 	public UserProfilesViewModel()
 	{
+		plawrightRepository = PlaywrightScriptRepository.Instance;
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
 		_ = UserProfilesRepo
 			.Connect()
@@ -140,11 +139,11 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 			});
 		}
 		PlaywrightScripts.Clear();
-		AddMappedScripts(_plawrightRepository.GetBundledScrits());
+		AddMappedScripts(plawrightRepository.GetBundledScrits());
 
 		var usd = IoC.GetValue<string>("UserScriptsDirectory");
 		if (usd.Is() && Directory.Exists(usd)) {
-			AddMappedScripts(await _plawrightRepository.GetUserScripts(usd));
+			AddMappedScripts(await plawrightRepository.GetUserScripts(usd));
 		}
 
 		//InintializeLastSelectedAutomation();
@@ -451,7 +450,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 				options.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
 				options.Record = IsRecordSelected;
 				try {
-					await _playwriteService.RunScript(SelectedPlaywrightScript.RunOptions, token);
+					await PlaywriteRunner.RunScript(SelectedPlaywrightScript.RunOptions, token);
 				} catch (Exception ex) {
 					// Log or handle the exception if closing the process fails
 					Toaster.Error($"{ex.Message}");
@@ -467,7 +466,7 @@ public partial class UserProfilesViewModel : ViewModelObjectBase {
 					break;
 				}
 			}
-			_playwriteService.Dispose();
+			PlaywriteRunner.Dispose();
 		} catch (Exception ex) {
 			Toaster.Error($"{ex.Message}");
 		}

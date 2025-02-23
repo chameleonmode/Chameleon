@@ -19,6 +19,7 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.Playwright.Models;
+using Chameleon.lib.Playwright.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
@@ -30,9 +31,7 @@ using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 public partial class MyProfilesViewModel : ViewModelObjectBase {
-
-	private readonly IPlaywrightScriptRepository _plawrightRepository = IoC.GetService<IPlaywrightScriptRepository>()!;
-	private readonly IPlaywriteService _playwriteService = IoC.GetService<IPlaywriteService>()!;
+	private readonly PlaywrightScriptRepository plawrightRepository;
 	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
 
 	public AvaloniaList<PlaywrightScript> PlaywrightScripts { get; } = [];
@@ -104,6 +103,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	public ReadOnlyObservableCollection<ObsProfile> Profiles => profiles;
 
 	public MyProfilesViewModel() {
+		plawrightRepository = PlaywrightScriptRepository.Instance;
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
 		_ = UserProfilesRepo
 			.Connect()
@@ -145,11 +145,11 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			});
 		}
 		PlaywrightScripts.Clear();
-		AddMappedScripts(_plawrightRepository.GetBundledScrits());
+		AddMappedScripts(plawrightRepository.GetBundledScrits());
 
 		var usd = IoC.GetValue<string>("UserScriptsDirectory");
 		if (usd.Is() && Directory.Exists(usd)) {
-			AddMappedScripts(await _plawrightRepository.GetUserScripts(usd));
+			AddMappedScripts(await plawrightRepository.GetUserScripts(usd));
 		}
 
 		//InintializeLastSelectedAutomation();
@@ -433,7 +433,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 				options.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
 				options.Record = IsRecordSelected;
 				try {
-					await _playwriteService.RunScript(SelectedPlaywrightScript.RunOptions, token);
+					await PlaywriteRunner.RunScript(SelectedPlaywrightScript.RunOptions, token);
 				} catch (Exception ex) {
 					// Log or handle the exception if closing the process fails
 					Toaster.Error($"{ex.Message}");
@@ -449,9 +449,10 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 					break;
 				}
 			}
-			_playwriteService.Dispose();
 		} catch (Exception ex) {
 			Toaster.Error($"{ex.Message}");
+		} finally{
+			PlaywriteRunner.Dispose();
 		}
 
 		IsVisibleRunButton = true;
