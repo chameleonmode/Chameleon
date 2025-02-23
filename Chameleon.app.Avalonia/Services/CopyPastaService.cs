@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 
-using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.lib.Helpers;
+using Chameleon.lib.Interfaces.Services;
 
 namespace Chameleon.app.Avalonia.Services;
 //ICopyPastaService

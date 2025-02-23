@@ -18,8 +18,6 @@ using Chameleon.app.client.Views;
 using Chameleon.lib;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.lib.Interfaces.Services;
-using Chameleon.lib.WebBrowser.Interfaces;
-using Chameleon.lib.WebBrowser.Services;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -81,10 +79,6 @@ public partial class App : Application {
 			.AddSingleton<SettingsView>()
 			.AddSingleton<SettingsViewModel>()
 			//Playwright
-			.AddSingleton<lib.Playwright.Interfaces.ICompileScriptService, lib.Playwright.Services.CompileScriptService>()
-			.AddSingleton<lib.Playwright.Interfaces.IPlaywriteService, lib.Playwright.Services.PlaywriteService>()
-			.AddSingleton<lib.Playwright.Interfaces.IPlaywrightScriptRepository, lib.Playwright.Services.PlaywrightScriptRepository>()
-			.AddSingleton<lib.Playwright.Interfaces.IChromeiumPlaywrightBrowser, lib.Playwright.Services.ChromeiumPlaywrightBrowser>()
 			.AddSingleton<PlaywrightViewModel>()
 			.AddSingleton<PlaywrightView>();
 

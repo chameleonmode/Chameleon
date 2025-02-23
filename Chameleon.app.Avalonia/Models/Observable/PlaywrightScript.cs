@@ -18,7 +18,7 @@ public partial class PlaywrightScript(PlaywriteRunScriptOptions runOptions) : Vi
 	[ObservableProperty]
 	public AvaloniaList<PlaywrightDescriptionParam> parameters = [];
 
-	public bool IsHasParameter => runOptions.Description?.Parameters.Count != 0;
+	public bool HasParameters => runOptions.Description?.Parameters.Count > 0;
 
 	public PlaywriteRunScriptOptions RunOptions => runOptions;
 

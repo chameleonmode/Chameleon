@@ -31,6 +31,19 @@ public partial class PlaywrightViewModel
 	public PlaywrightViewModel() : base("Bundled Playwright Scripts")
 	{
 		repository = PlaywrightScriptRepository.Instance;
+
+		BundlesScripts.AddMapped(repository.GetBundledScrits(), b => {
+			var viewModel = new PlaywrightScript(b);
+			if(b.Description?.Parameters != null)
+				viewModel.Parameters.AddRange(b.Description.Parameters);
+			viewModel.OnOpenEdit += scriptTitle => {
+				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
+			};
+
+			return viewModel;
+		});
+
+		SelectedBundledScript = BundlesScripts.FirstOrDefault();
 		AsyncCommandMap["Save"] = Save;
 	}
 
@@ -63,26 +76,8 @@ public partial class PlaywrightViewModel
 	{
 		await base.InitAsync(param);
 		if (!Loaded) {
-			Initialize();
 			await InitializeUserScripts();
 		}
-	}
-
-	private void Initialize()
-	{
-		BundlesScripts.Clear();
-
-		BundlesScripts.AddMapped(repository.GetBundledScrits(), b => {
-			var viewModel = new PlaywrightScript(b);
-			viewModel.Parameters.AddRange(b.Description?.Parameters!);
-			viewModel.OnOpenEdit += scriptTitle => {
-				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
-			};
-
-			return viewModel;
-		});
-
-		SelectedBundledScript = BundlesScripts.FirstOrDefault();
 	}
 
 	private async Task InitializeUserScripts()
@@ -106,7 +101,7 @@ public partial class PlaywrightViewModel
 												 | NotifyFilters.LastWrite
 												 | NotifyFilters.Security
 												 | NotifyFilters.Size,
-					Filter = "*.cs",
+					Filter = "*.js",
 					EnableRaisingEvents = true
 				};
 
@@ -116,7 +111,11 @@ public partial class PlaywrightViewModel
 				watcher.Created += OnChanged;
 			}
 
-			UserScripts.UpdateMapped(await repository.GetUserScripts(UserScriptsDirectory), s => new(s), (x, y) => x.Filepath == y.Description!.FilePath);
+			UserScripts.UpdateMapped(
+				await repository.GetUserScripts(UserScriptsDirectory),
+			 	s => new(s), 
+			 	(x, y) => x.Filepath == y.Description!.FilePath
+			);
 			await Task.Delay(250);
 		} finally {
 			_ = semaphore.Release();
