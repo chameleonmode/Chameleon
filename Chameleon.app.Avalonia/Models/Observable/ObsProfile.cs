@@ -17,7 +17,7 @@ using CommunityToolkit.Mvvm.Input;
 using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
-public partial class ObsProfile : Obs<UserProfileDto> {
+public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
 	private SystemBrowserService SysBrowserService { get; } = SystemBrowserService.Instance;
 	public event Action<ObsProfile>? OnSelectedChanged;
 

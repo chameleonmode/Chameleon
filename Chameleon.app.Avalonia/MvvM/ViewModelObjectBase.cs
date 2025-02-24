@@ -1,5 +1,4 @@
 ﻿using Chameleon.lib.Auth;
-using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.lib.Helpers;
 
 using CommunityToolkit.Mvvm.Input;
@@ -22,7 +21,7 @@ public partial class ViewModelObjectBase : ObservableObjectBase {
 	}
 
 	[RelayCommand]
-	private async Task Copy(object param) {
+	async Task Copy(object param) {
 		await CopyPasta.Copy(param as string ?? "");
 	}
 }

@@ -10,7 +10,7 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
-public partial class ObsFolder : Obs<UPFolderDto> {
+public partial class ObsFolder : ObservableViewModelDto<UPFolderDto> {
 	public event Action<ObsFolder>? OnSelectedChanged;
 
 	[ObservableProperty]

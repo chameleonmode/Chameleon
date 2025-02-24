@@ -271,7 +271,7 @@
 						   Theme="{StaticResource BodyStrongTextBlockStyle}"/>
 
 				<Button
-					Command="{Binding CfromVCommand}"
+					Command="{Binding CfVCommand}"
 					CommandParameter="Unselect"
 					Content="Cancel"
 					Background="Transparent"

@@ -1,18 +1,18 @@
-﻿using System.IO;
-
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 
 using Chameleon.app.Avalonia;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.app.Avalonia.ViewModels;
-using Chameleon.app.Avalonia.ViewModels.General;
 using Chameleon.app.Avalonia.Views;
+using Chameleon.app.Features.Automation;
+using Chameleon.app.Features.Assistants;
 using Chameleon.app.ViewModels;
 using Chameleon.app.Views;
 using Chameleon.lib;
@@ -25,6 +25,17 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Chameleon.app;
 
 public partial class App : Application {
+	public static IStorageProvider StorageProvider {
+		get {
+			return (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow?.StorageProvider 
+			?? throw new InvalidOperationException("StorageProvider not available");
+		}
+	}
+
+	public static T? TryGetResource<T>(string key) where T : class {
+		return Current?.TryGetResource(key, null, out var result) == true && result is T typed ? typed : default;
+	}
+
 	public override void Initialize()
 	{
 		AvaloniaXamlLoader.Load(this);
@@ -52,12 +63,12 @@ public partial class App : Application {
 			// Main
 			.AddSingleton<MainView>()
 			.AddSingleton(MainViewModel.Instance)
+			// Automation
+			.AddSingleton<AutomationView>()
+			.AddSingleton<AutomationViewModel>()
 			// Dash
 			.AddSingleton<DashboardView>()
 			.AddSingleton<DashboardViewModel>()
-			// General
-			.AddSingleton<AssistanTaskforceView>()
-			.AddSingleton<AssistantTaskforceViewModel>()
 			//FunctionalSettings
 			.AddSingleton<FunctionalSettingsView>()
 			.AddSingleton<UserProxySettingsView>()
@@ -71,9 +82,10 @@ public partial class App : Application {
 			.AddSingleton<ProxyCreditViewModel>()
 			//Settings
 			.AddSingleton<SettingsView>()
-			.AddSingleton<SettingsViewModel>();
-
-			new ProfilesAndFolderModule().ConfigureServices(services);
+			.AddSingleton<SettingsViewModel>()
+			.WithProfilesAndFolders()
+			.UseAutomation()
+			.WithAssistants();
 		});
 
 		// Setup IoC

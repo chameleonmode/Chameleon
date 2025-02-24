@@ -3,6 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 
@@ -23,5 +24,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Features/Automation/Playwright/PlaywrightView.axaml.cs">
+      <DependentUpon>PlaywrightView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views/AutomationView.axaml.cs">
+      <DependentUpon>AutomationView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

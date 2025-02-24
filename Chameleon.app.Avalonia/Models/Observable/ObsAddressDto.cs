@@ -6,7 +6,7 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
-public partial class ObsAddressDto : Vim<UPAddressDto> {
+public partial class ObsAddressDto : ViewModelObjectDto<UPAddressDto> {
 	public ObservableCollection<CountryzDto> Countries { get; } = new ObservableCollection<CountryzDto>(CountryzRepo.Instance.Countryz);
 	[ObservableProperty]
 	public CountryzDto? selectedCountry;

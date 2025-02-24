@@ -1,43 +1,37 @@
 using Avalonia.Collections;
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 using Chameleon.lib;
 using Chameleon.lib.Playwright.Services;
-using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
-using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia.Extensions;
+using Chameleon.app.Features.Automation.Playwright.ViewModels;
 
-namespace Chameleon.app.Avalonia.Features.Automation.Playwright;
-
+namespace Chameleon.app.Features.Automation.Playwright;
 public partial class PlaywrightViewModel : ViewModelObjectBase {
-	private readonly PlaywrightScriptRepository repository;
-	private FileSystemWatcher? watcher;
-	private readonly SemaphoreSlim semaphore = new(1, 1);
+	readonly PlaywrightScriptRepository repository;
+	readonly SemaphoreSlim semaphore = new(1, 1);
+	FileSystemWatcher? watcher;
 
-	public AvaloniaList<PlaywrightScript> UserScripts { get; } = [];
-	public AvaloniaList<PlaywrightScript> BundlesScripts { get; } = [];
-
-	[ObservableProperty]
-	private PlaywrightScript? _selectedBundledScript;
+	public AvaloniaList<ScriptViewModel> UserScripts { get; } = [];
+	public AvaloniaList<ScriptViewModel> BundlesScripts { get; } = [];
 
 	[ObservableProperty]
-	private int _totalCount;
-
+	private ScriptViewModel? selectedBundledScript;
 	[ObservableProperty]
-	private string _userScriptsDirectory = "";
+	private int totalCount;
+	[ObservableProperty]
+	private string userScriptsDirectory = "";
 
-	public PlaywrightViewModel() : base("Bundled Playwright Scripts")
-	{
+	public PlaywrightViewModel() : base("Playwright Taskforce") {
 		repository = PlaywrightScriptRepository.Instance;
 
-		BundlesScripts.AddMapped(repository.GetBundledScrits(), b => {
-			var viewModel = new PlaywrightScript(b);
-			if(b.Description?.Parameters != null)
-				viewModel.Parameters.AddRange(b.Description.Parameters);
+		BundlesScripts.AddMapped(repository.GetBundledScrits(), o => {
+			var viewModel = new ScriptViewModel(o);
+			if (o.Description?.Parameters != null)
+				viewModel.Parameters.AddRange(o.Description.Parameters);
 			viewModel.OnOpenEdit += scriptTitle => {
 				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
 			};
@@ -47,22 +41,25 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 
 		SelectedBundledScript = BundlesScripts.FirstOrDefault();
 		AsyncCommandMap["Save"] = Save;
+		AsyncCommandMap["SelectUserScriptFolder"] = SelectUserScriptFolder;
 	}
 
-	public Task Save() => Task.Run(() => {
+	public override async Task InitAsync(object? param) {
+		await base.InitAsync(param);
+		if (!Loaded) {
+			await InitializeUserScripts();
+		}
+	}
+
+	Task Save() => Task.Run(() => {
 		foreach (var param in SelectedBundledScript?.Parameters!) {
-			if(IoC.GetValue(SelectedBundledScript.Title!, param.Key!) != param.Value)
+			if (IoC.GetValue(SelectedBundledScript.Title!, param.Key!) != param.Value)
 				IoC.SetValue(param.Value, SelectedBundledScript.Title!, param.Key!);
 		}
 	});
 
-	[RelayCommand]
-	private async Task SelectUserScriptFolder()
-	{
-		var dialog = AppLayers.GetMainWindow()?.StorageProvider;
-		if (dialog == null) {
-			return;
-		}
+	async Task SelectUserScriptFolder() {
+		var dialog = App.StorageProvider;
 		var selected = await dialog.OpenFolderPickerAsync(new() { AllowMultiple = false });
 		if (selected == null || selected.Count == 0) {
 			return;
@@ -74,22 +71,14 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 		await InitializeUserScripts();
 	}
 
-	public override async Task InitAsync(object? param)
-	{
-		await base.InitAsync(param);
-		if (!Loaded) {
-			await InitializeUserScripts();
-		}
-	}
-
-	private async Task InitializeUserScripts()
-	{
+	private async Task InitializeUserScripts() {
 		await semaphore.WaitAsync();
 		try {
+			async void OnChanged(object sender, FileSystemEventArgs e) =>
+				await InitializeUserScripts();
+			
 			UserScriptsDirectory = IoC.GetValue<string>("UserScriptsDirectory") ?? "";
-
-			if (!UserScriptsDirectory.Is() ||
-				!Directory.Exists(UserScriptsDirectory)) {
+			if (!Directory.Exists(UserScriptsDirectory)) {
 				return;
 			}
 
@@ -109,28 +98,19 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 
 				watcher.Changed += OnChanged;
 				watcher.Deleted += OnChanged;
-				watcher.Renamed += OnRenamed;
+				watcher.Renamed += OnChanged;
 				watcher.Created += OnChanged;
 			}
 
 			UserScripts.UpdateMapped(
 				await repository.GetUserScripts(UserScriptsDirectory),
-			 	s => new(s), 
-			 	(x, y) => x.Filepath == y.Description!.FilePath
+			 	s => new(s),
+				 (x, y) => x.Filepath == y.Description!.FilePath
 			);
 			await Task.Delay(250);
 		} finally {
 			_ = semaphore.Release();
 		}
-	}
-
-	private async void OnChanged(object sender, FileSystemEventArgs e)
-	{
-		await InitializeUserScripts();
-	}
-	private async void OnRenamed(object sender, RenamedEventArgs e)
-	{
-		await InitializeUserScripts();
 	}
 }
 

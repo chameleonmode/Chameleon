@@ -1,7 +1,8 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
+using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api;
@@ -12,30 +13,19 @@ using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright;
-using Chameleon.lib.Playwright.Services;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
 using DynamicData;
 
-namespace Chameleon.app.Avalonia.Models.Observable;
-/// <summary>
-/// 
-/// </summary>
-/// <param name="dto"></param>
-/// <param name="onProfileUnshare"></param>
-/// <param name="onSendCookies"></param>
-public partial class ObsAssisProfile
-	: ViewModelObjectDto<AssisProfileDto> {
+namespace Chameleon.app.Features.Assistants.UserTaskforce.ViewModels;
+public partial class AssistantUsersProfile : ObservableViewModelDto<AssisProfileDto> {
+	private readonly Action<AssistantUsersProfile> onProfileUnshare;
+	private readonly Func<AssistantUsersProfile, Enums.SystemBrowserType, Task> onSendCookies;
 
-	private readonly Action<ObsAssisProfile> onProfileUnshare;
-	private readonly Func<ObsAssisProfile, Enums.SystemBrowserType, Task> onSendCookies;
-
-	public ObsAssisProfile(
+	public AssistantUsersProfile(
 		AssisProfileDto dto,
-		Action<ObsAssisProfile> onProfileUnshare,
-		Func<ObsAssisProfile, Enums.SystemBrowserType, Task> onSendCookies)
+		Action<AssistantUsersProfile> onProfileUnshare,
+		Func<AssistantUsersProfile, Enums.SystemBrowserType, Task> onSendCookies)
 		: base(dto) {
 		this.onProfileUnshare = onProfileUnshare;
 		this.onSendCookies = onSendCookies;
@@ -69,10 +59,7 @@ public partial class ObsAssisProfile
 		}
 	}
 }
-
-public partial class ObsAssisFolder(
-	AssisShareFolderDto dto,
-	Action<ObsAssisFolder> onFolderUnshare)
+public partial class AssistantUsersFolder(AssisShareFolderDto dto, Action<AssistantUsersFolder> onFolderUnshare)
 	: ViewModelObjectDto<AssisShareFolderDto>(dto) {
 
 	[RelayCommand]
@@ -91,20 +78,12 @@ public partial class ObsAssisFolder(
 	}
 }
 
-/// <summary>
-/// 
-/// </summary>
-/// <param name="dto"></param>
-public partial class ObsAssistantUser(AssistDto dto) : ViewModelObjectDto<AssistDto>(dto) {
-	// 
-	private readonly PlaywrightCookiesSyncService _playwrightCookiesRepo = PlaywrightCookiesSyncService.Instance;
-
+public partial class AssistantUser(AssistDto dto)  : ViewModelObjectDto<AssistDto>(dto) {
 	[ObservableProperty]
 	private bool canCreateProfiles;
-
 	//
-	public ObservableCollection<ObsAssisProfile> Profilez { get; } = [];
-	public ObservableCollection<ObsAssisFolder> Folderz { get; } = [];
+	public ObservableCollection<AssistantUsersProfile> Profilez { get; } = [];
+	public ObservableCollection<AssistantUsersFolder> Folderz { get; } = [];
 
 	//
 	public override async Task InitAsync(object? param) {
@@ -118,14 +97,13 @@ public partial class ObsAssistantUser(AssistDto dto) : ViewModelObjectDto<Assist
 	private async Task InitProfiles() {
 		var profiles = await UserAssistantRepo.GetAllAssistantProfilesById(Dto!.id);
 		Profilez.Clear();
-		Profilez.AddRange(profiles.Select(p => new ObsAssisProfile(p,
+		Profilez.AddRange(profiles.Select(p => new AssistantUsersProfile(p,
 			onProfileUnshare: async op => {
 				var (userId, dtoId) = EnsureDtos(Dto!.id, op.Dto!.ProfileId);
 				_ = await UserAssistantRepo.DeleteAssistantProfile(userId, dtoId);
 				_ = Profilez.Remove(op);
 			},
 			onSendCookies: async (op, bt) => {
-
 				var profile = GetRunningProfile(op.Dto!.ProfileId) ?? await GetNewProfileAsync(op.Dto!.ProfileId);
 				Process? getBrowserProfileProcess() => GetBrowserProfileProcess(profile);
 				void openBrowserProfile(Enums.SystemBrowserType browserType) {
@@ -176,7 +154,7 @@ public partial class ObsAssistantUser(AssistDto dto) : ViewModelObjectDto<Assist
 	private async Task InitFolders() {
 		var folders = await ShareFoldersRepo.GetAll(Dto!.id);
 		Folderz.Clear();
-		Folderz.AddRange(folders.Select(f => new ObsAssisFolder(f,
+		Folderz.AddRange(folders.Select(f => new AssistantUsersFolder(f,
 			onFolderUnshare: async of => {
 				var (userId, dtoId) = EnsureDtos(Dto!.id, of.Dto!.id);
 				_ = await ShareFoldersRepo.Instance.Delete(dtoId);
@@ -213,20 +191,20 @@ public partial class ObsAssistantUser(AssistDto dto) : ViewModelObjectDto<Assist
 			var invite = new InviteUserOrAddProfilesViewModel() {
 				ShowUserInfo = false,
 			};
-			if (await Mbox.ShowTaskDialog<InviteUserOrAddProfilesViewModel, InviteUserOrAddProfilesUserControl>(
+			if (
+        await Mbox.ShowTaskDialog<InviteUserOrAddProfilesViewModel, InviteUserOrAddProfilesUserControl>(
 				initialize: () => invite,
 				header: "Add Profiles",
 				subHeader: "Add access to specific Profiles for this user",
 				symbas: Enums.Symbas.AddFriend,
-				btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK) {
-				//
+				btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK
+      ) {
 				var profileIds = invite.SelectedProfiles.Select(p => p.Dto!.id).ToList();
 				if (profileIds.Count != 0) {
 					var result = await UserAssistantRepo.AddProfiles(Dto!.id, profileIds, []);
 					await InitProfiles();
 					Toaster.Success($"{profileIds.Count} profile(s) shared successfully");
 				}
-
 				//
 				var folderIds = invite.SelectedFolders.Select(f => f.Dto!.id).ToList();
 				if (folderIds.Count != 0) {

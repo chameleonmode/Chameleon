@@ -1,10 +1,10 @@
 ﻿using Chameleon.lib.Common.Interfaces.Systemics;
+using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveValidation;
 using System.Collections;
 using System.ComponentModel;
-using System.Reflection;
 
 namespace Chameleon.lib.CommunityToolkit.MvvM;
 
@@ -52,10 +52,22 @@ public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewM
 	public Task InitializeAsync(object? param) => InvokeInitializeAsyncCommand(param);
 
 	[RelayCommand]
-	public void CfromV(string what) => CommandMap[what]?.Invoke();
+	public void CfV(string what) {
+		try {
+			CommandMap[what]();
+		} catch (Exception e) {
+			Toaster.Error("[AsyncCfV]", what, e.Message);
+		}
+	}
 
 	[RelayCommand]
-	public async Task AsyncCfromV(string what) => await AsyncCommandMap[what]();
+	public async Task AsyncCfV(string what){
+		try {
+			await AsyncCommandMap[what]();
+		} catch (Exception e) {
+			Toaster.Error("[AsyncCfV]", what, e.Message);
+		}
+	}
 
 	private IObjectValidator? _objectValidator;
 	public IObjectValidator? Validator {

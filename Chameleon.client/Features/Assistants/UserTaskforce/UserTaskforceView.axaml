@@ -7,10 +7,10 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:paginator="using:Chameleon.app.Avalonia.Views"
              xmlns:controls="using:Chameleon.app.Avalonia.Controls"
-			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels.General"
-			 x:DataType="vm:AssistantTaskforceViewModel"
+			 xmlns:vm="using:Chameleon.app.Features.Assistants.UserTaskforce"
+			 x:DataType="vm:UserTaskforceViewModel"
 			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.AssistanTaskforceView">
+             x:Class="Chameleon.app.Features.Assistants.UserTaskforce.UserTaskforceView">
 	<UserControl.Styles>
 		<Style Selector="ListBox.no-scroll">
 			<Setter Property="Theme" Value="{StaticResource ListBoxNoScroller}" />
@@ -69,7 +69,7 @@
 						<ui:CommandBarButton IconSource="Add"
 											 Label="Invite User"
 											 CommandParameter="CreateNewUserAssistant"
-											 Command="{Binding AsyncCfromVCommand}"/>
+											 Command="{Binding AsyncCfVCommand}"/>
 					</ui:CommandBar.PrimaryCommands>
 				</ui:CommandBar>
 			</afv:ChameleonContentControl.TitleContent>
@@ -151,15 +151,15 @@
 																				<ui:MenuFlyoutItem
 																					Text="Chrome"
 																					CommandParameter="SyncCookiesChrome"
-																					Command="{Binding AsyncCfromVCommand}" />
+																					Command="{Binding AsyncCfVCommand}" />
 																				<ui:MenuFlyoutItem
 																					Text="Brave"
 																					CommandParameter="SyncCookiesBrave"
-																					Command="{Binding AsyncCfromVCommand}" />
+																					Command="{Binding AsyncCfVCommand}" />
 																				<ui:MenuFlyoutItem
 																					Text="Firefox"
 																					CommandParameter="SyncCookiesFirefox"
-																					Command="{Binding AsyncCfromVCommand}" />
+																					Command="{Binding AsyncCfVCommand}" />
 																			</ui:MenuFlyoutSubItem>
 
 																			<ui:MenuFlyoutSeparator />-->
@@ -209,15 +209,15 @@
 																				<ui:MenuFlyoutItem
 																					Text="Chrome"
 																					CommandParameter="SyncCookiesChrome"
-																					Command="{Binding AsyncCfromVCommand}" />
+																					Command="{Binding AsyncCfVCommand}" />
 																				<ui:MenuFlyoutItem
 																					Text="Brave"
 																					CommandParameter="SyncCookiesBrave"
-																					Command="{Binding AsyncCfromVCommand}" />
+																					Command="{Binding AsyncCfVCommand}" />
 																				<ui:MenuFlyoutItem
 																					Text="Firefox"
 																					CommandParameter="SyncCookiesFirefox"
-																					Command="{Binding AsyncCfromVCommand}" />
+																					Command="{Binding AsyncCfVCommand}" />
 																			</ui:MenuFlyoutSubItem>
 
 																			<ui:MenuFlyoutSeparator />
@@ -226,7 +226,7 @@
 																				Text="Remove Access"
 																				IconSource="Clear"
 																				CommandParameter="Unshare"
-																				Command="{Binding AsyncCfromVCommand}" />
+																				Command="{Binding AsyncCfVCommand}" />
 																		</ui:FAMenuFlyout>
 																	</Button.Flyout>
 																</Button>

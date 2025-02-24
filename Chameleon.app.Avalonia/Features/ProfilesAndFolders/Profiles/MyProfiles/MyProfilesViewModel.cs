@@ -117,21 +117,20 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			.SortAndBind(out profiles, profilesCompareObservable)
 			.Subscribe((i) => {
 			});
+
 		PaginatorViewModel = new PaginatorViewModel((p) => {
-			if (p.PageIndex < 0)
-				return;
-			pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems));
+			if (p.PageIndex > 0)
+				pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems));
 		}) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
+		
 		TotalCount = PaginatorViewModel.TotalCount;
-		//AppMainViewViewModel.Instance.OnBoundProfilesProfileSelectedChanged += OnSelectedChanged;
-
 		_ = this.WhenValueChanged(x => x.Folder!.Tags)
 			.Throttle(TimeSpan.FromSeconds(1))
 			.Where(_ => Folder is not null)
 			.Subscribe(async tags => {
-				await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), tags.ToTagsList());
+				_ = await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), tags.ToTagsList());
 			});
 	}
 	public override async Task InitAsync(object? param) {

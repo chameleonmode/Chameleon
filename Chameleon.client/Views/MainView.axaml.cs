@@ -1,7 +1,5 @@
 ﻿using Avalonia.Animation;
 using Avalonia;
-using System.Collections.Generic;
-using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
@@ -9,7 +7,6 @@ using Chameleon.Av.Fluent.Common.Pages;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Windowing;
-using System.Linq;
 using Chameleon.app.ViewModels;
 using Chameleon.app.Avalonia;
 using Chameleon.app.Avalonia.Helpers;
@@ -45,7 +42,7 @@ public partial class MainView : UserControl {
 			{
 				NavHeader = "Automation",
 				IconKey = "AutomationIcon",
-				Tag = typeof(Chameleon.app.Avalonia.Features.Automation.Playwright.PlaywrightView)
+				Tag = typeof(AutomationView)
 			}
 		},
 		{

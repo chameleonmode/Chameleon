@@ -1,4 +1,4 @@
-﻿using Chameleon.lib.Common.ServiceManagers;
+using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
@@ -14,8 +14,9 @@ using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.lib.Util;
 using Chameleon.lib.Helpers;
 
-namespace Chameleon.app.Avalonia.ViewModels.General;
-public partial class AssistantTaskforceViewModel : ViewModelObjectBase {
+namespace Chameleon.app.Features.Assistants.UserTaskforce;
+
+public partial class UserTaskforceViewModel : ViewModelObjectBase {
 	private readonly UserAssistantRepo userAssistantRepo = UserAssistantRepo.Instance;
 
 	[ObservableProperty]
@@ -32,7 +33,7 @@ public partial class AssistantTaskforceViewModel : ViewModelObjectBase {
 	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public ObservableCollection<ObsProfile> SelectedFolders { get; } = [];
 
-	public AssistantTaskforceViewModel() : base("Assistant Outforce")
+	public UserTaskforceViewModel() : base("Live Assistant Taskforce")
 	{
 		_ = userAssistantRepo.ObservableCache
 			.Connect()
@@ -118,3 +119,4 @@ public partial class AssistantTaskforceViewModel : ViewModelObjectBase {
 		}
 	}
 }
+

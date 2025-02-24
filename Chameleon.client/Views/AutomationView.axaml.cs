@@ -1,17 +1,16 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Chameleon.app.Features.Assistants.UserTaskforce;
+using Chameleon.app.Features.Automation.Playwright;
+using Chameleon.app.ViewModels;
 
-using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.Av.Fluent.Common.Pages;
 
 using FluentAvalonia.UI.Media.Animation;
 
-namespace Chameleon.app.Avalonia.Views;
-
-[Chameleon.lib.Common.Attributes.ViewModel(typeof(FunctionalSettingsViewModel))]
-public partial class FunctionalSettingsView : ChameleonNavigationPage {
-	public FunctionalSettingsView()
+namespace Chameleon.app.Views;
+public partial class AutomationView : ChameleonNavigationPage {
+	public AutomationView()
 	{
 		InitializeComponent();
 		TabStrip1.SelectionChanged += TabStrip1SelectionChanged!;
@@ -19,13 +18,6 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 	public override void OnAfterNavigatedToViewModel(object param)
 	{
 		base.OnAfterNavigatedToViewModel(param);
-
-		if (param is ObsFolder) {
-			TabStrip1.SelectionChanged -= TabStrip1SelectionChanged!;
-			TabStrip1.SelectedIndex = 2;
-			NavigateToIndex(2, param);
-			TabStrip1.SelectionChanged += TabStrip1SelectionChanged!;
-		}
 	}
 
 	protected override void OnLoaded(RoutedEventArgs e)
@@ -42,14 +34,12 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 
 	private void NavigateToIndex(int idx, object param)
 	{
-		if (DataContext is not FunctionalSettingsViewModel vm)
+		if (DataContext is not AutomationViewModel vm)
 			return;
 
 		_ = InnerNavFrame.Navigate(idx switch {
-			0 => typeof(UserDefaultSettingsView),
-			1 => typeof(PhoneVerificationView),
-			2 => typeof(UserProxySettingsView),
-			3 => typeof(ProxyCreditView),
+			0 => typeof(PlaywrightView),
+			1 => typeof(UserTaskforceView),
 			_ => throw new Exception()
 		}, param, GetTransitionInfo(vm.LastSelectedIndex, idx));
 
