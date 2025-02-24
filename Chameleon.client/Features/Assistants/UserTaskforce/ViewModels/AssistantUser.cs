@@ -12,7 +12,7 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
-using Chameleon.lib.Playwright;
+using Chameleon.lib.Playwright.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
@@ -104,21 +104,10 @@ public partial class AssistantUser(AssistDto dto)  : ViewModelObjectDto<AssistDt
 				_ = Profilez.Remove(op);
 			},
 			onSendCookies: async (op, bt) => {
-				var profile = GetRunningProfile(op.Dto!.ProfileId) ?? await GetNewProfileAsync(op.Dto!.ProfileId);
-				Process? getBrowserProfileProcess() => GetBrowserProfileProcess(profile);
-				void openBrowserProfile(Enums.SystemBrowserType browserType) {
-					if (browserType == Enums.SystemBrowserType.Firefox) {
-						profile.OpenFirefoxCommand.Execute(null);
-						return;
-					}
-					if (browserType == Enums.SystemBrowserType.Brave) {
-						profile.OpenBraveCommand.Execute(null);
-						return;
-					} 
-					profile.OpenChromeCommand.Execute(null);
-				}
+				var profile = MyProfilesViewModel.Instance.Profiles.FirstOrDefault(x => x.Dto!.id == op.Dto!.ProfileId) 
+				?? throw new InvalidOperationException("Profile not found");
 
-				var cookies = await PlaywrightUtil.GetCookies(op.Dto!.ProfileId.ToString()!, bt, openBrowserProfile, getBrowserProfileProcess);
+				var cookies = await PlaywrightUtil.GetCookies(new (new (bt, profile.SystemBrowserProfile), profile.SBI[bt]?.Settings.Port));
 				if (cookies.Count > 0) {
 					var platformaticDB = PlatformaticDB.Instance;
 					var email = Dto!.id == Auther.AuthSession?.UserId
@@ -132,20 +121,6 @@ public partial class AssistantUser(AssistDto dto)  : ViewModelObjectDto<AssistDt
 					}
 				} else {
 					Toaster.Info("No cookies to send in the local profile cache");
-				}
-
-				async Task<ObsProfile> GetNewProfileAsync(int profileId) {
-					var profile = await UserProfilesRepo.GetProfileById(profileId);
-					return new ObsProfile(profile);
-				}
-
-				ObsProfile? GetRunningProfile(int profileId) {
-					return MyProfilesViewModel.Instance.Profiles.FirstOrDefault(x => x.Dto!.id == profileId);
-				}
-
-				Process? GetBrowserProfileProcess(ObsProfile profile) {
-					var browser = profile.SBI[bt];
-					return browser?.Brocess;
 				}
 			}
 		)));

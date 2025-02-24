@@ -1,5 +1,3 @@
-using Avalonia.Collections;
-
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Playwright.Models;
 
@@ -7,7 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.app.Features.Automation.Playwright.ViewModels;
-public partial class ScriptViewModel(PlaywriteRunScriptOptions runOptions) : ViewModelObjectBase(runOptions.Description?.Title) {
+public partial class ScriptViewModel(RunScriptOptions runOptions) : ViewModelObjectBase(runOptions.Description?.Title) {
   public Action<string>? OnOpenEdit;
 
   [ObservableProperty]
@@ -16,12 +14,12 @@ public partial class ScriptViewModel(PlaywriteRunScriptOptions runOptions) : Vie
   [ObservableProperty]
   private string? filepath = runOptions.Description?.FilePath;
 
-  [ObservableProperty]
-  public AvaloniaList<PlaywrightDescriptionParam> parameters = [];
+  //[ObservableProperty]
+  public Dictionary<string, string>? Parameters => runOptions.Description?.Parameters;
 
   public bool HasParameters => runOptions.Description?.Parameters.Count > 0;
 
-  public PlaywriteRunScriptOptions RunOptions => runOptions;
+  public RunScriptOptions RunOptions => runOptions;
 
   [RelayCommand]
   public void OpenParamsPopup(string selectedScript) {

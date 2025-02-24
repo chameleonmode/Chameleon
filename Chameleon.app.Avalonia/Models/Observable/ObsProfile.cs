@@ -48,6 +48,15 @@ public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
 	public bool IsFavorite => Dto?.isFavourite ?? false;
 	public bool IsDeleteProfileBtnVisible => !IsSharedProfile;
 	public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI => Dto!.SBI;
+	public SysBrowserProfile SystemBrowserProfile => new() {
+		Id = Dto!.id,
+		Proxy = new SysBrowserProxy() {
+			Host = Dto.proxy?.host,
+			Port = Dto.proxy?.port ?? 0,
+			UserName = Dto.proxy?.userName,
+			Password = Dto.proxy?.password
+		}
+	};
 
 	public ObsProfile(
 			UserProfileDto userProfile,
@@ -59,8 +68,6 @@ public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
 			bool hasActionOptions = true,
 			Action<ObsProfile>? onSelectedChanged = default)
 		: base(userProfile.title ?? "xxx") {
-		SysBrowserService = SystemBrowserService.Instance;
-
 		OnSelectedChanged = onSelectedChanged;
 		Dto = userProfile;
 
@@ -72,21 +79,19 @@ public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
 		IsActionOptionsVisible = hasActionOptions;
 		IsSharedProfile = userProfile?.creatorUserId != Auther.AuthSession?.UserId;
 
-		if (SysBrowserService != null) {
-			async Task setEvents() {
-				if (SysBrowserService.OpenTaskCompletionSource != null) {
-					_ = await SysBrowserService.OpenTaskCompletionSource.Task;
-				}
-				foreach (var sbi in SBI) {
-					if (sbi.Value != null) {
-						_ = SetRunning(sbi.Value.Settings.BrowserType, true);
-						sbi.Value.OnEvent += Browser_OnEvent;
-					}
+		SysBrowserService = SystemBrowserService.Instance;
+		async Task setEvents() {
+			if (SysBrowserService.OpenTaskCompletionSource != null) {
+				_ = await SysBrowserService.OpenTaskCompletionSource.Task;
+			}
+			foreach (var sbi in SBI) {
+				if (sbi.Value != null) {
+					_ = SetRunning(sbi.Value.Settings.BrowserType, true);
+					sbi.Value.OnEvent += Browser_OnEvent;
 				}
 			}
-			_ = setEvents();
 		}
-
+		_ = setEvents();
 	}
 
 	public override void OnAnyIsSelectedChanged(bool value) {
@@ -158,17 +163,8 @@ public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
 			IsForeground = false;
 			if (browser == null) {
 				try {
-					browser = await SysBrowserService.Open(new SysBrowserOpenOptions(
-					browserType,
-					new SysBrowserProfile() {
-						Id = Dto!.id,
-						Proxy = new SysBrowserProxy() {
-							Host = Dto.proxy?.host,
-							Port = Dto.proxy?.port ?? 0,
-							UserName = Dto.proxy?.userName,
-							Password = Dto.proxy?.password
-						}
-					}), () => {
+					browser = await SysBrowserService.Open(new (browserType, SystemBrowserProfile)
+					, () => {
 						var urls = IoC.GetJsonValue<string[]>("DefaultHomePageSettings");
 						if (urls is null || urls.Length == 0)
 							urls = [Consts.DefaultHomePage];

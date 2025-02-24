@@ -13,6 +13,7 @@ using Chameleon.lib.Api;
 using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.lib.Util;
 using Chameleon.lib.Helpers;
+using Chameleon.app.Features.Assistants.UserTaskforce.ViewModels;
 
 namespace Chameleon.app.Features.Assistants.UserTaskforce;
 
@@ -23,7 +24,7 @@ public partial class UserTaskforceViewModel : ViewModelObjectBase {
 	private int totalCount;
 
 	// 
-	public ReadOnlyObservableCollection<ObsAssistantUser> Assistantz { get; }
+	public ReadOnlyObservableCollection<AssistantUser> Assistantz { get; }
 
 	//
 	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
@@ -38,7 +39,7 @@ public partial class UserTaskforceViewModel : ViewModelObjectBase {
 		_ = userAssistantRepo.ObservableCache
 			.Connect()
 			.Transform(p => {
-				var vim = new ObsAssistantUser(p);
+				var vim = new AssistantUser(p);
 				_ = vim.InitAsync(p);
 				return vim;
 			})

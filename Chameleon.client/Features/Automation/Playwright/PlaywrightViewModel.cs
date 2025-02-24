@@ -30,8 +30,6 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 
 		BundlesScripts.AddMapped(repository.GetBundledScrits(), o => {
 			var viewModel = new ScriptViewModel(o);
-			if (o.Description?.Parameters != null)
-				viewModel.Parameters.AddRange(o.Description.Parameters);
 			viewModel.OnOpenEdit += scriptTitle => {
 				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
 			};

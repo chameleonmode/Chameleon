@@ -155,9 +155,9 @@
 					<ui:FAComboBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock
-								Text="{Binding Title}"
+								Text="{Binding Description.Title}"
 								TextTrimming="CharacterEllipsis"
-								ToolTip.Tip="{Binding Title}" />
+								ToolTip.Tip="{Binding Description.Title}" />
 						</DataTemplate>
 					</ui:FAComboBox.ItemTemplate>
 				</ui:FAComboBox>

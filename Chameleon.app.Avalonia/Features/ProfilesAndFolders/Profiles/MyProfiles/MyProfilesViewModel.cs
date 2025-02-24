@@ -17,7 +17,6 @@ using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
-using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.Playwright.Models;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Playwright.Utils;
@@ -35,7 +34,9 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	private readonly PlaywrightScriptRepository plawrightRepository;
 	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
 
-	public AvaloniaList<PlaywrightScript> PlaywrightScripts { get; } = [];
+	public AvaloniaList<RunScriptOptions> PlaywrightScripts { get; } = [];
+	[ObservableProperty]
+	private RunScriptOptions? selectedPlaywrightScript;
 
 	[ObservableProperty]
 	private PaginatorViewModel paginatorViewModel;
@@ -53,8 +54,6 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	private bool isVisibleWaitButton;
 	[ObservableProperty]
 	private bool isRecordSelected;
-	[ObservableProperty]
-	private PlaywrightScript? selectedPlaywrightScript;
 	[ObservableProperty]
 	private string searchText = string.Empty;
 	[ObservableProperty]
@@ -136,20 +135,11 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
 
-		//await InitializeScripts();
-		void AddMappedScripts(IEnumerable<PlaywriteRunScriptOptions> scripts) {
-			PlaywrightScripts.AddMapped(scripts, b => {
-				var viewModel = new PlaywrightScript(b);
-				viewModel.Parameters.AddRange(b.Description!.Parameters);
-				return viewModel;
-			});
-		}
 		PlaywrightScripts.Clear();
-		AddMappedScripts(plawrightRepository.GetBundledScrits());
-
+		PlaywrightScripts.AddRange(plawrightRepository.GetBundledScrits());
 		var usd = IoC.GetValue<string>("UserScriptsDirectory");
 		if (usd.Is() && Directory.Exists(usd)) {
-			AddMappedScripts(await plawrightRepository.GetUserScripts(usd));
+			PlaywrightScripts.AddRange(await plawrightRepository.GetUserScripts(usd));
 		}
 
 		//InintializeLastSelectedAutomation();
@@ -158,7 +148,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 				!Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum)
 			? BrowserItems[0]
 			: BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
-		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
+		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Description?.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
 
 		//SetViewModelsFilter();
 	}
@@ -177,10 +167,10 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		if (cur != value.SystemBrowserType.ToString())
 			IoC.SetValue(value.SystemBrowserType.ToString(), "LastSelectedBrowser");
 	}
-	partial void OnSelectedPlaywrightScriptChanged(PlaywrightScript? value) {
+	partial void OnSelectedPlaywrightScriptChanged(RunScriptOptions? value) {
 		var cur = IoC.GetValue<string>("LastRunScriptId");
-		if (value != null && cur != value.Title)
-			IoC.SetValue(value.Title, "LastRunScriptId");
+		if (value != null && cur != value.Description?.Title)
+			IoC.SetValue(value.Description?.Title, "LastRunScriptId");
 	}
 	partial void OnSearchTextChanged(string value) {
 		if (value.Is()) {
@@ -429,11 +419,10 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 					if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || !await profile.SBI![SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))
 						continue;
 				}
-				var options = SelectedPlaywrightScript.RunOptions;
-				options.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
-				options.Record = IsRecordSelected;
+				SelectedPlaywrightScript.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
+				SelectedPlaywrightScript.Record = IsRecordSelected;
 				try {
-					await PlaywriteRunner.RunScript(SelectedPlaywrightScript.RunOptions, token);
+					await PlaywriteRunner.RunScript(SelectedPlaywrightScript, token);
 				} catch (Exception ex) {
 					// Log or handle the exception if closing the process fails
 					Toaster.Error($"{ex.Message}");
