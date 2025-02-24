@@ -1,6 +1,7 @@
 ﻿using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.lib;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
@@ -116,7 +117,7 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 			"DeleteLines")) {
 			_ = await UserProfilesRepo.Instance.Delete(Dto.id);
 			Navigator.Pop();
-			UserProfilesViewModel.Instance.SetViewModelsFilter();
+			MyProfilesViewModel.Instance.SetViewModelsFilter();
 		}
 	}
 	[RelayCommand]
