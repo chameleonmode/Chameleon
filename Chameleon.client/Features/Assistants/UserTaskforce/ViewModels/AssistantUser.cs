@@ -54,8 +54,8 @@ public partial class AssistantUsersProfile : ObservableViewModelDto<AssisProfile
 		try {
 			Toaster.Info("Sending cookies...");
 			await onSendCookies(this, bt);
-		} catch {
-			Toaster.Error($"Failed to send cookies.");
+		} catch (Exception ex) {
+			Toaster.Error($"Failed to send cookies.", ex.Message);
 		}
 	}
 }
