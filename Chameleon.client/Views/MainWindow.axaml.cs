@@ -1,10 +1,11 @@
 ﻿using Avalonia;
 
 using Chameleon.app.Avalonia;
+using Chameleon.client.UserControls;
 
 using FluentAvalonia.UI.Windowing;
 
-namespace Chameleon.app.Views;
+namespace Chameleon.client.Views;
 
 public partial class MainWindow : AppWindow {
     public MainWindow()

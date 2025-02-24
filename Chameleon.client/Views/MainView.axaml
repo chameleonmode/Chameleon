@@ -5,14 +5,14 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
-			 xmlns:local="using:Chameleon.app"
+			 xmlns:userControls="using:Chameleon.client.UserControls"
+             xmlns:vm="using:Chameleon.client.ViewModels"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
 			 xmlns:m="using:Chameleon.app.Avalonia.Models"
-             xmlns:vm="clr-namespace:Chameleon.app.ViewModels"
 			 xmlns:searchFolder="using:Chameleon.app.Avalonia.Features.Search"
 			 xmlns:defaultSearch="using:Chameleon.app.Avalonia.Features.Search.Default"
 			 xmlns:tagSearch="using:Chameleon.app.Avalonia.Features.Search.ByTags"
-             x:Class="Chameleon.app.Views.MainView"
+             x:Class="Chameleon.client.Views.MainView"
              x:DataType="vm:MainViewModel">
 	<UserControl.Styles>
 		<!-- 
@@ -220,7 +220,7 @@
 			</Panel>
 		</ui:NavigationView>
 
-		<local:SplashScreenUC  
+		<userControls:SplashScreenUC  
 			Name="SplashScreen"
 			Grid.RowSpan="2"
 			IsVisible="{Binding IsSplashVisible}" 

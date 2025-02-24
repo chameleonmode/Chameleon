@@ -7,9 +7,9 @@ using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
 using Chameleon.app.Avalonia.Extensions;
-using Chameleon.app.Features.Automation.Playwright.ViewModels;
+using Chameleon.client.Features.Automation.Playwright.ViewModels;
 
-namespace Chameleon.app.Features.Automation.Playwright;
+namespace Chameleon.client.Features.Automation.Playwright;
 public partial class PlaywrightViewModel : ViewModelObjectBase {
 	readonly PlaywrightScriptRepository repository;
 	readonly SemaphoreSlim semaphore = new(1, 1);
@@ -25,7 +25,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private string userScriptsDirectory = "";
 
-	public PlaywrightViewModel() : base("Playwrighteer") {
+	public PlaywrightViewModel() : base("Playwright AIR Configurations") {
 		repository = PlaywrightScriptRepository.Instance;
 
 		BundlesScripts.AddMapped(repository.GetBundledScrits(), o => {

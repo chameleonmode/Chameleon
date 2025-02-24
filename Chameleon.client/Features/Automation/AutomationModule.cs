@@ -1,7 +1,7 @@
-using Chameleon.app.Features.Automation.Playwright;
+using Chameleon.client.Features.Automation.Playwright;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Chameleon.app.Features.Automation;
+namespace Chameleon.client.Features.Automation;
 
 public static class AutomationModule {
 	public static IServiceCollection UseAutomation(this IServiceCollection services) => services

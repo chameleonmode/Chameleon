@@ -4,7 +4,7 @@ using Chameleon.lib.Playwright.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Chameleon.app.Features.Automation.Playwright.ViewModels;
+namespace Chameleon.client.Features.Automation.Playwright.ViewModels;
 public partial class ScriptViewModel(RunScriptOptions runOptions) : ViewModelObjectBase(runOptions.Description?.Title) {
   public Action<string>? OnOpenEdit;
 

@@ -2,7 +2,7 @@
 
 using Avalonia;
 
-using Chameleon.app;
+using Chameleon.client;
 
 using Svga = Avalonia.Svg.Skia.Svg;
 using SvgaImageExtension = Avalonia.Svg.Skia.SvgImageExtension;

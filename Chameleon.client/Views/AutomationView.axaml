@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:vm="using:Chameleon.app.ViewModels"
+             xmlns:vm="using:Chameleon.client.ViewModels"
              xmlns:contrls="using:Chameleon.Av.Fluent.Common.Controls"
 			 x:DataType="vm:AutomationViewModel"
 			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Views.AutomationView">
+             x:Class="Chameleon.client.Views.AutomationView">
 	<UserControl.Resources>
 		<ItemsPanelTemplate x:Key="DefaultPanel">
 			<StackPanel Orientation="Horizontal" />
@@ -38,6 +38,9 @@
 			<TabStripItem
 				Content="Assistant Taskforce"
 				Tag="{StaticResource User}"/>
+			<TabStripItem
+				Content="Assistant Chameleonair"
+				Tag="{StaticResource AutomationIcon2}"/>
 		</TabStrip>
 
 		<ui:Frame Name="InnerNavFrame"

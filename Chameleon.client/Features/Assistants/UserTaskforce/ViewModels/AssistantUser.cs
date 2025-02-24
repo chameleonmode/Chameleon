@@ -17,7 +17,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 
-namespace Chameleon.app.Features.Assistants.UserTaskforce.ViewModels;
+namespace Chameleon.client.Features.Assistants.UserTaskforce.ViewModels;
 public partial class AssistantUsersProfile : ObservableViewModelDto<AssisProfileDto> {
 	private readonly Action<AssistantUsersProfile> onProfileUnshare;
 	private readonly Func<AssistantUsersProfile, Enums.SystemBrowserType, Task> onSendCookies;

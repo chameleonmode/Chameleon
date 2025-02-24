@@ -27,6 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Features/AI/ChameleonAIR/ChameleonAIRView.axaml.cs">
+      <DependentUpon>ChameleonAIRView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Features/Automation/Playwright/PlaywrightView.axaml.cs">
       <DependentUpon>PlaywrightView.axaml</DependentUpon>
     </Compile>

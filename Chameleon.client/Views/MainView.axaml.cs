@@ -7,13 +7,15 @@ using Chameleon.Av.Fluent.Common.Pages;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Windowing;
-using Chameleon.app.ViewModels;
+using Chameleon.client.ViewModels;
 using Chameleon.app.Avalonia;
 using Chameleon.app.Avalonia.Helpers;
 using Chameleon.app.Avalonia.MvvM;
 using Chameleon.lib.Helpers;
+using Chameleon.app.Avalonia.Views;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
 
-namespace Chameleon.app.Views;
+namespace Chameleon.client.Views;
 
 public partial class MainView : UserControl {
 	//TODO: move to load from json maybe?
@@ -24,7 +26,7 @@ public partial class MainView : UserControl {
 			{
 				NavHeader = "Dashboard",
 				IconKey = "HomeIcon",
-				Tag = typeof(Chameleon.app.Avalonia.Views.DashboardView)
+				Tag = typeof(DashboardView)
 			}
 		},
 		{
@@ -33,7 +35,7 @@ public partial class MainView : UserControl {
 			{
 				NavHeader = "Profiles",
 				IconKey = "ContactIcon",
-				Tag = typeof(Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView)
+				Tag = typeof(ProjectsView)
 			}
 		},
 		{
@@ -52,7 +54,7 @@ public partial class MainView : UserControl {
 				NavHeader = "General",
 				IconKey = "CoreControlsIcon",
 				ShowsInFooter = true,
-				Tag = typeof(Chameleon.app.Avalonia.Views.FunctionalSettingsView)
+				Tag = typeof(FunctionalSettingsView)
 			}
 		},
 		{
@@ -62,7 +64,7 @@ public partial class MainView : UserControl {
 				NavHeader = "Settings",
 				IconKey = "SettingsIcon",
 				ShowsInFooter = true,
-				Tag = typeof(Chameleon.app.Avalonia.Views.SettingsView)
+				Tag = typeof(SettingsView)
 			}
 		}
 	};

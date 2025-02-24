@@ -7,10 +7,10 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:paginator="using:Chameleon.app.Avalonia.Views"
              xmlns:controls="using:Chameleon.app.Avalonia.Controls"
-			 xmlns:vm="using:Chameleon.app.Features.Assistants.UserTaskforce"
+			 xmlns:vm="using:Chameleon.client.Features.Assistants.UserTaskforce"
 			 x:DataType="vm:UserTaskforceViewModel"
 			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Features.Assistants.UserTaskforce.UserTaskforceView">
+             x:Class="Chameleon.client.Features.Assistants.UserTaskforce.UserTaskforceView">
 	<UserControl.Styles>
 		<Style Selector="ListBox.no-scroll">
 			<Setter Property="Theme" Value="{StaticResource ListBoxNoScroller}" />

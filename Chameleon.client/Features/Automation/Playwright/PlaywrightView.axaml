@@ -5,10 +5,10 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
 	xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-	xmlns:vm="using:Chameleon.app.Features.Automation.Playwright"
+	xmlns:vm="using:Chameleon.client.Features.Automation.Playwright"
 	x:DataType="vm:PlaywrightViewModel"
 	x:CompileBindings="True"
-	x:Class="Chameleon.app.Features.Automation.Playwright.PlaywrightView"
+	x:Class="Chameleon.client.Features.Automation.Playwright.PlaywrightView"
 	mc:Ignorable="d"
 	d:DesignWidth="800"
 	d:DesignHeight="1280">

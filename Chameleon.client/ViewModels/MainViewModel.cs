@@ -22,8 +22,9 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.app.Avalonia.Features.Search.ByTags.Controls;
 using System.Reactive.Linq;
 using Chameleon.app.Avalonia.Features.Search.ByTags;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
 
-namespace Chameleon.app.ViewModels;
+namespace Chameleon.client.ViewModels;
 
 public partial class MainViewModel : ObservableObjectBase {
 	public event Action<ObsProfile>? OnBoundProfilesProfileSelectedChanged;
@@ -117,7 +118,7 @@ public partial class MainViewModel : ObservableObjectBase {
 		if (newValue.ViewModel is ViewModelObjectBase nfs)
 			nfs.Navigated = false;
 
-		Navigator.NavigateToType(typeof(Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView), newValue.ViewModel);
+		Navigator.NavigateToType(typeof(ProjectsView), newValue.ViewModel);
 	}
 
 	[RelayCommand]
@@ -131,7 +132,7 @@ public partial class MainViewModel : ObservableObjectBase {
 		if (!p.Is())
 			ClearSearch();
 		else
-			Navigator.NavigateToType(typeof(Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView), p);
+			Navigator.NavigateToType(typeof(ProjectsView), p);
 	}
 
 	[RelayCommand]

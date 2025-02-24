@@ -1,7 +1,7 @@
 using Chameleon.Av.Fluent.Common.Pages;
 using FluentAvalonia.UI.Controls;
 
-namespace Chameleon.app.Features.Automation.Playwright;
+namespace Chameleon.client.Features.Automation.Playwright;
 public partial class PlaywrightView : ChameleonPageBase {
     public PlaywrightView()
     {

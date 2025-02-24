@@ -11,18 +11,19 @@ using Chameleon.app.Avalonia.Features.ProfilesAndFolders;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.app.Avalonia.Views;
-using Chameleon.app.Features.Automation;
-using Chameleon.app.Features.Assistants;
-using Chameleon.app.ViewModels;
-using Chameleon.app.Views;
+using Chameleon.client.Features.Automation;
+using Chameleon.client.Features.Assistants;
+using Chameleon.client.ViewModels;
+using Chameleon.client.Views;
 using Chameleon.lib;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.lib.Interfaces.Services;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Chameleon.client.Features.AI;
 
-namespace Chameleon.app;
+namespace Chameleon.client;
 
 public partial class App : Application {
 	public static IStorageProvider StorageProvider {
@@ -85,7 +86,8 @@ public partial class App : Application {
 			.AddSingleton<SettingsViewModel>()
 			.WithProfilesAndFolders()
 			.UseAutomation()
-			.WithAssistants();
+			.WithAssistants()
+			.WithAI();
 		});
 
 		// Setup IoC
