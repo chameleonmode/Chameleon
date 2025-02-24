@@ -65,7 +65,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A0E6
 		scripts\macbuild.sh = scripts\macbuild.sh
 		scripts\macpac.sh = scripts\macpac.sh
 		scripts\macsign.sh = scripts\macsign.sh
-		scripts\macnotocheck.sh = scripts\macnotocheck.sh
+		scripts\macpload.sh = scripts\macpload.sh
+		scripts\macstatus.sh = scripts\macstatus.sh
 	EndProjectSection
 EndProject
 Global
