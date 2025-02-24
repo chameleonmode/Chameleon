@@ -1,9 +1,7 @@
-using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.Av.Fluent.Common.Pages;
 
-namespace Chameleon.app.Avalonia.Views;
+namespace Chameleon.app.Avalonia.Features.Automation.Playwright;
 
-[Chameleon.lib.Common.Attributes.ViewModel(typeof(PlaywrightViewModel))]
 public partial class PlaywrightView : ChameleonNavigationPage {
     public PlaywrightView()
     {

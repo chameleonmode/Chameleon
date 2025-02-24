@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Chameleon.app.client.ViewModels;
+namespace Chameleon.app.ViewModels;
 
 public class ViewModelBase : ObservableObject
 {

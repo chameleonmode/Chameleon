@@ -4,7 +4,7 @@ using Chameleon.app.Avalonia;
 
 using FluentAvalonia.UI.Windowing;
 
-namespace Chameleon.app.client.Views;
+namespace Chameleon.app.Views;
 
 public partial class MainWindow : AppWindow {
     public MainWindow()

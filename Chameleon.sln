@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
@@ -42,10 +43,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CE7FF880
 		..\chameleon-lib\Tests\bin\Debug\net8.0\appsettings.json = ..\chameleon-lib\Tests\bin\Debug\net8.0\appsettings.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "main", "main", "{137272C9-D563-4573-A169-39252A4C9F7B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.app.client", "Chameleon.app.client\Chameleon.app.client.csproj", "{1975BFAC-B92B-459A-AB8B-A70C53433302}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{99A4DEF3-5CE7-424B-8811-DF2DEB87EB67}"
 	ProjectSection(SolutionItems) = preProject
 		..\chameleon-lib\.editorconfig = ..\chameleon-lib\.editorconfig
@@ -54,8 +51,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{99A4DEF3-5CE
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\chameleon-lib\Tests\Tests.csproj", "{D308CCCA-95E9-420B-A9B3-3DB904F11D30}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Avalonia.Desktop", "Chameleon.Avalonia.Desktop\Chameleon.Avalonia.Desktop.csproj", "{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A0E66BE5-8196-4E24-8CB9-731AFBED22BD}"
 	ProjectSection(SolutionItems) = preProject
@@ -68,6 +63,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A0E6
 		scripts\macpload.sh = scripts\macpload.sh
 		scripts\macstatus.sh = scripts\macstatus.sh
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.app", "Chameleon.client\Chameleon.app.csproj", "{F84616F6-D90C-40BC-9BD8-279010530232}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.Desktop", "Chameleon.Desktop\Chameleon.Desktop.csproj", "{A70597F3-5FEC-4DA5-A68E-3016FF1C37EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,18 +102,18 @@ Global
 		{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1975BFAC-B92B-459A-AB8B-A70C53433302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1975BFAC-B92B-459A-AB8B-A70C53433302}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1975BFAC-B92B-459A-AB8B-A70C53433302}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1975BFAC-B92B-459A-AB8B-A70C53433302}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Release|Any CPU.Build.0 = Release|Any CPU
-		{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F84616F6-D90C-40BC-9BD8-279010530232}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F84616F6-D90C-40BC-9BD8-279010530232}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F84616F6-D90C-40BC-9BD8-279010530232}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F84616F6-D90C-40BC-9BD8-279010530232}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A70597F3-5FEC-4DA5-A68E-3016FF1C37EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A70597F3-5FEC-4DA5-A68E-3016FF1C37EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A70597F3-5FEC-4DA5-A68E-3016FF1C37EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A70597F3-5FEC-4DA5-A68E-3016FF1C37EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,12 +121,11 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D} = {0B86C57C-40CF-4737-8F82-864548769102}
 		{AC2F00CB-88A2-44C8-ABDF-DD66EA1E0911} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
-		{137272C9-D563-4573-A169-39252A4C9F7B} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
-		{1975BFAC-B92B-459A-AB8B-A70C53433302} = {0B86C57C-40CF-4737-8F82-864548769102}
 		{99A4DEF3-5CE7-424B-8811-DF2DEB87EB67} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{D308CCCA-95E9-420B-A9B3-3DB904F11D30} = {CE7FF880-AA75-4AEE-BFA3-B64AB857433B}
-		{18BE8BCE-39CE-442C-9A4D-4924BE0CE06C} = {137272C9-D563-4573-A169-39252A4C9F7B}
 		{A0E66BE5-8196-4E24-8CB9-731AFBED22BD} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
+		{F84616F6-D90C-40BC-9BD8-279010530232} = {0B86C57C-40CF-4737-8F82-864548769102}
+		{A70597F3-5FEC-4DA5-A68E-3016FF1C37EE} = {0B86C57C-40CF-4737-8F82-864548769102}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

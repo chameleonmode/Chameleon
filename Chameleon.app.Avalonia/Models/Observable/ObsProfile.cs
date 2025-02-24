@@ -116,7 +116,9 @@ public partial class ObsProfile : Obs<UserProfileDto> {
 			MBoxButtons.OkCancel,
 			"DeleteLines")) {
 			_ = await UserProfilesRepo.Instance.Delete(Dto.id);
-			Navigator.Pop();
+			if (Navigator.Instance.Frame?.CanGoBack == true && Navigator.Instance.Frame.Content?.GetType() == typeof(IdentityView)){
+				Navigator.Instance.Frame?.GoBack();
+			}
 			MyProfilesViewModel.Instance.SetViewModelsFilter();
 		}
 	}

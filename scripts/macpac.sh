@@ -4,7 +4,7 @@
 
 APP_NAME=Chameleon.app
 SLN_DIR=/Users/dev/src/Chameleon
-CSPROJ_DIR=/Users/dev/src/Chameleon/Chameleon.Avalonia.Desktop
+CSPROJ_DIR=/Users/dev/src/Chameleon/Chameleon.Desktop
 BUILD_DIR=/Users/dev/src/Chameleon/build/osx
 PUBLISH_DIR=/Users/dev/src/Chameleon/publish/osx
 #

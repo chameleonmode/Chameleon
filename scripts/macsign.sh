@@ -4,7 +4,7 @@
 
 APP_NAME=Chameleon.app
 APP_SIGNING_IDENTITY="Developer ID Application: Simon Dadia (5K732WRGK2)"
-CSPROJ_DIR=/Users/dev/src/Chameleon/Chameleon.Avalonia.Desktop
+CSPROJ_DIR=/Users/dev/src/Chameleon/Chameleon.Desktop
 PUBLISH_DIR=/Users/dev/src/Chameleon/publish/osx
 
 # Move .playwright folder from MacOS to Resources if needed

@@ -10,13 +10,13 @@ using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Windowing;
 using System.Linq;
-using Chameleon.app.client.ViewModels;
+using Chameleon.app.ViewModels;
 using Chameleon.app.Avalonia;
 using Chameleon.app.Avalonia.Helpers;
 using Chameleon.app.Avalonia.MvvM;
 using Chameleon.lib.Helpers;
 
-namespace Chameleon.app.client.Views;
+namespace Chameleon.app.Views;
 
 public partial class MainView : UserControl {
 	//TODO: move to load from json maybe?
@@ -45,7 +45,7 @@ public partial class MainView : UserControl {
 			{
 				NavHeader = "Automation",
 				IconKey = "AutomationIcon",
-				Tag = typeof(Chameleon.app.Avalonia.Views.PlaywrightView)
+				Tag = typeof(Chameleon.app.Avalonia.Features.Automation.Playwright.PlaywrightView)
 			}
 		},
 		{

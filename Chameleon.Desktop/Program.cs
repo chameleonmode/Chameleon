@@ -2,12 +2,12 @@
 
 using Avalonia;
 
-using Chameleon.app.client;
+using Chameleon.app;
 
 using Svga = Avalonia.Svg.Skia.Svg;
 using SvgaImageExtension = Avalonia.Svg.Skia.SvgImageExtension;
 
-namespace Chameleon.Avalonia.Desktop;
+namespace Chameleon.Desktop;
 
 class Program {
 	// Initialization code. Don't use any Avalonia, third-party APIs or any

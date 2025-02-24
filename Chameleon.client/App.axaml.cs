@@ -13,8 +13,8 @@ using Chameleon.app.Avalonia.Services;
 using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.app.Avalonia.ViewModels.General;
 using Chameleon.app.Avalonia.Views;
-using Chameleon.app.client.ViewModels;
-using Chameleon.app.client.Views;
+using Chameleon.app.ViewModels;
+using Chameleon.app.Views;
 using Chameleon.lib;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.lib.Interfaces.Services;
@@ -22,7 +22,7 @@ using Chameleon.lib.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Chameleon.app.client;
+namespace Chameleon.app;
 
 public partial class App : Application {
 	public override void Initialize()
@@ -55,11 +55,6 @@ public partial class App : Application {
 			// Dash
 			.AddSingleton<DashboardView>()
 			.AddSingleton<DashboardViewModel>()
-			// Projects
-			.AddSingleton<ProjectsView>()
-			.AddSingleton<ProjectsViewModel>()
-			.AddSingleton<UserProfileIdentityView>()
-			.AddSingleton<UserProfileIdentityViewModel>()
 			// General
 			.AddSingleton<AssistanTaskforceView>()
 			.AddSingleton<AssistantTaskforceViewModel>()
@@ -74,13 +69,9 @@ public partial class App : Application {
 			.AddSingleton<UserDefaultSettingsViewModel>()
 			.AddSingleton<PhoneVerificationViewModel>()
 			.AddSingleton<ProxyCreditViewModel>()
-			.AddSingleton<AssistantUsersViewModel>()
 			//Settings
 			.AddSingleton<SettingsView>()
-			.AddSingleton<SettingsViewModel>()
-			//Playwright
-			.AddSingleton<PlaywrightViewModel>()
-			.AddSingleton<PlaywrightView>();
+			.AddSingleton<SettingsViewModel>();
 
 			new ProfilesAndFolderModule().ConfigureServices(services);
 		});

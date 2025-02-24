@@ -59,9 +59,6 @@
     <Compile Update="Views\PhoneVerificationView.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="Views\PlaywrightView.axaml.cs">
-      <DependentUpon>PlaywrightView.axaml</DependentUpon>
-    </Compile>
     <Compile Update="Views\ProxyCreditView.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>

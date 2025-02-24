@@ -2,7 +2,7 @@
 # Usage cd /Users/dev/src/Chameleon/scripts or C:\repos\Chameleon\Chameleon.Avalonia.Desktop
 # bash winbuild.sh
 
-dotnet publish /Users/dev/src/Chameleon/Chameleon.Avalonia.Desktop/Chameleon.Avalonia.Desktop.csproj \
+dotnet publish /Users/dev/src/Chameleon/Chameleon.Desktop/Chameleon.Desktop.csproj \
   -r win-x64 -c Release -f net8.0 -o "/Users/dev/src/Chameleon/build/windows" \
   --self-contained true \
   -p:DebugType=None \
@@ -17,7 +17,7 @@ rm -rf Resources/scripts
 rm -rf .playwright
 rm -rf playwright.ps1
 
-cp -a /Users/dev/src/Chameleon/Chameleon.Avalonia.Desktop/bin/Release/net8.0/win-x64/.playwright/. ".playwright"
+cp -a /Users/dev/src/Chameleon/Chameleon.Desktop/bin/Release/net8.0/win-x64/.playwright/. ".playwright"
 rm -rf .playwright/node/darwin-x64
 
 mkdir -p "Resources/scripts"

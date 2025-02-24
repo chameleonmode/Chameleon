@@ -23,7 +23,7 @@ using Chameleon.app.Avalonia.Features.Search.ByTags.Controls;
 using System.Reactive.Linq;
 using Chameleon.app.Avalonia.Features.Search.ByTags;
 
-namespace Chameleon.app.client.ViewModels;
+namespace Chameleon.app.ViewModels;
 
 public partial class MainViewModel : ObservableObjectBase {
 	public event Action<ObsProfile>? OnBoundProfilesProfileSelectedChanged;
