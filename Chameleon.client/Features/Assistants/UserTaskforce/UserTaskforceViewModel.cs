@@ -33,7 +33,7 @@ public partial class UserTaskforceViewModel : ViewModelObjectBase {
 	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public ObservableCollection<ObsProfile> SelectedFolders { get; } = [];
 
-	public UserTaskforceViewModel() : base("Live Assistant Taskforce")
+	public UserTaskforceViewModel() : base("Assistanteer")
 	{
 		_ = userAssistantRepo.ObservableCache
 			.Connect()

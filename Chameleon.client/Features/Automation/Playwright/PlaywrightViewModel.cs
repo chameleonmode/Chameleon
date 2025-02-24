@@ -25,7 +25,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private string userScriptsDirectory = "";
 
-	public PlaywrightViewModel() : base("Playwright Taskforce") {
+	public PlaywrightViewModel() : base("Playwrighteer") {
 		repository = PlaywrightScriptRepository.Instance;
 
 		BundlesScripts.AddMapped(repository.GetBundledScrits(), o => {

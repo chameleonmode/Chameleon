@@ -13,14 +13,12 @@
 	d:DesignWidth="800"
 	d:DesignHeight="1280">
 	<StackPanel>
-			<!-- chameleon scripts -->
-			<afv:ChameleonContentControl
-					  Grid.Row="1"
-					  Title="Bundle Scripts"
-					  TitleDescription="{Binding TotalCount, StringFormat='You have {0} scripts.'}">
-
-				<afv:ChameleonContentControl.Options>
-					<Grid RowDefinitions="*, Auto">
+	<!-- chameleon scripts -->
+	<afv:ChameleonContentControl Title="Bundled Scripts"
+	 	Grid.Row="1"
+		TitleDescription="{Binding TotalCount, StringFormat='You have {0} scripts.'}">
+			<afv:ChameleonContentControl.Options>
+				<Grid RowDefinitions="*, Auto">
 						<ui:CommandBar Grid.Row="1"
 									   HorizontalAlignment="Right" 
 									   DefaultLabelPosition="Right"
@@ -61,11 +59,10 @@
 							</ListBox.ItemTemplate>
 						</ListBox>
 						
-					</Grid>
-				</afv:ChameleonContentControl.Options>
-
-				<afv:ChameleonContentControl.Content>
-
+				</Grid>
+			</afv:ChameleonContentControl.Options>
+			
+			<afv:ChameleonContentControl.Content>
 					<!-- ListBox with ViewModel items -->
 					<ListBox
 						VerticalAlignment="Top"
@@ -124,9 +121,9 @@
 						</ListBox.ItemTemplate>
 					</ListBox>
 
-				</afv:ChameleonContentControl.Content>
-
-				<afv:ChameleonContentControl.Footer>
+			</afv:ChameleonContentControl.Content>
+			
+			<afv:ChameleonContentControl.Footer>
 					<StackPanel
 						Grid.Row="2"
 						HorizontalAlignment="Center"
@@ -140,11 +137,10 @@
 							automations coming soon
 						</TextBlock>
 					</StackPanel>
-				</afv:ChameleonContentControl.Footer>
-			</afv:ChameleonContentControl>
-
-			<!-- User Scripts -->
-			<afv:ChameleonContentControl
+			</afv:ChameleonContentControl.Footer>
+	</afv:ChameleonContentControl>
+	<!-- User Scripts -->
+	<afv:ChameleonContentControl
 			  Grid.Row="1"
 			  Title="Your Scripts"
 			  TitleDescription="Directory path to load your local scripts from.">
@@ -217,6 +213,6 @@
 					</ListBox>
 
 				</afv:ChameleonContentControl.Content>
-			</afv:ChameleonContentControl>
-		</StackPanel>
+	</afv:ChameleonContentControl>
+	</StackPanel>
 </UserControl>
