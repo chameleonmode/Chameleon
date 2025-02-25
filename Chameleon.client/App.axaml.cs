@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Chameleon.client.Pages;
 using Chameleon.client.Main;
+using Chameleon.lib.Const;
 
 namespace Chameleon.client;
 
@@ -45,11 +46,10 @@ public partial class App : Application {
 
 		IoC.Instance.Configure(() => {
 			return new WritableConfiguration(new ConfigurationBuilder()
-				.SetBasePath(lib.Common.Constants.Consts.AppDataDir)
-				.AddJsonFile(lib.Common.Constants.Consts.AppSettingsFileName, optional: true, reloadOnChange: true)
+				.SetBasePath(FilePaths.AppDataDir)
+				.AddJsonFile(Variables.AppSettingsFileName, optional: true, reloadOnChange: true)
 				.AddEnvironmentVariables()
-				.Build(),
-				Path.Combine(lib.Common.Constants.Consts.AppDataDir, lib.Common.Constants.Consts.AppSettingsFileName));
+				.Build(), Path.Combine(FilePaths.AppDataDir, Variables.AppSettingsFileName));
 		}, (services) => {
 			_ = services
 			.AddSingleton<IDispatchService, DispatchService>()
