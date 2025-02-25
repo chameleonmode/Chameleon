@@ -14,6 +14,7 @@ using Chameleon.app.Avalonia.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
+using Chameleon.client.Pages.Views;
 
 namespace Chameleon.client.Views;
 
@@ -45,6 +46,15 @@ public partial class MainView : UserControl {
 				NavHeader = "Automation",
 				IconKey = "AutomationIcon",
 				Tag = typeof(AutomationView)
+			}
+		},
+		{
+			"Tenants",
+			new()
+			{
+				NavHeader = "Tenants",
+				IconKey = "TenantsIcon",
+				Tag = typeof(TenantsView)
 			}
 		},
 		{

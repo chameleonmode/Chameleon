@@ -1,8 +1,6 @@
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
-using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api;
@@ -17,7 +15,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 
-namespace Chameleon.client.Features.Assistants.UserTaskforce.ViewModels;
+namespace Chameleon.client.Features.Tenants.Members.ViewModels;
 public partial class AssistantUsersProfile : ObservableViewModelDto<AssisProfileDto> {
 	private readonly Action<AssistantUsersProfile> onProfileUnshare;
 	private readonly Func<AssistantUsersProfile, Enums.SystemBrowserType, Task> onSendCookies;

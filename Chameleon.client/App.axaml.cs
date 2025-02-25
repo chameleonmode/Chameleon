@@ -7,12 +7,9 @@ using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 
 using Chameleon.app.Avalonia;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.app.Avalonia.Views;
-using Chameleon.client.Features.Automation;
-using Chameleon.client.Features.Assistants;
 using Chameleon.client.ViewModels;
 using Chameleon.client.Views;
 using Chameleon.lib;
@@ -21,7 +18,7 @@ using Chameleon.lib.Interfaces.Services;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Chameleon.client.Features.AI;
+using Chameleon.client.Pages;
 
 namespace Chameleon.client;
 
@@ -64,9 +61,6 @@ public partial class App : Application {
 			// Main
 			.AddSingleton<MainView>()
 			.AddSingleton(MainViewModel.Instance)
-			// Automation
-			.AddSingleton<AutomationView>()
-			.AddSingleton<AutomationViewModel>()
 			// Dash
 			.AddSingleton<DashboardView>()
 			.AddSingleton<DashboardViewModel>()
@@ -84,10 +78,8 @@ public partial class App : Application {
 			//Settings
 			.AddSingleton<SettingsView>()
 			.AddSingleton<SettingsViewModel>()
-			.WithProfilesAndFolders()
-			.UseAutomation()
-			.WithAssistants()
-			.WithAI();
+			.WithAllPagesAndFeatures()
+			;
 		});
 
 		// Setup IoC

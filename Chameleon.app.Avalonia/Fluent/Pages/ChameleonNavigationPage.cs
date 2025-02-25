@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
@@ -21,8 +22,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 	private Visual? _animationPage;
 	private object? _navParam;
 
-	public ChameleonNavigationPage()
-	{
+	public ChameleonNavigationPage() {
 		// Use the frame events here to ensure ConnectedAnimations still work with
 		// Back/Forward navigation and not just explicit page invokes
 		AddHandler(Frame.NavigatingFromEvent, OnNavigatingFrom, RoutingStrategies.Direct);
@@ -34,8 +34,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 
 	public virtual void OnAfterNavigatedToViewModel(object param) { }
 	public virtual void OnAfterNavigatedTo() { }
-	private async void OnNavigatedTo(object? sender, NavigationEventArgs e)
-	{
+	private async void OnNavigatedTo(object? sender, NavigationEventArgs e) {
 		if (DataContext is ViewModelObjectBase pageViewModel) {
 			await Task.Delay(64);
 			await pageViewModel.OnNavigatedToAsync(e.Parameter);
@@ -74,8 +73,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 		OnAfterNavigatedTo();
 	}
 
-	private void OnNavigatingFrom(object? sender, NavigatingCancelEventArgs e)
-	{
+	private void OnNavigatingFrom(object? sender, NavigatingCancelEventArgs e) {
 		_navParam = e.Parameter;
 
 		GetNavAnimationVisuals(_navParam);
@@ -91,10 +89,9 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 		}
 	}
 
-	private void GetNavAnimationVisuals(object? navParam)
-	{
+	private void GetNavAnimationVisuals(object? navParam) {
 		_animationPage = _animationPageParent = null;
-		
+
 		if (navParam is string command) {
 			_animationPageParent = this
 				.GetVisualDescendants()?
@@ -114,10 +111,10 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 					.Where(x => x is ListBoxItem b && b.DataContext is ViewModelObjectDto<UserProfileDto> dc && dc.Dto?.id == iprofile.id)?
 					.FirstOrDefault();
 			if (_animationPage == null && _animationPageParent is ListBox l && l.Items.Count >= 10) {
-					_animationPage = _animationPageParent?
-						.GetVisualDescendants()?
-						.Where(x => x is ListBoxItem b && b.DataContext is ViewModelObjectDto<UserProfileDto>)?
-					  .FirstOrDefault();
+				_animationPage = _animationPageParent?
+					.GetVisualDescendants()?
+					.Where(x => x is ListBoxItem b && b.DataContext is ViewModelObjectDto<UserProfileDto>)?
+					.FirstOrDefault();
 			}
 			_animationPage ??= _animationPageParent;
 		} else if (navParam is UPFolderDto f) {

@@ -1,6 +1,6 @@
 using Chameleon.lib.CommunityToolkit.MvvM;
 
-namespace Chameleon.client.ViewModels;
+namespace Chameleon.client.Pages.ViewModels;
 public class AutomationViewModel : ViewModelObjectBase {
-	public int LastSelectedIndex { get; set; } = -1;
+	
 }

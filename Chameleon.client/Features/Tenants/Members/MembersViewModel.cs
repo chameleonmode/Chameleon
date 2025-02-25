@@ -13,11 +13,10 @@ using Chameleon.lib.Api;
 using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.lib.Util;
 using Chameleon.lib.Helpers;
-using Chameleon.client.Features.Assistants.UserTaskforce.ViewModels;
+using Chameleon.client.Features.Tenants.Members.ViewModels;
 
-namespace Chameleon.client.Features.Assistants.UserTaskforce;
-
-public partial class UserTaskforceViewModel : ViewModelObjectBase {
+namespace Chameleon.client.Features.Tenants.Members;
+public partial class TenantMembersViewModel : ViewModelObjectBase {
 	private readonly UserAssistantRepo userAssistantRepo = UserAssistantRepo.Instance;
 
 	[ObservableProperty]
@@ -34,7 +33,7 @@ public partial class UserTaskforceViewModel : ViewModelObjectBase {
 	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public ObservableCollection<ObsProfile> SelectedFolders { get; } = [];
 
-	public UserTaskforceViewModel() : base("Live Assistanteers")
+	public TenantMembersViewModel() : base("Members")
 	{
 		_ = userAssistantRepo.ObservableCache
 			.Connect()

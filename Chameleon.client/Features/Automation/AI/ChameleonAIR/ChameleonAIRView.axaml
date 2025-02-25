@@ -6,10 +6,10 @@
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:controls="using:Chameleon.app.Avalonia.Controls"
-			 xmlns:vm="using:Chameleon.client.Features.AI.ChameleonAIR"
+			 xmlns:vm="using:Chameleon.client.Features.Automation.AI.ChameleonAIR"
+             x:Class="Chameleon.client.Features.Automation.AI.ChameleonAIR.ChameleonAIRView"
 			 x:DataType="vm:ChameleonAIRViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.AI.ChameleonAIR.ChameleonAIRView">
+			 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto, *">
 		<afv:ChameleonContentControl Title="AIR bot"
 									 TitleDescription="Taskforce AI Reimagined">

@@ -1,0 +1,19 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives">
+	<Style Selector="ui|Frame#NavigationFrame">
+		<Setter Property="IsNavigationStackEnabled" Value="False" />
+	</Style>
+
+    <Style Selector="TabStrip#ActiveTabStrip">
+		<Setter Property="ItemContainerTheme" Value="{DynamicResource ActiveTabStripItemTheme}" />
+		<Setter Property="Background" Value="{DynamicResource ControlOnImageFillColorDefaultBrush}" />
+		<Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
+		<Setter Property="ItemsPanel" Value="{StaticResource DefaultPanel}" />
+		<Setter Property="Margin" Value="4" />
+		<Setter Property="HorizontalAlignment" Value="Right" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="ZIndex" Value="72" />
+	</Style>
+</Styles>

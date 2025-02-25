@@ -2,9 +2,9 @@ using Chameleon.Av.Fluent.Common.Pages;
 
 using FluentAvalonia.UI.Controls;
 
-namespace Chameleon.client.Features.Assistants.UserTaskforce;
-public partial class UserTaskforceView : ChameleonPageBase {
-	public UserTaskforceView()
+namespace Chameleon.client.Features.Tenants.Members;
+public partial class TenantMembersView : ChameleonPageBase {
+	public TenantMembersView()
 	{
 		InitializeComponent();
 		ControlName = "Live Assistant Taskforce";
