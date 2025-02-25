@@ -6,14 +6,10 @@ using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System;
 using DynamicData;
-using System.Linq;
 using System.Reflection;
 using Chameleon.lib.Abs.Platformatic;
-using System.Threading.Tasks;
 using Chameleon.lib.Helpers;
 
 using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesViewModel;
@@ -24,7 +20,7 @@ using System.Reactive.Linq;
 using Chameleon.app.Avalonia.Features.Search.ByTags;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
 
-namespace Chameleon.client.ViewModels;
+namespace Chameleon.client.Main;
 
 public partial class MainViewModel : ObservableObjectBase {
 	public event Action<ObsProfile>? OnBoundProfilesProfileSelectedChanged;

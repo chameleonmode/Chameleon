@@ -7,7 +7,6 @@ using Chameleon.Av.Fluent.Common.Pages;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Windowing;
-using Chameleon.client.ViewModels;
 using Chameleon.app.Avalonia;
 using Chameleon.app.Avalonia.Helpers;
 using Chameleon.app.Avalonia.MvvM;
@@ -16,7 +15,7 @@ using Chameleon.app.Avalonia.Views;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
 using Chameleon.client.Pages.Views;
 
-namespace Chameleon.client.Views;
+namespace Chameleon.client.Main;
 
 public partial class MainView : UserControl {
 	//TODO: move to load from json maybe?

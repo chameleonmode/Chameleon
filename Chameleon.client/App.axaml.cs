@@ -10,8 +10,6 @@ using Chameleon.app.Avalonia;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.app.Avalonia.Views;
-using Chameleon.client.ViewModels;
-using Chameleon.client.Views;
 using Chameleon.lib;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.lib.Interfaces.Services;
@@ -19,6 +17,7 @@ using Chameleon.lib.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Chameleon.client.Pages;
+using Chameleon.client.Main;
 
 namespace Chameleon.client;
 
@@ -60,7 +59,6 @@ public partial class App : Application {
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
 			// Main
 			.AddSingleton<MainView>()
-			.AddSingleton(MainViewModel.Instance)
 			// Dash
 			.AddSingleton<DashboardView>()
 			.AddSingleton<DashboardViewModel>()

@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Chameleon.client.UserControls;
+namespace Chameleon.client.Main.UserControls;
 
 public partial class SplashScreenUC : UserControl
 {
