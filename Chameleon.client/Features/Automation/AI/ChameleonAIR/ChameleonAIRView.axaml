@@ -11,7 +11,7 @@
 			 x:DataType="vm:ChameleonAIRViewModel"
 			 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto, *">
-		<afv:ChameleonContentControl Title="AIR bot"
+		<afv:ChameleonContentControl Title="AIR0bot"
 									 TitleDescription="Taskforce AI Reimagined">
 			
 			<afv:ChameleonContentControl.Content>

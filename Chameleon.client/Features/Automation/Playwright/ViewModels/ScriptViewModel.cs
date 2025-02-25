@@ -1,12 +1,13 @@
 using System.Collections.ObjectModel;
-using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.lib.Playwright.Models;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
+using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Playwright.Models;
+
+using Chameleon.client.Features.Automation.Playwright.Models;
+
 namespace Chameleon.client.Features.Automation.Playwright.ViewModels;
-public record ScriptParametersValues(string Key, string Value);
 public partial class ScriptViewModel(RunScriptOptions runOptions, List<ScriptParametersValues> saved) : ViewModelObjectBase(runOptions.Description?.Title) {
   public Action<string>? OnOpenEdit;
 

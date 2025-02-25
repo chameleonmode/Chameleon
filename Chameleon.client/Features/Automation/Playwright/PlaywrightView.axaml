@@ -13,10 +13,10 @@
 	d:DesignWidth="800"
 	d:DesignHeight="1280">
 	<StackPanel>
-	<!-- chameleon scripts -->
-	<afv:ChameleonContentControl Title="Bundled Scripts"
+		<!-- chameleon scripts -->
+		<afv:ChameleonContentControl Title="AIR Scripts Configurations"
 	 	Grid.Row="1"
-		TitleDescription="{Binding TotalCount, StringFormat='You have {0} scripts.'}">
+		TitleDescription="Configure playwright scripts options for AIR0bot.">
 			<afv:ChameleonContentControl.Options>
 				<Grid RowDefinitions="*, Auto">
 						<ui:CommandBar Grid.Row="1"
@@ -43,17 +43,10 @@
 							</ListBox.ItemsPanel>
 							<ListBox.ItemTemplate>
 								<DataTemplate>
-									<StackPanel Spacing="6"
-												Margin="6">
+									<StackPanel Spacing="6" Margin="6">
 										<afv:HeaderdInputFieldsControl 
 											Title="{Binding Key}"
 											Text="{Binding Value}" />
-										<!--<TextBlock
-											Text="{Binding Name}"
-											Padding="0 5"/>
-										<TextBox
-											Text="{Binding Value, Mode=TwoWay}"
-											ToolTip.Tip="{Binding Value}"/>-->
 									</StackPanel>
 								</DataTemplate>
 							</ListBox.ItemTemplate>
@@ -115,7 +108,6 @@
 									   Content="three-dots"
 									   Theme="{DynamicResource SvgIconButton}">
 									</Button>
-
 								</Grid>
 							</DataTemplate>
 						</ListBox.ItemTemplate>
@@ -125,24 +117,21 @@
 			
 			<afv:ChameleonContentControl.Footer>
 					<StackPanel
-						Grid.Row="2"
 						HorizontalAlignment="Center"
 						VerticalAlignment="Center">
 						<TextBlock
-									Theme="{StaticResource BodyStrongTextBlockStyle}"
-									TextAlignment="Center"
-									HorizontalAlignment="Center">
-							More pre-installed and custom
-							<LineBreak/>
-							automations coming soon
+							Theme="{StaticResource BodyStrongTextBlockStyle}"
+							TextAlignment="Center"
+							HorizontalAlignment="Center">
+							More AIR scripts and AIR automations coming soon
 						</TextBlock>
 					</StackPanel>
 			</afv:ChameleonContentControl.Footer>
-	</afv:ChameleonContentControl>
-	<!-- User Scripts -->
-	<afv:ChameleonContentControl
+		</afv:ChameleonContentControl>
+
+		<!-- User Scripts -->
+		<afv:ChameleonContentControl Title="Your Scripts Configurations"
 			  Grid.Row="1"
-			  Title="Your Scripts"
 			  TitleDescription="Directory path to load your local scripts from.">
 
 				<afv:ChameleonContentControl.Header>
@@ -213,6 +202,6 @@
 					</ListBox>
 
 				</afv:ChameleonContentControl.Content>
-	</afv:ChameleonContentControl>
+		</afv:ChameleonContentControl>
 	</StackPanel>
 </UserControl>
