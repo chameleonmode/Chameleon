@@ -31,7 +31,6 @@ using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 public partial class MyProfilesViewModel : ViewModelObjectBase {
-	private readonly PlaywrightScriptRepository plawrightRepository;
 	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
 
 	public AvaloniaList<RunScriptOptions> PlaywrightScripts { get; } = [];
@@ -103,7 +102,6 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	public ReadOnlyObservableCollection<ObsProfile> Profiles => profiles;
 
 	public MyProfilesViewModel() {
-		plawrightRepository = PlaywrightScriptRepository.Instance;
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
 		_ = UserProfilesRepo
 			.Connect()
@@ -136,10 +134,10 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		await base.InitAsync(param);
 
 		PlaywrightScripts.Clear();
-		PlaywrightScripts.AddRange(plawrightRepository.GetBundledScrits());
+		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());
 		var usd = IoC.GetValue<string>("UserScriptsDirectory");
 		if (usd.Is() && Directory.Exists(usd)) {
-			PlaywrightScripts.AddRange(await plawrightRepository.GetUserScripts(usd));
+			PlaywrightScripts.AddRange(await BundledScriptsService.GetUserScripts(usd));
 		}
 
 		//InintializeLastSelectedAutomation();

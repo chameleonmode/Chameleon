@@ -6,12 +6,11 @@ using Chameleon.lib;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
-using Chameleon.app.Avalonia.Extensions;
 using Chameleon.client.Features.Automation.Playwright.ViewModels;
+using Chameleon.lib.Util;
 
 namespace Chameleon.client.Features.Automation.Playwright;
 public partial class PlaywrightViewModel : ViewModelObjectBase {
-	readonly PlaywrightScriptRepository repository;
 	readonly SemaphoreSlim semaphore = new(1, 1);
 	FileSystemWatcher? watcher;
 
@@ -26,9 +25,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 	private string userScriptsDirectory = "";
 
 	public PlaywrightViewModel() : base("Playwright AIR Configurations") {
-		repository = PlaywrightScriptRepository.Instance;
-
-		BundlesScripts.AddMapped(repository.GetBundledScrits(), o => {
+		BundlesScripts.AddMapped(BundledScriptsService.Instance.GetBundledScrits(), o => {
 			var viewModel = new ScriptViewModel(o);
 			viewModel.OnOpenEdit += scriptTitle => {
 				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
@@ -101,9 +98,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 			}
 
 			UserScripts.UpdateMapped(
-				await repository.GetUserScripts(UserScriptsDirectory),
-			 	s => new(s),
-				 (x, y) => x.Filepath == y.Description!.FilePath
+				await BundledScriptsService.GetUserScripts(UserScriptsDirectory),	s => new(s), (x, y) => x.Filepath == y.Description!.FilePath
 			);
 			await Task.Delay(250);
 		} finally {
