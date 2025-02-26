@@ -46,7 +46,9 @@ public partial class UPLoginViewModel : ViewModelObjectBase {
 		var builder = new ValidationBuilder<UPLoginViewModel>();
 
 		_ = builder.RuleFor(vm => vm.UserName).NotEmpty()
-				.WithMessage("Username is required");
+				.WithMessage("Username is required")
+				.MaxLength(236)
+				.WithMessage("Username length is greater than 236");
 
 		_ = builder.RuleFor(vm => vm.Email).NotEmpty().WithMessage("Email is requried");
 
