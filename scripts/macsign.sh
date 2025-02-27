@@ -30,6 +30,13 @@ find "$PUBLISH_DIR/$APP_NAME/Contents/MacOS" -name '*.dylib' | while read fname;
         codesign --force --sign "$APP_SIGNING_IDENTITY" "$fname"
     fi
 done
+echo "[INFO] Signing app bundle - dll files"
+find "$PUBLISH_DIR/$APP_NAME/Contents/MacOS" -name '*.dll' | while read fname; do
+    if [[ -f $fname ]]; then
+        echo "[INFO] Signing $fname"
+        codesign --force --sign "$APP_SIGNING_IDENTITY" "$fname"
+    fi
+done
 
 eecho "[INFO] Signing fsevents module"
 codesign --force --timestamp --options runtime --entitlements "$CSPROJ_DIR/chameleonApp.entitlements" --sign "$APP_SIGNING_IDENTITY" "$PUBLISH_DIR/$APP_NAME/Contents/Resources/scripts/node_modules/fsevents/fsevents.node"
