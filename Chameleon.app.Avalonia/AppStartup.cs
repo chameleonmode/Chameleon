@@ -24,9 +24,8 @@ public class AppStartup {
 			Toaster.Info("Login canceled, application closing");
 			Environment.Exit(0);
 		} else {
-			IOtil.DeleteDExists(Addons.AddonExtentionDir);
-			IOtil.DeleteDExists(Addons.CachedExtentionDir);
-			_ = FilePaths.EnsureDirectoryExists(FilePaths.AppTempDir);
+			IOtil.DeleteDir(Addons.AddonExtentionDir);
+			IOtil.DeleteDir(Addons.CachedExtentionDir);
 			await LoadSink();
 			OnLoginSuccess?.Invoke();
 		}

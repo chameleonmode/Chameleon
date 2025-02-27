@@ -26,9 +26,6 @@ cp $CSPROJ_DIR/Info.plist $PUBLISH_DIR/$APP_NAME/Contents/Info.plist
 cp $CSPROJ_DIR/logo-symbol.icns $PUBLISH_DIR/$APP_NAME/Contents/Resources/logo-symbol.icns
 cp $SLN_DIR/resources/example.js $PUBLISH_DIR/$APP_NAME/Contents/Resources/example.js
 cp -a $SLN_DIR/resources/BrowserExtensions/. $PUBLISH_DIR/$APP_NAME/Contents/Resources/BrowserExtensions
-cp /Users/dev/src/chameleon-playwright/package.json $PUBLISH_DIR/$APP_NAME/Contents/Resources/scripts/package.json
 cp -a /Users/dev/src/chameleon-playwright/dist/. $PUBLISH_DIR/$APP_NAME/Contents/Resources/scripts/dist
-cp -a /Users/dev/src/chameleon-playwright/node_modules/. $PUBLISH_DIR/$APP_NAME/Contents/Resources/scripts/node_modules
-
 
 echo "[INFO] done"

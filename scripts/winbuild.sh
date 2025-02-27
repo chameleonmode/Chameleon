@@ -22,9 +22,6 @@ rm -rf .playwright/node/darwin-x64
 
 mkdir -p "Resources/scripts"
 cp -a /Users/dev/src/chameleon-playwright/dist/. "Resources/scripts/dist"
-cp -a /Users/dev/src/chameleon-playwright/node_modules/. "Resources/scripts/node_modules"
-cp -a /Users/dev/src/chameleon-playwright/package.json "Resources/scripts/package.json"
-
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <upload bool>"

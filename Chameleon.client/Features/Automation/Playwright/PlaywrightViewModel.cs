@@ -67,7 +67,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 			return viewModel;
 		});
 
-		SelectedBundledScript = BundlesScripts.FirstOrDefault();
+		SelectedBundledScript = BundlesScripts[1];
 		AsyncCommandMap["Save"] = Save;
 		AsyncCommandMap["SelectUserScriptFolder"] = SelectUserScriptFolder;
 	}
