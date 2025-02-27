@@ -1,5 +1,5 @@
 ﻿using Chameleon.lib.Auth;
-using Chameleon.lib.Common.Interfaces.Services;
+using Chameleon.lib.Helpers;
 
 using CommunityToolkit.Mvvm.Input;
 
@@ -8,28 +8,20 @@ public partial class ViewModelObjectBase : ObservableObjectBase {
 	public Session CurrentSession { get; } = Session.Instance;
 
 	public bool Navigated { get; set; }
-	public ViewModelObjectBase()
-	{
-		
+	public ViewModelObjectBase() {
+
 	}
 
-	public ViewModelObjectBase(string? title) : this()
-	{
+	public ViewModelObjectBase(string? title) : this() {
 		Title = title;
 	}
 
-	public ViewModelObjectBase(string title, Func<ViewModelObjectBase> init) : this(title)
-	{
-		init();
+	public ViewModelObjectBase(string title, Func<ViewModelObjectBase> init) : this(title) {
+		_ = init();
 	}
 
 	[RelayCommand]
-	private async Task Copy(object param)
-	{
-		var copyPastaService = IoC.GetService<ICopyPastaService>();
-		if (copyPastaService == null)
-			return;
-
-		await copyPastaService.SetTextAsync(param as string ?? "");
+	async Task Copy(object param) {
+		await CopyPasta.Copy(param as string ?? "");
 	}
 }

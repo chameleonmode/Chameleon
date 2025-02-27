@@ -1,23 +1,23 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.lib.CommunityToolkit.MvvM;
-public abstract class Vim<T> : ViewModelObjectBase
+public abstract class ViewModelObjectDto<T> : ViewModelObjectBase
 	where T : Common.Models.Interfaces.Dto {
 	public T? Dto { get; set; }
 
-	public Vim(string? title) : base(title)
+	public ViewModelObjectDto(string? title) : base(title)
 	{
 	}
-	public Vim(T dto) : base()
+	public ViewModelObjectDto(T dto) : base()
 	{
 		Dto = dto;
 	}
-	public Vim() : base()
+	public ViewModelObjectDto() : base()
 	{
 	}
 }
 
-public abstract partial class Obs<T> : Vim<T>
+public abstract partial class ObservableViewModelDto<T> : ViewModelObjectDto<T>
 	where T : Common.Models.Interfaces.Dto {
 
 	[ObservableProperty]
@@ -26,7 +26,14 @@ public abstract partial class Obs<T> : Vim<T>
 	[ObservableProperty]
 	private bool isActionOptionsVisible = true;
 
-	public Obs(string? title) : base(title)
+	public ObservableViewModelDto(string? title) : base(title)
+	{
+		CommandMap["Unselect"] = () => {
+			IsSelected = false;
+		};
+	}
+
+	public ObservableViewModelDto(T dto) : base(dto)
 	{
 		CommandMap["Unselect"] = () => {
 			IsSelected = false;
@@ -38,5 +45,7 @@ public abstract partial class Obs<T> : Vim<T>
 		OnAnyIsSelectedChanged(value);
 	}
 
-	public abstract void OnAnyIsSelectedChanged(bool value);
+	public virtual void OnAnyIsSelectedChanged(bool value){
+
+	}
 }

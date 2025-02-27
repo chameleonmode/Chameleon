@@ -367,10 +367,6 @@
 			</Border>
 		</StackPanel>
 	</Design.PreviewWith>
-
-
-
-
 	<ControlTheme TargetType="ctrls:ChameleonContentControl"
                   x:Key="{x:Type ctrls:ChameleonContentControl}">
 		<Setter Property="Margin" Value="12 0 12 12" />

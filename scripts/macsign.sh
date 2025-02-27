@@ -2,35 +2,48 @@
 # Usage cd /Users/dev/src/Chameleon/scripts
 # bash macsign.sh
 
-
-SLN_DIR=/Users/dev/src/Chameleon
-CSPROJ=Chameleon.Avalonia.Desktop
-BUILD_DIR=$SLN_DIR/build/osx
-
 APP_NAME=Chameleon.app
 APP_SIGNING_IDENTITY="Developer ID Application: Simon Dadia (5K732WRGK2)"
-APP_ENTITLEMENTS_FILE=$SLN_DIR/$CSPROJ/chameleonApp.entitlements
-APP_PROVISIONINGPROFILE=$SLN_DIR/$CSPROJ/chameleonmodes.provisionprofile 
+CSPROJ_DIR=/Users/dev/src/Chameleon/Chameleon.Desktop
+PUBLISH_DIR=/Users/dev/src/Chameleon/publish/osx
 
-cd $BUILD_DIR
+# Move .playwright folder from MacOS to Resources if needed
+if [ -d "$PUBLISH_DIR/$APP_NAME/Contents/MacOS/.playwright" ]; then
+    echo "[INFO] Moving .playwright from MacOS to Resources"
+    mv "$PUBLISH_DIR/$APP_NAME/Contents/MacOS/.playwright" "$PUBLISH_DIR/$APP_NAME/Contents/Resources/"
+fi
 
-echo "[INFO] Switch provisionprofile to AppStore"
-\cp -R -f $APP_PROVISIONINGPROFILE $APP_NAME/Contents/embedded.provisionprofile
+# Remove any existing symlink (if present) in MacOS
+if [ -L "$PUBLISH_DIR/$APP_NAME/Contents/MacOS/.playwright" ]; then
+    rm "$PUBLISH_DIR/$APP_NAME/Contents/MacOS/.playwright"
+fi
 
-find "$APP_NAME/Contents/Frameworks"|while read fname; do
+# Create a symlink in MacOS pointing to the new Resources location
+echo "[INFO] Creating symlink for .playwright in MacOS folder"
+ln -s "../Resources/.playwright" "$PUBLISH_DIR/$APP_NAME/Contents/MacOS/.playwright"
+
+# [Perform all your signing operations here...]
+echo "[INFO] Signing app bundle - dylib files"
+find "$PUBLISH_DIR/$APP_NAME/Contents/MacOS" -name '*.dylib' | while read fname; do
     if [[ -f $fname ]]; then
         echo "[INFO] Signing $fname"
         codesign --force --sign "$APP_SIGNING_IDENTITY" "$fname"
     fi
 done
 
+eecho "[INFO] Signing fsevents module"
+codesign --force --timestamp --options runtime --entitlements "$CSPROJ_DIR/chameleonApp.entitlements" --sign "$APP_SIGNING_IDENTITY" "$PUBLISH_DIR/$APP_NAME/Contents/Resources/scripts/node_modules/fsevents/fsevents.node"
+
+echo "[INFO] Switching provision profile to AppStore"
+cp -R -f "$CSPROJ_DIR/chameleonmodes.provisionprofile" "$PUBLISH_DIR/$APP_NAME/Contents/embedded.provisionprofile"
+
 echo "[INFO] Signing app executable"
-codesign --force --timestamp --options=runtime --entitlements "$APP_ENTITLEMENTS_FILE" --sign "$APP_SIGNING_IDENTITY" "$APP_NAME/Contents/MacOS/Chameleon"
+codesign --force --timestamp --options runtime --entitlements "$CSPROJ_DIR/chameleonApp.entitlements" --sign "$APP_SIGNING_IDENTITY" "$PUBLISH_DIR/$APP_NAME/Contents/MacOS/Chameleon"
 
 echo "[INFO] Signing app bundle"
-codesign --force --timestamp --options=runtime --entitlements "$APP_ENTITLEMENTS_FILE" --sign "$APP_SIGNING_IDENTITY" "$APP_NAME"
+codesign --force --timestamp --options runtime --entitlements "$CSPROJ_DIR/chameleonApp.entitlements" --sign "$APP_SIGNING_IDENTITY" "$PUBLISH_DIR/$APP_NAME"
 
-#echo "[INFO] Creating Chameleon.pkg"
-#productbuild --component App/Chameleon.app /Applications --sign "$INSTALLER_SIGNING_IDENTITY" Chameleon.pkg
+echo "[INFO] Verifying signed app bundle"
+codesign --verify --deep --strict "$PUBLISH_DIR/$APP_NAME"
 
 echo "[INFO] done"

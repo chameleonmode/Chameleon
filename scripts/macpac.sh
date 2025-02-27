@@ -3,48 +3,29 @@
 # bash macpac.sh
 
 APP_NAME=Chameleon.app
-
 SLN_DIR=/Users/dev/src/Chameleon
-CSPROJ=Chameleon.Avalonia.Desktop
-BUILD_DIR=$SLN_DIR/build/osx
-
-#cleanup folders
-cd $BUILD_DIR
-rm -rf Chameleon.zip
-rm -rf $APP_NAME
-mkdir -p $APP_NAME
-mkdir -p "$APP_NAME/Contents/Frameworks/"
-mkdir -p "$APP_NAME/Contents/MacOS/"
-mkdir -p "$APP_NAME/Contents/Resources"
-mkdir -p "$APP_NAME/Contents/Resources/BrowserExtensions"
+CSPROJ_DIR=/Users/dev/src/Chameleon/Chameleon.Desktop
+BUILD_DIR=/Users/dev/src/Chameleon/build/osx
+PUBLISH_DIR=/Users/dev/src/Chameleon/publish/osx
+#
+rm -rf $PUBLISH_DIR/$APP_NAME.zip
+rm -rf $PUBLISH_DIR/$APP_NAME
+mkdir -p $PUBLISH_DIR/$APP_NAME
+mkdir -p $PUBLISH_DIR/$APP_NAME/Contents/
+mkdir -p $PUBLISH_DIR/$APP_NAME/Contents/MacOS/
+mkdir -p $PUBLISH_DIR/$APP_NAME/Contents/Resources/
+mkdir -p $PUBLISH_DIR/$APP_NAME/Contents/Resources/BrowserExtensions/
+mkdir -p $PUBLISH_DIR/$APP_NAME/Contents/Resources/scripts/
 
 #Move app
-cd $SLN_DIR
-rm -rf $CSPROJ/bin/release/net8.0/osx-x64/publish/playwright.ps1
-cp -R -f $CSPROJ/bin/release/net8.0/osx-x64/publish/* "$BUILD_DIR/$APP_NAME/Contents/MacOS/"
-cp -R -f $CSPROJ/bin/release/net8.0/osx-x64/publish/.playwright/. "$BUILD_DIR/$APP_NAME/Contents/Resources/.playwright"
-cd $BUILD_DIR
+rm -rf $BUILD_DIR/playwright.ps1
+cp -R -f $BUILD_DIR/. $PUBLISH_DIR/$APP_NAME/Contents/MacOS
 
 #<here is moving your app resources to Resources folder using relative symlinks>
-cp $SLN_DIR/$CSPROJ/Info.plist $APP_NAME/Contents/Info.plist
-cp $SLN_DIR/$CSPROJ/logo-symbol.icns $APP_NAME/Contents/Resources/logo-symbol.icns
-cp -a $SLN_DIR/resources/BrowserExtensions/. $APP_NAME/Contents/Resources/BrowserExtensions
-mkdir -p $APP_NAME/Contents/Resources/.playwright/scripts/
-cp -a /Users/dev/src/chameleon-playwright/dist/. $APP_NAME/Contents/Resources/.playwright/scripts/dist
-cp -a /Users/dev/src/chameleon-playwright/node_modules/. $APP_NAME/Contents/Resources/.playwright/scripts/node_modules
-cp -a /Users/dev/src/chameleon-playwright/package.json $APP_NAME/Contents/Resources/.playwright/scripts/package.json
-
-#<here is moving your .dylib files to Frameworks folder using relative symlinks>
-find "$APP_NAME/Contents/MacOS" -name '*.dylib' | while read fname; do
-    if [[ -f $fname ]]; then
-        mv $fname "$APP_NAME/Contents/Frameworks/"
-    fi
-done
-
-cd $APP_NAME/Contents/MacOS
-ln -s ../Resources/.playwright .playwright
-for dylib in ../Frameworks/*.dylib; do
-    ln -s "../Frameworks/$(basename "$dylib")" "$(basename "$dylib")"
-done
+cp $CSPROJ_DIR/Info.plist $PUBLISH_DIR/$APP_NAME/Contents/Info.plist
+cp $CSPROJ_DIR/logo-symbol.icns $PUBLISH_DIR/$APP_NAME/Contents/Resources/logo-symbol.icns
+cp $SLN_DIR/resources/example.js $PUBLISH_DIR/$APP_NAME/Contents/Resources/example.js
+cp -a $SLN_DIR/resources/BrowserExtensions/. $PUBLISH_DIR/$APP_NAME/Contents/Resources/BrowserExtensions
+cp -a /Users/dev/src/chameleon-playwright/dist/. $PUBLISH_DIR/$APP_NAME/Contents/Resources/scripts/dist
 
 echo "[INFO] done"

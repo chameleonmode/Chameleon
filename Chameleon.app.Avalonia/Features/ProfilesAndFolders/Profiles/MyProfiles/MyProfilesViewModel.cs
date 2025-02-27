@@ -17,8 +17,9 @@ using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
-using Chameleon.lib.Playwright.Interfaces;
 using Chameleon.lib.Playwright.Models;
+using Chameleon.lib.Playwright.Services;
+using Chameleon.lib.Playwright.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
@@ -30,12 +31,11 @@ using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 public partial class MyProfilesViewModel : ViewModelObjectBase {
-
-	private readonly IPlaywrightScriptRepository _plawrightRepository = IoC.GetService<IPlaywrightScriptRepository>()!;
-	private readonly IPlaywriteService _playwriteService = IoC.GetService<IPlaywriteService>()!;
 	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
 
-	public AvaloniaList<PlaywrightScript> PlaywrightScripts { get; } = [];
+	public AvaloniaList<RunScriptOptions> PlaywrightScripts { get; } = [];
+	[ObservableProperty]
+	private RunScriptOptions? selectedPlaywrightScript;
 
 	[ObservableProperty]
 	private PaginatorViewModel paginatorViewModel;
@@ -53,8 +53,6 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	private bool isVisibleWaitButton;
 	[ObservableProperty]
 	private bool isRecordSelected;
-	[ObservableProperty]
-	private PlaywrightScript? selectedPlaywrightScript;
 	[ObservableProperty]
 	private string searchText = string.Empty;
 	[ObservableProperty]
@@ -116,40 +114,30 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			.SortAndBind(out profiles, profilesCompareObservable)
 			.Subscribe((i) => {
 			});
+
 		PaginatorViewModel = new PaginatorViewModel((p) => {
-			if (p.PageIndex < 0)
-				return;
-			pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems));
+			if (p.PageIndex > 0)
+				pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems));
 		}) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
+		
 		TotalCount = PaginatorViewModel.TotalCount;
-		//AppMainViewViewModel.Instance.OnBoundProfilesProfileSelectedChanged += OnSelectedChanged;
-
 		_ = this.WhenValueChanged(x => x.Folder!.Tags)
 			.Throttle(TimeSpan.FromSeconds(1))
 			.Where(_ => Folder is not null)
 			.Subscribe(async tags => {
-				await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), tags.ToTagsList());
+				_ = await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), tags.ToTagsList());
 			});
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
 
-		//await InitializeScripts();
-		void AddMappedScripts(IEnumerable<PlaywriteRunScriptOptions> scripts) {
-			PlaywrightScripts.AddMapped(scripts, b => {
-				var viewModel = new PlaywrightScript(b);
-				viewModel.Parameters.AddRange(b.Description!.Parameters);
-				return viewModel;
-			});
-		}
 		PlaywrightScripts.Clear();
-		AddMappedScripts(_plawrightRepository.GetBundledScrits());
-
+		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());
 		var usd = IoC.GetValue<string>("UserScriptsDirectory");
 		if (usd.Is() && Directory.Exists(usd)) {
-			AddMappedScripts(await _plawrightRepository.GetUserScripts(usd));
+			PlaywrightScripts.AddRange(await BundledScriptsService.GetUserScripts(usd));
 		}
 
 		//InintializeLastSelectedAutomation();
@@ -158,7 +146,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 				!Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum)
 			? BrowserItems[0]
 			: BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
-		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
+		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Description?.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
 
 		//SetViewModelsFilter();
 	}
@@ -177,10 +165,10 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		if (cur != value.SystemBrowserType.ToString())
 			IoC.SetValue(value.SystemBrowserType.ToString(), "LastSelectedBrowser");
 	}
-	partial void OnSelectedPlaywrightScriptChanged(PlaywrightScript? value) {
+	partial void OnSelectedPlaywrightScriptChanged(RunScriptOptions? value) {
 		var cur = IoC.GetValue<string>("LastRunScriptId");
-		if (value != null && cur != value.Title)
-			IoC.SetValue(value.Title, "LastRunScriptId");
+		if (value != null && cur != value.Description?.Title)
+			IoC.SetValue(value.Description?.Title, "LastRunScriptId");
 	}
 	partial void OnSearchTextChanged(string value) {
 		if (value.Is()) {
@@ -429,11 +417,10 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 					if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || !await profile.SBI![SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))
 						continue;
 				}
-				var options = SelectedPlaywrightScript.RunOptions;
-				options.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
-				options.Record = IsRecordSelected;
+				SelectedPlaywrightScript.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
+				SelectedPlaywrightScript.Record = IsRecordSelected;
 				try {
-					await _playwriteService.RunScript(SelectedPlaywrightScript.RunOptions, token);
+					await PlaywriteRunner.RunScript(SelectedPlaywrightScript, token);
 				} catch (Exception ex) {
 					// Log or handle the exception if closing the process fails
 					Toaster.Error($"{ex.Message}");
@@ -449,9 +436,10 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 					break;
 				}
 			}
-			_playwriteService.Dispose();
 		} catch (Exception ex) {
 			Toaster.Error($"{ex.Message}");
+		} finally{
+			PlaywriteRunner.Dispose();
 		}
 
 		IsVisibleRunButton = true;

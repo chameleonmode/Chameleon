@@ -50,7 +50,6 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 			1 => typeof(PhoneVerificationView),
 			2 => typeof(UserProxySettingsView),
 			3 => typeof(ProxyCreditView),
-			4 => typeof(AssistanTaskforceView),
 			_ => throw new Exception()
 		}, param, GetTransitionInfo(vm.LastSelectedIndex, idx));
 

@@ -46,12 +46,12 @@
 				Content="View"
 				Theme="{StaticResource TransparentButton}"
 					CommandParameter="ViewGroup"
-					Command="{Binding CfromVCommand}"/>
+					Command="{Binding CfVCommand}"/>
 			<Button Grid.Column="2"
 					VerticalAlignment="Top"
 					Margin="5"
 					CommandParameter="SetFavoriteFolder"
-					Command="{Binding CfromVCommand}"
+					Command="{Binding CfVCommand}"
 					Theme="{StaticResource FavoriteButton}"/>
 		</StackPanel>
 	</Grid>

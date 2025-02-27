@@ -18,9 +18,6 @@ if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <upload bool>"
   exit 1
 fi
-
-cd /Users/dev/src/Chameleon/build/osx
-codesign --verify --verbose Chameleon.app/Contents/MacOS/Chameleon
-codesign --verify --verbose Chameleon.app
-ditto -c -k --sequesterRsrc --keepParent Chameleon.app Chameleon.zip
-xcrun notarytool submit Chameleon.zip --keychain-profile "DEV"
+echo "[INFO] Uploading macOS app"
+cd /Users/dev/src/Chameleon/scripts
+bash macpload.sh

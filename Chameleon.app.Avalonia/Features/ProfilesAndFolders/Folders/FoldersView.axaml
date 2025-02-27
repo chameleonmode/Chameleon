@@ -25,7 +25,7 @@
 							Height="40"
 							HorizontalContentAlignment="Stretch"
 							CommandParameter="Open"
-							Command="{Binding AsyncCfromVCommand}">
+							Command="{Binding AsyncCfVCommand}">
 							<Grid IsVisible="{Binding !IsRenamed}">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="Auto" />
@@ -89,7 +89,7 @@
 						  Content="Save"
 						  Grid.Column="1"
 						  CommandParameter="SaveRename"
-						  Command="{Binding AsyncCfromVCommand}"/>
+						  Command="{Binding AsyncCfVCommand}"/>
 					</Grid>
 
 					<StackPanel Orientation="Horizontal"
@@ -108,20 +108,20 @@
 										Tag="{Binding Dto}"
 										IconSource="Wifi4"
 										CommandParameter="ChangeProxies"
-										Command="{Binding CfromVCommand}"
+										Command="{Binding CfVCommand}"
 										IsEnabled="{Binding IsContextMenuItemEnabled}"/>
 									<ui:MenuFlyoutItem
 										Text="Rename folder"
 										IconSource="Rename"
 										CommandParameter="StartRename"
-										Command="{Binding CfromVCommand}"
+										Command="{Binding CfVCommand}"
 										IsEnabled="{Binding IsContextMenuItemEnabled}"
 										IsVisible="{Binding ShowFavoriteIcon}"/>
 									<ui:MenuFlyoutItem
 										Text="Delete"
 										IconSource="Delete"
 										CommandParameter="Delete"
-										Command="{Binding AsyncCfromVCommand}"
+										Command="{Binding AsyncCfVCommand}"
 										IsEnabled="{Binding IsContextMenuItemEnabled}"
 										IsVisible="{Binding ShowFavoriteIcon}" />
 								</ui:FAMenuFlyout>
@@ -132,7 +132,7 @@
 							IsVisible="{Binding ShowFavoriteIcon}"
 							Theme="{StaticResource FavoriteButton}"
 							CommandParameter="SetFavorite"
-							Command="{Binding AsyncCfromVCommand}"/>
+							Command="{Binding AsyncCfVCommand}"/>
 					</StackPanel>
 				</Grid>
 			</Panel>
@@ -150,7 +150,7 @@
 						ToolTip.Tip="Create Folder"
 						Theme="{StaticResource SvgIconTextButton}"
 						CommandParameter="Create"
-						Command="{Binding AsyncCfromVCommand}"/>
+						Command="{Binding AsyncCfVCommand}"/>
 			</StackPanel>
 		</afv:ChameleonContentControl.TitleContent>
 		<ItemsControl

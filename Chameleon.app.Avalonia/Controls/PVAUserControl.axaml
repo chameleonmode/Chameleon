@@ -28,7 +28,7 @@
 								Margin="12 8 0 0"
 								Content="{TemplateBinding Content}"
 								CommandParameter="{TemplateBinding Name}"
-								Command="{Binding AsyncCfromVCommand}" />
+								Command="{Binding AsyncCfVCommand}" />
 					</StackPanel>
 				</ControlTemplate>
 			</Setter>
@@ -104,18 +104,18 @@
 						<ui:CommandBarButton IconSource="Cancel"
 											 Label="Cancel"
 											 CommandParameter="CancelOrder"
-											 Command="{Binding AsyncCfromVCommand}"
+											 Command="{Binding AsyncCfVCommand}"
 											 IsVisible="{Binding CanCancel}"/>
 					</ui:CommandBar.PrimaryCommands>
 					<ui:CommandBar.SecondaryCommands>
 						<ui:CommandBarButton IconSource="Document"
 											 Label="Pop Out"
 											 CommandParameter="Popout"
-											 Command="{Binding CfromVCommand}"/>
+											 Command="{Binding CfVCommand}"/>
 						<ui:CommandBarButton IconSource="Save"
 											 Label="Save"
 											 CommandParameter="Save"
-											 Command="{Binding AsyncCfromVCommand}"/>
+											 Command="{Binding AsyncCfVCommand}"/>
 					</ui:CommandBar.SecondaryCommands>
 				</ui:CommandBar>
 			</Grid>
@@ -145,7 +145,7 @@
 							Content="Phone"
 							ToolTip.Tip="Get Number"
 							CommandParameter="GetNumber"
-							Command="{Binding AsyncCfromVCommand}"
+							Command="{Binding AsyncCfVCommand}"
 							Classes="accent"
 							Theme="{DynamicResource AccentSymbleIconButton}" />
 					</afv:HeaderdInputFieldsControl.Buttons>
@@ -162,7 +162,7 @@
 							Content="Message"
 							ToolTip.Tip="Get Code"
 							CommandParameter="GetCode"
-							Command="{Binding AsyncCfromVCommand}"
+							Command="{Binding AsyncCfVCommand}"
 							Classes="accent"
 							Theme="{DynamicResource AccentSymbleIconButton}" />
 					</afv:HeaderdInputFieldsControl.Buttons>

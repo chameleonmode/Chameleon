@@ -52,7 +52,7 @@
 							Theme="{StaticResource SvgIconTextButton}"
 							Tag="{TemplateBinding Content}"
 							CommandParameter="{TemplateBinding Tag}"
-							Command="{Binding AsyncCfromVCommand}" />
+							Command="{Binding AsyncCfVCommand}" />
 					</Grid>
 				</ControlTemplate>
 			</Setter>
@@ -110,7 +110,7 @@
 					Content="Save"
 					Classes="accent"
 					Theme="{StaticResource AccentSymbleIconButton}"
-					Command="{Binding AsyncCfromVCommand}"
+					Command="{Binding AsyncCfVCommand}"
 					CommandParameter="SaveChanges"/>
 			</StackPanel>
 		</Grid>
