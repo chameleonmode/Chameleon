@@ -83,6 +83,7 @@ public partial class MainViewModel : ObservableObjectBase {
 			.Bind(out _boundFolders)
 			.Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
 
+		TagsRepo.Instance.Initialize();//Ensure that data is loaded
 		_ = TagsRepo
 			.Connect()
 			.Transform(i => new MainAppSearchItem() {
