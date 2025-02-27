@@ -8,8 +8,6 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 
 using Chameleon.client.Features.Automation.Playwright.ViewModels;
 using Chameleon.lib.Util;
-using Chameleon.lib.Storage;
-using System.Data;
 using Chameleon.client.Features.Automation.Playwright.Models;
 
 namespace Chameleon.client.Features.Automation.Playwright;
@@ -28,9 +26,12 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 	private string userScriptsDirectory = "";
 
 	public PlaywrightViewModel() : base("Playwright AIR") {
-		BundlesScripts.AddMapped(BundledScriptsService.Instance.GetBundledScrits(), o => {
-			var viewModel = new ScriptViewModel(o, [.. o.Description!.Parameters.Select(p => new ScriptParametersValues( Key: p.Value, Value: p.Key ))]);
+		BundlesScripts.AddMapped(BundledScriptsService.Instance.GetBundledScrits(), script => {
+			var data = IoC.GetJsonValue<Dictionary<string,string>>(script.BundledScript!.TableName);
+			var options = script.BundledScript!.Parameters.Select(p => new ScriptParametersValues(p.Key, data?.GetValueOrDefault(p.Key) ?? p.Value)).ToList();
+			var viewModel = new ScriptViewModel(script, options);
 			viewModel.OnOpenEdit += scriptTitle => {
+				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
 				// var tableName = viewModel.TableName;
 				// Console.WriteLine($"\nParameters saved in table '{viewModel}':");
 
@@ -61,7 +62,6 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 				// 	}
 				// 	Console.WriteLine();
 				// }
-				SelectedBundledScript = BundlesScripts.FirstOrDefault(s => s.Title == scriptTitle);
 			};
 
 			return viewModel;
@@ -83,11 +83,14 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 		if (SelectedBundledScript?.Parameters == null) {
 			return;
 		}
-		// // Convert parameters to dictionary as in your original code
-		// var data = SelectedBundledScript.Parameters.ToDictionary(p => p.Key, p => (object)p.Value);
+		// Convert parameters to dictionary as in your original code
+		var data = SelectedBundledScript.Parameters.ToDictionary(p => p.Key, p => p.Value);
+		var table = SelectedBundledScript.RunOptions.BundledScript!.TableName;
+		IoC.SetJsonValue(data, table);
 
+		// TODO: Save the data to the database
 		// // Fixed version of your code - notice the logic inversion
-		// if (!SqliteStorageService.Instance.TableExists(SelectedBundledScript.TableName)) {
+		// if (!SqliteStorageService.Instance.TableExists(table)) {
 		// 	// Table doesn't exist - create it first
 		// 	Console.WriteLine("Table doesn't exist, creating it...");
 		// 	SqliteStorageService.Instance.CreateTable(
@@ -97,7 +100,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 		// 	);
 
 		// 	// Now insert the data
-		// 	var rowId = SqliteStorageService.Instance.Insert(SelectedBundledScript.TableName, data);
+		// 	var rowId = SqliteStorageService.Instance.Insert(SelectedBundledScript.RunOptions.BundledScript!.TableName, data);
 		// 	Console.WriteLine($"Inserted new row with ID: {rowId}");
 		// } else {
 		// 	// Table exists - update existing data

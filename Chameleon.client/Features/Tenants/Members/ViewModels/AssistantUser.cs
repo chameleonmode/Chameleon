@@ -107,7 +107,7 @@ public partial class AssistantUser(AssistDto dto)  : ViewModelObjectDto<AssistDt
 
 				var cookies = await PlaywrightUtil.GetCookies(new (new (bt, profile.SystemBrowserProfile), profile.SBI[bt]?.Settings.Port));
 				if (cookies.Count > 0) {
-					var platformaticDB = PlatformaticDB.Instance;
+					var platformaticDB = DB.Instance;
 					var email = Dto!.id == Auther.AuthSession?.UserId
 					? platformaticDB.DBusers?.SingleOrDefault(u => u.licenseKey != null)?.email
 					: Dto!.EmailAddress;

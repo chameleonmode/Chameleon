@@ -67,20 +67,15 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		Folders = flist;
 
 		AsyncCommandMap["SyncChanges"] = SyncChanges;
+		AsyncCommandMap["SyncCookiesClear"] = SyncCookiesClear;
 		AsyncCommandMap["SyncCookiesChrome"] = SyncCookiesChrome;
 		AsyncCommandMap["SyncCookiesBrave"] = SyncCookiesBrave;
 		AsyncCommandMap["SyncCookiesFirefox"] = SyncCookiesFirefox;
-		AsyncCommandMap["SyncCookiesClear"] = SyncCookiesClear;
 	}
 
-	public override async Task InitAsync(object? param)
-	{
-		await base.InitAsync(param);
-
-		//if(!Loaded) {
-		//	await SyncChanges();
-		//}
-	}
+	private async Task SyncCookiesChrome() => await SyncCookies(Enums.SystemBrowserType.Chrome);
+	private async Task SyncCookiesBrave() => await SyncCookies(Enums.SystemBrowserType.Brave);
+	private async Task SyncCookiesFirefox() => await SyncCookies(Enums.SystemBrowserType.Firefox);
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value)
 	{
@@ -109,7 +104,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		try {
 			HasCookiesToSync = await PlaywrightCookiesSyncService.Instance.HasCookies();
 		} catch (Exception e) {
-			Toaster.Error("Failed to check for cookies. Please try again. " + e.Message);
+			Toaster.Error("Failed to check for cookies. " + e.Message);
 		}
 	}
 
@@ -119,21 +114,16 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 			await PlaywrightCookiesSyncService.Instance.SyncCookies(systemBrowserType);
 			Toaster.Success("Cookies Synced");
 		} catch (Exception e) {
-			Toaster.Error("Failed to sync cookies. Please try again. " + e.Message);
+			Toaster.Error("Failed to sync cookies. " + e.Message);
 		}
 	}
-	private async Task SyncCookiesChrome() => await SyncCookies(Enums.SystemBrowserType.Chrome);
-	private async Task SyncCookiesBrave() => await SyncCookies(Enums.SystemBrowserType.Brave);
-	private async Task SyncCookiesFirefox() => await SyncCookies(Enums.SystemBrowserType.Firefox);
-
-
 	private async Task SyncCookiesClear()
 	{
 		try {
-			await PlatformaticDB.Instance.DeleteDataInteractions();
+			await DB.Instance.DeleteDataInteractions();
 			Toaster.Success("Cookies Cleared");
 		} catch (Exception e) {
-			Toaster.Error("Failed to sync cookies. Please try again. " + e.Message);
+			Toaster.Error("Failed to sync cookies. " + e.Message);
 		}
 		await CheckForCookies();
 	}
