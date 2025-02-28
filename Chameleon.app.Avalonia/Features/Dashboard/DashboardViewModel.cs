@@ -1,5 +1,4 @@
-﻿using Chameleon.app.Avalonia.DynamicData;
-using Chameleon.app.Avalonia.Models.Observable;
+﻿using Chameleon.app.Avalonia.Features.Dashboard.Favourite;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -8,57 +7,43 @@ using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
+using DynamicData.Binding;
 using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
 namespace Chameleon.app.Avalonia.Features.Dashboard;
 public partial class DashboardViewModel : ViewModelObjectBase {
-	// Private fields
-	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
-	private readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Compares.ObsFolderCompares.AscendingComparer);
 
 	//
 	[ObservableProperty]
 	private bool isSyncChangesBtnVisible = true;
 	[ObservableProperty]
 	public bool hasCookiesToSync = false;
+
+
 	[ObservableProperty]
-	private Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
+	private ObservableCollection<TagViewModel> tags = [];
+
 	[ObservableProperty]
-	private Enums.ChangeComparereOption folderSortSelected = Enums.ChangeComparereOption.Ascending;
+	private TagViewModel selectedTag = null!;
 
-	//
-	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
+	[ObservableProperty]
+	private bool isFavouriteSelected = true;
 
-	//
-	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
-	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
-
-	//
-	public bool HasNoFolderItems => Folders.Count == 0;
-	public bool HasNoItems => Profiles.Count == 0;
+	public FavouriteViewModel FavouriteViewModel => FavouriteViewModel.Instance;
 
 	public DashboardViewModel()
 		: base("Dashboard") {
-		//
-		_ = UserProfilesRepo
-			.Connect(i => i.isFavourite)
-			.Transform(i => new ObsProfile(i, false))
-			.SortAndBind(out var list, profilesCompareObservable)
-			.Subscribe((i) => {
-				OnPropertyChanged(nameof(HasNoItems));
-			});
-		Profiles = list;
 
-		//
-		_ = UserProfilesFolderRepo
-			.Connect(i => i.isFavorite)
-			.Transform(i => new ObsFolder(i, true, null))
-			.SortAndBind(out var flist, foldersCompareObservable)
-			.Subscribe((i) => {
-				OnPropertyChanged(nameof(HasNoFolderItems));
-			});
-		Folders = flist;
+		_ = TagsRepo
+			.Connect()
+			.Transform(item => new TagViewModel() { Name = item.Name })
+			.Subscribe(RefreshTags);
+
+		_ = this.WhenValueChanged(x => x.SelectedTag)
+			.Where(selectedTag => selectedTag != null)
+			.Subscribe(selectedTag => IsFavouriteSelected = selectedTag!.Name == "Favourites");
 
 		AsyncCommandMap["SyncChanges"] = SyncChanges;
 		AsyncCommandMap["SyncCookiesClear"] = SyncCookiesClear;
@@ -67,23 +52,29 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		AsyncCommandMap["SyncCookiesFirefox"] = SyncCookiesFirefox;
 	}
 
+	private void RefreshTags(IChangeSet<TagViewModel, string> changeSet) {
+		var items = changeSet.Select(change => change.Current).ToList();
+
+		SelectedTag = new TagViewModel { Name = "Favourites", IsSelected = true };
+		items.Insert(0, SelectedTag);
+
+		Tags = new ObservableCollection<TagViewModel>(items);
+		foreach (var tag in Tags) {
+			_ = tag.TagObservable
+				.Skip(1)
+				.Subscribe(OnTagSelected);
+		}
+	}
+
+	private void OnTagSelected(TagViewModel selectedTag) {
+		foreach (var tag in Tags)
+			tag.IsSelected = tag.Name == selectedTag.Name;
+		SelectedTag = selectedTag;
+	}
+
 	private async Task SyncCookiesChrome() => await SyncCookies(Enums.SystemBrowserType.Chrome);
 	private async Task SyncCookiesBrave() => await SyncCookies(Enums.SystemBrowserType.Brave);
 	private async Task SyncCookiesFirefox() => await SyncCookies(Enums.SystemBrowserType.Firefox);
-
-	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
-		profilesCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => Compares.ObsProfileCompares.DescendingComparer,
-			_ => Compares.ObsProfileCompares.AscendingComparer
-		});
-	}
-
-	partial void OnFolderSortSelectedChanged(Enums.ChangeComparereOption value) {
-		foldersCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => Compares.ObsFolderCompares.DescendingComparer,
-			_ => Compares.ObsFolderCompares.AscendingComparer
-		});
-	}
 
 	private async Task SyncChanges() {
 		await AppStartup.LoadSink(true);
@@ -115,5 +106,25 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 			Toaster.Error("Failed to sync cookies. " + e.Message);
 		}
 		await CheckForCookies();
+	}
+}
+
+public partial class TagViewModel : ObservableObject {
+
+	public BehaviorSubject<TagViewModel> TagObservable { get; } = null!;
+
+	[ObservableProperty]
+	private string name = null!;
+
+	[ObservableProperty]
+	private bool isSelected;
+
+	public TagViewModel() {
+
+		TagObservable = new(this);
+
+		_ = this.WhenValueChanged(x => x.IsSelected)
+								.Where(isSelected => isSelected)
+								.Subscribe(_ => TagObservable.OnNext(this));
 	}
 }
