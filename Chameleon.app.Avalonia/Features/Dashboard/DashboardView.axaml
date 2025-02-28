@@ -7,10 +7,10 @@
 			 xmlns:data="using:FluentAvalonia.UI.Data"
              xmlns:appuc="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
-			 x:DataType="vm:DashboardViewModel"
+			 xmlns:local="using:Chameleon.app.Avalonia.Features.Dashboard"
+			 x:DataType="local:DashboardViewModel"
 			 x:CompileBindings="False"
-             x:Class="Chameleon.app.Avalonia.Views.DashboardView">
+             x:Class="Chameleon.app.Avalonia.Features.Dashboard.DashboardView">
 
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
 		<Grid RowDefinitions="Auto,*">
@@ -52,9 +52,9 @@
 										CommandParameter="SyncCookiesFirefox"
 										Command="{Binding AsyncCfVCommand}"
 									/>
-									
+
 									<ui:MenuFlyoutSeparator />
-									
+
 									<ui:MenuFlyoutItem
 										Text="Clear"
 										CommandParameter="SyncCookiesClear"

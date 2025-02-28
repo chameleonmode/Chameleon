@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Chameleon.client.Pages;
 using Chameleon.client.Main;
 using Chameleon.lib.Const;
+using Chameleon.app.Avalonia.Features.Dashboard;
 
 namespace Chameleon.client;
 
@@ -59,9 +60,6 @@ public partial class App : Application {
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
 			// Main
 			.AddSingleton<MainView>()
-			// Dash
-			.AddSingleton<DashboardView>()
-			.AddSingleton<DashboardViewModel>()
 			//FunctionalSettings
 			.AddSingleton<FunctionalSettingsView>()
 			.AddSingleton<UserProxySettingsView>()
@@ -77,7 +75,7 @@ public partial class App : Application {
 			.AddSingleton<SettingsView>()
 			.AddSingleton<SettingsViewModel>()
 			.WithAllPagesAndFeatures()
-			;
+			.WithDashboard();
 		});
 
 		// Setup IoC

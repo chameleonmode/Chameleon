@@ -1,22 +1,17 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-
-using DynamicData;
-
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Collections.ObjectModel;
-
+﻿using Chameleon.app.Avalonia.DynamicData;
+using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
-using Chameleon.lib.Helpers;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.lib.Abs.Platformatic;
-
-using Chameleon.app.Avalonia.DynamicData;
-using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
+using DynamicData;
+using System.Collections.ObjectModel;
+using System.Reactive.Subjects;
 
-namespace Chameleon.app.Avalonia.ViewModels;
+namespace Chameleon.app.Avalonia.Features.Dashboard;
 public partial class DashboardViewModel : ViewModelObjectBase {
 	// Private fields
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
@@ -43,16 +38,15 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	public bool HasNoFolderItems => Folders.Count == 0;
 	public bool HasNoItems => Profiles.Count == 0;
 
-	public DashboardViewModel() 
-		: base("Dashboard")
-	{
+	public DashboardViewModel()
+		: base("Dashboard") {
 		//
 		_ = UserProfilesRepo
 			.Connect(i => i.isFavourite)
 			.Transform(i => new ObsProfile(i, false))
 			.SortAndBind(out var list, profilesCompareObservable)
 			.Subscribe((i) => {
-				OnPropertyChanged(nameof(HasNoItems)); 
+				OnPropertyChanged(nameof(HasNoItems));
 			});
 		Profiles = list;
 
@@ -77,24 +71,21 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	private async Task SyncCookiesBrave() => await SyncCookies(Enums.SystemBrowserType.Brave);
 	private async Task SyncCookiesFirefox() => await SyncCookies(Enums.SystemBrowserType.Firefox);
 
-	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value)
-	{
-		profilesCompareObservable.OnNext(value switch { 
+	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
+		profilesCompareObservable.OnNext(value switch {
 			Enums.ChangeComparereOption.Descending => Compares.ObsProfileCompares.DescendingComparer,
 			_ => Compares.ObsProfileCompares.AscendingComparer
 		});
 	}
 
-  partial void OnFolderSortSelectedChanged(Enums.ChangeComparereOption value)
-	{
+	partial void OnFolderSortSelectedChanged(Enums.ChangeComparereOption value) {
 		foldersCompareObservable.OnNext(value switch {
 			Enums.ChangeComparereOption.Descending => Compares.ObsFolderCompares.DescendingComparer,
 			_ => Compares.ObsFolderCompares.AscendingComparer
 		});
 	}
 
-	private async Task SyncChanges()
-	{
+	private async Task SyncChanges() {
 		await AppStartup.LoadSink(true);
 		await CheckForCookies();
 	}
@@ -108,8 +99,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		}
 	}
 
-	private async Task SyncCookies(Enums.SystemBrowserType systemBrowserType)
-	{
+	private async Task SyncCookies(Enums.SystemBrowserType systemBrowserType) {
 		try {
 			await PlaywrightCookiesSyncService.Instance.SyncCookies(systemBrowserType);
 			Toaster.Success("Cookies Synced");
@@ -117,8 +107,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 			Toaster.Error("Failed to sync cookies. " + e.Message);
 		}
 	}
-	private async Task SyncCookiesClear()
-	{
+	private async Task SyncCookiesClear() {
 		try {
 			await DB.Instance.DeleteDataInteractions();
 			Toaster.Success("Cookies Cleared");
@@ -128,4 +117,3 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		await CheckForCookies();
 	}
 }
-
