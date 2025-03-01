@@ -1,9 +1,8 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
 namespace Chameleon.app.Avalonia.Features.Dashboard.Tags;
 
+[Chameleon.lib.Common.Attributes.ViewModel(typeof(TagsViewModel))]
 public partial class TagsView : UserControl
 {
     public TagsView()

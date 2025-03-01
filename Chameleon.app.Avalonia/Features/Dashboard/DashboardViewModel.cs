@@ -1,4 +1,5 @@
 ﻿using Chameleon.app.Avalonia.Features.Dashboard.Favourite;
+using Chameleon.app.Avalonia.Features.Dashboard.Tags;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -33,17 +34,23 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 
 	public FavouriteViewModel FavouriteViewModel => FavouriteViewModel.Instance;
 
+	public TagsViewModel TagsViewModel => TagsViewModel.Instance;
+
 	public DashboardViewModel()
 		: base("Dashboard") {
 
 		_ = TagsRepo
 			.Connect()
+			.Filter(tag => tag.Items.Any(x => x.Value.Count > 0))
 			.Transform(item => new TagViewModel() { Name = item.Name })
 			.Subscribe(RefreshTags);
 
 		_ = this.WhenValueChanged(x => x.SelectedTag)
 			.Where(selectedTag => selectedTag != null)
 			.Subscribe(selectedTag => IsFavouriteSelected = selectedTag!.Name == "Favourites");
+		_ = this.WhenValueChanged(x => x.SelectedTag)
+			.Where(selectedTag => selectedTag != null && selectedTag!.Name != "Favourites")
+			.Subscribe(selectedTag => TagsViewModel.SelectedTagName = selectedTag!.Name);
 
 		AsyncCommandMap["SyncChanges"] = SyncChanges;
 		AsyncCommandMap["SyncCookiesClear"] = SyncCookiesClear;
@@ -55,10 +62,18 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	private void RefreshTags(IChangeSet<TagViewModel, string> changeSet) {
 		var items = changeSet.Select(change => change.Current).ToList();
 
-		SelectedTag = new TagViewModel { Name = "Favourites", IsSelected = true };
-		items.Insert(0, SelectedTag);
+		if (Tags.Count > 0) {
+			foreach (var item in items) {
+				if (!Tags.Any(tag => tag.Name == item.Name)) {
+					Tags.Add(item);
+				}
+			}
+		} else {
+			SelectedTag = new TagViewModel { Name = "Favourites", IsSelected = true };
+			items.Insert(0, SelectedTag);
+			Tags = new ObservableCollection<TagViewModel>(items);
+		}
 
-		Tags = new ObservableCollection<TagViewModel>(items);
 		foreach (var tag in Tags) {
 			_ = tag.TagObservable
 				.Skip(1)

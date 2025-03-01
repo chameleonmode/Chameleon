@@ -85,8 +85,9 @@
 			<Grid Grid.Row="2" IsVisible="{Binding IsFavouriteSelected}">
 				<favourite:FavouriteView DataContext="{Binding FavouriteViewModel}"/>
 			</Grid>
-			<tags:TagsView Grid.Row="2"
-				IsVisible="{Binding !IsFavouriteSelected}"/>
+			<Grid IsVisible="{Binding !IsFavouriteSelected}" Grid.Row="2">
+				<tags:TagsView DataContext="{Binding TagsViewModel}"/>
+			</Grid>
 		</Grid>
 	</ScrollViewer>
 </UserControl>
