@@ -51,10 +51,10 @@ public partial class MainViewModel : ObservableObjectBase {
 
 			try {
 				var current = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
-				var appClientInfo = await DB.Instance.GetLatestVersion;
-				if (appClientInfo != null && appClientInfo.latest != current) {
+				var appClientInfo = await DB.Routes.App.GetLatestVersion;
+				if (appClientInfo != null && appClientInfo.Latest != current) {
 					InfoBarTitle = "New Version Available";
-					InfoBarMessage = $"Download the latest version of Chameleon ({appClientInfo.latest})";
+					InfoBarMessage = $"Download the latest version of Chameleon ({appClientInfo.Latest})";
 					InfoBarOpen = true;
 				}
 			} catch (Exception e) {
@@ -135,7 +135,7 @@ public partial class MainViewModel : ObservableObjectBase {
 	[RelayCommand]
 	private async Task DownloadLatest() {
 		InfoBarOpen = false;
-		InfoBarOpen = !await DB.Instance.DownloadLatest((msg) => Toaster.Info(msg));
+		InfoBarOpen = !await DB.Routes.App.DownloadLatest((msg) => Toaster.Info(msg));
 		if (InfoBarOpen)
 			Toaster.Error("Failed to download latest version");
 	}

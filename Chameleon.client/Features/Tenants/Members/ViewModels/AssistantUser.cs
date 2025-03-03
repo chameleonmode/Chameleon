@@ -109,9 +109,9 @@ public partial class AssistantUser(AssistDto dto)  : ViewModelObjectDto<AssistDt
 				if (cookies.Count > 0) {
 					var platformaticDB = DB.Instance;
 					var email = Dto!.id == Auther.AuthSession?.UserId 
-					? platformaticDB.DBusers?.SingleOrDefault(u => u.licenseKey != null)?.email
+					? platformaticDB.DBusers?.SingleOrDefault(u => u.LicenseKey != null)?.Email
 					: Dto!.EmailAddress;
-					var data = await platformaticDB.SendCookies(email!, op.Dto!.ProfileId.ToString(), cookies);
+					var data = await DB.Routes.Cooky.SendCookies(email!, op.Dto!.ProfileId.ToString(), cookies);
 					if (data != null) {
 						Toaster.Success($"Cookies sent successfully");
 					} else {
