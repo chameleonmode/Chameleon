@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:local="using:Chameleon.app.Avalonia.Features.Dashboard.Tags"
+			 x:DataType="local:TagsViewModel"
+			 x:CompileBindings="True"
+             x:Class="Chameleon.app.Avalonia.Features.Dashboard.Tags.TagsView">
+	<Grid RowDefinitions="Auto,Auto">
+		<afv:ChameleonContentControl
+			Title="{Binding SelectedTagName,StringFormat='#{0} profiles'}"
+			TitleDescription="{Binding #lbProfiles.ItemCount, StringFormat='You have {0} profiles.'}">
+			<afv:ChameleonContentControl.Options>
+				<ui:FAComboBox
+					Header="Sort by:"
+					HorizontalAlignment="Right"
+					ItemsSource="{Binding Sorts}"
+					SelectedItem="{Binding SortSelected}"
+					IsEditable="False"/>
+			</afv:ChameleonContentControl.Options>
+			<afv:ChameleonContentControl.Content>
+				<Panel>
+					<ListBox
+						Name="lbProfiles"
+						ItemsSource="{Binding Profiles}"
+						Theme="{StaticResource ListBoxNoScroller}"
+						ItemContainerTheme="{StaticResource GridViewItem}"
+						ItemsPanel="{StaticResource SingleColumnUniformGridTemplate}"
+						ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}"
+						VerticalAlignment="Top" />
+
+					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+											Header="No profiles selected yet"/>
+				</Panel>
+			</afv:ChameleonContentControl.Content>
+		</afv:ChameleonContentControl>
+
+		<afv:ChameleonContentControl
+			Grid.Row="1"
+			Title="{Binding SelectedTagName,StringFormat='#{0} folders'}"
+			TitleDescription="{Binding #lbFolders.ItemCount, StringFormat='You have {0} folders.'}">
+			<afv:ChameleonContentControl.Options>
+				<ui:FAComboBox Header="Sort by:"
+							   HorizontalAlignment="Right"
+							   ItemsSource="{Binding Sorts}"
+							   SelectedItem="{Binding FolderSortSelected}"
+							   IsEditable="False"/>
+			</afv:ChameleonContentControl.Options>
+			<afv:ChameleonContentControl.Content>
+				<Panel>
+					<ListBox
+						Name="lbFolders"
+						ItemsSource="{Binding Folders}"
+						Theme="{StaticResource ListBoxNoScroller}"
+						ItemContainerTheme="{StaticResource GridViewItem}"
+						ItemsPanel="{StaticResource DoubleColumnUniformGridTemplate}"
+						ItemTemplate="{StaticResource UserFolderUserControlDataTemplate}"
+						IsVisible="{Binding !HasNoFolderItems}"
+						VerticalAlignment="Top"/>
+
+					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+											Header="No folders selected yet"
+											IsVisible="{Binding HasNoFolderItems}" />
+				</Panel>
+			</afv:ChameleonContentControl.Content>
+		</afv:ChameleonContentControl>
+	</Grid>
+</UserControl>
