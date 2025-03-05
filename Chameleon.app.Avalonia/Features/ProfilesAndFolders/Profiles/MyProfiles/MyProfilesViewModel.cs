@@ -123,12 +123,15 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		};
 		
 		TotalCount = PaginatorViewModel.TotalCount;
-		_ = this.WhenValueChanged(x => x.Folder!.Tags)
-			.Throttle(TimeSpan.FromSeconds(1))
-			.Where(_ => Folder is not null)
-			.Subscribe(async tags => {
-				_ = await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), tags.ToTagsList());
-			});
+		AsyncCommandMap["SaveTags"] = async()=>{
+			_ = await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
+		};
+		// _ = this.WhenValueChanged(x => x.Folder!.Tags)
+		// 	.Throttle(TimeSpan.FromSeconds(1))
+		// 	.Where(_ => Folder is not null)
+		// 	.Subscribe(async tags => {
+		// 		_ = await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), tags.ToTagsList());
+		// 	});
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);

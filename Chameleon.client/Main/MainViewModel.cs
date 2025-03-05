@@ -51,7 +51,7 @@ public partial class MainViewModel : ObservableObjectBase {
 
 			try {
 				var current = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
-				var appClientInfo = await DB.Routes.App.GetLatestVersion;
+				var appClientInfo = await Service.Routes.App.GetLatestVersion;
 				if (appClientInfo != null && appClientInfo.Latest != current) {
 					InfoBarTitle = "New Version Available";
 					InfoBarMessage = $"Download the latest version of Chameleon ({appClientInfo.Latest})";
@@ -83,7 +83,6 @@ public partial class MainViewModel : ObservableObjectBase {
 			.Bind(out _boundFolders)
 			.Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
 
-		TagsRepo.Instance.Initialize();//Ensure that data is loaded
 		_ = TagsRepo
 			.Connect()
 			.Transform(i => new MainAppSearchItem() {
@@ -94,19 +93,16 @@ public partial class MainViewModel : ObservableObjectBase {
 				Items = i.Items.Select(x => new TagItemDto(x.Key, x.Value))
 					.GroupBy(x => x.Type)
 					.Select(x => x.ToList())
-					.SelectMany(x =>  x.Select(t => TagItemToViewModel(t))),
+					.SelectMany(x =>  x.Select<TagItemDto, TagsSearchViewModelBase?>(t => t.Type switch {
+						TagItemType.Folder => new TagFolderSearchViewModel(t),
+						TagItemType.Profile => new TagProfilesSearchViewModel(t),
+						_ => null
+						})
+					),
 				PageType = this.GetType()
 			})
 			.Bind(out _boundTags)
 			.Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
-	}
-	TagsSearchViewModelBase? TagItemToViewModel(TagItemDto tagItem) {
-
-		return tagItem.Type switch {
-			TagItemType.Folder => new TagFolderSearchViewModel(tagItem),
-			TagItemType.Profile => new TagProfilesSearchViewModel(tagItem),
-			_ => null
-		};
 	}
 
 	partial void OnSelectedSearchTermChanged(MainAppSearchItem? oldValue, MainAppSearchItem? newValue) {
@@ -135,7 +131,7 @@ public partial class MainViewModel : ObservableObjectBase {
 	[RelayCommand]
 	private async Task DownloadLatest() {
 		InfoBarOpen = false;
-		InfoBarOpen = !await DB.Routes.App.DownloadLatest((msg) => Toaster.Info(msg));
+		InfoBarOpen = !await Service.Routes.App.DownloadLatest((msg) => Toaster.Info(msg));
 		if (InfoBarOpen)
 			Toaster.Error("Failed to download latest version");
 	}

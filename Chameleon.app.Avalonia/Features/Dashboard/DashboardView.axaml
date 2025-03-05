@@ -69,18 +69,20 @@
 				</afv:PageHeaderControl.ContentObject>
 			</afv:PageHeaderControl>
 
-			<ItemsControl Grid.Row="1" ItemsSource="{Binding Tags}" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<StackPanel Orientation="Horizontal" Spacing="5"/>
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-				<ItemsControl.ItemTemplate>
-					<DataTemplate x:DataType="local:TagViewModel">
-						<ToggleButton IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding Name}"/>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
+			<ScrollViewer Margin="0 0 0 6" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Row="1">
+				<ItemsControl Padding="0 0 0 26" ItemsSource="{Binding Tags}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" Spacing="5"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate x:DataType="local:TagViewModel">
+							<ToggleButton IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding Name}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ScrollViewer>
 
 			<Grid Grid.Row="2" IsVisible="{Binding IsFavouriteSelected}">
 				<favourite:FavouriteView DataContext="{Binding FavouriteViewModel}"/>
