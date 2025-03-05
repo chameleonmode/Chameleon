@@ -24,10 +24,15 @@ public class AppStartup {
 			Toaster.Info("Login canceled, application closing");
 			Environment.Exit(0);
 		} else {
-			IOtil.DeleteDir(Addons.AddonExtentionDir);
-			IOtil.DeleteDir(Addons.CachedExtentionDir);
-			await LoadSink();
-			OnLoginSuccess?.Invoke();
+			try {
+				IOtil.DeleteDir(Addons.AddonExtentionDir);
+				IOtil.DeleteDir(Addons.CachedExtentionDir);
+				await LoadSink();
+				OnLoginSuccess?.Invoke();
+			} catch (Exception ex) {
+				_ = await Mbox.ShowErrorAsync("Error Loading Data", ex.Message);
+				await RunAsync();
+			}
 		}
 	}
 	public async Task<bool> RunAsync(int trys) {
