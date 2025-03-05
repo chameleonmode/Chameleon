@@ -6,6 +6,7 @@ using Chameleon.lib;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
+using Chameleon.lib.Auth;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
@@ -31,6 +32,7 @@ public class AppStartup {
 				OnLoginSuccess?.Invoke();
 			} catch (Exception ex) {
 				_ = await Mbox.ShowErrorAsync("Error Loading Data", ex.Message);
+				await Session.Instance.Logout();
 				await RunAsync();
 			}
 		}

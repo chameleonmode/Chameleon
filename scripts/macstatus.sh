@@ -8,7 +8,7 @@ fi
 
 xcrun notarytool info $1 --keychain-profile "DEV"
 
-#cd /Users/dev/src/Chameleon/build/osx
+#cd /Users/dev/src/Chameleon/publish/osx
 #scp -s Chameleon.zip srv-cugb14aj1k6c738lm0kg@ssh.ohio.render.com:/local/storage/Chameleon.zip
 #scp -s Chameleon.zip srv-cv46cfpu0jms73eja6c0@ssh.ohio.render.com:/local/storage/Chameleon.zip
 
