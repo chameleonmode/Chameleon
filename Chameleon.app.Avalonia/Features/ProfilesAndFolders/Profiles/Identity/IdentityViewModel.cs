@@ -201,6 +201,8 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnSaveBusiness(UPBusinessViewModel p) {
 		_ = p.IsValidationValid();
 		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Biz, p.ToDto());
+		if (p.Id == 0)
+			_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Biz, p.ToDto());
 	}
 
 	[RelayCommand]
