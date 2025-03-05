@@ -1,6 +1,6 @@
 #!/bin/bash
 # Usage cd /Users/dev/src/Chameleon/scripts
-# bash winbuild.sh
+# bash winpload.sh
 
 cd /Users/dev/src/Chameleon/build/windows
 7z a Chameleon.7z && 7z d Chameleon.7z -r '*.DS_Store'

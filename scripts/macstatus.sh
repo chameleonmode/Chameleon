@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: bash macnotocheck.sh <notarization UUID>
+# Usage: bash macstatus.sh <notarization UUID>
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <notarization UUID>"
