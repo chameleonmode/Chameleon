@@ -3,12 +3,12 @@
 using Chameleon.app.Avalonia.lib.Community.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib;
+using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
-using Chameleon.lib.Const;
 using Chameleon.lib.Helpers;
 
 using FluentAvalonia.UI.Windowing;
@@ -24,10 +24,15 @@ public class AppStartup {
 			Toaster.Info("Login canceled, application closing");
 			Environment.Exit(0);
 		} else {
-			IOtil.DeleteDir(Addons.AddonExtentionDir);
-			IOtil.DeleteDir(Addons.CachedExtentionDir);
-			await LoadSink();
-			OnLoginSuccess?.Invoke();
+			try {
+				IOtil.DeleteDir(Addons.AddonExtentionDir);
+				IOtil.DeleteDir(Addons.CachedExtentionDir);
+				await LoadSink();
+				OnLoginSuccess?.Invoke();
+			} catch (Exception ex) {
+				_ = await Mbox.ShowErrorAsync("Error Loading Data", ex.Message);
+				await RunAsync();
+			}
 		}
 	}
 	public async Task<bool> RunAsync(int trys) {
@@ -67,9 +72,11 @@ public class AppStartup {
 	}
 
 	public static async Task LoadSink(bool reload = false) {
+		await DB.Instance.EnsureUser();
 		var tasks = new List<Task>() {
 			UserProfilesRepo.Instance.Load(),
-			UserProfilesFolderRepo.Instance.Load()
+			UserProfilesFolderRepo.Instance.Load(),
+			TagsRepo.Instance.Load()
 		};
 		if (reload) {
 			tasks.Add(UPAdditionalDataRepo.Instance.LoadReload(true));

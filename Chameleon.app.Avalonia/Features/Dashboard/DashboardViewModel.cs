@@ -115,7 +115,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	}
 	private async Task SyncCookiesClear() {
 		try {
-			await DB.Instance.DeleteDataInteractions();
+			await DB.Instance.DeleteDataInteractions(DB.Routes.Cooky.DataType);
 			Toaster.Success("Cookies Cleared");
 		} catch (Exception e) {
 			Toaster.Error("Failed to sync cookies. " + e.Message);

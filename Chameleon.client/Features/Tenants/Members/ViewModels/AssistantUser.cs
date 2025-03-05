@@ -107,11 +107,10 @@ public partial class AssistantUser(AssistDto dto)  : ViewModelObjectDto<AssistDt
 
 				var cookies = await PlaywrightUtil.GetCookies(new (new (bt, profile.SystemBrowserProfile), profile.SBI[bt]?.Settings.Port));
 				if (cookies.Count > 0) {
-					var platformaticDB = DB.Instance;
-					var email = Dto!.id == Auther.AuthSession?.UserId 
-					? platformaticDB.DBusers?.SingleOrDefault(u => u.licenseKey != null)?.email
-					: Dto!.EmailAddress;
-					var data = await platformaticDB.SendCookies(email!, op.Dto!.ProfileId.ToString(), cookies);
+					await DB.Instance.EnsureUser();
+					var email = Dto!.id != Auther.AuthSession?.UserId ? Dto!.EmailAddress
+					  : DB.Instance.DBusers?.SingleOrDefault(u => u.LicenseKey != null)?.Email;
+					var data = await DB.Routes.Cooky.SendCookies(email!, op.Dto!.ProfileId.ToString(), cookies);
 					if (data != null) {
 						Toaster.Success($"Cookies sent successfully");
 					} else {

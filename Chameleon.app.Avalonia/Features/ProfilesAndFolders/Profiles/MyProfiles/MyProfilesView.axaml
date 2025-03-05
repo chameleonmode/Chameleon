@@ -130,7 +130,17 @@
 						Theme="{StaticResource SvgIconTextButton}"
 						Command="{Binding AddProfilesToFolderCommand}" />
 				</StackPanel>
-				<afv:HeaderdInputFieldsControl Title="Tags" Text="{Binding Folder.Tags, FallbackValue=reddit-account}" />
+				<afv:HeaderdInputFieldsControl Title="Tags" Text="{Binding Folder.Tags, FallbackValue=reddit-account}">
+					<afv:HeaderdInputFieldsControl.Buttons>
+						<Button
+							Content="Save"
+							ToolTip.Tip="Save"
+							CommandParameter="SaveTags"
+							Command="{Binding AsyncCfVCommand}"
+							Classes="accent"
+							Theme="{DynamicResource AccentSymbleIconButton}" />
+					</afv:HeaderdInputFieldsControl.Buttons>
+				</afv:HeaderdInputFieldsControl>
 				<ui:FAComboBox
 					Width="200"
 					IsEditable="False"
