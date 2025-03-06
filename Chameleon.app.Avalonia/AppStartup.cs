@@ -31,7 +31,7 @@ public class AppStartup {
 				await LoadSink();
 				OnLoginSuccess?.Invoke();
 			} catch (Exception ex) {
-				_ = await Mbox.ShowErrorAsync("Invalid Login", "Couldnt authenticate make sure to use the same email to match your app login. \n" + ex.Message[ex.Message.LastIndexOf('\n')..]);
+				_ = await Mbox.ShowErrorAsync("Invalid Login", "Browser authentication must match application email.\n" + ex.Message[ex.Message.LastIndexOf('\n')..]);
 				await Session.Instance.Logout();
 				await RunAsync();
 			}
