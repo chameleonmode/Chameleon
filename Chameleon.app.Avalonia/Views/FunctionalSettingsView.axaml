@@ -9,29 +9,8 @@
 			 x:DataType="vm:FunctionalSettingsViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Views.FunctionalSettingsView">
-	<UserControl.Resources>
-		<ItemsPanelTemplate x:Key="DefaultPanel">
-			<StackPanel Orientation="Horizontal" />
-		</ItemsPanelTemplate>
-	</UserControl.Resources>
 	<Panel>
-		<TabStrip ItemContainerTheme="{StaticResource TabItemStyle}"
-                  Background="{DynamicResource ControlOnImageFillColorDefaultBrush}"
-                  CornerRadius="{StaticResource ControlCornerRadius}"
-                  Margin="4"
-                  Name="TabStrip1"
-                  HorizontalAlignment="Right"
-                  VerticalAlignment="Top"
-                  ZIndex="100">
-			<TabStrip.ItemsPanel>
-				<OnFormFactor Default="{StaticResource DefaultPanel}">
-					<On Options="Mobile">
-						<ItemsPanelTemplate>
-							<StackPanel />
-						</ItemsPanelTemplate>
-					</On>
-				</OnFormFactor>
-			</TabStrip.ItemsPanel>
+		<TabStrip Name="ActiveTabStrip">
 			<TabStripItem
 				Content="Default Launch Settings"
 				Tag="{StaticResource DefaultSettingsPageIcon}"/>
@@ -46,7 +25,6 @@
 				Tag="{StaticResource ProxyCred}"/>
 		</TabStrip>
 
-		<ui:Frame Name="InnerNavFrame"
-                  IsNavigationStackEnabled="False"/>
+		<ui:Frame Name="NavigationFrame" />
 	</Panel>
 </UserControl>

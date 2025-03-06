@@ -14,6 +14,7 @@ using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.lib.Util;
 using Chameleon.lib.Helpers;
 using Chameleon.client.Features.Tenants.Members.ViewModels;
+using Chameleon.lib.Abs.Platformatic;
 
 namespace Chameleon.client.Features.Tenants.Members;
 public partial class TenantMembersViewModel : ViewModelObjectBase {
@@ -33,13 +34,13 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public ObservableCollection<ObsProfile> SelectedFolders { get; } = [];
 
-	public TenantMembersViewModel() : base("Members")
-	{
+	public TenantMembersViewModel() : base("Members") {
 		_ = userAssistantRepo.ObservableCache
 			.Connect()
 			.Transform(p => {
 				var vim = new AssistantUser(p);
 				_ = vim.InitAsync(p);
+				vim.IsNotActive = DB.Instance.DBusers?.Any(u => u.Email == p.EmailAddress) ?? false;
 				return vim;
 			})
 			.Bind(out var assistants)
@@ -78,16 +79,14 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 		AsyncCommandMap["CreateNewUserAssistant"] = CreateNewUserAssistant;
 	}
 
-	public override async Task InitAsync(object? param)
-	{
+	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
 		if (!Loaded) {
 			await userAssistantRepo.Load();
 		}
 	}
 
-	private async Task CreateNewUserAssistant()
-	{
+	private async Task CreateNewUserAssistant() {
 		if (Assistantz.Count >= Auther.AuthSession?.LicenseLimits.MaxAssistantsCount) {
 			if (await Mbox.Show("USERS LIMIT REACHED", "You have reached the maximum number of users."))
 				ProcessUtil.OpenBrowser(Consts.PricingUrl);

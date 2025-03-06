@@ -90,29 +90,41 @@
 									<Run Text=" - " />
 									<Run Text="{Binding Dto.EmailAddress,FallbackValue=email@email.com}" />
 								</TextBlock>
-								<ui:CommandBar DefaultLabelPosition="Right"
-											   Grid.Column="1">
+								<ui:CommandBar DefaultLabelPosition="Right" Grid.Column="1">
 									<ui:CommandBar.SecondaryCommands>
 										<ui:CommandBarButton
 											IconSource="Edit"
 											Label="Edit Access"
-											Command="{Binding AddMoreProfilesCommand}" />
+											Command="{Binding AddMoreProfilesCommand}" 
+										/>
+
 										<ui:CommandBarButton
 											IconSource="Copy"
 											Label="Copy licence key"
-											Command="{Binding SendLicenceKeyCommand}" />
+											Command="{Binding SendLicenceKeyCommand}" 
+										/>
+
+										<ui:CommandBarButton
+											IconSource="Add"
+											Label="Activate"
+											IsVisible="{Binding !IsNotActive}"
+											Command="{Binding ToggleActiveCommand}"
+										/>
+
+										<ui:CommandBarButton
+											IconSource="Remove"
+											Label="Deactivate"
+											IsVisible="{Binding IsNotActive}"
+											Command="{Binding ToggleDeActiveCommand}"
+										/>
 
 										<ui:CommandBarSeparator />
 
-										<!--<ui:CommandBarToggleButton
-													IconSource="Contact"
-													Label="Can Create Profiles"
-													IsChecked="{Binding CanCreateProfiles}"/>
-												<ui:CommandBarSeparator />-->
 										<ui:CommandBarButton
 											IconSource="Delete"
 											Label="Delete"
-											Command="{Binding DeleteAssistantCommand}"/>
+											Command="{Binding DeleteAssistantCommand}"
+										/>
 									</ui:CommandBar.SecondaryCommands>
 								</ui:CommandBar>
 

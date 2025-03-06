@@ -14,17 +14,17 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 	public FunctionalSettingsView()
 	{
 		InitializeComponent();
-		TabStrip1.SelectionChanged += TabStrip1SelectionChanged!;
+		ActiveTabStrip.SelectionChanged += TabStrip1SelectionChanged!;
 	}
 	public override void OnAfterNavigatedToViewModel(object param)
 	{
 		base.OnAfterNavigatedToViewModel(param);
 
 		if (param is ObsFolder) {
-			TabStrip1.SelectionChanged -= TabStrip1SelectionChanged!;
-			TabStrip1.SelectedIndex = 2;
+			ActiveTabStrip.SelectionChanged -= TabStrip1SelectionChanged!;
+			ActiveTabStrip.SelectedIndex = 2;
 			NavigateToIndex(2, param);
-			TabStrip1.SelectionChanged += TabStrip1SelectionChanged!;
+			ActiveTabStrip.SelectionChanged += TabStrip1SelectionChanged!;
 		}
 	}
 
@@ -37,7 +37,7 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 
 	private void TabStrip1SelectionChanged(object sender, SelectionChangedEventArgs e)
 	{
-		NavigateToIndex(TabStrip1.SelectedIndex, null!);
+		NavigateToIndex(ActiveTabStrip.SelectedIndex, null!);
 	}
 
 	private void NavigateToIndex(int idx, object param)
@@ -45,7 +45,7 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 		if (DataContext is not FunctionalSettingsViewModel vm)
 			return;
 
-		_ = InnerNavFrame.Navigate(idx switch {
+		_ = NavigationFrame.Navigate(idx switch {
 			0 => typeof(UserDefaultSettingsView),
 			1 => typeof(PhoneVerificationView),
 			2 => typeof(UserProxySettingsView),
@@ -53,7 +53,7 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 			_ => throw new Exception()
 		}, param, GetTransitionInfo(vm.LastSelectedIndex, idx));
 
-		vm.LastSelectedIndex = TabStrip1.SelectedIndex;
+		vm.LastSelectedIndex = ActiveTabStrip.SelectedIndex;
 	}
 
 	private NavigationTransitionInfo GetTransitionInfo(int oldIndex, int newIndex)

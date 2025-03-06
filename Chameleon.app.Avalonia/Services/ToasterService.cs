@@ -51,7 +51,7 @@ public class ToasterService(IDispatchService dispatcher)
 	{
 		var notificationManager = new WindowNotificationManager((hostWindow as TopLevel) ?? AppLayers.GetMainWindow()) {
 			Position = NotificationPosition.BottomRight,
-			MaxItems = 6,
+			MaxItems = 2,
 			Margin = new Thickness(0, 0, 15, 40)
 		};
 

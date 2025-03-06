@@ -442,12 +442,10 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		} catch (Exception ex) {
 			Toaster.Error($"{ex.Message}");
 		} finally{
-			PlaywriteRunner.Dispose();
+			IsVisibleRunButton = true;
+			IsVisibleStopButton = false;
+			IsVisibleWaitButton = false;
 		}
-
-		IsVisibleRunButton = true;
-		IsVisibleStopButton = false;
-		IsVisibleWaitButton = false;
 	}
 
 	[RelayCommand]
