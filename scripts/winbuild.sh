@@ -1,6 +1,6 @@
 #!/bin/bash
 # Usage cd /Users/dev/src/Chameleon/scripts or C:\repos\Chameleon\Chameleon.Avalonia.Desktop
-# bash winbuild.sh
+# bash winbuild.sh 1
 
 dotnet publish /Users/dev/src/Chameleon/Chameleon.Desktop/Chameleon.Desktop.csproj \
   -r win-x64 -c Release -f net8.0 -o "/Users/dev/src/Chameleon/build/windows" \

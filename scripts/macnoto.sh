@@ -1,6 +1,6 @@
 #!/bin/bash
 # cd /Users/dev/src/Chameleon/scripts
-# bash macnoto.sh 
+# bash macnoto.sh 1
 
 echo "[INFO] Building macOS app"
 cd /Users/dev/src/Chameleon/scripts
