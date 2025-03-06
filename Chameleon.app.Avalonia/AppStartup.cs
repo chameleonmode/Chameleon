@@ -58,12 +58,9 @@ public class AppStartup {
 			ArgumentNullException.ThrowIfNull(loginvm.LicenceKey, "LicenceKey");
 
 			await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
-
-			var loginDetailsChanged = loginvm.UserName != loginSetings.LoginName || loginvm.LicenceKey != loginSetings.LicenseKey || loginvm.AutoLogin != loginSetings.AutoLogin;
-			if (loginDetailsChanged) {
-				IoC.SetJsonValue(new LoginSettings(loginvm.UserName, loginvm.LicenceKey, loginvm.AutoLogin), nameof(LoginSettings));
-				return true;
-			}
+			Session.Instance.SetLogin(new LoginSettings(loginvm.UserName, loginvm.LicenceKey, loginvm.AutoLogin));
+			//var loginDetailsChanged = loginvm.UserName != loginSetings.LoginName || loginvm.LicenceKey != loginSetings.LicenseKey || loginvm.AutoLogin != loginSetings.AutoLogin;
+			
 		} catch (Exception ex) {
 			_ = await Mbox.ShowErrorAsync("Error Logging In", ex.Message);
 			if (trys < 1)
