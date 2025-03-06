@@ -116,22 +116,18 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			});
 
 		PaginatorViewModel = new PaginatorViewModel((p) => {
-			if (p.PageIndex > 0)
-				pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems));
+			p.CurrentIndex = p.PageIndex <= 0
+				? 1
+				: p.PageIndex >= p.CurrentIndex ? p.PageIndex + 1 : p.PageIndex - 1;
+			pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems));
 		}) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
-		
+
 		TotalCount = PaginatorViewModel.TotalCount;
-		AsyncCommandMap["SaveTags"] = async()=>{
+		AsyncCommandMap["SaveTags"] = async () => {
 			_ = await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
 		};
-		// _ = this.WhenValueChanged(x => x.Folder!.Tags)
-		// 	.Throttle(TimeSpan.FromSeconds(1))
-		// 	.Where(_ => Folder is not null)
-		// 	.Subscribe(async tags => {
-		// 		_ = await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), tags.ToTagsList());
-		// 	});
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
