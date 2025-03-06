@@ -162,7 +162,7 @@ public partial class AssistantUser(AssistDto dto)  : ViewModelObjectDto<AssistDt
 	[RelayCommand]
 	async Task ToggleActive(){
 		try {
-			IsNotActive = (await DB.Instance.CreateUser(Dto!.EmailAddress!)) == null;
+			IsNotActive = (await DB.Instance.CreateUser(Dto!.EmailAddress!)) != null;
 			Toaster.Success($"User {Dto!.UserName} active status toggled successfully");
 		} catch (Exception e) {
 			Toaster.Error($"Failed to toggle user {Dto!.UserName} active status, {e.Message[e.Message.LastIndexOf('\n')..]}");
@@ -173,7 +173,7 @@ public partial class AssistantUser(AssistDto dto)  : ViewModelObjectDto<AssistDt
 	async Task ToggleDeActive(){
 		try {
 			_ = await DB.Instance.DeleteUser(Dto!.EmailAddress!);
-			IsNotActive = !DB.Instance.DBusers?.Any(u=>u.Email == Dto?.EmailAddress) ?? false;
+			IsNotActive = DB.Instance.DBusers?.Any(u=>u.Email == Dto?.EmailAddress) == true;
 			Toaster.Success($"User {Dto!.UserName} deactive status toggled successfully");
 		} catch (Exception e) {
 			Toaster.Error($"Failed to toggle user {Dto!.UserName} deactive status, {e.Message[e.Message.LastIndexOf('\n')..]}");
