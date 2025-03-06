@@ -31,7 +31,7 @@ public class AppStartup {
 				await LoadSink();
 				OnLoginSuccess?.Invoke();
 			} catch (Exception ex) {
-				_ = await Mbox.ShowErrorAsync("Error Loading Data", ex.Message);
+				_ = await Mbox.ShowErrorAsync("Invalid Login", "Couldnt authenticate make sure to use the same email to match your app login. \n" + ex.Message[ex.Message.LastIndexOf('\n')..]);
 				await Session.Instance.Logout();
 				await RunAsync();
 			}
@@ -58,9 +58,10 @@ public class AppStartup {
 			ArgumentNullException.ThrowIfNull(loginvm.LicenceKey, "LicenceKey");
 
 			await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
+			_ = await Session.Instance.Authenticate();
 			Session.Instance.SetLogin(new LoginSettings(loginvm.UserName, loginvm.LicenceKey, loginvm.AutoLogin));
 			//var loginDetailsChanged = loginvm.UserName != loginSetings.LoginName || loginvm.LicenceKey != loginSetings.LicenseKey || loginvm.AutoLogin != loginSetings.AutoLogin;
-			
+
 		} catch (Exception ex) {
 			_ = await Mbox.ShowErrorAsync("Error Logging In", ex.Message);
 			if (trys < 1)

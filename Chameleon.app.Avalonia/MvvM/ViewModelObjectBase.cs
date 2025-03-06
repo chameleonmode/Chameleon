@@ -5,8 +5,6 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.lib.CommunityToolkit.MvvM;
 public partial class ViewModelObjectBase : ObservableObjectBase {
-	public Session CurrentSession { get; } = Session.Instance;
-
 	public bool Navigated { get; set; }
 	public ViewModelObjectBase() {
 

@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using FluentAvalonia.Styling;
+using Chameleon.lib.Auth;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class SettingsViewModel : ViewModelObjectBase {
@@ -120,7 +121,7 @@ public partial class SettingsViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	public async Task Logout()
 	{
-		await CurrentSession.Logout();
+		await Session.Instance.Logout();
 		Environment.Exit(0);
 	}
 
