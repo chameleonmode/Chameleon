@@ -263,7 +263,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnSaveLogin(UPLoginViewModel p) {
 		_ = p.IsValidationValid();
-		_ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto());
+		_ = await Task.Run(async () => _ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto()));
 	}
 
 	[RelayCommand]
