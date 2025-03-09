@@ -173,6 +173,8 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnSavePerson(UPPersonViewModel p) {
 		_ = p.IsValidationValid();
 		_ = await Task.Run(() => UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Personz, p.ToDto()));
+		if (p.Id == 0)
+			_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Personz, p.ToDto());
 	}
 
 	[RelayCommand]
@@ -232,6 +234,8 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		_ = p.IsValidationValid();
 		if (p.Dto != null) {
 			_ = await Task.Run(() => UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.ToDto()));
+			if (p.Id == 0)
+				_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Addrez, p.ToDto());
 		}
 	}
 
@@ -264,6 +268,8 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnSaveLogin(UPLoginViewModel p) {
 		_ = p.IsValidationValid();
 		_ = await Task.Run(() => UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto()));
+		if (p.Id == 0)
+			_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Loginz, p.ToDto());
 	}
 
 	[RelayCommand]
