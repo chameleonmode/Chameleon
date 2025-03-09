@@ -172,7 +172,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnSavePerson(UPPersonViewModel p) {
 		_ = p.IsValidationValid();
-		_ = await Task.Run(async() => _ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Personz, p.ToDto()));
+		_ = await Task.Run(() => UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Personz, p.ToDto()));
 	}
 
 	[RelayCommand]
@@ -200,7 +200,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnSaveBusiness(UPBusinessViewModel p) {
 		_ = p.IsValidationValid();
-		_ = await Task.Run(async () => _ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Biz, p.ToDto()));
+		_ = await Task.Run(() => UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Biz, p.ToDto()));
 		if (p.Id == 0)
 			_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Biz, p.ToDto());
 	}
@@ -231,7 +231,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnSaveAddress(ObsAddressViewModel p) {
 		_ = p.IsValidationValid();
 		if (p.Dto != null) {
-			_ = await Task.Run(async () => _ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.ToDto()));
+			_ = await Task.Run(() => UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.ToDto()));
 		}
 	}
 
@@ -263,7 +263,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnSaveLogin(UPLoginViewModel p) {
 		_ = p.IsValidationValid();
-		_ = await Task.Run(async () => _ = await UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto()));
+		_ = await Task.Run(() => UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto()));
 	}
 
 	[RelayCommand]
