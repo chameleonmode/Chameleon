@@ -52,7 +52,7 @@ public partial class MainView : UserControl {
 			"Tenants",
 			new()
 			{
-				NavHeader = "Tenants",
+				NavHeader = "Tenant",
 				IconKey = "TenantsIcon",
 				Tag = typeof(TenantsView)
 			}

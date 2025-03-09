@@ -130,7 +130,7 @@
 						Theme="{StaticResource SvgIconTextButton}"
 						Command="{Binding AddProfilesToFolderCommand}" />
 				</StackPanel>
-				<afv:HeaderdInputFieldsControl Title="Tags" Text="{Binding Folder.Tags, FallbackValue=reddit-account}">
+				<afv:HeaderdInputFieldsControl Title="Tags:" Text="{Binding Folder.Tags, FallbackValue=reddit-account}">
 					<afv:HeaderdInputFieldsControl.Buttons>
 						<Button
 							Content="Save"
@@ -145,7 +145,7 @@
 					Width="200"
 					IsEditable="False"
 					HorizontalAlignment="Right"
-					Header="Sort by:"
+					Header="Sort:"
 					ItemsSource="{Binding Sorts}"
 					SelectedItem="{Binding SortSelected}" />
 
@@ -155,7 +155,7 @@
 							  PlaceholderText="Select an automation..."
 							  IsEditable="False"
 							  HorizontalAlignment="Right"
-							  Header="Automation"
+							  Header="Automation:"
 							  ItemsSource="{Binding PlaywrightScripts}"
 							  SelectedItem="{Binding SelectedPlaywrightScript}"
 							  Grid.Row="0"
