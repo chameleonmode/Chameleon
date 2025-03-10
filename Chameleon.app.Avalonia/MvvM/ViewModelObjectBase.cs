@@ -1,22 +1,19 @@
-﻿using Chameleon.lib.Auth;
-using Chameleon.lib.Helpers;
-
+﻿using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.lib.CommunityToolkit.MvvM;
 public partial class ViewModelObjectBase : ObservableObjectBase {
 	public bool Navigated { get; set; }
-	public ViewModelObjectBase() {
 
+	public ViewModelObjectBase() {
+		InitCommandMapping();
 	}
 
 	public ViewModelObjectBase(string? title) : this() {
 		Title = title;
 	}
 
-	public ViewModelObjectBase(string title, Func<ViewModelObjectBase> init) : this(title) {
-		_ = init();
-	}
+	public virtual void InitCommandMapping() { }
 
 	[RelayCommand]
 	async Task Copy(object param) {

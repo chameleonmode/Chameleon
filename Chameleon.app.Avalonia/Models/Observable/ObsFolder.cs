@@ -10,7 +10,7 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
-public partial class ObsFolder : ObservableViewModelDto<UPFolderDto> {
+public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	public event Action<ObsFolder>? OnSelectedChanged;
 
 	[ObservableProperty]
@@ -28,10 +28,8 @@ public partial class ObsFolder : ObservableViewModelDto<UPFolderDto> {
 	public bool IsContextMenuVisible => Dto!.id != 0;
 	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => p.folderId == Dto!.id); 
 
-	public ObsFolder(UPFolderDto folder) : base(folder.title)
+	public ObsFolder(UPFolderDto folder) : base(folder)
 	{
-		Dto = folder;
-
 		isFavorite = Dto.isFavorite;
 		profilesCount = Dto.profilesCount;
 
