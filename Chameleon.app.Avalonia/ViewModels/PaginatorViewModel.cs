@@ -7,21 +7,32 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.app.Avalonia.ViewModels;
-public class PaginatorButtonViewModel(int index) {
-	public int Index { get; } = index;
-	public string Text => (Index + 1).ToString();
+public class PaginatorButtonViewModel {
+	public int Index { get; }
+	public string Text { get; }
+	public bool IsEllipsis { get; }
+
+	public PaginatorButtonViewModel(int index, bool isEllipsis = false) {
+		Index = index;
+		IsEllipsis = isEllipsis;
+		Text = isEllipsis
+				? "..."
+				: (Index + 1).ToString();
+	}
 }
 public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageIndex, int onPageItems = Consts.PageinationPageItems)
 		: ViewModelObjectBase {
 	[ObservableProperty]
 	private int pageCount;
 	[ObservableProperty]
-	private int pageIndex = -1;
+	private int pageIndex = -2;
 	[ObservableProperty]
 	private int totalCount;
 
 	[ObservableProperty]
-	private int currentIndex = -1;
+	private int currentIndex = -2;
+
+	private int lastPageIndex = -3;
 
 	public int OnPageItems { get; private set; } = onPageItems;
 
@@ -34,38 +45,46 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 	public bool PrevButtonIsEnabled => PageIndex > 0;
 	public bool NextButtonIsEnabled => PageIndex < Buttons.Count - 1;
 
-	partial void OnPageCountChanged(int value)
-	{
-		Buttons.Clear();
-		for (int i = 0; i < value; i++) {
-			Buttons.Add(new PaginatorButtonViewModel(i));
-		}
+	partial void OnPageCountChanged(int value) {
+		UpdatePaginatorButtons();
 		UpdateStatus();
 	}
-	partial void OnPageIndexChanged(int value)
-	{
+	partial void OnPageIndexChanged(int value) {
+		if (value == -1 || lastPageIndex == value )
+			return;
+
+		lastPageIndex = value;
+
+		UpdatePaginatorButtons();
 		UpdateStatus();
 		ChangePageIndex(this);
 	}
-	partial void OnTotalCountChanged(int value)
-	{
+	partial void OnTotalCountChanged(int value) {
+		if (isUpdatingButtons)
+			return;
+
 		UpdatePageCount(OnPageItems);
 		UpdateStatus();
 	}
 
 	[RelayCommand]
-	private void OnNextPage()
-	{
-		PageIndex++;
-	}
-	[RelayCommand]
-	private void OnPrevPage()
-	{
-		PageIndex--;
+	private void OnNextPage() {
+		if (PageIndex < PageCount - 1) {
+			PageIndex++;
+			OnPropertyChanged(nameof(PageIndex));
+		}
 	}
 
-	public void UpdatePageCount(int opi)
-	{
+	[RelayCommand]
+	private void OnPrevPage() {
+		if (PageIndex > 0) {
+			PageIndex--;
+			OnPropertyChanged(nameof(PageIndex));
+		}
+	}
+
+
+	public void UpdatePageCount(int opi) {
 		OnPageItems = opi;
 
 		var pageCounts = OnPageItems == 0 ? 1 : TotalCount / OnPageItems +
@@ -77,8 +96,51 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 		ChangePageIndex(this);
 	}
 
-	private void UpdateStatus()
-	{
+	private bool isUpdatingButtons;
+	private void UpdatePaginatorButtons() {
+		if (isUpdatingButtons)
+			return;
+
+		isUpdatingButtons = true;
+		try {
+			Buttons.Clear();
+
+			if (PageCount <= 5) {
+				for (var i = 0; i < PageCount; i++) {
+					Buttons.Add(new PaginatorButtonViewModel(i));
+				}
+				return;
+			}
+
+			Buttons.Add(new PaginatorButtonViewModel(0));
+
+			var start = PageIndex - 2;
+			var end = PageIndex + 2;
+
+			if (start < 1) start = 1;
+			if (end > PageCount - 2) end = PageCount - 2;
+
+			if (start > 1) {
+				Buttons.Add(new PaginatorButtonViewModel(-1) {
+				});
+			}
+
+			for (var i = start; i <= end; i++) {
+				Buttons.Add(new PaginatorButtonViewModel(i));
+			}
+
+			if (end < PageCount - 2) {
+				Buttons.Add(new PaginatorButtonViewModel(-1) {
+				});
+			}
+
+			Buttons.Add(new PaginatorButtonViewModel(PageCount - 1));
+		} finally {
+			isUpdatingButtons = false;
+		}
+	}
+
+	private void UpdateStatus() {
 		OnPropertyChanged(nameof(PrevButtonIsEnabled));
 		OnPropertyChanged(nameof(NextButtonIsEnabled));
 		OnPropertyChanged(nameof(FirstVisibleElementNumber));
