@@ -25,14 +25,12 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 	[ObservableProperty]
 	private int pageCount;
 	[ObservableProperty]
-	private int pageIndex = -2;
+	private int? pageIndex = null;
 	[ObservableProperty]
 	private int totalCount;
 
 	[ObservableProperty]
-	private int currentIndex = -2;
-
-	private int lastPageIndex = -3;
+	private int currentIndex = 0;
 
 	public int OnPageItems { get; private set; } = onPageItems;
 
@@ -41,7 +39,7 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 	public int FirstVisibleElementNumber => Math.Min(Math.Abs(Skip) + 1, TotalCount);
 	public int LastVisibleElementNumber => Math.Min(Math.Abs(Skip) + OnPageItems, TotalCount);
 
-	public int Skip => PageIndex * OnPageItems;
+	public int Skip => PageIndex ?? 1 * OnPageItems;
 	public bool PrevButtonIsEnabled => PageIndex > 0;
 	public bool NextButtonIsEnabled => PageIndex < Buttons.Count - 1;
 
@@ -49,11 +47,20 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 		UpdatePaginatorButtons();
 		UpdateStatus();
 	}
-	partial void OnPageIndexChanged(int value) {
-		if (value == -1 || lastPageIndex == value )
+	partial void OnPageIndexChanged(int? value) {
+
+		if (value == null)
 			return;
 
-		lastPageIndex = value;
+		if(value == -1) {
+			PageIndex++;
+			return;
+		}
+
+		if(value == -2) {
+			PageIndex--;
+			return;
+		}
 
 		UpdatePaginatorButtons();
 		UpdateStatus();
@@ -98,7 +105,7 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 
 	private bool isUpdatingButtons;
 	private void UpdatePaginatorButtons() {
-		if (isUpdatingButtons)
+		if (isUpdatingButtons || PageIndex == null)
 			return;
 
 		isUpdatingButtons = true;
@@ -112,29 +119,34 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 				return;
 			}
 
-			Buttons.Add(new PaginatorButtonViewModel(0));
+			if (PageIndex <= 2) {
+				Buttons.Add(new PaginatorButtonViewModel(0));
 
-			var start = PageIndex - 2;
-			var end = PageIndex + 2;
+				Buttons.Add(new PaginatorButtonViewModel(1));
+				Buttons.Add(new PaginatorButtonViewModel(2));
 
-			if (start < 1) start = 1;
-			if (end > PageCount - 2) end = PageCount - 2;
+				Buttons.Add(new PaginatorButtonViewModel(-1, isEllipsis: true));
 
-			if (start > 1) {
-				Buttons.Add(new PaginatorButtonViewModel(-1) {
-				});
+				Buttons.Add(new PaginatorButtonViewModel(PageCount - 1));
+				return;
 			}
 
-			for (var i = start; i <= end; i++) {
-				Buttons.Add(new PaginatorButtonViewModel(i));
+			if (PageIndex >= PageCount - 3) {
+				Buttons.Add(new PaginatorButtonViewModel(0));
+				Buttons.Add(new PaginatorButtonViewModel(-2, isEllipsis: true));
+
+				Buttons.Add(new PaginatorButtonViewModel(PageCount - 3));
+				Buttons.Add(new PaginatorButtonViewModel(PageCount - 2));
+				Buttons.Add(new PaginatorButtonViewModel(PageCount - 1));
+				return;
 			}
 
-			if (end < PageCount - 2) {
-				Buttons.Add(new PaginatorButtonViewModel(-1) {
-				});
-			}
-
+			Buttons.Add(new PaginatorButtonViewModel(0));     
+			Buttons.Add(new PaginatorButtonViewModel(-2, isEllipsis: true));
+			Buttons.Add(new PaginatorButtonViewModel(PageIndex!.Value));   
+			Buttons.Add(new PaginatorButtonViewModel(-1, isEllipsis: true));
 			Buttons.Add(new PaginatorButtonViewModel(PageCount - 1));
+
 		} finally {
 			isUpdatingButtons = false;
 		}

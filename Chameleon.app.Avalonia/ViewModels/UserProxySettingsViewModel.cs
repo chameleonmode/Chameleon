@@ -77,7 +77,7 @@ public partial class UserProxySettingsViewModel
 		PaginatorViewModel = new PaginatorViewModel((p) => {
 			if (p.PageIndex < 0)
 				return;
-			pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems));
+			pageRequests.OnNext(new PageRequest(p.PageIndex ?? 0 + 1, p.OnPageItems));
 		}) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};

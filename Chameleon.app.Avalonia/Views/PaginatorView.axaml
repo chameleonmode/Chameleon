@@ -57,7 +57,8 @@
 			Grid.Column="2"
 			x:Name="LbPaginationButtons"
 			ItemsSource="{Binding Buttons}"
-			SelectedIndex="{Binding PageIndex}"
+			SelectedValue="{Binding PageIndex, Mode=TwoWay}"
+			SelectedValueBinding="{Binding Index}"
 			Margin="5 0">
 			<ListBox.ItemTemplate>
 				<DataTemplate x:DataType="vm:PaginatorButtonViewModel">
