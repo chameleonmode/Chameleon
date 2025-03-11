@@ -41,7 +41,7 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 
 	public int Skip => PageIndex ?? 1 * OnPageItems;
 	public bool PrevButtonIsEnabled => PageIndex > 0;
-	public bool NextButtonIsEnabled => PageIndex < Buttons.Count - 1;
+	public bool NextButtonIsEnabled => PageIndex < PageCount - 1;
 
 	partial void OnPageCountChanged(int value) {
 		UpdatePaginatorButtons();
@@ -54,7 +54,7 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 
 		UpdatePaginatorButtons();
 		UpdateStatus();
-		ChangePageIndex(this);
+		GoToPageIndex();
 	}
 	partial void OnTotalCountChanged(int value) {
 		if (isUpdatingButtons)
@@ -90,6 +90,13 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 		PageCount = Math.Max(1, pageCounts);
 		PageIndex = 0;
 		CurrentIndex = 0;
+		GoToPageIndex();
+	}
+
+	private void GoToPageIndex() {
+		if (PageIndex is null)
+			return;
+		CurrentIndex = PageIndex.Value + 1;
 		ChangePageIndex(this);
 	}
 

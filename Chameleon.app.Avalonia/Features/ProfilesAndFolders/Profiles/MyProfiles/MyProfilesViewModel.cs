@@ -115,12 +115,8 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			.Subscribe((i) => {
 			});
 
-		PaginatorViewModel = new PaginatorViewModel((p) => {
-			if (p.PageIndex is null)
-				return;
-			p.CurrentIndex = p.PageIndex.Value + 1;
-			pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems));
-		}) {
+		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) 
+		{
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
 
