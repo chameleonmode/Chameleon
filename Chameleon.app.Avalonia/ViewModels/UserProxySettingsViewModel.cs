@@ -74,11 +74,7 @@ public partial class UserProxySettingsViewModel
 			.Transform(i => new ObsFolder(i))
 			.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
 			.Subscribe();
-		PaginatorViewModel = new PaginatorViewModel((p) => {
-			if (p.PageIndex < 0)
-				return;
-			pageRequests.OnNext(new PageRequest(p.PageIndex ?? 0 + 1, p.OnPageItems));
-		}) {
+		PaginatorViewModel = new PaginatorViewModel((p) => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
 		TotalCount = PaginatorViewModel.TotalCount;
