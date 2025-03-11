@@ -52,16 +52,6 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> ChangePageInd
 		if (value == null)
 			return;
 
-		if(value == -1) {
-			PageIndex++;
-			return;
-		}
-
-		if(value == -2) {
-			PageIndex--;
-			return;
-		}
-
 		UpdatePaginatorButtons();
 		UpdateStatus();
 		ChangePageIndex(this);

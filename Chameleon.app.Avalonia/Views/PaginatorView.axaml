@@ -46,7 +46,7 @@
 			Command="{Binding PrevPageCommand}">
 			<StackPanel
 				Orientation="Horizontal">
-				<ui:SymbolIcon 
+				<ui:SymbolIcon
 					Symbol="Previous"
 					Margin="3"/>
 				<TextBlock Text="Prev" />
