@@ -148,8 +148,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			IsForeground = false;
 			if (browser == null) {
 				try {
-					browser = await SystemBrowserService.Instance.Open(new (browserType, SystemBrowserProfile)
-					, () => {
+					var url = () => {
 						var urls = IoC.GetJsonValue<string[]>("DefaultHomePageSettings");
 						if (urls is null || urls.Length == 0)
 							urls = [Consts.DefaultHomePage];
@@ -160,7 +159,8 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 							? starturl
 							: "https://" + starturl;
 						return starturl;
-					}).WaitAsync(TimeSpan.FromSeconds(21));
+					};
+					browser = await SystemBrowserService.Instance.Open(new (browserType, SystemBrowserProfile), url(), IoC.GetJsonValue<EmulationOptions>(nameof(EmulationOptions)) ?? new()).WaitAsync(TimeSpan.FromSeconds(21));
 				} catch {
 					browser = null;
 				}

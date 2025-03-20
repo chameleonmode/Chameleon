@@ -26,8 +26,6 @@ public class AppStartup {
 			Environment.Exit(0);
 		} else {
 			try {
-				IOtil.DeleteDir(Addons.AddonExtentionDir);
-				IOtil.DeleteDir(Addons.CachedExtentionDir);
 				await LoadSink();
 				OnLoginSuccess?.Invoke();
 			} catch (Exception ex) {
