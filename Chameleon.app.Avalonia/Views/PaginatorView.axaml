@@ -5,7 +5,7 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
              mc:Ignorable="d"
-			 x:CompileBindings="True"
+			 x:CompileBindings="False"
 			 x:DataType="vm:PaginatorViewModel"
              x:Class="Chameleon.app.Avalonia.Views.PaginatorView">
 
@@ -46,7 +46,7 @@
 			Command="{Binding PrevPageCommand}">
 			<StackPanel
 				Orientation="Horizontal">
-				<ui:SymbolIcon 
+				<ui:SymbolIcon
 					Symbol="Previous"
 					Margin="3"/>
 				<TextBlock Text="Prev" />
@@ -57,82 +57,17 @@
 			Grid.Column="2"
 			x:Name="LbPaginationButtons"
 			ItemsSource="{Binding Buttons}"
-			SelectedIndex="{Binding PageIndex}"
+			SelectedValue="{Binding PageIndex, Mode=TwoWay}"
+			SelectedValueBinding="{Binding Index}"
 			Margin="5 0">
-			<!--<ListBox.Items>
-				<ListBoxItem>
-					<Border>
-						<TextBlock
-							VerticalAlignment="Center"
-							HorizontalAlignment="Center"
-						Text="1"/>
-					</Border>
-				</ListBoxItem>
-				<ListBoxItem>
-					<TextBlock
-						VerticalAlignment="Center"
-						HorizontalAlignment="Center"
-						Text="2"/>
-				</ListBoxItem>
-				<ListBoxItem>
-					<Border>
-						<TextBlock
-							VerticalAlignment="Center"
-							HorizontalAlignment="Center"
-						Text="1"/>
-					</Border>
-				</ListBoxItem>
-				<ListBoxItem>
-					<TextBlock
-						VerticalAlignment="Center"
-						HorizontalAlignment="Center"
-						Text="2"/>
-				</ListBoxItem>
-				<ListBoxItem>
-					<Border>
-						<TextBlock
-							VerticalAlignment="Center"
-							HorizontalAlignment="Center"
-						Text="1"/>
-					</Border>
-				</ListBoxItem>
-				<ListBoxItem>
-					<TextBlock
-						VerticalAlignment="Center"
-						HorizontalAlignment="Center"
-						Text="2"/>
-				</ListBoxItem>
-				<ListBoxItem>
-					<Border>
-						<TextBlock
-							VerticalAlignment="Center"
-							HorizontalAlignment="Center"
-						Text="1"/>
-					</Border>
-				</ListBoxItem>
-				<ListBoxItem>
-					<TextBlock
-						VerticalAlignment="Center"
-						HorizontalAlignment="Center"
-						Text="2"/>
-				</ListBoxItem>
-				<ListBoxItem>
-					<Border>
-						<TextBlock
-							VerticalAlignment="Center"
-							HorizontalAlignment="Center"
-						Text="1"/>
-					</Border>
-				</ListBoxItem>
-				<ListBoxItem>
-					<TextBlock
-						VerticalAlignment="Center"
-						HorizontalAlignment="Center"
-						Text="2"/>
-				</ListBoxItem>
-			</ListBox.Items>-->
+			<ListBox.Styles>
+				<Style Selector="ListBoxItem">
+					<Setter Property="IsEnabled" Value="{Binding !IsEllipsis}"/>
+					<Setter Property="Focusable" Value="{Binding !IsEllipsis}"/>
+				</Style>
+			</ListBox.Styles>
 			<ListBox.ItemTemplate>
-				<DataTemplate>
+				<DataTemplate x:DataType="vm:PaginatorButtonViewModel">
 					<Border>
 						<TextBlock
 							VerticalAlignment="Center"
