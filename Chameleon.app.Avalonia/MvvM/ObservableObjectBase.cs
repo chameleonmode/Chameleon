@@ -57,7 +57,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewM
 		try {
 			CommandMap[what]();
 		} catch (Exception e) {
-			Toaster.Error("[CfV]", what, e.Message);
+			Toaster.Error("[CV]", what, e.Message);
 		}
 	}
 
@@ -67,7 +67,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewM
 			await AsyncCommandMap[what]();
 		} catch (Exception e) {
 			Debug.WriteLine(e);
-			Toaster.Error("[ACfV]", what, e.Message);
+			Toaster.Error("[ACV]", what, e.Message);
 		}
 	}
 

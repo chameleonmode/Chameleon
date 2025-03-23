@@ -26,12 +26,10 @@ public class AppStartup {
 			Environment.Exit(0);
 		} else {
 			try {
-				IOtil.DeleteDir(Addons.AddonExtentionDir);
-				IOtil.DeleteDir(Addons.CachedExtentionDir);
 				await LoadSink();
 				OnLoginSuccess?.Invoke();
 			} catch (Exception ex) {
-				_ = await Mbox.ShowErrorAsync("Invalid Login", "Browser authentication must match application email.\n" + ex.Message[ex.Message.LastIndexOf('\n')..]);
+				_ = await Mbox.ShowErrorAsync("Invalid Login", "Browser authentication must match application email.\n" + (ex.Message.Contains('\n') ? ex.Message[ex.Message.LastIndexOf('\n')..] : ex.Message));
 				await Session.Instance.Logout();
 				await RunAsync();
 			}

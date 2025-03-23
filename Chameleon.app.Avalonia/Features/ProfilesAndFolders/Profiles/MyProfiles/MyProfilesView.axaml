@@ -83,7 +83,7 @@
 
 							<Button
 								Content="minus-in-circle"
-								Tag="Remove profile"
+								Tag="Remove"
 								Command="{Binding RemoveProfilesFromFolderCommand}"
 								Theme="{StaticResource SvgIconTextButton}"
 								Margin="4 0 0 0"
@@ -126,7 +126,7 @@
 					</StackPanel.IsVisible>
 					<Button
 						Content="plus-in-circle"
-						Tag="Add profile"
+						Tag="Add profiles"
 						Theme="{StaticResource SvgIconTextButton}"
 						Command="{Binding AddProfilesToFolderCommand}" />
 				</StackPanel>

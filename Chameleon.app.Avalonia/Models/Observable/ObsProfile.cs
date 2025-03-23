@@ -17,10 +17,7 @@ using CommunityToolkit.Mvvm.Input;
 using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
-public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
-	private SystemBrowserService SysBrowserService { get; } = SystemBrowserService.Instance;
-	public event Action<ObsProfile>? OnSelectedChanged;
-
+public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 	[ObservableProperty]
 	private string _isChromeRunning = "False";
 	[ObservableProperty]
@@ -67,10 +64,7 @@ public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
 			bool isShowF = true,
 			bool hasActionOptions = true,
 			Action<ObsProfile>? onSelectedChanged = default)
-		: base(userProfile.title ?? "xxx") {
-		OnSelectedChanged = onSelectedChanged;
-		Dto = userProfile;
-
+		: base(userProfile, userProfile.title, onSelectedChanged != null ? x => onSelectedChanged((ObsProfile)x) : null) {
 		IsShowGlyph = isShowGlyph;
 		IsShowD = isShowD;
 		IsShowC = isShowC;
@@ -78,11 +72,9 @@ public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
 		IsShowCheckboxColumn = isShowCheckboxColumn;
 		IsActionOptionsVisible = hasActionOptions;
 		IsSharedProfile = userProfile?.creatorUserId != Auther.AuthSession?.UserId;
-
-		SysBrowserService = SystemBrowserService.Instance;
 		async Task setEvents() {
-			if (SysBrowserService.OpenTaskCompletionSource != null) {
-				_ = await SysBrowserService.OpenTaskCompletionSource.Task;
+			if (SystemBrowserService.Instance.OpenTaskCompletionSource != null) {
+				_ = await SystemBrowserService.Instance.OpenTaskCompletionSource.Task;
 			}
 			foreach (var sbi in SBI) {
 				if (sbi.Value != null) {
@@ -92,10 +84,6 @@ public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
 			}
 		}
 		_ = setEvents();
-	}
-
-	public override void OnAnyIsSelectedChanged(bool value) {
-		OnSelectedChanged?.Invoke(this);
 	}
 	public void Open() {
 		Navigator.NavigateToType(typeof(IdentityView), Dto);
@@ -156,15 +144,11 @@ public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
 	}
 	[RelayCommand]
 	public async Task OpenSystemBrowser(SystemBrowserType browserType) {
-		if (SysBrowserService == null) {
-			return;
-		}
 		if (SBI.TryGetValue(browserType, out var browser)) {
 			IsForeground = false;
 			if (browser == null) {
 				try {
-					browser = await SysBrowserService.Open(new (browserType, SystemBrowserProfile)
-					, () => {
+					var url = () => {
 						var urls = IoC.GetJsonValue<string[]>("DefaultHomePageSettings");
 						if (urls is null || urls.Length == 0)
 							urls = [Consts.DefaultHomePage];
@@ -175,7 +159,8 @@ public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
 							? starturl
 							: "https://" + starturl;
 						return starturl;
-					}).WaitAsync(TimeSpan.FromSeconds(21));
+					};
+					browser = await SystemBrowserService.Instance.Open(new (browserType, SystemBrowserProfile), url(), IoC.GetJsonValue<EmulationOptions>(nameof(EmulationOptions)) ?? new()).WaitAsync(TimeSpan.FromSeconds(21));
 				} catch {
 					browser = null;
 				}
@@ -183,7 +168,7 @@ public partial class ObsProfile : ObservableViewModelDto<UserProfileDto> {
 				var succeeded = false;
 				if (browser != null) {
 					try {
-						succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(SysBrowserService.TimeOut));
+						succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(SystemBrowserService.Instance.TimeOut));
 					} catch {
 						succeeded = false;
 					}

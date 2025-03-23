@@ -76,7 +76,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		}
 	}
 
-	private IEnumerable<ObsProfile>? GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
+	private IEnumerable<ObsProfile> GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
 	public int SelectedCount => GetSelectedProfiles?.Count() ?? 0;
 	public int MaxInFolderItems => Folder == null || Folder!.Id == 0
 	? UserProfilesRepo.Instance.ObservableCache.Count
@@ -391,12 +391,8 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task RunAutomation() {
-		if (GetSelectedProfiles == null) {
+		if (!GetSelectedProfiles.Any()) {
 			Toaster.Error("Select one or more profiles to run the automation.");
-			return;
-		}
-		if (SelectedPlaywrightScript == null) {
-			Toaster.Error("Select an automation.");
 			return;
 		}
 
@@ -412,7 +408,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 					if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || !await profile.SBI![SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))
 						continue;
 				}
-				SelectedPlaywrightScript.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
+				SelectedPlaywrightScript!.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
 				SelectedPlaywrightScript.Record = IsRecordSelected;
 				try {
 					await PlaywriteRunner.RunScript(SelectedPlaywrightScript, token);

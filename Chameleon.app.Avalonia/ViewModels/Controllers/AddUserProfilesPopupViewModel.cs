@@ -7,6 +7,7 @@ using Chameleon.lib.Api.Repos;
 using DynamicData;
 using Chameleon.lib.Common.Extensions;
 using Chameleon.app.Avalonia.DynamicData;
+using System.IO.Pipelines;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 public partial class AddUserProfilesPupViewModel : ViewModelObjectBase {
@@ -24,9 +25,8 @@ public partial class AddUserProfilesPupViewModel : ViewModelObjectBase {
 						userProfile: i,
 						hasActionOptions: false,
 						onSelectedChanged: p => {
-							if (p.IsSelected) {
-								if (!SelectedProfiles.Contains(p))
-									SelectedProfiles.Add(p);
+							if (p.IsSelected && !SelectedProfiles.Contains(p)) {
+								SelectedProfiles.Add(p);
 							} else {
 								_ = SelectedProfiles.Remove(p);
 							}

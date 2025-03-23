@@ -16,7 +16,7 @@ using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 
 namespace Chameleon.client.Features.Tenants.Members.ViewModels;
-public partial class AssistantUsersProfile : ObservableViewModelDto<AssisProfileDto> {
+public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisProfileDto> {
 	private readonly Action<AssistantUsersProfile> onProfileUnshare;
 	private readonly Func<AssistantUsersProfile, Enums.SystemBrowserType, Task> onSendCookies;
 
@@ -58,7 +58,7 @@ public partial class AssistantUsersProfile : ObservableViewModelDto<AssisProfile
 	}
 }
 public partial class AssistantUsersFolder(AssisShareFolderDto dto, Action<AssistantUsersFolder> onFolderUnshare)
-	: ViewModelObjectDto<AssisShareFolderDto>(dto) {
+	: DtoViewModelBase<AssisShareFolderDto>(dto) {
 
 	[RelayCommand]
 	public async Task Unshare() {
@@ -76,7 +76,7 @@ public partial class AssistantUsersFolder(AssisShareFolderDto dto, Action<Assist
 	}
 }
 
-public partial class AssistantUser(AssistDto dto)  : ViewModelObjectDto<AssistDto>(dto) {
+public partial class AssistantUser(AssistDto dto)  : DtoViewModelBase<AssistDto>(dto) {
 	[ObservableProperty]
 	bool canCreateProfiles;
 	[ObservableProperty]
