@@ -92,14 +92,17 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
-		await UPAdditionalDataRepo.Instance.LoadReload();
+		await UPAdditionalDataRepo.Instance
+			.LoadReload()
+			.RunInBackground();
 	}
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
 
 		if (param is UserProfileDto up) {
 			UserProfile = new UserProfileViewModel(up);
-			UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync();
+			UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString())
+				.ToStringAsync().RunInBackgroundWithResult();
 			ProfileVM = new ObsProfile(up, false);
 			filter.OnNext(FilterPredicate);
 			adrezfilter.OnNext(AdrezFilterPredicate);
@@ -109,7 +112,8 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task Discard() {
-		await UPAdditionalDataRepo.Instance.LoadReload(true);
+		await UPAdditionalDataRepo.Instance
+			.LoadReload(true).RunInBackground();
 	}
 
 	private async Task SaveChanges() {
@@ -131,10 +135,14 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			var res = await UserProfilesRepo.Instance.Put(UserProfile!.ToDto());
 			if (res != null) {
 
-				_ = await tagsRepo.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList());
+				await tagsRepo
+					.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList())
+					.RunInBackground();
 
 				UserProfile = new UserProfileViewModel(res);
-				UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync();
+				UserProfile.Tags = await tagsRepo
+					.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync()
+					.RunInBackgroundWithResult();
 				ProfileVM = new ObsProfile(UserProfile.ToDto(), false);
 				Toaster.Success($"Update was successful.");
 			}
@@ -172,7 +180,9 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnSavePerson(UPPersonViewModel p) {
 		_ = p.IsValidationValid();
-		_ = await Task.Run(() => UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Personz, p.ToDto()));
+		await UPAdditionalDataRepo
+			.Save(UPAdditionalDataRepo.Instance.Personz, p.ToDto())
+			.RunInBackground();
 		if (p.Id == 0)
 			_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Personz, p.ToDto());
 	}
@@ -181,7 +191,8 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task DeletePerson(UPPersonViewModel p) {
 		_ = p.Id == 0
 			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Personz, p.ToDto())
-			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Personz, p.ToDto());
+			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Personz, p.ToDto())
+								.RunInBackgroundWithResult();
 		OnPropertyChanged(nameof(HasPersons));
 	}
 	#endregion
@@ -202,7 +213,9 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnSaveBusiness(UPBusinessViewModel p) {
 		_ = p.IsValidationValid();
-		_ = await Task.Run(() => UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Biz, p.ToDto()));
+		await UPAdditionalDataRepo
+			.Save(UPAdditionalDataRepo.Instance.Biz, p.ToDto())
+			.RunInBackground();
 		if (p.Id == 0)
 			_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Biz, p.ToDto());
 	}
@@ -211,7 +224,8 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task DeleteBusiness(UPBusinessViewModel p) {
 		_ = p.Id == 0
 			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Biz, p.ToDto())
-			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Biz, p.ToDto());
+			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Biz, p.ToDto())
+							.RunInBackgroundWithResult();
 		OnPropertyChanged(nameof(HasBusiness));
 	}
 	#endregion
@@ -233,7 +247,9 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnSaveAddress(ObsAddressViewModel p) {
 		_ = p.IsValidationValid();
 		if (p.Dto != null) {
-			_ = await Task.Run(() => UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Addrez, p.ToDto()));
+			await UPAdditionalDataRepo
+				.Save(UPAdditionalDataRepo.Instance.Addrez, p.ToDto())
+				.RunInBackground();
 			if (p.Id == 0)
 				_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Addrez, p.ToDto());
 		}
@@ -244,7 +260,8 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		if (p.Dto != null) {
 			_ = p.Dto.Id == 0
 				? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Addrez, p.Dto.ToDto())
-				: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Addrez, p.Dto.ToDto());
+				: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Addrez, p.Dto.ToDto())
+								.RunInBackgroundWithResult();
 			OnPropertyChanged(nameof(HasAddresses));
 		}
 	}
@@ -267,7 +284,9 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task OnSaveLogin(UPLoginViewModel p) {
 		_ = p.IsValidationValid();
-		_ = await Task.Run(() => UPAdditionalDataRepo.Save(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto()));
+		await UPAdditionalDataRepo
+			.Save(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto())
+			.RunInBackground();
 		if (p.Id == 0)
 			_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Loginz, p.ToDto());
 	}
@@ -276,7 +295,8 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task OnDeleteLogin(UPLoginViewModel p) {
 		_ = p.Id == 0
 			? await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto())
-			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto());
+			: await UPAdditionalDataRepo.Delete(UPAdditionalDataRepo.Instance.Loginz, p!.ToDto())
+							.RunInBackgroundWithResult();
 		OnPropertyChanged(nameof(HasLogins));
 	}
 	#endregion
