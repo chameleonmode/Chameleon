@@ -2,12 +2,8 @@
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
-using Chameleon.lib;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Constants;
-using Chameleon.lib.Common.Interfaces.Sys;
-using Chameleon.lib.Common.Models;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -15,6 +11,8 @@ using Chameleon.lib.WebBrowser.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using static Chameleon.lib.Common.Constants.Enums;
+using Chameleon.lib.WebBrowser.Models;
+using Chameleon.lib.WebBrowser.Interfaces;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
@@ -44,10 +42,15 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 	public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
 	public bool IsFavorite => Dto?.isFavourite ?? false;
 	public bool IsDeleteProfileBtnVisible => !IsSharedProfile;
-	public Dictionary<SystemBrowserType, ISysBrowserInstance?> SBI => Dto!.SBI;
-	public SysBrowserProfile SystemBrowserProfile => new() {
+	public Dictionary<SystemBrowserType, IBrowserInstance?> SBI { get; } = new() {
+		[SystemBrowserType.Chrome] = null,
+		[SystemBrowserType.Firefox] = null,
+		[SystemBrowserType.Brave] = null
+	};
+	
+	public BrowserProfile SystemBrowserProfile => new() {
 		Id = Dto!.id,
-		Proxy = new SysBrowserProxy() {
+		Proxy = new BrowserProxy() {
 			Host = Dto.proxy?.host,
 			Port = Dto.proxy?.port ?? 0,
 			UserName = Dto.proxy?.userName,
@@ -71,7 +74,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		IsShowF = isShowF;
 		IsShowCheckboxColumn = isShowCheckboxColumn;
 		IsActionOptionsVisible = hasActionOptions;
-		IsSharedProfile = userProfile?.creatorUserId != Auther.AuthSession?.UserId;
+		IsSharedProfile = userProfile.creatorUserId != Auther.AuthSession?.UserId;
 		async Task setEvents() {
 			if (SystemBrowserService.Instance.OpenTaskCompletionSource != null) {
 				_ = await SystemBrowserService.Instance.OpenTaskCompletionSource.Task;
@@ -81,6 +84,10 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 					_ = SetRunning(sbi.Value.Settings.BrowserType, true);
 					sbi.Value.OnEvent += Browser_OnEvent;
 				}
+			}
+			var (has, browser) = SystemBrowserService.Instance.HasInstanceOf(Dto.id);
+			if (has) {
+				_ = SetRunning(browser, true);
 			}
 		}
 		_ = setEvents();
@@ -148,19 +155,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			IsForeground = false;
 			if (browser == null) {
 				try {
-					var url = () => {
-						var urls = IoC.GetJsonValue<string[]>("DefaultHomePageSettings");
-						if (urls is null || urls.Length == 0)
-							urls = [Consts.DefaultHomePage];
-
-						var starturl = urls[new Random().Next(urls.Length)];
-						starturl = Uri.TryCreate(starturl, UriKind.Absolute, out var uriResult)
-							&& (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)
-							? starturl
-							: "https://" + starturl;
-						return starturl;
-					};
-					browser = await SystemBrowserService.Instance.Open(new (browserType, SystemBrowserProfile), url(), IoC.GetJsonValue<EmulationOptions>(nameof(EmulationOptions)) ?? new()).WaitAsync(TimeSpan.FromSeconds(21));
+					browser = await SystemBrowserService.Instance.Open(new (browserType, SystemBrowserProfile)).WaitAsync(TimeSpan.FromSeconds(21));
 				} catch {
 					browser = null;
 				}
