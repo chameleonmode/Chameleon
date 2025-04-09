@@ -136,7 +136,7 @@
 													   Header="False">
 							<afv:HeaderdInputFieldsControl.TextBoxes>
 								<TextBox Text="{Binding Path=UserProfile.Proxy.Host, FallbackValue=proxy.example.com}" Watermark="proxy.example.com" />
-								<TextBox Text="{Binding Path=UserProfile.Proxy.Port, FallbackValue=1434}" Watermark="1434" />
+								<TextBox Text="{Binding Path=UserProfile.Proxy.Port, FallbackValue=8080}" Watermark="8080" />
 								<TextBox Text="{Binding Path=UserProfile.Proxy.UserName,FallbackValue=tester}" Watermark="tester" />
 								<TextBox Text="{Binding Path=UserProfile.Proxy.Password, FallbackValue=@testing}" Watermark="@testing"  />
 							</afv:HeaderdInputFieldsControl.TextBoxes>

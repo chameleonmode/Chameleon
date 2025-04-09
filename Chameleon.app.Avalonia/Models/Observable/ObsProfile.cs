@@ -47,7 +47,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		[SystemBrowserType.Firefox] = null,
 		[SystemBrowserType.Brave] = null
 	};
-	
+
 	public BrowserProfile SystemBrowserProfile => new() {
 		Id = Dto!.id,
 		Proxy = new BrowserProxy() {
@@ -85,7 +85,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 					sbi.Value.OnEvent += Browser_OnEvent;
 				}
 			}
-			var (has, browser) = SystemBrowserService.Instance.HasInstanceOf(Dto.id);
+			var (has, browser) = await SystemBrowserService.Instance.HasInstanceOf(Dto.id);
 			if (has) {
 				_ = SetRunning(browser, true);
 			}
@@ -116,22 +116,19 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			MBoxButtons.OkCancel,
 			"DeleteLines")) {
 			_ = await UserProfilesRepo.Instance.Delete(Dto.id);
-			if (Navigator.Instance.Frame?.CanGoBack == true && Navigator.Instance.Frame.Content?.GetType() == typeof(IdentityView)){
+			if (Navigator.Instance.Frame?.CanGoBack == true && Navigator.Instance.Frame.Content?.GetType() == typeof(IdentityView)) {
 				Navigator.Instance.Frame?.GoBack();
 			}
 			MyProfilesViewModel.Instance.SetViewModelsFilter();
 		}
 	}
-	[RelayCommand]
-	private void OpenUserProfile() {
-		Open();
-	}
+
 	[RelayCommand]
 	public void OpenUserBrowser() {
 		WShower.ShowTopmost(SnapCracklePopViewModel.Instance, SnapCracklePopUserControl.Instance,
 				vm => {
-					if (!vm.RunningList.Any(p => p.Dto?.id == this.Dto?.id))
-						vm.RunningList.Add(new ObsProfile(this.Dto!, false, false, false, false, false));
+					if (!vm.RunningList.Any(p => p.Dto?.id == Dto.id))
+						vm.RunningList.Add(new ObsProfile(Dto, false, false, false, false, false));
 				},
 				vm => {
 					vm.RunningList.Clear();
@@ -155,7 +152,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			IsForeground = false;
 			if (browser == null) {
 				try {
-					browser = await SystemBrowserService.Instance.Open(new (browserType, SystemBrowserProfile)).WaitAsync(TimeSpan.FromSeconds(21));
+					browser = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile)).WaitAsync(TimeSpan.FromSeconds(21));
 				} catch {
 					browser = null;
 				}

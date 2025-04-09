@@ -1,6 +1,7 @@
 ﻿using Chameleon.app.Avalonia.Extensions;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ReactiveValidation;
 using ReactiveValidation.Extensions;
@@ -103,7 +104,7 @@ public partial class ProxyViewModel : ObservableObjectBase {
 		Title = proxy.title;
 		Tags = proxy.Tags;
 		Host = proxy.host;
-		Port = proxy.port;
+		Port = "" + proxy.port;
 		UserName = proxy.userName;
 		Password = proxy.password;
 	}
@@ -115,7 +116,7 @@ public partial class ProxyViewModel : ObservableObjectBase {
 	public string? host;
 
 	[ObservableProperty]
-	public int port;
+	public string port;
 
 	[ObservableProperty]
 	public string? userName;
@@ -126,16 +127,25 @@ public partial class ProxyViewModel : ObservableObjectBase {
 	protected override IObjectValidator GetValidator() {
 		var builder = new ValidationBuilder<ProxyViewModel>();
 
-		_ = builder.RuleFor(vm => vm.Title).NotEmpty().MaxLength(50)
-							 .WithMessage("Title is requried");
-
-		_ = builder.RuleFor(vm => vm.Host).NotEmpty().WithMessage("Valid host is requried");
+		_ = builder.RuleFor(vm => vm.Host)
+								.NotEmpty()
+								.WithMessage("Consider using a proxy");
 
 		_ = builder.RuleFor(vm => vm.Port)
-							 .Must(x => x.PropertyValue > 0)
-								.WithMessage("Valid port is requried");
+							 .Must(x => Host.Is() || (Host.IsNot() && x.PropertyValue is string s && int.TryParse(s, out var port) && port > 0))
+							 .WithMessage("Valid port is requried");
 
 		return builder.Build(this);
+	}
+
+	partial void OnHostChanged(string? value) {
+		if (value.Is()) {
+			Port = string.Empty;
+		} else {
+			if (Port.Is() || !int.TryParse(Port, out var port) || port <= 0) {
+				Port = "0000";
+			}
+		}
 	}
 
 	public ProxDto ToDto() {
@@ -144,7 +154,7 @@ public partial class ProxyViewModel : ObservableObjectBase {
 			title = Title,
 			Tags = Tags,
 			host = Host,
-			port = Port,
+			port = int.TryParse(Port, out var port) ? port : 0,
 			userName = UserName,
 			password = Password
 		};
