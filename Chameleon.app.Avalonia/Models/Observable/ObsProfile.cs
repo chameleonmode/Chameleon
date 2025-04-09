@@ -76,16 +76,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		IsActionOptionsVisible = hasActionOptions;
 		IsSharedProfile = userProfile.creatorUserId != Auther.AuthSession?.UserId;
 		async Task setEvents() {
-			if (SystemBrowserService.Instance.OpenTaskCompletionSource != null) {
-				_ = await SystemBrowserService.Instance.OpenTaskCompletionSource.Task;
-			}
-			foreach (var sbi in SBI) {
-				if (sbi.Value != null) {
-					_ = SetRunning(sbi.Value.Settings.BrowserType, true);
-					sbi.Value.OnEvent += Browser_OnEvent;
-				}
-			}
-			var (has, browser) = await SystemBrowserService.Instance.HasInstanceOf(Dto.id);
+			var (has, browser) = await SystemBrowserService.Instance.HasInstanceOf(Dto.id, Browser_OnEvent);
 			if (has) {
 				_ = SetRunning(browser, true);
 			}
@@ -170,7 +161,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 					_ = SetRunning(browserType, null);
 				} else {
 					_ = SetRunning(browserType, true);
-					browser.OnEvent += Browser_OnEvent;
+					// browser.OnEvent += Browser_OnEvent;
 					SBI[browserType] = browser;
 				}
 			} else {
