@@ -429,9 +429,10 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 					}
 
 					var browser = await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(token);
+					ArgumentNullException.ThrowIfNull(browser, nameof(browser));
+
 					SelectedPlaywrightScript.Port = browser.Settings.Port;
 					SelectedPlaywrightScript.Record = IsRecordSelected;
-
 					await PlaywriteRunner.RunScript(SelectedPlaywrightScript, token);
 				} catch (Exception ex) {
 					// Log or handle the exception if closing the process fails
