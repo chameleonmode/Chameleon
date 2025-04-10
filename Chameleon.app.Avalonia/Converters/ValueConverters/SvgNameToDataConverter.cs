@@ -3,10 +3,9 @@ using Avalonia.Data.Converters;
 using Avalonia.Platform;
 using Avalonia.Styling;
 
-using Chameleon.lib.Common.Extensions;
-
 using System.Globalization;
 
+using Chameleon.lib.Util;
 using BN = Avalonia.Data.BindingNotification;
 
 namespace Chameleon.app.Avalonia.Converters.ValueConverters;
@@ -14,7 +13,7 @@ namespace Chameleon.app.Avalonia.Converters.ValueConverters;
 public class SvgNameToDataConverter : IValueConverter {
 	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 	{
-		if (value == null || !value.ToString().Is()) value = "x";
+		if (value == null || value.ToString().Is()) value = "x";
 
 		var uri = $"avares://Chameleon.app.Avalonia/Assets/Svgs/{value}.svg";
 		using var stream = AssetLoader.Open(new Uri(uri));

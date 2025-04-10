@@ -3,10 +3,10 @@ using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
-using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
@@ -129,7 +129,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	}
 	private async Task SaveRename()
 	{
-		if (!Title.Is()) {
+		if (Title.Is()) {
 			return;
 		}
 

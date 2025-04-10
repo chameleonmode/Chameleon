@@ -2,7 +2,7 @@
 using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Extensions;
+using Chameleon.lib.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -122,7 +122,7 @@ public partial class MainViewModel : ObservableObjectBase {
 
 	[RelayCommand]
 	private void ClickSearch(string p) {
-		if (!p.Is())
+		if (p.Is())
 			ClearSearch();
 		else
 			Navigator.NavigateToType(typeof(ProjectsView), p);

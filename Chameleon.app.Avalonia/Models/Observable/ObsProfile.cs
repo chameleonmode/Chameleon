@@ -13,6 +13,8 @@ using CommunityToolkit.Mvvm.Input;
 using static Chameleon.lib.Common.Constants.Enums;
 using Chameleon.lib.WebBrowser.Models;
 using Chameleon.lib.WebBrowser.Interfaces;
+using System.Collections.ObjectModel;
+using DynamicData;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
@@ -58,6 +60,9 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		}
 	};
 
+private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
+	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins => logins;
+
 	public ObsProfile(
 			UserProfileDto userProfile,
 			bool isShowCheckboxColumn = true,
@@ -82,6 +87,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			}
 		}
 		_ = setEvents();
+		_ = UPAdditionalDataRepo.Instance.Loginz.Connect(i => i.ProfileId == userProfile.id).Bind(out logins).Subscribe();
 	}
 	public void Open() {
 		Navigator.NavigateToType(typeof(IdentityView), Dto);
@@ -127,18 +133,18 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 	}
 	[RelayCommand]
 	private async Task OpenFirefox() {
-		await OpenSystemBrowser(SystemBrowserType.Firefox);
+		_ = await OpenSystemBrowser(SystemBrowserType.Firefox);
 	}
 	[RelayCommand]
 	private async Task OpenChrome() {
-		await OpenSystemBrowser(SystemBrowserType.Chrome);
+		_ = await OpenSystemBrowser(SystemBrowserType.Chrome);
 	}
 	[RelayCommand]
 	private async Task OpenBrave() {
-		await OpenSystemBrowser(SystemBrowserType.Brave);
+		_ = await OpenSystemBrowser(SystemBrowserType.Brave);
 	}
-	[RelayCommand]
-	public async Task OpenSystemBrowser(SystemBrowserType browserType) {
+
+	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType) {
 		if (SBI.TryGetValue(browserType, out var browser)) {
 			IsForeground = false;
 			if (browser == null) {
@@ -168,6 +174,8 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 				browser.InvokeEvent(SysBrowserEventType.Foreground);
 			}
 		}
+
+		return SBI[browserType];
 	}
 
 	private void Browser_OnEvent(object sender, SysBrowserEvent args) {

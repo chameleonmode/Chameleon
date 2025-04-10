@@ -1,14 +1,12 @@
 ﻿using System.Collections.ObjectModel;
-using System.Net.Sockets;
 using System.Reactive.Subjects;
 
 using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
-using Chameleon.lib.Common.Extensions;
+using Chameleon.lib.Util;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 
@@ -154,7 +152,7 @@ public partial class UserProxySettingsViewModel
 			return;
 		}
 
-		if (!ApplingProxy.Is()) {
+		if (ApplingProxy.Is()) {
 			if (SelectedProfiles != null) {
 				foreach (var model in SelectedProfiles) {
 					if (
@@ -216,7 +214,7 @@ public partial class UserProxySettingsViewModel
 			}
 			var portStr = applingProxies[1];
 			var isValidPort = int.TryParse(portStr, out var port);
-			if (!isValidPort && portStr.Is()) {
+			if (!isValidPort && portStr.IsNot()) {
 				Toaster.Error($"Port cann't be text {applingProxy}");
 				continue;
 			}
