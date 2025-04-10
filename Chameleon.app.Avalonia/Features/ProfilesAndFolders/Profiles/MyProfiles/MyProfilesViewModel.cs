@@ -20,10 +20,10 @@ using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Models;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Playwright.Utils;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
-using DynamicData.Binding;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -35,12 +35,12 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 	public AvaloniaList<RunScriptOptions> PlaywrightScripts { get; } = [];
 	[ObservableProperty]
-	private RunScriptOptions? selectedPlaywrightScript;
+	private RunScriptOptions selectedPlaywrightScript;
 
 	[ObservableProperty]
 	private PaginatorViewModel paginatorViewModel;
 	[ObservableProperty]
-	private SystemBrovserItem? selectedBrowserItem;
+	private SystemBrovserItem selectedBrowserItem;
 	[ObservableProperty]
 	private int totalCount;
 	[ObservableProperty]
@@ -61,8 +61,8 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	private CancellationTokenSource? _cts;
 
 	public ObservableCollection<SystemBrovserItem> BrowserItems { get; } = [
+		new SystemBrovserItem(SystemBrowserType.Chrome),
 		new SystemBrovserItem(SystemBrowserType.Brave),
-		new SystemBrovserItem(SystemBrowserType.Chrome)
 	];
 	private CancellationToken RecreateCancellationToken {
 		get {
@@ -124,6 +124,11 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		AsyncCommandMap["SaveTags"] = async () => {
 			_ = await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
 		};
+
+		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());
+		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Description?.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
+
+		SelectedBrowserItem = BrowserItems[0];
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
@@ -131,13 +136,13 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		PlaywrightScripts.Clear();
 		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());
 		var usd = IoC.GetValue<string>("UserScriptsDirectory");
-		if (usd.Is() && Directory.Exists(usd)) {
+		if (usd.IsNot() && Directory.Exists(usd)) {
 			PlaywrightScripts.AddRange(await BundledScriptsService.GetUserScripts(usd));
 		}
 
 		//InintializeLastSelectedAutomation();
 		var lastSelectedBrowserString = IoC.GetValue<string>("LastSelectedBrowser");
-		SelectedBrowserItem = !lastSelectedBrowserString.Is() ||
+		SelectedBrowserItem = lastSelectedBrowserString.Is() ||
 				!Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum)
 			? BrowserItems[0]
 			: BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
@@ -152,21 +157,18 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			_ => Compares.ObsProfileCompares.AscendingComparer
 		});
 	}
-	partial void OnSelectedBrowserItemChanged(SystemBrovserItem? value) {
-		if (value == null)
-			return;
-
+	partial void OnSelectedBrowserItemChanged(SystemBrovserItem value) {
 		var cur = IoC.GetValue<string>("LastSelectedBrowser");
 		if (cur != value.SystemBrowserType.ToString())
 			IoC.SetValue(value.SystemBrowserType.ToString(), "LastSelectedBrowser");
 	}
-	partial void OnSelectedPlaywrightScriptChanged(RunScriptOptions? value) {
+	partial void OnSelectedPlaywrightScriptChanged(RunScriptOptions value) {
 		var cur = IoC.GetValue<string>("LastRunScriptId");
 		if (value != null && cur != value.Description?.Title)
 			IoC.SetValue(value.Description?.Title, "LastRunScriptId");
 	}
 	partial void OnSearchTextChanged(string value) {
-		if (value.Is()) {
+		if (value.IsNot()) {
 			PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
 			filter.OnNext(p => p.Title?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true && (Folder == null || Folder.id == 0 || (Folder != null && Folder.id != 0 && p.Dto?.folderId == Folder?.id)));
 		} else {
@@ -177,7 +179,6 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		SetViewModelsFilter(false);
 	}
 	partial void OnFolderChanged(UPFolderViewModel? value) {
-
 		FoldersViewModel.Instance.SetSelectedFolder(value?.ToDto());
 		SearchText = string.Empty;
 		HasFolder = value?.id != default && value?.id != 0;
@@ -385,7 +386,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 	private void OpenSystemBrowser(SystemBrowserType browserType) {
 		GetSelectedProfiles?.ForEach(async (selectedProfile) => {
-			await selectedProfile.OpenSystemBrowser(browserType);
+			_ = await selectedProfile.OpenSystemBrowser(browserType);
 		});
 	}
 
@@ -398,38 +399,58 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 		IsVisibleRunButton = false;
 		IsVisibleStopButton = true;
-
+		var token = RecreateCancellationToken;
 		try {
-			var token = RecreateCancellationToken;
 			foreach (var profile in GetSelectedProfiles) {
-				var browserWasNotOpened = profile.SBI![SelectedBrowserItem!.SystemBrowserType] == null;
-				if (browserWasNotOpened) {
-					await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(token);
-					if (profile.SBI![SelectedBrowserItem.SystemBrowserType] == null || !await profile.SBI![SelectedBrowserItem.SystemBrowserType]!.LoadedTCS.Task.WaitAsync(token))
-						continue;
-				}
-				SelectedPlaywrightScript!.Port = profile.SBI![SelectedBrowserItem.SystemBrowserType]!.Settings.Port;
-				SelectedPlaywrightScript.Record = IsRecordSelected;
 				try {
+					var description = SelectedPlaywrightScript.Description;
+					if (
+							description != null &&
+							description.Parameters.TryGetValue("email", out var email) &&
+							description.Parameters.TryGetValue("password", out var password) &&
+							(email.Is() || email == "email" || password.Is() || password == "password")
+						) {
+						await UPAdditionalDataRepo.Instance.Loginz.Load();
+						var google =
+							description.Parameters["title"].Equals("google", StringComparison.CurrentCultureIgnoreCase) ||
+							description.Parameters["website"].Equals("google.com", StringComparison.CurrentCultureIgnoreCase);
+						if (!await TaskUtil.AwaitFor(() => profile.ProfileLogins.Count > 0, 4) && !google) {
+							throw new Exception("No logins found in the profile.");
+						}
+						if (profile.ProfileLogins.Count > 0 || !google) {
+							var login = profile.ProfileLogins.FirstOrDefault(l =>
+								(l.title.IsNot() && l.title!.Equals(description.Parameters["title"], StringComparison.CurrentCultureIgnoreCase)) ||
+								(l.WebSite.IsNot() && l.WebSite!.Equals(description.Parameters["website"], StringComparison.CurrentCultureIgnoreCase))
+							) ?? profile.ProfileLogins[0];
+
+							description.Parameters["email"] = login?.Email ?? email ?? string.Empty;
+							description.Parameters["password"] = login?.Password ?? password ?? string.Empty;
+						}
+					}
+
+					var browser = await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(token);
+					ArgumentNullException.ThrowIfNull(browser, nameof(browser));
+
+					SelectedPlaywrightScript.Port = browser.Settings.Port;
+					SelectedPlaywrightScript.Record = IsRecordSelected;
 					await PlaywriteRunner.RunScript(SelectedPlaywrightScript, token);
 				} catch (Exception ex) {
 					// Log or handle the exception if closing the process fails
 					Toaster.Error($"{ex.Message}");
 				}
-
-				// Check if the browser process is not null and hasn't exited
-				if (browserWasNotOpened) {
-					await ProUtil.TryKillProcess(profile.SBI[SelectedBrowserItem.SystemBrowserType]?.Brocess);
-				}
-
 				// Stop loop if canceled
 				if (token.IsCancellationRequested) {
 					break;
 				}
+
+				// Check if the browser process is not null and hasn't exited
+				// if (browserWasNotOpened) {
+				// 	await ProUtil.TryKillProcess(profile.SBI[SelectedBrowserItem.SystemBrowserType]?.Brocess);
+				// }
 			}
 		} catch (Exception ex) {
 			Toaster.Error($"{ex.Message}");
-		} finally{
+		} finally {
 			IsVisibleRunButton = true;
 			IsVisibleStopButton = false;
 			IsVisibleWaitButton = false;

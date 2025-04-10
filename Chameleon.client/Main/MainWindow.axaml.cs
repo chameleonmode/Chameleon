@@ -8,12 +8,12 @@ using FluentAvalonia.UI.Windowing;
 namespace Chameleon.client.Main;
 
 public partial class MainWindow : AppWindow {
-    public MainWindow()
-    {
-        InitializeComponent();
+	public MainWindow() {
+		InitializeComponent();
 
 #if DEBUG
 		this.AttachDevTools();
+		this.Topmost = true;
 #endif
 
 		SplashScreen = new AppStartup.MainAppSplashScreen(new SplashScreenUC());
