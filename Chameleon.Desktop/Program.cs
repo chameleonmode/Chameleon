@@ -1,11 +1,6 @@
 ﻿using System;
-
 using Avalonia;
-
 using Chameleon.client;
-
-using Svga = Avalonia.Svg.Skia.Svg;
-using SvgaImageExtension = Avalonia.Svg.Skia.SvgImageExtension;
 
 namespace Chameleon.Desktop;
 
@@ -18,21 +13,19 @@ class Program {
 			.StartWithClassicDesktopLifetime(args);
 
 	// Avalonia configuration, don't remove; also used by visual designer.
-	public static AppBuilder BuildAvaloniaApp()
-	{
-		GC.KeepAlive(typeof(SvgaImageExtension).Assembly);
-		GC.KeepAlive(typeof(Svga).Assembly);
-				return AppBuilder.Configure<App>()
-						.UsePlatformDetect()
-						.WithInterFont()
-						.UseSkia()
-						.With(new MacOSPlatformOptions {
-							DisableDefaultApplicationMenuItems = true,
-						})
+	public static AppBuilder BuildAvaloniaApp() {
+		GC.KeepAlive(typeof(Avalonia.Svg.Skia.SvgImageExtension).Assembly);
+		GC.KeepAlive(typeof(Avalonia.Svg.Skia.Svg).Assembly);
+		return AppBuilder.Configure<App>()
+				.UsePlatformDetect()
+				.WithInterFont()
+				.UseSkia()
+				.With(new MacOSPlatformOptions {
+					DisableDefaultApplicationMenuItems = true,
+				})
 #if DEBUG
-				.LogToTrace()
+		.LogToTrace()
 #endif
-				;
-
+		;
 	}
 }

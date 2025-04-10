@@ -1,7 +1,7 @@
 ﻿using Avalonia.Collections;
 
 using Chameleon.app.Avalonia.Controls;
-using Chameleon.lib.Common.Extensions;
+using Chameleon.lib.Util;
 using Chameleon.lib.Common.Records;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
@@ -99,7 +99,7 @@ public partial class PVApiModel
 
 	public async Task GetCode()
 	{
-		if (lastJsonResponse?.Is() == false)
+		if (lastJsonResponse.Is())
 			return;
 
 		await MakeRequest(async () => {
@@ -111,7 +111,7 @@ public partial class PVApiModel
 
 	private async Task CancelOrder()
 	{
-		if (lastJsonResponse?.Is() == false)
+		if (lastJsonResponse.Is())
 			return;
 
 		await MakeRequest(async () => {

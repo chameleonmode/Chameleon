@@ -13,6 +13,8 @@ using CommunityToolkit.Mvvm.Input;
 using static Chameleon.lib.Common.Constants.Enums;
 using Chameleon.lib.WebBrowser.Models;
 using Chameleon.lib.WebBrowser.Interfaces;
+using System.Collections.ObjectModel;
+using DynamicData;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
@@ -47,7 +49,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		[SystemBrowserType.Firefox] = null,
 		[SystemBrowserType.Brave] = null
 	};
-	
+
 	public BrowserProfile SystemBrowserProfile => new() {
 		Id = Dto!.id,
 		Proxy = new BrowserProxy() {
@@ -57,6 +59,9 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			Password = Dto.proxy?.password
 		}
 	};
+
+private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
+	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins => logins;
 
 	public ObsProfile(
 			UserProfileDto userProfile,
@@ -76,21 +81,13 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		IsActionOptionsVisible = hasActionOptions;
 		IsSharedProfile = userProfile.creatorUserId != Auther.AuthSession?.UserId;
 		async Task setEvents() {
-			if (SystemBrowserService.Instance.OpenTaskCompletionSource != null) {
-				_ = await SystemBrowserService.Instance.OpenTaskCompletionSource.Task;
-			}
-			foreach (var sbi in SBI) {
-				if (sbi.Value != null) {
-					_ = SetRunning(sbi.Value.Settings.BrowserType, true);
-					sbi.Value.OnEvent += Browser_OnEvent;
-				}
-			}
-			var (has, browser) = SystemBrowserService.Instance.HasInstanceOf(Dto.id);
+			var (has, browser) = await SystemBrowserService.Instance.HasInstanceOf(Dto.id, Browser_OnEvent);
 			if (has) {
 				_ = SetRunning(browser, true);
 			}
 		}
 		_ = setEvents();
+		_ = UPAdditionalDataRepo.Instance.Loginz.Connect(i => i.ProfileId == userProfile.id).Bind(out logins).Subscribe();
 	}
 	public void Open() {
 		Navigator.NavigateToType(typeof(IdentityView), Dto);
@@ -116,22 +113,19 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			MBoxButtons.OkCancel,
 			"DeleteLines")) {
 			_ = await UserProfilesRepo.Instance.Delete(Dto.id);
-			if (Navigator.Instance.Frame?.CanGoBack == true && Navigator.Instance.Frame.Content?.GetType() == typeof(IdentityView)){
+			if (Navigator.Instance.Frame?.CanGoBack == true && Navigator.Instance.Frame.Content?.GetType() == typeof(IdentityView)) {
 				Navigator.Instance.Frame?.GoBack();
 			}
 			MyProfilesViewModel.Instance.SetViewModelsFilter();
 		}
 	}
-	[RelayCommand]
-	private void OpenUserProfile() {
-		Open();
-	}
+
 	[RelayCommand]
 	public void OpenUserBrowser() {
 		WShower.ShowTopmost(SnapCracklePopViewModel.Instance, SnapCracklePopUserControl.Instance,
 				vm => {
-					if (!vm.RunningList.Any(p => p.Dto?.id == this.Dto?.id))
-						vm.RunningList.Add(new ObsProfile(this.Dto!, false, false, false, false, false));
+					if (!vm.RunningList.Any(p => p.Dto?.id == Dto.id))
+						vm.RunningList.Add(new ObsProfile(Dto, false, false, false, false, false));
 				},
 				vm => {
 					vm.RunningList.Clear();
@@ -139,23 +133,23 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 	}
 	[RelayCommand]
 	private async Task OpenFirefox() {
-		await OpenSystemBrowser(SystemBrowserType.Firefox);
+		_ = await OpenSystemBrowser(SystemBrowserType.Firefox);
 	}
 	[RelayCommand]
 	private async Task OpenChrome() {
-		await OpenSystemBrowser(SystemBrowserType.Chrome);
+		_ = await OpenSystemBrowser(SystemBrowserType.Chrome);
 	}
 	[RelayCommand]
 	private async Task OpenBrave() {
-		await OpenSystemBrowser(SystemBrowserType.Brave);
+		_ = await OpenSystemBrowser(SystemBrowserType.Brave);
 	}
-	[RelayCommand]
-	public async Task OpenSystemBrowser(SystemBrowserType browserType) {
+
+	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType) {
 		if (SBI.TryGetValue(browserType, out var browser)) {
 			IsForeground = false;
 			if (browser == null) {
 				try {
-					browser = await SystemBrowserService.Instance.Open(new (browserType, SystemBrowserProfile)).WaitAsync(TimeSpan.FromSeconds(21));
+					browser = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile)).WaitAsync(TimeSpan.FromSeconds(21));
 				} catch {
 					browser = null;
 				}
@@ -173,13 +167,15 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 					_ = SetRunning(browserType, null);
 				} else {
 					_ = SetRunning(browserType, true);
-					browser.OnEvent += Browser_OnEvent;
+					// browser.OnEvent += Browser_OnEvent;
 					SBI[browserType] = browser;
 				}
 			} else {
 				browser.InvokeEvent(SysBrowserEventType.Foreground);
 			}
 		}
+
+		return SBI[browserType];
 	}
 
 	private void Browser_OnEvent(object sender, SysBrowserEvent args) {

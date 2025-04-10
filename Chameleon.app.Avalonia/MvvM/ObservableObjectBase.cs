@@ -90,11 +90,12 @@ public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewM
 	public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
 	public IEnumerable GetErrors(string? propertyName) {
-		return Validator == null
+		var error = Validator == null
 			? Array.Empty<ValidationMessage>()
 			: (IEnumerable)(string.IsNullOrEmpty(propertyName)
 				? Validator.ValidationMessages
 				: Validator.GetMessages(propertyName!));
+		return error;
 	}
 
 	protected virtual IObjectValidator GetValidator() {

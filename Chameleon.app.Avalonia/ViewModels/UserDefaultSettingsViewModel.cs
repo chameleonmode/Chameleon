@@ -6,8 +6,7 @@ using System.Collections.ObjectModel;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
-using Chameleon.lib.Common.Models;
-using Chameleon.lib.Common.Extensions;
+using Chameleon.lib.Util;
 using Chameleon.lib;
 using Chameleon.lib.WebBrowser.Models;
 
@@ -26,7 +25,7 @@ public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action O
 	[RelayCommand]
 	public async Task SaveUrlFromViewText()
 	{
-		if (!DefaultUrl.Is() || DefaultUrl == bsd.DefaultUrl) {
+		if (DefaultUrl.Is() || DefaultUrl == bsd.DefaultUrl) {
 			return;
 		}
 
