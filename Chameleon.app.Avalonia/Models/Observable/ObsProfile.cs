@@ -15,9 +15,12 @@ using Chameleon.lib.WebBrowser.Models;
 using Chameleon.lib.WebBrowser.Interfaces;
 using System.Collections.ObjectModel;
 using DynamicData;
+using Chameleon.lib.Common.Extensions;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
+	readonly TaskCompletionSource settingEventsTCS = new();
+
 	[ObservableProperty]
 	private string _isChromeRunning = "False";
 	[ObservableProperty]
@@ -81,10 +84,11 @@ private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
 		IsActionOptionsVisible = hasActionOptions;
 		IsSharedProfile = userProfile.creatorUserId != Auther.AuthSession?.UserId;
 		async Task setEvents() {
-			var (has, browser) = await SystemBrowserService.Instance.HasInstanceOf(Dto.id, Browser_OnEvent);
+			var (has, browsers) = await SystemBrowserService.Instance.HasInstanceOf(Dto.id, Browser_OnEvent);
 			if (has) {
-				_ = SetRunning(browser, true);
+				browsers.ForEach(b => _ = SetRunning(b, true));
 			}
+			_ = settingEventsTCS.TrySetResult();
 		}
 		_ = setEvents();
 		_ = UPAdditionalDataRepo.Instance.Loginz.Connect(i => i.ProfileId == userProfile.id).Bind(out logins).Subscribe();
@@ -145,31 +149,40 @@ private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
 	}
 
 	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType) {
+		// TODO:
+		// if(SystemBrowserService.Instance.OpenTaskCompletionSource != null)
+		// 	_ = await SystemBrowserService.Instance.OpenTaskCompletionSource.Task;
+		await settingEventsTCS.Task;
 		if (SBI.TryGetValue(browserType, out var browser)) {
 			IsForeground = false;
+			var succeeded = false;
 			if (browser == null) {
 				try {
 					browser = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile)).WaitAsync(TimeSpan.FromSeconds(21));
 				} catch {
 					browser = null;
 				}
+			
+			if (browser != null) {
+				try {
+					succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(SystemBrowserService.Instance.TimeOut));
+				} catch {
+					succeeded = false;
+				}
+			}
 
-				var succeeded = false;
-				if (browser != null) {
-					try {
-						succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(SystemBrowserService.Instance.TimeOut));
-					} catch {
-						succeeded = false;
-					}
-				}
-				if (!succeeded || browser == null) {
-					IsForeground = false;
-					_ = SetRunning(browserType, null);
-				} else {
-					_ = SetRunning(browserType, true);
-					// browser.OnEvent += Browser_OnEvent;
-					SBI[browserType] = browser;
-				}
+			if (!succeeded || browser == null) {
+				IsForeground = false;
+				_ = SetRunning(browserType, null);
+			} else {
+				_ = SetRunning(browserType, true);
+				// browser.OnEvent += Browser_OnEvent;
+				SBI[browserType] = browser;
+			}
+			// if (browser == null) {
+
+			// 	if (browser != null) {
+			// 	}
 			} else {
 				browser.InvokeEvent(SysBrowserEventType.Foreground);
 			}
@@ -192,7 +205,6 @@ private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
 				SBI[args.OpenOptions.BrowserType] = null;
 			}
 		}
-		;
 	}
 
 	private string SetRunning(SystemBrowserType args, bool? running) => args switch {
