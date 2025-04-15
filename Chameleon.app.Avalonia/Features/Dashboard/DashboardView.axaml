@@ -85,10 +85,14 @@
 			</ScrollViewer>
 
 			<Grid Grid.Row="2" IsVisible="{Binding IsFavouriteSelected}">
-				<favourite:FavouriteView DataContext="{Binding FavouriteViewModel}"/>
+				<Panel DataContext="{Binding FavouriteViewModel}">
+					<favourite:FavouriteView/>
+				</Panel>
 			</Grid>
 			<Grid IsVisible="{Binding !IsFavouriteSelected}" Grid.Row="2">
-				<tags:TagsView DataContext="{Binding TagsViewModel}"/>
+				<Panel DataContext="{Binding TagsViewModel}">
+					<tags:TagsView />
+				</Panel>
 			</Grid>
 		</Grid>
 	</ScrollViewer>

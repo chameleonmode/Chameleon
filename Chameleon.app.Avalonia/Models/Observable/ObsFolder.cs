@@ -26,7 +26,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	public bool IsSharedFolder => Dto?.creatorUserId != null &&  Dto?.creatorUserId != Auther.AuthSession?.UserId;
 	public bool IsContextMenuItemEnabled => Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CreatorUserId == Dto?.creatorUserId;
 	public bool IsContextMenuVisible => Dto!.id != 0;
-	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => p.folderId == Dto!.id); 
+	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => (p.folderId == null && Dto!.id == 0) || p.folderId == Dto!.id); 
 
 	public ObsFolder(UPFolderDto folder) : base(folder)
 	{

@@ -82,7 +82,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	? UserProfilesRepo.Instance.ObservableCache.Count
 	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.Id);
 	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
-	public bool IsProfilesExist => FoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == false;
+	public bool IsProfilesExist => FoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == true;
 	public bool HasNoItems => Profiles.Count == 0;
 	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
 	public string SelectedFolderTitle => Folder?.Title ?? "All profiles";
@@ -105,14 +105,13 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i => new ObsProfile(i, onSelectedChanged: p => {
-				OnPropertyChanged(nameof(HasSelectedItems));
-				OnPropertyChanged(nameof(SelectedCount));
-			}))
+			.Transform(i => new ObsProfile(i))
 			.Filter(filter)
 			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
 			.SortAndBind(out profiles, profilesCompareObservable)
 			.Subscribe((i) => {
+				OnPropertyChanged(nameof(HasSelectedItems));
+				OnPropertyChanged(nameof(SelectedCount));
 			});
 
 		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) 
