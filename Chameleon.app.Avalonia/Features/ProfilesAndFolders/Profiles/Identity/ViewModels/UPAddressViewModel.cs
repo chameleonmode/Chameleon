@@ -56,15 +56,15 @@ public partial class UPAddressViewModel: ViewModelObjectBase {
 
 		_ = builder.RuleFor(vm => vm.Title).NotEmpty().MaxLength(50);
 
-		_ = builder.RuleFor(vm => vm.AddressLine1).NotEmpty().WithMessage("AddressLine is required");
+		_ = builder.RuleFor(vm => vm.AddressLine1).NotEmpty().WithMessage("AddressLine is empty");
 
-		_ = builder.RuleFor(vm => vm.City).NotEmpty().WithMessage("City is requried");
+		_ = builder.RuleFor(vm => vm.City).NotEmpty().WithMessage("City is empty");
 
-		_ = builder.RuleFor(vm => vm.State).NotEmpty().WithMessage("State is requried");
+		_ = builder.RuleFor(vm => vm.State).NotEmpty().WithMessage("State is empty");
 
 		_ = builder.RuleFor(vm => vm.CountryId)
 					.Must(x => x.PropertyValue is not null and not 0)
-					.WithMessage("Country is requried");
+					.WithMessage("Country is empty");
 
 		return builder.Build(this);
 	}

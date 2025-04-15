@@ -71,7 +71,9 @@ public partial class UserProfileViewModel : ObservableObjectBase {
 	protected override IObjectValidator GetValidator() {
 		var builder = new ValidationBuilder<UserProfileViewModel>();
 
-		_ = builder.RuleFor(vm => vm.Title).NotEmpty().MaxLength(50)
+		_ = builder.RuleFor(vm => vm.Title)
+							 .NotEmpty()
+							 .MaxLength(50)
 							 .WithMessage("Title is requried");
 
 		return builder.Build(this);
@@ -133,7 +135,7 @@ public partial class ProxyViewModel : ObservableObjectBase {
 
 		_ = builder.RuleFor(vm => vm.Port)
 							 .Must(x => Host.Is() || (Host.IsNot() && x.PropertyValue is string s && int.TryParse(s, out var port) && port > 0))
-							 .WithMessage("Valid port is requried");
+							 .WithMessage("Valid port is requried when using a proxy");
 
 		return builder.Build(this);
 	}

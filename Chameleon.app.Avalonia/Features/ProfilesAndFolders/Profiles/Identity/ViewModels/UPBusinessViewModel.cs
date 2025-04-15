@@ -49,7 +49,7 @@ public partial class UPBusinessViewModel : ViewModelObjectBase {
 
 		_ = builder.RuleFor(vm => vm.Title).NotEmpty();
 
-		_ = builder.RuleFor(vm => vm.CompanyName).NotEmpty().WithMessage("Company name is requried");
+		_ = builder.RuleFor(vm => vm.CompanyName).NotEmpty().WithMessage("Company name is empty");
 
 		_ = builder.RuleFor(vm => vm.WebSite)
 				.Must(context => context.PropertyValue.IsValidWebUrl())

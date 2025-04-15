@@ -92,9 +92,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
-		await UPAdditionalDataRepo.Instance
-			.LoadReload()
-			.RunInBackground();
+		await UPAdditionalDataRepo.Instance.Load();
 	}
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
@@ -112,8 +110,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private async Task Discard() {
-		await UPAdditionalDataRepo.Instance
-			.LoadReload(true).RunInBackground();
+		await UPAdditionalDataRepo.Instance.Load();
 	}
 
 	private async Task SaveChanges() {

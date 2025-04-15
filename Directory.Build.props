@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-	<Version>2025.0.2.9</Version>
+	<Version>2025.0.3.0</Version>
 	<PublishAot>false</PublishAot>
 	<PublishTrimmed>false</PublishTrimmed>
 	<StripSymbols>false</StripSymbols>

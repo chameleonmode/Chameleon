@@ -75,13 +75,13 @@ public partial class UPPersonViewModel: ViewModelObjectBase {
 
 		_ = builder.RuleFor(vm => vm.Title).NotEmpty().MaxLength(50);
 
-		_ = builder.RuleFor(vm => vm.FirstName).NotEmpty().WithMessage("Firstname is requried");
+		_ = builder.RuleFor(vm => vm.FirstName).NotEmpty().WithMessage("Firstname is empty");
 
-		_ = builder.RuleFor(vm => vm.LastName).NotEmpty().WithMessage("Lastname is requried");
+		_ = builder.RuleFor(vm => vm.LastName).NotEmpty().WithMessage("Lastname is empty");
 
 		_ = builder.RuleFor(vm => vm.PhoneNumber)
 				.Must(context => context.PropertyValue.IsValidPhoneNumber())
-				.WithMessage("Phone number is not valid");
+				.WithMessage("Consider a valid phone number");
 
 		return builder.Build(this);
 	}

@@ -55,8 +55,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		}
 	};
 
-	private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
-	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins => logins;
+	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins {get;}
 
 	public ObsProfile(
 			UserProfileDto userProfile,
@@ -69,6 +68,11 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			userProfile.title,
 			onSelectedChanged == null ? null : x => onSelectedChanged((ObsProfile)x)
 	) {
+		_ = UPAdditionalDataRepo.Instance.Loginz
+					.Connect(i => i.ProfileId == userProfile.id)
+					.Bind(out var logins)
+					.Subscribe();
+		ProfileLogins = logins;
 		IsShowGlyph = isShowGlyph;
 		IsShowCheckboxColumn = isShowCheckboxColumn;
 		IsActionOptionsVisible = hasActionOptions;
@@ -103,8 +107,6 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			title: "Copy Pasta", 
 			width: 156
 		);
-
-		_ = UPAdditionalDataRepo.Instance.Loginz.Connect(i => i.ProfileId == userProfile.id).Bind(out logins).Subscribe();
 
 		var browsers = SystemBrowserService.Instance.HasInstanceOf(Dto.id, (sender, args) => {
 			IsForeground = args.EventType == SysBrowserEventType.Foreground;

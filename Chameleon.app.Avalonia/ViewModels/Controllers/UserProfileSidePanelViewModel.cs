@@ -34,8 +34,7 @@ public partial class UserProfileSidePanelViewModel
 	public bool HasAddresses => ProfileAddresses?.Count > 0;
 	public bool HasLogins => ProfileLogins?.Count > 0;
 
-	public UserProfileSidePanelViewModel(UserProfileDto up)
-	{
+	public UserProfileSidePanelViewModel(UserProfileDto up) {
 		_ = UPAdditionalDataRepo.Instance.Personz
 			.Connect(i => i.ProfileId == up.id)
 			.Bind(out persons)
@@ -59,9 +58,8 @@ public partial class UserProfileSidePanelViewModel
 		userProfile = new ObsProfile(up);
 	}
 
-	public override async Task InitAsync(object? param)
-	{
-		await UPAdditionalDataRepo.Instance.LoadReload();
+	public override async Task InitAsync(object? param) {
+		await UPAdditionalDataRepo.Instance.Load();
 	}
 
 	partial void OnSelectedAddressChanged(UPAddressDto? value) => OnPropertyChanged(nameof(CountryName));
