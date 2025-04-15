@@ -63,7 +63,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		}
 	};
 
-private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
+ private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
 	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins => logins;
 
 	public ObsProfile(
@@ -99,15 +99,14 @@ private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
 
 	[RelayCommand]
 	private void ShowViewProfile() {
-		WShower.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(new UserProfileSidePanelViewModel(Dto!), vm => {
-		}, null, "Copy Pasta", 156);
+		WShower.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(
+			new UserProfileSidePanelViewModel(Dto!), vm => {}, null, "Copy Pasta", 156
+		);
 	}
 	[RelayCommand]
 	private async Task Favorite() {
 		Dto!.isFavourite = !IsFavorite;
-
 		_ = await UserProfilesRepo.SetProfileIsFavorite(Dto.id, Dto.isFavourite);
-
 		OnPropertyChanged(nameof(IsFavorite));
 	}
 	[RelayCommand]
