@@ -105,17 +105,16 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i => new ObsProfile(i))
+			.Transform(i => new ObsProfile(i, onSelectedChanged: p => {
+				OnPropertyChanged(nameof(HasSelectedItems));
+				OnPropertyChanged(nameof(SelectedCount));
+			}))
 			.Filter(filter)
 			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
 			.SortAndBind(out profiles, profilesCompareObservable)
-			.Subscribe((i) => {
-				OnPropertyChanged(nameof(HasSelectedItems));
-				OnPropertyChanged(nameof(SelectedCount));
-			});
+			.Subscribe((i) => { });
 
-		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) 
-		{
+		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
 
