@@ -1,4 +1,5 @@
 ﻿using Avalonia.Collections;
+
 using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.app.Avalonia.Extensions;
@@ -21,12 +22,16 @@ using Chameleon.lib.Playwright.Models;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Playwright.Utils;
 using Chameleon.lib.Util;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using DynamicData;
+
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+
 using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
@@ -58,12 +63,12 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private UPFolderViewModel? folder;
 
-	private CancellationTokenSource? _cts;
-
 	public ObservableCollection<SystemBrovserItem> BrowserItems { get; } = [
 		new SystemBrovserItem(SystemBrowserType.Chrome),
 		new SystemBrovserItem(SystemBrowserType.Brave),
 	];
+
+	private CancellationTokenSource? _cts;
 	private CancellationToken RecreateCancellationToken {
 		get {
 			if (_cts != null) {
@@ -112,13 +117,13 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			.Filter(filter)
 			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
 			.SortAndBind(out profiles, profilesCompareObservable)
-			.Subscribe((i) => { });
+			.Subscribe();
 
 		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
-
 		TotalCount = PaginatorViewModel.TotalCount;
+
 		AsyncCommandMap["SaveTags"] = async () => {
 			_ = await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
 		};
@@ -363,7 +368,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private void OpenChameleonBrowser() {
 		GetSelectedProfiles?.ForEach(profile => {
-			profile.OpenUserBrowser();
+			profile.OpenTopmostController();
 		});
 	}
 

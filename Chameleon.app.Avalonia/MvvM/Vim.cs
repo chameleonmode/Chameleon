@@ -10,7 +10,7 @@ public abstract class DtoViewModelBase<T>(T dto, string? title = null)
 public abstract partial class ObservableDtoViewModelBase<T>(
 	T dto, 
 	string? title = null, 
- Action<ObservableDtoViewModelBase<T>>? onSelectedChanged = default
+  Action<ObservableDtoViewModelBase<T>>? onSelectedChanged = default
 ) : DtoViewModelBase<T>(dto, title) where T : Dto {
 	[ObservableProperty]
 	private bool isSelected;
