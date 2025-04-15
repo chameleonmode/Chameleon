@@ -77,7 +77,7 @@ public class AppStartup {
 			TagsRepo.Instance.Load()
 		};
 		if (reload) {
-			tasks.Add(UPAdditionalDataRepo.Instance.LoadReload(true));
+			tasks.Add(UPAdditionalDataRepo.Instance.Load());
 		}
 		await Task.WhenAll(tasks);
 	}
