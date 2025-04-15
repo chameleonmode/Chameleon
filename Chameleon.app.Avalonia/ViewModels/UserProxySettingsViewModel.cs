@@ -57,8 +57,8 @@ public partial class UserProxySettingsViewModel
 		_ = UserProfilesRepo
 			.Connect()
 			.Transform(i=> new ObsProxySetting(new ObsProfile(i, false, onSelectedChanged: (p) => {
-				//PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
-				//PaginatorViewModel.UpdatePageCount(Math.Max(Consts.PageinationPageItems, Proxies.Count(p => p.ObsProfile.IsSelected)));
+				// PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
+				// PaginatorViewModel.UpdatePageCount(Math.Max(Consts.PageinationPageItems, Proxies.Count(p => p.ObsProfile.IsSelected)));
 				OnPropertyChanged(nameof(HasSelectedItems));
 				OnPropertyChanged(nameof(SelectedCount));
 			})))

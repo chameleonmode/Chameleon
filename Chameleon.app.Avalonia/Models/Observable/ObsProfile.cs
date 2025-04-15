@@ -1,4 +1,7 @@
-﻿using Chameleon.app.Avalonia.Controls;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using DynamicData;
+using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
@@ -8,44 +11,33 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.WebBrowser.Services;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using static Chameleon.lib.Common.Constants.Enums;
 using Chameleon.lib.WebBrowser.Models;
 using Chameleon.lib.WebBrowser.Interfaces;
-using System.Collections.ObjectModel;
-using DynamicData;
 using Chameleon.lib.Common.Extensions;
+using Chameleon.lib.Util;
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
-	readonly TaskCompletionSource settingEventsTCS = new();
-
 	[ObservableProperty]
-	private string _isChromeRunning = "False";
+	private string isChromeRunning = "False";
 	[ObservableProperty]
-	private string _isBraveRunning = "False";
+	private string isBraveRunning = "False";
 	[ObservableProperty]
-	private string _isFFRunning = "False";
+	private string isFFRunning = "False";
 	[ObservableProperty]
-	private bool _isShowGlyph;
+	private bool isShowGlyph;
 	[ObservableProperty]
-	private bool _isShowC;
+	private bool isForeground;
 	[ObservableProperty]
-	private bool _isShowD;
-	[ObservableProperty]
-	private bool _isShowF;
-	[ObservableProperty]
-	private bool _isForeground;
+	private bool isFavorite;
 
 	//
 	public bool IsShowCheckboxColumn { get; }
-	public bool IsEnabledCheckboxColumn { get; } = true;
 	public bool IsSharedProfile { get; }
 
 	//
 	public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
-	public bool IsFavorite => Dto?.isFavourite ?? false;
 	public bool IsDeleteProfileBtnVisible => !IsSharedProfile;
 	public Dictionary<SystemBrowserType, IBrowserInstance?> SBI { get; } = new() {
 		[SystemBrowserType.Chrome] = null,
@@ -63,95 +55,98 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		}
 	};
 
- private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
+	private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
 	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins => logins;
 
 	public ObsProfile(
 			UserProfileDto userProfile,
 			bool isShowCheckboxColumn = true,
 			bool isShowGlyph = true,
-			bool isShowC = true,
-			bool isShowD = true,
-			bool isShowF = true,
 			bool hasActionOptions = true,
-			Action<ObsProfile>? onSelectedChanged = default)
-		: base(userProfile, userProfile.title, onSelectedChanged != null ? x => onSelectedChanged((ObsProfile)x) : null) {
+			Action<ObsProfile>? onSelectedChanged = default
+	) : base(
+			userProfile,
+			userProfile.title,
+			onSelectedChanged == null ? null : x => onSelectedChanged((ObsProfile)x)
+	) {
 		IsShowGlyph = isShowGlyph;
-		IsShowD = isShowD;
-		IsShowC = isShowC;
-		IsShowF = isShowF;
 		IsShowCheckboxColumn = isShowCheckboxColumn;
 		IsActionOptionsVisible = hasActionOptions;
 		IsSharedProfile = userProfile.creatorUserId != Auther.AuthSession?.UserId;
-		async Task setEvents() {
-			var (has, browsers) = await SystemBrowserService.Instance.HasInstanceOf(Dto.id, Browser_OnEvent);
-			if (has) {
-				browsers.ForEach(b => _ = SetRunning(b, true));
+		IsFavorite = userProfile.isFavourite;
+
+		AsyncCommandMap["OpenFirefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
+		AsyncCommandMap["OpenChrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);
+		AsyncCommandMap["OpenBrave"] = () => OpenSystemBrowser(SystemBrowserType.Brave);
+		AsyncCommandMap["Favorite"] = async () => {
+			IsFavorite = !IsFavorite;
+			_ = await UserProfilesRepo.SetProfileIsFavorite(userProfile, IsFavorite);
+		};
+		AsyncCommandMap["DeleteUserProfile"] = async () => {
+			if (await Mbox.Show(
+				title: "Delete User Profile",
+				content: $"Are you sure you want to delete {userProfile.title}?",
+				btns: MBoxButtons.OkCancel,
+				fontIconInfo: "DeleteLines"
+			)) {
+				_ = await UserProfilesRepo.Instance.Delete(userProfile.id);
+				if (Navigator.Instance.Frame?.CanGoBack == true && Navigator.Instance.Frame.Content?.GetType() == typeof(IdentityView)) {
+					Navigator.Instance.Frame?.GoBack();
+				}
+				MyProfilesViewModel.Instance.SetViewModelsFilter();
 			}
-			_ = settingEventsTCS.TrySetResult();
-		}
-		_ = setEvents();
+		};
+
+		CommandMap["OpenTopmostController"] = OpenTopmostController;
+		CommandMap["ShowViewProfile"] = () => WShower.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(
+			vm: new UserProfileSidePanelViewModel(userProfile),
+			title: "Copy Pasta", 
+			width: 156
+		);
+
 		_ = UPAdditionalDataRepo.Instance.Loginz.Connect(i => i.ProfileId == userProfile.id).Bind(out logins).Subscribe();
+
+		var browsers = SystemBrowserService.Instance.HasInstanceOf(Dto.id, (sender, args) => {
+			IsForeground = args.EventType == SysBrowserEventType.Foreground;
+			if (!IsForeground && args.EventType != SysBrowserEventType.Background) {
+				var runnin = args.EventType switch {
+					SysBrowserEventType.Opened => SetRunning(args.OpenOptions.BrowserType, true),
+					SysBrowserEventType.Closed => SetRunning(args.OpenOptions.BrowserType, false),
+					SysBrowserEventType.Error => SetRunning(args.OpenOptions.BrowserType, null),
+					_ => SetRunning(args.OpenOptions.BrowserType, null)
+				};
+
+				if (runnin is "Error" or "False") {
+					SBI[args.OpenOptions.BrowserType] = null;
+				}
+			}
+		});
+		browsers.ForEach(b => _ = SetRunning(b, true));
 	}
+
 	public void Open() {
 		Navigator.NavigateToType(typeof(IdentityView), Dto);
 	}
 
-	[RelayCommand]
-	private void ShowViewProfile() {
-		WShower.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(
-			new UserProfileSidePanelViewModel(Dto!), vm => {}, null, "Copy Pasta", 156
+	public void OpenTopmostController() {
+		WShower.ShowTopmost(
+			vm: SnapCracklePopViewModel.Instance,
+			v: SnapCracklePopUserControl.Instance,
+			initialize: vm => {
+				vm.RunningList.AddIfNotExists(new ObsProfile(Dto, false, false), p => p.Dto?.id == Dto.id);
+			},
+			onClosed: vm => {
+				vm.RunningList.Clear();
+			},
+			title: "SCP",
+			width: 172
 		);
-	}
-	[RelayCommand]
-	private async Task Favorite() {
-		Dto!.isFavourite = !IsFavorite;
-		_ = await UserProfilesRepo.SetProfileIsFavorite(Dto.id, Dto.isFavourite);
-		OnPropertyChanged(nameof(IsFavorite));
-	}
-	[RelayCommand]
-	private async Task DeleteUserProfile() {
-		if (await Mbox.Show("Delete User Profile",
-			$"Are you sure you want to delete {Dto!.title}?",
-			MBoxButtons.OkCancel,
-			"DeleteLines")) {
-			_ = await UserProfilesRepo.Instance.Delete(Dto.id);
-			if (Navigator.Instance.Frame?.CanGoBack == true && Navigator.Instance.Frame.Content?.GetType() == typeof(IdentityView)) {
-				Navigator.Instance.Frame?.GoBack();
-			}
-			MyProfilesViewModel.Instance.SetViewModelsFilter();
-		}
-	}
-
-	[RelayCommand]
-	public void OpenUserBrowser() {
-		WShower.ShowTopmost(SnapCracklePopViewModel.Instance, SnapCracklePopUserControl.Instance,
-				vm => {
-					if (!vm.RunningList.Any(p => p.Dto?.id == Dto.id))
-						vm.RunningList.Add(new ObsProfile(Dto, false, false, false, false, false));
-				},
-				vm => {
-					vm.RunningList.Clear();
-				}, "SCP", 172);
-	}
-	[RelayCommand]
-	private async Task OpenFirefox() {
-		_ = await OpenSystemBrowser(SystemBrowserType.Firefox);
-	}
-	[RelayCommand]
-	private async Task OpenChrome() {
-		_ = await OpenSystemBrowser(SystemBrowserType.Chrome);
-	}
-	[RelayCommand]
-	private async Task OpenBrave() {
-		_ = await OpenSystemBrowser(SystemBrowserType.Brave);
 	}
 
 	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType) {
 		// TODO:
 		// if(SystemBrowserService.Instance.OpenTaskCompletionSource != null)
 		// 	_ = await SystemBrowserService.Instance.OpenTaskCompletionSource.Task;
-		await settingEventsTCS.Task;
 		if (SBI.TryGetValue(browserType, out var browser)) {
 			IsForeground = false;
 			var succeeded = false;
@@ -161,49 +156,33 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 				} catch {
 					browser = null;
 				}
-			
-			if (browser != null) {
-				try {
-					succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(SystemBrowserService.Instance.TimeOut));
-				} catch {
-					succeeded = false;
+
+				if (browser != null) {
+					try {
+						succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(SystemBrowserService.Instance.TimeOut));
+					} catch {
+						succeeded = false;
+					}
 				}
-			}
 
-			if (!succeeded || browser == null) {
-				IsForeground = false;
-				_ = SetRunning(browserType, null);
-			} else {
-				_ = SetRunning(browserType, true);
-				// browser.OnEvent += Browser_OnEvent;
-				SBI[browserType] = browser;
-			}
-			// if (browser == null) {
+				if (!succeeded || browser == null) {
+					IsForeground = false;
+					_ = SetRunning(browserType, null);
+				} else {
+					_ = SetRunning(browserType, true);
+					// browser.OnEvent += Browser_OnEvent;
+					SBI[browserType] = browser;
+				}
+				// if (browser == null) {
 
-			// 	if (browser != null) {
-			// 	}
+				// 	if (browser != null) {
+				// 	}
 			} else {
 				browser.InvokeEvent(SysBrowserEventType.Foreground);
 			}
 		}
 
 		return SBI[browserType];
-	}
-
-	private void Browser_OnEvent(object sender, SysBrowserEvent args) {
-		IsForeground = args.EventType == SysBrowserEventType.Foreground;
-		if (!IsForeground && args.EventType != SysBrowserEventType.Background) {
-			var runnin = args.EventType switch {
-				SysBrowserEventType.Opened => SetRunning(args.OpenOptions.BrowserType, true),
-				SysBrowserEventType.Closed => SetRunning(args.OpenOptions.BrowserType, false),
-				SysBrowserEventType.Error => SetRunning(args.OpenOptions.BrowserType, null),
-				_ => SetRunning(args.OpenOptions.BrowserType, null)
-			};
-
-			if (runnin is "Error" or "False") {
-				SBI[args.OpenOptions.BrowserType] = null;
-			}
-		}
 	}
 
 	private string SetRunning(SystemBrowserType args, bool? running) => args switch {

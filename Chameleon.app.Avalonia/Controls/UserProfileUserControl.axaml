@@ -35,8 +35,7 @@
 
 				<CheckBox Margin="6 0 -6 0"
 						  IsChecked="{Binding IsSelected}"
-						  IsVisible="{Binding IsShowCheckboxColumn}"
-						  IsEnabled="{Binding IsEnabledCheckboxColumn}">
+						  IsVisible="{Binding IsShowCheckboxColumn}">
 				</CheckBox>
 
 				<Panel
@@ -93,51 +92,56 @@
 					Content="chrome"
 					ToolTip.Tip="Open In System Chrome"
 					Tag="{Binding IsChromeRunning}"
-					Command="{Binding OpenChromeCommand}"
-					Theme="{StaticResource SvgIconButton}" />
+					Theme="{StaticResource SvgIconButton}"
+					Command="{Binding AsyncCfVCommand}"
+					CommandParameter="OpenChrome" />
 				<Button
 					Content="firefox"
 					ToolTip.Tip="Open In System Firefox"
 					Tag="{Binding IsFFRunning}"
-					Command="{Binding OpenFirefoxCommand}"
-					Theme="{StaticResource SvgIconButton}" />
+					Theme="{StaticResource SvgIconButton}"
+					Command="{Binding AsyncCfVCommand}"
+					CommandParameter="OpenFirefox" />
 				<Button
 					Content="brave"
 					ToolTip.Tip="Open In System Brave"
 					Tag="{Binding IsBraveRunning}"
-					Command="{Binding OpenBraveCommand}"
-					Theme="{StaticResource SvgIconButton}"/>
+					Theme="{StaticResource SvgIconButton}"
+					Command="{Binding AsyncCfVCommand}"
+					CommandParameter="OpenBrave"/>
 
 				<Button
 					Content="chameleon-logo"
-					IsVisible="{Binding IsShowC}"
 					ToolTip.Tip="Open In Chameleon Browser"
 					Theme="{StaticResource SvgIconButton}"
-					Command="{Binding OpenUserBrowserCommand}"/>
+					Command="{Binding CfVCommand}"
+					CommandParameter="OpenTopmostController"/>
 
 				<Button Content="copy"
 						ToolTip.Tip="Open copy-paste window"
 						Theme="{StaticResource SvgIconButton}"
-						Command="{Binding ShowViewProfileCommand}"/>
+						Command="{Binding CfVCommand}"
+						CommandParameter="ShowViewProfile"/>
 
 				<Button Content="three-dots"
-						IsVisible="{Binding IsShowD}"
 						ToolTip.Tip="Details"
 						Theme="{StaticResource SvgIconButton}">
 					<Button.Flyout>
 						<ui:FAMenuFlyout Placement="Bottom">
-							<ui:MenuFlyoutItem Text="Delete"
-											   IconSource="Delete"
-											   IsVisible="{Binding IsDeleteProfileBtnVisible}"
-											   Command="{Binding DeleteUserProfileCommand}" />
+							<ui:MenuFlyoutItem 
+								Text="Delete"
+								IconSource="Delete"
+								IsVisible="{Binding IsDeleteProfileBtnVisible}"
+								Command="{Binding AsyncCfVCommand}"
+								CommandParameter="DeleteUserProfile" />
 						</ui:FAMenuFlyout>
 					</Button.Flyout>
 				</Button>
 
 				<Button Grid.Column="3"
-					IsVisible="{Binding IsShowF}"
 						Theme="{StaticResource FavoriteButton}"
-						Command="{Binding FavoriteCommand}"/>
+						Command="{Binding AsyncCfVCommand}"
+						CommandParameter="Favorite" />
 			</UniformGrid>
 		</Grid>
 	</Border>

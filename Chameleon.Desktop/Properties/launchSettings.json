@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Chameleon.Desktop": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
