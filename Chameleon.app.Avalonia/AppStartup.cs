@@ -9,12 +9,9 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Auth;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
-using Chameleon.lib.Common.Util;
 using Chameleon.lib.Helpers;
 
 using FluentAvalonia.UI.Windowing;
-
-using static Chameleon.lib.Common.Constants.Consts;
 
 namespace Chameleon.app.Avalonia;
 public class AppStartup {

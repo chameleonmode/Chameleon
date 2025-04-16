@@ -150,35 +150,10 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		// if(SystemBrowserService.Instance.OpenTaskCompletionSource != null)
 		// 	_ = await SystemBrowserService.Instance.OpenTaskCompletionSource.Task;
 		if (SBI.TryGetValue(browserType, out var browser)) {
-			IsForeground = false;
-			var succeeded = false;
 			if (browser == null) {
-				try {
-					browser = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile)).WaitAsync(TimeSpan.FromSeconds(21));
-				} catch {
-					browser = null;
-				}
-
-				if (browser != null) {
-					try {
-						succeeded = await browser.LoadedTCS.Task.WaitAsync(TimeSpan.FromSeconds(SystemBrowserService.Instance.TimeOut));
-					} catch {
-						succeeded = false;
-					}
-				}
-
-				if (!succeeded || browser == null) {
-					IsForeground = false;
-					_ = SetRunning(browserType, null);
-				} else {
-					_ = SetRunning(browserType, true);
-					// browser.OnEvent += Browser_OnEvent;
+					browser = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile));
+					//_ = SetRunning(browserType, browser == null ? null : true);
 					SBI[browserType] = browser;
-				}
-				// if (browser == null) {
-
-				// 	if (browser != null) {
-				// 	}
 			} else {
 				browser.InvokeEvent(SysBrowserEventType.Foreground);
 			}
@@ -188,8 +163,14 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 	}
 
 	private string SetRunning(SystemBrowserType args, bool? running) => args switch {
-		SystemBrowserType.Chrome => running != true && IsChromeRunning == "Error" ? "Error"
-		: IsChromeRunning = IsChromeRunning = running is null ? "Error" : running == true ? "True" : "False",
+		SystemBrowserType.Chrome => 
+		running != true && IsChromeRunning == "Error" 
+		? "Error"
+		: IsChromeRunning = IsChromeRunning = running is null 
+		? "Error" 
+		: running == true 
+		? "True" 
+		: "False",
 
 		SystemBrowserType.Firefox => running != true && IsFFRunning == "Error" ? "Error"
 		: IsFFRunning = IsFFRunning = running is null ? "Error" : running == true ? "True" : "False",
