@@ -20,6 +20,7 @@ using Chameleon.client.Pages;
 using Chameleon.client.Main;
 using Chameleon.lib.Const;
 using Chameleon.app.Avalonia.Features.Dashboard;
+using Chameleon.lib.WebBrowser.Services;
 
 namespace Chameleon.client;
 
@@ -44,6 +45,8 @@ public partial class App : Application {
 		if (Design.IsDesignMode) {
 			RequestedThemeVariant = ThemeVariant.Light;
 		}
+
+		IoC.Instance.StartUps.Add(AddonsServer.Instance);
 
 		IoC.Instance.Configure(() => {
 			return new WritableConfiguration(new ConfigurationBuilder()
