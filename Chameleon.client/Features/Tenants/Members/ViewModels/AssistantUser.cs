@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using Chameleon.app.Avalonia.Controls;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
+using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api;
@@ -76,7 +76,9 @@ public partial class AssistantUsersFolder(AssisShareFolderDto dto, Action<Assist
 	}
 }
 
-public partial class AssistantUser(AssistDto dto)  : DtoViewModelBase<AssistDto>(dto) {
+public partial class AssistantUser : DtoViewModelBase<AssistDto> {
+
+	private readonly ReadOnlyObservableCollection<ObsProfile> allProfiles;
 	[ObservableProperty]
 	bool canCreateProfiles;
 	[ObservableProperty]
@@ -85,6 +87,13 @@ public partial class AssistantUser(AssistDto dto)  : DtoViewModelBase<AssistDto>
 	public ObservableCollection<AssistantUsersProfile> Profilez { get; } = [];
 	public ObservableCollection<AssistantUsersFolder> Folderz { get; } = [];
 
+	public AssistantUser(AssistDto dto) : base(dto) {
+		_ = UserProfilesRepo
+	.Connect()
+	.Transform(i => new ObsProfile(i))
+	.Bind(out allProfiles)
+	.Subscribe();
+	}
 	//
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
@@ -104,14 +113,14 @@ public partial class AssistantUser(AssistDto dto)  : DtoViewModelBase<AssistDto>
 				_ = Profilez.Remove(op);
 			},
 			onSendCookies: async (op, bt) => {
-				var profile = MyProfilesViewModel.Instance.Profiles.FirstOrDefault(x => x.Dto!.id == op.Dto!.ProfileId) 
+				var profile = allProfiles.FirstOrDefault(x => x.Dto!.id == op.Dto!.ProfileId)
 				?? throw new InvalidOperationException("Profile not found");
 
-				var cookies = await PlaywrightUtil.GetCookies(new (new (bt, profile.SystemBrowserProfile), profile.SBI[bt]?.Settings.Port));
+				var cookies = await PlaywrightUtil.GetCookies(new(new(bt, profile.SystemBrowserProfile), profile.SBI[bt]?.Settings.Port));
 				if (cookies.Count > 0) {
 					await DB.Instance.EnsureUser();
 					var email = Dto!.id != Auther.AuthSession?.UserId ? Dto!.EmailAddress
-					  : DB.Instance.DBusers?.SingleOrDefault(u => u.LicenseKey != null)?.Email;
+						: DB.Instance.DBusers?.SingleOrDefault(u => u.LicenseKey != null)?.Email;
 					var data = await DB.Routes.Cooky.SendCookies(email!, op.Dto!.ProfileId.ToString(), cookies);
 					if (data != null) {
 						Toaster.Success($"Cookies sent successfully");
@@ -160,7 +169,7 @@ public partial class AssistantUser(AssistDto dto)  : DtoViewModelBase<AssistDto>
 	}
 
 	[RelayCommand]
-	async Task ToggleActive(){
+	async Task ToggleActive() {
 		try {
 			IsNotActive = (await DB.Instance.CreateUser(Dto!.EmailAddress!)) != null;
 			Toaster.Success($"User {Dto!.UserName} active status toggled successfully");
@@ -170,10 +179,10 @@ public partial class AssistantUser(AssistDto dto)  : DtoViewModelBase<AssistDto>
 	}
 
 	[RelayCommand]
-	async Task ToggleDeActive(){
+	async Task ToggleDeActive() {
 		try {
 			_ = await DB.Instance.DeleteUser(Dto!.EmailAddress!);
-			IsNotActive = DB.Instance.DBusers?.Any(u=>u.Email == Dto?.EmailAddress) == true;
+			IsNotActive = DB.Instance.DBusers?.Any(u => u.Email == Dto?.EmailAddress) == true;
 			Toaster.Success($"User {Dto!.UserName} deactive status toggled successfully");
 		} catch (Exception e) {
 			Toaster.Error($"Failed to toggle user {Dto!.UserName} deactive status, {e.Message[e.Message.LastIndexOf('\n')..]}");
@@ -187,13 +196,13 @@ public partial class AssistantUser(AssistDto dto)  : DtoViewModelBase<AssistDto>
 				ShowUserInfo = false,
 			};
 			if (
-        await Mbox.ShowTaskDialog<InviteUserOrAddProfilesViewModel, InviteUserOrAddProfilesUserControl>(
+				await Mbox.ShowTaskDialog<InviteUserOrAddProfilesViewModel, InviteUserOrAddProfilesUserControl>(
 				initialize: () => invite,
 				header: "Add Profiles",
 				subHeader: "Add access to specific Profiles for this user",
 				symbas: Enums.Symbas.AddFriend,
 				btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK
-      ) {
+			) {
 				var profileIds = invite.SelectedProfiles.Select(p => p.Dto!.id).ToList();
 				if (profileIds.Count != 0) {
 					var result = await UserAssistantRepo.AddProfiles(Dto!.id, profileIds, []);
