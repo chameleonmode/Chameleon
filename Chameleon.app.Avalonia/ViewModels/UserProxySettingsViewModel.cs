@@ -69,7 +69,7 @@ public partial class UserProxySettingsViewModel
 
 		_ = UserProfilesFolderRepo
 			.Connect()
-			.Transform(i => new ObsFolder(i))
+			.Transform(i => new ObsFolder(i,null))
 			.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
 			.Subscribe();
 		PaginatorViewModel = new PaginatorViewModel((p) => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
