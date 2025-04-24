@@ -55,9 +55,10 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	public ObsFolder(
 		UPFolderDto folder,
 		bool hasActionOptions,
-		Action<ObsFolder>? onSelectedChanged, Func<string?,bool>? nameAlreadyExist)
-		: this(folder,nameAlreadyExist)
-	{
+		Action<ObsFolder>? onSelectedChanged,
+		Func<string?, bool>? nameAlreadyExist
+	) 
+	: this(folder, nameAlreadyExist) {
 		IsActionOptionsVisible = hasActionOptions;
 		OnSelectedChanged = onSelectedChanged;
 		NameAlreadyExist = nameAlreadyExist;

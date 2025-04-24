@@ -5,7 +5,6 @@
              mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="850"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:controls="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:vm="using:Chameleon.client.Features.Automation.Actors"
              x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
 			 x:DataType="vm:ActorsViewModel"
@@ -44,8 +43,66 @@
 					</ListBox.ItemsPanel>
 					<ListBox.ItemTemplate>
 						<DataTemplate>
-							<Grid ColumnDefinitions="Auto, *, 50">
-								<!-- Title -->
+							<ui:SettingsExpander Header="{Binding Actor.Options.Settings.Start.Feature}">
+								<ui:SettingsExpanderItem>
+									<Grid RowDefinitions="Auto, *">
+										<ItemsControl ItemsSource="{Binding Selections}">
+											<ItemsControl.ItemsPanel>
+												<ItemsPanelTemplate>
+													<StackPanel Orientation="Horizontal"
+														Spacing="6"
+														Margin="6" />
+												</ItemsPanelTemplate>
+											</ItemsControl.ItemsPanel>
+											<ItemsControl.ItemTemplate>
+												<DataTemplate>
+													<ToggleButton
+														IsChecked="{Binding Selected}"
+														Content="{Binding Script.Title}"
+														ToolTip.Tip="{Binding Script.Description}">
+													</ToggleButton>
+												</DataTemplate>
+											</ItemsControl.ItemTemplate>
+										</ItemsControl>
+										<ListBox ItemsSource="{Binding Options}"
+										 	Grid.Row="1" 
+											ItemContainerTheme="{StaticResource GridViewItem}">
+											<ListBox.ItemTemplate>
+												<DataTemplate>
+													<Expander Header="{Binding Key}">
+														<ListBox ItemContainerTheme="{StaticResource GridViewItem}"
+															ItemsSource="{Binding Value}">
+															<ListBox.ItemTemplate>
+																<DataTemplate>
+																	<StackPanel Spacing="6" Margin="6">
+																		<afv:HeaderdInputFieldsControl 
+																			Title="{Binding Key}"
+																			Text="{Binding Value}" />
+																	</StackPanel>
+																</DataTemplate>
+															</ListBox.ItemTemplate>
+														</ListBox>
+													</Expander>
+												</DataTemplate>
+											</ListBox.ItemTemplate>
+										</ListBox>
+									</Grid>
+								</ui:SettingsExpanderItem>
+							
+								<ui:SettingsExpander.Footer>
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+										<Button Content="Run"
+											CommandParameter="Run"
+											IsVisible="{Binding !Running}"
+											Command="{Binding AsyncCfVCommand}" />
+										<Button Content="Stop"
+											CommandParameter="Stop"
+											IsVisible="{Binding Running}"
+											Command="{Binding AsyncCfVCommand}" />
+									</StackPanel>
+								</ui:SettingsExpander.Footer>
+							</ui:SettingsExpander>
+							<!-- <Grid ColumnDefinitions="Auto, *, 50">
 								<TextBlock
 									Grid.Column="0"
 									Text="{Binding Actor.Options.Settings.Start.Feature}"
@@ -54,7 +111,6 @@
 									VerticalAlignment="Center"
 									Margin="9" />
 
-								<!-- PopUp Buttom -->
 								<Button
 									Grid.Column="2"
 									Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.OpenCommand}"
@@ -62,7 +118,7 @@
 									ToolTip.Tip="Open"
 									Content="three-dots"
 									Theme="{DynamicResource SvgIconButton}" />
-							</Grid>
+							</Grid> -->
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>

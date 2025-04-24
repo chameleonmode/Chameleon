@@ -32,40 +32,7 @@
 			</afv:ChameleonContentControl.Options> -->
 			
 			<afv:ChameleonContentControl.Content>
-				<ListBox
-					VerticalAlignment="Top"
-					ItemsSource="{Binding Actors}"
-					Theme="{StaticResource ListBoxNoScroller}"
-					ItemContainerTheme="{StaticResource GridViewItem}">
-					<ListBox.ItemsPanel>
-							<ItemsPanelTemplate>
-								<UniformGrid Columns="1"/>
-							</ItemsPanelTemplate>
-					</ListBox.ItemsPanel>
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<Grid ColumnDefinitions="Auto, *, 50">
-								<!-- Title -->
-								<TextBlock
-									Grid.Column="0"
-									Text="{Binding Options.Settings.Start.Feature}"
-									Theme="{StaticResource BodyStrongTextBlockStyle}"
-									TextTrimming="CharacterEllipsis"
-									VerticalAlignment="Center"
-									Margin="9" />
-
-								<!-- PopUp Buttom -->
-								<Button
-									Grid.Column="2"
-									Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.OpenCommand}"
-									CommandParameter="{Binding}"
-									ToolTip.Tip="Open"
-									Content="three-dots"
-									Theme="{DynamicResource SvgIconButton}" />
-							</Grid>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
+			 hi
 			</afv:ChameleonContentControl.Content>
 			
 		</afv:ChameleonContentControl>
