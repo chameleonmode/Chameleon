@@ -68,7 +68,9 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase
 					} else {
 						_ = SelectedFolders.Remove(p);
 					}
-				})
+				},
+				nameAlreadyExist: 
+				folderName => Folders?.Any(x => x.Title == folderName) ?? false)
 			)
 			.SortAndBind(out var folders, Compares.ObsFolderCompares.AscendingComparer)
 			.Subscribe(async p => {

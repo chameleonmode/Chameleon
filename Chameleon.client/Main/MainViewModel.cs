@@ -77,7 +77,7 @@ public partial class MainViewModel : ObservableObjectBase {
 			.Transform(i => new MainAppSearchItem() {
 				Header = i.title ?? "xxx",
 				Namespace = "Folder",
-				ViewModel = new ObsFolder(i),
+				ViewModel = new ObsFolder(i,null),
 				PageType = this.GetType()
 			})
 			.Bind(out _boundFolders)

@@ -71,7 +71,7 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 
 		_ = UserProfilesFolderRepo
 			.Connect()
-			.Transform(i => new ObsFolder(i, false, null))
+			.Transform(i => new ObsFolder(i, false, null, null))
 			.SortAndBind(out var folders, Compares.ObsFolderCompares.AscendingComparer)
 			.Subscribe();
 		Folders = folders;
