@@ -11,7 +11,7 @@
 			 x:DataType="vm:ChameleonAIRViewModel"
 			 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto, *">
-		<afv:ChameleonContentControl Title="Mr. AI-Robot"
+		<afv:ChameleonContentControl Title="Mr. AI-Agent"
 									 TitleDescription="AI Robot Agents Taskforce">
 			
 			<afv:ChameleonContentControl.Content>

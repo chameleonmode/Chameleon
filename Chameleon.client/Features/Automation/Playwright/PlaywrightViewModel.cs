@@ -10,6 +10,7 @@ using Chameleon.client.Features.Automation.Playwright.ViewModels;
 using Chameleon.lib.Util;
 using Chameleon.client.Features.Automation.Playwright.Models;
 
+// TODO change to automations from playwright ad playwright as option vs puppets ....
 namespace Chameleon.client.Features.Automation.Playwright;
 public partial class PlaywrightViewModel : ViewModelObjectBase {
 	readonly SemaphoreSlim semaphore = new(1, 1);

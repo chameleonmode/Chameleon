@@ -7,8 +7,8 @@ using RedditActor = Chameleon.AIR.Actors.Models.Reddit.Actor;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class ActorsViewModel : ViewModelObjectBase {
-  public ObservableCollection<IActor> Actors { get; set; } = [new RedditActor()];
-  public ActorsViewModel() : base("Mr. AI-Agent") {
+  public ObservableCollection<ActorViewModel> Actors { get; set; } = [new ActorViewModel(new RedditActor())];
+  public ActorsViewModel() : base("Mr. AI-Robot") {
 
   }
 

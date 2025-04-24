@@ -175,7 +175,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 	{
 		if (DataContext is ViewModelObjectBase pageViewModel) {
 			await pageViewModel.OnNavigatedToAsync(e.Parameter);
-			ControlName = pageViewModel.Title ?? "xxx";
+			ControlName ??= pageViewModel.Title ?? "xxx";
 		}
 
 		var svc = await TaskUtil.TryAwaitFor(() => ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this)), 2);   //TODO: might crash if wrong page

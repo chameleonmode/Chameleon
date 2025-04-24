@@ -6,8 +6,8 @@ public partial class ActorsView : ChameleonPageBase {
 	public ActorsView()
 	{
 		InitializeComponent();
-		ControlName = "Chameleon AIR";
-		Description = "Automationed Intelligence Respondent";
+		ControlName = "Mr. AI-Robot";
+		Description = "AI Robot Agents & Automationed Actors";
 		PreviewImage = App.TryGetResource<IconSource>("SpiderIcon");
 	}
 }

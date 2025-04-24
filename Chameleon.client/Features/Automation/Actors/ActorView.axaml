@@ -7,8 +7,8 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:controls="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:vm="using:Chameleon.client.Features.Automation.Actors"
-             x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
-			 x:DataType="vm:ActorsViewModel"
+             x:Class="Chameleon.client.Features.Automation.Actors.ActorView"
+			 x:DataType="vm:ActorViewModel"
 			 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto, *">
 		<afv:ChameleonContentControl Title="Agents"
@@ -48,7 +48,7 @@
 								<!-- Title -->
 								<TextBlock
 									Grid.Column="0"
-									Text="{Binding Actor.Options.Settings.Start.Feature}"
+									Text="{Binding Options.Settings.Start.Feature}"
 									Theme="{StaticResource BodyStrongTextBlockStyle}"
 									TextTrimming="CharacterEllipsis"
 									VerticalAlignment="Center"

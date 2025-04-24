@@ -15,7 +15,7 @@
 				Content="Actors"
 				Tag="{StaticResource SpiderIconWithCircles}"/>
 			<TabStripItem
-				Content="Playwright"
+				Content="Automation"
 				Tag="{StaticResource Playwright}"/>
 			<TabStripItem
 				Content="Assistant Chameleonair"

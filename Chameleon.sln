@@ -17,16 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia", "Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj", "{8C417AF0-D948-4637-B38B-DDC6E058C83D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.Common", "..\chameleon-lib\Chameleon.lib.Common\Chameleon.lib.Common.csproj", "{AF1C7B0B-6DF8-4F2A-ABA9-E257A6292B24}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.Playwright", "..\chameleon-lib\Chameleon.lib.Playwright\Chameleon.lib.Playwright.csproj", "{DA3B6225-D7BA-46E8-81E4-B90BCDB4EFF0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.WebBrowser", "..\chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj", "{005D507C-7B09-4091-9CFA-416F76E3CA9B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "chameleon.assets", "..\chameleon-lib\Chameleon.Assets\chameleon.assets.csproj", "{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.lib.Api", "..\chameleon-lib\Chameleon.lib.Api\Chameleon.lib.Api.csproj", "{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{0B86C57C-40CF-4737-8F82-864548769102}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{AC2F00CB-88A2-44C8-ABDF-DD66EA1E0911}"
@@ -36,21 +26,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{AC2F00CB-8
 		docs\QA.md = docs\QA.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.lib", "..\chameleon-lib\Chameleon.lib\Chameleon.lib.csproj", "{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CE7FF880-AA75-4AEE-BFA3-B64AB857433B}"
-	ProjectSection(SolutionItems) = preProject
-		..\chameleon-lib\Tests\bin\Debug\net8.0\appsettings.json = ..\chameleon-lib\Tests\bin\Debug\net8.0\appsettings.json
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{99A4DEF3-5CE7-424B-8811-DF2DEB87EB67}"
 	ProjectSection(SolutionItems) = preProject
 		..\chameleon-lib\.editorconfig = ..\chameleon-lib\.editorconfig
 		..\chameleon-lib\Directory.Build.props = ..\chameleon-lib\Directory.Build.props
 		..\chameleon-lib\Directory.Packages.props = ..\chameleon-lib\Directory.Packages.props
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\chameleon-lib\Tests\Tests.csproj", "{D308CCCA-95E9-420B-A9B3-3DB904F11D30}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A0E66BE5-8196-4E24-8CB9-731AFBED22BD}"
 	ProjectSection(SolutionItems) = preProject
@@ -78,34 +59,6 @@ Global
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AF1C7B0B-6DF8-4F2A-ABA9-E257A6292B24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AF1C7B0B-6DF8-4F2A-ABA9-E257A6292B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF1C7B0B-6DF8-4F2A-ABA9-E257A6292B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AF1C7B0B-6DF8-4F2A-ABA9-E257A6292B24}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA3B6225-D7BA-46E8-81E4-B90BCDB4EFF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA3B6225-D7BA-46E8-81E4-B90BCDB4EFF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA3B6225-D7BA-46E8-81E4-B90BCDB4EFF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA3B6225-D7BA-46E8-81E4-B90BCDB4EFF0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{005D507C-7B09-4091-9CFA-416F76E3CA9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{005D507C-7B09-4091-9CFA-416F76E3CA9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{005D507C-7B09-4091-9CFA-416F76E3CA9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{005D507C-7B09-4091-9CFA-416F76E3CA9B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77FD6A01-39DA-44EE-84A8-5A2ECDF6BCF8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CEDC03E1-82B9-4673-836B-03D0B86CD6C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{149F0B02-CFD2-4895-BF9E-84CC3896D9C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D308CCCA-95E9-420B-A9B3-3DB904F11D30}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F84616F6-D90C-40BC-9BD8-279010530232}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F84616F6-D90C-40BC-9BD8-279010530232}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F84616F6-D90C-40BC-9BD8-279010530232}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -122,7 +75,6 @@ Global
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D} = {0B86C57C-40CF-4737-8F82-864548769102}
 		{AC2F00CB-88A2-44C8-ABDF-DD66EA1E0911} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{99A4DEF3-5CE7-424B-8811-DF2DEB87EB67} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
-		{D308CCCA-95E9-420B-A9B3-3DB904F11D30} = {CE7FF880-AA75-4AEE-BFA3-B64AB857433B}
 		{A0E66BE5-8196-4E24-8CB9-731AFBED22BD} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{F84616F6-D90C-40BC-9BD8-279010530232} = {0B86C57C-40CF-4737-8F82-864548769102}
 		{A70597F3-5FEC-4DA5-A68E-3016FF1C37EE} = {0B86C57C-40CF-4737-8F82-864548769102}
