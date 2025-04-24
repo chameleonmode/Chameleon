@@ -25,7 +25,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private string userScriptsDirectory = "";
 
-	public PlaywrightViewModel() : base("Playwright AIR") {
+	public PlaywrightViewModel() : base("Playwright") {
 		BundlesScripts.AddMapped(
 			BundledScriptsService.Instance.GetBundledScrits(),
 			script => {
