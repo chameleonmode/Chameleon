@@ -32,62 +32,40 @@
 			</afv:ChameleonContentControl.Options> -->
 			
 			<afv:ChameleonContentControl.Content>
-					<ListBox
-						VerticalAlignment="Top"
-						ItemsSource="{Binding Actors}"
-						Theme="{StaticResource ListBoxNoScroller}"
-						ItemContainerTheme="{StaticResource GridViewItem}">
-						<ListBox.ItemsPanel>
+				<ListBox
+					VerticalAlignment="Top"
+					ItemsSource="{Binding Actors}"
+					Theme="{StaticResource ListBoxNoScroller}"
+					ItemContainerTheme="{StaticResource GridViewItem}">
+					<ListBox.ItemsPanel>
 							<ItemsPanelTemplate>
 								<UniformGrid Columns="1"/>
 							</ItemsPanelTemplate>
-						</ListBox.ItemsPanel>
-						<ListBox.ItemTemplate>
-							<DataTemplate>
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="Auto"/>
-										<ColumnDefinition Width="*"/>
-										<ColumnDefinition Width="50"/>
-									</Grid.ColumnDefinitions>
+					</ListBox.ItemsPanel>
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<Grid ColumnDefinitions="Auto, *, 50">
+								<!-- Title -->
+								<TextBlock
+									Grid.Column="0"
+									Text="{Binding Options.Settings.Start.Feature}"
+									Theme="{StaticResource BodyStrongTextBlockStyle}"
+									TextTrimming="CharacterEllipsis"
+									TextWrapping="NoWrap"
+									Margin="5 5 10 5" />
 
-									<!-- Title -->
-									<TextBlock
-										Grid.Column="0"
-										Text="{Binding Title}"
-										ToolTip.Tip="{Binding Description}"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Left"
-										Theme="{StaticResource BodyStrongTextBlockStyle}"
-										TextTrimming="CharacterEllipsis"
-										TextWrapping="NoWrap"
-										Margin="5 5 10 5"/>
-
-									<!-- Description -->
-									<!--<TextBlock
-										Grid.Column="1"
-										Text="{Binding Description}"
-										ToolTip.Tip="{Binding Description}"
-										VerticalAlignment="Center"
-										Theme="{StaticResource CaptionTextBlockStyle}"
-										Margin="10 5 5 5"
-										TextWrapping="NoWrap"/>-->
-
-									<!-- PopUp Buttom -->
-									<Button
-									   Grid.Column="2"
-									   Command="{Binding OpenParamsPopupCommand}"
-									   CommandParameter="{Binding Title}"
-									   IsVisible="{Binding HasParameters}"
-									   ToolTip.Tip="Set Parameters"
-									   Content="three-dots"
-									   Theme="{DynamicResource SvgIconButton}">
-									</Button>
-								</Grid>
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-
+								<!-- PopUp Buttom -->
+								<Button
+									Grid.Column="2"
+									Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.OpenCommand}"
+									CommandParameter="{Binding}"
+									ToolTip.Tip="Open"
+									Content="three-dots"
+									Theme="{DynamicResource SvgIconButton}" />
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
 			</afv:ChameleonContentControl.Content>
 			
 		</afv:ChameleonContentControl>
