@@ -31,6 +31,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private readonly ReadOnlyObservableCollection<UPLoginViewModel> logins;
 	private readonly ReadOnlyObservableCollection<UPPersonViewModel> persons;
 	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
+	private readonly List<int> newlyAddedAddress = [];
 
 	public ReadOnlyObservableCollection<ObsAddressViewModel> Addresses => addresses;
 	public bool HasAddresses => Addresses?.Count > 0;
@@ -110,7 +111,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private Task Discard() {
-	  return UPAdditionalDataRepo.Instance.Load();
+		return UPAdditionalDataRepo.Instance.Load();
 	}
 
 	private async Task SaveChanges() {
@@ -230,13 +231,14 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	#region Addresses
 	[RelayCommand]
 	private async Task OnAddAddress() {
-		if (addresses.Any(x => x.Id == 0)) {
+		if (addresses.Any(x => x.Id == 0) || newlyAddedAddress.Count != 0) {
 			return;
 		}
 
-		_ = await UPAdditionalDataRepo.Instance.Addrez.Create(new UPAddressDto() {
+		var addedAddress = await UPAdditionalDataRepo.Instance.Addrez.Create(new UPAddressDto() {
 			ProfileId = UserProfile?.Id
 		});
+		newlyAddedAddress.Add([addedAddress.id]);
 		OnPropertyChanged(nameof(HasAddresses));
 	}
 
@@ -249,6 +251,8 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 				.RunInBackground();
 			if (p.Id == 0)
 				_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Addrez, p.ToDto());
+			if (newlyAddedAddress.Any(id => p.Id == id))
+				_ = newlyAddedAddress.Remove(p.Id);
 		}
 	}
 
