@@ -204,7 +204,7 @@
 				<ui:Frame Name="FrameView" />
 				<ui:InfoBar
 					Severity="Informational"
-					IsClosable="False"
+					IsClosable="True"
 					VerticalAlignment="Top"
 					Margin="12"
 					Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"

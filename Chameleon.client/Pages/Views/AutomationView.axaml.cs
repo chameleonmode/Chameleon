@@ -1,4 +1,5 @@
 using Avalonia.Controls.Primitives;
+using Chameleon.client.Features.Automation.Actors;
 using Chameleon.client.Features.Automation.AI.ChameleonAIR;
 using Chameleon.client.Features.Automation.Playwright;
 using Chameleon.client.FluentUI.Pages;
@@ -13,8 +14,9 @@ public partial class AutomationView : TabStripNavigationPage {
 	public override TabStrip Strip => ActiveTabStrip;
 	public override Frame Frame => NavigationFrame;
 	public override Type GetNavigationTarget(int index) => index switch {
-		0 => typeof(PlaywrightView),
-		1 => typeof(ChameleonAIRView),
+		0 => typeof(ActorsView),
+		1 => typeof(PlaywrightView),
+		2 => typeof(ChameleonAIRView),
 		_ => throw new Exception()
 	};
 }

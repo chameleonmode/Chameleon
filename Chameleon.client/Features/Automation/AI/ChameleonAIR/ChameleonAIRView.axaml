@@ -11,11 +11,11 @@
 			 x:DataType="vm:ChameleonAIRViewModel"
 			 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto, *">
-		<afv:ChameleonContentControl Title="AIR0bot"
-									 TitleDescription="Taskforce AI Reimagined">
+		<afv:ChameleonContentControl Title="Mr. AI-Robot"
+									 TitleDescription="AI Robot Agents Taskforce">
 			
 			<afv:ChameleonContentControl.Content>
-				<TextBlock Text="Comming soon..."
+				<TextBlock Text="soon... err... or... later..."
 					  	   Theme="{StaticResource SubtitleTextBlockStyle}"/>
 			</afv:ChameleonContentControl.Content>
 			

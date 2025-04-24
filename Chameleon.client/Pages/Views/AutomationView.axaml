@@ -12,6 +12,9 @@
 	<Panel>
 		<TabStrip Name="ActiveTabStrip">
 			<TabStripItem
+				Content="Actors"
+				Tag="{StaticResource SpiderIconWithCircles}"/>
+			<TabStripItem
 				Content="Playwright"
 				Tag="{StaticResource Playwright}"/>
 			<TabStripItem
