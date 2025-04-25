@@ -58,10 +58,10 @@ public partial class ActorViewModel : ViewModelObjectBase {
         foreach (var profile in options.SelectedProfiles) {
           cts.Token.ThrowIfCancellationRequested();
 
-          // var browser = await profile.OpenSystemBrowser(Enums.SystemBrowserType.Chrome).WaitAsync(cts.Token);
-          // ArgumentNullException.ThrowIfNull(browser);
+					var browser = await profile.OpenSystemBrowser(Enums.SystemBrowserType.Chrome).WaitAsync(cts.Token);
+					ArgumentNullException.ThrowIfNull(browser);
 
-          foreach (var selection in selected) {
+					foreach (var selection in selected) {
             cts.Token.ThrowIfCancellationRequested();
 
             var args = new Dictionary<string, object>();
