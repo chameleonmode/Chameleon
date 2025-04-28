@@ -6,10 +6,12 @@ using Chameleon.lib.Api.Repos;
 using DynamicData;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.app.Avalonia.DynamicData;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
-public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase
-{
+
+public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private string? assistantName;
 	[ObservableProperty]
@@ -25,66 +27,84 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase
 	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public ObservableCollection<ObsFolder> SelectedFolders { get; } = [];
 
-	public InviteUserOrAddProfilesViewModel()
-	{
-		_ = UserProfilesRepo
-			.Connect()
-			.Transform(i => new ObsProfile(
-				userProfile: i,
-				hasActionOptions: false,
-				onSelectedChanged: p => {
-					if (p.IsSelected) {
-						if (!SelectedProfiles.Contains(p))
-							SelectedProfiles.Add(p);
-					} else {
-						_ = SelectedProfiles.Remove(p);
-					}
-				})
-			)
-			.SortAndBind(out var profiles, Compares.ObsProfileCompares.AscendingComparer)
-			.Subscribe(async p => {
-				var pre = SelectedProfiles.ToList();
-				SelectedProfiles.Clear();
-				await Task.Delay(64);
-				foreach (var item in pre) {
-					var cp = Profiles?.First(pr => pr.Dto!.id == item.Dto!.id);
-					if (cp != null) {
-						cp.IsSelected = true;
-						SelectedProfiles.Add(cp);
-					}
-				}
-			});
-		Profiles = profiles;
+	public InviteUserOrAddProfilesViewModel(bool singleton = false) : base("Select Profiles & Folders") {
+		if (singleton) {
+			Profiles = MyProfilesViewModel.Instance.Profiles;
+			MyProfilesViewModel.Instance.OnSelectedChanged += OnProfileSelectedChanged;
 
-		_ = UserProfilesFolderRepo
-			.Connect(i => i.id != 0)
-			.Transform(i => new ObsFolder(
-				folder: i,
-				hasActionOptions: false,
-				onSelectedChanged: p => {
-					if (p.IsSelected) {
-						if (!SelectedFolders.Contains(p))
-							SelectedFolders.Add(p);
-					} else {
-						_ = SelectedFolders.Remove(p);
+			Folders = FoldersViewModel.Instance.Folders;
+			FoldersViewModel.Instance.OnSelectedChanged += OnFolderSelectedChanged;
+		} else {
+			_ = UserProfilesRepo.Connect()
+				.Transform(i => new ObsProfile(
+						userProfile: i,
+						hasActionOptions: false,
+						onSelectedChanged: OnProfileSelectedChanged
+					)
+				)
+				.SortAndBind(out var profiles, Compares.ObsProfileCompares.AscendingComparer)
+				.Subscribe(async p => {
+					var pre = SelectedProfiles.ToList();
+					SelectedProfiles.Clear();
+					await Task.Delay(64);
+					foreach (var item in pre) {
+						var cp = Profiles?.First(pr => pr.Dto!.id == item.Dto!.id);
+						if (cp != null) {
+							cp.IsSelected = true;
+							SelectedProfiles.Add(cp);
+						}
 					}
-				},
-				nameAlreadyExist: 
-				folderName => Folders?.Any(x => x.Title == folderName) ?? false)
-			)
-			.SortAndBind(out var folders, Compares.ObsFolderCompares.AscendingComparer)
-			.Subscribe(async p => {
-				var pre = SelectedFolders.ToList();
-				SelectedFolders.Clear();
-				await Task.Delay(64);
-				foreach (var item in pre) {
-					var cp = Folders?.First(pr => pr.Dto!.id == item.Dto!.id);
-					if (cp != null) {
-						cp.IsSelected = true;
-						SelectedFolders.Add(cp);
+				});
+			Profiles = profiles;
+
+			_ = UserProfilesFolderRepo.Connect(i => i.id != 0)
+				.Transform(i => new ObsFolder(
+					folder: i,
+					hasActionOptions: false,
+					onSelectedChanged: OnFolderSelectedChanged,
+					nameAlreadyExist:
+					folderName => Folders?.Any(x => x.Title == folderName) ?? false)
+				)
+				.SortAndBind(out var folders, Compares.ObsFolderCompares.AscendingComparer)
+				.Subscribe(async p => {
+					var pre = SelectedFolders.ToList();
+					SelectedFolders.Clear();
+					await Task.Delay(64);
+					foreach (var item in pre) {
+						var cp = Folders?.First(pr => pr.Dto!.id == item.Dto!.id);
+						if (cp != null) {
+							cp.IsSelected = true;
+							SelectedFolders.Add(cp);
+						}
 					}
-				}
-			});
-		Folders = folders;
+				});
+			Folders = folders;
+		}
+	}
+
+	void OnProfileSelectedChanged(ObsProfile p) {
+		if (p.IsSelected) {
+			if (!SelectedProfiles.Contains(p))
+				SelectedProfiles.Add(p);
+		} else {
+			_ = SelectedProfiles.Remove(p);
+		}
+	}
+
+	void OnFolderSelectedChanged(ObsFolder f) {
+		if (f.IsSelected) {
+			if (!SelectedFolders.Contains(f)) {
+				SelectedFolders.Add(f);
+			}
+		} else {
+			_ = SelectedFolders.Remove(f);
+		}
+
+		var profiles = MyProfilesViewModel.Instance.Profiles.Where(p => p.Dto!.folderId == f.Dto!.id);
+		if (profiles != null) {
+			foreach (var item in profiles) {
+				item.IsSelected = f.IsSelected;
+			}
+		}
 	}
 }

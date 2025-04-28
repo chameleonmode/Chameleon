@@ -6,8 +6,8 @@ public partial class PlaywrightView : ChameleonPageBase {
     public PlaywrightView()
     {
         InitializeComponent();
-		ControlName = "Playwright Asisstant";
-		Description = "Configure your Browser profiles playwright scripts settings";
+		ControlName = "Automations";
+		Description = "Configure your Browser profiles automation scripts settings";
 		PreviewImage = App.TryGetResource<IconSource>("Playwright");
     }
 }

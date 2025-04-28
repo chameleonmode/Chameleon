@@ -16,7 +16,7 @@ public abstract partial class ObservableDtoViewModelBase<T>(
 	private bool isSelected;
 	[ObservableProperty]
 	private bool isActionOptionsVisible = true;
-
+	
 	public override void InitCommandMapping() {
 		CommandMap["Unselect"] = () => {
 			IsSelected = false;

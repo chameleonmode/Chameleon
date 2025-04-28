@@ -97,6 +97,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 				.GetVisualDescendants()?
 				.Where(x => x is ICommandSource { CommandParameter: string cmd } && cmd == command)?
 				.FirstOrDefault();
+				
 			_animationPage = _animationPageParent?
 				.GetVisualDescendants()?
 				.Where(x => x.Name == "IconHost")?

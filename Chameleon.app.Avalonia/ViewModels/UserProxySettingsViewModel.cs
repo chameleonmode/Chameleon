@@ -205,8 +205,8 @@ public partial class UserProxySettingsViewModel
 		var proxies = new List<ProxDto>();
 		foreach (var applingProxy in proxyList) {
 			var applingProxies = applingProxy
-				.StripPrefix("http://")
-				.StripPrefix("https://")
+				.Strip("http://")
+				.Strip("https://")
 				.Split(':');
 			if (applingProxies.Length != 4) {
 				Toaster.Error($"Not a valid set {applingProxy}");

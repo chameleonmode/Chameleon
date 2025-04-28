@@ -44,6 +44,9 @@
 	<ui:SymbolIconSource Symbol="Settings" x:Key="SettingsIcon" />
 	<ui:SymbolIconSource Symbol="SettingsFilled" x:Key="SettingsIconFilled" />
 
+    <ui:PathIconSource x:Key="SpiderIcon" Data="M-35,-35 L-35,-15 C-35,-7.5 -27.5,-7.5 -27.5,0 C-27.5,7.5 -35,7.5 -35,15 L-35,35 L-15,35 C-7.5,35 -7.5,27.5 0,27.5 C7.5,27.5 7.5,35 15,35 L35,35 L35,15 C35,7.5 27.5,7.5 27.5,0 C27.5,-7.5 35,-7.5 35,-15 L35,-35 L15,-35 C7.5,-35 7.5,-27.5 0,-27.5 C-7.5,-27.5 -7.5,-35 -15,-35 Z M0,0 a3,3 0 1,0 0.1,0 M0,4 a2.5,3 0 1,0 0.1,0 M-2,-1 C-4,-3 -6,-3 -8,-2 M-2,1 C-5,2 -7,4 -8,6 M-1,3 C-3,6 -4,9 -3,11 M1,3 C3,6 4,9 3,11 M2,1 C5,2 7,4 8,6 M2,-1 C4,-3 6,-3 8,-2 M1,-2 C2,-5 1,-8 0,-10 M-1,-2 C-2,-5 -1,-8 0,-10" />
+    <ui:PathIconSource x:Key="SpiderIconWithCircles" Data="M0,-40 m0,-20 a20,20 0 1,0 0,40 a20,20 0 1,0 0,-40 z M34.64,-20 m0,-20 a20,20 0 1,0 0,40 a20,20 0 1,0 0,-40 z M34.64,20 m0,-20 a20,20 0 1,0 0,40 a20,20 0 1,0 0,-40 z M0,40 m0,-20 a20,20 0 1,0 0,40 a20,20 0 1,0 0,-40 z M-34.64,20 m0,-20 a20,20 0 1,0 0,40 a20,20 0 1,0 0,-40 z M-34.64,-20 m0,-20 a20,20 0 1,0 0,40 a20,20 0 1,0 0,-40 z M-35,-35 L-35,-15 C-35,-7.5 -27.5,-7.5 -27.5,0 C-27.5,7.5 -35,7.5 -35,15 L-35,35 L-15,35 C-7.5,35 -7.5,27.5 0,27.5 C7.5,27.5 7.5,35 15,35 L35,35 L35,15 C35,7.5 27.5,7.5 27.5,0 C27.5,-7.5 35,-7.5 35,-15 L35,-35 L15,-35 C7.5,-35 7.5,-27.5 0,-27.5 C-7.5,-27.5 -7.5,-35 -15,-35 Z M0,0 a3,3 0 1,0 0.1,0 M0,4 a2.5,3 0 1,0 0.1,0 M-2,-1 C-4,-3 -6,-3 -8,-2 M-2,1 C-5,2 -7,4 -8,6 M-1,3 C-3,6 -4,9 -3,11 M1,3 C3,6 4,9 3,11 M2,1 C5,2 7,4 8,6 M2,-1 C4,-3 6,-3 8,-2 M1,-2 C2,-5 1,-8 0,-10 M-1,-2 C-2,-5 -1,-8 0,-10" />
+
 	<!-- subpage Icons -->
 	<ui:SymbolIconSource x:Key="DefaultSettingsPageIcon" Symbol="TwoPage" />
 	<ui:SymbolIconSource x:Key="Proxy" Symbol="Globe" />
@@ -52,6 +55,7 @@
 	<ui:SymbolIconSource x:Key="Phone" Symbol="Phone" />
 	<ui:SymbolIconSource x:Key="User" Symbol="OtherUser" />
 	<ui:SymbolIconSource Symbol="Play" x:Key="Playwright" />
+
 
 	<!-- Icons -->
 	<ui:SymbolIconSource x:Key="ClosePane" Symbol="ClosePane" />
