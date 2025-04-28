@@ -30,8 +30,8 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 		BundlesScripts.AddMapped(
 			BundledScriptsService.Instance.GetBundledScrits(),
 			script => {
-				var data = IoC.GetJsonValue<Dictionary<string, string>>(script.BundledScript!.TableName);
-				var options = script.BundledScript!.Args
+				var data = IoC.GetJsonValue<Dictionary<string, string>>(script.Script!.TableName);
+				var options = script.Script!.Args
 					.Select(p => new ScriptParametersValues(p.Key, data?.GetValueOrDefault(p.Key) ?? p.Value))
 					.ToList();
 				var viewModel = new ScriptViewModel(script, options);
@@ -59,7 +59,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 		}
 		// Convert parameters to dictionary as in your original code
 		var data = SelectedBundledScript.Parameters.ToDictionary(p => p.Key, p => p.Value);
-		var table = SelectedBundledScript.RunOptions.BundledScript!.TableName;
+		var table = SelectedBundledScript.RunOptions.Script!.TableName;
 		IoC.SetJsonValue(data, table);
 
 		// TODO: Save the data to the database

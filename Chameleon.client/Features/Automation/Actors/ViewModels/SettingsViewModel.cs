@@ -4,12 +4,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace Chameleon.client.Features.Automation.Actors.ViewModels;
 public partial class SettingsViewModel: ObservableObject {
 
-	[ObservableProperty] StartViewModel _start = new();
-	[ObservableProperty] TimeoutsViewModel _timeouts = new();
-	[ObservableProperty] RandoViewModel _rando = new();
-	[ObservableProperty] RandoViewModel _iterations = new();
+	[ObservableProperty] StartViewModel start = new();
+	[ObservableProperty] TimeoutsViewModel timeouts = new();
+	[ObservableProperty] RandoViewModel rando = new();
+	[ObservableProperty] RandoViewModel iterations = new();
 
-	public SettingsViewModel() { } 
 	public SettingsViewModel(Settings source) {
 		Start = new StartViewModel(source.Start);
 		Timeouts = new TimeoutsViewModel(source.Timeouts);

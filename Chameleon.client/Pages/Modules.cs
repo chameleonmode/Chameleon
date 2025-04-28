@@ -9,10 +9,13 @@ using Chameleon.client.Features.Automation.Actors;
 
 namespace Chameleon.client.Pages;
 public static class Modules {
+  public static IServiceCollection WithActors(this IServiceCollection services) => services
+      .AddSingleton<ActorsViewModel>()
+      .AddSingleton<ActorsView>()
+      ;
   public static IServiceCollection WithAllPagesAndFeatures(this IServiceCollection services) => services
       .WithProfilesAndFolders()
-      .AddSingleton<Chameleon.client.Features.Automation.Actors.V2.ActorsViewModel>()
-      .AddSingleton<Chameleon.client.Features.Automation.Actors.V2.ActorsView>()
+      .WithActors()
       .AddSingleton<AutomationViewModel>()
       .AddSingleton<AutomationView>()
 			.AddSingleton<ChameleonAIRView>()
