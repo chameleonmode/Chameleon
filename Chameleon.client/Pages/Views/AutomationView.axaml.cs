@@ -14,7 +14,7 @@ public partial class AutomationView : TabStripNavigationPage {
 	public override TabStrip Strip => ActiveTabStrip;
 	public override Frame Frame => NavigationFrame;
 	public override Type GetNavigationTarget(int index) => index switch {
-		0 => typeof(ActorsView),
+		0 => typeof(Chameleon.client.Features.Automation.Actors.V2.ActorsView),
 		1 => typeof(PlaywrightView),
 		2 => typeof(ChameleonAIRView),
 		_ => throw new Exception()

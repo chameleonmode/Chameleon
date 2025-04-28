@@ -11,8 +11,8 @@ namespace Chameleon.client.Pages;
 public static class Modules {
   public static IServiceCollection WithAllPagesAndFeatures(this IServiceCollection services) => services
       .WithProfilesAndFolders()
-      .AddSingleton<ActorsViewModel>()
-      .AddSingleton<ActorsView>()
+      .AddSingleton<Chameleon.client.Features.Automation.Actors.V2.ActorsViewModel>()
+      .AddSingleton<Chameleon.client.Features.Automation.Actors.V2.ActorsView>()
       .AddSingleton<AutomationViewModel>()
       .AddSingleton<AutomationView>()
 			.AddSingleton<ChameleonAIRView>()
