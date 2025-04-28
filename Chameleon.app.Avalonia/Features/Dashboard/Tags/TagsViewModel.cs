@@ -50,7 +50,7 @@ public partial class TagsViewModel : DashboardItemsViewModelBase {
 		var folders = UserProfilesFolderRepo
 					.Connect()
 					.Filter(folderTagIdsChangedFilter)
-					.Transform(i => new ObsFolder(i, true, null))
+					.Transform(i => new ObsFolder(i, true, null, null))
 					.SortAndBind(out var folderlist, foldersCompareObservable)
 					.Subscribe(_ => OnPropertyChanged(nameof(HasNoFolderItems)));
 		Folders = folderlist;

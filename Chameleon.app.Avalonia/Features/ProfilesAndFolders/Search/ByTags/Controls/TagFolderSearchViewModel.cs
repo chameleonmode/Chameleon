@@ -23,7 +23,7 @@ public partial class TagFolderSearchViewModel : TagsSearchViewModelBase {
 		_ = UserProfilesFolderRepo
 		.Connect()
 		.Filter(f => tagItem.Ids.Any(id => id == f.id.ToString()))
-		.Transform(i => new ObsFolder(i))
+		.Transform(i => new ObsFolder(i,null))
 		.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
 		.Subscribe();
 

@@ -12,7 +12,7 @@
 	x:CompileBindings="True">
 	<StackPanel>
 		<!-- chameleon scripts -->
-		<afv:ChameleonContentControl Title="AIR Scripts Configurations"
+		<afv:ChameleonContentControl Title="Playwright Scripts Configurations"
 	 	Grid.Row="1"
 		TitleDescription="Configure playwright scripts options for AIR0bot.">
 			<afv:ChameleonContentControl.Options>

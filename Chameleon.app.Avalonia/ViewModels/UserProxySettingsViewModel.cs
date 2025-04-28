@@ -69,7 +69,7 @@ public partial class UserProxySettingsViewModel
 
 		_ = UserProfilesFolderRepo
 			.Connect()
-			.Transform(i => new ObsFolder(i))
+			.Transform(i => new ObsFolder(i,null))
 			.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
 			.Subscribe();
 		PaginatorViewModel = new PaginatorViewModel((p) => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
@@ -205,8 +205,8 @@ public partial class UserProxySettingsViewModel
 		var proxies = new List<ProxDto>();
 		foreach (var applingProxy in proxyList) {
 			var applingProxies = applingProxy
-				.StripPrefix("http://")
-				.StripPrefix("https://")
+				.Strip("http://")
+				.Strip("https://")
 				.Split(':');
 			if (applingProxies.Length != 4) {
 				Toaster.Error($"Not a valid set {applingProxy}");

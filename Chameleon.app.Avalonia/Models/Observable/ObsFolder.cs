@@ -6,12 +6,14 @@ using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	public event Action<ObsFolder>? OnSelectedChanged;
+	public Func<string?,bool>? NameAlreadyExist { get;}
 
 	[ObservableProperty]
 	private bool isFavorite;
@@ -28,10 +30,11 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	public bool IsContextMenuVisible => Dto!.id != 0;
 	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => (p.folderId == null && Dto!.id == 0) || p.folderId == Dto!.id); 
 
-	public ObsFolder(UPFolderDto folder) : base(folder)
+	public ObsFolder(UPFolderDto folder, Func<string?, bool>? nameAlreadyExist) : base(folder)
 	{
 		isFavorite = Dto.isFavorite;
 		profilesCount = Dto.profilesCount;
+		NameAlreadyExist = nameAlreadyExist;
 
 		CommandMap["SetFavoriteFolder"] = SetFavoriteFolder;
 		CommandMap["ViewGroup"] = ViewGroup;
@@ -52,11 +55,13 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	public ObsFolder(
 		UPFolderDto folder,
 		bool hasActionOptions,
-		Action<ObsFolder>? onSelectedChanged)
-		: this(folder)
-	{
+		Action<ObsFolder>? onSelectedChanged,
+		Func<string?, bool>? nameAlreadyExist
+	) 
+	: this(folder, nameAlreadyExist) {
 		IsActionOptionsVisible = hasActionOptions;
 		OnSelectedChanged = onSelectedChanged;
+		NameAlreadyExist = nameAlreadyExist;
 	}
 
 	// Properties Changed Events
@@ -136,6 +141,14 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 		var wasSelected = IsSelected;
 		var orignalTitle = Dto!.title;
 		try {
+
+			if (NameAlreadyExist is null)
+				throw new ArgumentNullException("Name validation property can not be null");
+
+			if (NameAlreadyExist(this.Title)) {
+				Toaster.Error($"Folder named {this.Title} already exists");
+				return;
+			}
 			Dto.title = Title;
 			var res = await UserProfilesFolderRepo.Instance.Put(Dto);
 			if (res != null) {

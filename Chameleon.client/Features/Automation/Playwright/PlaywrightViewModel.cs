@@ -10,6 +10,7 @@ using Chameleon.client.Features.Automation.Playwright.ViewModels;
 using Chameleon.lib.Util;
 using Chameleon.client.Features.Automation.Playwright.Models;
 
+// TODO change to automations from playwright ad playwright as option vs puppets ....
 namespace Chameleon.client.Features.Automation.Playwright;
 public partial class PlaywrightViewModel : ViewModelObjectBase {
 	readonly SemaphoreSlim semaphore = new(1, 1);
@@ -25,12 +26,12 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private string userScriptsDirectory = "";
 
-	public PlaywrightViewModel() : base("Playwright AIR") {
+	public PlaywrightViewModel() : base("Playwright") {
 		BundlesScripts.AddMapped(
 			BundledScriptsService.Instance.GetBundledScrits(),
 			script => {
-				var data = IoC.GetJsonValue<Dictionary<string, string>>(script.BundledScript!.TableName);
-				var options = script.BundledScript!.Parameters
+				var data = IoC.GetJsonValue<Dictionary<string, string>>(script.Script!.TableName);
+				var options = script.Script!.Args
 					.Select(p => new ScriptParametersValues(p.Key, data?.GetValueOrDefault(p.Key) ?? p.Value))
 					.ToList();
 				var viewModel = new ScriptViewModel(script, options);
@@ -58,7 +59,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 		}
 		// Convert parameters to dictionary as in your original code
 		var data = SelectedBundledScript.Parameters.ToDictionary(p => p.Key, p => p.Value);
-		var table = SelectedBundledScript.RunOptions.BundledScript!.TableName;
+		var table = SelectedBundledScript.RunOptions.Script!.TableName;
 		IoC.SetJsonValue(data, table);
 
 		// TODO: Save the data to the database

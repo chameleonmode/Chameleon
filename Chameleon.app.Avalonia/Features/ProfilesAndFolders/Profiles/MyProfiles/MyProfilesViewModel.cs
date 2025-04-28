@@ -105,6 +105,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 	private readonly ReadOnlyObservableCollection<ObsProfile> profiles;
 	public ReadOnlyObservableCollection<ObsProfile> Profiles => profiles;
+	public event Action<ObsProfile>? OnSelectedChanged;
 
 	public MyProfilesViewModel() {
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
@@ -113,6 +114,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			.Transform(i => new ObsProfile(i, onSelectedChanged: p => {
 				OnPropertyChanged(nameof(HasSelectedItems));
 				OnPropertyChanged(nameof(SelectedCount));
+				OnSelectedChanged?.Invoke(p);
 			}))
 			.Filter(filter)
 			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)

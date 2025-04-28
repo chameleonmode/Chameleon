@@ -66,6 +66,12 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 			foreach (var item in items) {
 				if (!Tags.Any(tag => tag.Name == item.Name)) {
 					Tags.Add(item);
+				} else {
+					if(changeSet.Where(change => change.Reason == ChangeReason.Remove).Any(x => x.Current.Name == item.Name)) {
+						var tagToRemove = Tags.First(tag => tag.Name == item.Name);
+						_ = Tags.Remove(tagToRemove);
+						OnPropertyChanged(nameof(Tags));
+					};
 				}
 			}
 		} else {
