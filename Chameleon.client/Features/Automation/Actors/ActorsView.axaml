@@ -142,7 +142,7 @@
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="vmv:SettingsViewModel">
 															<StackPanel Spacing="10" Margin="20,5,0,5">
-																<Expander Header="Start Options" IsExpanded="True">
+																<Expander Header="Start" IsExpanded="True">
 																	<Expander.Content>
 																		<ContentControl Content="{Binding Start}">
 																			<ContentControl.ContentTemplate>
@@ -150,12 +150,12 @@
 																					<Grid ColumnDefinitions="Auto,*" 
 																						RowDefinitions="Auto,Auto,Auto" 
 																						Margin="20,5,0,5">
-																						<TextBlock Classes="sideLabel" 
+																						<!-- <TextBlock Classes="sideLabel" 
 																							Grid.Row="0" Grid.Column="0" 
 																							Text="Feature:"/>
 																						<TextBox Classes="sideInput" 
 																							Grid.Row="0" Grid.Column="1" 
-																							Text="{Binding Feature, Mode=TwoWay}"/>
+																							Text="{Binding Feature, Mode=TwoWay}"/> -->
 																						<TextBlock Classes="sideLabel" 
 																							Grid.Row="1" Grid.Column="0" 
 																							Text="URL:"/>
@@ -200,10 +200,12 @@
 																		</ContentControl>
 																	</Expander.Content>
 																</Expander>
-																<Expander Header="General Randomization" IsExpanded="False">
+																<Expander Header="Randomization" 
+																	ToolTip.Tip="Randomization settings for retries and selections ie. join/vote">
 																	<ContentControl Content="{Binding Rando}" ContentTemplate="{StaticResource RandoEditorTemplate}" Margin="20,5,0,5"/>
 																</Expander>
-																<Expander Header="Iteration Randomization" IsExpanded="False">
+																<Expander Header="Iterations"
+																	ToolTip.Tip="Randomization settings for iterations ie. number of times to run the script">
 																	<ContentControl Content="{Binding Iterations}" ContentTemplate="{StaticResource RandoEditorTemplate}" Margin="20,5,0,5"/>
 																</Expander>
 															</StackPanel>

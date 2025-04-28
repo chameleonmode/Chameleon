@@ -63,8 +63,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 							var json = JS.Serialize(opts);
 							Debug.WriteLine($@"Running script with:
 							  Profile '{profile.Title}', Script '{scriptToRun.Script.Title}' with Feature '{opts.Settings.Start.Feature}'");
-								
 							Debug.WriteLine(json);
+							await Task.Delay(1000, cts.Token);
 
 							// await PlaywriteRunner.RunScript(new() {
 							// 	Port = browser.Settings.Port,
