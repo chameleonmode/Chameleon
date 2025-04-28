@@ -138,7 +138,7 @@
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="vmv:SettingsViewModel">
 															<StackPanel Spacing="10" Margin="20,5,0,5">
-																<Expander Header="Start" IsExpanded="True">
+																<Expander Header="Start">
 																	<Expander.Content>
 																		<ContentControl Content="{Binding Start}">
 																			<ContentControl.ContentTemplate>
