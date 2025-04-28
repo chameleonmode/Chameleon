@@ -1,4 +1,3 @@
-using System.Linq;
 using Chameleon.AIR.Actors.Models;
 using Chameleon.AIR.Scripts.Models;
 using Chameleon.app.Avalonia.Controls;
@@ -7,6 +6,7 @@ using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Const;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.client.Features.Automation.Actors;
@@ -132,7 +132,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
       var value = prop.GetValue(obj);
 
       // Continue recursion for complex objects
-      if (value != null && !IsSimpleType(value.GetType())) {
+      if (value != null && !value.GetType().IsSimpleType()) {
         ToOptions(value, key);
       } else {
         var opts = Options.FirstOrDefault(o => o.Key == prefix);
@@ -158,29 +158,6 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
     // Also add settings
     ToOptions(actorOptions.Settings, "Settings");
-  }
-
-  private object? ParseValue(string? value) {
-    // Try to parse the value as a simple type
-    if (int.TryParse(value, out var intValue)) return intValue;
-    if (bool.TryParse(value, out var boolValue)) return boolValue;
-    if (double.TryParse(value, out var doubleValue)) return doubleValue;
-    if (DateTime.TryParse(value, out var dateTimeValue)) return dateTimeValue;
-
-    // If parsing fails, return the original string
-    return value;
-  }
-
-  private bool IsSimpleType(Type type) {
-    return type.IsPrimitive ||
-           type == typeof(string) ||
-           type == typeof(decimal) ||
-           type.IsEnum ||
-           Nullable.GetUnderlyingType(type) != null ||
-           type == typeof(DateTime) ||
-           type == typeof(DateTimeOffset) ||
-           type == typeof(TimeSpan) ||
-           type == typeof(Guid);
   }
 
 }

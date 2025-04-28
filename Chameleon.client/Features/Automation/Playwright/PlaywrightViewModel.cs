@@ -31,7 +31,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 			BundledScriptsService.Instance.GetBundledScrits(),
 			script => {
 				var data = IoC.GetJsonValue<Dictionary<string, string>>(script.BundledScript!.TableName);
-				var options = script.BundledScript!.Parameters
+				var options = script.BundledScript!.Args
 					.Select(p => new ScriptParametersValues(p.Key, data?.GetValueOrDefault(p.Key) ?? p.Value))
 					.ToList();
 				var viewModel = new ScriptViewModel(script, options);
