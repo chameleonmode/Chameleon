@@ -203,7 +203,9 @@ public partial class AssistantUser(AssistDto dto)  : DtoViewModelBase<AssistDto>
 				//
 				var folderIds = invite.SelectedFolders.Select(f => f.Dto!.id).ToList();
 				if (folderIds.Count != 0) {
-					var folderResult = await ShareFoldersRepo.Share(Dto!.id, folderIds, []);
+					foreach(var folderId in folderIds) { //Workaround for issue #30 in chameleon-lib
+						var folderResult = await ShareFoldersRepo.Share(Dto!.id, [folderId], []);
+					}
 					await InitFolders();
 					Toaster.Success($"{folderIds.Count} folder(s) shared successfully");
 				}
