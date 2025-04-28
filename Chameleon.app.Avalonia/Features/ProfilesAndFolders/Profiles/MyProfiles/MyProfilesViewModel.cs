@@ -117,7 +117,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 				OnSelectedChanged?.Invoke(p);
 			}))
 			.Filter(filter)
-			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
+			// .SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
 			.SortAndBind(out profiles, profilesCompareObservable)
 			.Subscribe();
 
