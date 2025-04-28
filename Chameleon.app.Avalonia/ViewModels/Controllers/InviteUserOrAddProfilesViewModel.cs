@@ -30,9 +30,19 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	public InviteUserOrAddProfilesViewModel(bool singleton = false) : base("Select Profiles & Folders") {
 		if (singleton) {
 			Profiles = MyProfilesViewModel.Instance.Profiles;
+			foreach (var item in Profiles) {
+				if (item.IsSelected) {
+					SelectedProfiles.Add(item);
+				}
+			}
 			MyProfilesViewModel.Instance.OnSelectedChanged += OnProfileSelectedChanged;
 
 			Folders = FoldersViewModel.Instance.Folders;
+			foreach (var item in Folders) {
+				if (item.IsSelected) {
+					SelectedFolders.Add(item);
+				}
+			}
 			FoldersViewModel.Instance.OnSelectedChanged += OnFolderSelectedChanged;
 		} else {
 			_ = UserProfilesRepo.Connect()

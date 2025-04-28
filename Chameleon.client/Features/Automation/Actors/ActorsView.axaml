@@ -92,7 +92,8 @@
 
 										<Expander Header="Options" IsExpanded="True">
 											<Expander.Content>
-												<ContentControl Content="{Binding EditableArgs}">
+											 	<StackPanel>
+													<ContentControl Content="{Binding EditableArgs}">
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="vmv:ArgsViewModel">
 															<StackPanel Spacing="10" Margin="20,5,0,5">
@@ -132,13 +133,8 @@
 															</StackPanel>
 														</DataTemplate>
 													</ContentControl.ContentTemplate>
-												</ContentControl>
-											</Expander.Content>
-										</Expander>
-
-										<Expander Header="Settings" IsExpanded="False">
-											<Expander.Content>
-												<ContentControl Content="{Binding EditableSettings}">
+													</ContentControl>
+													<ContentControl Content="{Binding EditableSettings}">
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="vmv:SettingsViewModel">
 															<StackPanel Spacing="10" Margin="20,5,0,5">
@@ -193,7 +189,10 @@
 																							Text="Navigate:"/>
 																						<ui:NumberBox Classes="sideInput" Grid.Row="2" Grid.Column="1" Value="{Binding Navigate, Mode=TwoWay}"/>
 																						<TextBlock Classes="sideLabel" Grid.Row="3" Grid.Column="0" Text="Naps:" VerticalAlignment="Top"/>
-																						<ContentControl Grid.Row="3" Grid.Column="1" Content="{Binding Naps}" ContentTemplate="{StaticResource RandoEditorTemplate}"/>
+																						<ContentControl Grid.Row="3" Grid.Column="1"
+																							ToolTip.Tip="Settings in milliseconds for naps ie. time to wait between actions"
+																							Content="{Binding Naps}" 
+																							ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 																					</Grid>
 																				</DataTemplate>
 																			</ContentControl.ContentTemplate>
@@ -211,7 +210,8 @@
 															</StackPanel>
 														</DataTemplate>
 													</ContentControl.ContentTemplate>
-												</ContentControl>
+													</ContentControl>
+												</StackPanel>
 											</Expander.Content>
 										</Expander>
 									</StackPanel>
@@ -220,7 +220,7 @@
 								<ui:SettingsExpander.Footer>
 									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 										<Button Content="Run" CommandParameter="Run" IsVisible="{Binding !Running}" Command="{Binding AsyncCfVCommand}" />
-										<Button Content="Stop" CommandParameter="Stop" IsVisible="{Binding Running}" Command="{Binding AsyncCfVCommand}" />
+										<Button Content="Stop" CommandParameter="Stop" IsVisible="{Binding Running}" Command="{Binding CfVCommand}" />
 									</StackPanel>
 								</ui:SettingsExpander.Footer>
 							</ui:SettingsExpander>
