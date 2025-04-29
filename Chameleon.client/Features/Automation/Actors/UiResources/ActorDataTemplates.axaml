@@ -8,15 +8,15 @@
 			<ui:NumberBox Value="{Binding Min, Mode=TwoWay}"/>
 			<TextBlock Text="Max:"/>
 			<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"/>
-			<TextBlock Text="Multiplier:"/>
-			<ui:NumberBox Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue=''}"/>
 		</StackPanel>
 	</DataTemplate>
 
 	<DataTemplate x:Key="StartEditorTemplate" x:DataType="vmv:StartViewModel">
 		<Grid Classes="inputGrid" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
-			<!-- <TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
-			<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> -->
+			<!-- 
+				<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
+				<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> 
+			-->
 			<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="URL:"/>
 			<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
 			<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" Text="New Tab:"/>
@@ -26,14 +26,35 @@
 
 	<DataTemplate x:Key="TimeoutsEditorTemplate" x:DataType="vmv:TimeoutsViewModel">
 		<Grid Classes="inputGrid" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
-			<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Default:"/>
-			<ui:NumberBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Value="{Binding Default, Mode=TwoWay}"/>
-			<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" Text="Wait:"/>
-			<ui:NumberBox Classes="sideInput" Grid.Row="1" Grid.Column="1" Value="{Binding Wait, Mode=TwoWay}" />
-			<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" Text="Navigate:"/>
-			<ui:NumberBox Classes="sideInput" Grid.Row="2" Grid.Column="1" Value="{Binding Navigate, Mode=TwoWay}"/>
+			<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" 
+				Text="Default:"/>
+			<ui:NumberBox Classes="sideInput" Grid.Row="0" Grid.Column="1" 
+				Value="{Binding Default, Mode=TwoWay}"/>
+
+			<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" 
+				Text="Wait:"/>
+			<ui:NumberBox Classes="sideInput" Grid.Row="1" Grid.Column="1" 
+				Value="{Binding Wait, Mode=TwoWay}" />
+
+			<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" 
+				Text="Navigate:"/>
+			<ui:NumberBox Classes="sideInput" Grid.Row="2" Grid.Column="1" 
+				Value="{Binding Navigate, Mode=TwoWay}"/>
 			<TextBlock Grid.Row="3" Classes="sideLabel" Text="Naps:" Margin="0"/>
-			<ContentControl Classes="sideInput" Content="{Binding Naps}" Grid.Row="3" Grid.Column="1" ContentTemplate="{StaticResource RandoEditorTemplate}" VerticalAlignment="Center"/>
+			<ContentControl Classes="sideInput" Content="{Binding Naps}" Grid.Row="3" Grid.Column="1"  VerticalAlignment="Center">
+				<ContentControl.ContentTemplate>
+					<DataTemplate x:DataType="vmv:RandoViewModel">
+						<StackPanel Classes="randoEditor">
+							<TextBlock Text="Min:"/>
+							<ui:NumberBox Value="{Binding Min, Mode=TwoWay}"/>
+							<TextBlock Text="Max:"/>
+							<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"/>
+							<TextBlock Text="Multiplier:"/>
+							<ui:NumberBox Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue=''}"/>
+						</StackPanel>
+					</DataTemplate>
+				</ContentControl.ContentTemplate>
+			</ContentControl>
 		</Grid>
 	</DataTemplate>
 </ResourceDictionary>

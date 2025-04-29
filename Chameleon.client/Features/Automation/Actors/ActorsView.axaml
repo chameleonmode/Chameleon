@@ -60,8 +60,7 @@
 										</ItemsControl>
 
 										<Expander Header="Options" IsExpanded="True">
-											<Expander.Content>
-											 	<StackPanel>
+											<StackPanel>
 													<ContentControl Content="{Binding EditableArgs}">
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="vmv:ArgsViewModel">
@@ -69,14 +68,27 @@
 																<Grid Classes="inputGrid"
                                                                       ColumnDefinitions="Auto,*"
                                                                       RowDefinitions="Auto,Auto,Auto,Auto">
-																	<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Search:"/>
-																	<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Search, Mode=TwoWay}"/>
-																	<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" Text="Scope:" />
-																	<ComboBox Classes="sideInput" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding AvailableScopes}" SelectedItem="{Binding SelectedScope, Mode=TwoWay}" />
-																	<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" Text="Sort:"/>
-																	<ComboBox Classes="sideInput" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding AvailableSorts}" SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
-																	<TextBlock Classes="sideLabel" Grid.Row="3" Grid.Column="0" Text="Filter:"/>
-																	<ComboBox Classes="sideInput" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding AvailableFilters}" SelectedItem="{Binding SelectedFilter, Mode=TwoWay}"/>
+																	<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" 
+																		Text="Search:"/>
+																	<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" 
+																		Text="{Binding Search, Mode=TwoWay}"/>
+
+																	<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" 
+																		Text="Scope:" />
+																	<ComboBox Classes="sideInput" Grid.Row="1" Grid.Column="1" 
+																		ItemsSource="{Binding AvailableScopes}" 
+																		SelectedItem="{Binding SelectedScope, Mode=TwoWay}" />
+																	
+																	<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" 
+																		Text="Sort:"/>
+																	<ComboBox Classes="sideInput" Grid.Row="2" Grid.Column="1" 
+																		ItemsSource="{Binding AvailableSorts}" SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
+																	
+																	<TextBlock Classes="sideLabel" Grid.Row="3" Grid.Column="0" 
+																		Text="Filter:"/>
+																	<ComboBox Classes="sideInput" Grid.Row="3" Grid.Column="1" 
+																		ItemsSource="{Binding AvailableFilters}" 
+																		SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" />
 																</Grid>
 															</StackPanel>
 														</DataTemplate>
@@ -87,34 +99,52 @@
 														<DataTemplate x:DataType="vmv:SettingsViewModel">
 															<StackPanel Margin="20,5,0,5" Spacing="6">
 																<Expander Header="Start Options" IsExpanded="True">
-																	<ContentControl Content="{Binding Start}"
-                                                                                    ContentTemplate="{StaticResource StartEditorTemplate}"/>
+																	<ContentControl 
+																		Content="{Binding Start}" 
+																		ContentTemplate="{StaticResource StartEditorTemplate}"/>
 																</Expander>
 																<Expander Header="Timeouts" IsExpanded="False">
-																	<ContentControl Content="{Binding Timeouts}"
-																				   ContentTemplate="{StaticResource TimeoutsEditorTemplate}"/>
-
+																	<ContentControl 
+																		Content="{Binding Timeouts}"
+																		ContentTemplate="{StaticResource TimeoutsEditorTemplate}"/>
 																</Expander>
-																<Expander Header="General Randomization" IsExpanded="False">
-																	<ContentControl Content="{Binding Rando}"
-                                                                                    ContentTemplate="{StaticResource RandoEditorTemplate}"/>
+																<Expander Header="Randomization" IsExpanded="False">
+																	<ContentControl 
+																		Content="{Binding Rando}"
+                                                                        ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 																</Expander>
-																<Expander Header="Iteration Randomization" IsExpanded="False">
-																	<ContentControl Content="{Binding Iterations}"
-																				   ContentTemplate="{StaticResource RandoEditorTemplate}"/>
+																<Expander Header="Iterations" IsExpanded="False">
+																	<ContentControl 
+																		Content="{Binding Iterations}"
+																		ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 																</Expander>
 															</StackPanel>
 														</DataTemplate>
 													</ContentControl.ContentTemplate>
 													</ContentControl>
-												</StackPanel>
-											</Expander.Content>
+											</StackPanel>
 										</Expander>
 									</StackPanel>
 								</ui:SettingsExpanderItem>
 
 								<ui:SettingsExpander.Footer>
-									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+									<StackPanel 
+										Orientation="Horizontal" 
+										Spacing="6"
+										HorizontalAlignment="Right">
+										<ui:FAComboBox
+											HorizontalAlignment="Left"
+											SelectedItem="{Binding SelectedBrowserOption}"
+											ItemsSource="{Binding BrowserOptions}">
+											<ui:FAComboBox.ItemTemplate>
+												<DataTemplate>
+													<afv:SvgIconControl 
+														IconName="{Binding IconName}"
+														Height="20"
+														Width="20"/>
+												</DataTemplate>
+											</ui:FAComboBox.ItemTemplate>
+										</ui:FAComboBox>
 										<Button Content="Run" CommandParameter="Run" IsVisible="{Binding !Running}" Command="{Binding AsyncCfVCommand}" />
 										<Button Content="Stop" CommandParameter="Stop" IsVisible="{Binding Running}" Command="{Binding CfVCommand}" />
 									</StackPanel>

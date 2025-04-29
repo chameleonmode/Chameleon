@@ -2,7 +2,7 @@ using Avalonia.Controls.Primitives;
 using Chameleon.client.Features.Automation.Actors;
 using Chameleon.client.Features.Automation.AI.ChameleonAIR;
 using Chameleon.client.Features.Automation.Playwright;
-using Chameleon.client.FluentUI.Pages;
+using Chameleon.client.UI.Fluent.Pages;
 using FluentAvalonia.UI.Controls;
 
 namespace Chameleon.client.Pages.Views;

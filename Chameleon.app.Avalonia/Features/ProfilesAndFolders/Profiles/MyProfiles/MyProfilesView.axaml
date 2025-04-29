@@ -159,17 +159,17 @@
 
 				<!--Automation Section in Options container-->
 				<!--Scripts-->
-				<ui:FAComboBox
-							  PlaceholderText="Select an automation..."
-							  IsEditable="False"
-							  HorizontalAlignment="Right"
-							  Header="Automation:"
-							  ItemsSource="{Binding PlaywrightScripts}"
-							  SelectedItem="{Binding SelectedPlaywrightScript}"
-							  Grid.Row="0"
-							  Grid.Column="0"
-							  Grid.ColumnSpan="3"
-							  Width="200">
+				<ui:FAComboBox 
+					PlaceholderText="Select an automation..."
+					IsEditable="False"
+					HorizontalAlignment="Right"
+					Header="Automation:"
+					ItemsSource="{Binding PlaywrightScripts}"
+					SelectedItem="{Binding SelectedPlaywrightScript}"
+					Grid.Row="0"
+					Grid.Column="0"
+					Grid.ColumnSpan="3"
+					Width="200">
 					<ui:FAComboBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock
