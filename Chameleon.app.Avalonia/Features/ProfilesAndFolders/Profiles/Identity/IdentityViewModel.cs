@@ -3,10 +3,10 @@ using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewM
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
@@ -118,13 +118,10 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		IsSaving = true;
 
 		try {
-			Logins.ForEach(async l => await OnSaveLogin(l));
-			//
-			Persons.ForEach(async l => await OnSavePerson(l));
-			//
-			Addresses.ForEach(async l => await OnSaveAddress(l));
-			//
-			Businesses.ForEach(async l => await OnSaveBusiness(l));
+			await Logins.ForEach(OnSaveLogin);
+			await Persons.ForEach(OnSavePerson);
+			await Addresses.ForEach(OnSaveAddress);
+			await Businesses.ForEach(OnSaveBusiness);
 
 			if (UserProfile?.Validator?.IsValid == false) {
 				//return;

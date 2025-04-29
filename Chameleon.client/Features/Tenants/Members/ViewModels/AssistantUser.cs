@@ -11,6 +11,7 @@ using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Utils;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
@@ -108,8 +109,7 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 		Profilez.Clear();
 		Profilez.AddRange(profiles.Select(p => new AssistantUsersProfile(p,
 			onProfileUnshare: async op => {
-				var (userId, dtoId) = EnsureDtos(Dto!.id, op.Dto!.ProfileId);
-				_ = await UserAssistantRepo.DeleteAssistantProfile(userId, dtoId);
+				_ = await UserAssistantRepo.DeleteAssistantProfile(Dto.id, op.Dto.ProfileId);
 				_ = Profilez.Remove(op);
 			},
 			onSendCookies: async (op, bt) => {
@@ -139,17 +139,10 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 		Folderz.Clear();
 		Folderz.AddRange(folders.Select(f => new AssistantUsersFolder(f,
 			onFolderUnshare: async of => {
-				var (userId, dtoId) = EnsureDtos(Dto!.id, of.Dto!.id);
-				_ = await ShareFoldersRepo.Instance.Delete(dtoId);
+				_ = await ShareFoldersRepo.Instance.Delete(of.Dto.id);
 				_ = Folderz.Remove(of);
 			}
 		)));
-	}
-
-	private static (long userId, int dtoId) EnsureDtos(long? user, int? profile) {
-		ArgumentNullException.ThrowIfNull(user);
-		ArgumentNullException.ThrowIfNull(profile);
-		return (user.Value, profile.Value);
 	}
 
 	partial void OnCanCreateProfilesChanged(bool value) {
@@ -192,29 +185,42 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 	[RelayCommand]
 	private async Task AddMoreProfiles() {
 		try {
-			var invite = new InviteUserOrAddProfilesViewModel() {
-				ShowUserInfo = false,
-			};
 			if (
-				await Mbox.ShowTaskDialog<InviteUserOrAddProfilesUserControl, InviteUserOrAddProfilesViewModel>(new(
-					Initialize: () => invite,
-					Header: "Add Profiles",
-					SubHeader: "Add access to specific Profiles for this user",
-					Symbas: Enums.Symbas.AddFriend,
-					Btns: Enums.MBoxButtons.OkCancel)) == Enums.TaskDialogResult.OK
+				await new InviteUserOrAddProfilesViewModel().ShowDialog(
+					Profilez.Select(p => p.Dto), Folderz.Select(f => f.Dto)
+				) is { } result
 			) {
-				var profileIds = invite.SelectedProfiles.Select(p => p.Dto!.id).ToList();
-				if (profileIds.Count != 0) {
-					var result = await UserAssistantRepo.AddProfiles(Dto!.id, profileIds, []);
+				// Profilez
+				await Profilez.Empty(
+					async profile => {
+						return !result.SelectedProfiles.Any(p => p.Dto.id == profile.Dto.ProfileId) &&
+							(await UserAssistantRepo.DeleteAssistantProfile(Dto.id, profile.Dto.ProfileId)).success;
+					}
+				);
+
+				if ((await UserAssistantRepo.AddProfiles(Dto.id,
+						result.SelectedProfiles
+							.Where(p => !Profilez.Any(profile => profile.Dto.ProfileId == p.Dto.id))
+							.Select(p => p.Dto!.id)
+				))?.success == true) {
 					await InitProfiles();
-					Toaster.Success($"{profileIds.Count} profile(s) shared successfully");
+					Toaster.Success($"profile(s) shared successfully");
 				}
-				//
-				var folderIds = invite.SelectedFolders.Select(f => f.Dto!.id).ToList();
-				if (folderIds.Count != 0) {
-					var folderResult = await ShareFoldersRepo.Share(Dto!.id, folderIds, []);
+
+				// Folderz
+				await Folderz.Empty(
+					async folder => {
+						return !result.SelectedFolders.Any(f => f.Dto.id == folder.Dto.id) &&
+							(await ShareFoldersRepo.Instance.Delete(folder.Dto.id)).success;
+					}
+				);
+				if ((await ShareFoldersRepo.Share(Dto.id,
+						result.SelectedFolders
+							.Where(p => !Folderz.Any(folder => folder.Dto.FolderId == p.Dto.id))
+							.Select(p => p.Dto!.id)
+				)).Length != 0) {
 					await InitFolders();
-					Toaster.Success($"{folderIds.Count} folder(s) shared successfully");
+					Toaster.Success($"folder(s) shared successfully");
 				}
 			}
 		} catch (Exception ex) {

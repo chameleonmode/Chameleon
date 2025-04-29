@@ -37,10 +37,10 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				var selected = Selections.Where(s => s.Selected);
 				if (!selected.Any()) throw new Exception("No scripts selected.");
 
-				if (await InviteUserOrAddProfilesViewModel.ShowDialog(true) is { } options) {
+				if (await new InviteUserOrAddProfilesViewModel().ShowDialog() is { } result) {
 					Running = true;
 					cts = new CancellationTokenSource();
-					foreach (var profile in options.SelectedProfiles) {
+					foreach (var profile in result.SelectedProfiles) {
 						cts.Token.ThrowIfCancellationRequested();
 
 						var browser = await profile.OpenSystemBrowser(Enums.SystemBrowserType.Chrome).WaitAsync(cts.Token);

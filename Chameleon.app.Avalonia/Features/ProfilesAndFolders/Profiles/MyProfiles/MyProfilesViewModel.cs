@@ -12,7 +12,6 @@ using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
-using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
@@ -226,14 +225,11 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		}
 
 		//InintializeLastSelectedAutomation();
-		var lastSelectedBrowserString = IoC.GetValue<string>("LastSelectedBrowser");
-		SelectedBrowserItem = lastSelectedBrowserString.Is() ||
-				!Enum.TryParse(typeof(SystemBrowserType), lastSelectedBrowserString, out var browserEnum)
-			? BrowserItems[0]
-			: BrowserItems.First(b => b.SystemBrowserType == (SystemBrowserType)browserEnum);
-		SelectedPlaywrightScript = PlaywrightScripts.FirstOrDefault(s => s.Description?.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
-
-		PaginatorViewModel.UpdateStatus();
+		SelectedBrowserItem =
+			Enum.TryParse<SystemBrowserType>(IoC.GetValue<string>("LastSelectedBrowser"), out var browserEnum)
+			? BrowserItems.FirstOrDefault(b => b.SystemBrowserType == browserEnum) ?? BrowserItems[0] : BrowserItems[0];
+		SelectedPlaywrightScript =
+			PlaywrightScripts.FirstOrDefault(s => s.Description?.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
 	}
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
