@@ -34,43 +34,35 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 		AsyncCommandMap["Run"] = async () => {
 			try {
-				var selectedScripts = Selections.Where(s => s.Selected);
-				if (!selectedScripts.Any()) throw new Exception("No scripts selected.");
+				var selected = Selections.Where(s => s.Selected);
+				if (!selected.Any()) throw new Exception("No scripts selected.");
 
-				var profileOptions = new InviteUserOrAddProfilesViewModel(true) { ShowUserInfo = false };
-				if (
-					await Mbox.ShowTaskDialog<InviteUserOrAddProfilesViewModel, InviteUserOrAddProfilesUserControl>(
-						initialize: () => profileOptions,
-						header: "Add Profiles & Folders",
-						subHeader: "Add profiles and folders to run these automationairs.",
-						symbas: Enums.Symbas.AddFriend,
-						btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK
-				) {
+				if (await new InviteUserOrAddProfilesViewModel().ShowDialog() is { } result) {
+					Running = true;
 					cts = new CancellationTokenSource();
-					foreach (var profile in profileOptions.SelectedProfiles) {
+					foreach (var profile in result.SelectedProfiles) {
 						cts.Token.ThrowIfCancellationRequested();
 
-						// var browser = await profile.OpenSystemBrowser(Enums.SystemBrowserType.Chrome).WaitAsync(cts.Token);
-						// ArgumentNullException.ThrowIfNull(browser);
+						var browser = await profile.OpenSystemBrowser(Enums.SystemBrowserType.Chrome).WaitAsync(cts.Token);
+						ArgumentNullException.ThrowIfNull(browser);
 
-						foreach (var scriptToRun in selectedScripts) {
+						foreach (var selection in selected) {
 							cts.Token.ThrowIfCancellationRequested();
-							Running = true;
 
 							var args = EditableArgs.ToDictionary();
 							var settings = EditableSettings.ToRecord();
 							var opts = new Opts(args, settings);
 							var json = JS.Serialize(opts);
 							Debug.WriteLine($@"Running script with:
-							  Profile '{profile.Title}', Script '{scriptToRun.Script.Title}' with Feature '{opts.Settings.Start.Feature}'");
+							  Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'");
 							Debug.WriteLine(json);
-							await Task.Delay(1000, cts.Token);
+							// await Task.Delay(1000, cts.Token);
 
-							// await PlaywriteRunner.RunScript(new() {
-							// 	Port = browser.Settings.Port,
-							// 	Script = selection.Script,
-							// 	Opts = opts
-							// }, cts.Token);
+							await PlaywriteRunner.RunScript(new() {
+								Port = browser.Settings.Port,
+								Script = selection.Script,
+								Opts = opts
+							}, cts.Token);
 						}
 					}
 				}
@@ -79,9 +71,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			}
 		};
 
-		AsyncCommandMap["Stop"] = () => {
+		CommandMap["Stop"] = () => {
 			StopExecution();
-			return Task.CompletedTask;
 		};
 	}
 

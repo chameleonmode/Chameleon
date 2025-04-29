@@ -13,7 +13,6 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.WebBrowser.Services;
 using Chameleon.lib.WebBrowser.Models;
 using Chameleon.lib.WebBrowser.Interfaces;
-using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Util;
 using static Chameleon.lib.Common.Constants.Enums;
 

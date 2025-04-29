@@ -3,10 +3,10 @@ using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewM
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
@@ -31,6 +31,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private readonly ReadOnlyObservableCollection<UPLoginViewModel> logins;
 	private readonly ReadOnlyObservableCollection<UPPersonViewModel> persons;
 	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
+	private readonly List<int> newlyAddedAddress = [];
 
 	public ReadOnlyObservableCollection<ObsAddressViewModel> Addresses => addresses;
 	public bool HasAddresses => Addresses?.Count > 0;
@@ -110,20 +111,17 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	private Task Discard() {
-	  return UPAdditionalDataRepo.Instance.Load();
+		return UPAdditionalDataRepo.Instance.Load();
 	}
 
 	private async Task SaveChanges() {
 		IsSaving = true;
 
 		try {
-			Logins.ForEach(async l => await OnSaveLogin(l));
-			//
-			Persons.ForEach(async l => await OnSavePerson(l));
-			//
-			Addresses.ForEach(async l => await OnSaveAddress(l));
-			//
-			Businesses.ForEach(async l => await OnSaveBusiness(l));
+			await Logins.ForEach(OnSaveLogin);
+			await Persons.ForEach(OnSavePerson);
+			await Addresses.ForEach(OnSaveAddress);
+			await Businesses.ForEach(OnSaveBusiness);
 
 			if (UserProfile?.Validator?.IsValid == false) {
 				//return;
@@ -230,13 +228,14 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	#region Addresses
 	[RelayCommand]
 	private async Task OnAddAddress() {
-		if (addresses.Any(x => x.Id == 0)) {
+		if (addresses.Any(x => x.Id == 0) || newlyAddedAddress.Count != 0) {
 			return;
 		}
 
-		_ = await UPAdditionalDataRepo.Instance.Addrez.Create(new UPAddressDto() {
+		var addedAddress = await UPAdditionalDataRepo.Instance.Addrez.Create(new UPAddressDto() {
 			ProfileId = UserProfile?.Id
 		});
+		newlyAddedAddress.Add([addedAddress.id]);
 		OnPropertyChanged(nameof(HasAddresses));
 	}
 
@@ -249,6 +248,8 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 				.RunInBackground();
 			if (p.Id == 0)
 				_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Addrez, p.ToDto());
+			if (newlyAddedAddress.Any(id => p.Id == id))
+				_ = newlyAddedAddress.Remove(p.Id);
 		}
 	}
 

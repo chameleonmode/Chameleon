@@ -31,10 +31,10 @@
 
 			<Grid ColumnDefinitions="3*,*">
 				<ContentControl Name="ProfilesPanel"
-					   DataContext= "{Binding Profiles}"/>
+					   DataContext= "{Binding Profiles}" />
 				<ContentControl Name="FoldersPanel"
 					   Grid.Column="1"
-					   DataContext= "{Binding Folders}"/>
+					   DataContext= "{Binding Folders}" />
 			</Grid>
 		</StackPanel>
 	</ScrollViewer>

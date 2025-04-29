@@ -8,6 +8,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
+using Chameleon.lib.Common.ServiceManagers;
+using Chameleon.lib.Common.Constants;
+using Chameleon.lib.Util;
+using Chameleon.lib.Common.Models.Dto;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 
@@ -17,7 +21,7 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private string? assistantEmail;
 	[ObservableProperty]
-	private bool showUserInfo = true;
+	private bool showUserInfo;
 
 	//
 	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
@@ -27,59 +31,22 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public ObservableCollection<ObsFolder> SelectedFolders { get; } = [];
 
-	public InviteUserOrAddProfilesViewModel(bool singleton = false) : base("Select Profiles & Folders") {
-		if (singleton) {
-			Profiles = MyProfilesViewModel.Instance.Profiles;
-			MyProfilesViewModel.Instance.OnSelectedChanged += OnProfileSelectedChanged;
+	public InviteUserOrAddProfilesViewModel(bool userInfo = false) : base("Select Profiles & Folders") {
+		ShowUserInfo = userInfo;
 
-			Folders = FoldersViewModel.Instance.Folders;
-			FoldersViewModel.Instance.OnSelectedChanged += OnFolderSelectedChanged;
-		} else {
-			_ = UserProfilesRepo.Connect()
-				.Transform(i => new ObsProfile(
-						userProfile: i,
-						hasActionOptions: false,
-						onSelectedChanged: OnProfileSelectedChanged
-					)
-				)
-				.SortAndBind(out var profiles, Compares.ObsProfileCompares.AscendingComparer)
-				.Subscribe(async p => {
-					var pre = SelectedProfiles.ToList();
-					SelectedProfiles.Clear();
-					await Task.Delay(64);
-					foreach (var item in pre) {
-						var cp = Profiles?.First(pr => pr.Dto!.id == item.Dto!.id);
-						if (cp != null) {
-							cp.IsSelected = true;
-							SelectedProfiles.Add(cp);
-						}
-					}
-				});
-			Profiles = profiles;
+		MyProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(UserProfilesRepo.Instance.ObservableCache.Count);
+		MyProfilesViewModel.Instance.Profiles.ForEach(p => {
+			p.IsActionOptionsVisible = false;
+			if (p.IsSelected) SelectedProfiles.Add(p);
+		});
+		MyProfilesViewModel.Instance.OnSelectedChanged += OnProfileSelectedChanged;
+		Profiles = MyProfilesViewModel.Instance.Profiles;
 
-			_ = UserProfilesFolderRepo.Connect(i => i.id != 0)
-				.Transform(i => new ObsFolder(
-					folder: i,
-					hasActionOptions: false,
-					onSelectedChanged: OnFolderSelectedChanged,
-					nameAlreadyExist:
-					folderName => Folders?.Any(x => x.Title == folderName) ?? false)
-				)
-				.SortAndBind(out var folders, Compares.ObsFolderCompares.AscendingComparer)
-				.Subscribe(async p => {
-					var pre = SelectedFolders.ToList();
-					SelectedFolders.Clear();
-					await Task.Delay(64);
-					foreach (var item in pre) {
-						var cp = Folders?.First(pr => pr.Dto!.id == item.Dto!.id);
-						if (cp != null) {
-							cp.IsSelected = true;
-							SelectedFolders.Add(cp);
-						}
-					}
-				});
-			Folders = folders;
-		}
+		FoldersViewModel.Instance.Folders.ForEach(f => {
+			if (f.IsSelected) SelectedFolders.Add(f);
+		});
+		FoldersViewModel.Instance.OnSelectedChanged += OnFolderSelectedChanged;
+		Folders = FoldersViewModel.Instance.Folders;
 	}
 
 	void OnProfileSelectedChanged(ObsProfile p) {
@@ -106,5 +73,34 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 				item.IsSelected = f.IsSelected;
 			}
 		}
+	}
+
+	public async Task<InviteUserOrAddProfilesViewModel?> ShowDialog() {
+		var result = await Mbox.ShowTaskDialog<Controls.InviteUserOrAddProfilesUserControl, InviteUserOrAddProfilesViewModel>(new(
+			Initialize: () => this,
+			Header: "Select Profiles & Folders",
+			SubHeader: "Add profiles and folders to your selection.",
+			Symbas: Enums.Symbas.AddFriend,
+			Btns: Enums.MBoxButtons.OkCancel)
+		);
+		MyProfilesViewModel.Instance.Profiles.ForEach(p => p.IsActionOptionsVisible = true);
+		MyProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
+		return result == Enums.TaskDialogResult.OK ? this : null;
+	}
+	public async Task<InviteUserOrAddProfilesViewModel?> ShowDialog(
+		IEnumerable<AssisProfileDto> profilez,
+		IEnumerable<AssisShareFolderDto> folderz
+	) {
+		profilez.ForEach(p => {
+			if(Profiles.FirstOrDefault(x => x.Dto.id == p.ProfileId) is { } profile) {
+				profile.IsSelected = true;
+			}
+		});
+		folderz.ForEach(f => {
+			if(Folders.FirstOrDefault(x => x.Dto.id == f.FolderId) is { } folder) {
+				folder.IsSelected = true;
+			}
+		});
+		return await ShowDialog();
 	}
 }
