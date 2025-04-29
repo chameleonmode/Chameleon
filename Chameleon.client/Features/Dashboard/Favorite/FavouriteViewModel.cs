@@ -3,7 +3,7 @@ using Chameleon.client.Features.Dashboard;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
 
-namespace Chameleon.client.Features.Shared.Favorite;
+namespace Chameleon.client.Features.Dashboard.Favorite;
 public partial class FavouriteViewModel : BaseDashboard {
 	public FavouriteViewModel() : base("Favourites") {
 		_ = UserProfilesRepo.Connect(i => i.isFavourite)

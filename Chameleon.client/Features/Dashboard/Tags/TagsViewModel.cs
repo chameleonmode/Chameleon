@@ -7,7 +7,7 @@ using DynamicData;
 using DynamicData.Binding;
 using System.Reactive.Linq;
 
-namespace Chameleon.client.Features.Shared.Tags;
+namespace Chameleon.client.Features.Dashboard.Tags;
 
 public partial class TagsViewModel : BaseDashboard {
 	[ObservableProperty] string selectedTagName = "";
@@ -15,14 +15,24 @@ public partial class TagsViewModel : BaseDashboard {
 	[ObservableProperty] IEnumerable<string> profileTagIds = [];
 
 	public TagsViewModel() : base("Tags") {
-		var tagItems = TagsRepo
-			.Connect()
+		var tagItems = TagsRepo.Connect()
 			.Filter(tag => tag.Name == SelectedTagName);
 
 		_ = this.WhenValueChanged(x => x.SelectedTagName)
 			.Where(tagName => !string.IsNullOrEmpty(tagName))
 			.SelectMany(_ => tagItems)
-			.Subscribe(RefreshProfilesAndFolders);
+			.Subscribe(changeSet => {
+				var items = changeSet
+										.Select(change => change.Current)
+										.SelectMany(x => x.Items);
+										
+				FolderTagIds = items
+					.Where(x => x.Key == TagItemType.Folder)
+					.SelectMany(x => x.Value).Distinct();
+				ProfileTagIds = items
+					.Where(x => x.Key == TagItemType.Profile)
+					.SelectMany(x => x.Value).Distinct();
+			});
 
 		_ = UserProfilesRepo.Connect()
 					.Filter(
@@ -45,18 +55,6 @@ public partial class TagsViewModel : BaseDashboard {
 					.SortAndBind(out var folders, foldersCompareObservable)
 					.Subscribe(_ => OnPropertyChanged(nameof(HasNoFolderItems)));
 		Folders = folders;
-	}
-
-	void RefreshProfilesAndFolders(IChangeSet<TagDto, string> changeSet) {
-		var items = changeSet.Select(change => change.Current)
-								.SelectMany(x => x.Items)
-								.ToList();
-		FolderTagIds = items
-			.Where(x => x.Key == TagItemType.Folder)
-			.SelectMany(x => x.Value).Distinct();
-		ProfileTagIds = items
-			.Where(x => x.Key == TagItemType.Profile)
-			.SelectMany(x => x.Value).Distinct();
 	}
 
 	public static TagsViewModel Instance { get; } = new TagsViewModel();

@@ -1,4 +1,4 @@
-﻿using Chameleon.client.Features.Shared.Tags;
+﻿using Chameleon.client.Features.Dashboard.Tags;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -25,29 +25,9 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 
 		_ = TagsRepo.Connect()
 			.Filter(tag => tag.Name == "Favourites" || tag.Items.Any(x => x.Value.Count > 0))
-			.Transform(item => new TagViewModel(t => SelectedTag = t) { Name = item.Name })
+			.Transform(item => new TagViewModel(t => SelectedTag = t) { Name = item.Name, IsSelected = item.Name == "Favourites" })
 			.Bind(out var tagz)
-			.Subscribe(changeSet => {
-				// if (Tagz.Count > 0) {
-				// 	foreach (var change in changeSet) {
-				// 		if (!Tagz.Any(tag => tag.Name == change.Current.Name)) continue;
-				// 		else if(change.Reason == ChangeReason.Remove) _ = Tagz.Remove(change.Current);
-				// 		else Tagz.Add(change.Current);
-				// 	}
-				// } else {
-				// 	Tagz.Add(new TagViewModel { Name = "Favourites", IsSelected = true });
-				// 	Tagz.AddRange(changeSet.Select(change => change.Current));
-				// 	SelectedTag = Tagz[0];
-				// }
-
-				// foreach (var tag in Tagz) {
-				// 	_ = tag.TagObservable
-				// 		.Skip(1)
-				// 		.Subscribe(OnTagSelected);
-				// }
-
-				SelectedTag ??= tagz[0];
-			});
+			.Subscribe();
 		Tagz = tagz;
 
 		AsyncCommandMap["SyncChanges"] = async () => {
@@ -71,9 +51,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 		if (!IsFavouriteSelected) TagsViewModel.Instance.SelectedTagName = newValue.Name;
 
 		if(!newValue.IsSelected) newValue.IsSelected = true;
-		if (oldValue != null && oldValue.IsSelected) {
-			 oldValue.IsSelected = false;
-		}
+		if (oldValue != null && oldValue.IsSelected) oldValue.IsSelected = false;
 	}
 
 	private async Task CheckForCookies() {

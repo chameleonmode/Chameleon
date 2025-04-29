@@ -5,8 +5,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-             x:Class="Chameleon.client.Features.Shared.Favorite.FavouriteView"
-			 xmlns:local="using:Chameleon.client.Features.Shared.Favorite"
+             x:Class="Chameleon.client.Features.Dashboard.Favorite.FavouriteView"
+			 xmlns:local="using:Chameleon.client.Features.Dashboard.Favorite"
 			 x:DataType="local:FavouriteViewModel"
 			 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto,Auto">
