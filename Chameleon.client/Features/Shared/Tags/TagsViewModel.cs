@@ -24,31 +24,27 @@ public partial class TagsViewModel : BaseDashboard {
 			.SelectMany(_ => tagItems)
 			.Subscribe(RefreshProfilesAndFolders);
 
-		var profileTagIdsChangedFilter = this
-			.WhenValueChanged(vm => vm.ProfileTagIds)
-			.Where(ids => ids is not null)
-			.Select(ids => new Func<UserProfileDto, bool>(f => ids!.Any(id => id == f.id.ToString())));
-
-		var profiles = UserProfilesRepo
-					.Connect()
-					.Filter(profileTagIdsChangedFilter)
+		_ = UserProfilesRepo.Connect()
+					.Filter(
+						this.WhenValueChanged(vm => vm.ProfileTagIds)
+								.Where(ids => ids is not null)
+								.Select(ids => new Func<UserProfileDto, bool>(f => ids!.Any(id => id == f.id.ToString())))
+					)
 					.Transform(i => new ObsProfile(i, false))
-					.SortAndBind(out var profileList, profilesCompareObservable)
+					.SortAndBind(out var profiles, profilesCompareObservable)
 					.Subscribe(_ => OnPropertyChanged(nameof(HasNoItems)));
-		Profiles = profileList;
+		Profiles = profiles;
 
-		var folderTagIdsChangedFilter = this
-					.WhenValueChanged(vm => vm.FolderTagIds)
-					.Where(ids => ids is not null)
-					.Select(ids => new Func<UPFolderDto, bool>(f => ids!.Any(id => id == f.id.ToString())));
-
-		var folders = UserProfilesFolderRepo
-					.Connect()
-					.Filter(folderTagIdsChangedFilter)
+		_ = UserProfilesFolderRepo.Connect()
+					.Filter(
+						this.WhenValueChanged(vm => vm.FolderTagIds)
+								.Where(ids => ids is not null)
+								.Select(ids => new Func<UPFolderDto, bool>(f => ids!.Any(id => id == f.id.ToString())))
+					)
 					.Transform(i => new ObsFolder(i, true, null, null))
-					.SortAndBind(out var folderlist, foldersCompareObservable)
+					.SortAndBind(out var folders, foldersCompareObservable)
 					.Subscribe(_ => OnPropertyChanged(nameof(HasNoFolderItems)));
-		Folders = folderlist;
+		Folders = folders;
 	}
 
 	void RefreshProfilesAndFolders(IChangeSet<TagDto, string> changeSet) {

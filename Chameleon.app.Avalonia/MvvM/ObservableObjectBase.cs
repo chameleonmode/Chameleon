@@ -5,8 +5,6 @@ using CommunityToolkit.Mvvm.Input;
 using ReactiveValidation;
 using System.Collections;
 using System.ComponentModel;
-using System.Diagnostics;
-
 namespace Chameleon.lib.CommunityToolkit.MvvM;
 
 public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewModel, IValidatableObject {

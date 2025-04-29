@@ -6,17 +6,15 @@ using DynamicData;
 namespace Chameleon.client.Features.Shared.Favorite;
 public partial class FavouriteViewModel : BaseDashboard {
 	public FavouriteViewModel() : base("Favourites") {
-		_ = UserProfilesRepo
-					.Connect(i => i.isFavourite)
-					.Transform(i => new ObsProfile(i, false))
-					.SortAndBind(out var list, profilesCompareObservable)
-					.Subscribe((i) => {
-						OnPropertyChanged(nameof(HasNoItems));
-					});
+		_ = UserProfilesRepo.Connect(i => i.isFavourite)
+			.Transform(i => new ObsProfile(i, false))
+			.SortAndBind(out var list, profilesCompareObservable)
+			.Subscribe((i) => {
+				OnPropertyChanged(nameof(HasNoItems));
+			});
 		Profiles = list;
 
-		_ = UserProfilesFolderRepo
-			.Connect(i => i.isFavorite)
+		_ = UserProfilesFolderRepo.Connect(i => i.isFavorite)
 			.Transform(i => new ObsFolder(i, true, null, null))
 			.SortAndBind(out var flist, foldersCompareObservable)
 			.Subscribe((i) => {

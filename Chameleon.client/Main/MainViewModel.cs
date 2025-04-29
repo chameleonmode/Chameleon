@@ -83,8 +83,7 @@ public partial class MainViewModel : ObservableObjectBase {
 			.Bind(out _boundFolders)
 			.Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
 
-		_ = TagsRepo
-			.Connect()
+		_ = TagsRepo.Connect()
 			.Transform(i => new MainAppSearchItem() {
 				Header = $"#{i.Name}",
 				Namespace = "Tag",
