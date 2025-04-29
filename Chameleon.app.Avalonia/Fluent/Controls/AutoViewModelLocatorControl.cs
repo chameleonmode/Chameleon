@@ -20,7 +20,7 @@ public class AutoViewModelInitControl : UserControl {
 public class AutoViewModelLocatorControl : AutoViewModelInitControl {
 	public AutoViewModelLocatorControl()
 	{
-		DataContext = AutoLocateVM() ??
+		DataContext ??= AutoLocateVM() ??
 				throw new NullReferenceException($"ViewModel for {GetType().Name} not found.");
 	}
 

@@ -7,11 +7,11 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:Chameleon.client.Features.Automation.Actors"
              xmlns:vmv="using:Chameleon.client.Features.Automation.Actors.ViewModels"
-			 xmlns:models="using:Chameleon.AIR.Actors.Models"
+             xmlns:models="using:Chameleon.AIR.Actors.Models"
              xmlns:redditModels="using:Chameleon.AIR.Actors.Models.Reddit"
-			 x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
+             x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
              x:DataType="vm:ActorsViewModel"
-			 x:CompileBindings="True">
+             x:CompileBindings="True">
 	<UserControl.Styles>
 		<Style Selector="TextBlock.sideLabel">
 			<Setter Property="VerticalAlignment" Value="Center"/>
@@ -23,38 +23,126 @@
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 
+		<Style Selector="ContentControl.sideInput">
+			<Setter Property="Margin" Value="5,0,0,8"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
 		<Style Selector="ComboBox.sideInput">
 			<Setter Property="Margin" Value="5,0,0,8"/>
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
-		
+
 		<Style Selector="ToggleSwitch.sideInput">
-			<Setter Property="Margin" Value="5,0,0,8"/>
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="Margin" Value="5,0,0,11"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
+
 		<Style Selector="ui|NumberBox.sideInput">
 			<Setter Property="Margin" Value="5,0,0,8"/>
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="SpinButtonPlacementMode" Value="Inline"/>
+			<Setter Property="ValidationMode" Value="InvalidInputOverwritten"/>
+		</Style>
+
+		<Style Selector="ui|SettingsExpanderItem > StackPanel">
+			<Setter Property="Spacing" Value="10"/>
+			<Setter Property="Margin" Value="10,5,10,5"/>
+		</Style>
+
+		<Style Selector="Grid.inputGrid">
+			<Setter Property="Margin" Value="0"/>
+		</Style>
+
+		<Style Selector="StackPanel.randoEditor">
+			<Setter Property="Orientation" Value="Horizontal"/>
+			<Setter Property="Spacing" Value="5"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="StackPanel.randoEditor > TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="0,0,5,0"/>
+		</Style>
+
+		<Style Selector="StackPanel.randoEditor > ui|NumberBox">
+			<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
+			<Setter Property="Minimum" Value="0"/>
+			<Setter Property="AcceptsExpression" Value="False"/>
+			<Setter Property="Margin" Value="0,0,5,0"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 	</UserControl.Styles>
-	
-	<UserControl.Resources>
-		<DataTemplate x:Key="RandoEditorTemplate" x:DataType="vmv:RandoViewModel">
-			<StackPanel Orientation="Horizontal" Spacing="5">
-				<TextBlock Classes="sideLabel" Text="Min:"/>
-				<ui:NumberBox Classes="sideInput" Value="{Binding Min, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Minimum="0"/>
-				<TextBlock Classes="sideLabel" Text="Max:"/>
-				<ui:NumberBox Classes="sideInput" Value="{Binding Max, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Minimum="0"/>
-				<TextBlock Classes="sideLabel" Text="Multiplier:" VerticalAlignment="Center"/>
-				<ui:NumberBox Classes="sideInput" Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue=''}" SpinButtonPlacementMode="Compact" AcceptsExpression="False"/>
-			</StackPanel>
-		</DataTemplate>
-	</UserControl.Resources>
 
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<DataTemplate x:Key="RandoEditorTemplate" x:DataType="vmv:RandoViewModel">
+				<StackPanel Classes="randoEditor">
+					<TextBlock Text="Min:"/>
+					<ui:NumberBox Value="{Binding Min, Mode=TwoWay}"/>
+					<TextBlock Text="Max:"/>
+					<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"/>
+				</StackPanel>
+			</DataTemplate>
+
+			<DataTemplate x:Key="StartEditorTemplate" x:DataType="vmv:StartViewModel">
+				<Grid Classes="inputGrid" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+					<!-- 
+						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
+						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> 
+					
+						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="URL:"/>
+						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
+					-->
+					<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" Text="New Tab:"/>
+					<ToggleSwitch Classes="sideInput" Grid.Row="1" Grid.Column="1" IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
+				</Grid>
+			</DataTemplate>
+
+			<DataTemplate x:Key="TimeoutsEditorTemplate" x:DataType="vmv:TimeoutsViewModel">
+				<Grid Classes="inputGrid" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+					<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" 
+						Text="Default:"/>
+					<ui:NumberBox Classes="sideInput" Grid.Row="0" Grid.Column="1" 
+						Value="{Binding Default, Mode=TwoWay}"/>
+
+					<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" 
+						Text="Wait:"/>
+					<ui:NumberBox Classes="sideInput" Grid.Row="1" Grid.Column="1" 
+						Value="{Binding Wait, Mode=TwoWay}" />
+
+					<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" 
+						Text="Navigate:"/>
+					<ui:NumberBox Classes="sideInput" Grid.Row="2" Grid.Column="1" 
+						Value="{Binding Navigate, Mode=TwoWay}"/>
+
+					<TextBlock Grid.Row="3" Classes="sideLabel" Text="Naps:" Margin="0"/>
+					<ContentControl Classes="sideInput" 
+						Grid.Row="3" Grid.Column="1"  
+						Margin="5,4,0,0"
+						VerticalAlignment="Center"
+						Content="{Binding Naps}">
+						<ContentControl.ContentTemplate>
+							<DataTemplate x:DataType="vmv:RandoViewModel">
+								<StackPanel Classes="randoEditor">
+									<TextBlock Text="Min:"/>
+									<ui:NumberBox Value="{Binding Min, Mode=TwoWay}"/>
+									<TextBlock Text="Max:"/>
+									<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"/>
+									<TextBlock Text="Multiplier:"/>
+									<ui:NumberBox Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue=''}"/>
+								</StackPanel>
+							</DataTemplate>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+				</Grid>
+			</DataTemplate>
+		</ResourceDictionary>
+	</UserControl.Resources>
+	
 	<Grid RowDefinitions="Auto, *">
 		<afv:ChameleonContentControl Title="Agents"
                                      TitleDescription="Robotic Automation Agents">
@@ -73,14 +161,26 @@
 							<ui:SettingsExpander Header="{Binding EditableSettings.Start.Feature}"
                                                  Description="{Binding EditableSettings.Start.Url}">
 								<ui:SettingsExpanderItem>
-									<StackPanel Spacing="10" Margin="10,0,10,0">
-										<TextBlock Text="Scripts" Theme="{StaticResource CaptionTextBlockStyle}"/>
-										<ItemsControl ItemsSource="{Binding Selections}">
-											<ItemsControl.ItemsPanel>
-												<ItemsPanelTemplate>
-													<StackPanel Orientation="Horizontal" Spacing="6" />
-												</ItemsPanelTemplate>
-											</ItemsControl.ItemsPanel>
+									<StackPanel>
+										<TextBlock Text="Profiles" Theme="{StaticResource CaptionTextBlockStyle}"/>
+										<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
+											<ItemsControl 
+												ItemsPanel="{StaticResource HorizontalStackPanel}" 
+												ItemsSource="{Binding Tagz}">											
+												<ItemsControl.ItemTemplate>
+													<DataTemplate x:DataType="vm:Tag">
+														<ToggleButton IsChecked="{Binding Selected}"
+                                                	                  Content="{Binding Dto.Name}"
+                                                	                  ToolTip.Tip="{Binding Items.Length}" />
+													</DataTemplate>
+											</ItemsControl.ItemTemplate>
+													
+												</ItemsControl>
+										</ScrollViewer>
+										<TextBlock Text="Scripts" Margin="0 6 0 0" Theme="{StaticResource CaptionTextBlockStyle}"/>
+										<ItemsControl 
+											ItemsSource="{Binding Selections}"
+											ItemsPanel="{StaticResource HorizontalStackPanel}">
 											<ItemsControl.ItemTemplate>
 												<DataTemplate x:DataType="vm:Selection">
 													<ToggleButton IsChecked="{Binding Selected}"
@@ -91,134 +191,90 @@
 										</ItemsControl>
 
 										<Expander Header="Options" IsExpanded="True">
-											<Expander.Content>
-											 	<StackPanel>
-													<ContentControl Content="{Binding EditableArgs}">
-													<ContentControl.ContentTemplate>
-														<DataTemplate x:DataType="vmv:ArgsViewModel">
-															<StackPanel Spacing="10" Margin="20,5,0,5">
-																<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+											<StackPanel>
+												<ContentControl Content="{Binding EditableArgs}">
+														<ContentControl.ContentTemplate>
+															<DataTemplate x:DataType="vmv:ArgsViewModel">
+																<Grid Margin="20,5,0,5"
+                                                		              ColumnDefinitions="Auto,*"
+                                                		              RowDefinitions="Auto,Auto,Auto,Auto">
 																	<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" 
 																		Text="Search:"/>
 																	<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" 
 																		Text="{Binding Search, Mode=TwoWay}"/>
+
 																	<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" 
 																		Text="Scope:" />
 																	<ComboBox Classes="sideInput" Grid.Row="1" Grid.Column="1" 
 																		ItemsSource="{Binding AvailableScopes}" 
 																		SelectedItem="{Binding SelectedScope, Mode=TwoWay}" />
+
 																	<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" 
 																		Text="Sort:"/>
 																	<ComboBox Classes="sideInput" Grid.Row="2" Grid.Column="1" 
 																		ItemsSource="{Binding AvailableSorts}" 
 																		SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
+
 																	<TextBlock Classes="sideLabel" Grid.Row="3" Grid.Column="0" 
-																		Text="Filter:" VerticalAlignment="Center"/>
+																		Text="Filter:"/>
 																	<ComboBox Classes="sideInput" Grid.Row="3" Grid.Column="1" 
 																		ItemsSource="{Binding AvailableFilters}" 
-																		SelectedItem="{Binding SelectedFilter, Mode=TwoWay}"/>
+																		SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" />
 																</Grid>
-																<!-- <Expander Header="Other Arguments" IsExpanded="False" Margin="0,10,0,0" IsVisible="{Binding OtherArgs.Count}">
-																	<ItemsControl ItemsSource="{Binding OtherArgs}">
-																		<ItemsControl.ItemTemplate>
-																			<DataTemplate>
-																				<Grid ColumnDefinitions="Auto,*" Margin="2">
-																					<TextBlock Classes="sideLabel" Text="{Binding Key}" FontWeight="SemiBold" Margin="0,0,10,0" VerticalAlignment="Center"/>
-																					<TextBox Classes="sideInput" Grid.Column="1" Text="{Binding Value, Mode=OneWay}" IsReadOnly="True" />
-																				</Grid>
-																			</DataTemplate>
-																		</ItemsControl.ItemTemplate>
-																	</ItemsControl>
-																</Expander> -->
-															</StackPanel>
-														</DataTemplate>
-													</ContentControl.ContentTemplate>
-													</ContentControl>
-													<ContentControl Content="{Binding EditableSettings}">
+															</DataTemplate>
+														</ContentControl.ContentTemplate>
+												</ContentControl>
+												<ContentControl Content="{Binding EditableSettings}">
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="vmv:SettingsViewModel">
-															<StackPanel Spacing="10" Margin="20,5,0,5">
+															<StackPanel Margin="20,5,0,5" Spacing="6">
 																<Expander Header="Start">
-																	<Expander.Content>
-																		<ContentControl Content="{Binding Start}">
-																			<ContentControl.ContentTemplate>
-																				<DataTemplate x:DataType="vmv:StartViewModel">
-																					<Grid ColumnDefinitions="Auto,*" 
-																						RowDefinitions="Auto,Auto,Auto" 
-																						Margin="20,5,0,5">
-																						<!-- <TextBlock Classes="sideLabel" 
-																							Grid.Row="0" Grid.Column="0" 
-																							Text="Feature:"/>
-																						<TextBox Classes="sideInput" 
-																							Grid.Row="0" Grid.Column="1" 
-																							Text="{Binding Feature, Mode=TwoWay}"/> -->
-																						<TextBlock Classes="sideLabel" 
-																							Grid.Row="1" Grid.Column="0" 
-																							Text="URL:"/>
-																						<TextBox Classes="sideInput" 
-																							Grid.Row="1" Grid.Column="1" 
-																							Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
-																						<TextBlock Classes="sideLabel" 
-																							Grid.Row="2" Grid.Column="0" 
-																							Text="New Tab:"/>
-																						<ToggleSwitch Classes="sideInput" 
-																							Grid.Row="2" Grid.Column="1" 
-																							IsChecked="{Binding New, Mode=TwoWay}" 
-																							OffContent="" OnContent=""/>
-																					</Grid>
-																				</DataTemplate>
-																			</ContentControl.ContentTemplate>
-																		</ContentControl>
-																	</Expander.Content>
+																	<ContentControl 
+																		Content="{Binding Start}" 
+																		ContentTemplate="{StaticResource StartEditorTemplate}"/>
 																</Expander>
-																<Expander Header="Timeouts" IsExpanded="False">
-																	<Expander.Content>
-																		<ContentControl Content="{Binding Timeouts}">
-																			<ContentControl.ContentTemplate>
-																				<DataTemplate x:DataType="vmv:TimeoutsViewModel">
-																					<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" Margin="20,5,0,5">
-																						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" 
-																							Text="Default:"/>
-																						<ui:NumberBox Classes="sideInput" Grid.Row="0" Grid.Column="1"
-																						 	Value="{Binding Default, Mode=TwoWay}"/>
-																						<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" 
-																							Text="Wait:"/>
-																						<ui:NumberBox Classes="sideInput" Grid.Row="1" Grid.Column="1" 
-																							Value="{Binding Wait, Mode=TwoWay}" />
-																						<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" 
-																							Text="Navigate:"/>
-																						<ui:NumberBox Classes="sideInput" Grid.Row="2" Grid.Column="1" Value="{Binding Navigate, Mode=TwoWay}"/>
-																						<TextBlock Classes="sideLabel" Grid.Row="3" Grid.Column="0" Text="Naps:" VerticalAlignment="Top"/>
-																						<ContentControl Grid.Row="3" Grid.Column="1"
-																							ToolTip.Tip="Settings in milliseconds for naps ie. time to wait between actions"
-																							Content="{Binding Naps}" 
-																							ContentTemplate="{StaticResource RandoEditorTemplate}"/>
-																					</Grid>
-																				</DataTemplate>
-																			</ContentControl.ContentTemplate>
-																		</ContentControl>
-																	</Expander.Content>
+																<Expander Header="Timeouts">
+																	<ContentControl 
+																		Content="{Binding Timeouts}"
+																		ContentTemplate="{StaticResource TimeoutsEditorTemplate}"/>
 																</Expander>
-																<Expander Header="Randomization" 
-																	ToolTip.Tip="Randomization settings for retries and selections ie. join/vote">
-																	<ContentControl Content="{Binding Rando}" ContentTemplate="{StaticResource RandoEditorTemplate}" Margin="20,5,0,5"/>
+																<Expander Header="Randomization">
+																	<ContentControl 
+																		Content="{Binding Rando}"
+                                                	                    ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 																</Expander>
-																<Expander Header="Iterations"
-																	ToolTip.Tip="Randomization settings for iterations ie. number of times to run the script">
-																	<ContentControl Content="{Binding Iterations}" ContentTemplate="{StaticResource RandoEditorTemplate}" Margin="20,5,0,5"/>
+																<Expander Header="Iterations">
+																	<ContentControl 
+																		Content="{Binding Iterations}"
+																		ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 																</Expander>
 															</StackPanel>
 														</DataTemplate>
 													</ContentControl.ContentTemplate>
-													</ContentControl>
-												</StackPanel>
-											</Expander.Content>
+												</ContentControl>
+											</StackPanel>
 										</Expander>
 									</StackPanel>
 								</ui:SettingsExpanderItem>
 
 								<ui:SettingsExpander.Footer>
-									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+									<StackPanel 
+										Orientation="Horizontal" 
+										Spacing="6"
+										HorizontalAlignment="Right">
+										<ui:FAComboBox
+											HorizontalAlignment="Left"
+											SelectedItem="{Binding Browser}"
+											ItemsSource="{Binding BrowserOptions}">
+											<ui:FAComboBox.ItemTemplate>
+												<DataTemplate>
+													<afv:SvgIconControl 
+														IconName="{Binding IconName}"
+														Height="20"
+														Width="20"/>
+												</DataTemplate>
+											</ui:FAComboBox.ItemTemplate>
+										</ui:FAComboBox>
 										<Button Content="Run" CommandParameter="Run" IsVisible="{Binding !Running}" Command="{Binding AsyncCfVCommand}" />
 										<Button Content="Stop" CommandParameter="Stop" IsVisible="{Binding Running}" Command="{Binding CfVCommand}" />
 									</StackPanel>

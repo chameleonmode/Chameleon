@@ -22,7 +22,12 @@ public partial class FoldersViewModel : ViewModelObjectBase {
 	public FoldersViewModel() {
 		_ = UserProfilesFolderRepo
 		.Connect()
-		.Transform(i => new ObsFolder(i, false, f => OnSelectedChanged?.Invoke(f), folderName => Folders?.Any(x => x.Dto.title == folderName) ?? false))
+		.Transform(i => new ObsFolder(
+			i,
+			false,
+			f => OnSelectedChanged?.Invoke(f),
+			folderName => Folders?.Any(x => x.Dto.title == folderName) ?? false
+		))
 		.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
 		.Subscribe();
 		SelectedFolder = AllProfiles = folders[0];

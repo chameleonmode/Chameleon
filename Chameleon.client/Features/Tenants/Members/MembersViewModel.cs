@@ -6,7 +6,6 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
 using DynamicData;
-using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api;
@@ -32,7 +31,7 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 
 	//
 	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
-	public ObservableCollection<ObsProfile> SelectedFolders { get; } = [];
+	public ObservableCollection<ObsFolder> SelectedFolders { get; } = [];
 
 	public TenantMembersViewModel() : base("Members") {
 		_ = userAssistantRepo.ObservableCache
@@ -91,21 +90,15 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 			if (await Mbox.Show("USERS LIMIT REACHED", "You have reached the maximum number of users."))
 				ProcessUtil.OpenBrowser(Consts.PricingUrl);
 		} else {
-			var invite = new InviteUserOrAddProfilesViewModel();
-			if (await Mbox.ShowTaskDialog<InviteUserOrAddProfilesViewModel, InviteUserOrAddProfilesUserControl>(
-							initialize: () => invite,
-							header: "Invite User",
-							subHeader: "Invite new user and customise their access",
-							symbas: Enums.Symbas.AddFriend,
-							btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK) {
+			if (await new InviteUserOrAddProfilesViewModel(true).ShowDialog() is { } result) {
 				try {
-					ArgumentNullException.ThrowIfNullOrEmpty(invite.AssistantName);
-					ArgumentNullException.ThrowIfNullOrEmpty(invite.AssistantEmail);
-					var profileIds = invite.SelectedProfiles.Select(p => p.Dto!.id).ToList();
-					var folderIds = invite.SelectedFolders.Select(f => f.Dto!.id).ToList();
+					ArgumentException.ThrowIfNullOrEmpty(result.AssistantName);
+					ArgumentException.ThrowIfNullOrEmpty(result.AssistantEmail);
+					var profileIds = result.SelectedProfiles.Select(p => p.Dto!.id).ToList();
+					var folderIds = result.SelectedFolders.Select(f => f.Dto!.id).ToList();
 					_ = await userAssistantRepo.Create(new AssistDto {
-						UserName = invite.AssistantName,
-						EmailAddress = invite.AssistantEmail,
+						UserName = result.AssistantName,
+						EmailAddress = result.AssistantEmail,
 						ProfileIds = profileIds,
 						ProfilePermissionIds = [],
 						FolderIds = folderIds,

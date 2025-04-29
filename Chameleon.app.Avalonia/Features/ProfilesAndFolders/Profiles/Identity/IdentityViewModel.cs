@@ -3,10 +3,10 @@ using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity.ViewM
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Extensions;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
@@ -118,13 +118,10 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		IsSaving = true;
 
 		try {
-			Logins.ForEach(async l => await OnSaveLogin(l));
-			//
-			Persons.ForEach(async l => await OnSavePerson(l));
-			//
-			Addresses.ForEach(async l => await OnSaveAddress(l));
-			//
-			Businesses.ForEach(async l => await OnSaveBusiness(l));
+			Logins.ForEach(async x=> await OnSaveLogin(x));
+			Persons.ForEach(async x=> await OnSavePerson(x));
+			Addresses.ForEach(async x=> await OnSaveAddress(x));
+			Businesses.ForEach(async x=> await OnSaveBusiness(x));
 
 			if (UserProfile?.Validator?.IsValid == false) {
 				//return;
@@ -144,9 +141,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 				ProfileVM = new ObsProfile(UserProfile.ToDto(), false);
 				Toaster.Success($"Update was successful.");
 			}
-		} catch (Exception ex) {
-			// Handle the exception (e.g., log it, show a notification, etc.)
-			Toaster.Error($"{ex.Message}");
 		} finally {
 			ShowValidationErrors();
 			// Code to execute after the task completes, regardless of success or failure

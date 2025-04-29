@@ -3,7 +3,6 @@ using Chameleon.app.Avalonia.Features.ProfilesAndFolders;
 using Chameleon.client.Features.Automation.AI.ChameleonAIR;
 using Chameleon.client.Features.Automation.Playwright;
 using Chameleon.client.Features.Tenants.Members;
-using Chameleon.client.Pages.ViewModels;
 using Chameleon.client.Pages.Views;
 using Chameleon.client.Features.Automation.Actors;
 
@@ -16,13 +15,15 @@ public static class Modules {
   public static IServiceCollection WithAllPagesAndFeatures(this IServiceCollection services) => services
       .WithProfilesAndFolders()
       .WithActors()
-      .AddSingleton<AutomationViewModel>()
+      .AddSingleton<DashboardView>()
+		  .AddSingleton<Features.Dashboard.ViewModel>()
+      .AddSingleton<Features.Automation.ViewModel>()
       .AddSingleton<AutomationView>()
 			.AddSingleton<ChameleonAIRView>()
 			.AddSingleton<ChameleonAIRViewModel>()
 			.AddSingleton<PlaywrightView>()
 			.AddSingleton<PlaywrightViewModel>()
-      .AddSingleton<TenantsViewModel>()
+      .AddSingleton<Features.Tenants.ViewModel>()
       .AddSingleton<TenantsView>()
       .AddSingleton<TenantMembersView>()
 			.AddSingleton<TenantMembersViewModel>();

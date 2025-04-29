@@ -14,8 +14,9 @@ public class PaginatorButtonViewModel(int index, bool isEllipsis = false) {
 				: (index + 1).ToString();
 }
 
-public partial class PaginatorViewModel(Action<PaginatorViewModel> changePageIndex,
-													int onPageItems = Consts.PageinationPageItems) : ViewModelObjectBase {
+public partial class PaginatorViewModel(
+	Action<PaginatorViewModel> changePageIndex,	int onPageItems = Consts.PageinationPageItems
+) : ViewModelObjectBase {
 	private bool _isUpdatingButtons;
 	[ObservableProperty]
 	private int pageCount;
@@ -138,7 +139,7 @@ public partial class PaginatorViewModel(Action<PaginatorViewModel> changePageInd
 		}
 	}
 
-	private void UpdateStatus() {
+	public void UpdateStatus() {
 		OnPropertyChanged(nameof(PrevButtonIsEnabled));
 		OnPropertyChanged(nameof(NextButtonIsEnabled));
 		OnPropertyChanged(nameof(FirstVisibleElementNumber));

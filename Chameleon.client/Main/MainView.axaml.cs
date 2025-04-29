@@ -14,7 +14,6 @@ using Chameleon.lib.Helpers;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
 using Chameleon.client.Pages.Views;
-using Chameleon.app.Avalonia.Features.Dashboard;
 
 namespace Chameleon.client.Main;
 

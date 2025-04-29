@@ -42,11 +42,13 @@ public class AppStartup {
 			};
 
 			if (!loginSetings.AutoLogin &&
-				await Mbox.ShowTaskDialog<MboxLoginViewModel, MboxLoginUserControl>(() => loginvm,
+				await Mbox.ShowTaskDialog<MboxLoginUserControl, MboxLoginViewModel>(new(
+					() => loginvm,
 					"User Login",
 					"Enter the provided activation information",
-					symbas: Enums.Symbas.ContactInfo,
-					btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.Cancel) {
+					Symbas: Enums.Symbas.ContactInfo,
+					Btns: Enums.MBoxButtons.OkCancel
+				)) == Enums.TaskDialogResult.Cancel) {
 				return false;
 			}
 			ArgumentNullException.ThrowIfNull(loginvm.UserName, "UserName");
