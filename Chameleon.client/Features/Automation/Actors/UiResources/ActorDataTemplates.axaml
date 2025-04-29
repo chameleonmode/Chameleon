@@ -14,13 +14,13 @@
 	</DataTemplate>
 
 	<DataTemplate x:Key="StartEditorTemplate" x:DataType="vmv:StartViewModel">
-		<Grid Classes="inputGrid" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
-			<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
-			<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/>
-			<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" Text="URL:"/>
-			<TextBox Classes="sideInput" Grid.Row="1" Grid.Column="1" Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
-			<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" Text="New Tab:"/>
-			<ToggleSwitch Classes="sideInput" Grid.Row="2" Grid.Column="1" IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
+		<Grid Classes="inputGrid" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+			<!-- <TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
+			<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> -->
+			<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="URL:"/>
+			<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
+			<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" Text="New Tab:"/>
+			<ToggleSwitch Classes="sideInput" Grid.Row="1" Grid.Column="1" IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
 		</Grid>
 	</DataTemplate>
 

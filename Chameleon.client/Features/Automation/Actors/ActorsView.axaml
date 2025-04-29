@@ -85,7 +85,7 @@
 													<ContentControl Content="{Binding EditableSettings}">
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="vmv:SettingsViewModel">
-															<StackPanel Margin="20,5,0,5">
+															<StackPanel Margin="20,5,0,5" Spacing="6">
 																<Expander Header="Start Options" IsExpanded="True">
 																	<ContentControl Content="{Binding Start}"
                                                                                     ContentTemplate="{StaticResource StartEditorTemplate}"/>

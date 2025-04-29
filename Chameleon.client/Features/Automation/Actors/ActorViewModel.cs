@@ -49,14 +49,11 @@ public partial class ActorViewModel : ViewModelObjectBase {
 						foreach (var selection in selected) {
 							cts.Token.ThrowIfCancellationRequested();
 
-							var args = EditableArgs.ToDictionary();
-							var settings = EditableSettings.ToRecord();
-							var opts = new Opts(args, settings);
+							var opts = new Opts(EditableArgs.ToDictionary(), EditableSettings.ToRecord());
 							var json = JS.Serialize(opts);
 							Debug.WriteLine($@"Running script with:
 							  Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'");
 							Debug.WriteLine(json);
-							// await Task.Delay(1000, cts.Token);
 
 							await PlaywriteRunner.RunScript(new() {
 								Port = browser.Settings.Port,

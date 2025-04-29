@@ -8,9 +8,9 @@ public partial class ArgsViewModel : ObservableObject {
 	[ObservableProperty] Sort _selectedSort;
 	[ObservableProperty] Filter _selectedFilter;
 
-	public IEnumerable<Scope> AvailableScopes => Enum.GetValues<Scope>();
-	public IEnumerable<Sort> AvailableSorts => Enum.GetValues<Sort>();
-	public IEnumerable<Filter> AvailableFilters => Enum.GetValues<Filter>();
+	public IEnumerable<Scope> AvailableScopes { get; } = Enum.GetValues<Scope>();
+	public IEnumerable<Sort> AvailableSorts { get; } = Enum.GetValues<Sort>();
+	public IEnumerable<Filter> AvailableFilters { get; } = Enum.GetValues<Filter>();
 
 	public ArgsViewModel(IDictionary<string, string> sourceArgs) {
 		Search = sourceArgs.TryGetValue("Search", out var search) ? search?.ToString() : null;

@@ -3,9 +3,7 @@ using System.Collections.ObjectModel;
 
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Api.Repos;
-using DynamicData;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
 using Chameleon.lib.Common.ServiceManagers;
