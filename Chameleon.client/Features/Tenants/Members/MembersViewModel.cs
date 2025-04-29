@@ -92,15 +92,17 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 				ProcessUtil.OpenBrowser(Consts.PricingUrl);
 		} else {
 			var invite = new InviteUserOrAddProfilesViewModel();
-			if (await Mbox.ShowTaskDialog<InviteUserOrAddProfilesViewModel, InviteUserOrAddProfilesUserControl>(
-							initialize: () => invite,
-							header: "Invite User",
-							subHeader: "Invite new user and customise their access",
-							symbas: Enums.Symbas.AddFriend,
-							btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK) {
+			if (
+					await Mbox.ShowTaskDialog<InviteUserOrAddProfilesUserControl, InviteUserOrAddProfilesViewModel>(new(
+							Initialize: () => invite,
+							Header: "Invite User",
+							SubHeader: "Invite new user and customise their access",
+							Symbas: Enums.Symbas.AddFriend,
+							Btns: Enums.MBoxButtons.OkCancel)) == Enums.TaskDialogResult.OK
+				) {
 				try {
-					ArgumentNullException.ThrowIfNullOrEmpty(invite.AssistantName);
-					ArgumentNullException.ThrowIfNullOrEmpty(invite.AssistantEmail);
+					ArgumentException.ThrowIfNullOrEmpty(invite.AssistantName);
+					ArgumentException.ThrowIfNullOrEmpty(invite.AssistantEmail);
 					var profileIds = invite.SelectedProfiles.Select(p => p.Dto!.id).ToList();
 					var folderIds = invite.SelectedFolders.Select(f => f.Dto!.id).ToList();
 					_ = await userAssistantRepo.Create(new AssistDto {

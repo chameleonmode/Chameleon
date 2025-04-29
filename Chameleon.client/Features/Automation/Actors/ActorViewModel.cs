@@ -37,18 +37,10 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				var selected = Selections.Where(s => s.Selected);
 				if (!selected.Any()) throw new Exception("No scripts selected.");
 
-				var profileOptions = new InviteUserOrAddProfilesViewModel(true) { ShowUserInfo = false };
-				if (
-					await Mbox.ShowTaskDialog<InviteUserOrAddProfilesViewModel, InviteUserOrAddProfilesUserControl>(
-						initialize: () => profileOptions,
-						header: "Add Profiles & Folders",
-						subHeader: "Add profiles and folders to run these automationairs.",
-						symbas: Enums.Symbas.AddFriend,
-						btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK
-				) {
+				if (await InviteUserOrAddProfilesViewModel.ShowDialog(true) is { } options) {
 					Running = true;
 					cts = new CancellationTokenSource();
-					foreach (var profile in profileOptions.SelectedProfiles) {
+					foreach (var profile in options.SelectedProfiles) {
 						cts.Token.ThrowIfCancellationRequested();
 
 						var browser = await profile.OpenSystemBrowser(Enums.SystemBrowserType.Chrome).WaitAsync(cts.Token);

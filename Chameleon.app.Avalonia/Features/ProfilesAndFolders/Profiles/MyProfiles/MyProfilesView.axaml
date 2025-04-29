@@ -47,30 +47,33 @@
 				<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
 					<HeaderedContentControl.Header>
 						<StackPanel Orientation="Horizontal">
-
 							<Button
 								Content="chrome"
 								ToolTip.Tip="Open In System Chrome"
 								Theme="{StaticResource SvgIconButton}"
-								Command="{Binding OpenChromeCommand}"/>
+								Command="{Binding AsyncCfVCommand}"
+								CommandParameter="chrome" />
 							<Button
 								Content="firefox"
 								Margin="3 0 0 0"
 								ToolTip.Tip="Open In System Firefox"
 								Theme="{StaticResource SvgIconButton}"
-								Command="{Binding OpenFirefoxCommand}"/>
+								Command="{Binding AsyncCfVCommand}"
+								CommandParameter="firefox" />
 							<Button
 								Content="brave"
 								Margin="3 0 0 0"
 								ToolTip.Tip="Open In System Brave"
 								Theme="{StaticResource SvgIconButton}"
-								Command="{Binding OpenBraveCommand}"/>
+								Command="{Binding AsyncCfVCommand}"
+								CommandParameter="brave" />
 							<Button
 								Content="chameleon-logo"
 								Margin="3 0 0 0"
 								ToolTip.Tip="Open In Chameleon Browser"
 								Theme="{StaticResource SvgIconButton}"
-								Command="{Binding OpenChameleonBrowserCommand}"/>
+								Command="{Binding AsyncCfVCommand}"
+								CommandParameter="hwinds" />
 
 							<Border
 								BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
@@ -80,23 +83,24 @@
 							<Button
 								Content="up-folder"
 								Tag="Move"
-								Command="{Binding MoveProfilesToFolderCommand}"
-								Theme="{StaticResource SvgIconTextButton}" />
-
+								Theme="{StaticResource SvgIconTextButton}"
+								Command="{Binding AsyncCfVCommand}"
+								CommandParameter="Move"/>
 							<Button
 								Content="minus-in-circle"
 								Tag="Remove"
-								Command="{Binding RemoveProfilesFromFolderCommand}"
 								Theme="{StaticResource SvgIconTextButton}"
 								Margin="4 0 0 0"
-								IsVisible="{Binding HasFolder}"/>
-
+								IsVisible="{Binding HasFolder}"
+								Command="{Binding AsyncCfVCommand}"
+								CommandParameter="Remove"/>
 							<Button
 								Theme="{StaticResource SvgIconTextButton}"
 								Content="delete"
 								Tag="Delete"
 								Margin="3 0 0 0"
-								Command="{Binding DeleteCommand}" />
+								Command="{Binding AsyncCfVCommand}"
+								CommandParameter="Delete" />
 						</StackPanel>
 					</HeaderedContentControl.Header>
 				</HeaderedContentControl>
@@ -111,12 +115,14 @@
 					Content="select-all"
 					Tag="Select all"
 					Theme="{StaticResource SvgIconTextButton}"
-					Command="{Binding SelectAllCommand}" />
+					Command="{Binding CfVCommand}"
+					CommandParameter="SelectAll" />
 				<Button
 					Content="select-all"
 					Tag="Select all in folder"
 					Theme="{StaticResource SvgIconTextButton}"
-					Command="{Binding SelectAllProfilesFromFolderCommand}" />
+					Command="{Binding CfVCommand}"
+					CommandParameter="SelectAllProfilesFromFolder" />
 				<StackPanel
 					Orientation="Horizontal"
 					Margin="2 0 0 0">
@@ -130,7 +136,8 @@
 						Content="plus-in-circle"
 						Tag="Add profiles"
 						Theme="{StaticResource SvgIconTextButton}"
-						Command="{Binding AddProfilesToFolderCommand}" />
+						Command="{Binding AsyncCfVCommand}"
+						CommandParameter="AddProfilesToFolder" />
 				</StackPanel>
 				<afv:HeaderdInputFieldsControl Title="Tags:" Text="{Binding Folder.Tags, FallbackValue=reddit-account}">
 					<afv:HeaderdInputFieldsControl.Buttons>
@@ -212,7 +219,8 @@
 						<Button
 							Classes="accent"
 							Width="72"
-							Command="{Binding RunAutomationCommand}"
+							Command="{Binding AsyncCfVCommand}"
+							CommandParameter="playwright"
 							IsVisible="{Binding IsVisibleRunButton}">
 							<StackPanel Orientation="Horizontal" >
 								<ui:SymbolIcon

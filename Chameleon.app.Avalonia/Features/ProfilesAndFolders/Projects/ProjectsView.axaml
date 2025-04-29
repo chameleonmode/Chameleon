@@ -30,11 +30,8 @@
 			</afv:PageHeaderControl>
 
 			<Grid ColumnDefinitions="3*,*">
-				<ContentControl Name="ProfilesPanel"
-					   DataContext= "{Binding Profiles}"/>
-				<ContentControl Name="FoldersPanel"
-					   Grid.Column="1"
-					   DataContext= "{Binding Folders}"/>
+				<ContentControl Name="ProfilesPanel" />
+				<ContentControl Name="FoldersPanel" Grid.Column="1" />
 			</Grid>
 		</StackPanel>
 	</ScrollViewer>

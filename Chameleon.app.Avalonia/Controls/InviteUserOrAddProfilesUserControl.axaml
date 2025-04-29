@@ -21,7 +21,8 @@
 		</dialogs:ChameleonDialogControl.DialogInputs>
 
 		<dialogs:ChameleonDialogControl.Content>
-			<StackPanel Spacing="6">
+			<StackPanel Spacing="6" 
+				MinWidth="513">
 				<Expander Header="Folders">
 					<StackPanel>
 						<ItemsControl

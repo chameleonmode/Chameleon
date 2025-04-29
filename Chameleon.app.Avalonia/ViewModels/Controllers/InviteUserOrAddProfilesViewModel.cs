@@ -8,6 +8,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
+using Chameleon.lib.Common.ServiceManagers;
+using Chameleon.lib.Common.Constants;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 
@@ -35,6 +37,7 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 					SelectedProfiles.Add(item);
 				}
 			}
+			MyProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(UserProfilesRepo.Instance.ObservableCache.Count);
 			MyProfilesViewModel.Instance.OnSelectedChanged += OnProfileSelectedChanged;
 
 			Folders = FoldersViewModel.Instance.Folders;
@@ -116,5 +119,17 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 				item.IsSelected = f.IsSelected;
 			}
 		}
+	}
+
+	public static async Task<InviteUserOrAddProfilesViewModel?> ShowDialog(bool singleton = false) {
+		var vm = new InviteUserOrAddProfilesViewModel(singleton) { ShowUserInfo = false };
+		var result = await Mbox.ShowTaskDialog<Controls.InviteUserOrAddProfilesUserControl, InviteUserOrAddProfilesViewModel>(new(
+			Initialize: () => vm,
+			Header: "Add Profiles & Folders",
+			SubHeader: "Add profiles and folders to run these automationairs.",
+			Symbas: Enums.Symbas.AddFriend,
+			Btns: Enums.MBoxButtons.OkCancel)
+		);
+		return result == Enums.TaskDialogResult.OK ? vm : null;
 	}
 }

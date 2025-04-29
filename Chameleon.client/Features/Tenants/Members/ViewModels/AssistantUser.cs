@@ -196,12 +196,12 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 				ShowUserInfo = false,
 			};
 			if (
-				await Mbox.ShowTaskDialog<InviteUserOrAddProfilesViewModel, InviteUserOrAddProfilesUserControl>(
-				initialize: () => invite,
-				header: "Add Profiles",
-				subHeader: "Add access to specific Profiles for this user",
-				symbas: Enums.Symbas.AddFriend,
-				btns: Enums.MBoxButtons.OkCancel) == Enums.TaskDialogResult.OK
+				await Mbox.ShowTaskDialog<InviteUserOrAddProfilesUserControl, InviteUserOrAddProfilesViewModel>(new(
+					Initialize: () => invite,
+					Header: "Add Profiles",
+					SubHeader: "Add access to specific Profiles for this user",
+					Symbas: Enums.Symbas.AddFriend,
+					Btns: Enums.MBoxButtons.OkCancel)) == Enums.TaskDialogResult.OK
 			) {
 				var profileIds = invite.SelectedProfiles.Select(p => p.Dto!.id).ToList();
 				if (profileIds.Count != 0) {
