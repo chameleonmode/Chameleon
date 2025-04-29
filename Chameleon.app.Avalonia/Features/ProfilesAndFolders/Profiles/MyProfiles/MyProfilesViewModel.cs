@@ -216,6 +216,8 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
+		Profiles.ForEach(p => p.IsActionOptionsVisible = true);
+		PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
 
 		PlaywrightScripts.Clear();
 		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());

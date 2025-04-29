@@ -1,8 +1,8 @@
 <ResourceDictionary
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:ctrls="using:Chameleon.Av.Fluent.Common.Controls"
-	xmlns:ui="using:FluentAvalonia.UI.Controls">
+	xmlns:ui="using:FluentAvalonia.UI.Controls"
+	xmlns:tags="using:Chameleon.client.Features.Dashboard.Tags">
     	<ItemsPanelTemplate x:Key="DefaultPanel">
 			<StackPanel Orientation="Horizontal" />
 		</ItemsPanelTemplate>
@@ -58,4 +58,8 @@
 				</Style>
 			</Style>
 		</ControlTheme>
+
+		<ItemsPanelTemplate x:Key="HorizontalStackPanel">
+			<StackPanel Orientation="Horizontal" Spacing="6" />
+		</ItemsPanelTemplate>
 </ResourceDictionary>

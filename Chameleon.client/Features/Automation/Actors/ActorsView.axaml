@@ -13,14 +13,133 @@
              x:DataType="vm:ActorsViewModel"
              x:CompileBindings="True">
 	<UserControl.Styles>
-		<StyleInclude Source="UiResources/ActorStyles.axaml"/>
+		<Style Selector="TextBlock.sideLabel">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="0,0,5,8"/>
+		</Style>
+
+		<Style Selector="TextBox.sideInput">
+			<Setter Property="Margin" Value="5,0,0,8"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="ContentControl.sideInput">
+			<Setter Property="Margin" Value="5,0,0,8"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="ComboBox.sideInput">
+			<Setter Property="Margin" Value="5,0,0,8"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="ToggleSwitch.sideInput">
+			<Setter Property="Margin" Value="5,0,0,11"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="ui|NumberBox.sideInput">
+			<Setter Property="Margin" Value="5,0,0,8"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="SpinButtonPlacementMode" Value="Inline"/>
+			<Setter Property="ValidationMode" Value="InvalidInputOverwritten"/>
+		</Style>
+
+		<Style Selector="ui|SettingsExpanderItem > StackPanel">
+			<Setter Property="Spacing" Value="10"/>
+			<Setter Property="Margin" Value="10,5,10,5"/>
+		</Style>
+
+		<Style Selector="Grid.inputGrid">
+			<Setter Property="Margin" Value="0"/>
+		</Style>
+
+		<Style Selector="StackPanel.randoEditor">
+			<Setter Property="Orientation" Value="Horizontal"/>
+			<Setter Property="Spacing" Value="5"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="StackPanel.randoEditor > TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="0,0,5,0"/>
+		</Style>
+
+		<Style Selector="StackPanel.randoEditor > ui|NumberBox">
+			<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
+			<Setter Property="Minimum" Value="0"/>
+			<Setter Property="AcceptsExpression" Value="False"/>
+			<Setter Property="Margin" Value="0,0,5,0"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
 	</UserControl.Styles>
 
 	<UserControl.Resources>
 		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceInclude Source="UiResources/ActorDataTemplates.axaml"/>
-			</ResourceDictionary.MergedDictionaries>
+			<DataTemplate x:Key="RandoEditorTemplate" x:DataType="vmv:RandoViewModel">
+				<StackPanel Classes="randoEditor">
+					<TextBlock Text="Min:"/>
+					<ui:NumberBox Value="{Binding Min, Mode=TwoWay}"/>
+					<TextBlock Text="Max:"/>
+					<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"/>
+				</StackPanel>
+			</DataTemplate>
+
+			<DataTemplate x:Key="StartEditorTemplate" x:DataType="vmv:StartViewModel">
+				<Grid Classes="inputGrid" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+					<!-- 
+						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
+						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> 
+					
+						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="URL:"/>
+						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
+					-->
+					<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" Text="New Tab:"/>
+					<ToggleSwitch Classes="sideInput" Grid.Row="1" Grid.Column="1" IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
+				</Grid>
+			</DataTemplate>
+
+			<DataTemplate x:Key="TimeoutsEditorTemplate" x:DataType="vmv:TimeoutsViewModel">
+				<Grid Classes="inputGrid" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+					<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" 
+						Text="Default:"/>
+					<ui:NumberBox Classes="sideInput" Grid.Row="0" Grid.Column="1" 
+						Value="{Binding Default, Mode=TwoWay}"/>
+
+					<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" 
+						Text="Wait:"/>
+					<ui:NumberBox Classes="sideInput" Grid.Row="1" Grid.Column="1" 
+						Value="{Binding Wait, Mode=TwoWay}" />
+
+					<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" 
+						Text="Navigate:"/>
+					<ui:NumberBox Classes="sideInput" Grid.Row="2" Grid.Column="1" 
+						Value="{Binding Navigate, Mode=TwoWay}"/>
+
+					<TextBlock Grid.Row="3" Classes="sideLabel" Text="Naps:" Margin="0"/>
+					<ContentControl Classes="sideInput" 
+						Grid.Row="3" Grid.Column="1"  
+						Margin="5,4,0,0"
+						VerticalAlignment="Center"
+						Content="{Binding Naps}">
+						<ContentControl.ContentTemplate>
+							<DataTemplate x:DataType="vmv:RandoViewModel">
+								<StackPanel Classes="randoEditor">
+									<TextBlock Text="Min:"/>
+									<ui:NumberBox Value="{Binding Min, Mode=TwoWay}"/>
+									<TextBlock Text="Max:"/>
+									<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"/>
+									<TextBlock Text="Multiplier:"/>
+									<ui:NumberBox Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue=''}"/>
+								</StackPanel>
+							</DataTemplate>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+				</Grid>
+			</DataTemplate>
 		</ResourceDictionary>
 	</UserControl.Resources>
 	
@@ -43,13 +162,25 @@
                                                  Description="{Binding EditableSettings.Start.Url}">
 								<ui:SettingsExpanderItem>
 									<StackPanel>
-										<TextBlock Text="Scripts" Theme="{StaticResource CaptionTextBlockStyle}"/>
-										<ItemsControl ItemsSource="{Binding Selections}">
-											<ItemsControl.ItemsPanel>
-												<ItemsPanelTemplate>
-													<StackPanel Orientation="Horizontal" Spacing="6" />
-												</ItemsPanelTemplate>
-											</ItemsControl.ItemsPanel>
+										<TextBlock Text="Profiles" Theme="{StaticResource CaptionTextBlockStyle}"/>
+										<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
+											<ItemsControl 
+												ItemsPanel="{StaticResource HorizontalStackPanel}" 
+												ItemsSource="{Binding Tagz}">											
+												<ItemsControl.ItemTemplate>
+													<DataTemplate x:DataType="vm:Tag">
+														<ToggleButton IsChecked="{Binding Selected}"
+                                                	                  Content="{Binding Dto.Name}"
+                                                	                  ToolTip.Tip="{Binding Items.Length}" />
+													</DataTemplate>
+											</ItemsControl.ItemTemplate>
+													
+												</ItemsControl>
+										</ScrollViewer>
+										<TextBlock Text="Scripts" Margin="0 6 0 0" Theme="{StaticResource CaptionTextBlockStyle}"/>
+										<ItemsControl 
+											ItemsSource="{Binding Selections}"
+											ItemsPanel="{StaticResource HorizontalStackPanel}">
 											<ItemsControl.ItemTemplate>
 												<DataTemplate x:DataType="vm:Selection">
 													<ToggleButton IsChecked="{Binding Selected}"
@@ -61,13 +192,12 @@
 
 										<Expander Header="Options" IsExpanded="True">
 											<StackPanel>
-													<ContentControl Content="{Binding EditableArgs}">
-													<ContentControl.ContentTemplate>
-														<DataTemplate x:DataType="vmv:ArgsViewModel">
-															<StackPanel Margin="20,5,0,5">
-																<Grid Classes="inputGrid"
-                                                                      ColumnDefinitions="Auto,*"
-                                                                      RowDefinitions="Auto,Auto,Auto,Auto">
+												<ContentControl Content="{Binding EditableArgs}">
+														<ContentControl.ContentTemplate>
+															<DataTemplate x:DataType="vmv:ArgsViewModel">
+																<Grid Margin="20,5,0,5"
+                                                		              ColumnDefinitions="Auto,*"
+                                                		              RowDefinitions="Auto,Auto,Auto,Auto">
 																	<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" 
 																		Text="Search:"/>
 																	<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" 
@@ -78,42 +208,42 @@
 																	<ComboBox Classes="sideInput" Grid.Row="1" Grid.Column="1" 
 																		ItemsSource="{Binding AvailableScopes}" 
 																		SelectedItem="{Binding SelectedScope, Mode=TwoWay}" />
-																	
+
 																	<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" 
 																		Text="Sort:"/>
 																	<ComboBox Classes="sideInput" Grid.Row="2" Grid.Column="1" 
-																		ItemsSource="{Binding AvailableSorts}" SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
-																	
+																		ItemsSource="{Binding AvailableSorts}" 
+																		SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
+
 																	<TextBlock Classes="sideLabel" Grid.Row="3" Grid.Column="0" 
 																		Text="Filter:"/>
 																	<ComboBox Classes="sideInput" Grid.Row="3" Grid.Column="1" 
 																		ItemsSource="{Binding AvailableFilters}" 
 																		SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" />
 																</Grid>
-															</StackPanel>
-														</DataTemplate>
-													</ContentControl.ContentTemplate>
-													</ContentControl>
-													<ContentControl Content="{Binding EditableSettings}">
+															</DataTemplate>
+														</ContentControl.ContentTemplate>
+												</ContentControl>
+												<ContentControl Content="{Binding EditableSettings}">
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="vmv:SettingsViewModel">
 															<StackPanel Margin="20,5,0,5" Spacing="6">
-																<Expander Header="Start Options" IsExpanded="True">
+																<Expander Header="Start">
 																	<ContentControl 
 																		Content="{Binding Start}" 
 																		ContentTemplate="{StaticResource StartEditorTemplate}"/>
 																</Expander>
-																<Expander Header="Timeouts" IsExpanded="False">
+																<Expander Header="Timeouts">
 																	<ContentControl 
 																		Content="{Binding Timeouts}"
 																		ContentTemplate="{StaticResource TimeoutsEditorTemplate}"/>
 																</Expander>
-																<Expander Header="Randomization" IsExpanded="False">
+																<Expander Header="Randomization">
 																	<ContentControl 
 																		Content="{Binding Rando}"
-                                                                        ContentTemplate="{StaticResource RandoEditorTemplate}"/>
+                                                	                    ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 																</Expander>
-																<Expander Header="Iterations" IsExpanded="False">
+																<Expander Header="Iterations">
 																	<ContentControl 
 																		Content="{Binding Iterations}"
 																		ContentTemplate="{StaticResource RandoEditorTemplate}"/>
@@ -121,7 +251,7 @@
 															</StackPanel>
 														</DataTemplate>
 													</ContentControl.ContentTemplate>
-													</ContentControl>
+												</ContentControl>
 											</StackPanel>
 										</Expander>
 									</StackPanel>
@@ -134,7 +264,7 @@
 										HorizontalAlignment="Right">
 										<ui:FAComboBox
 											HorizontalAlignment="Left"
-											SelectedItem="{Binding SelectedBrowserOption}"
+											SelectedItem="{Binding Browser}"
 											ItemsSource="{Binding BrowserOptions}">
 											<ui:FAComboBox.ItemTemplate>
 												<DataTemplate>

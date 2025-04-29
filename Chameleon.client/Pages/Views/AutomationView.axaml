@@ -6,7 +6,7 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:Chameleon.client.Features.Automation"
              xmlns:contrls="using:Chameleon.Av.Fluent.Common.Controls"
-			 x:DataType="vm:AutomationViewModel"
+			 x:DataType="vm:ViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.client.Pages.Views.AutomationView">
 	<Panel>

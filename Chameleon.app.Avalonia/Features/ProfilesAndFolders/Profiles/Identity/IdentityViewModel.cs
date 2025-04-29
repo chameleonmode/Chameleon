@@ -118,10 +118,10 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		IsSaving = true;
 
 		try {
-			await Logins.ForEach(OnSaveLogin);
-			await Persons.ForEach(OnSavePerson);
-			await Addresses.ForEach(OnSaveAddress);
-			await Businesses.ForEach(OnSaveBusiness);
+			Logins.ForEach(async x=> await OnSaveLogin(x));
+			Persons.ForEach(async x=> await OnSavePerson(x));
+			Addresses.ForEach(async x=> await OnSaveAddress(x));
+			Businesses.ForEach(async x=> await OnSaveBusiness(x));
 
 			if (UserProfile?.Validator?.IsValid == false) {
 				//return;
@@ -141,9 +141,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 				ProfileVM = new ObsProfile(UserProfile.ToDto(), false);
 				Toaster.Success($"Update was successful.");
 			}
-		} catch (Exception ex) {
-			// Handle the exception (e.g., log it, show a notification, etc.)
-			Toaster.Error($"{ex.Message}");
 		} finally {
 			ShowValidationErrors();
 			// Code to execute after the task completes, regardless of success or failure

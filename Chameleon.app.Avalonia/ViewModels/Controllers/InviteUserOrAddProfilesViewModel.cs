@@ -81,8 +81,6 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 			Symbas: Enums.Symbas.AddFriend,
 			Btns: Enums.MBoxButtons.OkCancel)
 		);
-		MyProfilesViewModel.Instance.Profiles.ForEach(p => p.IsActionOptionsVisible = true);
-		MyProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
 		return result == Enums.TaskDialogResult.OK ? this : null;
 	}
 	public async Task<InviteUserOrAddProfilesViewModel?> ShowDialog(

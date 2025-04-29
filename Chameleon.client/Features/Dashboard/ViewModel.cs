@@ -11,6 +11,16 @@ using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 
 namespace Chameleon.client.Features.Dashboard;
+
+public partial class TagViewModel(Action<TagViewModel> OnSelectChanged) : ObservableObject {
+	[ObservableProperty] string name = null!;
+	[ObservableProperty] bool isSelected;
+
+	partial void OnIsSelectedChanged(bool value) {
+		if (value) OnSelectChanged(this);
+	}
+}
+
 public partial class ViewModel : ViewModelObjectBase {
 	[ObservableProperty] bool isSyncChangesBtnVisible = true;
 	[ObservableProperty] bool hasCookiesToSync = false;
@@ -44,10 +54,12 @@ public partial class ViewModel : ViewModelObjectBase {
 
 	partial void OnSelectedTagChanged(TagViewModel? oldValue, TagViewModel? newValue) {
 		if (newValue == null) return;
-		IsFavouriteSelected = newValue.Name == "Favourites";
-		if (!IsFavouriteSelected) TagsViewModel.Instance.SelectedTagName = newValue.Name;
 
-		if(!newValue.IsSelected) newValue.IsSelected = true;
+		IsFavouriteSelected = newValue.Name == "Favourites";
+		
+		if (!IsFavouriteSelected) TagsViewModel.Instance.SelectedTagName = newValue.Name;
+		
+		if (!newValue.IsSelected) newValue.IsSelected = true;
 		if (oldValue != null && oldValue.IsSelected) oldValue.IsSelected = false;
 	}
 
