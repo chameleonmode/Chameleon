@@ -1,6 +1,6 @@
 using Chameleon.lib.CommunityToolkit.MvvM;
 
 namespace Chameleon.client.Features.Tenants;
-public partial class TenantsViewModel : ViewModelObjectBase {
+public partial class ViewModel : ViewModelObjectBase {
 
 }

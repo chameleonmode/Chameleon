@@ -7,8 +7,8 @@ using System.Collections.ObjectModel;
 using System.Reactive.Subjects;
 
 namespace Chameleon.client.Features.Dashboard;
-public partial class BaseDashboard : ViewModelObjectBase {
 
+public abstract partial class Base(string? title) : ViewModelObjectBase(title) {
 	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
 	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Compares.ObsFolderCompares.AscendingComparer);
 
@@ -19,17 +19,11 @@ public partial class BaseDashboard : ViewModelObjectBase {
 
 	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
 
-	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; protected set; }
-	public ReadOnlyObservableCollection<ObsFolder> Folders { get; protected set; }
+	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; protected set; } = new([]);
+	public ReadOnlyObservableCollection<ObsFolder> Folders { get; protected set; } = new([]);
 
 	public bool HasNoFolderItems => Folders.Count == 0;
 	public bool HasNoItems => Profiles.Count == 0;
-
-	public BaseDashboard(string? title) : base(title) {
-		Title = title;
-		Profiles = new ReadOnlyObservableCollection<ObsProfile>([]);
-		Folders = new ReadOnlyObservableCollection<ObsFolder>([]);
-	}
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
 		profilesCompareObservable.OnNext(value switch {

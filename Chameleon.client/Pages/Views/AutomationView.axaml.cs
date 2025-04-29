@@ -7,7 +7,7 @@ using FluentAvalonia.UI.Controls;
 
 namespace Chameleon.client.Pages.Views;
 
-[lib.Common.Attributes.ViewModel(typeof(Features.Automation.AutomationViewModel))]
+[lib.Common.Attributes.ViewModel(typeof(Features.Automation.ViewModel))]
 public partial class AutomationView : TabStripNavigationPage {
 	public AutomationView() {
 		InitializeComponent();

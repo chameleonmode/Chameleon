@@ -7,12 +7,11 @@ using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
-using DynamicData.Binding;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 
 namespace Chameleon.client.Features.Dashboard;
-public partial class DashboardViewModel : ViewModelObjectBase {
+public partial class ViewModel : ViewModelObjectBase {
 	[ObservableProperty] bool isSyncChangesBtnVisible = true;
 	[ObservableProperty] bool hasCookiesToSync = false;
 	[ObservableProperty] bool isFavouriteSelected = true;
@@ -20,9 +19,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 
 	public ReadOnlyObservableCollection<TagViewModel> Tagz { get; }
 
-	public DashboardViewModel()
-		: base("Dashboard") {
-
+	public ViewModel() : base("Dashboard") {
 		_ = TagsRepo.Connect()
 			.Filter(tag => tag.Name == "Favourites" || tag.Items.Any(x => x.Value.Count > 0))
 			.Transform(item => new TagViewModel(t => SelectedTag = t) { Name = item.Name, IsSelected = item.Name == "Favourites" })

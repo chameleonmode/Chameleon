@@ -1,10 +1,9 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.client.Features.Dashboard;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
 
 namespace Chameleon.client.Features.Dashboard.Favorite;
-public partial class FavouriteViewModel : BaseDashboard {
+public partial class FavouriteViewModel : Base {
 	public FavouriteViewModel() : base("Favourites") {
 		_ = UserProfilesRepo.Connect(i => i.isFavourite)
 			.Transform(i => new ObsProfile(i, false))
