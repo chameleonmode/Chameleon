@@ -33,6 +33,7 @@
 		<Setter Property="HorizontalAlignment" Value="Stretch"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
 		<Setter Property="SpinButtonPlacementMode" Value="Inline"/>
+		<Setter Property="ValidationMode" Value="InvalidInputOverwritten"/>
 	</Style>
 
 	<Style Selector="ui|SettingsExpanderItem > StackPanel">
