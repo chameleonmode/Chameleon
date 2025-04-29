@@ -1,0 +1,65 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:FluentAvalonia.UI.Controls">
+		<Style Selector="TextBlock.sideLabel">
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="Margin" Value="0,0,5,8"/>
+	</Style>
+
+	<Style Selector="TextBox.sideInput">
+		<Setter Property="Margin" Value="5,0,0,8"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+
+	<Style Selector="ContentControl.sideInput">
+		<Setter Property="Margin" Value="5,0,0,8"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+
+	<Style Selector="ComboBox.sideInput">
+		<Setter Property="Margin" Value="5,0,0,8"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+
+	<Style Selector="ToggleSwitch.sideInput">
+		<Setter Property="Margin" Value="5,0,0,11"/>
+		<Setter Property="HorizontalAlignment" Value="Left"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+
+	<Style Selector="ui|NumberBox.sideInput">
+		<Setter Property="Margin" Value="5,0,0,8"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="SpinButtonPlacementMode" Value="Inline"/>
+	</Style>
+
+	<Style Selector="ui|SettingsExpanderItem > StackPanel">
+		<Setter Property="Spacing" Value="10"/>
+		<Setter Property="Margin" Value="10,5,10,5"/>
+	</Style>
+
+	<Style Selector="Grid.inputGrid">
+		<Setter Property="Margin" Value="0"/>
+	</Style>
+
+	<Style Selector="StackPanel.randoEditor">
+		<Setter Property="Orientation" Value="Horizontal"/>
+		<Setter Property="Spacing" Value="5"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+	
+	<Style Selector="StackPanel.randoEditor > TextBlock">
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="Margin" Value="0,0,5,0"/>
+	</Style>
+	
+	<Style Selector="StackPanel.randoEditor > ui|NumberBox">
+		<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
+		<Setter Property="Minimum" Value="0"/>
+		<Setter Property="AcceptsExpression" Value="False"/>
+		<Setter Property="Margin" Value="0,0,5,0"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+</Styles>
