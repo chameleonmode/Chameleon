@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Reactive.Subjects;
 
 namespace Chameleon.client.Features.Dashboard;
-public partial class DashboardItemsViewModelBase : ViewModelObjectBase {
+public partial class BaseDashboard : ViewModelObjectBase {
 
 	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
 	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Compares.ObsFolderCompares.AscendingComparer);
@@ -25,7 +25,7 @@ public partial class DashboardItemsViewModelBase : ViewModelObjectBase {
 	public bool HasNoFolderItems => Folders.Count == 0;
 	public bool HasNoItems => Profiles.Count == 0;
 
-	public DashboardItemsViewModelBase(string? title) : base(title) {
+	public BaseDashboard(string? title) : base(title) {
 		Title = title;
 		Profiles = new ReadOnlyObservableCollection<ObsProfile>([]);
 		Folders = new ReadOnlyObservableCollection<ObsFolder>([]);

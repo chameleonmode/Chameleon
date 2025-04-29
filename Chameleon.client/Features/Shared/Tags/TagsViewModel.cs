@@ -9,7 +9,7 @@ using System.Reactive.Linq;
 
 namespace Chameleon.client.Features.Shared.Tags;
 
-public partial class TagsViewModel : DashboardItemsViewModelBase {
+public partial class TagsViewModel : BaseDashboard {
 	[ObservableProperty] string selectedTagName = "";
 	[ObservableProperty] IEnumerable<string> folderTagIds = [];
 	[ObservableProperty] IEnumerable<string> profileTagIds = [];
