@@ -6,12 +6,12 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:data="using:FluentAvalonia.UI.Data"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:local="using:Chameleon.client.Pages.ViewModels"
-			 xmlns:favourite="using:Chameleon.app.Avalonia.Features.Dashboard.Favourite"
-			 xmlns:tags="using:Chameleon.app.Avalonia.Features.Dashboard.Tags"
-			 x:DataType="local:DashboardViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.client.Pages.Views.DashboardView">
+			 xmlns:favourite="using:Chameleon.client.Features.Shared.Favorite"
+			 xmlns:tags="using:Chameleon.client.Features.Shared.Tags"
+			 xmlns:vm="using:Chameleon.client.Features.Dashboard"
+             x:Class="Chameleon.client.Pages.Views.DashboardView"
+			 x:DataType="vm:DashboardViewModel"
+			 x:CompileBindings="True">
 
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
 		<Grid RowDefinitions="Auto,Auto,*">
@@ -78,7 +78,7 @@
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
-						<DataTemplate x:DataType="local:TagViewModel">
+						<DataTemplate x:DataType="tags:TagViewModel">
 							<ToggleButton IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding Name}"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>

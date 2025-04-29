@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Reactive.Subjects;
 
-namespace Chameleon.app.Avalonia.Features.Dashboard;
+namespace Chameleon.client.Features.Dashboard;
 public partial class DashboardItemsViewModelBase : ViewModelObjectBase {
 
 	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);

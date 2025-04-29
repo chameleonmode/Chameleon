@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:vm="using:Chameleon.client.Pages.ViewModels"
+             xmlns:vm="using:Chameleon.client.Features.Automation"
              xmlns:contrls="using:Chameleon.Av.Fluent.Common.Controls"
 			 x:DataType="vm:AutomationViewModel"
 			 x:CompileBindings="True"

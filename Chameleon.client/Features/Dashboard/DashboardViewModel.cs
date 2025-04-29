@@ -10,9 +10,8 @@ using DynamicData;
 using DynamicData.Binding;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 
-namespace Chameleon.client.Pages.ViewModels;
+namespace Chameleon.client.Features.Dashboard;
 public partial class DashboardViewModel : ViewModelObjectBase {
 	[ObservableProperty] bool isSyncChangesBtnVisible = true;
 	[ObservableProperty] bool hasCookiesToSync = false;
@@ -111,25 +110,5 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 			Toaster.Error("Failed to sync cookies. " + e.Message);
 		}
 		await CheckForCookies();
-	}
-}
-
-public partial class TagViewModel : ObservableObject {
-
-	public BehaviorSubject<TagViewModel> TagObservable { get; } = null!;
-
-	[ObservableProperty]
-	private string name = null!;
-
-	[ObservableProperty]
-	private bool isSelected;
-
-	public TagViewModel() {
-
-		TagObservable = new(this);
-
-		_ = this.WhenValueChanged(x => x.IsSelected)
-								.Where(isSelected => isSelected)
-								.Subscribe(_ => TagObservable.OnNext(this));
 	}
 }

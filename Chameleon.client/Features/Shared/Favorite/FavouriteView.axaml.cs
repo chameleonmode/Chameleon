@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Chameleon.app.Avalonia.Features.Dashboard.Favourite;
+namespace Chameleon.client.Features.Shared.Favorite;
 
 public partial class FavouriteView : UserControl {
     public FavouriteView() {

@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Chameleon.app.Avalonia.Features.Dashboard.Tags;
+namespace Chameleon.client.Features.Shared.Tags;
 
 public partial class TagsView : UserControl {
     public TagsView() {

@@ -1,8 +1,9 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.client.Features.Dashboard;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
 
-namespace Chameleon.app.Avalonia.Features.Dashboard.Favourite;
+namespace Chameleon.client.Features.Shared.Favorite;
 public partial class FavouriteViewModel : DashboardItemsViewModelBase {
 	public FavouriteViewModel() : base("Favourites") {
 		_ = UserProfilesRepo

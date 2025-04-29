@@ -1,4 +1,5 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.client.Features.Dashboard;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -6,7 +7,7 @@ using DynamicData;
 using DynamicData.Binding;
 using System.Reactive.Linq;
 
-namespace Chameleon.app.Avalonia.Features.Dashboard.Tags;
+namespace Chameleon.client.Features.Shared.Tags;
 
 public partial class TagsViewModel : DashboardItemsViewModelBase {
 	[ObservableProperty] string selectedTagName = "";

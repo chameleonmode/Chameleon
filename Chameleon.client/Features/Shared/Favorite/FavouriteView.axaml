@@ -5,10 +5,10 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:local="using:Chameleon.app.Avalonia.Features.Dashboard.Favourite"
+             x:Class="Chameleon.client.Features.Shared.Favorite.FavouriteView"
+			 xmlns:local="using:Chameleon.client.Features.Shared.Favorite"
 			 x:DataType="local:FavouriteViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Features.Dashboard.Favourite.FavouriteView">
+			 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto,Auto">
 		<afv:ChameleonContentControl
 			Title="Favorite Profiles"

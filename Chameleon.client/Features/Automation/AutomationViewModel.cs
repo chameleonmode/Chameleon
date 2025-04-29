@@ -1,6 +1,6 @@
 using Chameleon.lib.CommunityToolkit.MvvM;
 
-namespace Chameleon.client.Pages.ViewModels;
+namespace Chameleon.client.Features.Automation;
 public class AutomationViewModel : ViewModelObjectBase {
 	
 }
