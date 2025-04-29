@@ -44,5 +44,4 @@ public partial class DashboardItemsViewModelBase : ViewModelObjectBase {
 			_ => Compares.ObsFolderCompares.AscendingComparer
 		});
 	}
-
 }

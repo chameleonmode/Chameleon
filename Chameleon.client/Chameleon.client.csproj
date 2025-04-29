@@ -35,8 +35,4 @@
       <DependentUpon>MembersView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="FluentUI/" />
-  </ItemGroup>
 </Project>

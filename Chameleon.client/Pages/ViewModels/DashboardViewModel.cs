@@ -1,5 +1,4 @@
-﻿using Chameleon.app.Avalonia.Features.Dashboard.Favourite;
-using Chameleon.app.Avalonia.Features.Dashboard.Tags;
+﻿using Chameleon.app.Avalonia.Features.Dashboard.Tags;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -13,28 +12,13 @@ using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Chameleon.app.Avalonia.Features.Dashboard;
+namespace Chameleon.client.Pages.ViewModels;
 public partial class DashboardViewModel : ViewModelObjectBase {
-
-	//
-	[ObservableProperty]
-	private bool isSyncChangesBtnVisible = true;
-	[ObservableProperty]
-	public bool hasCookiesToSync = false;
-
-
-	[ObservableProperty]
-	private ObservableCollection<TagViewModel> tags = [];
-
-	[ObservableProperty]
-	private TagViewModel selectedTag = null!;
-
-	[ObservableProperty]
-	private bool isFavouriteSelected = true;
-
-	public FavouriteViewModel FavouriteViewModel => FavouriteViewModel.Instance;
-
-	public TagsViewModel TagsViewModel => TagsViewModel.Instance;
+	[ObservableProperty] bool isSyncChangesBtnVisible = true;
+	[ObservableProperty] bool hasCookiesToSync = false;
+	[ObservableProperty] ObservableCollection<TagViewModel> tags = [];
+	[ObservableProperty] TagViewModel selectedTag = null!;
+	[ObservableProperty] bool isFavouriteSelected = true;
 
 	public DashboardViewModel()
 		: base("Dashboard") {
@@ -50,7 +34,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 			.Subscribe(selectedTag => IsFavouriteSelected = selectedTag!.Name == "Favourites");
 		_ = this.WhenValueChanged(x => x.SelectedTag)
 			.Where(selectedTag => selectedTag != null && selectedTag!.Name != "Favourites")
-			.Subscribe(selectedTag => TagsViewModel.SelectedTagName = selectedTag!.Name);
+			.Subscribe(selectedTag => TagsViewModel.Instance.SelectedTagName = selectedTag!.Name);
 
 		AsyncCommandMap["SyncChanges"] = SyncChanges;
 		AsyncCommandMap["SyncCookiesClear"] = SyncCookiesClear;
@@ -98,7 +82,7 @@ public partial class DashboardViewModel : ViewModelObjectBase {
 	private async Task SyncCookiesFirefox() => await SyncCookies(Enums.SystemBrowserType.Firefox);
 
 	private async Task SyncChanges() {
-		await AppStartup.LoadSink(true);
+		await app.Avalonia.AppStartup.LoadSink(true);
 		await CheckForCookies();
 	}
 

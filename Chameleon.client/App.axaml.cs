@@ -19,7 +19,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Chameleon.client.Pages;
 using Chameleon.client.Main;
 using Chameleon.lib.Const;
-using Chameleon.app.Avalonia.Features.Dashboard;
 using Chameleon.lib.WebBrowser.Services;
 
 namespace Chameleon.client;
@@ -77,8 +76,7 @@ public partial class App : Application {
 			//Settings
 			.AddSingleton<SettingsView>()
 			.AddSingleton<SettingsViewModel>()
-			.WithAllPagesAndFeatures()
-			.WithDashboard();
+			.WithAllPagesAndFeatures();
 		});
 
 		// Setup IoC

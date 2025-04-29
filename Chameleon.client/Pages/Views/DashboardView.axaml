@@ -5,14 +5,13 @@
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="1101"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:data="using:FluentAvalonia.UI.Data"
-             xmlns:appuc="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:local="using:Chameleon.app.Avalonia.Features.Dashboard"
+			 xmlns:local="using:Chameleon.client.Pages.ViewModels"
 			 xmlns:favourite="using:Chameleon.app.Avalonia.Features.Dashboard.Favourite"
 			 xmlns:tags="using:Chameleon.app.Avalonia.Features.Dashboard.Tags"
 			 x:DataType="local:DashboardViewModel"
-			 x:CompileBindings="False"
-             x:Class="Chameleon.app.Avalonia.Features.Dashboard.DashboardView">
+			 x:CompileBindings="True"
+             x:Class="Chameleon.client.Pages.Views.DashboardView">
 
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
 		<Grid RowDefinitions="Auto,Auto,*">
@@ -69,7 +68,9 @@
 				</afv:PageHeaderControl.ContentObject>
 			</afv:PageHeaderControl>
 
-			<ScrollViewer Margin="0 0 0 6" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Row="1">
+			<ScrollViewer Margin="0 0 0 6" 
+				ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+				Grid.Row="1">
 				<ItemsControl Padding="0 0 0 26" ItemsSource="{Binding Tags}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
@@ -85,14 +86,10 @@
 			</ScrollViewer>
 
 			<Grid Grid.Row="2" IsVisible="{Binding IsFavouriteSelected}">
-				<Panel DataContext="{Binding FavouriteViewModel}">
-					<favourite:FavouriteView/>
-				</Panel>
+				<favourite:FavouriteView/>
 			</Grid>
 			<Grid IsVisible="{Binding !IsFavouriteSelected}" Grid.Row="2">
-				<Panel DataContext="{Binding TagsViewModel}">
-					<tags:TagsView />
-				</Panel>
+				<tags:TagsView />
 			</Grid>
 		</Grid>
 	</ScrollViewer>

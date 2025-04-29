@@ -16,6 +16,8 @@ public static class Modules {
   public static IServiceCollection WithAllPagesAndFeatures(this IServiceCollection services) => services
       .WithProfilesAndFolders()
       .WithActors()
+      .AddSingleton<DashboardView>()
+		  .AddSingleton<DashboardViewModel>()
       .AddSingleton<AutomationViewModel>()
       .AddSingleton<AutomationView>()
 			.AddSingleton<ChameleonAIRView>()

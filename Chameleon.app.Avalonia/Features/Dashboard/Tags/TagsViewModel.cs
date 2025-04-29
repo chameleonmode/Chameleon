@@ -9,15 +9,9 @@ using System.Reactive.Linq;
 namespace Chameleon.app.Avalonia.Features.Dashboard.Tags;
 
 public partial class TagsViewModel : DashboardItemsViewModelBase {
-
-	[ObservableProperty]
-	private string selectedTagName = "";
-
-	[ObservableProperty]
-	private IEnumerable<string> folderTagIds = [];
-
-	[ObservableProperty]
-	private IEnumerable<string> profileTagIds = [];
+	[ObservableProperty] string selectedTagName = "";
+	[ObservableProperty] IEnumerable<string> folderTagIds = [];
+	[ObservableProperty] IEnumerable<string> profileTagIds = [];
 
 	public TagsViewModel() : base("Tags") {
 		var tagItems = TagsRepo
