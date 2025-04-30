@@ -13,6 +13,16 @@
              x:DataType="vm:ActorsViewModel"
              x:CompileBindings="True">
 	<UserControl.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="6 0 0 0"/>
+		</Style>
+
+		<Style Selector="ContentControl">
+			<Setter Property="Margin" Value="5,4,0,4"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
 		<Style Selector="TextBlock.sideLabel">
 			<Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="Margin" Value="0,0,5,8"/>
@@ -34,17 +44,19 @@
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 
-		<Style Selector="ToggleSwitch.sideInput">
-			<Setter Property="Margin" Value="5,0,0,11"/>
+		<Style Selector="ToggleSwitch">
+			<Setter Property="Margin" Value="6,0,0,0"/>
 			<Setter Property="HorizontalAlignment" Value="Left"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 
-		<Style Selector="ui|NumberBox.sideInput">
-			<Setter Property="Margin" Value="5,0,0,8"/>
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Style Selector="ui|NumberBox">
+			<Setter Property="Margin" Value="6,0,0,4"/>
+			<Setter Property="Minimum" Value="0"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 			<Setter Property="SpinButtonPlacementMode" Value="Inline"/>
+			<Setter Property="AcceptsExpression" Value="False"/>
 			<Setter Property="ValidationMode" Value="InvalidInputOverwritten"/>
 		</Style>
 
@@ -59,37 +71,27 @@
 
 		<Style Selector="StackPanel.randoEditor">
 			<Setter Property="Orientation" Value="Horizontal"/>
-			<Setter Property="Spacing" Value="5"/>
-			<Setter Property="VerticalAlignment" Value="Center"/>
-		</Style>
-
-		<Style Selector="StackPanel.randoEditor > TextBlock">
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="Margin" Value="0,0,5,0"/>
-		</Style>
-
-		<Style Selector="StackPanel.randoEditor > ui|NumberBox">
-			<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
-			<Setter Property="Minimum" Value="0"/>
-			<Setter Property="AcceptsExpression" Value="False"/>
-			<Setter Property="Margin" Value="0,0,5,0"/>
+			<Setter Property="Margin" Value="0,0,0,0"/>
+			<Setter Property="Spacing" Value="6"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 	</UserControl.Styles>
 
 	<UserControl.Resources>
 		<ResourceDictionary>
-			<DataTemplate x:Key="RandoEditorTemplate" x:DataType="vmv:RandoViewModel">
-				<StackPanel Classes="randoEditor">
+			<DataTemplate x:Key="RandoEditorTemplate" x:DataType="models:Rando">
+				<StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
 					<TextBlock Text="Min:"/>
-					<ui:NumberBox Value="{Binding Min, Mode=TwoWay}"/>
+					<ui:NumberBox Value="{Binding Min, Mode=TwoWay}"
+						SpinButtonPlacementMode="Compact" />
 					<TextBlock Text="Max:"/>
-					<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"/>
+					<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"
+						SpinButtonPlacementMode="Compact" />
 				</StackPanel>
 			</DataTemplate>
 
-			<DataTemplate x:Key="StartEditorTemplate" x:DataType="vmv:StartViewModel">
-				<Grid Classes="inputGrid" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+			<DataTemplate x:Key="StartEditorTemplate" x:DataType="models:Start">
+				<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 					<!-- 
 						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
 						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> 
@@ -97,43 +99,89 @@
 						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="URL:"/>
 						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
 					-->
-					<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" Text="New Tab:"/>
-					<ToggleSwitch Classes="sideInput" Grid.Row="1" Grid.Column="1" IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
+
+					<TextBlock Text="Variations:" Grid.Row="0"
+						ToolTip.Tip="number of variations of each search term to generate" />
+					<ContentControl 
+						Grid.Column="1" Grid.Row="0" 
+						Margin="5,4,0,0"
+						Content="{Binding Variations}"
+						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
+
+
+					<TextBlock Text="Iterations:" Grid.Row="1"
+						ToolTip.Tip="number of iteration to run per search term" />
+					<ContentControl 
+						Grid.Column="1" Grid.Row="1" 
+						Content="{Binding Iterations}"
+						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
+
+
+					<TextBlock Text="Randomization:" Grid.Row="2"
+						ToolTip.Tip="general number of times to run actions like up/down vote" />
+					<ContentControl 
+						Grid.Column="1" Grid.Row="2" 
+						Content="{Binding Rando}"
+						ContentTemplate="{StaticResource RandoEditorTemplate}" />
+
+					<TextBlock Text="Max Attempts:" Grid.Row="3"
+						ToolTip.Tip="maximum number of attempts to try untill a successfull iteration" />
+					<ui:NumberBox 
+						Grid.Column="1" Grid.Row="3" 
+						Value="{Binding Attempts, Mode=TwoWay}"/>
+
+					<TextBlock Text="New Tab:" Grid.Row="4"
+						ToolTip.Tip="to start in a new tab (recommended)" />
+					<ToggleSwitch 
+						Grid.Column="1" Grid.Row="4" 
+						IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
 				</Grid>
 			</DataTemplate>
 
-			<DataTemplate x:Key="TimeoutsEditorTemplate" x:DataType="vmv:TimeoutsViewModel">
-				<Grid Classes="inputGrid" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+			<DataTemplate x:Key="TimeoutsEditorTemplate" x:DataType="models:Timeouts">
+				<Grid Classes="inputGrid" ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
 					<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" 
-						Text="Default:"/>
-					<ui:NumberBox Classes="sideInput" Grid.Row="0" Grid.Column="1" 
-						Value="{Binding Default, Mode=TwoWay}"/>
-
-					<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" 
-						Text="Wait:"/>
-					<ui:NumberBox Classes="sideInput" Grid.Row="1" Grid.Column="1" 
-						Value="{Binding Wait, Mode=TwoWay}" />
-
-					<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" 
+						ToolTip.Tip="max time to wait for page load"
 						Text="Navigate:"/>
-					<ui:NumberBox Classes="sideInput" Grid.Row="2" Grid.Column="1" 
+					<ui:NumberBox Classes="sideInput" Grid.Row="0" Grid.Column="1" 
 						Value="{Binding Navigate, Mode=TwoWay}"/>
 
-					<TextBlock Grid.Row="3" Classes="sideLabel" Text="Naps:" Margin="0"/>
-					<ContentControl Classes="sideInput" 
+					<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" 
+						ToolTip.Tip="max time to wait in general"
+						Text="Default:"/>
+					<ui:NumberBox Classes="sideInput" Grid.Row="1" Grid.Column="1" 
+						Margin="5,4,0,8"
+						Value="{Binding Default, Mode=TwoWay}"/>
+
+					<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" 
+						ToolTip.Tip="max time to wait for actions to complete"
+						Text="Wait:"/>
+					<ui:NumberBox Classes="sideInput" Grid.Row="2" Grid.Column="1" 
+						Value="{Binding Wait, Mode=TwoWay}" />
+
+					<TextBlock Grid.Row="3" 
+						Classes="sideLabel" 
+						Margin="0"
+						Text="Naps:" 
+						ToolTip.Tip="milliseconds between actions to simulate natural user interactions" />
+					<ContentControl 
 						Grid.Row="3" Grid.Column="1"  
+						Classes="sideInput" 
 						Margin="5,4,0,0"
 						VerticalAlignment="Center"
 						Content="{Binding Naps}">
 						<ContentControl.ContentTemplate>
-							<DataTemplate x:DataType="vmv:RandoViewModel">
+							<DataTemplate x:DataType="models:Rando">
 								<StackPanel Classes="randoEditor">
 									<TextBlock Text="Min:"/>
-									<ui:NumberBox Value="{Binding Min, Mode=TwoWay}"/>
+									<ui:NumberBox Value="{Binding Min, Mode=TwoWay}" 
+										SpinButtonPlacementMode="Compact"/>
 									<TextBlock Text="Max:"/>
-									<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"/>
+									<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"
+										SpinButtonPlacementMode="Compact"/>
 									<TextBlock Text="Multiplier:"/>
-									<ui:NumberBox Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue=''}"/>
+									<ui:NumberBox Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue=''}"
+										SpinButtonPlacementMode="Compact"/>
 								</StackPanel>
 							</DataTemplate>
 						</ContentControl.ContentTemplate>
@@ -162,7 +210,9 @@
                                                  Description="{Binding EditableSettings.Start.Url}">
 								<ui:SettingsExpanderItem>
 									<StackPanel>
-										<TextBlock Text="Tagged Profiles" Theme="{StaticResource CaptionTextBlockStyle}"/>
+										<TextBlock Text="Profiles"
+											ToolTip.Tip="tags that contain profiles" 
+											Theme="{StaticResource CaptionTextBlockStyle}"/>
 										<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
 											<ItemsControl 
 												ItemsPanel="{StaticResource HorizontalStackPanel}" 
@@ -176,7 +226,11 @@
 												</ItemsControl.ItemTemplate>
 											</ItemsControl>
 										</ScrollViewer>
-										<TextBlock Text="Scripts" Margin="0 6 0 0" Theme="{StaticResource CaptionTextBlockStyle}"/>
+
+										<TextBlock Text="Actors" 
+											ToolTip.Tip="available automation actors to run" 
+											Margin="0 6 0 0" 
+											Theme="{StaticResource CaptionTextBlockStyle}"/>
 										<ItemsControl 
 											ItemsSource="{Binding Selections}"
 											ItemsPanel="{StaticResource HorizontalStackPanel}">
@@ -236,16 +290,6 @@
 																	<ContentControl 
 																		Content="{Binding Timeouts}"
 																		ContentTemplate="{StaticResource TimeoutsEditorTemplate}"/>
-																</Expander>
-																<Expander Header="Randomization">
-																	<ContentControl 
-																		Content="{Binding Rando}"
-                                                	                    ContentTemplate="{StaticResource RandoEditorTemplate}"/>
-																</Expander>
-																<Expander Header="Iterations">
-																	<ContentControl 
-																		Content="{Binding Iterations}"
-																		ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 																</Expander>
 															</StackPanel>
 														</DataTemplate>
