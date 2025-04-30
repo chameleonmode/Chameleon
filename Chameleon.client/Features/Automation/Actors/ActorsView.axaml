@@ -162,7 +162,7 @@
                                                  Description="{Binding EditableSettings.Start.Url}">
 								<ui:SettingsExpanderItem>
 									<StackPanel>
-										<TextBlock Text="Profiles" Theme="{StaticResource CaptionTextBlockStyle}"/>
+										<TextBlock Text="Tagged Profiles" Theme="{StaticResource CaptionTextBlockStyle}"/>
 										<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
 											<ItemsControl 
 												ItemsPanel="{StaticResource HorizontalStackPanel}" 
@@ -173,9 +173,8 @@
                                                 	                  Content="{Binding Dto.Name}"
                                                 	                  ToolTip.Tip="{Binding Items.Length}" />
 													</DataTemplate>
-											</ItemsControl.ItemTemplate>
-													
-												</ItemsControl>
+												</ItemsControl.ItemTemplate>
+											</ItemsControl>
 										</ScrollViewer>
 										<TextBlock Text="Scripts" Margin="0 6 0 0" Theme="{StaticResource CaptionTextBlockStyle}"/>
 										<ItemsControl 
