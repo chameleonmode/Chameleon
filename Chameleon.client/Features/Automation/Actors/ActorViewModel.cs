@@ -77,32 +77,37 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				if (!profiles.Any()) profiles = (await new InviteUserOrAddProfilesViewModel().ShowDialog())?.SelectedProfiles;
 				if (profiles == null) throw new Exception("No profiles selected.");
 
-					Running = true;
-					cts = new CancellationTokenSource();
-					foreach (var profile in profiles) {
+				Running = true;
+				cts = new CancellationTokenSource();
+				foreach (var profile in profiles) {
+					cts.Token.ThrowIfCancellationRequested();
+
+					var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
+					ArgumentNullException.ThrowIfNull(browser);
+
+					foreach (var selection in selected) {
 						cts.Token.ThrowIfCancellationRequested();
 
-						var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
-						ArgumentNullException.ThrowIfNull(browser);
-
-						foreach (var selection in selected) {
-							cts.Token.ThrowIfCancellationRequested();
-
-							var opts = new Opts(EditableArgs.ToDictionary(), EditableSettings.ToRecord());
-							var json = JS.Serialize(opts);
-							Debug.WriteLine($@"Running script with:
+						var opts = new Opts(EditableArgs.ToDictionary(), EditableSettings.ToRecord());
+						var json = JS.Serialize(opts);
+						Debug.WriteLine($@"Running script with:
 							  Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'");
-							Debug.WriteLine(json);
+						Debug.WriteLine(json);
 
-							await PlaywriteRunner.RunScript(new() {
-								Port = browser.Settings.Port,
-								Script = selection.Script,
-								Opts = opts
-							}, cts.Token);
-						}
+						await PlaywriteRunner.RunScript(new() {
+							Port = browser.Settings.Port,
+							Script = selection.Script,
+							Opts = opts
+						}, cts.Token);
 					}
+				}
 			} finally {
-				if(Running) StopExecution();
+				if (Running) StopExecution();
+				// TODO: save the actor state
+				// await File.WriteAllTextAsync(
+				// 	Path.Combine(FilePaths.Roboto, Actor.Options.Settings.Start.Feature + ".json"),
+				// 	JS.Serialize(Actor)
+				// );
 			}
 		};
 
