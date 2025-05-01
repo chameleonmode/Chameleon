@@ -12,7 +12,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using static Chameleon.lib.Common.Constants.Enums;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.client.Features.Automation.Actors;
 // multiple storage state / results
@@ -44,9 +47,11 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	public List<Selection> Selections { get; }
 	public ReadOnlyObservableCollection<Tag> Tagz { get; }
 
-	public ActorViewModel(IActor actor) {
+	public ActorViewModel(IActor actor, List<string>? initialSelectedScriptFiles = null) {
 		Actor = actor;
-		Selections = [.. Actor.Scripts.Select(script => new Selection(script))];
+		Selections = actor.Scripts
+								.Select(script => new Selection(script, initialSelectedScriptFiles?.Contains(script.File) ?? false))
+								.ToList();
 
 		EditableArgs = new(actor.Options.Args);
 		EditableSettings = new(actor.Options.Settings);
@@ -99,18 +104,15 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					}
 				}
 			} finally {
-				if (Running) StopExecution();
-				// TODO: save the actor state
-				// await File.WriteAllTextAsync(
-				// 	Path.Combine(FilePaths.Roboto, Actor.Options.Settings.Start.Feature + ".json"),
-				// 	JS.Serialize(Actor)
-				// );
+				if (Running)
+					StopExecution();
+				await SaveStateAsync();
 			}
 		};
 
-		CommandMap["Stop"] = () => {
-			StopExecution();
-		};
+		CommandMap["Stop"] = StopExecution;
+
+		AsyncCommandMap["SaveState"] = SaveStateAsync;
 	}
 
 	private void StopExecution() {
@@ -120,5 +122,42 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			cts = null;
 		}
 		Running = false;
+	}
+
+	[RelayCommand]
+	private async Task SaveStateAsync() {
+		if (Actor == null || EditableArgs == null || EditableSettings == null || Selections == null)
+			return;
+
+		try {
+			var currentArgs = EditableArgs.ToDictionary();
+			var currentSettings = EditableSettings.ToRecord();
+			var currentOpts = new Opts(currentArgs, currentSettings);
+
+			var selectedScriptFiles = Selections
+					.Where(s => s.Selected)
+					.Select(s => s.Script.File)
+					.ToList();
+
+			var stateToSave = new ActorState(currentOpts, selectedScriptFiles);
+
+			var featureName = currentOpts.Settings.Start.Feature;
+			if (string.IsNullOrWhiteSpace(featureName)) {
+				Debug.WriteLine("Cannot save state: Feature name is missing.");
+				return;
+			}
+
+			var filePath = Path.Combine(FilePaths.Roboto, $"{featureName}.json");
+
+			_ = Directory.CreateDirectory(FilePaths.Roboto);
+
+			var jsonOptions = new JsonSerializerOptions { WriteIndented = true, Converters = { new JsonStringEnumConverter() }, };
+			var jsonContent = JsonSerializer.Serialize(stateToSave, jsonOptions);
+			await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
+
+			Debug.WriteLine($"Actor state saved to: {filePath}");
+		} catch (Exception ex) {
+			Debug.WriteLine($"Error saving actor state: {ex}");
+		}
 	}
 }
