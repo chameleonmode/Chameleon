@@ -24,8 +24,6 @@
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 		</Style>
 
-
-
 		<Style Selector="ContentControl">
 			<Setter Property="Margin" Value="4 0"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
@@ -39,7 +37,7 @@
 		</Style>
 
 		<Style Selector="ToggleSwitch">
-			<Setter Property="Margin" Value="4"/>
+			<Setter Property="Margin" Value="4 0"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="HorizontalAlignment" Value="Left"/>
 		</Style>
@@ -96,14 +94,14 @@
 			</DataTemplate>
 
 			<DataTemplate x:Key="StartEditorTemplate" x:DataType="models:Start">
-				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 					<!-- 
 						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
 						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> 
 					-->
 					<TextBlock Text="URL's:" 
 						Grid.Row="0"
-						ToolTip.Tip="list of urls (start at either a post or a community)" />
+						ToolTip.Tip="(experimental) list of urls (start at either a post or a community ie: https://www.reddit.com/r/*)" />
 					<TextBox 
 						Grid.Row="0" 
 						Grid.Column="1" 
@@ -154,6 +152,14 @@
 						Grid.Row="5" 
 						Grid.Column="1" 
 						IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
+
+					<TextBlock Text="All The Things:" 
+						Grid.Row="6"
+						ToolTip.Tip="(experimental) no settings left behind" />
+					<ToggleSwitch 
+						Grid.Row="6" 
+						Grid.Column="1" 
+						IsChecked="{Binding All, Mode=TwoWay}" OffContent="" OnContent=""/>
 				</Grid>
 			</DataTemplate>
 
@@ -218,7 +224,7 @@
 										SpinButtonPlacementMode="Compact"/>
 									<TextBlock Text="Multiplier:"/>
 									<ui:NumberBox 
-										Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue=''}"
+										Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue='0'}"
 										SpinButtonPlacementMode="Compact" />
 								</StackPanel>
 							</DataTemplate>
@@ -240,9 +246,9 @@
 							<ui:SettingsExpander Header="{Binding EditableSettings.Start.Feature}">
 								<ui:SettingsExpanderItem>
 									<StackPanel>
-										<TextBlock Text="Profiles"
+										<TextBlock Text="Tags With Profiles"
 											Margin="4 6"
-											ToolTip.Tip="tags that contain profiles" 
+											ToolTip.Tip="select a tag that contain a grouping of profiles to artificially intelligently reactivationely with" 
 											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
 										<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
 											<ItemsControl 
@@ -258,7 +264,7 @@
 											</ItemsControl>
 										</ScrollViewer>
 
-										<TextBlock Text="Actors" 
+										<TextBlock Text="Artificially Intelligent Automations" 
 											ToolTip.Tip="available automation actors to run" 
 											Margin="4 12 4 6" 
 											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
