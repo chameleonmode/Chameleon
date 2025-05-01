@@ -15,43 +15,33 @@
 	<UserControl.Styles>
 		<Style Selector="TextBlock">
 			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="Margin" Value="6 0 0 0"/>
+			<Setter Property="Margin" Value="4"/>
 		</Style>
 
 		<Style Selector="ContentControl">
-			<Setter Property="Margin" Value="5,4,0,4"/>
+			<Setter Property="Margin" Value="4"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 
-		<Style Selector="TextBlock.sideLabel">
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="Margin" Value="0,0,5,8"/>
-		</Style>
-
-		<Style Selector="TextBox.sideInput">
-			<Setter Property="Margin" Value="5,0,0,8"/>
+		<Style Selector="TextBox">
+			<Setter Property="Margin" Value="4"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 
-		<Style Selector="ContentControl.sideInput">
-			<Setter Property="Margin" Value="5,0,0,8"/>
-			<Setter Property="VerticalAlignment" Value="Center"/>
-		</Style>
-
-		<Style Selector="ComboBox.sideInput">
-			<Setter Property="Margin" Value="5,0,0,8"/>
+		<Style Selector="ComboBox">
+			<Setter Property="Margin" Value="4"/>
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 
 		<Style Selector="ToggleSwitch">
-			<Setter Property="Margin" Value="6,0,0,0"/>
+			<Setter Property="Margin" Value="4"/>
 			<Setter Property="HorizontalAlignment" Value="Left"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 
 		<Style Selector="ui|NumberBox">
-			<Setter Property="Margin" Value="6,0,0,4"/>
+			<Setter Property="Margin" Value="4"/>
 			<Setter Property="Minimum" Value="0"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -59,26 +49,110 @@
 			<Setter Property="AcceptsExpression" Value="False"/>
 			<Setter Property="ValidationMode" Value="InvalidInputOverwritten"/>
 		</Style>
-
-		<Style Selector="ui|SettingsExpanderItem > StackPanel">
-			<Setter Property="Spacing" Value="10"/>
-			<Setter Property="Margin" Value="10,5,10,5"/>
-		</Style>
-
-		<Style Selector="Grid.inputGrid">
-			<Setter Property="Margin" Value="0"/>
-		</Style>
-
-		<Style Selector="StackPanel.randoEditor">
-			<Setter Property="Orientation" Value="Horizontal"/>
-			<Setter Property="Margin" Value="0,0,0,0"/>
-			<Setter Property="Spacing" Value="6"/>
-			<Setter Property="VerticalAlignment" Value="Center"/>
-		</Style>
 	</UserControl.Styles>
 
 	<UserControl.Resources>
-		<ResourceDictionary>
+		<ResourceDictionary>															
+			<DataTemplate x:Key="ArgsTemplate" x:DataType="vmv:ArgsViewModel">
+				<Grid ColumnDefinitions="Auto,*"
+					RowDefinitions="Auto,Auto,Auto,Auto">
+					<TextBlock Text="Search:"	
+						Grid.Row="0"
+						ToolTip.Tip="comma seperated list of search terms" />
+					<TextBox 
+						Grid.Row="0" 
+						Grid.Column="1"
+						Watermark="comma seperated list of search terms"
+						Text="{Binding Search, Mode=TwoWay}"/>
+
+					<TextBlock Text="Scope:" 
+						Grid.Row="1" />
+					<ComboBox 
+						Grid.Row="1" 
+						Grid.Column="1" 
+						ItemsSource="{Binding AvailableScopes}" 
+						SelectedItem="{Binding SelectedScope, Mode=TwoWay}" />
+
+					<TextBlock Text="Sort:"
+						Grid.Row="2" />
+					<ComboBox 
+						Grid.Row="2" 
+						Grid.Column="1"
+						ItemsSource="{Binding AvailableSorts}" 
+						SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
+
+					<TextBlock Text="Filter:"
+						Grid.Row="3" />
+					<ComboBox 
+						Grid.Row="3" 
+						Grid.Column="1" 
+						ItemsSource="{Binding AvailableFilters}" 
+						SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" />
+				</Grid>
+			</DataTemplate>
+
+			<DataTemplate x:Key="StartEditorTemplate" x:DataType="models:Start">
+				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+					<!-- 
+						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
+						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> 
+					-->
+					<TextBlock Text="URL's:" 
+						Grid.Row="0"
+						ToolTip.Tip="list of urls (start at either a post or a community)" />
+					<TextBox 
+						Grid.Row="0" 
+						Grid.Column="1" 
+						AcceptsReturn="True" 
+         				TextWrapping="Wrap"
+						Watermark="Enter multi-line urls here..."
+						Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
+
+					<TextBlock Text="Max Attempts:" 
+						Grid.Row="1"
+						ToolTip.Tip="maximum number of attempts to try untill a successfull iteration" />
+					<ui:NumberBox 
+						Grid.Row="1" 
+						Grid.Column="1" 
+						Value="{Binding Attempts, Mode=TwoWay}"/>
+
+					<TextBlock Text="Variations:" 
+						Grid.Row="2"
+						ToolTip.Tip="number of variations of each search term to generate" />
+					<ContentControl 
+						Grid.Row="2" 
+						Grid.Column="1" 
+						Content="{Binding Variations}"
+						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
+
+					<TextBlock Text="Iterations:" 
+						Grid.Row="3"
+						ToolTip.Tip="number of iteration to run per search term" />
+					<ContentControl 
+						Grid.Row="3" 
+						Grid.Column="1" 
+						Content="{Binding Iterations}"
+						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
+
+					<TextBlock Text="Randomization:" 
+						Grid.Row="4"
+						ToolTip.Tip="general number of times to run actions like up/down vote" />
+					<ContentControl 
+						Grid.Row="4" 
+						Grid.Column="1" 
+						Content="{Binding Rando}"
+						ContentTemplate="{StaticResource RandoEditorTemplate}" />
+
+					<TextBlock Text="New Tab:" 
+						Grid.Row="5"
+						ToolTip.Tip="to start in a new tab (recommended)" />
+					<ToggleSwitch 
+						Grid.Row="5" 
+						Grid.Column="1" 
+						IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
+				</Grid>
+			</DataTemplate>
+
 			<DataTemplate x:Key="RandoEditorTemplate" x:DataType="models:Rando">
 				<StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
 					<TextBlock Text="Min:"/>
@@ -90,98 +164,58 @@
 				</StackPanel>
 			</DataTemplate>
 
-			<DataTemplate x:Key="StartEditorTemplate" x:DataType="models:Start">
-				<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
-					<!-- 
-						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
-						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> 
-					
-						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="URL:"/>
-						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
-					-->
-
-					<TextBlock Text="Variations:" Grid.Row="0"
-						ToolTip.Tip="number of variations of each search term to generate" />
-					<ContentControl 
-						Grid.Column="1" Grid.Row="0" 
-						Margin="5,4,0,0"
-						Content="{Binding Variations}"
-						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
-
-
-					<TextBlock Text="Iterations:" Grid.Row="1"
-						ToolTip.Tip="number of iteration to run per search term" />
-					<ContentControl 
-						Grid.Column="1" Grid.Row="1" 
-						Content="{Binding Iterations}"
-						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
-
-
-					<TextBlock Text="Randomization:" Grid.Row="2"
-						ToolTip.Tip="general number of times to run actions like up/down vote" />
-					<ContentControl 
-						Grid.Column="1" Grid.Row="2" 
-						Content="{Binding Rando}"
-						ContentTemplate="{StaticResource RandoEditorTemplate}" />
-
-					<TextBlock Text="Max Attempts:" Grid.Row="3"
-						ToolTip.Tip="maximum number of attempts to try untill a successfull iteration" />
-					<ui:NumberBox 
-						Grid.Column="1" Grid.Row="3" 
-						Value="{Binding Attempts, Mode=TwoWay}"/>
-
-					<TextBlock Text="New Tab:" Grid.Row="4"
-						ToolTip.Tip="to start in a new tab (recommended)" />
-					<ToggleSwitch 
-						Grid.Column="1" Grid.Row="4" 
-						IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
-				</Grid>
-			</DataTemplate>
-
 			<DataTemplate x:Key="TimeoutsEditorTemplate" x:DataType="models:Timeouts">
-				<Grid Classes="inputGrid" ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
-					<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" 
-						ToolTip.Tip="max time to wait for page load"
-						Text="Navigate:"/>
-					<ui:NumberBox Classes="sideInput" Grid.Row="0" Grid.Column="1" 
+				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+					<TextBlock Text="Navigate:"
+						Grid.Row="0" 
+						ToolTip.Tip="max time to wait for page load"/>
+					<ui:NumberBox 
+						Grid.Row="0" 
+						Grid.Column="1" 
 						Value="{Binding Navigate, Mode=TwoWay}"/>
 
-					<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" 
-						ToolTip.Tip="max time to wait in general"
-						Text="Default:"/>
-					<ui:NumberBox Classes="sideInput" Grid.Row="1" Grid.Column="1" 
-						Margin="5,4,0,8"
+					<TextBlock Text="Default:"
+						Grid.Row="1" 
+						Grid.Column="0" 
+						ToolTip.Tip="max time to wait in general"/>
+					<ui:NumberBox 
+						Grid.Row="1" 
+						Grid.Column="1" 
 						Value="{Binding Default, Mode=TwoWay}"/>
 
-					<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" 
-						ToolTip.Tip="max time to wait for actions to complete"
-						Text="Wait:"/>
-					<ui:NumberBox Classes="sideInput" Grid.Row="2" Grid.Column="1" 
+					<TextBlock Text="Wait:"
+						Grid.Row="2"
+						Grid.Column="0" 
+						ToolTip.Tip="max time to wait for actions to complete"/>
+					<ui:NumberBox 
+						Grid.Row="2"
+						Grid.Column="1" 
 						Value="{Binding Wait, Mode=TwoWay}" />
 
-					<TextBlock Grid.Row="3" 
-						Classes="sideLabel" 
-						Margin="0"
-						Text="Naps:" 
+					<TextBlock Text="Naps:" 
+						Grid.Row="3" 
 						ToolTip.Tip="milliseconds between actions to simulate natural user interactions" />
 					<ContentControl 
-						Grid.Row="3" Grid.Column="1"  
+						Grid.Row="3" 
+						Grid.Column="1"  
 						Classes="sideInput" 
-						Margin="5,4,0,0"
 						VerticalAlignment="Center"
 						Content="{Binding Naps}">
 						<ContentControl.ContentTemplate>
 							<DataTemplate x:DataType="models:Rando">
-								<StackPanel Classes="randoEditor">
+								<StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
 									<TextBlock Text="Min:"/>
-									<ui:NumberBox Value="{Binding Min, Mode=TwoWay}" 
+									<ui:NumberBox 
+										Value="{Binding Min, Mode=TwoWay}" 
 										SpinButtonPlacementMode="Compact"/>
 									<TextBlock Text="Max:"/>
-									<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"
+									<ui:NumberBox
+										Value="{Binding Max, Mode=TwoWay}"
 										SpinButtonPlacementMode="Compact"/>
 									<TextBlock Text="Multiplier:"/>
-									<ui:NumberBox Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue=''}"
-										SpinButtonPlacementMode="Compact"/>
+									<ui:NumberBox 
+										Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue=''}"
+										SpinButtonPlacementMode="Compact" />
 								</StackPanel>
 							</DataTemplate>
 						</ContentControl.ContentTemplate>
@@ -195,24 +229,17 @@
 		<afv:ChameleonContentControl Title="Agents"
                                      TitleDescription="Robotic Automation Agents">
 			<afv:ChameleonContentControl.Content>
-				<ListBox VerticalAlignment="Top"
-                         ItemsSource="{Binding Actors}"
-                         Theme="{StaticResource ListBoxNoScroller}"
-                         ItemContainerTheme="{StaticResource GridViewItem}">
-					<ListBox.ItemsPanel>
-						<ItemsPanelTemplate>
-							<UniformGrid Columns="1" />
-						</ItemsPanelTemplate>
-					</ListBox.ItemsPanel>
+				<ListBox ItemsSource="{Binding Actors}"
+						 Classes="uniColumn">
 					<ListBox.ItemTemplate>
 						<DataTemplate x:DataType="vm:ActorViewModel">
-							<ui:SettingsExpander Header="{Binding EditableSettings.Start.Feature}"
-                                                 Description="{Binding EditableSettings.Start.Url}">
+							<ui:SettingsExpander Header="{Binding EditableSettings.Start.Feature}">
 								<ui:SettingsExpanderItem>
 									<StackPanel>
 										<TextBlock Text="Profiles"
+											Margin="4 6"
 											ToolTip.Tip="tags that contain profiles" 
-											Theme="{StaticResource CaptionTextBlockStyle}"/>
+											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
 										<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
 											<ItemsControl 
 												ItemsPanel="{StaticResource HorizontalStackPanel}" 
@@ -229,8 +256,8 @@
 
 										<TextBlock Text="Actors" 
 											ToolTip.Tip="available automation actors to run" 
-											Margin="0 6 0 0" 
-											Theme="{StaticResource CaptionTextBlockStyle}"/>
+											Margin="4 12 4 6" 
+											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
 										<ItemsControl 
 											ItemsSource="{Binding Selections}"
 											ItemsPanel="{StaticResource HorizontalStackPanel}">
@@ -243,45 +270,20 @@
 											</ItemsControl.ItemTemplate>
 										</ItemsControl>
 
-										<Expander Header="Options" IsExpanded="True">
+										<Expander Header="Options" 
+											IsExpanded="True"
+											Margin="0 12 0 0">
 											<StackPanel>
-												<ContentControl Content="{Binding EditableArgs}">
-														<ContentControl.ContentTemplate>
-															<DataTemplate x:DataType="vmv:ArgsViewModel">
-																<Grid Margin="20,5,0,5"
-                                                		              ColumnDefinitions="Auto,*"
-                                                		              RowDefinitions="Auto,Auto,Auto,Auto">
-																	<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" 
-																		Text="Search:"/>
-																	<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" 
-																		Text="{Binding Search, Mode=TwoWay}"/>
+												<ContentControl 
+													Content="{Binding EditableArgs}"
+													ContentTemplate="{StaticResource ArgsTemplate}" />
 
-																	<TextBlock Classes="sideLabel" Grid.Row="1" Grid.Column="0" 
-																		Text="Scope:" />
-																	<ComboBox Classes="sideInput" Grid.Row="1" Grid.Column="1" 
-																		ItemsSource="{Binding AvailableScopes}" 
-																		SelectedItem="{Binding SelectedScope, Mode=TwoWay}" />
-
-																	<TextBlock Classes="sideLabel" Grid.Row="2" Grid.Column="0" 
-																		Text="Sort:"/>
-																	<ComboBox Classes="sideInput" Grid.Row="2" Grid.Column="1" 
-																		ItemsSource="{Binding AvailableSorts}" 
-																		SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
-
-																	<TextBlock Classes="sideLabel" Grid.Row="3" Grid.Column="0" 
-																		Text="Filter:"/>
-																	<ComboBox Classes="sideInput" Grid.Row="3" Grid.Column="1" 
-																		ItemsSource="{Binding AvailableFilters}" 
-																		SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" />
-																</Grid>
-															</DataTemplate>
-														</ContentControl.ContentTemplate>
-												</ContentControl>
-												<ContentControl Content="{Binding EditableSettings}">
+												<ContentControl 
+													Content="{Binding EditableSettings}">
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="vmv:SettingsViewModel">
-															<StackPanel Margin="20,5,0,5" Spacing="6">
-																<Expander Header="Run">
+															<StackPanel Spacing="6">
+																<Expander Header="Run" IsExpanded="True">
 																	<ContentControl 
 																		Content="{Binding Start}" 
 																		ContentTemplate="{StaticResource StartEditorTemplate}"/>

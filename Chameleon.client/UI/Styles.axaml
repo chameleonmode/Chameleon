@@ -10,4 +10,10 @@
 	</Styles.Resources>
 
 	<StyleInclude Source="Fluent/Styles.axaml" />
+
+	<Style Selector="ListBox.uniColumn">
+		<Setter Property="ItemsPanel" Value="{DynamicResource SingleColumnUniformGridTemplate}" />
+		<Setter Property="Theme" Value="{DynamicResource ListBoxNoScroller}" />
+		<Setter Property="ItemContainerTheme" Value="{DynamicResource GridViewItem}" />
+	</Style>
 </Styles>
