@@ -15,10 +15,7 @@ using System.Diagnostics;
 using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.client.Features.Automation.Actors;
-// tooltips
-// multi kw by ',' delimiter or ai generate or both...
 // multiple storage state / results
-// if start url start script at url and skip search or find post if the url is checked
 // more ai stuffs
 public record Tag(TagDto Dto, bool Selected = false) {
 	public TagItemDto[] Items { get; } =
