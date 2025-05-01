@@ -4,7 +4,9 @@
 	<Styles.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceInclude Source="Fluent/Templates.axaml" />
+				<ResourceInclude Source="Fluent/Themes.axaml" />
+				<ResourceInclude Source="Themes.axaml" />
+				<ResourceInclude Source="Templates.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Styles.Resources>
