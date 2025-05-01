@@ -17,7 +17,7 @@ public partial class ArgsViewModel : ObservableObject {
 	public IEnumerable<Filter> AvailableFilters { get; } = Enum.GetValues<Filter>();
 
 	public ArgsViewModel(DictionaryArgs sourceArgs) {
-		Search = GetValue(sourceArgs, "Search", "Search Term") ?? "Search Term";
+		Search = GetValue(sourceArgs, "Search", string.Empty) ?? string.Empty;
 		SelectedScope = GetValue(sourceArgs, "Scope", Scope.Posts);
 		SelectedSort = GetValue(sourceArgs, "Sort", Sort.Relevance);
 		SelectedFilter = GetValue(sourceArgs, "Filter", Filter.All);

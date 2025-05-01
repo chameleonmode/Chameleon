@@ -1,8 +1,5 @@
 using System.Collections.ObjectModel;
-using Chameleon.AIR.Actors.Models;
 using System.Diagnostics;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using RedditActor = Chameleon.AIR.Actors.Models.Reddit.Actor;
 using Chameleon.lib.Const;
@@ -16,42 +13,26 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 		LoadActorStates();
 	}
 
-	private static IActor CreateActorFromFeature(string featureName, Opts options) {
-
-		return featureName.ToLowerInvariant() switch {
-			"reddit" => new RedditActor { Options = options},
-			_ => throw new NotSupportedException($"Feature '{featureName}' is not supported.")
-		};
-	}
-
-	private void LoadActorStates() {
+	private async void LoadActorStates() {
 		Actors.Clear();
-
-		if (!Directory.Exists(FilePaths.Roboto)) {
-			Actors.Add(new ActorViewModel(new RedditActor()));
-			return;
-		}
-
-		var jsonOptions = new JsonSerializerOptions {
-			Converters = { new JsonStringEnumConverter() },
-		};
-
+		
 		foreach (var filePath in Directory.EnumerateFiles(FilePaths.Roboto, "*.json")) {
 			try {
-				var jsonContent = File.ReadAllText(filePath);
-				var loadedState = JsonSerializer.Deserialize<ActorState>(jsonContent, jsonOptions);
+				var jsonContent = await File.ReadAllTextAsync(filePath);
+				var loadedState = JS.Deserialize<State>(jsonContent, JS.EnumConverter);
 
-				if (loadedState != null && !string.IsNullOrWhiteSpace(loadedState.Options.Settings.Start.Feature)) {
-					var loadedActor = CreateActorFromFeature(loadedState.Options.Settings.Start.Feature, loadedState.Options);
-					if (loadedActor != null) {
-						Actors.Add(new ActorViewModel(loadedActor, loadedState.SelectedScriptFiles));
-						Debug.WriteLine($"Loaded actor state from: {filePath}");
-					}
-				} else {
-					Debug.WriteLine($"Failed to load valid ActorState or Feature name from: {filePath}");
-				}
+				Actors.Add(
+					new ActorViewModel(
+						actor: loadedState?.Options.Settings.Start.Feature.ToLowerInvariant() switch {
+							"reddit" => new RedditActor { Options = loadedState.Options },
+							_ => throw new NotSupportedException($"Feature '{loadedState?.Options.Settings.Start.Feature}' is not supported.")
+						},
+						selections: loadedState.Selections
+				));
+				Debug.WriteLine($"Loaded actor state from: {filePath}");
 			} catch (Exception ex) {
 				Debug.WriteLine($"Error loading actor state from {filePath}: {ex}");
+				File.Delete(filePath);
 			}
 		}
 

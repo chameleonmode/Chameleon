@@ -322,9 +322,20 @@
 												</DataTemplate>
 											</ui:FAComboBox.ItemTemplate>
 										</ui:FAComboBox>
-										<Button Content="Save" CommandParameter="SaveState" Command="{Binding AsyncCfVCommand}" ToolTip.Tip="Save current settings" IsVisible="{Binding !Running}" IsEnabled="{Binding !IsBusy}"/>
-										<Button Content="Run" CommandParameter="Run" IsVisible="{Binding !Running}" Command="{Binding AsyncCfVCommand}" />
-										<Button Content="Stop" CommandParameter="Stop" IsVisible="{Binding Running}" Command="{Binding CfVCommand}" />
+										<Button Content="Save" 
+											CommandParameter="Save" 
+											IsVisible="{Binding !Running}"
+											Command="{Binding AsyncCfVCommand}" />
+
+										<Button Content="Run" 
+											CommandParameter="Run" 
+											IsVisible="{Binding !Running}"
+											Command="{Binding AsyncCfVCommand}" />
+
+										<Button Content="Stop" 
+											CommandParameter="Stop" 
+											IsVisible="{Binding Running}"
+											Command="{Binding CfVCommand}" />
 									</StackPanel>
 								</ui:SettingsExpander.Footer>
 							</ui:SettingsExpander>
