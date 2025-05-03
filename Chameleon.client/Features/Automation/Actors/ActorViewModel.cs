@@ -22,7 +22,7 @@ public record Tag(TagDto Dto, bool Selected = false) {
 		[.. Dto.Items.Where(x => x.Key == TagItemType.Profile).Select(x => new TagItemDto(x.Key, x.Value))];
 }
 public record Selection(Script Script, bool Selected = false);
-public record State(Opts Options, IEnumerable<Selection> Selections);
+public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> Tags);
 public record BrowserOption(SystemBrowserType Option) {
 	public string IconName { get; } = Option.ToString().ToLower();
 }
@@ -44,7 +44,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	public List<Selection> Selections { get; }
 	public ReadOnlyObservableCollection<Tag> Tagz { get; }
 
-	public ActorViewModel(IActor actor, IEnumerable<Selection>? selections = null) {
+	public ActorViewModel(IActor actor, IEnumerable<Selection>? selections = null, IEnumerable<Tag>? selectedTags = null) {
 		Actor = actor;
 		Selections = [.. actor.Scripts.Select(s =>{
 				if (s is not Script script) return null;
@@ -52,7 +52,6 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				return new Selection(script, selected);
 			}).Where(s => s != null)
 		];
-		
 
 		EditableArgs = new(actor.Options.Args);
 		EditableSettings = new(actor.Options.Settings);
@@ -60,7 +59,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 		_ = TagsRepo.Connect()
 			.Filter(tag => tag.Items.Where(x => x.Key == TagItemType.Profile).Any())
-			.Transform(item => new Tag(item))
+			.Transform(item => new Tag(item,selectedTags?.Any(x => x.Dto.Name == item.Name) ?? false))
 			.Bind(out var tagz)
 			.Subscribe();
 		Tagz = tagz;
@@ -112,7 +111,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			var currentArgs = EditableArgs.ToDictionary();
 			var currentSettings = EditableSettings.ToRecord();
 			var currentOpts = new Opts(currentArgs, currentSettings);
-			var stateToSave = new State(currentOpts, Selections);
+			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.Selected));
 			var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
 			var jsonContent = JS.Serialize(stateToSave, JS.EnumConverter);
 			await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
