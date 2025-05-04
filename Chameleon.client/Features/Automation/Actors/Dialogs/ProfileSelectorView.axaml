@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+             xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
+             xmlns:vm="using:Chameleon.client.Features.Automation.Actors.Dialogs"
+             xmlns:modelsObservable="using:Chameleon.app.Avalonia.Models.Observable"
+             xmlns:controls="using:Chameleon.app.Avalonia.Controls"
+             xmlns:dd="using:DynamicData" 
+             xmlns:System="using:System"
+             x:DataType="vm:ProfileSelectorViewModel"
+             x:CompileBindings="False"
+             x:Class="Chameleon.client.Features.Automation.Actors.Dialogs.ProfileSelectorView" MinHeight="250">
+
+	<UserControl.Resources>
+		<vm:FolderKeyToNameConverter x:Key="KeyToFolderNameConverter"/>
+
+		<DataTemplate x:Key="ProfileItemTemplate" x:DataType="vm:ProfileOrFolderItem">
+			<Grid ColumnDefinitions="Auto,*" Margin="25,0,0,0" IsVisible="{Binding IsProfile}">
+				<CheckBox Grid.Column="0"
+                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                          VerticalAlignment="Center"
+                          Margin="0,0,8,0"/>
+				<controls:UserProfileUserControl Grid.Column="1"
+                                                 DataContext="{Binding Profile}" />
+			</Grid>
+		</DataTemplate>
+
+	</UserControl.Resources>
+
+	<dialogs:ChameleonDialogControl>
+		<dialogs:ChameleonDialogControl.Content>
+			<StackPanel Spacing="10">
+				<TextBox Text="{Binding SearchText, Mode=TwoWay}"
+						 Watermark="Search profiles..."
+						 Margin="0,0,0,5"/>
+
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<ItemsControl ItemsSource="{Binding GroupedFilteredItems}"
+								  MaxHeight="450">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Expander Margin="0,0,0,5">
+									<Expander.Header>
+										<TextBlock Text="{Binding GroupKey, Converter={StaticResource KeyToFolderNameConverter}}"
+                                                   FontWeight="Bold"/>
+									</Expander.Header>
+									<Expander.Content>
+										<ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+											<ItemsControl ItemsSource="{Binding List.Items}" ItemTemplate="{StaticResource ProfileItemTemplate}">
+												<ItemsControl.ItemsPanel>
+													<ItemsPanelTemplate>
+														<WrapPanel/>
+													</ItemsPanelTemplate>
+												</ItemsControl.ItemsPanel>
+											</ItemsControl>
+										</ScrollViewer>
+									</Expander.Content>
+								</Expander>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</StackPanel>
+		</dialogs:ChameleonDialogControl.Content>
+	</dialogs:ChameleonDialogControl>
+</UserControl>
