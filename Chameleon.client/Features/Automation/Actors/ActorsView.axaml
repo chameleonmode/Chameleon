@@ -16,6 +16,7 @@
 		<Style Selector="TextBlock">
 			<Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="Margin" Value="0 0 4 0"/>
+			<Setter Property="Cursor" Value="Help"/>
 		</Style>
 
 		<Style Selector="TextBox">
@@ -68,6 +69,7 @@
 						Text="{Binding Search, Mode=TwoWay}"/>
 
 					<TextBlock Text="Scope:" 
+						ToolTip.Tip="scope of the search"
 						Grid.Row="1" />
 					<ComboBox 
 						Grid.Row="1" 
@@ -76,6 +78,7 @@
 						SelectedItem="{Binding SelectedScope, Mode=TwoWay}" />
 
 					<TextBlock Text="Sort:"
+						ToolTip.Tip="sort order of the search"
 						Grid.Row="2" />
 					<ComboBox 
 						Grid.Row="2" 
@@ -84,6 +87,7 @@
 						SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
 
 					<TextBlock Text="Filter:"
+						ToolTip.Tip="filter to apply to the search"
 						Grid.Row="3" />
 					<ComboBox 
 						Grid.Row="3" 
@@ -99,15 +103,16 @@
 						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
 						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> 
 					-->
+					<!-- Using &#x0a; for line breaks -->
 					<TextBlock Text="URL's:" 
 						Grid.Row="0"
-						ToolTip.Tip="(experimental) list of urls (start at either a post or a community ie: https://www.reddit.com/r/*)" />
+						ToolTip.Tip="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)" />
 					<TextBox 
 						Grid.Row="0" 
 						Grid.Column="1" 
 						AcceptsReturn="True" 
          				TextWrapping="Wrap"
-						Watermark="Enter multi-line urls here..."
+						Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*"
 						Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
 
 					<TextBlock Text="Max Attempts:" 
