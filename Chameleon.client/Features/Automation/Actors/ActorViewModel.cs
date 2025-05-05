@@ -1,4 +1,5 @@
 using Chameleon.AIR.Actors.Models;
+using Chameleon.AIR.Scripts.Models;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.app.Avalonia.Models.Observable;
@@ -9,6 +10,7 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Const;
 using Chameleon.lib.Playwright.Utils;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using System.Collections.ObjectModel;
