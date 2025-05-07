@@ -42,7 +42,7 @@
 									<Expander.Header>
 										<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
 											<CheckBox IsThreeState="True" IsChecked="{Binding IsGroupSelected}"/>
-											<TextBlock Text="{Binding Title}" FontWeight="Bold"/>
+											<TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="0,6,0,0"/>
 										</StackPanel>
 									</Expander.Header>
 									<Expander.Content>

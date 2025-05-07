@@ -181,7 +181,7 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 		RebuildAndFilterDisplayGroups(searchText);
 
 		filterSubscription = this.WhenValueChanged(x => x.SearchText)
-															.Skip(0)
+															.Skip(1)
 															.Throttle(TimeSpan.FromMilliseconds(300))
 															.Subscribe(RebuildAndFilterDisplayGroups);
 	}
