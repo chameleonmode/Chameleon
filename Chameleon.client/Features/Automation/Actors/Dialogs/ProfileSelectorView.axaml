@@ -8,14 +8,11 @@
              xmlns:modelsObservable="using:Chameleon.app.Avalonia.Models.Observable"
              xmlns:controls="using:Chameleon.app.Avalonia.Controls"
              xmlns:dd="using:DynamicData" 
-             xmlns:System="using:System"
+			 xmlns:System="using:System"
              x:DataType="vm:ProfileSelectorViewModel"
-             x:CompileBindings="False"
-             x:Class="Chameleon.client.Features.Automation.Actors.Dialogs.ProfileSelectorView" MinHeight="250">
+             x:CompileBindings="True" x:Class="Chameleon.client.Features.Automation.Actors.Dialogs.ProfileSelectorView" MinHeight="250">
 
 	<UserControl.Resources>
-		<vm:FolderKeyToNameConverter x:Key="KeyToFolderNameConverter"/>
-
 		<DataTemplate x:Key="ProfileItemTemplate" x:DataType="vm:ProfileOrFolderItem">
 			<Grid ColumnDefinitions="Auto,*" Margin="25,0,0,0" IsVisible="{Binding IsProfile}">
 				<CheckBox Grid.Column="0"
@@ -37,21 +34,21 @@
 						 Margin="0,0,0,5"/>
 
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
-					<ItemsControl ItemsSource="{Binding GroupedFilteredItems}"
+					<ItemsControl ItemsSource="{Binding DisplayGroups}"
 								  MaxHeight="450">
 						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<Expander Margin="0,0,0,5">
+							<DataTemplate x:DataType="vm:GroupedProfiles">
+								<Expander IsExpanded="True" Margin="0,0,0,5">
 									<Expander.Header>
-										<TextBlock Text="{Binding GroupKey, Converter={StaticResource KeyToFolderNameConverter}}"
-                                                   FontWeight="Bold"/>
+										<TextBlock Text="{Binding Title}" FontWeight="Bold"/>
 									</Expander.Header>
 									<Expander.Content>
 										<ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
-											<ItemsControl ItemsSource="{Binding List.Items}" ItemTemplate="{StaticResource ProfileItemTemplate}">
+											<ItemsControl ItemsSource="{Binding ProfileItems}"
+														  ItemTemplate="{StaticResource ProfileItemTemplate}">
 												<ItemsControl.ItemsPanel>
 													<ItemsPanelTemplate>
-														<WrapPanel/>
+														<WrapPanel Orientation="Horizontal" />
 													</ItemsPanelTemplate>
 												</ItemsControl.ItemsPanel>
 											</ItemsControl>
@@ -62,6 +59,7 @@
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 				</ScrollViewer>
+
 			</StackPanel>
 		</dialogs:ChameleonDialogControl.Content>
 	</dialogs:ChameleonDialogControl>

@@ -27,8 +27,9 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 							"reddit" => new RedditActor { Options = loadedState.Options },
 							_ => throw new NotSupportedException($"Feature '{loadedState?.Options.Settings.Start.Feature}' is not supported.")
 						},
-						selections: loadedState.Selections,
-						selectedTags: loadedState.Tags
+						initialSelections: loadedState.Selections,
+						initialSelectedTagNames: loadedState.SelectedTags.Select(x => x.Dto.Name),
+						initialSelectedProfileIds: loadedState.SelectedProfileIds
 				));
 				Debug.WriteLine($"Loaded actor state from: {filePath}");
 			} catch (Exception ex) {
