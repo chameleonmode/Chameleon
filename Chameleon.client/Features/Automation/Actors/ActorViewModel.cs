@@ -168,15 +168,14 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 	private List<ObsProfile>? GetProfilesForRun() {
 
-		var selectedTagsInUI = Tagz.Where(t => t.Selected).ToList();
+		var selectedTagsInUI = Tagz.Where(t => t.Selected);
 		var profileIdsFromSelectedTags = selectedTagsInUI
 				.SelectMany(t => t.ProfileIds)
-				.Distinct()
-				.ToList();
+				.Distinct();
 
-		List<ObsProfile>? profilesToRun = null;
+		List<ObsProfile> profilesToRun = [];
 
-		if (profileIdsFromSelectedTags.Count != 0) {
+		if (profileIdsFromSelectedTags.Any()) {
 			profilesToRun = AllProfiles
 					.Where(p => p.Dto != null && profileIdsFromSelectedTags.Contains(p.Dto.id.ToString()))
 					.ToList();

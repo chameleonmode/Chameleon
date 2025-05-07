@@ -11,9 +11,11 @@ using System.Reactive.Linq;
 
 namespace Chameleon.client.Features.Automation.Actors.Dialogs;
 
-public partial class ProfileOrFolderItem: ObservableObject {
+public partial class ProfileOrFolderItem: ObservableObject, IDisposable {
 
 	[ObservableProperty] bool isSelected = false;
+
+	public object OriginalItem { get; }
 	public object Item { get; } = null!;
 	public ObsFolder? Folder => Item as ObsFolder;
 	public ObsProfile? Profile => Item as ObsProfile;
@@ -23,20 +25,39 @@ public partial class ProfileOrFolderItem: ObservableObject {
 
 	public long FolderIdKey => Folder?.Dto?.id ?? Profile?.Dto?.folderId ?? 0;
 
-	public ProfileOrFolderItem(object item, bool isSelected = false) {
-		if(item is ObsProfile profile) {
+	public ProfileOrFolderItem(object item, bool initialIsSelected = false) {
+		OriginalItem = item ?? throw new ArgumentNullException(nameof(item));
+		isSelected = (Profile?.IsSelected ?? false) || initialIsSelected;
+
+		if (item is ObsProfile profile) {
 			Item = new ObsProfile(profile.Dto, isShowCheckboxColumn: false, isShowGlyph: true, hasActionOptions: false);
 		}
 
-		if(item is ObsFolder folder) {
+		if (item is ObsFolder folder) {
 			Item = new ObsFolder(folder.Dto, hasActionOptions: false, onSelectedChanged: null, nameAlreadyExist: null);
 		}
-		this.isSelected = isSelected;
+
+
+		if (Profile != null) {
+			Profile.PropertyChanged += OriginalProfile_PropertyChanged;
+		}
+	}
+
+	private void OriginalProfile_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+		if (e.PropertyName == nameof(ObsProfile.IsSelected) && Profile != null) {
+			SetProperty(ref isSelected, Profile.IsSelected, nameof(IsSelected));
+		}
 	}
 
 	partial void OnIsSelectedChanged(bool value) {
-		if (Profile != null) {
+		if (Profile != null && Profile.IsSelected != value) {
 			Profile.IsSelected = value;
+		}
+	}
+
+	public void Dispose() {
+		if (Profile != null) {
+			Profile.PropertyChanged -= OriginalProfile_PropertyChanged;
 		}
 	}
 }
@@ -114,6 +135,7 @@ public partial class GroupedProfiles : ObservableObject {
 	public void Cleanup() {
 		foreach (var item in ProfileItems) {
 			item.PropertyChanged -= ProfileItem_PropertyChanged;
+			item.Dispose();
 		}
 	}
 }
@@ -137,7 +159,7 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 					}
 				}
 			}
-			return selectedOriginalProfiles.Distinct().ToList();
+			return selectedOriginalProfiles.Distinct();
 		}
 	}
 
@@ -159,6 +181,7 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 		RebuildAndFilterDisplayGroups(searchText);
 
 		filterSubscription = this.WhenValueChanged(x => x.SearchText)
+															.Skip(0)
 															.Throttle(TimeSpan.FromMilliseconds(300))
 															.Subscribe(RebuildAndFilterDisplayGroups);
 	}
@@ -170,14 +193,20 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 		DisplayGroups.Clear();
 
 		var filteredSourceProfiles = string.IsNullOrWhiteSpace(searchText)
-				? allProfiles.ToList()
-				: allProfiles.Where(p => p.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
+				? [.. allProfiles]
+				: allProfiles.Where(p => p.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false);
 
-		foreach (var folder in allFolders.OrderBy(f => f.Title)) {
-			var profilesInThisFolder = filteredSourceProfiles.Where(p => p.Dto?.folderId == folder.Dto?.id).ToList();
+		var distinctFolders = allFolders
+				 .Where(f => f.Dto != null)
+				 .GroupBy(f => f.Dto!.id)
+				 .Select(g => g.First()) 
+				 .OrderBy(f => f.Title);
+
+		foreach (var folder in distinctFolders) {
+			var profilesInThisFolder = filteredSourceProfiles.Where(p => p.Dto?.folderId == folder.Dto?.id);
 
 			var folderTitleMatchesOrContainsFilteredProfiles =
-					profilesInThisFolder.Count != 0 ||
+					profilesInThisFolder.Any() ||
 					(!string.IsNullOrWhiteSpace(searchText) && (folder.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false));
 
 			if (folderTitleMatchesOrContainsFilteredProfiles) {
