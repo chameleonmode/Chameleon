@@ -15,7 +15,6 @@ public partial class ProfileOrFolderItem: ObservableObject, IDisposable {
 
 	[ObservableProperty] bool isSelected = false;
 
-	public object OriginalItem { get; }
 	public object Item { get; } = null!;
 	public ObsFolder? Folder => Item as ObsFolder;
 	public ObsProfile? Profile => Item as ObsProfile;
@@ -26,7 +25,6 @@ public partial class ProfileOrFolderItem: ObservableObject, IDisposable {
 	public long FolderIdKey => Folder?.Dto?.id ?? Profile?.Dto?.folderId ?? 0;
 
 	public ProfileOrFolderItem(object item, bool initialIsSelected = false) {
-		OriginalItem = item ?? throw new ArgumentNullException(nameof(item));
 		isSelected = (Profile?.IsSelected ?? false) || initialIsSelected;
 
 		if (item is ObsProfile profile) {
@@ -148,7 +146,8 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 
 	[ObservableProperty] string? searchText;
 
-	public ObservableCollection<GroupedProfiles> DisplayGroups { get; } = [];
+	[ObservableProperty] ObservableCollection<GroupedProfiles> displayGroups = [];
+
 	public IEnumerable<ObsProfile> SelectedProfiles {
 		get {
 			var selectedOriginalProfiles = new List<ObsProfile>();
@@ -188,50 +187,42 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 	}
 
 	private void RebuildAndFilterDisplayGroups(string? searchText) {
-		foreach (var group in DisplayGroups) {
-			group.Cleanup();
-		}
-		DisplayGroups.Clear();
 
 		var filteredSourceProfiles = string.IsNullOrWhiteSpace(searchText)
 				? [.. allProfiles]
 				: allProfiles.Where(p => p.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false);
 
-		var distinctFolders = allFolders
-				 .Where(f => f.Dto != null)
-				 .Distinct()
-				 .OrderBy(f => f.Title);
+		var profileWrappers = filteredSourceProfiles
+						.Select(p => new ProfileOrFolderItem(p, initiallySelectedProfileIds.Contains(p.Dto?.id.ToString()) || p.IsSelected));
+
+		var groupedProfileWrappers = profileWrappers.GroupBy(pfi => pfi.FolderIdKey);
+
+		var distinctFolders = allFolders.Where(f => f.Dto != null).GroupBy(f => f.Dto!.id)
+					 .Select(g => g.First()).OrderBy(f => f.Title);
+
+		var resultGroup = new List<GroupedProfiles>();
 
 		foreach (var folder in distinctFolders) {
-			var profilesInThisFolder = filteredSourceProfiles.Where(p => p.Dto?.folderId == folder.Dto?.id);
+			var currentFolderId = folder.Dto!.id;
+			var folderTitleMatchesSearch = !string.IsNullOrWhiteSpace(searchText) &&
+																			(folder.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false);
 
-			var folderTitleMatchesOrContainsFilteredProfiles =
-					profilesInThisFolder.Any() ||
-					(!string.IsNullOrWhiteSpace(searchText) && (folder.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false));
+			var wrappersInThisGroup = groupedProfileWrappers.FirstOrDefault(g => g.Key == currentFolderId);
 
-			if (folderTitleMatchesOrContainsFilteredProfiles) {
-				var profileItemsForGroup = profilesInThisFolder
-						.Select(p => new ProfileOrFolderItem(p, initiallySelectedProfileIds.Contains(p.Dto?.id.ToString()) || p.IsSelected))
-						.OrderBy(pfi => pfi.DisplayName);
-
-				var groupVM = new GroupedProfiles(folder.Dto!.id, folder.Title ?? "Unnamed Folder", profileItemsForGroup);
-				DisplayGroups.Add(groupVM);
+			if (folderTitleMatchesSearch || (wrappersInThisGroup != null && wrappersInThisGroup.Any())) {
+				var groupVM = new GroupedProfiles(
+						currentFolderId,
+						folder.Title ?? "Unnamed Folder",
+						wrappersInThisGroup ?? Enumerable.Empty<ProfileOrFolderItem>()
+				);
+				resultGroup.Add(groupVM);
 			}
 		}
-
-		var ungroupedProfiles = filteredSourceProfiles.Where(p => p.Dto?.folderId is null or 0).ToList();
-		if (ungroupedProfiles.Count != 0) {
-			var profileItemsForUngrouped = ungroupedProfiles
-					.Select(p => new ProfileOrFolderItem(p, initiallySelectedProfileIds.Contains(p.Dto?.id.ToString()) || p.IsSelected))
-					.OrderBy(pfi => pfi.DisplayName);
-
-			var ungroupedGroupVM = new GroupedProfiles(0, "Ungrouped Profiles", profileItemsForUngrouped);
-			DisplayGroups.Add(ungroupedGroupVM);
-		}
-
-		foreach (var group in DisplayGroups) {
+		foreach (var group in resultGroup) {
 			group.UpdateGroupSelectionState();
 		}
+
+		DisplayGroups = new ObservableCollection<GroupedProfiles>(resultGroup.OrderBy(g => g.Title));
 	}
 
 	public async Task<bool> ShowDialogAsync() {
