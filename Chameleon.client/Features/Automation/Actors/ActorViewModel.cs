@@ -31,6 +31,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	CancellationTokenSource? cts;
 
 	[ObservableProperty] bool running;
+	[ObservableProperty] AIR.Actors.Models.AI aiSettings;
 	[ObservableProperty] ArgsViewModel editableArgs;
 	[ObservableProperty] SettingsViewModel editableSettings;
 	[ObservableProperty] BrowserOption browser;
@@ -46,6 +47,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 	public ActorViewModel(IActor actor, IEnumerable<Selection>? selections = null) {
 		Actor = actor;
+		AiSettings = actor.Options.AI;
 		Selections = [.. actor.Scripts.Select(s =>{
 				if (s is not Script script) return null;
 				var selected = selections?.FirstOrDefault(x => x.Script.File == script.File)?.Selected ?? false;
@@ -69,6 +71,9 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			try {
 				var selected = Selections.Where(s => s.Selected);
 				if (!selected.Any()) throw new Exception("No scripts selected.");
+				if (EditableArgs.Search.Is() && EditableSettings.Start.Url.Is()) throw new Exception("Search and URL's cannot be empty together.");
+
+				
 
 				MyProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(UserProfilesRepo.Instance.ObservableCache.Count);
 				var profiles = Tagz.Where(t => t.Selected)
@@ -89,7 +94,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					foreach (var selection in selected) {
 						cts.Token.ThrowIfCancellationRequested();
 
-						var opts = new Opts(EditableArgs.ToDictionary(), EditableSettings.ToRecord());
+						var opts = new Opts(AiSettings, EditableArgs.ToDictionary(), EditableSettings.ToRecord());
 						var json = JS.Serialize(opts);
 						Debug.WriteLine($@"Running script with:
 							  Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'");
@@ -111,7 +116,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			Actor.Options.Settings.Start.Feature.ThrowIfNullOrEmpty();
 			var currentArgs = EditableArgs.ToDictionary();
 			var currentSettings = EditableSettings.ToRecord();
-			var currentOpts = new Opts(currentArgs, currentSettings);
+			var currentOpts = new Opts(AiSettings, currentArgs, currentSettings);
 			var stateToSave = new State(currentOpts, Selections);
 			var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
 			var jsonContent = JS.Serialize(stateToSave, JS.EnumConverter);

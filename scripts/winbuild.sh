@@ -23,6 +23,9 @@ rm -rf .playwright/node/darwin-x64
 mkdir -p "Resources/scripts"
 cp -a /Users/dev/src/chameleon-playwright/dist/. "Resources/scripts/dist"
 
+cd /Users/dev/src/Chameleon/build/windows
+7z a Chameleon.7z && 7z d Chameleon.7z -r '*.DS_Store'
+
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <upload bool>"
   exit 1

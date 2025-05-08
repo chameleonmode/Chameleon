@@ -8,6 +8,6 @@ public partial class ActorsView : ChameleonPageBase {
 		InitializeComponent();
 		ControlName = "Mr. Roboto";
 		Description = "AI Robot Agents & Automationed Actors";
-		PreviewImage = App.TryGetResource<IconSource>("SpiderIcon");
+		PreviewImage = App.TryGetResource<IconSource>("SpiderIconWithCircles");
 	}
 }
