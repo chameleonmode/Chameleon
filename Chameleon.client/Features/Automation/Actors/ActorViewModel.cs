@@ -27,7 +27,7 @@ public record Tag(TagDto Dto, bool Selected = false) {
 	public string ToolTipText => $"{ProfileIds.Count()} Profiles";
 }
 public record Selection(Script Script, bool Selected = false);
-public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<string> SelectedProfileIds);
+public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<int> SelectedProfileIds);
 public record BrowserOption(SystemBrowserType Option) {
 	public string IconName { get; } = Option.ToString().ToLower();
 }
@@ -52,7 +52,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	private ReadOnlyObservableCollection<ObsProfile> AllProfiles => MyProfilesViewModel.Instance?.Profiles ?? ReadOnlyObservableCollection<ObsProfile>.Empty;
 	private ReadOnlyObservableCollection<ObsFolder> AllFolders => FoldersViewModel.Instance?.Folders ?? ReadOnlyObservableCollection<ObsFolder>.Empty;
 
-	public ActorViewModel(IActor actor, IEnumerable<Selection>? initialSelections = null, IEnumerable<string>? initialSelectedTagNames = null, IEnumerable<string>? initialSelectedProfileIds = null) {
+	public ActorViewModel(IActor actor, IEnumerable<Selection>? initialSelections = null, IEnumerable<string>? initialSelectedTagNames = null, IEnumerable<int>? initialSelectedProfileIds = null) {
 		Actor = actor;
 		Selections = [.. actor.Scripts.Select(s =>{
 				if (s is not Script script) return null;
@@ -75,7 +75,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		if (initialSelectedProfileIds != null && AllProfiles.Any()) {
 			foreach (var profile in AllProfiles) {
 				if (profile.Dto?.id != null) {
-					profile.IsSelected = initialSelectedProfileIds.Contains(profile.Dto.id.ToString());
+					profile.IsSelected = initialSelectedProfileIds.Contains(profile.Dto.id);
 				}
 			}
 		}
@@ -129,7 +129,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			var currentArgs = EditableArgs.ToDictionary();
 			var currentSettings = EditableSettings.ToRecord();
 			var currentOpts = new Opts(currentArgs, currentSettings);
-			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.Selected), initialSelectedProfileIds ?? []);
+			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.Selected), AllProfiles.Where(x => x.IsSelected).Select(x => x.Dto.id));
 			var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
 			var jsonContent = JS.Serialize(stateToSave, JS.EnumConverter);
 			await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
@@ -153,8 +153,13 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			Toaster.Error("Profile data not loaded.");
 			return;
 		}
-
-		var initiallySelectedForDialog = AllProfiles.Where(p => p.IsSelected).ToList();
+		var profileIdsFromSelectedTags = Tagz
+			.Where(x => x.Selected)
+			.SelectMany(t => t.ProfileIds)
+			.Distinct();
+		var initiallySelectedForDialog = AllProfiles
+			.Where(p => p.IsSelected || profileIdsFromSelectedTags.Any(id => int.Parse(id) == p.Dto.id))
+			.Distinct();
 		using var profileSelectorVM = new ProfileSelectorViewModel(AllFolders, AllProfiles, initiallySelectedForDialog);
 
 		var selectionMade = await profileSelectorVM.ShowDialogAsync();

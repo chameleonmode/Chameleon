@@ -182,6 +182,7 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 
 		filterSubscription = this.WhenValueChanged(x => x.SearchText)
 															.Skip(1)
+															.DistinctUntilChanged()
 															.Throttle(TimeSpan.FromMilliseconds(300))
 															.Subscribe(RebuildAndFilterDisplayGroups);
 	}
@@ -198,8 +199,7 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 
 		var distinctFolders = allFolders
 				 .Where(f => f.Dto != null)
-				 .GroupBy(f => f.Dto!.id)
-				 .Select(g => g.First()) 
+				 .Distinct()
 				 .OrderBy(f => f.Title);
 
 		foreach (var folder in distinctFolders) {
