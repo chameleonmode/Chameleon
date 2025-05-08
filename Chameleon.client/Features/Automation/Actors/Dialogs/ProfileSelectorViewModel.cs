@@ -14,7 +14,7 @@ namespace Chameleon.client.Features.Automation.Actors.Dialogs;
 public partial class ProfileOrFolderItem: ObservableObject, IDisposable {
 
 	[ObservableProperty] bool isSelected = false;
-
+	[ObservableProperty] bool isVisible = true;
 	public object Item { get; } = null!;
 	public ObsFolder? Folder => Item as ObsFolder;
 	public ObsProfile? Profile => Item as ObsProfile;
@@ -43,7 +43,7 @@ public partial class ProfileOrFolderItem: ObservableObject, IDisposable {
 
 	private void OriginalProfile_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
 		if (e.PropertyName == nameof(ObsProfile.IsSelected) && Profile != null) {
-			SetProperty(ref isSelected, Profile.IsSelected, nameof(IsSelected));
+			IsSelected = Profile.IsSelected;
 		}
 	}
 
@@ -127,7 +127,7 @@ public partial class GroupedProfiles : ObservableObject {
 	}
 
 	private void SetIsGroupSelected(bool? value) {
-		SetProperty(ref isGroupSelected, value, nameof(IsGroupSelected));
+		IsGroupSelected = value;
 	}
 
 	public void Cleanup() {
