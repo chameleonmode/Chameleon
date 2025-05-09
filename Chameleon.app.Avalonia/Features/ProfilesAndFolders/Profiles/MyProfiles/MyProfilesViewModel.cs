@@ -62,7 +62,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	? UserProfilesRepo.Instance.ObservableCache.Count
 	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.Id);
 	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
-	public bool IsProfilesExist => FoldersViewModel.Instance.AllProfiles?.IsFolderNotEmpty == true;
+	public bool IsProfilesExist => UserProfilesRepo.Instance.ObservableCache.Items.Any();
 	public bool HasNoItems => Profiles.Count == 0;
 	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
 	public string SelectedFolderTitle => Folder?.Title ?? "All profiles";
