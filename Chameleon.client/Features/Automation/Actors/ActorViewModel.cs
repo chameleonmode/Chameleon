@@ -29,6 +29,7 @@ public record BrowserOption(SystemBrowserType Option) {
 
 public partial class ActorViewModel : ViewModelObjectBase {
 	CancellationTokenSource? cts;
+	private static readonly Random random = new();
 
 	[ObservableProperty] bool running;
 	[ObservableProperty] ArgsViewModel editableArgs;
@@ -86,7 +87,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
 					ArgumentNullException.ThrowIfNull(browser);
 
-					foreach (var selection in selected) {
+					var shuffledScripts = selected.OrderBy(s => random.Next());
+					foreach (var selection in shuffledScripts) {
 						cts.Token.ThrowIfCancellationRequested();
 
 						var opts = new Opts(EditableArgs.ToDictionary(), EditableSettings.ToRecord());
