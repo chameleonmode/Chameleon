@@ -34,8 +34,10 @@ public record BrowserOption(SystemBrowserType Option) {
 
 public partial class ActorViewModel : ViewModelObjectBase {
 	CancellationTokenSource? cts;
+	private static readonly Random random = new();
 
 	[ObservableProperty] bool running;
+	[ObservableProperty] AIR.Actors.Models.AI aiSettings;
 	[ObservableProperty] ArgsViewModel editableArgs;
 	[ObservableProperty] SettingsViewModel editableSettings;
 	[ObservableProperty] BrowserOption browser;
@@ -51,6 +53,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 	public ActorViewModel(IActor actor, IEnumerable<Selection>? initialSelections = null, IEnumerable<string>? initialSelectedTagNames = null, IEnumerable<int>? initialSelectedProfileIds = null) {
 		Actor = actor;
+		AiSettings = actor.Options.AI;
 		Selections = [.. actor.Scripts.Select(s =>{
 				if (s is not Script script) return null;
 				var selected = initialSelections?.FirstOrDefault(x => x.Script.File == script.File)?.Selected ?? false;
@@ -79,6 +82,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 		AsyncCommandMap["Run"] = async () => {
 			try {
+//<<<<<<< reddit-actor-jack
 				var profiles = GetProfilesForRun();
 				if (profiles == null || profiles.Count == 0) {
 					Debug.WriteLine("No profiles selected from tags or 'More Profiles' button. Prompting with main selector.");
@@ -88,6 +92,13 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					if (profiles == null || profiles.Count == 0)
 						throw new OperationCanceledException("No profiles selected for the run after all attempts.");
 				}
+//=======
+//				var selected = Selections.Where(s => s.Selected);
+//				if (!selected.Any()) throw new Exception("No scripts selected.");
+//				if (EditableArgs.Search.Is() && EditableSettings.Start.Url.Is()) throw new Exception("Search and URL's cannot be empty together.");
+//
+//				
+//>>>>>>> ai-settings-update
 
 				var selected = await EnsureScriptsSelectedAsync();
 
@@ -99,10 +110,11 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
 					ArgumentNullException.ThrowIfNull(browser);
 
-					foreach (var selection in selected) {
+					var shuffledScripts = selected.OrderBy(s => random.Next());
+					foreach (var selection in shuffledScripts) {
 						cts.Token.ThrowIfCancellationRequested();
 
-						var opts = new Opts(EditableArgs.ToDictionary(), EditableSettings.ToRecord());
+						var opts = new Opts(AiSettings, EditableArgs.ToDictionary(), EditableSettings.ToRecord());
 						var json = JS.Serialize(opts);
 						Debug.WriteLine($@"Running script with:
 							  Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'");
@@ -124,8 +136,13 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			Actor.Options.Settings.Start.Feature.ThrowIfNullOrEmpty();
 			var currentArgs = EditableArgs.ToDictionary();
 			var currentSettings = EditableSettings.ToRecord();
+//<<<<<<< reddit-actor-jack
 			var currentOpts = new Opts(currentArgs, currentSettings);
 			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.Selected), MyProfilesViewModel.Instance.Profiles.Where(x => x.IsSelected).Select(x => x.Dto.id));
+//=======
+//			var currentOpts = new Opts(AiSettings, currentArgs, currentSettings);
+//			var stateToSave = new State(currentOpts, Selections);
+//>>>>>>> ai-settings-update
 			var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
 			var jsonContent = JS.Serialize(stateToSave, JS.EnumConverter);
 			await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);

@@ -16,6 +16,7 @@
 		<Style Selector="TextBlock">
 			<Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="Margin" Value="0 0 4 0"/>
+			<Setter Property="Cursor" Value="Help"/>
 		</Style>
 
 		<Style Selector="TextBox">
@@ -54,7 +55,75 @@
 	</UserControl.Styles>
 
 	<UserControl.Resources>
-		<ResourceDictionary>															
+		<ResourceDictionary>	
+			<DataTemplate x:Key="AITemplate" x:DataType="models:Decorations">
+				<Grid ColumnDefinitions="Auto,*"
+					RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+					<TextBlock Text="System:" 
+						Grid.Row="0"
+						ToolTip.Tip="System instructions" />
+					<TextBox 
+						Grid.Row="0" 
+						Grid.Column="1"
+						Watermark="You are a helpful assistant..."
+						Text="{Binding System, Mode=TwoWay}"/>
+
+					<TextBlock Text="Prefix:" 
+						Grid.Row="1"
+						ToolTip.Tip="Text to add before the prompt" />
+					<TextBox 
+						Grid.Row="1" 
+						Grid.Column="1"
+						Watermark="As a... you know how to... consider the following:"
+						Text="{Binding Prefix, Mode=TwoWay}"/>
+
+					<TextBlock Text="Human:" 
+						Grid.Row="2"
+						ToolTip.Tip="Human persona description" />
+					<TextBox 
+						Grid.Row="2" 
+						Grid.Column="1"
+						Watermark="I am... (eg. reddit content creator who...)"
+						Text="{Binding Human, Mode=TwoWay}"/>
+
+					<TextBlock Text="Audience:" 
+						Grid.Row="3"
+						ToolTip.Tip="Target audience" />
+					<TextBox 
+						Grid.Row="3" 
+						Grid.Column="1"
+						Watermark="the target audience is... (eg: reddit users who...)"
+						Text="{Binding Audience, Mode=TwoWay}"/>
+
+					<TextBlock Text="Background:" 
+						Grid.Row="4"
+						ToolTip.Tip="Background context" />
+					<TextBox 
+						Grid.Row="4" 
+						Grid.Column="1"
+						Watermark="up until this point... (eg: I... You... etc.)"
+						Text="{Binding Background, Mode=TwoWay}"/>
+
+					<TextBlock Text="Tone:" 
+						Grid.Row="5"
+						ToolTip.Tip="Communication tone" />
+					<TextBox 
+						Grid.Row="5" 
+						Grid.Column="1"
+						Watermark="The tone in your communication is... (eg: friendly and professional with.. etc.)"
+						Text="{Binding Tone, Mode=TwoWay}"/>
+
+					<TextBlock Text="Suffix:" 
+						Grid.Row="6"
+						ToolTip.Tip="Text to add after the prompt" />
+					<TextBox 
+						Grid.Row="6" 
+						Grid.Column="1"
+						Watermark="In you response and reasoning be as... (eg: creative as possible.)"
+						Text="{Binding Suffix, Mode=TwoWay}"/>
+				</Grid>
+			</DataTemplate>														
+			
 			<DataTemplate x:Key="ArgsTemplate" x:DataType="vmv:ArgsViewModel">
 				<Grid ColumnDefinitions="Auto,*"
 					RowDefinitions="Auto,Auto,Auto,Auto">
@@ -68,6 +137,7 @@
 						Text="{Binding Search, Mode=TwoWay}"/>
 
 					<TextBlock Text="Scope:" 
+						ToolTip.Tip="scope of the search"
 						Grid.Row="1" />
 					<ComboBox 
 						Grid.Row="1" 
@@ -76,6 +146,7 @@
 						SelectedItem="{Binding SelectedScope, Mode=TwoWay}" />
 
 					<TextBlock Text="Sort:"
+						ToolTip.Tip="sort order of the search"
 						Grid.Row="2" />
 					<ComboBox 
 						Grid.Row="2" 
@@ -84,6 +155,7 @@
 						SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
 
 					<TextBlock Text="Filter:"
+						ToolTip.Tip="filter to apply to the search"
 						Grid.Row="3" />
 					<ComboBox 
 						Grid.Row="3" 
@@ -99,15 +171,16 @@
 						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
 						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> 
 					-->
+					<!-- Using &#x0a; for line breaks -->
 					<TextBlock Text="URL's:" 
 						Grid.Row="0"
-						ToolTip.Tip="(experimental) list of urls (start at either a post or a community ie: https://www.reddit.com/r/*)" />
+						ToolTip.Tip="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)" />
 					<TextBox 
 						Grid.Row="0" 
 						Grid.Column="1" 
 						AcceptsReturn="True" 
          				TextWrapping="Wrap"
-						Watermark="Enter multi-line urls here..."
+						Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*"
 						Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
 
 					<TextBlock Text="Max Attempts:" 
@@ -118,7 +191,7 @@
 						Grid.Column="1" 
 						Value="{Binding Attempts, Mode=TwoWay}"/>
 
-					<TextBlock Text="Variations:" 
+					<TextBlock Text="AI Keywords:" 
 						Grid.Row="2"
 						ToolTip.Tip="number of variations of each search term to generate" />
 					<ContentControl 
@@ -127,7 +200,7 @@
 						Content="{Binding Variations}"
 						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 
-					<TextBlock Text="Iterations:" 
+					<TextBlock Text="Automations:" 
 						Grid.Row="3"
 						ToolTip.Tip="number of iteration to run per search term" />
 					<ContentControl 
@@ -243,9 +316,10 @@
 						 Classes="uniColumn">
 					<ListBox.ItemTemplate>
 						<DataTemplate x:DataType="vm:ActorViewModel">
-							<ui:SettingsExpander Header="{Binding EditableSettings.Start.Feature}">
+							<ui:SettingsExpander Header="{Binding EditableSettings.Start.Feature}"
+								IsExpanded="True">
 								<ui:SettingsExpanderItem>
-									<StackPanel>
+									<StackPanel Spacing="6">
 										<TextBlock Text="Tags With Profiles"
 											Margin="4 6"
 											ToolTip.Tip="select a tag that contain a grouping of profiles to artificially intelligently reactivationely with" 
@@ -291,14 +365,31 @@
 											<StackPanel>
 												<ContentControl 
 													Content="{Binding EditableArgs}"
-													ContentTemplate="{StaticResource ArgsTemplate}" />
+													ContentTemplate="{StaticResource ArgsTemplate}" 
+													Margin="6 0 6 6" />
 
-												<ContentControl 
-													Content="{Binding EditableSettings}">
+												<ContentControl Content="{Binding AiSettings}">
+													<ContentControl.ContentTemplate>
+														<DataTemplate x:DataType="models:AI">
+															<StackPanel Spacing="6">
+																<Expander Header="Inception" 
+																	ToolTip.Tip="Contextualization for arificial insemination"
+																	Margin="0 6"
+																	IsExpanded="True">
+																	<ContentControl 
+																		Content="{Binding Decorators}"
+																		ContentTemplate="{StaticResource AITemplate}" />
+																</Expander>
+															</StackPanel>
+														</DataTemplate>
+													</ContentControl.ContentTemplate>
+												</ContentControl>
+
+												<ContentControl Content="{Binding EditableSettings}">
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="vmv:SettingsViewModel">
 															<StackPanel Spacing="6">
-																<Expander Header="Run" IsExpanded="True" Margin="0 6 0 0">
+																<Expander Header="Run" IsExpanded="True" Margin="0 6">
 																	<ContentControl 
 																		Content="{Binding Start}" 
 																		ContentTemplate="{StaticResource StartEditorTemplate}"/>

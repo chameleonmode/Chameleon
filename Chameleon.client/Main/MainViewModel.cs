@@ -8,7 +8,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using DynamicData;
-using System.Reflection;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Helpers;
 
@@ -46,11 +45,15 @@ public partial class MainViewModel : ObservableObjectBase {
 		.Concat(_boundTags);
 
 	private MainViewModel() {
+#if DEBUG
+		AppStartup.Instance.OnLoginSuccess += () => {
+			IsSplashVisible = false;
+		};
+#else
 		AppStartup.Instance.OnLoginSuccess += async () => {
 			IsSplashVisible = false;
-
 			try {
-				var current = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
+				var current = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
 				var appClientInfo = await Service.Routes.App.GetLatestVersion;
 				if (appClientInfo != null && appClientInfo.Latest != current) {
 					InfoBarTitle = "New Version Available";
@@ -61,6 +64,7 @@ public partial class MainViewModel : ObservableObjectBase {
 				Toaster.Error(e.Message);
 			}
 		};
+#endif
 		_ = UserProfilesRepo
 			.Connect()
 			.Transform(i => new MainAppSearchItem() {
