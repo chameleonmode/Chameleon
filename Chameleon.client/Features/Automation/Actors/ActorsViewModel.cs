@@ -4,17 +4,17 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using RedditActor = Chameleon.AIR.Actors.Models.Reddit.Actor;
 using Chameleon.lib.Const;
 using Chameleon.AIR.Actors.Models;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
+using Chameleon.lib.Api.Repos;
 
 namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class ActorsViewModel : ViewModelObjectBase {
 	public ObservableCollection<ActorViewModel> Actors { get; set; } = [];
 
-	public ActorsViewModel() {
-		LoadActorStates();
-	}
+	public ActorsViewModel() { }
 
-	private async void LoadActorStates() {
+	private async Task LoadActorStates() {
 		Actors.Clear();
 
 		foreach (var filePath in Directory.EnumerateFiles(FilePaths.Roboto, "*.json")) {
@@ -33,20 +33,12 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 					Settings: loadedState.Options.Settings ?? actor.Options.Settings
 				);
 
-				Actors.Add(
-//<<<<<<< reddit-actor-jack
-					new ActorViewModel(
-						actor: loadedState?.Options.Settings.Start.Feature.ToLowerInvariant() switch {
-							"reddit" => new RedditActor { Options = loadedState.Options },
-							_ => throw new NotSupportedException($"Feature '{loadedState?.Options.Settings.Start.Feature}' is not supported.")
-						},
-						initialSelections: loadedState.Selections,
-						initialSelectedTagNames: loadedState.SelectedTags.Select(x => x.Dto.Name),
-						initialSelectedProfileIds: loadedState.SelectedProfileIds
+				Actors.Add(new(
+					actor,
+				 	selections: loadedState.Selections,
+				 	initialSelectedTagNames: loadedState.SelectedTags.Select(x => x.Dto.Name),
+					initialSelectedProfileIds: loadedState.SelectedProfileIds
 				));
-//=======
-//					new ActorViewModel(actor, selections: loadedState.Selections));
-//>>>>>>> ai-settings-update
 				Debug.WriteLine($"Loaded actor state from: {filePath}");
 			} catch (Exception ex) {
 				Debug.WriteLine($"Error loading actor state from {filePath}: {ex}");
@@ -58,5 +50,14 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 			Debug.WriteLine("No saved Reddit actor found, adding default.");
 			Actors.Add(new ActorViewModel(new RedditActor()));
 		}
+	}
+
+	public override async Task OnNavigatedToAsync(object? param) {
+		await base.OnNavigatedToAsync(param);
+		if (!Loaded) {
+			await LoadActorStates();
+		}
+		
+		MyProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(UserProfilesRepo.Instance.ObservableCache.Count);
 	}
 }

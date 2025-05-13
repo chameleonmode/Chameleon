@@ -320,11 +320,10 @@
 								IsExpanded="True">
 								<ui:SettingsExpanderItem>
 									<StackPanel Spacing="6">
-										<TextBlock Text="Tags With Profiles"
+										<TextBlock Text="Tags"
 											Margin="4 6"
-											ToolTip.Tip="select a tag that contain a grouping of profiles to artificially intelligently reactivationely with" 
+											ToolTip.Tip="select a tag that contain a grouping of profiles to inceptionalize" 
 											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
-										<Grid ColumnDefinitions="*,Auto">
 											<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
 												<ItemsControl
 													ItemsPanel="{StaticResource HorizontalStackPanel}"
@@ -338,12 +337,20 @@
 													</ItemsControl.ItemTemplate>
 												</ItemsControl>
 											</ScrollViewer>
-											<Button Grid.Column="1" Content="More Profiles..."
-													Command="{Binding AsyncCfVCommand}"
-													CommandParameter="OpenProfileSelector"
-													Theme="{StaticResource AccentTextButton}"
-													HorizontalAlignment="Right"
-													Margin="4,6"/>
+										<TextBlock Text="Profiles & Folders"
+											Margin="4 12 4 6"
+											ToolTip.Tip="select any profiles or folders to inceptionalize" 
+											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+											<Grid ColumnDefinitions="Auto,*">
+												<Button Content="Select..."
+														Command="{Binding AsyncCfVCommand}"
+														CommandParameter="OpenProfileSelector"
+														Theme="{StaticResource AccentTextButton}"
+														HorizontalAlignment="Right"
+														Margin="4,6"/>
+												<ScrollViewer Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+													<!-- this is where i want the currently selected profiles list-->
+												</ScrollViewer>
 										</Grid>
 										<TextBlock Text="Artificially Intelligent Automations" 
 											ToolTip.Tip="available automation actors to run" 

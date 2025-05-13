@@ -51,12 +51,12 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	public List<Selection> Selections { get; }
 	public ReadOnlyObservableCollection<Tag> Tagz { get; }
 
-	public ActorViewModel(IActor actor, IEnumerable<Selection>? initialSelections = null, IEnumerable<string>? initialSelectedTagNames = null, IEnumerable<int>? initialSelectedProfileIds = null) {
+	public ActorViewModel(IActor actor, IEnumerable<Selection>? selections = null, IEnumerable<string>? initialSelectedTagNames = null, IEnumerable<int>? initialSelectedProfileIds = null) {
 		Actor = actor;
 		AiSettings = actor.Options.AI;
 		Selections = [.. actor.Scripts.Select(s =>{
 				if (s is not Script script) return null;
-				var selected = initialSelections?.FirstOrDefault(x => x.Script.File == script.File)?.Selected ?? false;
+				var selected = selections?.FirstOrDefault(x => x.Script.File == script.File)?.Selected ?? false;
 				return new Selection(script, selected);
 			}).Where(s => s != null)
 		];
@@ -136,13 +136,15 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			Actor.Options.Settings.Start.Feature.ThrowIfNullOrEmpty();
 			var currentArgs = EditableArgs.ToDictionary();
 			var currentSettings = EditableSettings.ToRecord();
-//<<<<<<< reddit-actor-jack
-			var currentOpts = new Opts(currentArgs, currentSettings);
+			//<<<<<<< reddit-actor-jack
+			//			var currentOpts = new Opts(currentArgs, currentSettings);
+			//			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.Selected), MyProfilesViewModel.Instance.Profiles.Where(x => x.IsSelected).Select(x => x.Dto.id));
+			//=======
+			//		  var currentOpts = new Opts(AiSettings, currentArgs, currentSettings);
+			//			var stateToSave = new State(currentOpts, Selections);
+			//>>>>>>> ai-settings-update
+			var currentOpts = new Opts(AiSettings, currentArgs, currentSettings);
 			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.Selected), MyProfilesViewModel.Instance.Profiles.Where(x => x.IsSelected).Select(x => x.Dto.id));
-//=======
-//			var currentOpts = new Opts(AiSettings, currentArgs, currentSettings);
-//			var stateToSave = new State(currentOpts, Selections);
-//>>>>>>> ai-settings-update
 			var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
 			var jsonContent = JS.Serialize(stateToSave, JS.EnumConverter);
 			await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
@@ -180,7 +182,6 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	}
 
 	private List<ObsProfile>? GetProfilesForRun() {
-
 		var selectedTagsInUI = Tagz.Where(t => t.Selected);
 		var profileIdsFromSelectedTags = selectedTagsInUI
 				.SelectMany(t => t.ProfileIds)
