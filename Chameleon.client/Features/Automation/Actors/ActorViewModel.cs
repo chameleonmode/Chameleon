@@ -49,9 +49,6 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	public List<Selection> Selections { get; }
 	public ReadOnlyObservableCollection<Tag> Tagz { get; }
 
-	private ReadOnlyObservableCollection<ObsProfile> AllProfiles => MyProfilesViewModel.Instance?.Profiles ?? ReadOnlyObservableCollection<ObsProfile>.Empty;
-	private ReadOnlyObservableCollection<ObsFolder> AllFolders => FoldersViewModel.Instance?.Folders ?? ReadOnlyObservableCollection<ObsFolder>.Empty;
-
 	public ActorViewModel(IActor actor, IEnumerable<Selection>? initialSelections = null, IEnumerable<string>? initialSelectedTagNames = null, IEnumerable<int>? initialSelectedProfileIds = null) {
 		Actor = actor;
 		Selections = [.. actor.Scripts.Select(s =>{
@@ -72,8 +69,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			.Subscribe();
 		Tagz = tagz;
 
-		if (initialSelectedProfileIds != null && AllProfiles.Any()) {
-			foreach (var profile in AllProfiles) {
+		if (initialSelectedProfileIds != null && MyProfilesViewModel.Instance.Profiles.Any()) {
+			foreach (var profile in MyProfilesViewModel.Instance.Profiles) {
 				if (profile.Dto?.id != null) {
 					profile.IsSelected = initialSelectedProfileIds.Contains(profile.Dto.id);
 				}
@@ -82,12 +79,11 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 		AsyncCommandMap["Run"] = async () => {
 			try {
-
 				var profiles = GetProfilesForRun();
 				if (profiles == null || profiles.Count == 0) {
 					Debug.WriteLine("No profiles selected from tags or 'More Profiles' button. Prompting with main selector.");
 					await OpenProfileSelectorDialogAsync();
-					profiles = AllProfiles.Where(p => p.IsSelected).ToList();
+					profiles = MyProfilesViewModel.Instance.Profiles.Where(p => p.IsSelected).ToList();
 
 					if (profiles == null || profiles.Count == 0)
 						throw new OperationCanceledException("No profiles selected for the run after all attempts.");
@@ -129,7 +125,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			var currentArgs = EditableArgs.ToDictionary();
 			var currentSettings = EditableSettings.ToRecord();
 			var currentOpts = new Opts(currentArgs, currentSettings);
-			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.Selected), AllProfiles.Where(x => x.IsSelected).Select(x => x.Dto.id));
+			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.Selected), MyProfilesViewModel.Instance.Profiles.Where(x => x.IsSelected).Select(x => x.Dto.id));
 			var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
 			var jsonContent = JS.Serialize(stateToSave, JS.EnumConverter);
 			await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
@@ -148,19 +144,14 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	}
 
 	private async Task OpenProfileSelectorDialogAsync() {
-		if (AllFolders == null || AllProfiles == null) {
-			Debug.WriteLine("Error: Profile/Folder collections not available for dialog.");
-			Toaster.Error("Profile data not loaded.");
-			return;
-		}
 		var profileIdsFromSelectedTags = Tagz
 			.Where(x => x.Selected)
 			.SelectMany(t => t.ProfileIds)
 			.Distinct();
-		var initiallySelectedForDialog = AllProfiles
+		var initiallySelectedForDialog = MyProfilesViewModel.Instance.Profiles
 			.Where(p => p.IsSelected || profileIdsFromSelectedTags.Any(id => int.Parse(id) == p.Dto.id))
 			.Distinct();
-		using var profileSelectorVM = new ProfileSelectorViewModel(AllFolders, AllProfiles, initiallySelectedForDialog);
+		using var profileSelectorVM = new ProfileSelectorViewModel(FoldersViewModel.Instance.Folders, MyProfilesViewModel.Instance.Profiles, initiallySelectedForDialog);
 
 		var selectionMade = await profileSelectorVM.ShowDialogAsync();
 
@@ -181,14 +172,14 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		List<ObsProfile> profilesToRun = [];
 
 		if (profileIdsFromSelectedTags.Any()) {
-			profilesToRun = AllProfiles
+			profilesToRun = MyProfilesViewModel.Instance.Profiles
 					.Where(p => p.Dto != null && profileIdsFromSelectedTags.Contains(p.Dto.id.ToString()))
 					.ToList();
 			Debug.WriteLine($"Using {profilesToRun.Count} profiles from currently selected Tags: {string.Join(", ", selectedTagsInUI.Select(t => t.Dto.Name))}");
 			profilesToRun.ForEach(p => p.IsSelected = true);
 		}
 
-		profilesToRun = [.. profilesToRun, .. AllProfiles.Where(p => p.IsSelected)];
+		profilesToRun = [.. profilesToRun, .. MyProfilesViewModel.Instance.Profiles.Where(p => p.IsSelected)];
 		if (profilesToRun.Count != 0) {
 			Debug.WriteLine($"Using {profilesToRun.Count} profiles previously selected");
 			return profilesToRun.Distinct().ToList();
