@@ -337,11 +337,11 @@
 													</ItemsControl.ItemTemplate>
 												</ItemsControl>
 											</ScrollViewer>
-										<TextBlock Text="Profiles & Folders"
-											Margin="4 12 4 6"
-											ToolTip.Tip="select any profiles or folders to inceptionalize" 
-											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
-											<Grid ColumnDefinitions="Auto,*">
+											<TextBlock Text="Profiles N Folders"
+												Margin="4 12 4 6"
+												ToolTip.Tip="select any profiles or folders to inceptionalize" 
+												Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+												<Grid ColumnDefinitions="Auto,*">
 												<Button Content="Select..."
 														Command="{Binding AsyncCfVCommand}"
 														CommandParameter="OpenProfileSelector"
