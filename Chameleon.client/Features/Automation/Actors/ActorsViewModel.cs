@@ -34,7 +34,19 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 				);
 
 				Actors.Add(
-					new ActorViewModel(actor, selections: loadedState.Selections));
+//<<<<<<< reddit-actor-jack
+					new ActorViewModel(
+						actor: loadedState?.Options.Settings.Start.Feature.ToLowerInvariant() switch {
+							"reddit" => new RedditActor { Options = loadedState.Options },
+							_ => throw new NotSupportedException($"Feature '{loadedState?.Options.Settings.Start.Feature}' is not supported.")
+						},
+						initialSelections: loadedState.Selections,
+						initialSelectedTagNames: loadedState.SelectedTags.Select(x => x.Dto.Name),
+						initialSelectedProfileIds: loadedState.SelectedProfileIds
+				));
+//=======
+//					new ActorViewModel(actor, selections: loadedState.Selections));
+//>>>>>>> ai-settings-update
 				Debug.WriteLine($"Loaded actor state from: {filePath}");
 			} catch (Exception ex) {
 				Debug.WriteLine($"Error loading actor state from {filePath}: {ex}");

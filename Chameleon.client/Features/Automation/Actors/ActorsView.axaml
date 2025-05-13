@@ -324,20 +324,27 @@
 											Margin="4 6"
 											ToolTip.Tip="select a tag that contain a grouping of profiles to artificially intelligently reactivationely with" 
 											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
-										<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
-											<ItemsControl 
-												ItemsPanel="{StaticResource HorizontalStackPanel}" 
-												ItemsSource="{Binding Tagz}">											
-												<ItemsControl.ItemTemplate>
-													<DataTemplate x:DataType="vm:Tag">
-														<ToggleButton IsChecked="{Binding Selected}"
-                                                	                  Content="{Binding Dto.Name}"
-                                                	                  ToolTip.Tip="{Binding Items.Length}" />
-													</DataTemplate>
-												</ItemsControl.ItemTemplate>
-											</ItemsControl>
-										</ScrollViewer>
-
+										<Grid ColumnDefinitions="*,Auto">
+											<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
+												<ItemsControl
+													ItemsPanel="{StaticResource HorizontalStackPanel}"
+													ItemsSource="{Binding Tagz}">
+													<ItemsControl.ItemTemplate>
+														<DataTemplate x:DataType="vm:Tag">
+															<ToggleButton IsChecked="{Binding Selected}"
+																		  Content="{Binding Dto.Name}"
+																		  ToolTip.Tip="{Binding ToolTipText}" />
+														</DataTemplate>
+													</ItemsControl.ItemTemplate>
+												</ItemsControl>
+											</ScrollViewer>
+											<Button Grid.Column="1" Content="More Profiles..."
+													Command="{Binding AsyncCfVCommand}"
+													CommandParameter="OpenProfileSelector"
+													Theme="{StaticResource AccentTextButton}"
+													HorizontalAlignment="Right"
+													Margin="4,6"/>
+										</Grid>
 										<TextBlock Text="Artificially Intelligent Automations" 
 											ToolTip.Tip="available automation actors to run" 
 											Margin="4 12 4 6" 
