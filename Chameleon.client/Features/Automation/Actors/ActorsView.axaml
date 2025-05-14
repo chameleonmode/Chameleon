@@ -337,7 +337,7 @@
 													</ItemsControl.ItemTemplate>
 												</ItemsControl>
 											</ScrollViewer>
-											<TextBlock Text="Profiles N Folders"
+											<TextBlock Text="Profiles and Folders"
 												Margin="4 12 4 6"
 												ToolTip.Tip="select any profiles or folders to inceptionalize" 
 												Theme="{StaticResource BodyStrongTextBlockStyle}"/>
@@ -349,7 +349,7 @@
 														HorizontalAlignment="Right"
 														Margin="4,6"/>
 												<ScrollViewer Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-													<!-- this is where i want the currently selected profiles list-->
+													
 												</ScrollViewer>
 										</Grid>
 										<TextBlock Text="Artificially Intelligent Automations" 

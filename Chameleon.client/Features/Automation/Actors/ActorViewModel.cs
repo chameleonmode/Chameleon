@@ -1,7 +1,5 @@
 using Chameleon.AIR.Actors.Models;
 using Chameleon.AIR.Scripts.Models;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.client.Features.Automation.Actors.Dialogs;
 using Chameleon.client.Features.Automation.Actors.ViewModels;
@@ -9,7 +7,6 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Const;
-using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Utils;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -51,7 +48,25 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	public List<Selection> Selections { get; }
 	public ReadOnlyObservableCollection<Tag> Tagz { get; }
 
-	public ActorViewModel(IActor actor, IEnumerable<Selection>? selections = null, IEnumerable<string>? initialSelectedTagNames = null, IEnumerable<int>? initialSelectedProfileIds = null) {
+	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
+	private readonly ReadOnlyObservableCollection<ObsProfile> profiles;
+
+	public ActorViewModel(IActor actor, IEnumerable<Selection>? selections = null,
+		IEnumerable<string>? initialSelectedTagNames = null,
+		IEnumerable<int>? initialSelectedProfileIds = null) {
+
+		_ = UserProfilesFolderRepo
+		.Connect()
+		.Transform(i => new ObsFolder(i, false, null, null))
+		.Bind(out folders)
+		.Subscribe();
+
+		_ = UserProfilesRepo
+	.Connect()
+	.Transform(i => new ObsProfile(i))
+	.Bind(out profiles)
+	.Subscribe();
+
 		Actor = actor;
 		AiSettings = actor.Options.AI;
 		Selections = [.. actor.Scripts.Select(s =>{
@@ -72,8 +87,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			.Subscribe();
 		Tagz = tagz;
 
-		if (initialSelectedProfileIds != null && MyProfilesViewModel.Instance.Profiles.Any()) {
-			foreach (var profile in MyProfilesViewModel.Instance.Profiles) {
+		if (initialSelectedProfileIds != null && profiles.Any()) {
+			foreach (var profile in profiles) {
 				if (profile.Dto?.id != null) {
 					profile.IsSelected = initialSelectedProfileIds.Contains(profile.Dto.id);
 				}
@@ -82,25 +97,18 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 		AsyncCommandMap["Run"] = async () => {
 			try {
-//<<<<<<< reddit-actor-jack
+
 				var profiles = GetProfilesForRun();
 				if (profiles == null || profiles.Count == 0) {
 					Debug.WriteLine("No profiles selected from tags or 'More Profiles' button. Prompting with main selector.");
 					await OpenProfileSelectorDialogAsync();
-					profiles = MyProfilesViewModel.Instance.Profiles.Where(p => p.IsSelected).ToList();
 
 					if (profiles == null || profiles.Count == 0)
 						throw new OperationCanceledException("No profiles selected for the run after all attempts.");
 				}
-//=======
-//				var selected = Selections.Where(s => s.Selected);
-//				if (!selected.Any()) throw new Exception("No scripts selected.");
-//				if (EditableArgs.Search.Is() && EditableSettings.Start.Url.Is()) throw new Exception("Search and URL's cannot be empty together.");
-//
-//				
-//>>>>>>> ai-settings-update
 
 				var selected = await EnsureScriptsSelectedAsync();
+				if (EditableArgs.Search.Is() && EditableSettings.Start.Url.Is()) throw new Exception("Search and URL's cannot be empty together.");
 
 				Running = true;
 				cts = new CancellationTokenSource();
@@ -136,15 +144,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			Actor.Options.Settings.Start.Feature.ThrowIfNullOrEmpty();
 			var currentArgs = EditableArgs.ToDictionary();
 			var currentSettings = EditableSettings.ToRecord();
-			//<<<<<<< reddit-actor-jack
-			//			var currentOpts = new Opts(currentArgs, currentSettings);
-			//			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.Selected), MyProfilesViewModel.Instance.Profiles.Where(x => x.IsSelected).Select(x => x.Dto.id));
-			//=======
-			//		  var currentOpts = new Opts(AiSettings, currentArgs, currentSettings);
-			//			var stateToSave = new State(currentOpts, Selections);
-			//>>>>>>> ai-settings-update
 			var currentOpts = new Opts(AiSettings, currentArgs, currentSettings);
-			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.Selected), MyProfilesViewModel.Instance.Profiles.Where(x => x.IsSelected).Select(x => x.Dto.id));
+			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.Selected), profiles.Where(x => x.IsSelected).Select(x => x.Dto.id));
 			var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
 			var jsonContent = JS.Serialize(stateToSave, JS.EnumConverter);
 			await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
@@ -167,10 +168,10 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			.Where(x => x.Selected)
 			.SelectMany(t => t.ProfileIds)
 			.Distinct();
-		var initiallySelectedForDialog = MyProfilesViewModel.Instance.Profiles
+		var initiallySelectedForDialog = profiles
 			.Where(p => p.IsSelected || profileIdsFromSelectedTags.Any(id => int.Parse(id) == p.Dto.id))
 			.Distinct();
-		using var profileSelectorVM = new ProfileSelectorViewModel(FoldersViewModel.Instance.Folders, MyProfilesViewModel.Instance.Profiles, initiallySelectedForDialog);
+		using var profileSelectorVM = new ProfileSelectorViewModel(folders, profiles, initiallySelectedForDialog);
 
 		var selectionMade = await profileSelectorVM.ShowDialogAsync();
 
@@ -190,14 +191,14 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		List<ObsProfile> profilesToRun = [];
 
 		if (profileIdsFromSelectedTags.Any()) {
-			profilesToRun = MyProfilesViewModel.Instance.Profiles
+			profilesToRun = profiles
 					.Where(p => p.Dto != null && profileIdsFromSelectedTags.Contains(p.Dto.id.ToString()))
 					.ToList();
 			Debug.WriteLine($"Using {profilesToRun.Count} profiles from currently selected Tags: {string.Join(", ", selectedTagsInUI.Select(t => t.Dto.Name))}");
 			profilesToRun.ForEach(p => p.IsSelected = true);
 		}
 
-		profilesToRun = [.. profilesToRun, .. MyProfilesViewModel.Instance.Profiles.Where(p => p.IsSelected)];
+		profilesToRun = [.. profilesToRun, .. profiles.Where(p => p.IsSelected)];
 		if (profilesToRun.Count != 0) {
 			Debug.WriteLine($"Using {profilesToRun.Count} profiles previously selected");
 			return profilesToRun.Distinct().ToList();
