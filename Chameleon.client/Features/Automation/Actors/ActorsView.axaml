@@ -8,6 +8,7 @@
              xmlns:vm="using:Chameleon.client.Features.Automation.Actors"
              xmlns:vmv="using:Chameleon.client.Features.Automation.Actors.ViewModels"
              xmlns:models="using:Chameleon.AIR.Actors.Models"
+			 xmlns:modelsObservable="using:Chameleon.app.Avalonia.Models.Observable"
              xmlns:redditModels="using:Chameleon.AIR.Actors.Models.Reddit"
              x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
              x:DataType="vm:ActorsViewModel"
@@ -55,112 +56,112 @@
 	</UserControl.Styles>
 
 	<UserControl.Resources>
-		<ResourceDictionary>	
+		<ResourceDictionary>
 			<DataTemplate x:Key="AITemplate" x:DataType="models:Decorations">
 				<Grid ColumnDefinitions="Auto,*"
 					RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-					<TextBlock Text="System:" 
+					<TextBlock Text="System:"
 						Grid.Row="0"
 						ToolTip.Tip="System instructions" />
-					<TextBox 
-						Grid.Row="0" 
+					<TextBox
+						Grid.Row="0"
 						Grid.Column="1"
 						Watermark="You are a helpful assistant..."
 						Text="{Binding System, Mode=TwoWay}"/>
 
-					<TextBlock Text="Prefix:" 
+					<TextBlock Text="Prefix:"
 						Grid.Row="1"
 						ToolTip.Tip="Text to add before the prompt" />
-					<TextBox 
-						Grid.Row="1" 
+					<TextBox
+						Grid.Row="1"
 						Grid.Column="1"
 						Watermark="As a... you know how to... consider the following:"
 						Text="{Binding Prefix, Mode=TwoWay}"/>
 
-					<TextBlock Text="Human:" 
+					<TextBlock Text="Human:"
 						Grid.Row="2"
 						ToolTip.Tip="Human persona description" />
-					<TextBox 
-						Grid.Row="2" 
+					<TextBox
+						Grid.Row="2"
 						Grid.Column="1"
 						Watermark="I am... (eg. reddit content creator who...)"
 						Text="{Binding Human, Mode=TwoWay}"/>
 
-					<TextBlock Text="Audience:" 
+					<TextBlock Text="Audience:"
 						Grid.Row="3"
 						ToolTip.Tip="Target audience" />
-					<TextBox 
-						Grid.Row="3" 
+					<TextBox
+						Grid.Row="3"
 						Grid.Column="1"
 						Watermark="the target audience is... (eg: reddit users who...)"
 						Text="{Binding Audience, Mode=TwoWay}"/>
 
-					<TextBlock Text="Background:" 
+					<TextBlock Text="Background:"
 						Grid.Row="4"
 						ToolTip.Tip="Background context" />
-					<TextBox 
-						Grid.Row="4" 
+					<TextBox
+						Grid.Row="4"
 						Grid.Column="1"
 						Watermark="up until this point... (eg: I... You... etc.)"
 						Text="{Binding Background, Mode=TwoWay}"/>
 
-					<TextBlock Text="Tone:" 
+					<TextBlock Text="Tone:"
 						Grid.Row="5"
 						ToolTip.Tip="Communication tone" />
-					<TextBox 
-						Grid.Row="5" 
+					<TextBox
+						Grid.Row="5"
 						Grid.Column="1"
 						Watermark="The tone in your communication is... (eg: friendly and professional with.. etc.)"
 						Text="{Binding Tone, Mode=TwoWay}"/>
 
-					<TextBlock Text="Suffix:" 
+					<TextBlock Text="Suffix:"
 						Grid.Row="6"
 						ToolTip.Tip="Text to add after the prompt" />
-					<TextBox 
-						Grid.Row="6" 
+					<TextBox
+						Grid.Row="6"
 						Grid.Column="1"
 						Watermark="In you response and reasoning be as... (eg: creative as possible.)"
 						Text="{Binding Suffix, Mode=TwoWay}"/>
 				</Grid>
-			</DataTemplate>														
-			
+			</DataTemplate>
+
 			<DataTemplate x:Key="ArgsTemplate" x:DataType="vmv:ArgsViewModel">
 				<Grid ColumnDefinitions="Auto,*"
 					RowDefinitions="Auto,Auto,Auto,Auto">
-					<TextBlock Text="Search:"	
+					<TextBlock Text="Search:"
 						Grid.Row="0"
 						ToolTip.Tip="comma seperated list of search terms" />
-					<TextBox 
-						Grid.Row="0" 
+					<TextBox
+						Grid.Row="0"
 						Grid.Column="1"
 						Watermark="comma seperated list of search terms"
 						Text="{Binding Search, Mode=TwoWay}"/>
 
-					<TextBlock Text="Scope:" 
+					<TextBlock Text="Scope:"
 						ToolTip.Tip="scope of the search"
 						Grid.Row="1" />
-					<ComboBox 
-						Grid.Row="1" 
-						Grid.Column="1" 
-						ItemsSource="{Binding AvailableScopes}" 
+					<ComboBox
+						Grid.Row="1"
+						Grid.Column="1"
+						ItemsSource="{Binding AvailableScopes}"
 						SelectedItem="{Binding SelectedScope, Mode=TwoWay}" />
 
 					<TextBlock Text="Sort:"
 						ToolTip.Tip="sort order of the search"
 						Grid.Row="2" />
-					<ComboBox 
-						Grid.Row="2" 
+					<ComboBox
+						Grid.Row="2"
 						Grid.Column="1"
-						ItemsSource="{Binding AvailableSorts}" 
+						ItemsSource="{Binding AvailableSorts}"
 						SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
 
 					<TextBlock Text="Filter:"
 						ToolTip.Tip="filter to apply to the search"
 						Grid.Row="3" />
-					<ComboBox 
-						Grid.Row="3" 
-						Grid.Column="1" 
-						ItemsSource="{Binding AvailableFilters}" 
+					<ComboBox
+						Grid.Row="3"
+						Grid.Column="1"
+						ItemsSource="{Binding AvailableFilters}"
 						SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" />
 				</Grid>
 			</DataTemplate>
@@ -172,66 +173,66 @@
 						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> 
 					-->
 					<!-- Using &#x0a; for line breaks -->
-					<TextBlock Text="URL's:" 
+					<TextBlock Text="URL's:"
 						Grid.Row="0"
 						ToolTip.Tip="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)" />
-					<TextBox 
-						Grid.Row="0" 
-						Grid.Column="1" 
-						AcceptsReturn="True" 
+					<TextBox
+						Grid.Row="0"
+						Grid.Column="1"
+						AcceptsReturn="True"
          				TextWrapping="Wrap"
 						Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*"
 						Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
 
-					<TextBlock Text="Max Attempts:" 
+					<TextBlock Text="Max Attempts:"
 						Grid.Row="1"
 						ToolTip.Tip="maximum number of attempts to try untill a successfull iteration" />
-					<ui:NumberBox 
-						Grid.Row="1" 
-						Grid.Column="1" 
+					<ui:NumberBox
+						Grid.Row="1"
+						Grid.Column="1"
 						Value="{Binding Attempts, Mode=TwoWay}"/>
 
-					<TextBlock Text="AI Keywords:" 
+					<TextBlock Text="AI Keywords:"
 						Grid.Row="2"
 						ToolTip.Tip="number of variations of each search term to generate" />
-					<ContentControl 
-						Grid.Row="2" 
-						Grid.Column="1" 
+					<ContentControl
+						Grid.Row="2"
+						Grid.Column="1"
 						Content="{Binding Variations}"
 						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 
-					<TextBlock Text="Automations:" 
+					<TextBlock Text="Automations:"
 						Grid.Row="3"
 						ToolTip.Tip="number of iteration to run per search term" />
-					<ContentControl 
-						Grid.Row="3" 
-						Grid.Column="1" 
+					<ContentControl
+						Grid.Row="3"
+						Grid.Column="1"
 						Content="{Binding Iterations}"
 						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 
-					<TextBlock Text="Randomization:" 
+					<TextBlock Text="Randomization:"
 						Grid.Row="4"
 						ToolTip.Tip="general number of times to run actions like up/down vote" />
-					<ContentControl 
-						Grid.Row="4" 
-						Grid.Column="1" 
+					<ContentControl
+						Grid.Row="4"
+						Grid.Column="1"
 						Content="{Binding Rando}"
 						ContentTemplate="{StaticResource RandoEditorTemplate}" />
 
-					<TextBlock Text="New Tab:" 
+					<TextBlock Text="New Tab:"
 						Grid.Row="5"
 						ToolTip.Tip="to start in a new tab (recommended)" />
-					<ToggleSwitch 
-						Grid.Row="5" 
-						Grid.Column="1" 
+					<ToggleSwitch
+						Grid.Row="5"
+						Grid.Column="1"
 						IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
 
-					<TextBlock Text="All The Things:" 
+					<TextBlock Text="All The Things:"
 						Grid.Row="6"
 						ToolTip.Tip="(experimental) no settings left behind" />
-					<ToggleSwitch 
-						Grid.Row="6" 
-						Grid.Column="1" 
+					<ToggleSwitch
+						Grid.Row="6"
+						Grid.Column="1"
 						IsChecked="{Binding All, Mode=TwoWay}" OffContent="" OnContent=""/>
 				</Grid>
 			</DataTemplate>
@@ -250,53 +251,53 @@
 			<DataTemplate x:Key="TimeoutsEditorTemplate" x:DataType="models:Timeouts">
 				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
 					<TextBlock Text="Navigate:"
-						Grid.Row="0" 
+						Grid.Row="0"
 						ToolTip.Tip="max time to wait for page load"/>
-					<ui:NumberBox 
-						Grid.Row="0" 
-						Grid.Column="1" 
+					<ui:NumberBox
+						Grid.Row="0"
+						Grid.Column="1"
 						Value="{Binding Navigate, Mode=TwoWay}"/>
 
 					<TextBlock Text="Default:"
-						Grid.Row="1" 
-						Grid.Column="0" 
+						Grid.Row="1"
+						Grid.Column="0"
 						ToolTip.Tip="max time to wait in general"/>
-					<ui:NumberBox 
-						Grid.Row="1" 
-						Grid.Column="1" 
+					<ui:NumberBox
+						Grid.Row="1"
+						Grid.Column="1"
 						Value="{Binding Default, Mode=TwoWay}"/>
 
 					<TextBlock Text="Wait:"
 						Grid.Row="2"
-						Grid.Column="0" 
+						Grid.Column="0"
 						ToolTip.Tip="max time to wait for actions to complete"/>
-					<ui:NumberBox 
+					<ui:NumberBox
 						Grid.Row="2"
-						Grid.Column="1" 
+						Grid.Column="1"
 						Value="{Binding Wait, Mode=TwoWay}" />
 
-					<TextBlock Text="Naps:" 
-						Grid.Row="3" 
+					<TextBlock Text="Naps:"
+						Grid.Row="3"
 						ToolTip.Tip="milliseconds between actions to simulate natural user interactions" />
-					<ContentControl 
-						Grid.Row="3" 
-						Grid.Column="1"  
-						Classes="sideInput" 
+					<ContentControl
+						Grid.Row="3"
+						Grid.Column="1"
+						Classes="sideInput"
 						VerticalAlignment="Center"
 						Content="{Binding Naps}">
 						<ContentControl.ContentTemplate>
 							<DataTemplate x:DataType="models:Rando">
 								<StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
 									<TextBlock Text="Min:"/>
-									<ui:NumberBox 
-										Value="{Binding Min, Mode=TwoWay}" 
+									<ui:NumberBox
+										Value="{Binding Min, Mode=TwoWay}"
 										SpinButtonPlacementMode="Compact"/>
 									<TextBlock Text="Max:"/>
 									<ui:NumberBox
 										Value="{Binding Max, Mode=TwoWay}"
 										SpinButtonPlacementMode="Compact"/>
 									<TextBlock Text="Multiplier:"/>
-									<ui:NumberBox 
+									<ui:NumberBox
 										Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue='0'}"
 										SpinButtonPlacementMode="Compact" />
 								</StackPanel>
@@ -307,7 +308,7 @@
 			</DataTemplate>
 		</ResourceDictionary>
 	</UserControl.Resources>
-	
+
 	<Grid RowDefinitions="Auto, *">
 		<afv:ChameleonContentControl Title="Agents"
                                      TitleDescription="Robotic Automation Agents">
@@ -322,41 +323,50 @@
 									<StackPanel Spacing="6">
 										<TextBlock Text="Tags"
 											Margin="4 6"
-											ToolTip.Tip="select a tag that contain a grouping of profiles to inceptionalize" 
+											ToolTip.Tip="select a tag that contain a grouping of profiles to inceptionalize"
 											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
-											<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
+										<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
+											<ItemsControl
+												ItemsPanel="{StaticResource HorizontalStackPanel}"
+												ItemsSource="{Binding Tagz}">
+												<ItemsControl.ItemTemplate>
+													<DataTemplate x:DataType="vm:Tag">
+														<ToggleButton IsChecked="{Binding IsSelected}"
+																	  Content="{Binding Dto.Name}"
+																	  ToolTip.Tip="{Binding ToolTipText}" />
+													</DataTemplate>
+												</ItemsControl.ItemTemplate>
+											</ItemsControl>
+										</ScrollViewer>
+										<TextBlock Text="Profiles and Folders"
+											Margin="4 12 4 6"
+											ToolTip.Tip="already selected profiles"
+											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+										<Grid ColumnDefinitions="Auto,*">
+											<Button Content="Select..."
+													Command="{Binding AsyncCfVCommand}"
+													CommandParameter="OpenProfileSelector"
+													Theme="{StaticResource AccentTextButton}"
+													HorizontalAlignment="Right"
+													Margin="4,6"/>
+											<ScrollViewer Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Auto">
 												<ItemsControl
-													ItemsPanel="{StaticResource HorizontalStackPanel}"
-													ItemsSource="{Binding Tagz}">
+												ItemsPanel="{StaticResource HorizontalStackPanel}"
+												ItemsSource="{Binding SelectedProfiles}">
 													<ItemsControl.ItemTemplate>
-														<DataTemplate x:DataType="vm:Tag">
-															<ToggleButton IsChecked="{Binding Selected}"
-																		  Content="{Binding Dto.Name}"
-																		  ToolTip.Tip="{Binding ToolTipText}" />
+														<DataTemplate x:DataType="modelsObservable:ObsProfile">
+															<ToggleButton IsChecked="{Binding IsSelected}"
+																		  Content="{Binding Title}" />
 														</DataTemplate>
 													</ItemsControl.ItemTemplate>
 												</ItemsControl>
 											</ScrollViewer>
-											<TextBlock Text="Profiles and Folders"
-												Margin="4 12 4 6"
-												ToolTip.Tip="select any profiles or folders to inceptionalize" 
-												Theme="{StaticResource BodyStrongTextBlockStyle}"/>
-												<Grid ColumnDefinitions="Auto,*">
-												<Button Content="Select..."
-														Command="{Binding AsyncCfVCommand}"
-														CommandParameter="OpenProfileSelector"
-														Theme="{StaticResource AccentTextButton}"
-														HorizontalAlignment="Right"
-														Margin="4,6"/>
-												<ScrollViewer Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-													
-												</ScrollViewer>
 										</Grid>
-										<TextBlock Text="Artificially Intelligent Automations" 
-											ToolTip.Tip="available automation actors to run" 
-											Margin="4 12 4 6" 
+										<TextBlock Text="Artificially Intelligent Automations"
+											ToolTip.Tip="available automation actors to run"
+											Margin="4 12 4 6"
 											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
-										<ItemsControl 
+										<ItemsControl
 											ItemsSource="{Binding Selections}"
 											ItemsPanel="{StaticResource HorizontalStackPanel}">
 											<ItemsControl.ItemTemplate>
@@ -370,20 +380,20 @@
 
 										<Expander Header="Options" IsExpanded="True" Margin="0 16 0 0">
 											<StackPanel>
-												<ContentControl 
+												<ContentControl
 													Content="{Binding EditableArgs}"
-													ContentTemplate="{StaticResource ArgsTemplate}" 
+													ContentTemplate="{StaticResource ArgsTemplate}"
 													Margin="6 0 6 6" />
 
 												<ContentControl Content="{Binding AiSettings}">
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="models:AI">
 															<StackPanel Spacing="6">
-																<Expander Header="Inception" 
+																<Expander Header="Inception"
 																	ToolTip.Tip="Contextualization for arificial insemination"
 																	Margin="0 6"
 																	IsExpanded="True">
-																	<ContentControl 
+																	<ContentControl
 																		Content="{Binding Decorators}"
 																		ContentTemplate="{StaticResource AITemplate}" />
 																</Expander>
@@ -397,12 +407,12 @@
 														<DataTemplate x:DataType="vmv:SettingsViewModel">
 															<StackPanel Spacing="6">
 																<Expander Header="Run" IsExpanded="True" Margin="0 6">
-																	<ContentControl 
-																		Content="{Binding Start}" 
+																	<ContentControl
+																		Content="{Binding Start}"
 																		ContentTemplate="{StaticResource StartEditorTemplate}"/>
 																</Expander>
 																<Expander Header="Timeouts" Margin="0 6">
-																	<ContentControl 
+																	<ContentControl
 																		Content="{Binding Timeouts}"
 																		ContentTemplate="{StaticResource TimeoutsEditorTemplate}"/>
 																</Expander>
@@ -416,8 +426,8 @@
 								</ui:SettingsExpanderItem>
 
 								<ui:SettingsExpander.Footer>
-									<StackPanel 
-										Orientation="Horizontal" 
+									<StackPanel
+										Orientation="Horizontal"
 										Spacing="6"
 										HorizontalAlignment="Right">
 										<ui:FAComboBox
@@ -426,25 +436,25 @@
 											ItemsSource="{Binding BrowserOptions}">
 											<ui:FAComboBox.ItemTemplate>
 												<DataTemplate>
-													<afv:SvgIconControl 
+													<afv:SvgIconControl
 														IconName="{Binding IconName}"
 														Height="20"
 														Width="20"/>
 												</DataTemplate>
 											</ui:FAComboBox.ItemTemplate>
 										</ui:FAComboBox>
-										<Button Content="Save" 
-											CommandParameter="Save" 
+										<Button Content="Save"
+											CommandParameter="Save"
 											IsVisible="{Binding !Running}"
 											Command="{Binding AsyncCfVCommand}" />
 
-										<Button Content="Run" 
-											CommandParameter="Run" 
+										<Button Content="Run"
+											CommandParameter="Run"
 											IsVisible="{Binding !Running}"
 											Command="{Binding AsyncCfVCommand}" />
 
-										<Button Content="Stop" 
-											CommandParameter="Stop" 
+										<Button Content="Stop"
+											CommandParameter="Stop"
 											IsVisible="{Binding Running}"
 											Command="{Binding CfVCommand}" />
 									</StackPanel>
