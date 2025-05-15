@@ -9,8 +9,7 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Const;
-using Chameleon.lib.Helpers;
-using Chameleon.lib.Playwright.Utils;
+using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
@@ -34,7 +33,6 @@ public record BrowserOption(SystemBrowserType Option) {
 
 public partial class ActorViewModel : ViewModelObjectBase {
 	CancellationTokenSource? cts;
-	private static readonly Random random = new();
 
 	[ObservableProperty] bool running;
 	[ObservableProperty] AIR.Actors.Models.AI aiSettings;
@@ -42,14 +40,13 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	[ObservableProperty] SettingsViewModel editableSettings;
 	[ObservableProperty] BrowserOption browser;
 
+	public IActor Actor { get; }
+	public List<Selection> Selections { get; }
+	public ReadOnlyObservableCollection<Tag> Tagz { get; }
 	public IEnumerable<BrowserOption> BrowserOptions { get; } = [
 		new (SystemBrowserType.Chrome),
 		new (SystemBrowserType.Brave),
 	];
-
-	public IActor Actor { get; }
-	public List<Selection> Selections { get; }
-	public ReadOnlyObservableCollection<Tag> Tagz { get; }
 
 	public ActorViewModel(IActor actor, IEnumerable<Selection>? selections = null, IEnumerable<string>? initialSelectedTagNames = null, IEnumerable<int>? initialSelectedProfileIds = null) {
 		Actor = actor;
@@ -110,17 +107,17 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
 					ArgumentNullException.ThrowIfNull(browser);
 
-					var shuffledScripts = selected.OrderBy(s => random.Next());
+					var shuffledScripts = selected.OrderBy(s => new Random().Next());
 					foreach (var selection in shuffledScripts) {
 						cts.Token.ThrowIfCancellationRequested();
 
-						var opts = new Opts(AiSettings, EditableArgs.ToDictionary(), EditableSettings.ToRecord());
+						var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected), EditableSettings.ToRecord());
 						var json = JS.Serialize(opts);
 						Debug.WriteLine($@"Running script with:
 							  Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'");
 						Debug.WriteLine(json);
 
-						await PlaywriteRunner.RunScript(new() {
+						await Runner.RunScript(new() {
 							Port = browser.Settings.Port,
 							Script = selection.Script,
 							Opts = opts
@@ -134,7 +131,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		};
 		AsyncCommandMap["Save"] = async () => {
 			Actor.Options.Settings.Start.Feature.ThrowIfNullOrEmpty();
-			var currentArgs = EditableArgs.ToDictionary();
+			var currentArgs = EditableArgs.ToDictionary([]);
 			var currentSettings = EditableSettings.ToRecord();
 			//<<<<<<< reddit-actor-jack
 			//			var currentOpts = new Opts(currentArgs, currentSettings);

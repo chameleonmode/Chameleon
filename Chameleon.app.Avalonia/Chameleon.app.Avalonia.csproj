@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\chameleon-lib\Chameleon.AIR\Chameleon.AIR.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.AIR\Chameleon.lib.AIR.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.assets\chameleon.assets.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib\Chameleon.lib.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Api\Chameleon.lib.Api.csproj" />

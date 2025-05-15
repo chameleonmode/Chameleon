@@ -19,7 +19,6 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Models;
 using Chameleon.lib.Playwright.Services;
-using Chameleon.lib.Playwright.Utils;
 using Chameleon.lib.Util;
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -388,7 +387,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 					SelectedPlaywrightScript.Port = browser.Settings.Port;
 					SelectedPlaywrightScript.Record = IsRecordSelected;
-					await PlaywriteRunner.RunScript(SelectedPlaywrightScript, cts.Token);
+					await Runner.RunScript(SelectedPlaywrightScript, cts.Token);
 				} catch (Exception ex) {
 					// Log or handle the exception if closing the process fails
 					Toaster.Error($"{ex.Message}");
