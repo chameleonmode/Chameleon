@@ -36,8 +36,8 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 				Actors.Add(new(
 					actor,
 				 	selections: loadedState.Selections,
-				 	initialSelectedTagNames: loadedState.SelectedTags.Select(x => x.Dto.Name),
-					initialSelectedProfileIds: loadedState.SelectedProfileIds
+				 	selectedTags: loadedState.SelectedTags.Select(x => x.Dto.Name),
+					profileSelections: loadedState.SelectedProfileIds
 				));
 				Debug.WriteLine($"Loaded actor state from: {filePath}");
 			} catch (Exception ex) {

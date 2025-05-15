@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib.Abs.Platformatic;
@@ -10,8 +9,8 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
-using Chameleon.lib.Playwright.Utils;
 using Chameleon.lib.Util;
+using Chameleon.lib.Playwright.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
@@ -116,7 +115,7 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 				var profile = allProfiles.FirstOrDefault(x => x.Dto!.id == op.Dto!.ProfileId)
 				?? throw new InvalidOperationException("Profile not found");
 
-				var cookies = await PlaywrightUtil.GetCookies(new(new(bt, profile.SystemBrowserProfile), profile.SBI[bt]?.Settings.Port));
+				var cookies = await Util.GetCookies(new(new(bt, profile.SystemBrowserProfile), profile.SBI[bt]?.Settings.Port));
 				if (cookies.Count > 0) {
 					await DB.Instance.EnsureUser();
 					var email = Dto!.id != Auther.AuthSession?.UserId ? Dto!.EmailAddress

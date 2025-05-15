@@ -23,7 +23,7 @@ public partial class ArgsViewModel : ObservableObject {
 		SelectedFilter = GetValue(sourceArgs, "Filter", Filter.All);
 	}
 
-	public DictionaryArgs ToDictionary(List<Selection> selections) {
+	public DictionaryArgs ToDictionary(IEnumerable<Selection> selections) {
 		return new DictionaryArgs {
 			["search"] = Search.Contains(',') ? Search.Split(",").Select(x => x.Trim()) : [Search.Trim()],
 			["scope"] = SelectedScope.ToString(),

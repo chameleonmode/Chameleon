@@ -12,10 +12,9 @@ public abstract partial class ObservableDtoViewModelBase<T>(
 	string? title = null, 
   Action<ObservableDtoViewModelBase<T>>? onSelectedChanged = default
 ) : DtoViewModelBase<T>(dto, title) where T : Dto {
-	[ObservableProperty]
-	private bool isSelected;
-	[ObservableProperty]
-	private bool isActionOptionsVisible = true;
+	[ObservableProperty] bool isSelected;
+	[ObservableProperty] bool active;
+	[ObservableProperty] bool isActionOptionsVisible = true;
 	
 	public override void InitCommandMapping() {
 		CommandMap["Unselect"] = () => {
@@ -24,6 +23,7 @@ public abstract partial class ObservableDtoViewModelBase<T>(
 	}
 
 	partial void OnIsSelectedChanged(bool value) {
+		Active = value;
 		OnAnyIsSelectedChanged(value);
 		onSelectedChanged?.Invoke(this);
 	}

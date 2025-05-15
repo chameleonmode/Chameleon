@@ -30,12 +30,12 @@
 		<dialogs:ChameleonDialogControl.Content>
 			<StackPanel Spacing="10">
 				<TextBox Text="{Binding SearchText, Mode=TwoWay}"
-						 Watermark="Search profiles..."
-						 Margin="0,0,0,5"/>
+						 Watermark="Search..."
+						 Margin="0,0,0,5"
+				/>
 
-				<ScrollViewer VerticalScrollBarVisibility="Auto">
-					<ItemsControl ItemsSource="{Binding DisplayGroups}"
-								  MaxHeight="450">
+				<ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="420">
+					<ItemsControl ItemsSource="{Binding DisplayGroups}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate x:DataType="vm:GroupedProfiles">
 								<Expander IsExpanded="False" Margin="0,0,0,5">

@@ -47,9 +47,10 @@ public record BrowserOption(SystemBrowserType Option) {
 }
 
 public partial class ActorViewModel : ViewModelObjectBase {
-	private readonly CompositeDisposable subscriptions = [];
-	private readonly HashSet<int> initialSelectedProfileIdsHashSet;
-	private readonly HashSet<string> initialSelectedTagNamesHashSet;
+	readonly CompositeDisposable subscriptions = [];
+
+	ReadOnlyObservableCollection<ObsFolder> Folders => FoldersViewModel.Instance.Folders;
+	ReadOnlyObservableCollection<ObsProfile> Profiles => MyProfilesViewModel.Instance.Profiles;
   
 	CancellationTokenSource? cts;
 
@@ -61,75 +62,68 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 	public IActor Actor { get; }
 	public List<Selection> Selections { get; }
-	public ReadOnlyObservableCollection<Tag> Tagz { get; }
 	public IEnumerable<BrowserOption> BrowserOptions { get; } = [
 		new (SystemBrowserType.Chrome),
 		new (SystemBrowserType.Brave),
 	];
 
-
 	private readonly ReadOnlyObservableCollection<Tag> tagz;
 	public ReadOnlyObservableCollection<Tag> Tagz => tagz;
-
-	private ReadOnlyObservableCollection<ObsFolder> Folders => FoldersViewModel.Instance.Folders;
-
-	private ReadOnlyObservableCollection<ObsProfile> Profiles => MyProfilesViewModel.Instance.Profiles;
 
 	private readonly ReadOnlyObservableCollection<ObsProfile> selectedProfiles;
 	public ReadOnlyObservableCollection<ObsProfile> SelectedProfiles => selectedProfiles;
 
-	public ActorViewModel(IActor actor, IEnumerable<Selection>? selections = null,
-		IEnumerable<string>? initialSelectedTagNames = null,
-		IEnumerable<int>? initialSelectedProfileIds = null) {
+	public ActorViewModel(
+		IActor actor,
+		IEnumerable<Selection>? selections = null,
+		IEnumerable<string>? selectedTags = null,
+		IEnumerable<int>? profileSelections = null
+	) {
+		subscriptions.Add(
+			TagsRepo.Connect()
+			.Filter(tag => tag.Items.Where(x => x.Key == TagItemType.Profile).Any())
+			.Transform(item => new Tag(item, selectedTags?.Contains(item.Name) ?? false))
+			.Bind(out tagz)
+			.Subscribe()
+		);
 
-		initialSelectedProfileIdsHashSet = new HashSet<int>(initialSelectedProfileIds ?? []);
-		initialSelectedTagNamesHashSet = new HashSet<string>(initialSelectedTagNames ?? []);
+		subscriptions.Add(
+			Profiles.ToObservableChangeSet()
+			.AutoRefresh(profile => profile.IsSelected)
+			.Filter(profile => profile.IsSelected)
+			.Sort(SortExpressionComparer<ObsProfile>.Ascending(p => p.Title ?? ""))
+			.DistinctUntilChanged()
+			.Bind(out selectedProfiles)
+			.Subscribe()
+		);
 
-		var profilesSortExpression = SortExpressionComparer<ObsProfile>.Ascending(p => p.Title ?? "");
-		var selectionUpdater = Profiles.ToObservableChangeSet()
-				.AutoRefresh(profile => profile.IsSelected)
-				.Filter(profile => profile.IsSelected)
-				.Sort(profilesSortExpression)
-				.DistinctUntilChanged()
-				.Bind(out selectedProfiles)
-				.Subscribe();
-		subscriptions.Add(selectionUpdater);
-
-		var tagzSource = TagsRepo.Connect()
-		.Filter(tag => tag.Items.Where(x => x.Key == TagItemType.Profile).Any())
-		.Transform(item => new Tag(item, initialSelectedTagNamesHashSet?.Contains(item.Name) ?? false))
-		.Bind(out tagz)
-		.Subscribe();
-		subscriptions.Add(tagzSource);
-
-		var tagSelectionSynchronizer = tagz.ToObservableChangeSet()
-						.AutoRefresh(tag => tag.IsSelected)
-						.ToCollection()
-						.Subscribe(currentTags => {
-							var profileIdsToSelect = currentTags
-									.Where(tag => tag.IsSelected)
-									.SelectMany(tag => tag.ProfileIds)
-									.ToHashSet();
-
-							foreach (var profile in Profiles) {
-								if (profile.Dto?.id != null)
-									profile.IsSelected = profileIdsToSelect.Contains(profile.Dto.id.ToString());
-							}
-						},
-						ex => Debug.WriteLine($"Error in Tag selection synchronizer: {ex}")
-						);
-		subscriptions.Add(tagSelectionSynchronizer);
+		subscriptions.Add(
+			tagz.ToObservableChangeSet()
+			.AutoRefresh(tag => tag.IsSelected)
+			.ToCollection()
+			.Subscribe(current =>
+				current
+				.ForEach(t =>
+					Profiles
+					.Where(x => t.ProfileIds.Contains(x.Dto.ID))
+					.ForEach(p => p.Active = p.IsSelected = t.IsSelected)
+				))
+		);
 
 		Actor = actor;
 		AiSettings = actor.Options.AI;
-		Selections = [.. actor.Scripts.Select(s =>{
-				if (s is not Script script) return null;
+		Selections = [.. actor.Scripts.Select(s => {
+			if (s is not Script script) return null;
 				var selected = selections?.FirstOrDefault(x => x.Script.File == script.File)?.Selected ?? false;
 				return new Selection(script, selected);
 			}).Where(s => s != null)
 		];
 
-		InitializeSelectedProfiles();
+		profileSelections?.ForEach(id => {
+			Profiles
+			.Where(p => p.Dto.id == id)
+			.ForEach(p => p.IsSelected = true);
+		});
 
 		EditableArgs = new(actor.Options.Args);
 		EditableSettings = new(actor.Options.Settings);
@@ -137,21 +131,18 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 		AsyncCommandMap["Run"] = async () => {
 			try {
+				var profiles = SelectedProfiles.Where(p => p.Active);
+				if (!profiles.Any()) throw new Exception("No profiles selected to run.");
+				
+				var selected = Selections.Where(s => s.Selected);
+				if (!selected.Any()) throw new Exception("No scripts selected to run.");
 
-				if (SelectedProfiles == null || SelectedProfiles.Count == 0) {
-					Debug.WriteLine("No profiles selected from tags or 'Select..' button. Prompting with main selector.");
-					await AsyncCommandMap["OpenProfileSelector"].Invoke();
-
-					if (SelectedProfiles == null || SelectedProfiles.Count == 0)
-						throw new OperationCanceledException("No profiles selected for the run after all attempts.");
-				}
-
-				var selected = await EnsureScriptsSelectedAsync();
-				if (EditableArgs.Search.Is() && EditableSettings.Start.Url.Is()) throw new Exception("Search and URL's cannot be empty together.");
+				var things = EditableArgs.Search.Is() && EditableSettings.Start.Url.Is();
+				if (things) throw new Exception("Search and URL's cannot be empty together.");
 
 				Running = true;
 				cts = new CancellationTokenSource();
-				foreach (var profile in SelectedProfiles) {
+				foreach (var profile in profiles) {
 					cts.Token.ThrowIfCancellationRequested();
 
 					var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
@@ -189,6 +180,10 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			var jsonContent = JS.Serialize(stateToSave, JS.EnumConverter);
 			await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
 		};
+		AsyncCommandMap["OpenProfileSelector"] = async () => {
+			using var profileSelectorVM = new ProfileSelectorViewModel(Folders, Profiles, SelectedProfiles);
+			_ = await profileSelectorVM.ShowDialogAsync();
+		};
 
 		CommandMap["Stop"] = () => {
 			if (cts != null) {
@@ -198,40 +193,5 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			}
 			Running = false;
 		};
-
-		AsyncCommandMap["OpenProfileSelector"] = async () => {
-			using var profileSelectorVM = new ProfileSelectorViewModel(Folders, Profiles, SelectedProfiles);
-			_ = await profileSelectorVM.ShowDialogAsync();
-		};
-	}
-
-	private void InitializeSelectedProfiles() => 
-		_ = Observable.Timer(TimeSpan.FromMilliseconds(150))
-				.Subscribe(_ => {
-					foreach (var profile in Profiles) {
-						if (profile.Dto?.id != null && initialSelectedProfileIdsHashSet.Contains(profile.Dto.id)) {
-							profile.IsSelected = true;
-						}
-					}
-				});
-	async Task<List<Selection>> EnsureScriptsSelectedAsync() {
-		var selectedScripts = Selections.Where(s => s.Selected).ToList();
-		if (selectedScripts.Count == 0) {
-			var scriptSelectorVM = new ScriptsSelectorViewModel(this.Selections);
-			var scriptsChosen = await scriptSelectorVM.ShowDialogAsync();
-			if (!scriptsChosen)
-				throw new OperationCanceledException("Script selection cancelled or none chosen");
-			selectedScripts = this.Selections.Where(s => s.Selected).ToList();
-			if (selectedScripts.Count == 0)
-				throw new InvalidOperationException("Dialog returned OK but no scripts were selected");
-		}
-		return selectedScripts;
-	}
-
-	private bool disposed = false;
-	public void Dispose() {
-		if (disposed) return;
-		subscriptions.Dispose();
-		disposed = true;
 	}
 }

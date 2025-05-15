@@ -350,7 +350,7 @@
 												</ItemsControl.ItemTemplate>
 											</ItemsControl>
 										</ScrollViewer>
-										<TextBlock Text="Profiles and Folders"
+										<TextBlock Text="Profiles"
 											Margin="4 12 4 6"
 											ToolTip.Tip="already selected profiles"
 											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
@@ -363,11 +363,11 @@
 													Margin="4,6"/>
 											<ScrollViewer Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Auto">
 												<ItemsControl
-												ItemsPanel="{StaticResource HorizontalStackPanel}"
-												ItemsSource="{Binding SelectedProfiles}">
+													ItemsPanel="{StaticResource HorizontalStackPanel}"
+													ItemsSource="{Binding SelectedProfiles}">
 													<ItemsControl.ItemTemplate>
 														<DataTemplate x:DataType="modelsObservable:ObsProfile">
-															<ToggleButton IsChecked="{Binding IsSelected}"
+															<ToggleButton IsChecked="{Binding Active}"
 																		  Content="{Binding Title}" />
 														</DataTemplate>
 													</ItemsControl.ItemTemplate>
