@@ -8,7 +8,7 @@
              xmlns:vm="using:Chameleon.client.Features.Automation.Actors"
              xmlns:vmv="using:Chameleon.client.Features.Automation.Actors.ViewModels"
              xmlns:models="using:Chameleon.AIR.Actors.Models"
-			 xmlns:modelsObservable="using:Chameleon.app.Avalonia.Models.Observable"
+			       xmlns:modelsObservable="using:Chameleon.app.Avalonia.Models.Observable"
              xmlns:redditModels="using:Chameleon.AIR.Actors.Models.Reddit"
              x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
              x:DataType="vm:ActorsViewModel"
@@ -184,55 +184,67 @@
 						Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*"
 						Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
 
-					<TextBlock Text="Max Attempts:"
-						Grid.Row="1"
-						ToolTip.Tip="maximum number of attempts to try untill a successfull iteration" />
-					<ui:NumberBox
-						Grid.Row="1"
-						Grid.Column="1"
+					<TextBlock 
+						Grid.Row="1" 
+						Text="Max Attempts:" 
+						ToolTip.Tip="maximum number of attempts to try untill a successfull iteration"
+					/>
+					<ui:NumberBox 
+						Grid.Row="1" 
+						Grid.Column="1" 
 						Value="{Binding Attempts, Mode=TwoWay}"/>
 
-					<TextBlock Text="AI Keywords:"
-						Grid.Row="2"
-						ToolTip.Tip="number of variations of each search term to generate" />
-					<ContentControl
-						Grid.Row="2"
-						Grid.Column="1"
+					<TextBlock 
+						Grid.Row="2" 
+						Text="AI Keywords:" 
+						ToolTip.Tip="Adds AI related keywords when set above 1-1."
+					/>
+					<ContentControl 
+						Grid.Row="2" 
+						Grid.Column="1" 
 						Content="{Binding Variations}"
 						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 
-					<TextBlock Text="Automations:"
-						Grid.Row="3"
-						ToolTip.Tip="number of iteration to run per search term" />
-					<ContentControl
-						Grid.Row="3"
-						Grid.Column="1"
+					<TextBlock 
+						Grid.Row="3" 
+						Text="Automations:" 
+						ToolTip.Tip="Amount of iterations to run per search term. (for example each keyword will result in a search result of multiple posts. This setting allows for control over ho many times an automation such as Join will select a post with a joinable subreddit join/subscribe to it then go back to the search results and repeat the process of finding a joinable subreddit under the same keyword for a min-max amount of times. All other automations run in the same way.)"
+					/>
+					<ContentControl 
+						Grid.Row="3" 
+						Grid.Column="1" 
 						Content="{Binding Iterations}"
 						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 
-					<TextBlock Text="Randomization:"
-						Grid.Row="4"
-						ToolTip.Tip="general number of times to run actions like up/down vote" />
-					<ContentControl
-						Grid.Row="4"
-						Grid.Column="1"
+					<TextBlock 
+						Grid.Row="4" 
+						Text="Randomization:" 
+						ToolTip.Tip="Predictable hash value to reference min-max activity while performing things such as voting, joining a subreddit set to 0-0 and select only the vote automation to act as a 'search warm up' (to seed the account with random activity of time spent to nudge its TikTok algorithm to link your account to those keywords)." 
+					/>
+					<ContentControl 
+						Grid.Row="4" 
+						Grid.Column="1" 
 						Content="{Binding Rando}"
 						ContentTemplate="{StaticResource RandoEditorTemplate}" />
 
-					<TextBlock Text="New Tab:"
-						Grid.Row="5"
-						ToolTip.Tip="to start in a new tab (recommended)" />
-					<ToggleSwitch
-						Grid.Row="5"
-						Grid.Column="1"
+					<TextBlock 
+						Grid.Row="5" 
+						Text="New Tab:" 
+						ToolTip.Tip="to start in a new tab (recommended)" 
+					/>
+					<ToggleSwitch 
+						Grid.Row="5" 
+						Grid.Column="1" 
 						IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
 
-					<TextBlock Text="All The Things:"
-						Grid.Row="6"
-						ToolTip.Tip="(experimental) no settings left behind" />
-					<ToggleSwitch
-						Grid.Row="6"
-						Grid.Column="1"
+					<TextBlock
+						Grid.Row="6" 
+						Text="All The Things:" 
+						ToolTip.Tip="(experimental) no settings left behind" 
+					/>
+					<ToggleSwitch 
+						Grid.Row="6" 
+						Grid.Column="1" 
 						IsChecked="{Binding All, Mode=TwoWay}" OffContent="" OnContent=""/>
 				</Grid>
 			</DataTemplate>
@@ -389,13 +401,21 @@
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="models:AI">
 															<StackPanel Spacing="6">
-																<Expander Header="Inception"
-																	ToolTip.Tip="Contextualization for arificial insemination"
+																<Expander Header="Inception" 
 																	Margin="0 6"
 																	IsExpanded="True">
-																	<ContentControl
+																	<Expander.Header>
+																		<TextBlock Text="Inception"
+																			ToolTip.Tip="Inceptionalize Roboto" />
+																	</Expander.Header>
+																	<StackPanel>
+																	<TextBlock Theme="{StaticResource CaptionTextBlockStyle}">
+																		<Run Text="prompt decorations for the robosponder" />
+																	</TextBlock>
+																	<ContentControl 
 																		Content="{Binding Decorators}"
 																		ContentTemplate="{StaticResource AITemplate}" />
+																	</StackPanel>
 																</Expander>
 															</StackPanel>
 														</DataTemplate>
