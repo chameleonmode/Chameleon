@@ -128,14 +128,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			}).Where(s => s != null)
 		];
 
-		_ = Observable.Timer(TimeSpan.FromMilliseconds(150))
-			.Subscribe(_ => {
-				foreach (var profile in Profiles) {
-					if (profile.Dto?.id != null && initialSelectedProfileIdsHashSet.Contains(profile.Dto.id)) {
-						profile.IsSelected = true;
-					}
-				}
-			});
+		InitializeSelectedProfiles();
 
 		EditableArgs = new(actor.Options.Args);
 		EditableSettings = new(actor.Options.Settings);
@@ -211,6 +204,15 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		};
 	}
 
+	private void InitializeSelectedProfiles() => 
+		_ = Observable.Timer(TimeSpan.FromMilliseconds(150))
+				.Subscribe(_ => {
+					foreach (var profile in Profiles) {
+						if (profile.Dto?.id != null && initialSelectedProfileIdsHashSet.Contains(profile.Dto.id)) {
+							profile.IsSelected = true;
+						}
+					}
+				});
 	async Task<List<Selection>> EnsureScriptsSelectedAsync() {
 		var selectedScripts = Selections.Where(s => s.Selected).ToList();
 		if (selectedScripts.Count == 0) {
