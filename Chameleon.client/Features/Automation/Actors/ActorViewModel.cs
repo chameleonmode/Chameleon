@@ -1,5 +1,7 @@
 using Chameleon.AIR.Actors.Models;
 using Chameleon.AIR.Scripts.Models;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.client.Features.Automation.Actors.Dialogs;
 using Chameleon.client.Features.Automation.Actors.ViewModels;
@@ -27,16 +29,15 @@ public partial class Tag : ObservableObject
 
 	public TagDto Dto { get; }
 
-
 	public IEnumerable<string> ProfileIds => Dto.Items
 																						 .Where(x => x.Key == TagItemType.Profile)
 																						 .SelectMany(x => x.Value);
 
 	public string ToolTipText => $"{ProfileIds.Count()} Profiles";
 
-	public Tag(TagDto dto, bool initialIsSelected = false) {
+	public Tag(TagDto dto, bool isSelected = false) {
 		Dto = dto;
-		IsSelected = initialIsSelected;
+		IsSelected = isSelected;
 	}
 }
 public record Selection(Script Script, bool Selected = false);
@@ -69,9 +70,10 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	private readonly ReadOnlyObservableCollection<Tag> tagz;
 	public ReadOnlyObservableCollection<Tag> Tagz => tagz;
 
-	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
+	private ReadOnlyObservableCollection<ObsFolder> Folders => FoldersViewModel.Instance.Folders;
 
-	private readonly ReadOnlyObservableCollection<ObsProfile> profiles;
+	private ReadOnlyObservableCollection<ObsProfile> Profiles => MyProfilesViewModel.Instance.Profiles;
+
 	private readonly ReadOnlyObservableCollection<ObsProfile> selectedProfiles;
 	public ReadOnlyObservableCollection<ObsProfile> SelectedProfiles => selectedProfiles;
 
@@ -82,24 +84,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		initialSelectedProfileIdsHashSet = new HashSet<int>(initialSelectedProfileIds ?? []);
 		initialSelectedTagNamesHashSet = new HashSet<string>(initialSelectedTagNames ?? []);
 
-		var foldersSource = UserProfilesFolderRepo
-		.Connect()
-		.Transform(dto => new ObsFolder(dto, false, null, null))
-		.SortAndBind(out folders,SortExpressionComparer<ObsFolder>.Ascending(p => p.Title ?? ""))
-		.Subscribe();
-		subscriptions.Add(foldersSource);
-
 		var profilesSortExpression = SortExpressionComparer<ObsProfile>.Ascending(p => p.Title ?? "");
-		var profilesSource = UserProfilesRepo
-		.Connect()
-		.Transform(dto => new ObsProfile(dto!) {
-			IsSelected = dto?.id != null && initialSelectedProfileIdsHashSet.Contains(dto.id)
-		})
-		.SortAndBind(out profiles, profilesSortExpression)
-		.Subscribe();
-		subscriptions.Add(profilesSource);
-
-		var selectionUpdater = profiles.ToObservableChangeSet()
+		var selectionUpdater = Profiles.ToObservableChangeSet()
 				.AutoRefresh(profile => profile.IsSelected)
 				.Filter(profile => profile.IsSelected)
 				.Sort(profilesSortExpression)
@@ -124,7 +110,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 									.SelectMany(tag => tag.ProfileIds)
 									.ToHashSet();
 
-							foreach (var profile in profiles) {
+							foreach (var profile in Profiles) {
 								if (profile.Dto?.id != null)
 									profile.IsSelected = profileIdsToSelect.Contains(profile.Dto.id.ToString());
 							}
@@ -141,6 +127,15 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				return new Selection(script, selected);
 			}).Where(s => s != null)
 		];
+
+		_ = Observable.Timer(TimeSpan.FromMilliseconds(150))
+			.Subscribe(_ => {
+				foreach (var profile in Profiles) {
+					if (profile.Dto?.id != null && initialSelectedProfileIdsHashSet.Contains(profile.Dto.id)) {
+						profile.IsSelected = true;
+					}
+				}
+			});
 
 		EditableArgs = new(actor.Options.Args);
 		EditableSettings = new(actor.Options.Settings);
@@ -211,7 +206,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		};
 
 		AsyncCommandMap["OpenProfileSelector"] = async () => {
-			using var profileSelectorVM = new ProfileSelectorViewModel(folders, profiles, SelectedProfiles);
+			using var profileSelectorVM = new ProfileSelectorViewModel(Folders, Profiles, SelectedProfiles);
 			_ = await profileSelectorVM.ShowDialogAsync();
 		};
 	}
