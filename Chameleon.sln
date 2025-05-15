@@ -63,6 +63,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{5E9DE6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.lib.AIR", "..\Chameleon-lib\Chameleon.lib.AIR\Chameleon.lib.AIR.csproj", "{29B49DC6-A92E-4F80-BD10-B66FDD0C369E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\Chameleon-lib\Tests\Tests.csproj", "{A3A74176-9F67-4914-9374-15A6B99E6DEF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -193,6 +195,18 @@ Global
 		{29B49DC6-A92E-4F80-BD10-B66FDD0C369E}.Release|x64.Build.0 = Release|Any CPU
 		{29B49DC6-A92E-4F80-BD10-B66FDD0C369E}.Release|x86.ActiveCfg = Release|Any CPU
 		{29B49DC6-A92E-4F80-BD10-B66FDD0C369E}.Release|x86.Build.0 = Release|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Debug|x64.Build.0 = Debug|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Debug|x86.Build.0 = Debug|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Release|x64.ActiveCfg = Release|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Release|x64.Build.0 = Release|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Release|x86.ActiveCfg = Release|Any CPU
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -211,6 +225,7 @@ Global
 		{7724F61D-F1A7-4D3B-8F98-698784BB38F5} = {3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}
 		{5E9DE6D7-8131-5EF7-7320-59933A962646} = {3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}
 		{29B49DC6-A92E-4F80-BD10-B66FDD0C369E} = {3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}
+		{A3A74176-9F67-4914-9374-15A6B99E6DEF} = {3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C30471-AD92-43F8-A89B-23CD1967C6A9}

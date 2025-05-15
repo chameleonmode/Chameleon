@@ -51,13 +51,13 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 			Actors.Add(new ActorViewModel(new RedditActor()));
 		}
 	}
+	public override async Task InitAsync(object? param) {
+		await base.InitAsync(param);
+		if (!Loaded) await LoadActorStates();
+	}
 
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
-		if (!Loaded) {
-			await LoadActorStates();
-		}
-		
 		MyProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(UserProfilesRepo.Instance.ObservableCache.Count);
 	}
 }

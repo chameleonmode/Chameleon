@@ -117,7 +117,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 							  Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'");
 						Debug.WriteLine(json);
 
-						await Runner.RunScript(new() {
+						await Run.Script(new() {
 							Port = browser.Settings.Port,
 							Script = selection.Script,
 							Opts = opts

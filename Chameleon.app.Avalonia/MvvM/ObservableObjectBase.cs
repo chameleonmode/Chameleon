@@ -45,8 +45,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewM
 		Validator = GetValidator();
 	}
 	public virtual Task InitAsync(object? param) => Task.CompletedTask;
-	public virtual Task OnNavigatedToAsync(object? param) => Task.CompletedTask;
-
+	public virtual Task OnNavigatedToAsync(object? param) => LoadedTCS.Task;
 	public Task InvokeInitializeAsyncCommand(object? p = null) => InitializeAsyncCommand.ExecuteAsync(p);
 	public Task InitializeAsync(object? param) => InvokeInitializeAsyncCommand(param);
 
