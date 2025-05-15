@@ -134,7 +134,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				var profiles = SelectedProfiles.Where(p => p.Active);
 				if (!profiles.Any()) throw new Exception("No profiles selected to run.");
 				
-				var selected = Selections.Where(s => s.Selected);
+				var selected = Selections.OrderBy(s => new Random().Next()).Where(s => s.Selected);
 				if (!selected.Any()) throw new Exception("No scripts selected to run.");
 
 				var things = EditableArgs.Search.Is() && EditableSettings.Start.Url.Is();
@@ -148,15 +148,15 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
 					ArgumentNullException.ThrowIfNull(browser);
 
-					var shuffledScripts = selected.OrderBy(s => new Random().Next());
-					foreach (var selection in shuffledScripts) {
+					foreach (var selection in selected) {
 						cts.Token.ThrowIfCancellationRequested();
 
 						var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected), EditableSettings.ToRecord());
 						var json = JS.Serialize(opts);
 						Debug.WriteLine($@"Running script with:
-							  Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'");
-						Debug.WriteLine(json);
+							  Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'
+						");
+						Debug.WriteLine($@"Opts: {json}");
 
 						await Run.Script(new() {
 							Port = browser.Settings.Port,

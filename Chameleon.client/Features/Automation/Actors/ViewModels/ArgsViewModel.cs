@@ -29,7 +29,7 @@ public partial class ArgsViewModel : ObservableObject {
 			["scope"] = SelectedScope.ToString(),
 			["sort"] = SelectedSort.ToString(),
 			["filter"] = SelectedFilter.ToString(),
-			["artifactors"] = new List<Artifact>() {
+			["artifacters"] = new List<Artifact>() {
 				new() {
 					["type"] = "selections",
 					["data"] = selections.Select(x => x.Script.Title.ToLower())
