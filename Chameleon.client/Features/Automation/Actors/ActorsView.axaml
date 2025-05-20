@@ -59,69 +59,69 @@
 		<ResourceDictionary>
 			<DataTemplate x:Key="AITemplate" x:DataType="models:Decorations">
 				<Grid ColumnDefinitions="Auto,*"
-					RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+					RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
 					<TextBlock Text="System:"
 						Grid.Row="0"
 						ToolTip.Tip="System instructions" />
 					<TextBox
 						Grid.Row="0"
 						Grid.Column="1"
-						Watermark="You are a helpful assistant..."
+						Watermark="You are helpful..."
 						Text="{Binding System, Mode=TwoWay}"/>
 
-					<TextBlock Text="Prefix:"
+					<!-- <TextBlock Text="Prefix:"
 						Grid.Row="1"
 						ToolTip.Tip="Text to add before the prompt" />
 					<TextBox
 						Grid.Row="1"
 						Grid.Column="1"
 						Watermark="As a... you know how to... consider the following:"
-						Text="{Binding Prefix, Mode=TwoWay}"/>
+						Text="{Binding Prefix, Mode=TwoWay}"/> -->
 
 					<TextBlock Text="Human:"
-						Grid.Row="2"
+						Grid.Row="1"
 						ToolTip.Tip="Human persona description" />
 					<TextBox
-						Grid.Row="2"
+						Grid.Row="1"
 						Grid.Column="1"
-						Watermark="I am... (eg. reddit content creator who...)"
+						Watermark="...(eg. reddit content creator who...)"
 						Text="{Binding Human, Mode=TwoWay}"/>
 
 					<TextBlock Text="Audience:"
-						Grid.Row="3"
+						Grid.Row="2"
 						ToolTip.Tip="Target audience" />
 					<TextBox
-						Grid.Row="3"
+						Grid.Row="2"
 						Grid.Column="1"
-						Watermark="the target audience is... (eg: reddit users who...)"
+						Watermark="...(eg: reddit users who...)"
 						Text="{Binding Audience, Mode=TwoWay}"/>
 
 					<TextBlock Text="Background:"
-						Grid.Row="4"
+						Grid.Row="3"
 						ToolTip.Tip="Background context" />
 					<TextBox
-						Grid.Row="4"
+						Grid.Row="3"
 						Grid.Column="1"
-						Watermark="up until this point... (eg: I... You... etc.)"
+						Watermark="...(eg: I am surfing reddit... You... etc.)"
 						Text="{Binding Background, Mode=TwoWay}"/>
 
 					<TextBlock Text="Tone:"
-						Grid.Row="5"
+						Grid.Row="4"
 						ToolTip.Tip="Communication tone" />
 					<TextBox
-						Grid.Row="5"
+						Grid.Row="4"
 						Grid.Column="1"
-						Watermark="The tone in your communication is... (eg: friendly and professional with.. etc.)"
+						Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
 						Text="{Binding Tone, Mode=TwoWay}"/>
 
-					<TextBlock Text="Suffix:"
+					<!-- <TextBlock Text="Suffix:"
 						Grid.Row="6"
 						ToolTip.Tip="Text to add after the prompt" />
 					<TextBox
 						Grid.Row="6"
 						Grid.Column="1"
 						Watermark="In you response and reasoning be as... (eg: creative as possible.)"
-						Text="{Binding Suffix, Mode=TwoWay}"/>
+						Text="{Binding Suffix, Mode=TwoWay}"/> -->
 				</Grid>
 			</DataTemplate>
 
