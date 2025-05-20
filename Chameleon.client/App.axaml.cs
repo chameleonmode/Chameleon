@@ -93,6 +93,7 @@ public partial class App : Application {
 		// Line below is needed to remove Avalonia data validation.
 		// Without this line you will get duplicate validations from both Avalonia and CT
 		BindingPlugins.DataValidators.RemoveAt(0);
+		AppServicesConfig.Configure();
 
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 			desktop.MainWindow = new MainWindow {
