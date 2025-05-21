@@ -53,6 +53,7 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
+		await lib.Playwright.Project.Initialized.Task;	
 		if (!Loaded) await LoadActorStates();
 	}
 

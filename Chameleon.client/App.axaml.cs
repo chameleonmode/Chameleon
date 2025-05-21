@@ -85,6 +85,7 @@ public partial class App : Application {
 			if (inited) {
 				await AppStartup.Instance.RunAsync();
 				IoC.GetService<SettingsViewModel>()?.InitializSettings();
+
 				_ = await lib.Playwright.Project.Init();
 			}
 		});
