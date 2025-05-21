@@ -17,7 +17,7 @@ using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
-using Chameleon.lib.Playwright.Models;
+using Chameleon.lib.Playwright;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Util;
 

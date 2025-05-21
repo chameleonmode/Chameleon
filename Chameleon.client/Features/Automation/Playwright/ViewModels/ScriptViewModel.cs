@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using Chameleon.client.Features.Automation.Playwright.Models;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.lib.Playwright.Models;
+using Chameleon.lib.Playwright;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
