@@ -11,10 +11,9 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.WebBrowser.Services;
-using Chameleon.lib.WebBrowser.Models;
-using Chameleon.lib.WebBrowser.Interfaces;
 using Chameleon.lib.Util;
 using static Chameleon.lib.Common.Constants.Enums;
+using Chameleon.lib.WebBrowser;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {

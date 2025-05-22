@@ -20,8 +20,8 @@ rm -rf playwright.ps1
 cp -a /Users/dev/src/Chameleon/Chameleon.Desktop/bin/Release/net8.0/win-x64/.playwright/. .playwright
 rm -rf .playwright/node/darwin-x64
 
-mkdir -p "Resources/scripts"
-cp -a /Users/dev/src/chameleon-playwright/dist/. Resources/scripts/dist
+# mkdir -p "Resources/scripts"
+# cp -a /Users/dev/src/chameleon-playwright/dist/. Resources/scripts/dist
 
 cd /Users/dev/src/Chameleon/build/windows
 7z a Chameleon.7z && 7z d Chameleon.7z -r '*.DS_Store'

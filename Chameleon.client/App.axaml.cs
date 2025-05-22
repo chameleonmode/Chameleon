@@ -23,6 +23,7 @@ using Chameleon.lib.WebBrowser.Services;
 using Microsoft.Playwright;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Auth;
+using Chameleon.lib.Util;
 
 namespace Chameleon.client;
 
