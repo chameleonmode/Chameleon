@@ -23,6 +23,7 @@ public class AppStartup {
 			Environment.Exit(0);
 		} else {
 			try {
+				Toaster.Success($"Hello {(Session.Instance.Login?.LoginName) ?? "World"}");
 				await LoadSink();
 				OnLoginSuccess?.Invoke();
 			} catch (Exception ex) {

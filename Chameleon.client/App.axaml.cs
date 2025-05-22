@@ -21,6 +21,8 @@ using Chameleon.client.Main;
 using Chameleon.lib.Const;
 using Chameleon.lib.WebBrowser.Services;
 using Microsoft.Playwright;
+using Chameleon.lib.Helpers;
+using Chameleon.lib.Auth;
 
 namespace Chameleon.client;
 
@@ -86,8 +88,8 @@ public partial class App : Application {
 				await AppStartup.Instance.RunAsync();
 				IoC.GetService<SettingsViewModel>()?.InitializSettings();
 
-				_ = await lib.Playwright.Project.Init();
 				_ = await lib.WebBrowser.Project.Init();
+				_ = await lib.Playwright.Project.Init();
 			}
 		});
 	}
