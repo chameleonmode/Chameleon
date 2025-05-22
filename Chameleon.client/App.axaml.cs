@@ -46,7 +46,7 @@ public partial class App : Application {
 			RequestedThemeVariant = ThemeVariant.Light;
 		}
 
-		IoC.Instance.StartUps.Add(AddonsServer.Instance);
+		// IoC.Instance.StartUps.Add(AddonsServer.Instance);
 
 		IoC.Instance.Configure(() => {
 			return new WritableConfiguration(new ConfigurationBuilder()
@@ -87,6 +87,7 @@ public partial class App : Application {
 				IoC.GetService<SettingsViewModel>()?.InitializSettings();
 
 				_ = await lib.Playwright.Project.Init();
+				_ = await lib.WebBrowser.Project.Init();
 			}
 		});
 	}
