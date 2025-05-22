@@ -375,7 +375,7 @@
 											</ScrollViewer>
 										</Grid>
 										<TextBlock Text="Robotomations"
-											ToolTip.Tip="available auto robo mr roboto automated ai actors to run"
+											ToolTip.Tip="auto robo autonomous roboto automations"
 											Margin="4 12 4 6"
 											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
 										<ItemsControl
