@@ -36,6 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A0E6
 		scripts\macstatus.sh = scripts\macstatus.sh
 		scripts\winbuild.sh = scripts\winbuild.sh
 		scripts\winpload.sh = scripts\winpload.sh
+		scripts\macship.sh = scripts\macship.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.client", "Chameleon.client\Chameleon.client.csproj", "{F84616F6-D90C-40BC-9BD8-279010530232}"

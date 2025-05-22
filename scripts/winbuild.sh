@@ -25,6 +25,7 @@ rm -rf .playwright/node/darwin-x64
 
 cd /Users/dev/src/Chameleon/build/windows
 7z a Chameleon.7z && 7z d Chameleon.7z -r '*.DS_Store'
+cp Chameleon.7z /Users/dev/src/Chameleon/publish/win
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <upload bool>"
