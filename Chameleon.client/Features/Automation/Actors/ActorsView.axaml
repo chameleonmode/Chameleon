@@ -4,11 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="850"
              xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+             xmlns:afvc="using:Chameleon.app.Avalonia.Fluent.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:controls="using:Chameleon.client.UI.Controls"
              xmlns:vm="using:Chameleon.client.Features.Automation.Actors"
              xmlns:vmv="using:Chameleon.client.Features.Automation.Actors.ViewModels"
              xmlns:models="using:Chameleon.AIR.Actors.Models"
-			       xmlns:modelsObservable="using:Chameleon.app.Avalonia.Models.Observable"
+			 xmlns:modelsObservable="using:Chameleon.app.Avalonia.Models.Observable"
              xmlns:redditModels="using:Chameleon.AIR.Actors.Models.Reddit"
              x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
              x:DataType="vm:ActorsViewModel"
@@ -57,74 +59,6 @@
 
 	<UserControl.Resources>
 		<ResourceDictionary>
-			<DataTemplate x:Key="AITemplate" x:DataType="models:Decorations">
-				<Grid ColumnDefinitions="Auto,*"
-					RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-					<TextBlock Text="System:"
-						Grid.Row="0"
-						ToolTip.Tip="System instructions" />
-					<TextBox
-						Grid.Row="0"
-						Grid.Column="1"
-						Watermark="You are helpful..."
-						Text="{Binding System, Mode=TwoWay}"/>
-
-					<!-- <TextBlock Text="Prefix:"
-						Grid.Row="1"
-						ToolTip.Tip="Text to add before the prompt" />
-					<TextBox
-						Grid.Row="1"
-						Grid.Column="1"
-						Watermark="As a... you know how to... consider the following:"
-						Text="{Binding Prefix, Mode=TwoWay}"/> -->
-
-					<TextBlock Text="Human:"
-						Grid.Row="1"
-						ToolTip.Tip="Human persona description" />
-					<TextBox
-						Grid.Row="1"
-						Grid.Column="1"
-						Watermark="...(eg. reddit content creator who...)"
-						Text="{Binding Human, Mode=TwoWay}"/>
-
-					<TextBlock Text="Audience:"
-						Grid.Row="2"
-						ToolTip.Tip="Target audience" />
-					<TextBox
-						Grid.Row="2"
-						Grid.Column="1"
-						Watermark="...(eg: reddit users who...)"
-						Text="{Binding Audience, Mode=TwoWay}"/>
-
-					<TextBlock Text="Background:"
-						Grid.Row="3"
-						ToolTip.Tip="Background context" />
-					<TextBox
-						Grid.Row="3"
-						Grid.Column="1"
-						Watermark="...(eg: I am surfing reddit... You... etc.)"
-						Text="{Binding Background, Mode=TwoWay}"/>
-
-					<TextBlock Text="Tone:"
-						Grid.Row="4"
-						ToolTip.Tip="Communication tone" />
-					<TextBox
-						Grid.Row="4"
-						Grid.Column="1"
-						Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
-						Text="{Binding Tone, Mode=TwoWay}"/>
-
-					<!-- <TextBlock Text="Suffix:"
-						Grid.Row="6"
-						ToolTip.Tip="Text to add after the prompt" />
-					<TextBox
-						Grid.Row="6"
-						Grid.Column="1"
-						Watermark="In you response and reasoning be as... (eg: creative as possible.)"
-						Text="{Binding Suffix, Mode=TwoWay}"/> -->
-				</Grid>
-			</DataTemplate>
-
 			<DataTemplate x:Key="ArgsTemplate" x:DataType="vmv:ArgsViewModel">
 				<Grid ColumnDefinitions="Auto,*"
 					RowDefinitions="Auto,Auto,Auto,Auto">
@@ -336,7 +270,7 @@
 										<TextBlock Text="Tags"
 											Margin="4 6"
 											ToolTip.Tip="select a tag that contain a grouping of profiles to inceptionalize"
-											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+											Classes="b1" />
 										<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
 											<ItemsControl
 												ItemsPanel="{StaticResource HorizontalStackPanel}"
@@ -353,7 +287,7 @@
 										<TextBlock Text="Profiles"
 											Margin="4 12 4 6"
 											ToolTip.Tip="already selected profiles"
-											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+											Classes="b1" />
 										<Grid ColumnDefinitions="Auto,*">
 											<Button Content="Select..."
 													Command="{Binding AsyncCfVCommand}"
@@ -377,7 +311,7 @@
 										<TextBlock Text="Robotomations"
 											ToolTip.Tip="auto robo autonomous roboto automations"
 											Margin="4 12 4 6"
-											Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+											Classes="b1" />
 										<ItemsControl
 											ItemsSource="{Binding Selections}"
 											ItemsPanel="{StaticResource HorizontalStackPanel}">
@@ -405,17 +339,50 @@
 																	Margin="0 6"
 																	IsExpanded="True">
 																	<Expander.Header>
-																		<TextBlock Text="Inception"
-																			ToolTip.Tip="Inceptionalize Roboto" />
+																		<TextBlock Text="Inception" />
 																	</Expander.Header>
-																	<StackPanel>
-																	<TextBlock Theme="{StaticResource CaptionTextBlockStyle}">
-																		<Run Text="prompt decorations for the robosponder" />
-																	</TextBlock>
-																	<ContentControl 
-																		Content="{Binding Decorators}"
-																		ContentTemplate="{StaticResource AITemplate}" />
-																	</StackPanel>
+																	<ContentControl Content="{Binding Decorators}">
+																		<ContentControl.ContentTemplate>
+																			<DataTemplate x:DataType="models:Decorations">
+																				<StackPanel Grid.IsSharedSizeScope="True" Spacing="6">
+																					<TextBlock Classes="caption"
+																						Margin="0 0 0 8">
+																						<Run Text="prompt decorations helps keep the model 'on brand'" />
+																					</TextBlock>
+
+																					<controls:Inputter Title="System:"
+																						Description="most helpful for the model consistency"
+																						Watermark="You are helpful..."
+																						Text="{Binding System, Mode=TwoWay}" 
+																					/>
+
+																					<controls:Inputter Title="Human:"
+																						Description="Human persona description"
+																						Watermark="...(eg. reddit content creator, reddit user, etc.)"
+																						Text="{Binding Human, Mode=TwoWay}" 
+																					/>
+
+																					<controls:Inputter Title="Audience:"
+																						Description="Target audience"
+																						Watermark="...(eg: reddit users who are interested in..., reddit users who are looking for..., etc.)"
+																						Text="{Binding Audience, Mode=TwoWay}" 
+																					/>
+
+																					<controls:Inputter Title="Background:"
+																						Description="Background context"
+																						Watermark="...(eg: I am surfing reddit... You... etc.)"
+																						Text="{Binding Background, Mode=TwoWay}" 
+																					/>
+
+																					<controls:Inputter Title="Tone:"
+																						Description="Communication tone"
+																						Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
+																						Text="{Binding Tone, Mode=TwoWay}" 
+																					/>
+																				</StackPanel>
+																			</DataTemplate>
+																		</ContentControl.ContentTemplate>
+																	</ContentControl>
 																</Expander>
 															</StackPanel>
 														</DataTemplate>

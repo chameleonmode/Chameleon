@@ -16,4 +16,27 @@
 		<Setter Property="VerticalAlignment" Value="Top" />
 		<Setter Property="ZIndex" Value="72" />
 	</Style>
+
+	<!--TextBlock-->
+	<Style Selector="TextBlock.h1">
+        <Setter Property="Theme" Value="{StaticResource DisplayTextBlockStyle}"/>
+    </Style>
+	<Style Selector="TextBlock.h2">
+        <Setter Property="Theme" Value="{StaticResource TitleLargeTextBlockStyle}"/>
+    </Style>
+	<Style Selector="TextBlock.h3">
+        <Setter Property="Theme" Value="{StaticResource TitleTextBlockStyle}"/>
+    </Style>
+	<Style Selector="TextBlock.h4">
+        <Setter Property="Theme" Value="{StaticResource SubtitleTextBlockStyle}"/>
+    </Style>
+	<Style Selector="TextBlock.b1">
+        <Setter Property="Theme" Value="{StaticResource BodyStrongTextBlockStyle}"/>
+    </Style>
+	<Style Selector="TextBlock.b2">
+        <Setter Property="Theme" Value="{StaticResource BodyTextBlockStyle}"/>
+    </Style>
+	<Style Selector="TextBlock.caption">
+        <Setter Property="Theme" Value="{StaticResource CaptionTextBlockStyle}"/>
+    </Style>
 </Styles>
