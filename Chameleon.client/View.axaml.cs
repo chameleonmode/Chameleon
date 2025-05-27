@@ -9,8 +9,8 @@ using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Windowing;
 using Chameleon.app.Avalonia;
 using Chameleon.app.Avalonia.MvvM;
-using Chameleon.app.Avalonia.Views;
 using Chameleon.client.Features.ProfilesAndFolders.Projects;
+using Chameleon.client.Features.Settings.Featured;
 namespace Chameleon.client;
 
 public partial class View : UserControl {

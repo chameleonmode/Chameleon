@@ -4,12 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="520" d:DesignHeight="520"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
+             xmlns:vm="using:Chameleon.client.Features.Settings.Featured"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 x:DataType="vm:PVApiModel"
 			 xmlns:local="using:Chameleon.Avalonia.Controls.Settings.Functional"
 			 x:CompileBindings="False"
-             x:Class="Chameleon.app.Avalonia.Controls.PVAUserControl">
+             x:Class="Chameleon.client.Features.Settings.Featured.PVAUserControl">
 	<UserControl.Resources>
 		<ControlTheme x:Key="ThesePVApisCP"
 			TargetType="HeaderedContentControl">

@@ -4,12 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="490"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:local="using:Chameleon.app.Avalonia.Controls"
-			 x:DataType="vm:PhoneVerificationViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Views.PhoneVerificationView">
+             xmlns:local="using:Chameleon.client.Features.Settings.Featured"
+             x:Class="Chameleon.client.Features.Settings.Featured.PhoneVerificationView"
+			 x:DataType="local:PhoneVerificationViewModel"
+			 x:CompileBindings="True">
 			<ItemsControl ItemsSource="{Binding PVApis}">
 				<!--<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>

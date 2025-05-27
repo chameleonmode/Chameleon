@@ -1,6 +1,4 @@
 ﻿using Avalonia.Collections;
-
-using Chameleon.app.Avalonia.Controls;
 using Chameleon.lib.Util;
 using Chameleon.lib.Common.Records;
 using Chameleon.lib.Common.ServiceManagers;
@@ -14,7 +12,7 @@ using Chameleon.lib.Helpers;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Chameleon.app.Avalonia.ViewModels;
+namespace Chameleon.client.Features.Settings.Featured;
 
 public partial class PVApiModel
 		: ViewModelObjectBase, IPVApiModel {

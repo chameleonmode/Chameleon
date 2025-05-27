@@ -66,7 +66,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 	});
 
 	async Task SelectUserScriptFolder() {
-		var dialog = App.StorageProvider;
+		var dialog = App.MainWindow!.StorageProvider;
 		var selected = await dialog.OpenFolderPickerAsync(new() { AllowMultiple = false });
 		if (selected == null || selected.Count == 0) {
 			return;

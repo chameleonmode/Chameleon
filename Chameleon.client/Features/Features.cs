@@ -28,6 +28,7 @@ using Chameleon.client.Features.ProfilesAndFolders.Search;
 using Chameleon.client.Features.ProfilesAndFolders.Search.ByTags;
 using Chameleon.client.Features.ProfilesAndFolders.Search.ByTags.Controls;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
+using Chameleon.client.Features.Settings.Featured;
 
 namespace Chameleon.client.Features;
 
@@ -48,7 +49,7 @@ public static class Modules {
   .AddSingleton<ProjectsView>()
   .AddSingleton<ProjectsViewModel>();
 
-  public static IServiceCollection WithAllPagesAndFeatures(this IServiceCollection services) => services
+  public static IServiceCollection WithAllFeatures(this IServiceCollection services) => services
   .Automation()
   .WithProfilesAndFolders()
   .AddSingleton<Dashboard.View>()
@@ -58,7 +59,31 @@ public static class Modules {
   .AddSingleton<TenantMembersView>()
   .AddSingleton<TenantMembersViewModel>()
   .AddSingleton<Settings.View>()
-  .AddSingleton<Settings.ViewModel>();
+  .AddSingleton<Settings.ViewModel>()
+  //FunctionalSettings
+  .AddSingleton<FunctionalSettingsView>()
+  .AddSingleton<UserProxySettingsView>()
+  .AddSingleton<UserDefaultSettingsView>()
+  .AddSingleton<PhoneVerificationView>()
+  .AddSingleton<ProxyCreditView>()
+  .AddSingleton<FunctionalSettingsViewModel>()
+  .AddSingleton<UserProxySettingsViewModel>()
+  .AddSingleton<UserDefaultSettingsViewModel>()
+  .AddSingleton<PhoneVerificationViewModel>()
+  .AddSingleton<ProxyCreditViewModel>();
+
+  public static async Task Sync(bool reload = false) {
+    await DB.Instance.EnsureUser();
+    var tasks = new List<Task>() {
+      UserProfilesRepo.Instance.Load(),
+      UserProfilesFolderRepo.Instance.Load(),
+      TagsRepo.Instance.Load()
+    };
+    if (reload) {
+      tasks.Add(UPAdditionalDataRepo.Instance.Load());
+    }
+    await Task.WhenAll(tasks);
+  }
 }
 
 public partial class ViewModel : ObservableObjectBase {
@@ -79,68 +104,49 @@ public partial class ViewModel : ObservableObjectBase {
     .Concat(_boundFolders)
     .Concat(_boundTags);
 
-  private ViewModel() {
-#if DEBUG
-    AppStartup.Instance.OnLoginSuccess += () => {
-      IsSplashVisible = false;
+  ViewModel() {
+    _ = UserProfilesRepo.Connect().Transform(i => new MainAppSearchItem() {
+      Header = i.title ?? "xxx",
+      Namespace = "Profile",
+      ViewModel = new ObsProfile(i, onSelectedChanged: OnBoundProfilesProfileSelectedChanged),
+      PageType = this.GetType()
+    })
+    .Bind(out _boundProfiles)
+    .Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
+
+    _ = UserProfilesFolderRepo.Connect().Transform(i => new MainAppSearchItem() {
+      Header = i.title ?? "xxx",
+      Namespace = "Folder",
+      ViewModel = new ObsFolder(i, null),
+      PageType = this.GetType()
+    })
+    .Bind(out _boundFolders)
+    .Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
+
+    _ = TagsRepo.Connect().Transform(i => new MainAppSearchItem() {
+      Header = $"#{i.Name}",
+      Namespace = "Tag",
+      ViewModel = i,
+      SearchType = SearchType.Tags,
+      Items = i.Items.Select(x => new TagItemDto(x.Key, x.Value))
+            .GroupBy(x => x.Type)
+            .Select(x => x.ToList())
+            .SelectMany(x => x.Select<TagItemDto, TagsSearchViewModelBase?>(t => t.Type switch {
+              TagItemType.Folder => new TagFolderSearchViewModel(t),
+              TagItemType.Profile => new TagProfilesSearchViewModel(t),
+              _ => null
+            })
+            ),
+      PageType = this.GetType()
+    })
+    .Bind(out _boundTags)
+    .Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
+
+    AsyncCommandMap["DownloadLatest"] = async () => {
+      InfoBarOpen = false;
+      InfoBarOpen = !await Service.Routes.App.DownloadLatest((msg) => Toaster.Info(msg));
+      if (InfoBarOpen) Toaster.Error("Failed to download latest version");
     };
-#else
-		AppStartup.Instance.OnLoginSuccess += async () => {
-			IsSplashVisible = false;
-			try {
-				var current = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
-				var appClientInfo = await Service.Routes.App.GetLatestVersion;
-				if (appClientInfo != null && appClientInfo.Latest != current) {
-					InfoBarTitle = "New Version Available";
-					InfoBarMessage = $"Download the latest version of Chameleon ({appClientInfo.Latest})";
-					InfoBarOpen = true;
-				}
-			} catch (Exception e) {
-				Toaster.Error(e.Message);
-			}
-		};
-#endif
-    _ = UserProfilesRepo
-      .Connect()
-      .Transform(i => new MainAppSearchItem() {
-        Header = i.title ?? "xxx",
-        Namespace = "Profile",
-        ViewModel = new ObsProfile(i, onSelectedChanged: OnBoundProfilesProfileSelectedChanged),
-        PageType = this.GetType()
-      })
-      .Bind(out _boundProfiles)
-      .Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
-
-    _ = UserProfilesFolderRepo
-      .Connect()
-      .Transform(i => new MainAppSearchItem() {
-        Header = i.title ?? "xxx",
-        Namespace = "Folder",
-        ViewModel = new ObsFolder(i, null),
-        PageType = this.GetType()
-      })
-      .Bind(out _boundFolders)
-      .Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
-
-    _ = TagsRepo.Connect()
-      .Transform(i => new MainAppSearchItem() {
-        Header = $"#{i.Name}",
-        Namespace = "Tag",
-        ViewModel = i,
-        SearchType = SearchType.Tags,
-        Items = i.Items.Select(x => new TagItemDto(x.Key, x.Value))
-          .GroupBy(x => x.Type)
-          .Select(x => x.ToList())
-          .SelectMany(x => x.Select<TagItemDto, TagsSearchViewModelBase?>(t => t.Type switch {
-            TagItemType.Folder => new TagFolderSearchViewModel(t),
-            TagItemType.Profile => new TagProfilesSearchViewModel(t),
-            _ => null
-          })
-          ),
-        PageType = this.GetType()
-      })
-      .Bind(out _boundTags)
-      .Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
   }
 
   partial void OnSelectedSearchTermChanged(MainAppSearchItem? oldValue, MainAppSearchItem? newValue) {
@@ -153,25 +159,33 @@ public partial class ViewModel : ObservableObjectBase {
   }
 
   [RelayCommand]
-  private void ClearSearch() {
-    SelectedSearchTerm = null;
-    MyProfilesViewModel.Instance.OnFilterTo();
+  void ClickSearch(string p) {
+    if (p.IsNot()) Navigator.NavigateToType(typeof(ProjectsView), p);
+    else {
+      SelectedSearchTerm = null;
+      MyProfilesViewModel.Instance.OnFilterTo();
+    }
   }
 
-  [RelayCommand]
-  private void ClickSearch(string p) {
-    if (p.Is())
-      ClearSearch();
-    else
-      Navigator.NavigateToType(typeof(ProjectsView), p);
-  }
-
-  [RelayCommand]
-  private async Task DownloadLatest() {
-    InfoBarOpen = false;
-    InfoBarOpen = !await Service.Routes.App.DownloadLatest((msg) => Toaster.Info(msg));
-    if (InfoBarOpen)
-      Toaster.Error("Failed to download latest version");
+  public async Task Init() {
+    // This is where you can initialize any data or state needed for the ViewModel
+    // For example, you might want to load initial data from a repository or service
+    await Modules.Sync();
+    IsSplashVisible = false;
+    // #if DEBUG
+    // #else
+    try {
+      var current = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
+      var appClientInfo = await Service.Routes.App.GetLatestVersion;
+      if (appClientInfo != null && appClientInfo.Latest != current) {
+        InfoBarTitle = "New Version Available";
+        InfoBarMessage = $"Download the latest version of Chameleon ({appClientInfo.Latest})";
+        InfoBarOpen = true;
+      }
+    } catch (Exception e) {
+      Toaster.Error(e.Message);
+    }
+    // #endif
   }
 
   public static ViewModel Instance { get; } = new();

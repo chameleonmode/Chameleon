@@ -35,7 +35,7 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 
 	public async Task<Enums.TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Variables.AppName, object? footer = null, Enums.Symbas symbas = Enums.Symbas.Alert, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo)
 	{
-		while(App.GetMainWindow is null) {
+		while(App.MainWindow is null) {
 			await Task.Delay(250);
 		}
 		return await dispatcher.InvokeOnUiThread(async () => {
@@ -115,7 +115,7 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 				// Using the VisualRoot is fine, if the VisualRoot is a Window, the dialog automatically launches in
 				// Windowed mode, otherwise, it tries to find the OverlayLayer and will launch in hosted mode
 				// If your TaskDialog is declared in Xaml, this is automatically handled for you
-				XamlRoot = App.GetMainWindow
+				XamlRoot = App.MainWindow
 			};
 
 			var result = await td.ShowAsync(true);

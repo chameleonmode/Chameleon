@@ -10,7 +10,7 @@ public class CopyPastaService : ICopyPastaService {
 	public TopLevel? Owner { get; set; }
 	public async Task SetTextAsync(string text) {
 		try {
-			Owner ??= TopLevel.GetTopLevel(App.GetMainWindow?.GetVisualRoot() as Visual);
+			Owner ??= TopLevel.GetTopLevel(App.MainWindow?.GetVisualRoot() as Visual);
 			await Owner!.Clipboard!.SetTextAsync(text);
 			Toaster.Success("Copied to clipboard");
 

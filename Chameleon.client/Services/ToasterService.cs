@@ -35,7 +35,7 @@ public class ToasterService(IDispatchService dispatcher)
 			});
 		} else {
 			_dispatcher?.InvokeOnUiThread(() => {
-				_notificationManager = new WindowNotificationManager(App.GetMainWindow) {
+				_notificationManager = new WindowNotificationManager(App.MainWindow) {
 					Position = NotificationPosition.BottomRight,
 					MaxItems = 6,
 					Margin = new Thickness(0, 0, 15, 40)
@@ -49,7 +49,7 @@ public class ToasterService(IDispatchService dispatcher)
 	/// <param name="hostWindow">Parent window.</param>
 	public void SetHostWindow(object? hostWindow)
 	{
-		var notificationManager = new WindowNotificationManager((hostWindow as TopLevel) ?? App.GetMainWindow) {
+		var notificationManager = new WindowNotificationManager((hostWindow as TopLevel) ?? App.MainWindow) {
 			Position = NotificationPosition.BottomRight,
 			MaxItems = 2,
 			Margin = new Thickness(0, 0, 15, 40)

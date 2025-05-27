@@ -209,7 +209,9 @@
 					<ui:InfoBar.ActionButton>
 						<Button Content="Download"
 								HorizontalAlignment="Right"
-								Command="{Binding DownloadLatestCommand}"/>
+								Command="{Binding AsyncCfVCommand}"
+								CommandParameter="DownloadLatest"
+						/>
 					</ui:InfoBar.ActionButton>
 				</ui:InfoBar>
 			</Panel>

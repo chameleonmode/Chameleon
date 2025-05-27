@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;

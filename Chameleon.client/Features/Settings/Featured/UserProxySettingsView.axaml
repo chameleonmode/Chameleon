@@ -8,10 +8,10 @@
 			 xmlns:uc="using:Chameleon.client.UI.UserControls"
 			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
+			 xmlns:vm="using:Chameleon.client.Features.Settings.Featured"
 			 x:DataType="vm:UserProxySettingsViewModel"
 			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Views.UserProxySettingsView">
+             x:Class="Chameleon.client.Features.Settings.Featured.UserProxySettingsView">
 	<Grid RowDefinitions="*,Auto">
 				<afv:ChameleonContentControl Title="Proxies list"
 											 TitleDescription="Select proxies to edit them">

@@ -1,8 +1,7 @@
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
-namespace Chameleon.app.Avalonia.Controls;
+using Avalonia.Controls;
+
+namespace Chameleon.client.Features.Settings.Featured;
 
 public partial class PVAUserControl : UserControl
 {

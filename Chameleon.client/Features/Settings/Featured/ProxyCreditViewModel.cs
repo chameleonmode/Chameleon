@@ -16,7 +16,7 @@ using DynamicData;
 
 using static Chameleon.lib.Common.Constants.Enums.Api;
 
-namespace Chameleon.app.Avalonia.ViewModels;
+namespace Chameleon.client.Features.Settings.Featured;
 
 public partial class ProxyCreditViewModel
 			: ViewModelObjectBase {

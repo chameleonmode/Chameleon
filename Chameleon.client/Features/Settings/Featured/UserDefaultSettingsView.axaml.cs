@@ -1,9 +1,8 @@
 using Chameleon.Av.Fluent.Common.Pages;
-using Chameleon.client;
 
 using FluentAvalonia.UI.Controls;
 
-namespace Chameleon.app.Avalonia.Views;
+namespace Chameleon.client.Features.Settings.Featured;
 
 public partial class UserDefaultSettingsView : ChameleonPageBase
 {

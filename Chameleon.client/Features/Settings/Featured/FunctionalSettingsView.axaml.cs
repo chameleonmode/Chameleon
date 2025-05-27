@@ -2,12 +2,11 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.Av.Fluent.Common.Pages;
 
 using FluentAvalonia.UI.Media.Animation;
 
-namespace Chameleon.app.Avalonia.Views;
+namespace Chameleon.client.Features.Settings.Featured;
 
 [Chameleon.lib.Common.Attributes.ViewModel(typeof(FunctionalSettingsViewModel))]
 public partial class FunctionalSettingsView : ChameleonNavigationPage {

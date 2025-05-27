@@ -18,7 +18,7 @@ using DynamicData;
 using static Chameleon.lib.Common.Constants.Enums.Api;
 using Chameleon.client.UI.UserControls.ViewModels;
 
-namespace Chameleon.app.Avalonia.ViewModels;
+namespace Chameleon.client.Features.Settings.Featured;
 
 public partial class UserProxySettingsViewModel
 			 : ViewModelObjectBase {

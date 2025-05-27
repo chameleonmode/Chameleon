@@ -5,10 +5,10 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
+			 xmlns:vm="using:Chameleon.client.Features.Settings.Featured"
 			 x:DataType="vm:ProxyCreditViewModel"
 			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Views.ProxyCreditView">
+             x:Class="Chameleon.client.Features.Settings.Featured.ProxyCreditView">
 		<StackPanel Spacing="8">
 			<afv:ChameleonContentControl Title="Residential Proxies"
 										   TitleDescription="Manage your proxy payment and top-ups here">

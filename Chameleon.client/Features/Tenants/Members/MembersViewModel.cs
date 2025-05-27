@@ -6,7 +6,6 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
 using DynamicData;
-using Chameleon.app.Avalonia.ViewModels.Controllers;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api;
 using Chameleon.app.Avalonia.DynamicData;

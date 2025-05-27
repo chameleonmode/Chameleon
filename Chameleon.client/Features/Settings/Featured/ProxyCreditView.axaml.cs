@@ -3,7 +3,7 @@ using Chameleon.client;
 
 using FluentAvalonia.UI.Controls;
 
-namespace Chameleon.app.Avalonia.Views;
+namespace Chameleon.client.Features.Settings.Featured;
 
 public partial class ProxyCreditView : ChameleonPageBase
 {

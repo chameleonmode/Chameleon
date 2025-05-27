@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
              xmlns:contrls="using:Chameleon.Av.Fluent.Common.Controls"
+             xmlns:vm="using:Chameleon.client.Features.Settings.Featured"
+             x:Class="Chameleon.client.Features.Settings.Featured.FunctionalSettingsView"
 			 x:DataType="vm:FunctionalSettingsViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Views.FunctionalSettingsView">
+			 x:CompileBindings="True">
 	<Panel>
 		<TabStrip Name="ActiveTabStrip">
 			<TabStripItem

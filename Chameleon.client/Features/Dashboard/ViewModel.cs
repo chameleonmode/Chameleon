@@ -73,7 +73,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		Tagz = tagz;
 
 		AsyncCommandMap["SyncChanges"] = async () => {
-			await AppStartup.LoadSink(true);
+			await Modules.Sync(true);
 			await CheckForCookies();
 		};
 		AsyncCommandMap["SyncCookiesClear"] = async () => {
