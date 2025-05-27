@@ -8,10 +8,10 @@
 			 xmlns:userControls="using:Chameleon.client.Main.UserControls"
              xmlns:vm="using:Chameleon.client.Main"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
-			 xmlns:m="using:Chameleon.client.Features.Search"
-			 xmlns:searchFolder="using:Chameleon.client.Features.Search"
-			 xmlns:defaultSearch="using:Chameleon.client.Features.Search.Default"
-			 xmlns:tagSearch="using:Chameleon.client.Features.Search.ByTags"
+			 xmlns:m="using:Chameleon.app.Avalonia.Models"
+			 xmlns:searchFolder="using:Chameleon.app.Avalonia.Features.Search"
+			 xmlns:defaultSearch="using:Chameleon.app.Avalonia.Features.Search.Default"
+			 xmlns:tagSearch="using:Chameleon.app.Avalonia.Features.Search.ByTags"
              x:Class="Chameleon.client.Main.MainView"
              x:DataType="vm:MainViewModel">
 	<UserControl.Styles>

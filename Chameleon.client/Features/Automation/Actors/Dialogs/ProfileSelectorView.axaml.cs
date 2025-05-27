@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
 using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.client.Features.ProfilesAndFolders.Folders;
 using System.Diagnostics;
 using System.Globalization;
 
