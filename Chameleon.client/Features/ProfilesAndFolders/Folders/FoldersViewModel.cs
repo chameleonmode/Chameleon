@@ -3,7 +3,6 @@ using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
@@ -13,7 +12,7 @@ using UserProfilesViewModel = Chameleon.client.Features.ProfilesAndFolders.Profi
 namespace Chameleon.client.Features.ProfilesAndFolders.Folders;
 public partial class FoldersViewModel : ViewModelObjectBase {
 
-	private IFolderManagementService FolderManagementService => ServiceProvider.GetService<IFolderManagementService>();
+	private IFolderManagementService FolderManagementServices => FolderManagementService.Instance;
 
 	[ObservableProperty]
 	private ObsFolder selectedFolder;
@@ -38,7 +37,7 @@ public partial class FoldersViewModel : ViewModelObjectBase {
 
 		AsyncCommandMap["Create"] = Create;
 
-		FolderManagementService.CurrentFolderChanged += FolderManagementService_CurrentFolderChanged;
+		FolderManagementServices.CurrentFolderChanged += FolderManagementService_CurrentFolderChanged;
 	}
 
 	private void FolderManagementService_CurrentFolderChanged(object? sender, FolderChangedEventArgs e) {
@@ -87,4 +86,3 @@ public partial class FoldersViewModel : ViewModelObjectBase {
 
 	public static FoldersViewModel Instance { get; } = new FoldersViewModel();
 }
-

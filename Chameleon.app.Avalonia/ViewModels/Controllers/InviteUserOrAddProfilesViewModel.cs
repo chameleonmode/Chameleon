@@ -18,8 +18,8 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private bool showUserInfo;
 
-	public IProfileManagementService ProfileService => ServiceProvider.GetService<IProfileManagementService>();
-	public IFolderManagementService FolderService => ServiceProvider.GetService<IFolderManagementService>();
+	public IProfileManagementService ProfileService => ProfileManagementService.Instance;
+	public IFolderManagementService FolderService => FolderManagementService.Instance;
 
 	//
 	public ReadOnlyObservableCollection<ObsProfile> Profiles => ProfileService.AllProfiles;

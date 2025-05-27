@@ -47,4 +47,6 @@ public class ProfileManagementService : IProfileManagementService {
 			lock (_loadLock) areProfilesLoaded = true;
 		}
 	}
+
+	public static ProfileManagementService Instance { get; } = new ProfileManagementService(UserProfilesRepo.Instance);
 }

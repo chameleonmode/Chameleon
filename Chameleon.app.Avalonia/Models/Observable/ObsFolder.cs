@@ -13,8 +13,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 
-	private INavigatorService NavigationService => ServiceProvider.GetService<INavigatorService>();
-	private IFolderManagementService FolderManagementService => ServiceProvider.GetService<IFolderManagementService>();
+	private INavigatorService NavigationService => Navigator.Instance;
+	private IFolderManagementService FolderManagementServices => FolderManagementService.Instance;
 
 	public event Action<ObsFolder>? OnSelectedChanged;
 	public Func<string?,bool>? NameAlreadyExist { get;}
@@ -103,7 +103,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	// AsyncCommandMap Commands
 	public async Task Open()
 	{
-		await FolderManagementService.SetCurrentFolderAsync(Dto);
+		await FolderManagementServices.SetCurrentFolderAsync(Dto);
 		IsSelected = true;
 	}
 	private async Task SetFavorite()
@@ -133,7 +133,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 			if (!res.success) {
 
 			}
-			await FolderManagementService.SetCurrentFolderAsync(null);
+			await FolderManagementServices.SetCurrentFolderAsync(null);
 		}
 	}
 	private async Task SaveRename()

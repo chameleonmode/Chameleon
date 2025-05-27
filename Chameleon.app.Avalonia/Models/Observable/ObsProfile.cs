@@ -13,13 +13,12 @@ using Chameleon.lib.WebBrowser.Models;
 using Chameleon.lib.WebBrowser.Interfaces;
 using Chameleon.lib.Util;
 using static Chameleon.lib.Common.Constants.Enums;
-using Chameleon.app.Avalonia.Services;
 using DynamicData.Binding;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 	
-	private INavigatorService NavigationService => ServiceProvider.GetService<INavigatorService>();
+	private INavigatorService NavigationService => Navigator.Instance;
 
 	[ObservableProperty]
 	private string isChromeRunning = "False";

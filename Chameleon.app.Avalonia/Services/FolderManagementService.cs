@@ -79,4 +79,6 @@ public class FolderManagementService : IFolderManagementService {
 	protected virtual void OnCurrentFolderChanged(FolderChangedEventArgs e) {
 		CurrentFolderChanged?.Invoke(this, e);
 	}
+
+	public static FolderManagementService Instance { get; } = new FolderManagementService(UserProfilesFolderRepo.Instance);
 }
