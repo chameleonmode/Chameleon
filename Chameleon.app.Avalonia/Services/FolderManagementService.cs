@@ -10,30 +10,15 @@ public class FolderChangedEventArgs(UPFolderDto? newCurrentFolderDto) : EventArg
 	public UPFolderDto? NewCurrentFolderDto { get; } = newCurrentFolderDto;
 }
 
-public interface IFolderManagementService {
-	ReadOnlyObservableCollection<ObsFolder> AllFolders { get; }
-	SourceCache<UPFolderDto, int> FolderDtoCache { get; }
-
-	UPFolderDto? CurrentFolderDto { get; }
-
-	Task SetCurrentFolderAsync(UPFolderDto? folderDto);
-
-	event EventHandler<FolderChangedEventArgs>? CurrentFolderChanged;
-}
-
-public class FolderManagementService : IFolderManagementService {
-	private readonly UserProfilesFolderRepo folderRepo;
-
+public class FolderManagementService {
 	private readonly ReadOnlyObservableCollection<ObsFolder> allFolders;
 	public ReadOnlyObservableCollection<ObsFolder> AllFolders => allFolders;
-	public SourceCache<UPFolderDto, int> FolderDtoCache => folderRepo.SourceCache;
 
 	public UPFolderDto? CurrentFolderDto { get; private set; }
 	public event EventHandler<FolderChangedEventArgs>? CurrentFolderChanged;
 
-	public FolderManagementService(UserProfilesFolderRepo folderRepo) {
-		this.folderRepo = folderRepo;
-		_ = FolderDtoCache.Connect()
+	public FolderManagementService() {
+		_ = UserProfilesFolderRepo.Connect()
 				.Transform(dto => new ObsFolder(dto, false, null, null))
 				.SortAndBind(out allFolders, Compares.ObsFolderCompares.AscendingComparer)
 				.DisposeMany()
@@ -59,5 +44,5 @@ public class FolderManagementService : IFolderManagementService {
 		CurrentFolderChanged?.Invoke(this, e);
 	}
 
-	public static FolderManagementService Instance { get; } = new FolderManagementService(UserProfilesFolderRepo.Instance);
+	public static FolderManagementService Instance { get; } = new FolderManagementService();
 }

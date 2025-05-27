@@ -31,6 +31,7 @@ using Chameleon.lib.Abs.Platformatic;
 using Chameleon.client.Services;
 using Chameleon.client.UI.UserControls;
 using FluentAvalonia.UI.Windowing;
+using Avalonia.VisualTree;
 
 namespace Chameleon.client;
 
@@ -162,6 +163,7 @@ public class AppStartup {
 }
 
 public partial class App : Application {
+	public static Window? GetMainWindow => (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 	public static IStorageProvider StorageProvider {
 		get {
 			return (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow?.StorageProvider
@@ -169,7 +171,6 @@ public partial class App : Application {
 		}
 	}
 
-	public static Window? GetMainWindow => (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
 	public static T? TryGetResource<T>(string key) where T : class {
 		return Current?.TryGetResource(key, null, out var result) == true && result is T typed ? typed : default;
@@ -246,6 +247,41 @@ public partial class App : Application {
 			window.AttachDevTools();
 			window.Topmost = true;
 #endif
+
+			/** TODO: test if still happening on windows then remove fully 
+			Dictionary<Control, object> TooltipBackup = [];
+			window.Deactivated += (s, e) => {
+				var controlsWithTooltips = new List<Control>();
+				var queue = new Queue<Visual>();
+				queue.Enqueue(window);
+
+				while (queue.Count > 0) {
+					var current = queue.Dequeue();
+
+					if (current is Control control && ToolTip.GetTip(control) != null) controlsWithTooltips.Add(control);
+
+					foreach (var child in current.GetVisualChildren()) {
+						queue.Enqueue(child);
+					}
+				}
+				foreach (var control in controlsWithTooltips) {
+					var tooltip = ToolTip.GetTip(control);
+					if (tooltip != null) {
+						TooltipBackup[control] = tooltip;
+						ToolTip.SetTip(control, null);
+					}
+				}
+			};
+			window.Activated += (s, e) => {
+				var controlsToRestore = TooltipBackup.Keys.ToList();
+				foreach (var control in controlsToRestore) {
+					if (TooltipBackup.TryGetValue(control, out var tooltip)) {
+						ToolTip.SetTip(control, tooltip);
+						TooltipBackup.Remove(control);
+					}
+				}
+			};
+			**/
 			desktop.MainWindow = window;
 		} else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform) {
 			singleViewPlatform.MainView = new View {

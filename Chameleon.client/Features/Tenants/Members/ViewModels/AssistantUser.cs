@@ -14,6 +14,7 @@ using Chameleon.lib.Playwright.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
+using Chameleon.client.Features.Tenants.Members.Dialogs;
 
 namespace Chameleon.client.Features.Tenants.Members.ViewModels;
 public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisProfileDto> {

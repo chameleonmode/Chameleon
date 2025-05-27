@@ -14,6 +14,7 @@ using Chameleon.lib.Util;
 using Chameleon.lib.Helpers;
 using Chameleon.client.Features.Tenants.Members.ViewModels;
 using Chameleon.lib.Abs.Platformatic;
+using Chameleon.client.Features.Tenants.Members.Dialogs;
 
 namespace Chameleon.client.Features.Tenants.Members;
 public partial class TenantMembersViewModel : ViewModelObjectBase {

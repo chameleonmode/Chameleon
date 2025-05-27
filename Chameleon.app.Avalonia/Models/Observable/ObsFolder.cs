@@ -12,7 +12,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace Chameleon.app.Avalonia.Models.Observable;
 
 public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
-	private IFolderManagementService FolderManagementServices => FolderManagementService.Instance;
+	private FolderManagementService FolderManagementServices => FolderManagementService.Instance;
 
 	public event Action<ObsFolder>? OnSelectedChanged;
 	public Func<string?, bool>? NameAlreadyExist { get; }
@@ -54,8 +54,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 		bool hasActionOptions,
 		Action<ObsFolder>? onSelectedChanged,
 		Func<string?, bool>? nameAlreadyExist
-	)
-	: this(folder, nameAlreadyExist) {
+	) : this(folder, nameAlreadyExist) {
 		IsActionOptionsVisible = hasActionOptions;
 		OnSelectedChanged = onSelectedChanged;
 		NameAlreadyExist = nameAlreadyExist;

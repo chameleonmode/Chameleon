@@ -32,7 +32,6 @@ using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
 public partial class MyProfilesViewModel : ViewModelObjectBase {
-	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
 	private CancellationTokenSource? cts;
 
 	[ObservableProperty] Arguments selectedPlaywrightScript;
@@ -83,11 +82,13 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i => new ObsProfile(i, onSelectedChanged: p => {
-				OnPropertyChanged(nameof(HasSelectedItems));
-				OnPropertyChanged(nameof(SelectedCount));
-				OnSelectedChanged?.Invoke(p);
-			}, onDeleted: p => SetViewModelsFilter()))
+			.Transform(i => new ObsProfile(i,
+				onSelectedChanged: p => {
+					OnPropertyChanged(nameof(HasSelectedItems));
+					OnPropertyChanged(nameof(SelectedCount));
+					OnSelectedChanged?.Invoke(p);
+				},
+				onDeleted: p => SetViewModelsFilter()))
 			.Filter(filter)
 			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
 			.SortAndBind(out profiles, profilesCompareObservable)
@@ -119,7 +120,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		};
 
 		AsyncCommandMap["SaveTags"] = async () => {
-			_ = await tagsRepo.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
+			_ = await  TagsRepo.Instance.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
 		};
 		AsyncCommandMap["chrome"] = async () => {
 			await OpenSystemBrowser(SystemBrowserType.Chrome);
@@ -269,7 +270,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	public async Task OpenAsync(UPFolderDto? folder) {
 		if (folder is not null) {
 			Folder = new UPFolderViewModel(folder!);
-			Folder.Tags = await tagsRepo.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
+			Folder.Tags = await  TagsRepo.Instance.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
 			OnPropertyChanged(nameof(SelectedFolderTitle));
 			UnselectItems();
 			SetViewModelsFilter();

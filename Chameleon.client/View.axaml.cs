@@ -8,7 +8,6 @@ using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Windowing;
 using Chameleon.app.Avalonia;
-using Chameleon.app.Avalonia.Helpers;
 using Chameleon.app.Avalonia.MvvM;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.client.Features.ProfilesAndFolders.Projects;
@@ -16,7 +15,7 @@ namespace Chameleon.client;
 
 public partial class View : UserControl {
 	//TODO: move to load from json maybe?
-	private readonly Dictionary<string, PageModelBase> _pages = new() {
+	private readonly Dictionary<string, PageModelBase> pages = new() {
 		{
 			"Dashboard",
 			new()
@@ -95,11 +94,11 @@ public partial class View : UserControl {
 		// TooltipManager.Attach(Application.Current!, NavView);
 
 		//
-		NavView.MenuItemsSource = _pages
+		NavView.MenuItemsSource = pages
 		.Where(p => !p.Value.ShowsInFooter)
 		.Select(a => a.Value.GetNavigationViewItemBase(this))
 		.ToArray();
-		NavView.FooterMenuItemsSource = _pages
+		NavView.FooterMenuItemsSource = pages
 		.Where(p => p.Value.ShowsInFooter)
 		.Select(a => a.Value.GetNavigationViewItemBase(this))
 		.ToArray();
@@ -115,7 +114,7 @@ public partial class View : UserControl {
 			Navigator.NavigateToType(
 				pageModel.Tag!,
 				null,
-				FrameView.Content is ChameleonPageBase 
+				FrameView.Content is ChameleonPageBase
 					? new SuppressNavigationTransitionInfo()
 					: e.RecommendedNavigationTransitionInfo);
 		};
@@ -124,7 +123,7 @@ public partial class View : UserControl {
 		//
 		FrameView.NavigationPageFactory = Features.ViewModel.Instance.NavigationFactory;
 		FrameView.Navigated += (s, e) => {
-			var page = _pages
+			var page = pages
 			.SingleOrDefault(p => p.Value.Tag?.FullName == e.Content.GetType().FullName).Value;
 
 			if (page != null) {
@@ -143,7 +142,7 @@ public partial class View : UserControl {
 			if (WindowLogoIcon.IsVisible) AnimateContentForBackButton();
 		};
 
-		_ = FrameView.NavigateToType(_pages["Dashboard"].Tag, null, null);
+		_ = FrameView.NavigateToType(pages["Dashboard"].Tag, null, null);
 	}
 
 	private void SetNVIIcon(NavigationViewItem item, bool selected = true) {
@@ -157,8 +156,8 @@ public partial class View : UserControl {
 		: null;
 	}
 	private async void AnimateContentForBackButton() {
-		var startMargin = NavView.IsBackButtonVisible  ? new Thickness(12, 4, 12, 4) : new Thickness(48, 4, 12, 4);
-		var endMargin = NavView.IsBackButtonVisible  ? new Thickness(48, 4, 12, 4) : new Thickness(12, 4, 12, 4);
+		var startMargin = NavView.IsBackButtonVisible ? new Thickness(12, 4, 12, 4) : new Thickness(48, 4, 12, 4);
+		var endMargin = NavView.IsBackButtonVisible ? new Thickness(48, 4, 12, 4) : new Thickness(12, 4, 12, 4);
 
 		await new Animation {
 			Duration = TimeSpan.FromMilliseconds(250),

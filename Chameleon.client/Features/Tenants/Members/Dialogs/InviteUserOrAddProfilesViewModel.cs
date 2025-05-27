@@ -1,15 +1,15 @@
-﻿using Chameleon.app.Avalonia.Models.Observable;
-using System.Collections.ObjectModel;
-
-using Chameleon.lib.CommunityToolkit.MvvM;
+﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+
+using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.app.Avalonia.Services;
+using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Util;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.app.Avalonia.Services;
 
-namespace Chameleon.app.Avalonia.ViewModels.Controllers;
+namespace Chameleon.client.Features.Tenants.Members.Dialogs;
 
 public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	[ObservableProperty]
@@ -19,8 +19,8 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private bool showUserInfo;
 
-	public IProfileManagementService ProfileService => ProfileManagementService.Instance;
-	public IFolderManagementService FolderService => FolderManagementService.Instance;
+	public ProfileManagementService ProfileService => ProfileManagementService.Instance;
+	public FolderManagementService FolderService => FolderManagementService.Instance;
 
 	//
 	public ReadOnlyObservableCollection<ObsProfile> Profiles => ProfileService.AllProfiles;
@@ -72,7 +72,7 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	}
 
 	public async Task<InviteUserOrAddProfilesViewModel?> ShowDialog() {
-		var result = await Mbox.ShowTaskDialog<Controls.InviteUserOrAddProfilesUserControl, InviteUserOrAddProfilesViewModel>(new(
+		var result = await Mbox.ShowTaskDialog<InviteUserOrAddProfilesUserControl, InviteUserOrAddProfilesViewModel>(new(
 			Initialize: () => this,
 			Header: "Select Profiles & Folders",
 			SubHeader: "Add profiles and folders to your selection.",

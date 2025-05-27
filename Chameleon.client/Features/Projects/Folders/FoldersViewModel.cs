@@ -12,7 +12,7 @@ using UserProfilesViewModel = Chameleon.client.Features.ProfilesAndFolders.Profi
 namespace Chameleon.client.Features.ProfilesAndFolders.Folders;
 public partial class FoldersViewModel : ViewModelObjectBase {
 
-	private IFolderManagementService FolderManagementServices => FolderManagementService.Instance;
+	private FolderManagementService FolderManagementServices => FolderManagementService.Instance;
 
 	[ObservableProperty]
 	private ObsFolder selectedFolder;
@@ -23,13 +23,12 @@ public partial class FoldersViewModel : ViewModelObjectBase {
 	public event Action<ObsFolder>? OnSelectedChanged;
 
 	public FoldersViewModel() {
-		_ = UserProfilesFolderRepo
-		.Connect()
+		_ = UserProfilesFolderRepo.Connect()
 		.Transform(i => new ObsFolder(
-			i,
-			false,
-			f => OnSelectedChanged?.Invoke(f),
-			folderName => Folders?.Any(x => x.Dto.title == folderName) ?? false
+			folder: i,
+		  hasActionOptions: false,
+			onSelectedChanged: f => OnSelectedChanged?.Invoke(f),
+			nameAlreadyExist: folderName => Folders?.Any(x => x.Dto.title == folderName) ?? false
 		))
 		.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
 		.Subscribe();

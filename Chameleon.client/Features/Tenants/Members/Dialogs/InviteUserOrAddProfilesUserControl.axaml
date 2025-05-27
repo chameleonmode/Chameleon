@@ -4,12 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="450"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
-             xmlns:controls="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:dt="using:Chameleon.app.Avalonia.ViewModels.Controllers"
-			 x:DataType="dt:InviteUserOrAddProfilesViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Controls.InviteUserOrAddProfilesUserControl">
+			 xmlns:local="using:Chameleon.client.Features.Tenants.Members.Dialogs"
+             x:Class="Chameleon.client.Features.Tenants.Members.Dialogs.InviteUserOrAddProfilesUserControl"
+			 x:DataType="local:InviteUserOrAddProfilesViewModel"
+			 x:CompileBindings="True">
 	<dialogs:ChameleonDialogControl>
 		<dialogs:ChameleonDialogControl.DialogInputs>
 			<dialogs:DialogInputHost TextLabel="Username:"
