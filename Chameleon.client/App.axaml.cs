@@ -24,6 +24,7 @@ using Microsoft.Playwright;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Auth;
 using Chameleon.lib.Util;
+using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
 
 namespace Chameleon.client;
 
@@ -93,6 +94,8 @@ public partial class App : Application {
 				_ = await lib.Playwright.Project.Init();
 			}
 		});
+
+		Navigator.Instance.RegisterView(nameof(IdentityView), typeof(IdentityView));
 	}
 
 	public override void OnFrameworkInitializationCompleted()

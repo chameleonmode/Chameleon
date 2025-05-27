@@ -1,5 +1,4 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Util;
@@ -11,13 +10,14 @@ using DynamicData;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Helpers;
 
-using UserProfilesViewModel = Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesViewModel;
+using UserProfilesViewModel = Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesViewModel;
 using DynamicData.PLinq;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.app.Avalonia.Features.Search.ByTags.Controls;
 using System.Reactive.Linq;
-using Chameleon.app.Avalonia.Features.Search.ByTags;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
+using Chameleon.client.Features.ProfilesAndFolders.Projects;
+using Chameleon.client.Features.ProfilesAndFolders.Search;
+using Chameleon.client.Features.ProfilesAndFolders.Search.ByTags;
+using Chameleon.client.Features.ProfilesAndFolders.Search.ByTags.Controls;
 
 namespace Chameleon.client.Main;
 
