@@ -45,10 +45,4 @@
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Controls\MboxTitleUserControl.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
 </Project>

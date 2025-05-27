@@ -1,5 +1,4 @@
 ﻿using Avalonia.Collections;
-using Chameleon.app.Avalonia.Controls;
 using Chameleon.app.Avalonia.Extensions;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.Services;

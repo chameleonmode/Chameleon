@@ -2,10 +2,12 @@
 
 using chameleon.assets;
 
+using Chameleon.client.UI.UserControls;
+
 using Chameleon.lib.Const;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Interfaces.Services;
-using Chameleon.app.Avalonia.lib.Community.Controls;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.client.Services;

@@ -9,9 +9,9 @@
 			 xmlns:uc="using:Chameleon.client.UI.UserControls"
 			 xmlns:converter="using:Chameleon.Common.ValueConverters"
 			 xmlns:vm="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles"
+             x:Class="Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesView"
 			 x:DataType="vm:MyProfilesViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesView">
+			 x:CompileBindings="True">
 	<UserControl.Styles>
 		<Style Selector="ui|SymbolIcon.spinner">
 			<Style.Animations>
