@@ -16,12 +16,6 @@
              x:DataType="Features:ViewModel"
 			 x:CompileBindings="True">
 	<UserControl.Styles>
-	<!-- 
-         NavView style in MainView for main app navigation
-         While you are free to copy this into your own apps
-         if you want an MS store like NavView, this will NOT
-         be an officially supported thing in the main library
-    -->
 		<Style Selector="ui|NavigationView.MainAppNav">
 			<Setter Property="IsPaneToggleButtonVisible" Value="False" />
 			<Setter Property="OpenPaneLength" Value="72" />
@@ -174,12 +168,12 @@
 
 			<Border Grid.Column="2" Padding="6">
 				<AutoCompleteBox Name="SearchBox"
-                                 MaxWidth="500"
-                                 Watermark="Search"
-                                 Classes="MainSearchBox"
-                                 ValueMemberBinding="{Binding Header, DataType=m:MainAppSearchItem}"
-								 SelectedItem="{Binding SelectedSearchTerm}"
-                                 ItemsSource="{Binding SearchTerms}">
+                	MaxWidth="500"
+                	Watermark="Search"
+                	Classes="MainSearchBox"
+                	ValueMemberBinding="{Binding Header, DataType=m:MainAppSearchItem}"
+					SelectedItem="{Binding SelectedSearchTerm}"
+                	ItemsSource="{Binding SearchTerms}">
 					<AutoCompleteBox.ItemTemplate>
 						<searchFolder:MainSearchTemplateSelector>
 							<DataTemplate x:Key="Default">

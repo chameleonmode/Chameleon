@@ -29,6 +29,9 @@ using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Abs.Platformatic;
+using Chameleon.client.Services;
+using Chameleon.client.UI.UserControls;
+using FluentAvalonia.UI.Windowing;
 
 namespace Chameleon.client;
 
@@ -230,9 +233,15 @@ public partial class App : Application {
 		BindingPlugins.DataValidators.RemoveAt(0);
 
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-			desktop.MainWindow = new MainWindow {
-				DataContext = ViewModel.Instance
+			var window = new UI.Windows.Main {
+				DataContext = ViewModel.Instance,
+				SplashScreen = new SplashScreen(),
+				// ExtendClientAreaToDecorationsHint = true;
+				// ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.Default;
 			};
+			window.TitleBar.ExtendsContentIntoTitleBar = true;
+			window.TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
+			desktop.MainWindow = window;
 		} else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform) {
 			singleViewPlatform.MainView = new View {
 				DataContext = ViewModel.Instance

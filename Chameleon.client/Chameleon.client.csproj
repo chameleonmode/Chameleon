@@ -40,6 +40,9 @@
     <Compile Update="Features/Tenants/Members/MembersView.axaml.cs">
       <DependentUpon>MembersView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="UI/Windows/Acrylic.axaml.cs">
+      <DependentUpon>Acrylic.axaml</DependentUpon>
+    </Compile>
     <Compile Update="View.axaml.cs">
       <DependentUpon>View.axaml</DependentUpon>
     </Compile>

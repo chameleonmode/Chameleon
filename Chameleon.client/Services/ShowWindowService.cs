@@ -1,14 +1,14 @@
-﻿using Avalonia.Controls;
-
-using Chameleon.app.Avalonia.Windows;
+﻿
+using Avalonia.Controls;
+using Chameleon.client.UI.Windows;
 using Chameleon.lib.Common.Interfaces.Services;
 
-namespace Chameleon.app.Avalonia.Services;
-public class ShowWindowService : IShowWindowService {
-	private readonly Dictionary<object, AcrylicWindow> windows = [];
+namespace Chameleon.client.Services;
 
-	private void PrivateShow<TViewModel>(TViewModel viewModel, Action<TViewModel> initialize, Control view, int width, string title, Action<TViewModel>? onClosed)
-	{
+public class ShowWindowService : IShowWindowService {
+	private readonly Dictionary<object, Acrylic> windows = [];
+
+	private void PrivateShow<TViewModel>(TViewModel viewModel, Action<TViewModel> initialize, Control view, int width, string title, Action<TViewModel>? onClosed) {
 		initialize(viewModel);
 
 		if (!windows.TryGetValue(viewModel!, out var w)) {
@@ -32,21 +32,18 @@ public class ShowWindowService : IShowWindowService {
 	}
 
 	public void ShowTopmost<TView, TViewModel>(Action<TViewModel> initialize,
-			Action<TViewModel>? onClosed = null, string title = "CP", int width = 256) where TView : new() where TViewModel : new()
-	{
+			Action<TViewModel>? onClosed = null, string title = "CP", int width = 256) where TView : new() where TViewModel : new() {
 		var vm = new TViewModel();
 		ShowTopmost<TView, TViewModel>(vm, initialize, onClosed, title, width);
 	}
 
 	public void ShowTopmost<TView, TViewModel>(TViewModel vm, Action<TViewModel> initialize,
-			Action<TViewModel>? onClosed = null, string title = "CP", int width = 256) where TView : new()
-	{
+			Action<TViewModel>? onClosed = null, string title = "CP", int width = 256) where TView : new() {
 		var view = new TView();
 		ShowTopmost(vm, view, initialize, onClosed, title, width);
 	}
 
-	public void ShowTopmost<TView, TViewModel>(TViewModel vm, TView v, Action<TViewModel> initialize, Action<TViewModel>? onClosed, string title = "TP", int width = 256)  
-	{
+	public void ShowTopmost<TView, TViewModel>(TViewModel vm, TView v, Action<TViewModel> initialize, Action<TViewModel>? onClosed, string title = "TP", int width = 256) {
 		if (v is Control control) {
 			control.DataContext = vm;
 			PrivateShow(vm, initialize, control, width, title, onClosed);

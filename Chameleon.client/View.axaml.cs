@@ -139,10 +139,8 @@ public partial class View : UserControl {
 				}
 			}
 
-			var shouldShowBackButton = FrameView.BackStackDepth > 0;
-			if (shouldShowBackButton != NavView.IsBackButtonVisible) {
-				AnimateContentForBackButton(shouldShowBackButton);
-			}
+			NavView.IsBackButtonVisible = FrameView.BackStackDepth > 0;
+			if (WindowLogoIcon.IsVisible) AnimateContentForBackButton();
 		};
 
 		_ = FrameView.NavigateToType(_pages["Dashboard"].Tag, null, null);
@@ -158,16 +156,11 @@ public partial class View : UserControl {
 		? value as IconSource
 		: null;
 	}
-	private async void AnimateContentForBackButton(bool show) {
-		if (!WindowLogoIcon.IsVisible)
-			return;
+	private async void AnimateContentForBackButton() {
+		var startMargin = NavView.IsBackButtonVisible  ? new Thickness(12, 4, 12, 4) : new Thickness(48, 4, 12, 4);
+		var endMargin = NavView.IsBackButtonVisible  ? new Thickness(48, 4, 12, 4) : new Thickness(12, 4, 12, 4);
 
-		NavView.IsBackButtonVisible = show;
-
-		var startMargin = show ? new Thickness(12, 4, 12, 4) : new Thickness(48, 4, 12, 4);
-		var endMargin = show ? new Thickness(48, 4, 12, 4) : new Thickness(12, 4, 12, 4);
-
-		var ani = new Animation {
+		await new Animation {
 			Duration = TimeSpan.FromMilliseconds(250),
 			FillMode = FillMode.Forward,
 			Children = {
@@ -181,9 +174,7 @@ public partial class View : UserControl {
 					Setters = { new Setter(MarginProperty, endMargin) }
 				}
 			}
-		};
-
-		await ani.RunAsync(WindowLogoIcon);
+		}.RunAsync(WindowLogoIcon);
 	}
 }
 

@@ -7,11 +7,7 @@
 		<Border Padding="50">
 			<StackPanel Spacing="5"
 						Background="Gray">
-				<ui:SymbolIcon
-					Symbol="Cancel"
-							Margin="0 0 5 0"/>
-				
-				
+				<ui:SymbolIcon Symbol="Cancel" Margin="0 0 5 0"/>
 				<Button Content="Button" />
 				<Button Content="Button" Classes="accent" />
 				<Button Content="Button" IsEnabled="False" />

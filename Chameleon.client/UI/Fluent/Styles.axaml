@@ -39,4 +39,9 @@
 	<Style Selector="TextBlock.caption">
         <Setter Property="Theme" Value="{StaticResource CaptionTextBlockStyle}"/>
     </Style>
+
+	<!--Button-->
+	<Style Selector="Button.symble">
+		<Setter Property="Theme" Value="{DynamicResource SymbleIconButton}" />
+	</Style>
 </Styles>
