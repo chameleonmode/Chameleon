@@ -38,9 +38,6 @@ find "$PUBLISH_DIR/$APP_NAME/Contents/MacOS" -name '*.dll' | while read fname; d
     fi
 done
 
-eecho "[INFO] Signing fsevents module"
-codesign --force --timestamp --options runtime --entitlements "$CSPROJ_DIR/chameleonApp.entitlements" --sign "$APP_SIGNING_IDENTITY" "$PUBLISH_DIR/$APP_NAME/Contents/Resources/scripts/node_modules/fsevents/fsevents.node"
-
 echo "[INFO] Switching provision profile to AppStore"
 cp -R -f "$CSPROJ_DIR/chameleonmodes.provisionprofile" "$PUBLISH_DIR/$APP_NAME/Contents/embedded.provisionprofile"
 

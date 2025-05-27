@@ -1,8 +1,7 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="using:Chameleon.client.UI.Controls">
-	<ControlTheme x:Key="ListBoxNoScroller"
-		TargetType="ListBox"
+	<ControlTheme x:Key="ListBoxNoScroller" TargetType="ListBox"
 		BasedOn="{StaticResource {x:Type ListBox}}">
 		<Setter Property="Template">
 			<ControlTemplate>
@@ -16,8 +15,7 @@
 		</Setter>
 	</ControlTheme>
 
-	<ControlTheme x:Key="GridViewItem"
-		TargetType="ListBoxItem"
+	<ControlTheme x:Key="GridViewItem" TargetType="ListBoxItem"
 	  	BasedOn="{StaticResource {x:Type ListBoxItem}}">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="2" />
@@ -79,5 +77,34 @@
 				<Setter Property="Background" Value="{DynamicResource LayerFillColorDefaultBrush}" />
 			</Style>-->
 		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="{x:Type local:Inputter}" TargetType="local:Inputter">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid>
+				    <Grid.ColumnDefinitions>
+            			<ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn"/>
+            			<ColumnDefinition Width="*"/>
+        			</Grid.ColumnDefinitions>
+					<TextBlock 
+						Name="TitleTextBlock"
+						Text="{TemplateBinding Title}" 
+						ToolTip.Tip="{TemplateBinding Description}"
+						VerticalAlignment="Center"
+						Margin="0 0 0 0"
+					/>	
+					<TextBox 
+						Text="{TemplateBinding Text, Mode=TwoWay}" 
+						Watermark="{TemplateBinding Watermark}"
+						Grid.Column="1"
+						Margin="8 0 0 0"
+						MaxLength="10000"
+						VerticalAlignment="Center"
+						HorizontalAlignment="Stretch"
+					/>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
 	</ControlTheme>
 </ResourceDictionary>

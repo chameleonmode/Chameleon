@@ -13,6 +13,7 @@ using Chameleon.app.Avalonia.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.client.Pages.Views;
+using Chameleon.lib.Auth;
 using Chameleon.client.Features.ProfilesAndFolders.Projects;
 
 namespace Chameleon.client.Main;
@@ -97,7 +98,6 @@ public partial class MainView : UserControl {
 		base.OnAttachedToVisualTree(e);
 
 		//
-		Toaster.Success("Welcome to Chameleon!");
 		Navigator.SetFrame(FrameView);
 		TooltipManager.Attach(Application.Current!, NavView);
 

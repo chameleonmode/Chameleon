@@ -8,7 +8,7 @@ using Chameleon.lib.Api.Repos;
 using DynamicData;
 using Chameleon.lib.Util;
 using Chameleon.lib;
-using Chameleon.lib.WebBrowser.Models;
+using Chameleon.lib.WebBrowser;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action OnSelectedChanged, Action<BrowserSettingDto> OnSettingsDeleted) : ViewModelObjectBase {

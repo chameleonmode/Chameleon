@@ -12,7 +12,7 @@ using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
-using Chameleon.lib.Playwright.Models;
+using Chameleon.lib.Playwright;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -33,7 +33,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
 	private CancellationTokenSource? cts;
 
-	[ObservableProperty] RunScriptOptions selectedPlaywrightScript;
+	[ObservableProperty] Arguments selectedPlaywrightScript;
 	[ObservableProperty] PaginatorViewModel paginatorViewModel;
 	[ObservableProperty] SystemBrovserItem selectedBrowserItem;
 	[ObservableProperty] int totalCount;
@@ -45,7 +45,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	[ObservableProperty] string searchText = string.Empty;
 	[ObservableProperty] UPFolderViewModel? folder;
 
-	public AvaloniaList<RunScriptOptions> PlaywrightScripts { get; } = [];
+	public AvaloniaList<Arguments> PlaywrightScripts { get; } = [];
 	public ObservableCollection<SystemBrovserItem> BrowserItems { get; } = [
 		new SystemBrovserItem(SystemBrowserType.Chrome),
 		new SystemBrovserItem(SystemBrowserType.Brave),
@@ -240,7 +240,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		if (cur != value.SystemBrowserType.ToString())
 			IoC.SetValue(value.SystemBrowserType.ToString(), "LastSelectedBrowser");
 	}
-	partial void OnSelectedPlaywrightScriptChanged(RunScriptOptions value) {
+	partial void OnSelectedPlaywrightScriptChanged(Arguments value) {
 		var cur = IoC.GetValue<string>("LastRunScriptId");
 		if (value != null && cur != value.Description?.Title)
 			IoC.SetValue(value.Description?.Title, "LastRunScriptId");

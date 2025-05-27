@@ -45,26 +45,26 @@ public partial class MainViewModel : ObservableObjectBase {
 		.Concat(_boundTags);
 
 	private MainViewModel() {
-//#if DEBUG
+#if DEBUG
 		AppStartup.Instance.OnLoginSuccess += () => {
 			IsSplashVisible = false;
 		};
-// #else
-// 		AppStartup.Instance.OnLoginSuccess += async () => {
-// 			IsSplashVisible = false;
-// 			try {
-// 				var current = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
-// 				var appClientInfo = await Service.Routes.App.GetLatestVersion;
-// 				if (appClientInfo != null && appClientInfo.Latest != current) {
-// 					InfoBarTitle = "New Version Available";
-// 					InfoBarMessage = $"Download the latest version of Chameleon ({appClientInfo.Latest})";
-// 					InfoBarOpen = true;
-// 				}
-// 			} catch (Exception e) {
-// 				Toaster.Error(e.Message);
-// 			}
-// 		};
-// #endif
+#else
+		AppStartup.Instance.OnLoginSuccess += async () => {
+			IsSplashVisible = false;
+			try {
+				var current = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
+				var appClientInfo = await Service.Routes.App.GetLatestVersion;
+				if (appClientInfo != null && appClientInfo.Latest != current) {
+					InfoBarTitle = "New Version Available";
+					InfoBarMessage = $"Download the latest version of Chameleon ({appClientInfo.Latest})";
+					InfoBarOpen = true;
+				}
+			} catch (Exception e) {
+				Toaster.Error(e.Message);
+			}
+		};
+#endif
 		_ = UserProfilesRepo
 			.Connect()
 			.Transform(i => new MainAppSearchItem() {
