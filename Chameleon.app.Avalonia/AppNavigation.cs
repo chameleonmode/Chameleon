@@ -97,9 +97,7 @@ public class Navigator: INavigatorService {
 	}
 
 	public void RegisterView(string viewKey, Type viewType) {
-		if (string.IsNullOrWhiteSpace(viewKey))
-			throw new ArgumentNullException(nameof(viewKey));
-		ArgumentNullException.ThrowIfNull(viewType);
+		ArgumentException.ThrowIfNullOrWhiteSpace(viewKey);
 		if (!typeof(Control).IsAssignableFrom(viewType))
 			throw new ArgumentException($"{viewType.FullName} must be assignable to Avalonia.Controls.Control", nameof(viewType));
 

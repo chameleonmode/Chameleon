@@ -9,18 +9,11 @@ using System.Reactive.Linq;
 using DynamicData;
 using DynamicData.PLinq;
 
-using Chameleon.client.Features.Automation.AI.ChameleonAIR;
 using Chameleon.client.Features.Automation.Playwright;
 using Chameleon.client.Features.Tenants.Members;
 using Chameleon.client.Features.Automation.Actors;
 
-using Chameleon.app.Avalonia.Features.Search.ByTags;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
-using Chameleon.app.Avalonia.Features.Search.ByTags.Controls;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders;
 using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia;
 
 using Chameleon.lib.Api.Repos;
@@ -29,6 +22,12 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Common.Models.Dto;
+using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
+using Chameleon.client.Features.ProfilesAndFolders.Projects;
+using Chameleon.client.Features.ProfilesAndFolders.Search;
+using Chameleon.client.Features.ProfilesAndFolders.Search.ByTags;
+using Chameleon.client.Features.ProfilesAndFolders.Search.ByTags.Controls;
+using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
 
 namespace Chameleon.client.Features;
 
@@ -42,6 +41,12 @@ public static class Modules {
   .AddSingleton<PlaywrightViewModel>()
   .AddSingleton<ActorsViewModel>()
   .AddSingleton<ActorsView>();
+
+  public static IServiceCollection WithProfilesAndFolders(this IServiceCollection services) => services
+  .AddSingleton<IdentityView>()
+  .AddSingleton<IdentityViewModel>()
+  .AddSingleton<ProjectsView>()
+  .AddSingleton<ProjectsViewModel>();
 
   public static IServiceCollection WithAllPagesAndFeatures(this IServiceCollection services) => services
   .Automation()

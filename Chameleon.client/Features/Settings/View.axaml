@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:contrls="using:Chameleon.Av.Fluent.Common.Controls"
-             xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
+             xmlns:local="using:Chameleon.client.Features.Settings"
              x:Class="Chameleon.client.Features.Settings.View"
-			 x:DataType="vm:ViewModel"
+			 x:DataType="local:ViewModel"
 			 x:CompileBindings="True"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450">
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">

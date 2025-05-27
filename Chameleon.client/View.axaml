@@ -11,12 +11,12 @@
 			 xmlns:searchFolder="using:Chameleon.client.Features.ProfilesAndFolders.Search"
 			 xmlns:defaultSearch="using:Chameleon.client.Features.ProfilesAndFolders.Search.Default"
 			 xmlns:tagSearch="using:Chameleon.client.Features.ProfilesAndFolders.Search.ByTags"
-             xmlns:vm="using:Chameleon.client"
-             x:Class="Chameleon.client.Main.MainView"
-             x:Class="Chameleon.client.View"
-             x:DataType="vm:MainViewModel">
+             xmlns:Features="using:Chameleon.client.Features" 
+			 x:Class="Chameleon.client.View"
+             x:DataType="Features:ViewModel"
+			 x:CompileBindings="True">
 	<UserControl.Styles>
-		<!-- 
+	<!-- 
          NavView style in MainView for main app navigation
          While you are free to copy this into your own apps
          if you want an MS store like NavView, this will NOT

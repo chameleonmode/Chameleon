@@ -124,7 +124,7 @@ public partial class View : UserControl {
 		FrameView.NavigationPageFactory = Features.ViewModel.Instance.NavigationFactory;
 		FrameView.Navigated += (s, e) => {
 			var page = _pages
-				.SingleOrDefault(p => p.Value.Tag?.Name == e.Content.GetType().Name).Value;
+				.SingleOrDefault(p => p.Value.Tag?.FullName == e.Content.GetType().FullName).Value;
 
 			foreach (var nvi in from NavigationViewItem nvi in
 														((List<NavigationViewItemBase>)NavView.MenuItemsSource).Concat((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource)
