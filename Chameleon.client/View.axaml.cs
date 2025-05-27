@@ -8,11 +8,26 @@ using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Windowing;
 using Chameleon.app.Avalonia;
-using Chameleon.app.Avalonia.MvvM;
 using Chameleon.client.Features.ProfilesAndFolders.Projects;
 using Chameleon.client.Features.Settings.Featured;
 namespace Chameleon.client;
+public class PageModelBase {
+	public Type? Tag { get; set; }
+	public string? NavHeader { get; set; }
+	public string IconKey { get; set; } = "HomeIcon"; // Default to "HomeIcon
+	public bool ShowsInFooter { get; set; }
 
+	public NavigationViewItemBase GetNavigationViewItemBase(UserControl c)
+	{
+		var nvi = new NavigationViewItem {
+			Content = NavHeader,
+			Tag = this,
+			IconSource = (IconSource)c.FindResource(IconKey)!,
+		};
+		nvi.Classes.Add("MainAppNav");
+		return nvi;
+	}
+}
 public partial class View : UserControl {
 	//TODO: move to load from json maybe?
 	private readonly Dictionary<string, PageModelBase> pages = new() {

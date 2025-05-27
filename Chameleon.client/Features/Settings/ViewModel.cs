@@ -15,6 +15,8 @@ using Chameleon.lib.Auth;
 
 namespace Chameleon.client.Features.Settings;
 
+public record AppSettings(string? CurrentAppTheme, string? CustomAccentColor, bool UseCustomAccentColor);
+
 public partial class ViewModel : ViewModelObjectBase {
 	private const string _system = "System";
 	private const string _dark = "Dark";

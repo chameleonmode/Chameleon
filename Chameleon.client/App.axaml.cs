@@ -19,17 +19,15 @@ using Chameleon.client.Features;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Auth;
-using Chameleon.app.Avalonia.ViewModels.Controllers;
-using Chameleon.app.Avalonia.lib.Community.Controls;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Api;
 using Chameleon.client.Services;
 using Chameleon.client.UI.UserControls;
 using FluentAvalonia.UI.Windowing;
 using Chameleon.client.Features.Settings.Featured;
+using Chameleon.client.UI.Dialogs;
 
 namespace Chameleon.client;
-
 
 public partial class App : Application {
 	public static Window? MainWindow => (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;

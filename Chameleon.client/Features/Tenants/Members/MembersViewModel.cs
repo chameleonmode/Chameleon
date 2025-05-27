@@ -8,12 +8,12 @@ using Chameleon.lib.Common.Constants;
 using DynamicData;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api;
-using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.lib.Util;
 using Chameleon.lib.Helpers;
 using Chameleon.client.Features.Tenants.Members.ViewModels;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.client.Features.Tenants.Members.Dialogs;
+using Chameleon.app.Avalonia.Services;
 
 namespace Chameleon.client.Features.Tenants.Members;
 public partial class TenantMembersViewModel : ViewModelObjectBase {
@@ -50,9 +50,7 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 			});
 		Assistantz = assistants;
 
-		_ = UserProfilesRepo
-			.Connect()
-			.Transform(i => new ObsProfile(
+		_ = UserProfilesRepo.Connect().Transform(i => new ObsProfile(
 				userProfile: i,
 				hasActionOptions: false,
 				onSelectedChanged: p => {
@@ -64,14 +62,12 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 					}
 				})
 			)
-			.SortAndBind(out var profiles, Compares.ObsProfileCompares.AscendingComparer)
+			.SortAndBind(out var profiles, ProfileManagementService.AscendingComparer)
 			.Subscribe();
 		Profiles = profiles;
 
-		_ = UserProfilesFolderRepo
-			.Connect()
-			.Transform(i => new ObsFolder(i, false, null, null))
-			.SortAndBind(out var folders, Compares.ObsFolderCompares.AscendingComparer)
+		_ = UserProfilesFolderRepo.Connect().Transform(i => new ObsFolder(i, false, null, null))
+			.SortAndBind(out var folders, FolderManagementService.AscendingComparer)
 			.Subscribe();
 		Folders = folders;
 

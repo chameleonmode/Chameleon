@@ -6,12 +6,11 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
-			 xmlns:vmc="using:Chameleon.app.Avalonia.ViewModels.Controllers"
-			 xmlns:models="using:Chameleon.app.Avalonia.Models.Observable"
 			 xmlns:ct="using:Chameleon.lib.CommunityToolkit.MvvM"
+			 xmlns:vmc="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles"
+             x:Class="Chameleon.client.Features.Projects.Profiles.MyProfiles.Dialogs.AddUserProfilesPopupUserControl"
 			 x:DataType="vmc:AddUserProfilesPupViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Controls.AddUserProfilesPopupUserControl">
+			 x:CompileBindings="True">
 	<dialogs:ChameleonDialogControl>
 		<dialogs:ChameleonDialogControl.Content>
 			<Grid RowDefinitions="Auto,*">

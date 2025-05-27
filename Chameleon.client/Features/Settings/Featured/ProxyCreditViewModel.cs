@@ -1,10 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 
-using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
@@ -18,6 +16,7 @@ using static Chameleon.lib.Common.Constants.Enums.Api;
 
 namespace Chameleon.client.Features.Settings.Featured;
 
+public record CreditPlan(decimal Amount, string Size, bool IsChecked = false);
 public partial class ProxyCreditViewModel
 			: ViewModelObjectBase {
 	[ObservableProperty]

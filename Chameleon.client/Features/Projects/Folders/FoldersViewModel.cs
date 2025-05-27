@@ -1,5 +1,4 @@
-﻿using Chameleon.app.Avalonia.DynamicData;
-using Chameleon.app.Avalonia.Models.Observable;
+﻿using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
@@ -30,7 +29,7 @@ public partial class FoldersViewModel : ViewModelObjectBase {
 			onSelectedChanged: f => OnSelectedChanged?.Invoke(f),
 			nameAlreadyExist: folderName => Folders?.Any(x => x.Dto.title == folderName) ?? false
 		))
-		.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
+		.SortAndBind(out folders, FolderManagementService.AscendingComparer)
 		.Subscribe();
 		SelectedFolder = AllProfiles = folders[0];
 

@@ -5,7 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels.Controllers"
+			 xmlns:vm="using:Chameleon.app.Avalonia.Models.Observable"
 			 x:DataType="vm:UserProfileSidePanelViewModel"
 			 x:CompileBindings="True"
              x:Class="Chameleon.app.Avalonia.Controls.UserProfileSidePanelUserControl">

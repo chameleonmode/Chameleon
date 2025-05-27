@@ -1,12 +1,11 @@
 ﻿using Avalonia.Collections;
 using Chameleon.app.Avalonia.Controls;
-using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.app.Avalonia.Extensions;
-using Chameleon.app.Avalonia.Models;
 using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.app.Avalonia.Services;
 using Chameleon.client.Features.ProfilesAndFolders.Folders;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModels;
+using Chameleon.client.Features.Projects.Profiles.MyProfiles.Dialogs;
 using Chameleon.client.UI.UserControls.ViewModels;
 using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
@@ -31,6 +30,69 @@ using System.Reactive.Subjects;
 using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
+public partial class AddUserProfilesPupViewModel : ViewModelObjectBase {
+	[ObservableProperty]
+	private ObsFolder? folder;
+
+	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
+	public ObservableCollection<ObsProfile> SelectedProfiles { get; } = [];
+
+	public AddUserProfilesPupViewModel()
+	{
+		_ = UserProfilesRepo
+					.Connect()
+					.Transform(i => new ObsProfile(
+						userProfile: i,
+						hasActionOptions: false,
+						onSelectedChanged: p => {
+							if (p.IsSelected && !SelectedProfiles.Contains(p)) {
+								SelectedProfiles.Add(p);
+							} else {
+								_ = SelectedProfiles.Remove(p);
+							}
+						})
+					)
+					.SortAndBind(out var profiles, ProfileManagementService.AscendingComparer)
+					.Subscribe(async p => {
+						var pre = SelectedProfiles.ToList();
+						SelectedProfiles.Clear();
+						await Task.Delay(64);
+						foreach (var item in pre) {
+							var cp = Profiles?.First(pr => pr.Dto!.id == item.Dto!.id);
+							if (cp != null) {
+								cp.IsSelected = true;
+								SelectedProfiles.Add(cp);
+							}
+						}
+					});
+		Profiles = profiles;
+	}
+}
+
+public partial class MoveUserProfilesPopupViewModel : ViewModelObjectBase {
+	[ObservableProperty]
+	private ObsFolder? selectedFolder;
+	[ObservableProperty]
+	private bool listIsVisible = true;
+
+	public ObservableCollection<ObsFolder> Folders { get; } = [];
+	public ObservableCollection<ObsProfile> Profiles { get; } = [];
+
+	public bool HasSelected => SelectedFolder != null;
+
+	partial void OnSelectedFolderChanged(ObsFolder? value) => OnPropertyChanged(nameof(HasSelected));
+
+	[RelayCommand]
+	private void SelectFolder(ObsFolder selectedFolder)
+	{
+		SelectedFolder = selectedFolder;
+	}
+}
+
+public record SystemBrovserItem(SystemBrowserType SystemBrowserType) {
+	public string IconName => SystemBrowserType.ToString().ToLower();
+}
+
 public partial class MyProfilesViewModel : ViewModelObjectBase {
 	private CancellationTokenSource? cts;
 
@@ -65,7 +127,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	//
 	public Func<ObsProfile, bool> FilterPredicate => p => Folder == null || Folder.Id == 0 || (Folder != null && Folder.Id != 0 && p.Dto?.folderId == Folder?.Id);
 
-	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
+	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(ProfileManagementService.AscendingComparer);
 	private readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, Consts.PageinationPageItems));
 	private readonly BehaviorSubject<Func<ObsProfile, bool>> filter;
 
@@ -90,7 +152,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 				},
 				onDeleted: p => SetViewModelsFilter()))
 			.Filter(filter)
-			.SortAndPage(Compares.ObsProfileCompares.AscendingComparer, pageRequests)
+			.SortAndPage(ProfileManagementService.AscendingComparer, pageRequests)
 			.SortAndBind(out profiles, profilesCompareObservable)
 			.Subscribe();
 
@@ -234,8 +296,8 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
 		profilesCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => Compares.ObsProfileCompares.DescendingComparer,
-			_ => Compares.ObsProfileCompares.AscendingComparer
+			Enums.ChangeComparereOption.Descending => ProfileManagementService.DescendingComparer,
+			_ => ProfileManagementService.AscendingComparer
 		});
 	}
 	partial void OnSelectedBrowserItemChanged(SystemBrovserItem value) {

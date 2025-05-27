@@ -1,8 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
-namespace Chameleon.app.Avalonia.Controls;
+namespace Chameleon.client.Features.Projects.Profiles.MyProfiles.Dialogs; 
 
 public partial class AddUserProfilesPopupUserControl : UserControl
 {

@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:afvDialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Chameleon.app.Avalonia.lib.Community.Controls.MboxLoginUserControl">
+             x:Class="Chameleon.client.UI.Dialogs.MboxLoginUserControl"
+			 x:CompileBindings="False">
 	<afvDialogs:ChameleonDialogControl>
 		<afvDialogs:ChameleonDialogControl.DialogInputs>
 			<afvDialogs:DialogInputHost TextLabel="Email:"

@@ -1,5 +1,5 @@
-﻿using Chameleon.app.Avalonia.DynamicData;
-using Chameleon.app.Avalonia.Models.Observable;
+﻿using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.app.Avalonia.Services;
 using Chameleon.client.Features.Dashboard.Tags;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
@@ -16,8 +16,8 @@ using System.Reactive.Subjects;
 namespace Chameleon.client.Features.Dashboard;
 
 public abstract partial class Base(string? title) : ViewModelObjectBase(title) {
-	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
-	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Compares.ObsFolderCompares.AscendingComparer);
+	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(ProfileManagementService.AscendingComparer);
+	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(FolderManagementService.AscendingComparer);
 
 	[ObservableProperty]
 	private Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
@@ -34,15 +34,15 @@ public abstract partial class Base(string? title) : ViewModelObjectBase(title) {
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
 		profilesCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => Compares.ObsProfileCompares.DescendingComparer,
-			_ => Compares.ObsProfileCompares.AscendingComparer
+			Enums.ChangeComparereOption.Descending => ProfileManagementService.DescendingComparer,
+			_ => ProfileManagementService.AscendingComparer
 		});
 	}
 
 	partial void OnFolderSortSelectedChanged(Enums.ChangeComparereOption value) {
 		foldersCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => Compares.ObsFolderCompares.DescendingComparer,
-			_ => Compares.ObsFolderCompares.AscendingComparer
+			Enums.ChangeComparereOption.Descending => FolderManagementService.DescendingComparer,
+			_ => FolderManagementService.AscendingComparer
 		});
 	}
 }

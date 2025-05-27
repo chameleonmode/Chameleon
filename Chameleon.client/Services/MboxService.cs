@@ -6,9 +6,13 @@ using Chameleon.lib.Const;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.app.Avalonia.lib.Community.Controls;
-using Chameleon.app.Avalonia.ViewModels.Controllers;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.client.Services;
+public partial class MBoxViewModel : ObservableObject {
+	[ObservableProperty] string title = Variables.AppName;
+	[ObservableProperty] string glyph = "E946";
+}
 public class MboxService(IDispatchService dispatcher) : IMboxService {
 	public async Task<Enums.MboxResult> Show(string title, string content, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo, string icon = "Info")
 	{

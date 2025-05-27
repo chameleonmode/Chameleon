@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reactive.Subjects;
 
-using Chameleon.app.Avalonia.DynamicData;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -17,11 +16,50 @@ using DynamicData;
 
 using static Chameleon.lib.Common.Constants.Enums.Api;
 using Chameleon.client.UI.UserControls.ViewModels;
+using DynamicData.Binding;
+using Chameleon.app.Avalonia.Services;
 
 namespace Chameleon.client.Features.Settings.Featured;
+public partial class ObsProxySetting : ViewModelObjectBase{
+	[ObservableProperty] string? host;
+	[ObservableProperty] int port = 80;
+	[ObservableProperty] string? userName;
+	[ObservableProperty] string? password;
+	[ObservableProperty] ObsProfile obsProfile;
 
-public partial class UserProxySettingsViewModel
-			 : ViewModelObjectBase {
+	public ObsProxySetting(ObsProfile profile)
+	{
+		obsProfile = profile;
+		host = obsProfile.Dto!.proxy!.host;
+		port = obsProfile.Dto.proxy.port;
+		userName = obsProfile.Dto.proxy.userName;
+		password = obsProfile.Dto.proxy.password;
+	}
+
+	partial void OnPortChanged(int value)
+	{
+		if (value < 0 || value >= 65535) {
+			Port = 0;
+		}
+	}
+
+	public void SetProfile()
+	{
+		ObsProfile.Dto!.proxy!.host = Host;
+		ObsProfile.Dto.proxy.port = Port;
+		ObsProfile.Dto.proxy.userName = UserName;
+		ObsProfile.Dto.proxy.password = Password;
+	}
+}
+
+public partial class ObsProxyAccess : ViewModelObjectBase {
+	[ObservableProperty] string? url;
+}
+
+public partial class UserProxySettingsViewModel : ViewModelObjectBase {
+	public static SortExpressionComparer<ObsProxySetting> AscendingComparer => SortExpressionComparer<ObsProxySetting>.Descending(p => p.ObsProfile.IsSelected).ThenByAscending(p => p.ObsProfile.Title!);
+	public static SortExpressionComparer<ObsProxySetting> DescendingComparer => SortExpressionComparer<ObsProxySetting>.Descending(p => p.ObsProfile.Title!);
+
 	private readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, Consts.PageinationPageItems));
 
 	private readonly ReadOnlyObservableCollection<ObsProxySetting> proxies;
@@ -59,14 +97,14 @@ public partial class UserProxySettingsViewModel
 				OnPropertyChanged(nameof(SelectedCount));
 			})))
 			.Filter(filter)
-			.SortAndPage(Compares.ObsProxySettingCompares.AscendingComparer, pageRequests)
+			.SortAndPage(AscendingComparer, pageRequests)
 			.Bind(out proxies)
 			.Subscribe();
 
 		_ = UserProfilesFolderRepo
 			.Connect()
 			.Transform(i => new ObsFolder(i,null))
-			.SortAndBind(out folders, Compares.ObsFolderCompares.AscendingComparer)
+			.SortAndBind(out folders, FolderManagementService.AscendingComparer)
 			.Subscribe();
 		PaginatorViewModel = new PaginatorViewModel((p) => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
