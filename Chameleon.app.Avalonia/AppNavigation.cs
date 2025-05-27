@@ -1,28 +1,16 @@
 ﻿using Avalonia.Controls;
+
 using Chameleon.lib;
+
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Navigation;
 
 namespace Chameleon.app.Avalonia;
-public interface INavigatorService {
-	void NavigateTo(string viewKey, object? parameter = null);
-	void NavigateToType(Type viewType, object? parameter = null);
-	void RegisterView(string viewKey, Type viewType);
-	bool IsCurrentView(string viewKey);
-	bool CanGoBack { get; }
-	void GoBack();
-}
+public class Navigator {
+	private Panel? _overlayHost;
 
-public class Navigator: INavigatorService {
-
-	private readonly Dictionary<string, Type> registeredViews = new(StringComparer.OrdinalIgnoreCase);
-
-	private Panel? overlayHost;
-
-	public Frame? Frame { get; private set; }
-	public bool CanGoBack => Frame?.CanGoBack ?? false;
-	public void GoBack() => Frame?.GoBack();
+	public Frame? Frame { get; set; }
 
 	public static void SetFrame(Frame f)
 	{
@@ -63,63 +51,23 @@ public class Navigator: INavigatorService {
 
 	public void SetOverlayHost(Panel p)
 	{
-		overlayHost = p;
+		_overlayHost = p;
 	}
-
 	public void ClearOverlay()
 	{
-		overlayHost?.Children.Clear();
+		_overlayHost?.Children.Clear();
 	}
-
 	public void ShowControlDefinitionOverlay(Type targetType)
 	{
-		if (overlayHost != null) {
+		if (_overlayHost != null) {
 			//(_overlayHost.Children[0] as ControlDefinitionOverlay).TargetType = targetType;
 			//(_overlayHost.Children[0] as ControlDefinitionOverlay).Show();
 		}
 	}
 
-	public void NavigateTo(string viewKey, object? parameter = null) {
-		if (string.IsNullOrWhiteSpace(viewKey))
-			throw new ArgumentNullException(nameof(viewKey));
-
-		if (registeredViews.TryGetValue(viewKey, out var viewType)) {
-			Navigator.NavigateToType(viewType, parameter);
-		} else {
-			throw new ArgumentException($"No view registered with the key: {viewKey}", nameof(viewKey));
-		}
-	}
-
-	public void NavigateToType(Type viewType, object? parameter = null) {
-		Navigator.NavigateToType(viewType, parameter);
-	}
-
-	public void RegisterView(string viewKey, Type viewType) {
-		if (string.IsNullOrWhiteSpace(viewKey))
-			throw new ArgumentNullException(nameof(viewKey));
-		ArgumentNullException.ThrowIfNull(viewType);
-		if (!typeof(Control).IsAssignableFrom(viewType))
-			throw new ArgumentException($"{viewType.FullName} must be assignable to Avalonia.Controls.Control", nameof(viewType));
-
-		registeredViews[viewKey] = viewType;
-	}
-
-	public bool IsCurrentView(string viewKey) {
-		if (string.IsNullOrWhiteSpace(viewKey)) {
-			return false;
-		}
-
-		var currentViewType = Frame?.Content?.GetType();
-
-		return registeredViews.TryGetValue(viewKey, out var expectedViewType)
-				&& currentViewType is not null
-				&& currentViewType == expectedViewType;
-	}
-
 	private Navigator()
 	{
 	}
-
 	public static Navigator Instance { get; } = new Navigator();
 }
 
