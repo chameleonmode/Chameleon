@@ -3,11 +3,11 @@ using Chameleon.client.Features.Tenants.Members;
 using Chameleon.client.UI.Fluent.Pages;
 using FluentAvalonia.UI.Controls;
 
-namespace Chameleon.client.Pages.Views;
+namespace Chameleon.client.Features.Tenants;
 
-[lib.Common.Attributes.ViewModel(typeof(Features.Tenants.ViewModel))]
-public partial class TenantsView : TabStripNavigationPage {
-	public TenantsView() {
+[lib.Common.Attributes.ViewModel(typeof(ViewModel))]
+public partial class View : TabStripNavigationPage {
+	public View() {
 		InitializeComponent();
 	}
 

@@ -19,9 +19,8 @@ using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using static Chameleon.lib.Common.Constants.Enums;
-namespace Chameleon.client.Features.Automation.Actors;
 // multiple storage state / results
-// more ai stuffs
+namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class Tag : ObservableObject
 {

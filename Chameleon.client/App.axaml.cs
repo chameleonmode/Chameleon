@@ -16,15 +16,10 @@ using Chameleon.lib.Interfaces.Services;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Chameleon.client.Pages;
-using Chameleon.client.Main;
 using Chameleon.lib.Const;
-using Chameleon.lib.WebBrowser.Services;
-using Microsoft.Playwright;
-using Chameleon.lib.Helpers;
-using Chameleon.lib.Auth;
 using Chameleon.lib.Util;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
+using Chameleon.client.Features;
 
 namespace Chameleon.client;
 
@@ -65,8 +60,6 @@ public partial class App : Application {
 			.AddSingleton<IMboxService, MboxService>()
 			.AddSingleton<IShowWindowService, ShowWindowService>()
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
-			// Main
-			.AddSingleton<MainView>()
 			//FunctionalSettings
 			.AddSingleton<FunctionalSettingsView>()
 			.AddSingleton<UserProxySettingsView>()
@@ -78,9 +71,6 @@ public partial class App : Application {
 			.AddSingleton<UserDefaultSettingsViewModel>()
 			.AddSingleton<PhoneVerificationViewModel>()
 			.AddSingleton<ProxyCreditViewModel>()
-			//Settings
-			.AddSingleton<SettingsView>()
-			.AddSingleton<SettingsViewModel>()
 			.WithAllPagesAndFeatures();
 		});
 
@@ -88,7 +78,7 @@ public partial class App : Application {
 		IoC.Instance.Init(action: async (inited) => {
 			if (inited) {
 				await AppStartup.Instance.RunAsync();
-				IoC.GetService<SettingsViewModel>()?.InitializSettings();
+				IoC.GetService<Features.Settings.ViewModel>()?.InitializSettings();
 
 				_ = await lib.WebBrowser.Project.Init();
 				_ = await lib.Playwright.Project.Init();
@@ -106,11 +96,11 @@ public partial class App : Application {
 
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 			desktop.MainWindow = new MainWindow {
-				DataContext = MainViewModel.Instance
+				DataContext = ViewModel.Instance
 			};
 		} else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform) {
-			singleViewPlatform.MainView = new MainView {
-				DataContext = MainViewModel.Instance
+			singleViewPlatform.MainView = new View {
+				DataContext = ViewModel.Instance
 			};
 		}
 

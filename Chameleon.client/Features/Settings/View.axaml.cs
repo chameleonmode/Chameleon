@@ -1,15 +1,13 @@
 using Avalonia.Interactivity;
-
-using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.Av.Fluent.Common.Pages;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
 
-namespace Chameleon.app.Avalonia.Views;
+namespace Chameleon.client.Features.Settings;
 
-[Chameleon.lib.Common.Attributes.ViewModel(typeof(SettingsViewModel))]
-public partial class SettingsView : ChameleonNavigationPage {
-	public SettingsView()
+[lib.Common.Attributes.ViewModel(typeof(ViewModel))]
+public partial class View : ChameleonNavigationPage {
+	public View()
 	{
 		InitializeComponent();
 		LaunchSupportLinkItem.Click += LaunchSupportLinkItemClick;
