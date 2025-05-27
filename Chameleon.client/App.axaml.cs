@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Chameleon.lib.Const;
 using Chameleon.lib.Util;
+using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
 using Chameleon.client.Features;
 
 namespace Chameleon.client;
@@ -83,6 +84,8 @@ public partial class App : Application {
 				_ = await lib.Playwright.Project.Init();
 			}
 		});
+
+		Navigator.Instance.RegisterView(nameof(IdentityView), typeof(IdentityView));
 	}
 
 	public override void OnFrameworkInitializationCompleted()
