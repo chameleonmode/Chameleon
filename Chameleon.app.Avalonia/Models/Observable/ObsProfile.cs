@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using Chameleon.app.Avalonia.Controls;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.Identity;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
@@ -12,13 +14,9 @@ using Chameleon.lib.WebBrowser.Services;
 using Chameleon.lib.Util;
 using static Chameleon.lib.Common.Constants.Enums;
 using Chameleon.lib.WebBrowser;
-using DynamicData.Binding;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
-	
-	private INavigatorService NavigationService => Navigator.Instance;
-
 	[ObservableProperty]
 	private string isChromeRunning = "False";
 	[ObservableProperty]
@@ -57,15 +55,12 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 
 	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins {get;}
 
-	public event Action<ObsProfile>? OnSelectedChanged;
-
 	public ObsProfile(
 			UserProfileDto userProfile,
 			bool isShowCheckboxColumn = true,
 			bool isShowGlyph = true,
 			bool hasActionOptions = true,
-			Action<ObsProfile>? onSelectedChanged = default,
-			Action<ObsProfile>? onDeleted = default
+			Action<ObsProfile>? onSelectedChanged = default
 	) : base(
 			userProfile,
 			userProfile.title,
@@ -97,10 +92,10 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 				fontIconInfo: "DeleteLines"
 			)) {
 				_ = await UserProfilesRepo.Instance.Delete(userProfile.id);
-				if (Navigator.Instance.Frame?.CanGoBack == true && NavigationService.IsCurrentView("IdentityView")) {
+				if (Navigator.Instance.Frame?.CanGoBack == true && Navigator.Instance.Frame.Content?.GetType() == typeof(IdentityView)) {
 					Navigator.Instance.Frame?.GoBack();
 				}
-				onDeleted?.Invoke(this);
+				MyProfilesViewModel.Instance.SetViewModelsFilter();
 			}
 		};
 
@@ -127,13 +122,10 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			}
 		});
 		browsers.ForEach(b => _ = SetRunning(b, true));
-
-		_ = this.WhenValueChanged(x=> x.IsSelected)
-			.Subscribe(x => OnSelectedChanged?.Invoke(this));
 	}
 
 	public void Open() {
-		NavigationService.NavigateTo("IdentityView", Dto);
+		Navigator.NavigateToType(typeof(IdentityView), Dto);
 	}
 
 	public void OpenTopmostController() {

@@ -1,0 +1,41 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:folder="using:Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects"
+			 x:DataType="folder:ProjectsViewModel"
+			 x:CompileBindings="True"
+             x:Class="Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView">
+	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
+		<StackPanel>
+			<afv:PageHeaderControl TextType="Profiles"
+								   Classes="smallest">
+				<afv:PageHeaderControl.ContentObject>
+					<StackPanel Orientation="Horizontal">
+						<Button Margin="6 -18 8 0"
+								Classes="accent"
+								Command="{Binding CreateProfileCommand}"
+								IsVisible="{Binding IsCreateProfileBtnVisible}">
+							<StackPanel Orientation="Horizontal" Spacing="8">
+								<ui:SymbolIcon Symbol="Add"  />
+								<TextBlock Text="New Profile"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+						</Button>
+					</StackPanel>
+				</afv:PageHeaderControl.ContentObject>
+			</afv:PageHeaderControl>
+
+			<Grid ColumnDefinitions="3*,*">
+				<ContentControl Name="ProfilesPanel"
+					   DataContext= "{Binding Profiles}" />
+				<ContentControl Name="FoldersPanel"
+					   Grid.Column="1"
+					   DataContext= "{Binding Folders}" />
+			</Grid>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

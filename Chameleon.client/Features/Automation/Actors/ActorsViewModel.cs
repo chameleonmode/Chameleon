@@ -4,9 +4,9 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using RedditActor = Chameleon.AIR.Actors.Models.Reddit.Actor;
 using Chameleon.lib.Const;
 using Chameleon.AIR.Actors.Models;
+using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Util;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
 
 namespace Chameleon.client.Features.Automation.Actors;
 
