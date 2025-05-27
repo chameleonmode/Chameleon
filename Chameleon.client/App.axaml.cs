@@ -7,7 +7,6 @@ using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 
 using Chameleon.app.Avalonia;
-using Chameleon.app.Avalonia.Services;
 using Chameleon.app.Avalonia.ViewModels;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.lib;

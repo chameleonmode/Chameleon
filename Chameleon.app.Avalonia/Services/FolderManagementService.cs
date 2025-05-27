@@ -28,8 +28,7 @@ public class FolderManagementService : IFolderManagementService {
 	public ReadOnlyObservableCollection<ObsFolder> AllFolders => allFolders;
 	public SourceCache<UPFolderDto, int> FolderDtoCache => folderRepo.SourceCache;
 
-	private UPFolderDto? currentFolderDto;
-	public UPFolderDto? CurrentFolderDto => currentFolderDto;
+	public UPFolderDto? CurrentFolderDto { get; private set; }
 	public event EventHandler<FolderChangedEventArgs>? CurrentFolderChanged;
 
 	public FolderManagementService(UserProfilesFolderRepo folderRepo) {
@@ -43,15 +42,15 @@ public class FolderManagementService : IFolderManagementService {
 
 	public async Task SetCurrentFolderAsync(UPFolderDto? folderDto) {
 
-		if ((currentFolderDto?.id == folderDto?.id
-			&& currentFolderDto != null
+		if ((CurrentFolderDto?.id == folderDto?.id
+			&& CurrentFolderDto != null
 			&& folderDto != null)
-			|| (currentFolderDto == null && folderDto == null)) {
+			|| (CurrentFolderDto == null && folderDto == null)) {
 			return;
 		}
-		currentFolderDto = folderDto;
+		CurrentFolderDto = folderDto;
 
-		OnCurrentFolderChanged(new FolderChangedEventArgs(currentFolderDto));
+		OnCurrentFolderChanged(new FolderChangedEventArgs(CurrentFolderDto));
 
 		await Task.CompletedTask;//Keep async incase we need to load profiles when folder opens
 	}
