@@ -2,14 +2,12 @@
 using System.Collections.ObjectModel;
 
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.lib.Api.Repos;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Profiles.MyProfiles;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Util;
 using Chameleon.lib.Common.Models.Dto;
+using Chameleon.app.Avalonia.Services;
 
 namespace Chameleon.app.Avalonia.ViewModels.Controllers;
 
@@ -21,30 +19,30 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private bool showUserInfo;
 
+	public IProfileManagementService ProfileService => ProfileManagementService.Instance;
+	public IFolderManagementService FolderService => FolderManagementService.Instance;
+
 	//
-	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
+	public ReadOnlyObservableCollection<ObsProfile> Profiles => ProfileService.AllProfiles;
 	public ObservableCollection<ObsProfile> SelectedProfiles { get; } = [];
 
 	//
-	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
+	public ReadOnlyObservableCollection<ObsFolder> Folders => FolderService.AllFolders;
 	public ObservableCollection<ObsFolder> SelectedFolders { get; } = [];
 
 	public InviteUserOrAddProfilesViewModel(bool userInfo = false) : base("Select Profiles & Folders") {
 		ShowUserInfo = userInfo;
 
-		MyProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(UserProfilesRepo.Instance.ObservableCache.Count);
-		MyProfilesViewModel.Instance.Profiles.ForEach(p => {
+		Profiles.ForEach(p => {
 			p.IsActionOptionsVisible = false;
 			if (p.IsSelected) SelectedProfiles.Add(p);
+			p.OnSelectedChanged += OnProfileSelectedChanged;
 		});
-		MyProfilesViewModel.Instance.OnSelectedChanged += OnProfileSelectedChanged;
-		Profiles = MyProfilesViewModel.Instance.Profiles;
 
-		FoldersViewModel.Instance.Folders.ForEach(f => {
+		Folders.ForEach(f => {
 			if (f.IsSelected) SelectedFolders.Add(f);
+			f.OnSelectedChanged += OnFolderSelectedChanged;
 		});
-		FoldersViewModel.Instance.OnSelectedChanged += OnFolderSelectedChanged;
-		Folders = FoldersViewModel.Instance.Folders;
 	}
 
 	void OnProfileSelectedChanged(ObsProfile p) {
@@ -65,7 +63,7 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 			_ = SelectedFolders.Remove(f);
 		}
 
-		var profiles = MyProfilesViewModel.Instance.Profiles.Where(p => p.Dto!.folderId == f.Dto!.id);
+		var profiles = Profiles.Where(p => p.Dto!.folderId == f.Dto!.id);
 		if (profiles != null) {
 			foreach (var item in profiles) {
 				item.IsSelected = f.IsSelected;

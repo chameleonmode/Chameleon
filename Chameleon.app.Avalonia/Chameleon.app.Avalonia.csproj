@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\chameleon-lib\Chameleon.AIR\Chameleon.AIR.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.AIR\Chameleon.lib.AIR.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.assets\chameleon.assets.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib\Chameleon.lib.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Api\Chameleon.lib.Api.csproj" />
@@ -52,22 +52,7 @@
     <Compile Update="Controls\MboxTitleUserControl.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="Features\ProfilesAndFolders\Search\ByTags\Controls\TagFolderSearchControl.axaml.cs">
-      <DependentUpon>TagFolderSearchControl.axaml</DependentUpon>
-    </Compile>
     <Compile Update="Views\PaginatorView.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="Views\PhoneVerificationView.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="Views\ProxyCreditView.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UserDefaultSettingsView.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UserProxySettingsView.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
   </ItemGroup>

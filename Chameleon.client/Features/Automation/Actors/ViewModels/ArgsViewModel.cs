@@ -23,12 +23,18 @@ public partial class ArgsViewModel : ObservableObject {
 		SelectedFilter = GetValue(sourceArgs, "Filter", Filter.All);
 	}
 
-	public DictionaryArgs ToDictionary() {
+	public DictionaryArgs ToDictionary(IEnumerable<Selection> selections) {
 		return new DictionaryArgs {
 			["search"] = Search.Contains(',') ? Search.Split(",").Select(x => x.Trim()) : [Search.Trim()],
 			["scope"] = SelectedScope.ToString(),
 			["sort"] = SelectedSort.ToString(),
-			["filter"] = SelectedFilter.ToString()
+			["filter"] = SelectedFilter.ToString(),
+			["artifacters"] = new List<Artifact>() {
+				new() {
+					["type"] = "selections",
+					["data"] = selections.Select(x => x.Script.Title.ToLower())
+				}
+			}
 		};
 	}
 

@@ -8,26 +8,22 @@ namespace Chameleon.app.Avalonia.Helpers;
 public static class TooltipManager {
 	private static readonly Dictionary<Control, object> TooltipBackup = [];
 
-	public static void Attach(Application app, Control control)
-	{
+	public static void Attach(Application app, Control control) {
 		if (app.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow != null) {
 			desktop.MainWindow.Deactivated += OnAppDeactivated;
 			desktop.MainWindow.Activated += OnAppActivated;
 		}
 
-		void OnAppDeactivated(object? sender, EventArgs e)
-		{
+		void OnAppDeactivated(object? sender, EventArgs e) {
 			BackupAndRemoveTooltips(control);
 		}
 
-		void OnAppActivated(object? sender, EventArgs e)
-		{
+		void OnAppActivated(object? sender, EventArgs e) {
 			RestoreTooltips();
 		}
 	}
 
-	private static void BackupAndRemoveTooltips(Control rootControl)
-	{
+	private static void BackupAndRemoveTooltips(Control rootControl) {
 		foreach (var control in FindControlsWithTooltips(rootControl)) {
 			var tooltip = ToolTip.GetTip(control);
 			if (tooltip != null) {
@@ -37,8 +33,7 @@ public static class TooltipManager {
 		}
 	}
 
-	private static void RestoreTooltips()
-	{
+	private static void RestoreTooltips() {
 		var controlsToRestore = TooltipBackup.Keys.ToList();
 		foreach (var control in controlsToRestore) {
 			if (TooltipBackup.TryGetValue(control, out var tooltip)) {
@@ -48,8 +43,7 @@ public static class TooltipManager {
 		}
 	}
 
-	private static List<Control> FindControlsWithTooltips(Control root)
-	{
+	private static List<Control> FindControlsWithTooltips(Control root) {
 		var controlsWithTooltips = new List<Control>();
 		var queue = new Queue<Visual>();
 		queue.Enqueue(root);

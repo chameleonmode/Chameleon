@@ -29,10 +29,10 @@
 								ItemTemplate="{StaticResource ObsSelectedTemplate}"
 								ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}"/>
 						<ListBox
-							ItemsSource="{Binding Folders}"
-							ItemTemplate="{StaticResource UserFolderUserControlDataTemplate}"
 							Theme="{StaticResource ListBoxNoScroller}"
 							ItemContainerTheme="{StaticResource GridViewItem}"
+							ItemsSource="{Binding Folders}"
+							ItemTemplate="{StaticResource UserFolderUserControlDataTemplate}"
 							ItemsPanel="{StaticResource DoubleColumnUniformGridTemplate}"/>
 					</StackPanel>
 				</Expander>

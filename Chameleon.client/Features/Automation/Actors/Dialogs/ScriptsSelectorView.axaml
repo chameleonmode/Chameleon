@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="350"
+             xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
+             xmlns:vm="using:Chameleon.client.Features.Automation.Actors.Dialogs"
+             xmlns:actorVM="using:Chameleon.client.Features.Automation.Actors"
+             x:DataType="vm:ScriptsSelectorViewModel"
+             x:CompileBindings="True"
+             x:Class="Chameleon.client.Features.Automation.Actors.Dialogs.ScriptsSelectorView">
+
+	<dialogs:ChameleonDialogControl>
+		<dialogs:ChameleonDialogControl.Content>
+			<ScrollViewer>
+				<ItemsControl ItemsSource="{Binding AvailableSelections}"
+                              Margin="0,10,0,0">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" Spacing="6"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate x:DataType="actorVM:Selection">
+							<ToggleButton IsChecked="{Binding Selected, Mode=TwoWay}"
+										 Content="{Binding Script.Title}"
+										 ToolTip.Tip="{Binding Script.Description}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ScrollViewer>
+		</dialogs:ChameleonDialogControl.Content>
+	</dialogs:ChameleonDialogControl>
+</UserControl>

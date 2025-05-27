@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="850"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:controls="using:Chameleon.app.Avalonia.Controls"
+			 xmlns:vm="using:Chameleon.client.Features.Automation.AI.ChameleonAIR"
+             x:Class="Chameleon.client.Features.Automation.AI.ChameleonAIR.View"
+			 x:DataType="vm:ViewModel"
+			 x:CompileBindings="True">
+	<Grid RowDefinitions="Auto, *">
+		<afv:ChameleonContentControl Title="Mr. AI-Agent"
+									 TitleDescription="AI Robot Agents Taskforce">
+			
+			<afv:ChameleonContentControl.Content>
+				<TextBlock Text="soon... err... or... later..."
+					  	   Theme="{StaticResource SubtitleTextBlockStyle}"/>
+			</afv:ChameleonContentControl.Content>
+			
+		</afv:ChameleonContentControl>
+	</Grid>
+</UserControl>

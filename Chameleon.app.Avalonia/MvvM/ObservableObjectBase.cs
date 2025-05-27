@@ -8,14 +8,9 @@ using System.ComponentModel;
 namespace Chameleon.lib.CommunityToolkit.MvvM;
 
 public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewModel, IValidatableObject {
-	[ObservableProperty]
-	private string? title;
-
-	[ObservableProperty]
-	private string? tags;
-
-	[ObservableProperty]
-	private bool loaded;
+	[ObservableProperty] string? title;
+	[ObservableProperty] string? tags;
+	[ObservableProperty] bool loaded;
 
 	private long _isBusy;
 	public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
@@ -45,8 +40,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewM
 		Validator = GetValidator();
 	}
 	public virtual Task InitAsync(object? param) => Task.CompletedTask;
-	public virtual Task OnNavigatedToAsync(object? param) => Task.CompletedTask;
-
+	public virtual Task OnNavigatedToAsync(object? param) => LoadedTCS.Task;
 	public Task InvokeInitializeAsyncCommand(object? p = null) => InitializeAsyncCommand.ExecuteAsync(p);
 	public Task InitializeAsync(object? param) => InvokeInitializeAsyncCommand(param);
 

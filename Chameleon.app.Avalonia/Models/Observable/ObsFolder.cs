@@ -1,4 +1,4 @@
-﻿using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Folders;
+﻿using Chameleon.app.Avalonia.Services;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
@@ -11,9 +11,12 @@ using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
+
 public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
+	private IFolderManagementService FolderManagementServices => FolderManagementService.Instance;
+
 	public event Action<ObsFolder>? OnSelectedChanged;
-	public Func<string?,bool>? NameAlreadyExist { get;}
+	public Func<string?, bool>? NameAlreadyExist { get; }
 
 	[ObservableProperty]
 	private bool isFavorite;
@@ -25,13 +28,12 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	private bool isActionOptionsVisible;
 
 	public bool ShowFavoriteIcon => IsContextMenuItemEnabled && Dto?.id != 0;
-	public bool IsSharedFolder => Dto?.creatorUserId != null &&  Dto?.creatorUserId != Auther.AuthSession?.UserId;
+	public bool IsSharedFolder => Dto?.creatorUserId != null && Dto?.creatorUserId != Auther.AuthSession?.UserId;
 	public bool IsContextMenuItemEnabled => Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CreatorUserId == Dto?.creatorUserId;
 	public bool IsContextMenuVisible => Dto!.id != 0;
-	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => (p.folderId == null && Dto!.id == 0) || p.folderId == Dto!.id); 
+	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => (p.folderId == null && Dto!.id == 0) || p.folderId == Dto!.id);
 
-	public ObsFolder(UPFolderDto folder, Func<string?, bool>? nameAlreadyExist) : base(folder)
-	{
+	public ObsFolder(UPFolderDto folder, Func<string?, bool>? nameAlreadyExist) : base(folder) {
 		isFavorite = Dto.isFavorite;
 		profilesCount = Dto.profilesCount;
 		NameAlreadyExist = nameAlreadyExist;
@@ -57,7 +59,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 		bool hasActionOptions,
 		Action<ObsFolder>? onSelectedChanged,
 		Func<string?, bool>? nameAlreadyExist
-	) 
+	)
 	: this(folder, nameAlreadyExist) {
 		IsActionOptionsVisible = hasActionOptions;
 		OnSelectedChanged = onSelectedChanged;
@@ -65,8 +67,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	}
 
 	// Properties Changed Events
-	public override void OnAnyIsSelectedChanged(bool value)
-	{
+	public override void OnAnyIsSelectedChanged(bool value) {
 		if (value == false) {
 			IsRenamed = false;
 		}
@@ -75,35 +76,29 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	}
 
 	// CommandMap Commands
-	private void ViewGroup()
-	{
-		Navigator.NavigateToType(typeof(Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects.ProjectsView), this);
+	private void ViewGroup() {
+		Navigator.Instance.NavigateTo("ProjectsView", this);
 	}
-	private void SetFavoriteFolder()
-	{
+	private void SetFavoriteFolder() {
 		IsFavorite = !IsFavorite;
 
 		Dto!.isFavorite = IsFavorite;
 		_ = UserProfilesFolderRepo.Instance.Put(Dto);
 	}
-	private void StartRename()
-	{
+	private void StartRename() {
 		Title = Dto?.title;
 		IsRenamed = true;
 	}
-	private void ChangeProxies()
-	{
-		Navigator.NavigateToType(typeof(FunctionalSettingsView), this);
+	private void ChangeProxies() {
+		Navigator.Instance.NavigateTo("FunctionalSettingsView", this);
 	}
 
 	// AsyncCommandMap Commands
-	public async Task Open()
-	{
-		await FoldersViewModel.Instance.OnNavigatingTo(Dto);
+	public async Task Open() {
+		await FolderManagementServices.SetCurrentFolderAsync(Dto);
 		IsSelected = true;
 	}
-	private async Task SetFavorite()
-	{
+	private async Task SetFavorite() {
 		IsFavorite = !IsFavorite;
 		Dto!.isFavorite = IsFavorite;
 
@@ -111,14 +106,13 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 
 		OnPropertyChanged(nameof(Dto));
 	}
-	private async Task Delete()
-	{
+	private async Task Delete() {
 		if (await Mbox.Show("Delete Folder",
 				$"Are you sure you want to delete {Dto!.title} folder? This will not affect individual profiles within the folder.",
 				Enums.MBoxButtons.OkCancel,
 				"DeleteLines")) {
 
-			var userProfiles = UserProfilesRepo.Instance.ObservableCache.Items.Where(p=> p.folderId == Dto!.id);
+			var userProfiles = UserProfilesRepo.Instance.ObservableCache.Items.Where(p => p.folderId == Dto!.id);
 			var deletes = new List<Task>();
 			foreach (var item in userProfiles) {
 				item.folderId = null;
@@ -129,11 +123,10 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 			if (!res.success) {
 
 			}
-			await FoldersViewModel.Instance.AllProfiles!.Open();
+			await FolderManagementServices.SetCurrentFolderAsync(null);
 		}
 	}
-	private async Task SaveRename()
-	{
+	private async Task SaveRename() {
 		if (Title.Is()) {
 			return;
 		}

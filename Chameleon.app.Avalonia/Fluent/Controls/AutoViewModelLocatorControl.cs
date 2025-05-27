@@ -37,6 +37,7 @@ public class AutoViewModelLocatorControl : AutoViewModelInitControl {
 
 		var vmt =
 			Type.GetType($"{viewType.Namespace}.ViewModels.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}") ??
+			Type.GetType($"{viewType.Namespace}.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}") ??
 			Type.GetType($"{viewType.Namespace?.Replace(".Views", ".ViewModels")}.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}");
 
 		ArgumentNullException.ThrowIfNull(vmt, nameof(vmt));

@@ -1,0 +1,95 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="1101"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:favourite="using:Chameleon.client.Features.Dashboard.Favorite"
+			 xmlns:tags="using:Chameleon.client.Features.Dashboard.Tags"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:vm="using:Chameleon.client.Features.Dashboard"
+             x:Class="Chameleon.client.Features.Dashboard.View"
+			 x:DataType="vm:ViewModel"
+			 x:CompileBindings="True">
+
+	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
+		<Grid RowDefinitions="Auto,Auto,*">
+			<afv:PageHeaderControl
+				TextType="Dashboard"
+				Classes="smallest">
+				<afv:PageHeaderControl.ContentObject>
+					<StackPanel Orientation="Horizontal"
+								Margin="6 -18 6 6">
+						<Button Background="Transparent"
+								BorderBrush="Transparent"
+								Foreground="{DynamicResource AccentButtonBackground}"
+								Theme="{DynamicResource AccentSymbleIconButton}"
+								Content="Sync"
+								ToolTip.Tip="Refresh"
+								Command="{Binding AsyncCfVCommand}"
+								CommandParameter="SyncChanges" />
+						<Button Background="Transparent"
+								BorderBrush="Transparent"
+								Foreground="{DynamicResource AccentButtonBackground}"
+								IsVisible="{Binding HasCookiesToSync}"
+								ToolTip.Tip="Download"
+								Content="Download"
+								Theme="{DynamicResource AccentSymbleIconButton}">
+							<Button.Flyout>
+								<ui:FAMenuFlyout Placement="Bottom">
+									<ui:MenuFlyoutItem
+										Text="Chrome"
+										CommandParameter="SyncCookiesChrome"
+										Command="{Binding AsyncCfVCommand}"
+									/>
+									<ui:MenuFlyoutItem
+										Text="Brave"
+										CommandParameter="SyncCookiesBrave"
+										Command="{Binding AsyncCfVCommand}"
+									/>
+									<ui:MenuFlyoutItem
+										Text="Firefox"
+										CommandParameter="SyncCookiesFirefox"
+										Command="{Binding AsyncCfVCommand}"
+									/>
+
+									<ui:MenuFlyoutSeparator />
+
+									<ui:MenuFlyoutItem
+										Text="Clear"
+										CommandParameter="SyncCookiesClear"
+										Command="{Binding AsyncCfVCommand}"
+									/>
+								</ui:FAMenuFlyout>
+							</Button.Flyout>
+						</Button>
+					</StackPanel>
+				</afv:PageHeaderControl.ContentObject>
+			</afv:PageHeaderControl>
+
+			<ScrollViewer Margin="0 0 0 6" 
+				Grid.Row="1"
+				ScrollViewer.HorizontalScrollBarVisibility="Auto">
+				<ItemsControl 
+					Padding="0 0 0 26"
+					ItemsPanel="{StaticResource HorizontalStackPanel}" 
+					ItemsSource="{Binding Tagz}">
+						<ItemsControl.ItemTemplate>
+						<DataTemplate x:DataType="vm:TagViewModel">
+							<ToggleButton IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding Name}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ScrollViewer>
+
+			<Panel Grid.Row="2"
+				IsVisible="{Binding IsFavouriteSelected}">
+				<favourite:FavouriteView />
+			</Panel>
+			<Panel Grid.Row="2"
+				IsVisible="{Binding !IsFavouriteSelected}">
+				<tags:TagsView />
+			</Panel>
+		</Grid>
+	</ScrollViewer>
+</UserControl>

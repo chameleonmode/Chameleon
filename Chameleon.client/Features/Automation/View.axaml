@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:Chameleon.client.Features.Automation"
+             x:Class="Chameleon.client.Features.Automation.View"
+			 x:DataType="vm:ViewModel"
+			 x:CompileBindings="True">
+	<Panel>
+		<TabStrip Name="ActiveTabStrip">
+			<TabStripItem
+				Content="Actors"
+				Tag="{StaticResource SpiderIconWithCircles}"/>
+			<TabStripItem
+				Content="Automation"
+				Tag="{StaticResource Playwright}"/>
+			<TabStripItem
+				Content="Assistant Chameleonair"
+				Tag="{StaticResource AutomationIcon2}"/>
+		</TabStrip>
+
+		<ui:Frame Name="NavigationFrame" />
+	</Panel>
+</UserControl>

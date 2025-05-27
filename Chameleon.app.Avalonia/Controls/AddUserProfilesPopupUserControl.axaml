@@ -22,10 +22,10 @@
 				<Expander Header="Profiles"
 						  Grid.Row="1">
 					<ListBox
-						ItemsSource="{Binding Profiles}"
-						ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}"
 						Theme="{StaticResource ListBoxNoScroller}"
 						ItemContainerTheme="{StaticResource GridViewItem}"
+						ItemsSource="{Binding Profiles}"
+						ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}"
 						ItemsPanel="{StaticResource DoubleColumnUniformGridTemplate}"/>
 				</Expander>
 			</Grid>
