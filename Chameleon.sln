@@ -3,41 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution", ".solution", "{FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		.gitattributes = .gitattributes
-		.gitignore = .gitignore
-		..\..\Users\eli\AppData\Roaming\Chameleon\appsettings.json = ..\..\Users\eli\AppData\Roaming\Chameleon\appsettings.json
-		Directory.Build.props = Directory.Build.props
-		Directory.Packages.props = Directory.Packages.props
-		LICENSE = LICENSE
-		README.md = README.md
-	EndProjectSection
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia", "Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj", "{8C417AF0-D948-4637-B38B-DDC6E058C83D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{0B86C57C-40CF-4737-8F82-864548769102}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{AC2F00CB-88A2-44C8-ABDF-DD66EA1E0911}"
-	ProjectSection(SolutionItems) = preProject
-		docs\Contributing.md = docs\Contributing.md
-		docs\Developers.md = docs\Developers.md
-		docs\QA.md = docs\QA.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A0E66BE5-8196-4E24-8CB9-731AFBED22BD}"
-	ProjectSection(SolutionItems) = preProject
-		scripts\macbuild.sh = scripts\macbuild.sh
-		scripts\macnoto.sh = scripts\macnoto.sh
-		scripts\macpac.sh = scripts\macpac.sh
-		scripts\macpload.sh = scripts\macpload.sh
-		scripts\macsign.sh = scripts\macsign.sh
-		scripts\macstatus.sh = scripts\macstatus.sh
-		scripts\winbuild.sh = scripts\winbuild.sh
-		scripts\winpload.sh = scripts\winpload.sh
-		scripts\macship.sh = scripts\macship.sh
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.client", "Chameleon.client\Chameleon.client.csproj", "{F84616F6-D90C-40BC-9BD8-279010530232}"
 EndProject
@@ -56,6 +26,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.lib.Playwright", "..\Chameleon-lib\Chameleon.lib.Playwright\Chameleon.lib.Playwright.csproj", "{A12A9384-AD37-4E89-89B7-C4CA564907C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.lib.WebBrowser", "..\Chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj", "{7724F61D-F1A7-4D3B-8F98-698784BB38F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{5E9DE6D7-8131-5EF7-7320-59933A962646}"
+	ProjectSection(SolutionItems) = preProject
+		..\Chameleon-lib\Directory.Build.props = ..\Chameleon-lib\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon.lib.AIR", "..\Chameleon-lib\Chameleon.lib.AIR\Chameleon.lib.AIR.csproj", "{29B49DC6-A92E-4F80-BD10-B66FDD0C369E}"
 EndProject
@@ -209,8 +184,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8C417AF0-D948-4637-B38B-DDC6E058C83D} = {0B86C57C-40CF-4737-8F82-864548769102}
-		{AC2F00CB-88A2-44C8-ABDF-DD66EA1E0911} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
-		{A0E66BE5-8196-4E24-8CB9-731AFBED22BD} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{F84616F6-D90C-40BC-9BD8-279010530232} = {0B86C57C-40CF-4737-8F82-864548769102}
 		{A70597F3-5FEC-4DA5-A68E-3016FF1C37EE} = {0B86C57C-40CF-4737-8F82-864548769102}
 		{11BDD01F-9CF8-4564-ADE4-CE987CC20643} = {3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}
@@ -219,6 +192,7 @@ Global
 		{D0B99CFF-337A-4A22-876C-BEB0E24742D0} = {3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}
 		{A12A9384-AD37-4E89-89B7-C4CA564907C7} = {3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}
 		{7724F61D-F1A7-4D3B-8F98-698784BB38F5} = {3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}
+		{5E9DE6D7-8131-5EF7-7320-59933A962646} = {3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}
 		{29B49DC6-A92E-4F80-BD10-B66FDD0C369E} = {3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}
 		{A3A74176-9F67-4914-9374-15A6B99E6DEF} = {3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}
 	EndGlobalSection

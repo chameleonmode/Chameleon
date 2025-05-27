@@ -1,10 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
-using Chameleon.app.Avalonia.Features.ProfilesAndFolders;
 using Chameleon.client.Features.Automation.AI.ChameleonAIR;
 using Chameleon.client.Features.Automation.Playwright;
 using Chameleon.client.Features.Tenants.Members;
 using Chameleon.client.Pages.Views;
 using Chameleon.client.Features.Automation.Actors;
+using Chameleon.client.Features.ProfilesAndFolders;
 
 namespace Chameleon.client.Pages;
 public static class Modules {
