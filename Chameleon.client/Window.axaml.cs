@@ -1,11 +1,11 @@
 ﻿using Avalonia;
 
 using Chameleon.app.Avalonia;
-using Chameleon.client.Main.UserControls;
+using Chameleon.client.UI.UserControls;
 
 using FluentAvalonia.UI.Windowing;
 
-namespace Chameleon.client.Main;
+namespace Chameleon.client;
 
 public partial class MainWindow : AppWindow {
 	public MainWindow() {
@@ -16,7 +16,7 @@ public partial class MainWindow : AppWindow {
 		this.Topmost = true;
 #endif
 
-		SplashScreen = new AppStartup.MainAppSplashScreen(new SplashScreenUC());
+		SplashScreen = new AppStartup.MainAppSplashScreen(new SplashScreen());
 		TitleBar.ExtendsContentIntoTitleBar = true;
 		TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 	}

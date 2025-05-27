@@ -4,12 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="1101"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:data="using:FluentAvalonia.UI.Data"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:favourite="using:Chameleon.client.Features.Dashboard.Favorite"
 			 xmlns:tags="using:Chameleon.client.Features.Dashboard.Tags"
+			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:vm="using:Chameleon.client.Features.Dashboard"
-             x:Class="Chameleon.client.Pages.Views.DashboardView"
+             x:Class="Chameleon.client.Features.Dashboard.View"
 			 x:DataType="vm:ViewModel"
 			 x:CompileBindings="True">
 

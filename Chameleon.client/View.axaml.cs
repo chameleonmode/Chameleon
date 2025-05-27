@@ -10,15 +10,11 @@ using FluentAvalonia.UI.Windowing;
 using Chameleon.app.Avalonia;
 using Chameleon.app.Avalonia.Helpers;
 using Chameleon.app.Avalonia.MvvM;
-using Chameleon.lib.Helpers;
 using Chameleon.app.Avalonia.Views;
 using Chameleon.app.Avalonia.Features.ProfilesAndFolders.Projects;
-using Chameleon.client.Pages.Views;
-using Chameleon.lib.Auth;
+namespace Chameleon.client;
 
-namespace Chameleon.client.Main;
-
-public partial class MainView : UserControl {
+public partial class View : UserControl {
 	//TODO: move to load from json maybe?
 	private readonly Dictionary<string, PageModelBase> _pages = new() {
 		{
@@ -27,7 +23,7 @@ public partial class MainView : UserControl {
 			{
 				NavHeader = "Dashboard",
 				IconKey = "HomeIcon",
-				Tag = typeof(DashboardView)
+				Tag = typeof(Features.Dashboard.View)
 			}
 		},
 		{
@@ -45,7 +41,7 @@ public partial class MainView : UserControl {
 			{
 				NavHeader = "Automation",
 				IconKey = "AutomationIcon",
-				Tag = typeof(AutomationView)
+				Tag = typeof(Features.Automation.View)
 			}
 		},
 		{
@@ -54,7 +50,7 @@ public partial class MainView : UserControl {
 			{
 				NavHeader = "Tenant",
 				IconKey = "TenantsIcon",
-				Tag = typeof(TenantsView)
+				Tag = typeof(Features.Tenants.View)
 			}
 		},
 		{
@@ -74,18 +70,16 @@ public partial class MainView : UserControl {
 				NavHeader = "Settings",
 				IconKey = "SettingsIcon",
 				ShowsInFooter = true,
-				Tag = typeof(SettingsView)
+				Tag = typeof(Features.Settings.View)
 			}
 		}
 	};
 
-	public MainView()
-	{
+	public View() {
 		InitializeComponent();
 	}
 
-	protected override void OnLoaded(RoutedEventArgs e)
-	{
+	protected override void OnLoaded(RoutedEventArgs e) {
 		base.OnLoaded(e);
 
 		if (VisualRoot is AppWindow aw) {
@@ -93,8 +87,7 @@ public partial class MainView : UserControl {
 		}
 	}
 
-	protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-	{
+	protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e) {
 		base.OnAttachedToVisualTree(e);
 
 		//
@@ -128,7 +121,7 @@ public partial class MainView : UserControl {
 		NavView.BackRequested += (s, e) => FrameView.GoBack();
 
 		//
-		FrameView.NavigationPageFactory = MainViewModel.Instance.NavigationFactory;
+		FrameView.NavigationPageFactory = Features.ViewModel.Instance.NavigationFactory;
 		FrameView.Navigated += (s, e) => {
 			var page = _pages
 				.SingleOrDefault(p => p.Value.Tag?.Name == e.Content.GetType().Name).Value;
@@ -153,8 +146,7 @@ public partial class MainView : UserControl {
 		_ = FrameView.NavigateToType(_pages["Dashboard"].Tag, null, null);
 	}
 
-	private void SetNVIIcon(NavigationViewItem? item, bool selected)
-	{
+	private void SetNVIIcon(NavigationViewItem? item, bool selected) {
 		// Technically, yes you could set up binding and converters and whatnot to let the icon change
 		// between filled and unfilled based on selection, but this is so much simpler 
 		if (item == null)
@@ -167,8 +159,7 @@ public partial class MainView : UserControl {
 			//TODO: :P
 		}
 	}
-	private async void AnimateContentForBackButton(bool show)
-	{
+	private async void AnimateContentForBackButton(bool show) {
 		if (!WindowLogoIcon.IsVisible)
 			return;
 

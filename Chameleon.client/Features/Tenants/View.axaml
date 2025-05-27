@@ -4,22 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:vm="using:Chameleon.client.Features.Automation"
-             xmlns:contrls="using:Chameleon.Av.Fluent.Common.Controls"
+             xmlns:vm="using:Chameleon.client.Features.Tenants"
+             x:Class="Chameleon.client.Features.Tenants.View"
 			 x:DataType="vm:ViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.client.Pages.Views.AutomationView">
+			 x:CompileBindings="True">
 	<Panel>
 		<TabStrip Name="ActiveTabStrip">
 			<TabStripItem
-				Content="Actors"
-				Tag="{StaticResource SpiderIconWithCircles}"/>
-			<TabStripItem
-				Content="Automation"
-				Tag="{StaticResource Playwright}"/>
-			<TabStripItem
-				Content="Assistant Chameleonair"
-				Tag="{StaticResource AutomationIcon2}"/>
+				Content="Members"
+				Tag="{StaticResource User}"/>
 		</TabStrip>
 
 		<ui:Frame Name="NavigationFrame" />

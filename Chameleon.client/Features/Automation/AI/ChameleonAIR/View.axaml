@@ -7,8 +7,8 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:controls="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:vm="using:Chameleon.client.Features.Automation.AI.ChameleonAIR"
-             x:Class="Chameleon.client.Features.Automation.AI.ChameleonAIR.ChameleonAIRView"
-			 x:DataType="vm:ChameleonAIRViewModel"
+             x:Class="Chameleon.client.Features.Automation.AI.ChameleonAIR.View"
+			 x:DataType="vm:ViewModel"
 			 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto, *">
 		<afv:ChameleonContentControl Title="Mr. AI-Agent"

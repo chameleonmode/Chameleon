@@ -13,8 +13,9 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.Styling;
 using Chameleon.lib.Auth;
 
-namespace Chameleon.app.Avalonia.ViewModels;
-public partial class SettingsViewModel : ViewModelObjectBase {
+namespace Chameleon.client.Features.Settings;
+
+public partial class ViewModel : ViewModelObjectBase {
 	private const string _system = "System";
 	private const string _dark = "Dark";
 	private const string _light = "Light";
@@ -75,37 +76,19 @@ public partial class SettingsViewModel : ViewModelObjectBase {
 		Color.FromRgb(126,115,95)
 	];
 
-	[ObservableProperty]
-	private bool hasProxySettingsView;
-	[ObservableProperty]
-	private bool hasProxyCredit;
-	[ObservableProperty]
-	private bool hasPhoneVerification;
-	[ObservableProperty]
-	private bool hasAssistantUsers;
-	[ObservableProperty]
-	public bool hasImport;
-	[ObservableProperty]
-	public bool hasExport;
+	[ObservableProperty] bool hasProxySettingsView;
+	[ObservableProperty] bool hasProxyCredit;
+	[ObservableProperty] bool hasPhoneVerification;
+	[ObservableProperty] bool hasAssistantUsers;
+	[ObservableProperty] bool hasImport;
+	[ObservableProperty] bool hasExport;
+	[ObservableProperty] string currentAppTheme = _system;
+	[ObservableProperty] bool useCustomAccentColor = false;
+	[ObservableProperty] Color customAccentColor = Colors.SlateBlue;
+	[ObservableProperty] Color? listBoxColor;
+	[ObservableProperty] string liscencedTo = "xxx";
 
-	[ObservableProperty]
-	private string currentAppTheme = _system;
-	[ObservableProperty]
-	private bool useCustomAccentColor = false;
-	[ObservableProperty]
-	private Color customAccentColor = Colors.SlateBlue;
-	[ObservableProperty]
-	private Color? listBoxColor;
-
-	[ObservableProperty]
-	private string liscencedTo = "xxx";
-
-	public SettingsViewModel()
-	{
-	}
-
-	public void InitializSettings()
-	{
+	public void InitializSettings() {
 		if (IoC.GetJsonValue<AppSettings>(nameof(AppSettings)) is AppSettings appSettings) {
 			if (appSettings.UseCustomAccentColor && appSettings.CustomAccentColor is string coler) {
 				UpdateAppAccentColor(Color.Parse(coler));
@@ -119,14 +102,12 @@ public partial class SettingsViewModel : ViewModelObjectBase {
 	}
 
 	[RelayCommand]
-	public async Task Logout()
-	{
+	public async Task Logout() {
 		await Session.Instance.Logout();
 		Environment.Exit(0);
 	}
 
-	partial void OnUseCustomAccentColorChanged(bool oldValue, bool newValue)
-	{
+	partial void OnUseCustomAccentColorChanged(bool oldValue, bool newValue) {
 		if (newValue) {
 			//SetCustomAccentColorFromSystem();
 			if (_faTheme?.TryGetResource("SystemAccentColor", null, out var curColor) == true) {
@@ -141,17 +122,14 @@ public partial class SettingsViewModel : ViewModelObjectBase {
 		}
 	}
 
-	partial void OnCustomAccentColorChanged(Color oldValue, Color newValue)
-	{
+	partial void OnCustomAccentColorChanged(Color oldValue, Color newValue) {
 		UpdateAppAccentColor(newValue);
 	}
-	partial void OnListBoxColorChanged(Color? oldValue, Color? newValue)
-	{
+	partial void OnListBoxColorChanged(Color? oldValue, Color? newValue) {
 		UpdateAppAccentColor(newValue);
 	}
 
-	partial void OnCurrentAppThemeChanged(string? oldValue, string newValue)
-	{
+	partial void OnCurrentAppThemeChanged(string? oldValue, string newValue) {
 		//ApplyThemeVariant(newValue);
 		static ThemeVariant? GetThemeVariant(string value) => value switch {
 			_light => ThemeVariant.Light,
@@ -170,8 +148,7 @@ public partial class SettingsViewModel : ViewModelObjectBase {
 		SaveIfNeeded();
 	}
 
-	private void UpdateAppAccentColor(Color? color)
-	{
+	private void UpdateAppAccentColor(Color? color) {
 		if (_faTheme != null && _faTheme.CustomAccentColor != color) {
 			_faTheme.CustomAccentColor = color;
 		}
@@ -179,8 +156,7 @@ public partial class SettingsViewModel : ViewModelObjectBase {
 		SaveIfNeeded();
 	}
 
-	private void SaveIfNeeded()
-	{
+	private void SaveIfNeeded() {
 		if (Loaded) {
 			IoC.SetJsonValue(new AppSettings(CurrentAppTheme, _faTheme?.CustomAccentColor?.ToString(), UseCustomAccentColor), nameof(AppSettings));
 		}

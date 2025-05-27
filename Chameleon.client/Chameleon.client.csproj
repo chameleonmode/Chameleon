@@ -28,11 +28,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Features/Automation/AI/ChameleonAIR/View.axaml.cs">
+      <DependentUpon>View.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Features/Automation/Playwright/PlaywrightView.axaml.cs">
       <DependentUpon>PlaywrightView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Features/Settings/View.axaml.cs">
+      <DependentUpon>View.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Features/Tenants/Members/MembersView.axaml.cs">
       <DependentUpon>MembersView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="View.axaml.cs">
+      <DependentUpon>View.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>
