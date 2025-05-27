@@ -4,7 +4,7 @@ using Avalonia;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.lib.Interfaces.Services;
 
-namespace Chameleon.app.Avalonia.Services;
+namespace Chameleon.client.Services;
 public class ToasterService(IDispatchService dispatcher)
 								: IToasterService {
 	private int _notificationTimeout = 9;
@@ -35,7 +35,7 @@ public class ToasterService(IDispatchService dispatcher)
 			});
 		} else {
 			_dispatcher?.InvokeOnUiThread(() => {
-				_notificationManager = new WindowNotificationManager(AppLayers.GetMainWindow()) {
+				_notificationManager = new WindowNotificationManager(App.GetMainWindow) {
 					Position = NotificationPosition.BottomRight,
 					MaxItems = 6,
 					Margin = new Thickness(0, 0, 15, 40)
@@ -49,7 +49,7 @@ public class ToasterService(IDispatchService dispatcher)
 	/// <param name="hostWindow">Parent window.</param>
 	public void SetHostWindow(object? hostWindow)
 	{
-		var notificationManager = new WindowNotificationManager((hostWindow as TopLevel) ?? AppLayers.GetMainWindow()) {
+		var notificationManager = new WindowNotificationManager((hostWindow as TopLevel) ?? App.GetMainWindow) {
 			Position = NotificationPosition.BottomRight,
 			MaxItems = 2,
 			Margin = new Thickness(0, 0, 15, 40)

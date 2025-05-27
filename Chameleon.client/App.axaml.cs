@@ -170,6 +170,8 @@ public partial class App : Application {
 		}
 	}
 
+	public static Window? GetMainWindow => (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
 	public static T? TryGetResource<T>(string key) where T : class {
 		return Current?.TryGetResource(key, null, out var result) == true && result is T typed ? typed : default;
 	}

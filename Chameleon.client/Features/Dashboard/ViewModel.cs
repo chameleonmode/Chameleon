@@ -1,4 +1,6 @@
-﻿using Chameleon.client.Features.Dashboard.Tags;
+﻿using Chameleon.app.Avalonia.DynamicData;
+using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.client.Features.Dashboard.Tags;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -9,8 +11,41 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace Chameleon.client.Features.Dashboard;
+
+public abstract partial class Base(string? title) : ViewModelObjectBase(title) {
+	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Compares.ObsProfileCompares.AscendingComparer);
+	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Compares.ObsFolderCompares.AscendingComparer);
+
+	[ObservableProperty]
+	private Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
+	[ObservableProperty]
+	private Enums.ChangeComparereOption folderSortSelected = Enums.ChangeComparereOption.Ascending;
+
+	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
+
+	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; protected set; } = new([]);
+	public ReadOnlyObservableCollection<ObsFolder> Folders { get; protected set; } = new([]);
+
+	public bool HasNoFolderItems => Folders.Count == 0;
+	public bool HasNoItems => Profiles.Count == 0;
+
+	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
+		profilesCompareObservable.OnNext(value switch {
+			Enums.ChangeComparereOption.Descending => Compares.ObsProfileCompares.DescendingComparer,
+			_ => Compares.ObsProfileCompares.AscendingComparer
+		});
+	}
+
+	partial void OnFolderSortSelectedChanged(Enums.ChangeComparereOption value) {
+		foldersCompareObservable.OnNext(value switch {
+			Enums.ChangeComparereOption.Descending => Compares.ObsFolderCompares.DescendingComparer,
+			_ => Compares.ObsFolderCompares.AscendingComparer
+		});
+	}
+}
 
 public partial class TagViewModel(Action<TagViewModel> OnSelectChanged) : ObservableObject {
 	[ObservableProperty] string name = null!;

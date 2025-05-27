@@ -1,4 +1,5 @@
 using Chameleon.Av.Fluent.Common.Pages;
+using Chameleon.client;
 
 using FluentAvalonia.UI.Controls;
 
@@ -10,6 +11,6 @@ public partial class UserProxySettingsView : ChameleonPageBase {
         InitializeComponent();
         ControlName = "Proxy Settings";
         Description = "Customize multiple profiles proxy settings";
-        PreviewImage = AppLayers.TryGetResource<IconSource>("Proxy")!;
+        PreviewImage = App.TryGetResource<IconSource>("Proxy");
     }
 }

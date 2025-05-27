@@ -1,4 +1,5 @@
 using Chameleon.Av.Fluent.Common.Pages;
+using Chameleon.client;
 
 using FluentAvalonia.UI.Controls;
 
@@ -11,6 +12,6 @@ public partial class ProxyCreditView : ChameleonPageBase
         InitializeComponent();
         ControlName = "Proxy Credit";
         Description = "Proxy credit settings";
-        PreviewImage = AppLayers.TryGetResource<IconSource>("ProxyCred")!;
+        PreviewImage = App.TryGetResource<IconSource>("ProxyCred");
     }
 }

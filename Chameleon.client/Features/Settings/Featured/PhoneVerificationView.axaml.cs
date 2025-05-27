@@ -1,4 +1,5 @@
 using Chameleon.Av.Fluent.Common.Pages;
+using Chameleon.client;
 
 using FluentAvalonia.UI.Controls;
 
@@ -12,6 +13,6 @@ public partial class PhoneVerificationView : ChameleonPageBase
 
         ControlName = "Phone Verification";
         Description = "PVA key settings and API simplified";
-        PreviewImage = AppLayers.TryGetResource<IconSource>("Phone")!;
+        PreviewImage = App.TryGetResource<IconSource>("Phone");
     }
 }

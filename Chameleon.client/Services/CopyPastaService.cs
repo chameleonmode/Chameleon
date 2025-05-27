@@ -1,16 +1,16 @@
-﻿using Avalonia.Controls;
-
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.VisualTree;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Interfaces.Services;
 
-namespace Chameleon.app.Avalonia.Services;
+namespace Chameleon.client.Services;
 //ICopyPastaService
 public class CopyPastaService : ICopyPastaService {
 	public TopLevel? Owner { get; set; }
-	public async Task SetTextAsync(string text)
-	{
+	public async Task SetTextAsync(string text) {
 		try {
-			Owner ??= TopLevel.GetTopLevel(AppLayers.GetToplevetVisual());
+			Owner ??= TopLevel.GetTopLevel(App.GetMainWindow?.GetVisualRoot() as Visual);
 			await Owner!.Clipboard!.SetTextAsync(text);
 			Toaster.Success("Copied to clipboard");
 

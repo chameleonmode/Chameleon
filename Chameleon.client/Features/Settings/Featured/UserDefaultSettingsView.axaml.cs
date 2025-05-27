@@ -1,4 +1,5 @@
 using Chameleon.Av.Fluent.Common.Pages;
+using Chameleon.client;
 
 using FluentAvalonia.UI.Controls;
 
@@ -11,6 +12,6 @@ public partial class UserDefaultSettingsView : ChameleonPageBase
         InitializeComponent();
         ControlName = "Default Settings";
         Description = "Customize the default homepage and anonymity settings for your profiles";
-        PreviewImage = AppLayers.TryGetResource<IconSource>("DefaultSettingsPageIcon")!;
+        PreviewImage = App.TryGetResource<IconSource>("DefaultSettingsPageIcon");
     }
 }

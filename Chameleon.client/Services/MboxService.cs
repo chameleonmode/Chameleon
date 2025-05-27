@@ -2,16 +2,13 @@
 
 using chameleon.assets;
 
+using Chameleon.lib.Const;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.app.Avalonia.lib.Community.Controls;
-using Avalonia.Controls;
 using Chameleon.app.Avalonia.ViewModels.Controllers;
-using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.lib;
-using Chameleon.lib.Const;
 
-namespace Chameleon.app.Avalonia.Services;
+namespace Chameleon.client.Services;
 public class MboxService(IDispatchService dispatcher) : IMboxService {
 	public async Task<Enums.MboxResult> Show(string title, string content, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo, string icon = "Info")
 	{
@@ -36,41 +33,9 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 		});
 	}
 
-	public async Task<Enums.MboxResult> ShowContentDialog<TView, TViewModel>(Action<TViewModel> initialize)
-	{
-		if (IoC.GetService<TView>() is Control view) {
-			var viewModel = (TViewModel)view.DataContext!;
-
-			initialize?.Invoke(viewModel);
-
-			var title = viewModel is ViewModelObjectBase pvm ? pvm.Title : Variables.AppName;
-
-			var btns = Enums.MBoxButtons.OkCancel;
-
-			var dialog = new ContentDialog() {
-				Title = title,
-				Content = view,
-				PrimaryButtonText = btns.PrimaryBtnText(),
-				SecondaryButtonText = btns.SecondaryBtnText(),
-				CloseButtonText = btns.CloseBtnText(),
-				DefaultButton = ContentDialogButton.Primary,
-			};
-
-			//if (viewModel is IContentDialogViewModel cdvm) {
-			//	dialog.Closing += (s, e) => {
-			//		cdvm.OnDialogClosing((IContentDialogResult)e.Result);
-			//	};
-			//}
-			var res = await dialog.ShowAsync(AppLayers.GetMainWindow());
-			return (Enums.MboxResult)res;
-		}
-
-		throw new ArgumentNullException("TView");
-	}
-
 	public async Task<Enums.TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Variables.AppName, object? footer = null, Enums.Symbas symbas = Enums.Symbas.Alert, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo)
 	{
-		while(AppLayers.GetMainWindow() is null) {
+		while(App.GetMainWindow is null) {
 			await Task.Delay(250);
 		}
 		return await dispatcher.InvokeOnUiThread(async () => {
@@ -150,7 +115,7 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 				// Using the VisualRoot is fine, if the VisualRoot is a Window, the dialog automatically launches in
 				// Windowed mode, otherwise, it tries to find the OverlayLayer and will launch in hosted mode
 				// If your TaskDialog is declared in Xaml, this is automatically handled for you
-				XamlRoot = AppLayers.GetMainWindow()
+				XamlRoot = App.GetMainWindow
 			};
 
 			var result = await td.ShowAsync(true);
