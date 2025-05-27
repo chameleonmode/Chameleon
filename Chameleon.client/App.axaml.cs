@@ -241,6 +241,10 @@ public partial class App : Application {
 			};
 			window.TitleBar.ExtendsContentIntoTitleBar = true;
 			window.TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
+#if DEBUG
+			window.AttachDevTools();
+			window.Topmost = true;
+#endif
 			desktop.MainWindow = window;
 		} else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform) {
 			singleViewPlatform.MainView = new View {
