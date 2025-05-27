@@ -6,7 +6,7 @@
              xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:local="using:Chameleon.app.Avalonia.Controls"
-			 xmlns:pagnator="using:Chameleon.app.Avalonia.Views"
+			 xmlns:uc="using:Chameleon.client.UI.UserControls"
 			 xmlns:converter="using:Chameleon.Common.ValueConverters"
 			 xmlns:vm="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles"
 			 x:DataType="vm:MyProfilesViewModel"
@@ -31,7 +31,7 @@
 		  Title="{Binding SelectedFolderTitle}"
 		  TitleDescription="{Binding TotalCount, StringFormat='You have {0} profiles.'}">
 		<afv:ChameleonContentControl.TitleContent>
-			<pagnator:PaginatorView DataContext="{Binding PaginatorViewModel}" />
+			<uc:PaginatorView DataContext="{Binding PaginatorViewModel}" />
 		</afv:ChameleonContentControl.TitleContent> 
 		
 

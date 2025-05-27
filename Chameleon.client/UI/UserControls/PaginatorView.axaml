@@ -2,12 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:vm="using:Chameleon.app.Avalonia.ViewModels"
              mc:Ignorable="d"
-			 x:CompileBindings="False"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:vm="using:Chameleon.client.UI.UserControls.ViewModels"
+             x:Class="Chameleon.client.UI.UserControls.PaginatorView"
 			 x:DataType="vm:PaginatorViewModel"
-             x:Class="Chameleon.app.Avalonia.Views.PaginatorView">
+			 x:CompileBindings="False">
 
 	<UserControl.Resources>
 		<ControlTheme TargetType="ListBoxItem"

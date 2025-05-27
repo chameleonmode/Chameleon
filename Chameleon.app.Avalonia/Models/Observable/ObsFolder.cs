@@ -1,5 +1,4 @@
 ﻿using Chameleon.app.Avalonia.Services;
-using Chameleon.app.Avalonia.Views;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -18,14 +17,10 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	public event Action<ObsFolder>? OnSelectedChanged;
 	public Func<string?, bool>? NameAlreadyExist { get; }
 
-	[ObservableProperty]
-	private bool isFavorite;
-	[ObservableProperty]
-	private int profilesCount;
-	[ObservableProperty]
-	private bool isRenamed;
-	[ObservableProperty]
-	private bool isActionOptionsVisible;
+	[ObservableProperty] bool isFavorite;
+	[ObservableProperty] int profilesCount;
+	[ObservableProperty] bool isRenamed;
+	[ObservableProperty] bool isActionOptionsVisible;
 
 	public bool ShowFavoriteIcon => IsContextMenuItemEnabled && Dto?.id != 0;
 	public bool IsSharedFolder => Dto?.creatorUserId != null && Dto?.creatorUserId != Auther.AuthSession?.UserId;

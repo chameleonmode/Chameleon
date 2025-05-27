@@ -16,6 +16,7 @@ using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 
 using static Chameleon.lib.Common.Constants.Enums.Api;
+using Chameleon.client.UI.UserControls.ViewModels;
 
 namespace Chameleon.app.Avalonia.ViewModels;
 
@@ -27,16 +28,11 @@ public partial class UserProxySettingsViewModel
 	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
 	private readonly BehaviorSubject<Func<ObsProxySetting, bool>> filter;
 
-	[ObservableProperty]
-	private ProxCountryDto? country;
-	[ObservableProperty]
-	private ObsFolder? selectedFolder;
-	[ObservableProperty]
-	private string? applingProxy;
-	[ObservableProperty]
-	private int totalCount;
-	[ObservableProperty]
-	private PaginatorViewModel paginatorViewModel;
+	[ObservableProperty] ProxCountryDto? country;
+	[ObservableProperty] ObsFolder? selectedFolder;
+	[ObservableProperty] string? applingProxy;
+	[ObservableProperty] int totalCount;
+	[ObservableProperty] PaginatorViewModel paginatorViewModel;
 
 	public ObservableCollection<ProxCountryDto> Countries { get; } = [];
 	public ReadOnlyObservableCollection<ObsFolder> Folders => folders;
