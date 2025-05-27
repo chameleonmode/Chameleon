@@ -38,7 +38,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		Tagz = tagz;
 
 		AsyncCommandMap["SyncChanges"] = async () => {
-			await app.Avalonia.AppStartup.LoadSink(true);
+			await AppStartup.LoadSink(true);
 			await CheckForCookies();
 		};
 		AsyncCommandMap["SyncCookiesClear"] = async () => {

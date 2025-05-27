@@ -90,33 +90,34 @@ public partial class View : UserControl {
 	protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e) {
 		base.OnAttachedToVisualTree(e);
 
-		//
+		// Initialize the frame and navigation view
 		Navigator.SetFrame(FrameView);
-		TooltipManager.Attach(Application.Current!, NavView);
+		// TooltipManager.Attach(Application.Current!, NavView);
 
 		//
 		NavView.MenuItemsSource = _pages
-			.Where(p => !p.Value.ShowsInFooter)
-			.Select(a => a.Value.GetNavigationViewItemBase(this))
-			.ToList();
+		.Where(p => !p.Value.ShowsInFooter)
+		.Select(a => a.Value.GetNavigationViewItemBase(this))
+		.ToArray();
 		NavView.FooterMenuItemsSource = _pages
-			.Where(p => p.Value.ShowsInFooter)
-			.Select(a => a.Value.GetNavigationViewItemBase(this))
-			.ToList();
+		.Where(p => p.Value.ShowsInFooter)
+		.Select(a => a.Value.GetNavigationViewItemBase(this))
+		.ToArray();
 
 		NavView.ItemInvoked += (s, e) => {
-			// Change the current selected item back to normal
-			SetNVIIcon(s as NavigationViewItem, false);
+			if (e.InvokedItemContainer is not NavigationViewItem nvi || nvi.Tag is not PageModelBase pageModel) return;
 
-			if (e.InvokedItemContainer is NavigationViewItem nvi) {
-				// Keep the frame navigation when not using connected animation but suppress it
-				// if we have a connected animation binding two pages
-				Navigator.NavigateToType(
-					(nvi.Tag as PageModelBase)?.Tag!,
-					null,
-					FrameView.Content is ChameleonPageBase ? new SuppressNavigationTransitionInfo()
+			// Change the current selected item back to normal
+			SetNVIIcon(nvi);
+
+			// Keep the frame navigation when not using connected animation but suppress it
+			// if we have a connected animation binding two pages
+			Navigator.NavigateToType(
+				pageModel.Tag!,
+				null,
+				FrameView.Content is ChameleonPageBase 
+					? new SuppressNavigationTransitionInfo()
 					: e.RecommendedNavigationTransitionInfo);
-			}
 		};
 		NavView.BackRequested += (s, e) => FrameView.GoBack();
 
@@ -124,104 +125,65 @@ public partial class View : UserControl {
 		FrameView.NavigationPageFactory = Features.ViewModel.Instance.NavigationFactory;
 		FrameView.Navigated += (s, e) => {
 			var page = _pages
-				.SingleOrDefault(p => p.Value.Tag?.FullName == e.Content.GetType().FullName).Value;
+			.SingleOrDefault(p => p.Value.Tag?.FullName == e.Content.GetType().FullName).Value;
 
-			foreach (var nvi in from NavigationViewItem nvi in
-														((List<NavigationViewItemBase>)NavView.MenuItemsSource).Concat((List<NavigationViewItemBase>)NavView.FooterMenuItemsSource)
-													let set = nvi.Tag == page
-													where set
-													select nvi
-			) {
-				NavView.SelectedItem = nvi;
-				SetNVIIcon(nvi, true);
+			if (page != null) {
+				var nvi = ((IEnumerable<NavigationViewItemBase>)NavView.MenuItemsSource)
+				.Concat((IEnumerable<NavigationViewItemBase>)NavView.FooterMenuItemsSource)
+				.OfType<NavigationViewItem>()
+				.FirstOrDefault(item => item.Tag == page);
+
+				if (nvi != null) {
+					NavView.SelectedItem = nvi;
+					SetNVIIcon(nvi, true);
+				}
 			}
 
-			if (FrameView.BackStackDepth > 0 && !NavView.IsBackButtonVisible) {
-				AnimateContentForBackButton(true);
-			} else if (FrameView.BackStackDepth == 0 && NavView.IsBackButtonVisible) {
-				AnimateContentForBackButton(false);
+			var shouldShowBackButton = FrameView.BackStackDepth > 0;
+			if (shouldShowBackButton != NavView.IsBackButtonVisible) {
+				AnimateContentForBackButton(shouldShowBackButton);
 			}
 		};
 
 		_ = FrameView.NavigateToType(_pages["Dashboard"].Tag, null, null);
 	}
 
-	private void SetNVIIcon(NavigationViewItem? item, bool selected) {
+	private void SetNVIIcon(NavigationViewItem item, bool selected = true) {
 		// Technically, yes you could set up binding and converters and whatnot to let the icon change
 		// between filled and unfilled based on selection, but this is so much simpler 
-		if (item == null)
-			return;
 
-		if (item.Tag is PageModelBase m) {
-			item.IconSource = this.TryFindResource(selected ? $"{m.IconKey}Filled" : m.IconKey, out var value) ?
-					(IconSource)value! : null;
-		} else {
-			//TODO: :P
-		}
+		if (item.Tag is not PageModelBase m) return;
+
+		item.IconSource = this.TryFindResource(selected ? $"{m.IconKey}Filled" : m.IconKey, out var value)
+		? value as IconSource
+		: null;
 	}
 	private async void AnimateContentForBackButton(bool show) {
 		if (!WindowLogoIcon.IsVisible)
 			return;
 
-		if (show) {
-			var ani = new Animation {
-				Duration = TimeSpan.FromMilliseconds(250),
-				FillMode = FillMode.Forward,
-				Children =
-				{
-					new KeyFrame
-					{
-							Cue = new Cue(0d),
-							Setters =
-							{
-									new Setter(MarginProperty, new Thickness(12, 4, 12, 4))
-							}
-					},
-					new KeyFrame
-					{
-							Cue = new Cue(1d),
-							KeySpline = new KeySpline(0,0,0,1),
-							Setters =
-							{
-									new Setter(MarginProperty, new Thickness(48,4,12,4))
-							}
-					}
+		NavView.IsBackButtonVisible = show;
+
+		var startMargin = show ? new Thickness(12, 4, 12, 4) : new Thickness(48, 4, 12, 4);
+		var endMargin = show ? new Thickness(48, 4, 12, 4) : new Thickness(12, 4, 12, 4);
+
+		var ani = new Animation {
+			Duration = TimeSpan.FromMilliseconds(250),
+			FillMode = FillMode.Forward,
+			Children = {
+				new KeyFrame {
+					Cue = new Cue(0d),
+					Setters = { new Setter(MarginProperty, startMargin) }
+				},
+				new KeyFrame {
+					Cue = new Cue(1d),
+					KeySpline = new KeySpline(0, 0, 0, 1),
+					Setters = { new Setter(MarginProperty, endMargin) }
 				}
-			};
+			}
+		};
 
-			await ani.RunAsync(WindowLogoIcon);
-
-			NavView.IsBackButtonVisible = true;
-		} else {
-			NavView.IsBackButtonVisible = false;
-
-			var ani = new Animation {
-				Duration = TimeSpan.FromMilliseconds(250),
-				FillMode = FillMode.Forward,
-				Children =
-				{
-					new KeyFrame
-					{
-							Cue = new Cue(0d),
-							Setters =
-							{
-									new Setter(MarginProperty, new Thickness(48, 4, 12, 4))
-							}
-					},
-					new KeyFrame
-					{
-							Cue = new Cue(1d),
-							KeySpline = new KeySpline(0,0,0,1),
-							Setters =
-							{
-									new Setter(MarginProperty, new Thickness(12,4,12,4))
-							}
-					}
-				}
-			};
-
-			await ani.RunAsync(WindowLogoIcon);
-		}
+		await ani.RunAsync(WindowLogoIcon);
 	}
 }
 

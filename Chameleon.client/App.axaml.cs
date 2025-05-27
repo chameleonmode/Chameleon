@@ -20,13 +20,149 @@ using Chameleon.lib.Const;
 using Chameleon.lib.Util;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
 using Chameleon.client.Features;
+using Chameleon.lib.Helpers;
+using Chameleon.lib.Common.ServiceManagers;
+using Chameleon.lib.Auth;
+using Chameleon.app.Avalonia.ViewModels.Controllers;
+using Chameleon.app.Avalonia.lib.Community.Controls;
+using Chameleon.lib.Common.Constants;
+using Chameleon.lib.Api;
+using Chameleon.lib.Api.Repos;
+using Chameleon.lib.Abs.Platformatic;
 
 namespace Chameleon.client;
+
+public class AppStartup {
+	public event Action? OnLoginSuccess;
+
+	public async Task RunAsync() {
+		if (!await RunAsync(0)) {
+			Toaster.Info("Login canceled, application closing");
+			Environment.Exit(0);
+		} else {
+			try {
+				Toaster.Success($"Hello {(Session.Instance.Login?.LoginName) ?? "World"}");
+				await LoadSink();
+				OnLoginSuccess?.Invoke();
+			} catch (Exception ex) {
+				_ = await Mbox.ShowErrorAsync("Invalid Login", "Browser authentication must match application email.\n" + (ex.Message.Contains('\n') ? ex.Message[ex.Message.LastIndexOf('\n')..] : ex.Message));
+				await Session.Instance.Logout();
+				await RunAsync();
+			}
+		}
+	}
+	public async Task<bool> RunAsync(int trys) {
+		try {
+			var loginSetings = IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) ?? new("", "", false);
+			var loginvm = new MboxLoginViewModel {
+				UserName = loginSetings.LoginName,
+				LicenceKey = loginSetings.LicenseKey,
+				AutoLogin = loginSetings.AutoLogin
+			};
+
+			if (!loginSetings.AutoLogin &&
+				await Mbox.ShowTaskDialog<MboxLoginUserControl, MboxLoginViewModel>(new(
+					() => loginvm,
+					"User Login",
+					"Enter the provided activation information",
+					Symbas: Enums.Symbas.ContactInfo,
+					Btns: Enums.MBoxButtons.OkCancel
+				)) == Enums.TaskDialogResult.Cancel) {
+				return false;
+			}
+			ArgumentNullException.ThrowIfNull(loginvm.UserName, "UserName");
+			ArgumentNullException.ThrowIfNull(loginvm.LicenceKey, "LicenceKey");
+
+			await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
+			_ = await Session.Instance.Authenticate();
+			Session.Instance.SetLogin(new LoginSettings(loginvm.UserName, loginvm.LicenceKey, loginvm.AutoLogin));
+			//var loginDetailsChanged = loginvm.UserName != loginSetings.LoginName || loginvm.LicenceKey != loginSetings.LicenseKey || loginvm.AutoLogin != loginSetings.AutoLogin;
+
+		} catch (Exception ex) {
+			_ = await Mbox.ShowErrorAsync("Error Logging In", ex.Message);
+			if (trys < 1)
+				return await RunAsync(trys++);
+		}
+
+		return Auther.AuthSession is not null;
+	}
+
+	public static async Task LoadSink(bool reload = false) {
+		await DB.Instance.EnsureUser();
+		var tasks = new List<Task>() {
+			UserProfilesRepo.Instance.Load(),
+			UserProfilesFolderRepo.Instance.Load(),
+			TagsRepo.Instance.Load()
+		};
+		if (reload) {
+			tasks.Add(UPAdditionalDataRepo.Instance.Load());
+		}
+		await Task.WhenAll(tasks);
+	}
+
+	public static AppStartup Instance { get; } = new AppStartup();
+	private AppStartup() {
+		// for migration
+		//if (IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) is null || IoC.GetJsonValue<AppSettings>(nameof(AppSettings)) is null) {
+		//	var _settingsFilePath = Path.Combine(
+		//			Consts.AppDataLocalDir,
+		//			"settings.json"
+		//			);
+		//	if (File.Exists(_settingsFilePath)) {
+		//		var json = File.ReadAllText(_settingsFilePath);
+		//		var _settings = System.Text.Json.JsonSerializer.Deserialize<TheseApplicationSettings>(json);
+		//		if (_settings is not null) {
+		//			if (_settings.Login is not null) {
+		//				IoC.SetJsonValue(new LoginSettings(_settings.Login.LoginName, _settings.Login.LicenseKey, true),
+		//					nameof(LoginSettings));
+		//			}
+
+		//			if (_settings.Settings is not null) {
+		//				IoC.SetJsonValue(new AppSettings(_settings.Settings.CurrentAppTheme, _settings.Settings.CustomAccentColor?.ToString(), _settings.Settings.UseCustomAccentColor),
+		//					nameof(AppSettings));
+		//			}
+		//		}
+		//	}
+		//}
+		//_authSession = IoC.GetService<IAuthSession>();
+		HttpApiClient.Instance.OnRetry += (e) => {
+			Toaster.Error("Error", e);
+		};
+		HttpApiClient.Instance.OnAuthError += async () => {
+			try {
+				await Auther.RefreshTokenAsync();
+			} catch {
+				Toaster.Error("AuthRefreshToken Err");
+			}
+		};
+		HttpApiClient.Instance.OnCircuitBreaker += (e) => {
+			//Toaster.ShowErr("CircuitBreaker", e);
+		};
+		HttpApiClient.Instance.OnSendSeccess += (m) => {
+			//switch(m) {
+			//	case HttpMethod.Get:
+			//		Toaster.ShowInfo($"Request {m} was successful.");
+			//		break;
+			//	case HttpMethod.Post:
+			//		Toaster.ShowSuccess($"Request {m} was successful.");
+			//		break;
+			//	case HttpMethod.Put:
+			//		Toaster.ShowSuccess($"Request {m} was successful.");
+			//		break;
+			//	case HttpMethod.Delete:
+			//		Toaster.ShowSuccess($"Request {m} was successful.");
+			//		break;
+			//}
+			//if(m == HttpMethod.Put)
+			//	Toaster.ShowSuccess($"Update was successful.");
+		};
+	}
+}
 
 public partial class App : Application {
 	public static IStorageProvider StorageProvider {
 		get {
-			return (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow?.StorageProvider 
+			return (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow?.StorageProvider
 			?? throw new InvalidOperationException("StorageProvider not available");
 		}
 	}
@@ -35,8 +171,7 @@ public partial class App : Application {
 		return Current?.TryGetResource(key, null, out var result) == true && result is T typed ? typed : default;
 	}
 
-	public override void Initialize()
-	{
+	public override void Initialize() {
 		AvaloniaXamlLoader.Load(this);
 
 		// Default logic doesn't auto detect windows theme anymore in designer
@@ -89,8 +224,7 @@ public partial class App : Application {
 		Navigator.Instance.RegisterView(nameof(FunctionalSettingsView), typeof(FunctionalSettingsView));
 	}
 
-	public override void OnFrameworkInitializationCompleted()
-	{
+	public override void OnFrameworkInitializationCompleted() {
 		// Line below is needed to remove Avalonia data validation.
 		// Without this line you will get duplicate validations from both Avalonia and CT
 		BindingPlugins.DataValidators.RemoveAt(0);
