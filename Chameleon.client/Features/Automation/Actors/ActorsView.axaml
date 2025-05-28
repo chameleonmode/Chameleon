@@ -113,68 +113,84 @@
 						Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*"
 						Text="{Binding Url, Mode=TwoWay, TargetNullValue=''}"/>
 
-					<TextBlock 
-						Grid.Row="1" 
-						Text="Max Attempts:" 
+					<TextBlock
+						Grid.Row="1"
+						Text="Max Attempts:"
 						ToolTip.Tip="maximum number of attempts to try untill a successfull iteration"
 					/>
-					<ui:NumberBox 
-						Grid.Row="1" 
-						Grid.Column="1" 
+					<ui:NumberBox
+						Grid.Row="1"
+						Grid.Column="1"
 						Value="{Binding Attempts, Mode=TwoWay}"/>
 
-					<TextBlock 
-						Grid.Row="2" 
-						Text="AI Keywords:" 
+					<TextBlock
+						Grid.Row="2"
+						Text="AI Keywords:"
 						ToolTip.Tip="Adds AI related keywords when set above 1-1."
 					/>
-					<ContentControl 
-						Grid.Row="2" 
-						Grid.Column="1" 
+					<ContentControl
+						Grid.Row="2"
+						Grid.Column="1"
 						Content="{Binding Variations}"
 						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 
-					<TextBlock 
-						Grid.Row="3" 
-						Text="Automations:" 
+					<TextBlock
+						Grid.Row="3"
+						Text="Automations:"
 						ToolTip.Tip="Amount of iterations to run per search term. (for example each keyword will result in a search result of multiple posts. This setting allows for control over ho many times an automation such as Join will select a post with a joinable subreddit join/subscribe to it then go back to the search results and repeat the process of finding a joinable subreddit under the same keyword for a min-max amount of times. All other automations run in the same way.)"
 					/>
-					<ContentControl 
-						Grid.Row="3" 
-						Grid.Column="1" 
+					<ContentControl
+						Grid.Row="3"
+						Grid.Column="1"
 						Content="{Binding Iterations}"
 						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
 
-					<TextBlock 
-						Grid.Row="4" 
-						Text="Randomization:" 
-						ToolTip.Tip="Predictable hash value to reference min-max activity while performing things such as voting, joining a subreddit set to 0-0 and select only the vote automation to act as a 'search warm up' (to seed the account with random activity of time spent to nudge its TikTok algorithm to link your account to those keywords)." 
+					<TextBlock
+						Grid.Row="4"
+						Text="Randomization:"
+						ToolTip.Tip="Predictable hash value to reference min-max activity while performing things such as voting, joining a subreddit set to 0-0 and select only the vote automation to act as a 'search warm up' (to seed the account with random activity of time spent to nudge its TikTok algorithm to link your account to those keywords)."
 					/>
-					<ContentControl 
-						Grid.Row="4" 
-						Grid.Column="1" 
+					<ContentControl
+						Grid.Row="4"
+						Grid.Column="1"
 						Content="{Binding Rando}"
 						ContentTemplate="{StaticResource RandoEditorTemplate}" />
 
-					<TextBlock 
-						Grid.Row="5" 
-						Text="New Tab:" 
-						ToolTip.Tip="to start in a new tab (recommended)" 
+					<TextBlock
+						Grid.Row="5"
+						Text="New Tab:"
+						ToolTip.Tip="to start in a new tab (recommended)"
 					/>
-					<ToggleSwitch 
-						Grid.Row="5" 
-						Grid.Column="1" 
+					<ToggleSwitch
+						Grid.Row="5"
+						Grid.Column="1"
 						IsChecked="{Binding New, Mode=TwoWay}" OffContent="" OnContent=""/>
 
 					<TextBlock
-						Grid.Row="6" 
-						Text="All The Things:" 
-						ToolTip.Tip="(experimental) no settings left behind" 
+						Grid.Row="6"
+						Text="All The Things:"
+						ToolTip.Tip="(experimental) no settings left behind"
 					/>
-					<ToggleSwitch 
-						Grid.Row="6" 
-						Grid.Column="1" 
+					<ToggleSwitch
+						Grid.Row="6"
+						Grid.Column="1"
 						IsChecked="{Binding All, Mode=TwoWay}" OffContent="" OnContent=""/>
+					<TextBlock
+						Grid.Row="7"
+						Text="Close old profile browsers"
+						ToolTip.Tip="Closing browser instances for the previous profile before moving to the next"/>
+					<ToggleSwitch
+						Grid.Row="7"
+						Grid.Column="1"
+						IsChecked="{Binding CloseOldBrowserProfileAfterRun, Mode=TwoWay}" OffContent="" OnContent=""/>
+					<TextBlock
+						Grid.Row="8"
+						Text="Sequential Script Execution per Profile"
+						ToolTip.Tip=" Iterate through all selected profiles, and for each profile, run exactly one script from the selected list before moving to the next profile"/>
+					<ToggleSwitch
+						Grid.Row="8"
+						Grid.Column="1"
+						IsChecked="{Binding ExecuteOneScriptAccrosProfiles, Mode=TwoWay}" OffContent="" OnContent=""/>
 				</Grid>
 			</DataTemplate>
 
@@ -190,7 +206,7 @@
 			</DataTemplate>
 
 			<DataTemplate x:Key="TimeoutsEditorTemplate" x:DataType="models:Timeouts">
-				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 					<TextBlock Text="Navigate:"
 						Grid.Row="0"
 						ToolTip.Tip="max time to wait for page load"/>
@@ -217,11 +233,20 @@
 						Grid.Column="1"
 						Value="{Binding Wait, Mode=TwoWay}" />
 
-					<TextBlock Text="Naps:"
+					<TextBlock Text="Random Sleep:"
 						Grid.Row="3"
+						Grid.Column="0"
+						ToolTip.Tip="Timeouts between each script iteration on the same profile in seconds"/>
+					<ui:NumberBox
+						Grid.Row="3"
+						Grid.Column="1"
+						Value="{Binding RandomWaitPerProfile, Mode=TwoWay}" />
+
+					<TextBlock Text="Naps:"
+						Grid.Row="4"
 						ToolTip.Tip="milliseconds between actions to simulate natural user interactions" />
 					<ContentControl
-						Grid.Row="3"
+						Grid.Row="4"
 						Grid.Column="1"
 						Classes="sideInput"
 						VerticalAlignment="Center"
@@ -330,7 +355,7 @@
 													<ContentControl.ContentTemplate>
 														<DataTemplate x:DataType="models:AI">
 															<StackPanel Spacing="6">
-																<Expander Header="Inception" 
+																<Expander Header="Inception"
 																	Margin="0 6"
 																	IsExpanded="True">
 																	<Expander.Header>
@@ -348,31 +373,31 @@
 																					<controls:Inputter Title="System:"
 																						Description="most helpful for the model consistency"
 																						Watermark="You are helpful..."
-																						Text="{Binding System, Mode=TwoWay}" 
+																						Text="{Binding System, Mode=TwoWay}"
 																					/>
 
 																					<controls:Inputter Title="Human:"
 																						Description="Human persona description"
 																						Watermark="...(eg. reddit content creator, reddit user, etc.)"
-																						Text="{Binding Human, Mode=TwoWay}" 
+																						Text="{Binding Human, Mode=TwoWay}"
 																					/>
 
 																					<controls:Inputter Title="Audience:"
 																						Description="Target audience"
 																						Watermark="...(eg: reddit users who are interested in..., reddit users who are looking for..., etc.)"
-																						Text="{Binding Audience, Mode=TwoWay}" 
+																						Text="{Binding Audience, Mode=TwoWay}"
 																					/>
 
 																					<controls:Inputter Title="Background:"
 																						Description="Background context"
 																						Watermark="...(eg: I am surfing reddit... You... etc.)"
-																						Text="{Binding Background, Mode=TwoWay}" 
+																						Text="{Binding Background, Mode=TwoWay}"
 																					/>
 
 																					<controls:Inputter Title="Tone:"
 																						Description="Communication tone"
 																						Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
-																						Text="{Binding Tone, Mode=TwoWay}" 
+																						Text="{Binding Tone, Mode=TwoWay}"
 																					/>
 																				</StackPanel>
 																			</DataTemplate>
