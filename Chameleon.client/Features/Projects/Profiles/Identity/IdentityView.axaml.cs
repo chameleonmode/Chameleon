@@ -5,9 +5,8 @@ namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
 
 [Chameleon.lib.Common.Attributes.ViewModel(typeof(IdentityViewModel))]
 public partial class IdentityView : ChameleonPageBase {
-    public IdentityView()
-    {
+    public IdentityView() {
         InitializeComponent();
     }
-	public override Visual? AnimateVisual { get => UPView; set => base.AnimateVisual = value; }
+    public override Visual? AnimateVisual { get => UPView; set => base.AnimateVisual = value; }
 }

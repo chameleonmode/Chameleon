@@ -95,8 +95,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 		_hasLoaded = false;
 	}
 
-	protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-	{
+	protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
 		base.OnApplyTemplate(e);
 		_previewImageHost = e.NameScope.Find<IconSourceElement>("PreviewImageElement");
 		_detailsHost = e.NameScope.Find<StackPanel>("DetailsTextHost");
@@ -158,19 +157,19 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 			_isSmallWidth2 = false;
 		}
 	}
-	
-	private async void OnNavigatingFrom(object? sender, NavigatingCancelEventArgs e)
-	{
-		if (_previewImageHost == null)
-			return;
+
+	private void OnNavigatingFrom(object? sender, NavigatingCancelEventArgs e) {
+		var animate = AnimateVisual ?? _previewImageHost;
+		if (animate is null) return;
 
 		// Only setup the ConnectedAnimation if it makes sense
-		_ = await TaskUtil.TryAwaitFor(async () => {
+		_ = ExUtil.TryCatch(() => {
 			var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-			_ = svc.PrepareToAnimate("BackAnimation", await TaskUtil.AwaitFor(() => AnimateVisual != null, 1) ? AnimateVisual : _previewImageHost.Parent as Control);
-		}, 2);
+			_ = svc.PrepareToAnimate("BackAnimation", animate);
+			return true;
+		});
 	}
-	
+
 	private async void OnNavigatedTo(object? sender, NavigationEventArgs e)
 	{
 		if (DataContext is ViewModelObjectBase pageViewModel) {

@@ -10,13 +10,11 @@ namespace Chameleon.client.Features.Settings.Featured;
 
 [Chameleon.lib.Common.Attributes.ViewModel(typeof(FunctionalSettingsViewModel))]
 public partial class FunctionalSettingsView : ChameleonNavigationPage {
-	public FunctionalSettingsView()
-	{
+	public FunctionalSettingsView() {
 		InitializeComponent();
 		ActiveTabStrip.SelectionChanged += TabStrip1SelectionChanged!;
 	}
-	public override void OnAfterNavigatedToViewModel(object param)
-	{
+	public override void OnAfterNavigatedToViewModel(object param) {
 		base.OnAfterNavigatedToViewModel(param);
 
 		if (param is ObsFolder) {
@@ -27,20 +25,17 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 		}
 	}
 
-	protected override void OnLoaded(RoutedEventArgs e)
-	{
+	protected override void OnLoaded(RoutedEventArgs e) {
 		base.OnLoaded(e);
 
 		TabStrip1SelectionChanged(null!, null!);
 	}
 
-	private void TabStrip1SelectionChanged(object sender, SelectionChangedEventArgs e)
-	{
+	private void TabStrip1SelectionChanged(object sender, SelectionChangedEventArgs e) {
 		NavigateToIndex(ActiveTabStrip.SelectedIndex, null!);
 	}
 
-	private void NavigateToIndex(int idx, object param)
-	{
+	private void NavigateToIndex(int idx, object param) {
 		if (DataContext is not FunctionalSettingsViewModel vm)
 			return;
 
@@ -55,10 +50,8 @@ public partial class FunctionalSettingsView : ChameleonNavigationPage {
 		vm.LastSelectedIndex = ActiveTabStrip.SelectedIndex;
 	}
 
-	private NavigationTransitionInfo GetTransitionInfo(int oldIndex, int newIndex)
-	{
-		SlideNavigationTransitionEffect GetEffect(int oldIndex, int index)
-		{
+	private NavigationTransitionInfo GetTransitionInfo(int oldIndex, int newIndex) {
+		SlideNavigationTransitionEffect GetEffect(int oldIndex, int index) {
 			if (oldIndex < 0)
 				return SlideNavigationTransitionEffect.FromBottom;
 
