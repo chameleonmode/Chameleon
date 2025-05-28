@@ -1,8 +1,7 @@
-﻿using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.Services;
-using Chameleon.client.Features.Dashboard.Tags;
+﻿using Chameleon.client.Features.Dashboard.Tags;
 using Chameleon.client.Features.Projects;
 using Chameleon.client.Features.Projects.Folders;
+using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -18,7 +17,7 @@ using System.Reactive.Subjects;
 namespace Chameleon.client.Features.Dashboard;
 
 public abstract partial class Base(string? title) : Projector(title) {
-	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(ProfileManagementService.AscendingComparer);
+	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(ProfilesViewModel.AscendingComparer);
 	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(FoldersViewModel.AscendingComparer);
 
 	[ObservableProperty]
@@ -32,8 +31,8 @@ public abstract partial class Base(string? title) : Projector(title) {
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
 		profilesCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => ProfileManagementService.DescendingComparer,
-			_ => ProfileManagementService.AscendingComparer
+			Enums.ChangeComparereOption.Descending => ProfilesViewModel.DescendingComparer,
+			_ => ProfilesViewModel.AscendingComparer
 		});
 	}
 

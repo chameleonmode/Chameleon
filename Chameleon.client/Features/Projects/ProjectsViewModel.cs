@@ -6,11 +6,10 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 
 using Chameleon.lib.Helpers;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
-using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia;
 using Chameleon.client.Features.Projects.Folders;
 using System.Collections.ObjectModel;
-using Chameleon.client.Features.Projects.Profiles.MyProfiles;
+using Chameleon.client.Features.Projects.Profiles;
 
 namespace Chameleon.client.Features.Projects;
 public abstract partial class Projector(string? title = null) : ViewModelObjectBase(title) {

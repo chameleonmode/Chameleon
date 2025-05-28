@@ -5,7 +5,6 @@ using System.Reflection;
 
 using Chameleon.lib;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.app.Avalonia.Models;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

@@ -5,22 +5,20 @@ using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
 using DynamicData;
-using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api;
 using Chameleon.lib.Util;
 using Chameleon.lib.Helpers;
 using Chameleon.client.Features.Tenants.Members.ViewModels;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.client.Features.Tenants.Members.Dialogs;
-using Chameleon.app.Avalonia.Services;
 using Chameleon.client.Features.Projects.Folders;
+using Chameleon.client.Features.Projects.Profiles;
 
 namespace Chameleon.client.Features.Tenants.Members;
 public partial class TenantMembersViewModel : ViewModelObjectBase {
 	private readonly UserAssistantRepo userAssistantRepo = UserAssistantRepo.Instance;
 
-	[ObservableProperty]
-	private int totalCount;
+	[ObservableProperty] int totalCount;
 
 	// 
 	public ReadOnlyObservableCollection<AssistantUser> Assistantz { get; }
@@ -50,19 +48,15 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 			});
 		Assistantz = assistants;
 
-		_ = UserProfilesRepo.Connect().Transform(i => new ObsProfile(
-				userProfile: i,
-				hasActionOptions: false,
+		_ = UserProfilesRepo.Connect().Transform(i => new ObsProfile(i,
 				onSelectedChanged: p => {
-					if (p.IsSelected) {
-						if (!SelectedProfiles.Contains(p))
-							SelectedProfiles.Add(p);
-					} else {
-						_ = SelectedProfiles.Remove(p);
-					}
-				})
-			)
-			.SortAndBind(out var profiles, ProfileManagementService.AscendingComparer)
+					var obs = Profiles?.FirstOrDefault(x => x.Dto.id == p.Dto.id);
+					if (obs == null) return;
+					
+					if (p.IsSelected && !SelectedProfiles.Contains(p)) SelectedProfiles.Add(obs);
+					else if (SelectedProfiles.Contains(p)) _ = SelectedProfiles.Remove(obs);
+				}) { IsActionOptionsVisible = false, IsShowCheckboxColumn = true })
+			.SortAndBind(out var profiles, ProfilesViewModel.AscendingComparer)
 			.Subscribe();
 		Profiles = profiles;
 

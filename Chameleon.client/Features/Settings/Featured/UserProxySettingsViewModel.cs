@@ -1,9 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reactive.Subjects;
 
-using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Util;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -18,6 +16,7 @@ using static Chameleon.lib.Common.Constants.Enums.Api;
 using Chameleon.client.UI.UserControls.ViewModels;
 using DynamicData.Binding;
 using Chameleon.client.Features.Projects.Folders;
+using Chameleon.client.Features.Projects.Profiles;
 
 namespace Chameleon.client.Features.Settings.Featured;
 public partial class ObsProxySetting : ViewModelObjectBase{
@@ -90,10 +89,10 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i=> new ObsProxySetting(new ObsProfile(i, false, onSelectedChanged: (p) => {
+			.Transform(i=> new ObsProxySetting(new ObsProfile(i, onSelectedChanged: (p) => {
 				OnPropertyChanged(nameof(HasSelectedItems));
 				OnPropertyChanged(nameof(SelectedCount));
-			})))
+			}){IsShowCheckboxColumn = false}))
 			.Filter(filter)
 			.SortAndPage(AscendingComparer, pageRequests)
 			.Bind(out proxies)

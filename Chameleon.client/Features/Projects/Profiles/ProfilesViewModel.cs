@@ -1,13 +1,8 @@
 ﻿using Avalonia.Collections;
 using Chameleon.lib.Util;
-using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.Services;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModels;
-using Chameleon.client.Features.Projects.Profiles.MyProfiles.Dialogs;
 using Chameleon.client.UI.UserControls.ViewModels;
 using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -25,51 +20,15 @@ using System.Reactive.Subjects;
 
 using static Chameleon.lib.Common.Constants.Enums;
 using Chameleon.client.Features.Projects.Folders;
+using DynamicData.Binding;
+using Chameleon.client.Features.ProfilesAndFolders.Profiles.ViewModels;
+using Chameleon.client.Features.Projects.Profiles.Dialogs;
 
-namespace Chameleon.client.Features.Projects.Profiles.MyProfiles;
-public partial class AddUserProfilesPupViewModel : ViewModelObjectBase {
-	[ObservableProperty] ObsFolder? folder;
-
-	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
-	public ObservableCollection<ObsProfile> SelectedProfiles { get; } = [];
-
-	public AddUserProfilesPupViewModel()
-	{
-		_ = UserProfilesRepo
-					.Connect()
-					.Transform(i => new ObsProfile(
-						userProfile: i,
-						hasActionOptions: false,
-						onSelectedChanged: p => {
-							if (p.IsSelected && !SelectedProfiles.Contains(p)) {
-								SelectedProfiles.Add(p);
-							} else {
-								_ = SelectedProfiles.Remove(p);
-							}
-						})
-					)
-					.SortAndBind(out var profiles, ProfileManagementService.AscendingComparer)
-					.Subscribe(async p => {
-						var pre = SelectedProfiles.ToList();
-						SelectedProfiles.Clear();
-						await Task.Delay(64);
-						foreach (var item in pre) {
-							var cp = Profiles?.First(pr => pr.Dto!.id == item.Dto!.id);
-							if (cp != null) {
-								cp.IsSelected = true;
-								SelectedProfiles.Add(cp);
-							}
-						}
-					});
-		Profiles = profiles;
-	}
-}
+namespace Chameleon.client.Features.Projects.Profiles;
 
 public partial class MoveUserProfilesPopupViewModel : ViewModelObjectBase {
-	[ObservableProperty]
-	private ObsFolder? selectedFolder;
-	[ObservableProperty]
-	private bool listIsVisible = true;
+	[ObservableProperty] ObsFolder? selectedFolder;
+	[ObservableProperty] bool listIsVisible = true;
 
 	public ObservableCollection<ObsFolder> Folders { get; } = [];
 	public ObservableCollection<ObsProfile> Profiles { get; } = [];
@@ -79,8 +38,7 @@ public partial class MoveUserProfilesPopupViewModel : ViewModelObjectBase {
 	partial void OnSelectedFolderChanged(ObsFolder? value) => OnPropertyChanged(nameof(HasSelected));
 
 	[RelayCommand]
-	private void SelectFolder(ObsFolder selectedFolder)
-	{
+	private void SelectFolder(ObsFolder selectedFolder) {
 		SelectedFolder = selectedFolder;
 	}
 }
@@ -89,8 +47,14 @@ public record SystemBrovserItem(SystemBrowserType SystemBrowserType) {
 	public string IconName => SystemBrowserType.ToString().ToLower();
 }
 
-public partial class ProfilesViewModel : ViewModelObjectBase {
-	private CancellationTokenSource? cts;
+public partial class ProfilesViewModel : Projector {
+	public static SortExpressionComparer<ObsProfile> AscendingComparer => SortExpressionComparer<ObsProfile>.Ascending(p => p.Dto!.title!);
+	public static SortExpressionComparer<ObsProfile> DescendingComparer => SortExpressionComparer<ObsProfile>.Descending(p => p.Dto!.title!);
+	readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(AscendingComparer);
+	readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, 9));
+	readonly BehaviorSubject<Func<ObsProfile, bool>> filter;
+
+	CancellationTokenSource? cts;
 
 	[ObservableProperty] Arguments selectedPlaywrightScript;
 	[ObservableProperty] PaginatorViewModel paginatorViewModel;
@@ -103,36 +67,30 @@ public partial class ProfilesViewModel : ViewModelObjectBase {
 	[ObservableProperty] bool isRecordSelected;
 	[ObservableProperty] string searchText = string.Empty;
 	[ObservableProperty] UPFolderViewModel? folder;
+	[ObservableProperty] ChangeComparereOption sortSelected = ChangeComparereOption.Ascending;
 
 	public AvaloniaList<Arguments> PlaywrightScripts { get; } = [];
 	public ObservableCollection<SystemBrovserItem> BrowserItems { get; } = [
 		new SystemBrovserItem(SystemBrowserType.Chrome),
 		new SystemBrovserItem(SystemBrowserType.Brave),
 	];
+	public ChangeComparereOption[] Sorts { get; } = (ChangeComparereOption[])Enum.GetValues(typeof(ChangeComparereOption));
 
-	private IEnumerable<ObsProfile> GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
+	public bool HasNoItems => Profiles.Count == 0;
+	public string SelectedFolderTitle => Folder?.Title ?? "x_x";
 	public int SelectedCount => GetSelectedProfiles?.Count() ?? 0;
-	public int MaxInFolderItems => Folder == null || Folder!.Id == 0
-	? UserProfilesRepo.Instance.ObservableCache.Count
-	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.Id);
 	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
 	public bool IsProfilesExist => UserProfilesRepo.Instance.ObservableCache.Items.Any();
-	public bool HasNoItems => Profiles.Count == 0;
+	private IEnumerable<ObsProfile> GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
 	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
-	public string SelectedFolderTitle => Folder?.Title ?? "x_x";
-	//
-	public Func<ObsProfile, bool> FilterPredicate => p => Folder == null || Folder.Id == 0 || (Folder != null && Folder.Id != 0 && p.Dto?.folderId == Folder?.Id);
+	public Func<ObsProfile, bool> FilterPredicate =>
+	p => Folder == null || Folder.Id == 0 ||
+	(Folder != null && Folder.Id != 0 && p.Dto?.folderId == Folder?.Id);
+	public int MaxInFolderItems =>
+	Folder == null || Folder.Id == 0
+	? UserProfilesRepo.Instance.ObservableCache.Count
+	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.Id);
 
-	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(ProfileManagementService.AscendingComparer);
-	private readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, 9));
-	private readonly BehaviorSubject<Func<ObsProfile, bool>> filter;
-
-	[ObservableProperty] ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
-	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
-
-	private readonly ReadOnlyObservableCollection<ObsProfile> profiles;
-	public ReadOnlyObservableCollection<ObsProfile> Profiles => profiles;
-	public event Action<ObsProfile>? OnSelectedChanged;
 
 	public ProfilesViewModel() {
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
@@ -142,13 +100,13 @@ public partial class ProfilesViewModel : ViewModelObjectBase {
 				onSelectedChanged: p => {
 					OnPropertyChanged(nameof(HasSelectedItems));
 					OnPropertyChanged(nameof(SelectedCount));
-					OnSelectedChanged?.Invoke(p);
 				},
 				onDeleted: p => SetViewModelsFilter()))
 			.Filter(filter)
-			.SortAndPage(ProfileManagementService.AscendingComparer, pageRequests)
-			.SortAndBind(out profiles, profilesCompareObservable)
+			.SortAndPage(AscendingComparer, pageRequests)
+			.SortAndBind(out var profiles, profilesCompareObservable)
 			.Subscribe();
+		Profiles = profiles;
 
 		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
@@ -176,7 +134,7 @@ public partial class ProfilesViewModel : ViewModelObjectBase {
 		};
 
 		AsyncCommandMap["SaveTags"] = async () => {
-			_ = await  TagsRepo.Instance.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
+			_ = await TagsRepo.Instance.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
 		};
 		AsyncCommandMap["chrome"] = async () => {
 			await OpenSystemBrowser(SystemBrowserType.Chrome);
@@ -288,10 +246,10 @@ public partial class ProfilesViewModel : ViewModelObjectBase {
 			PlaywrightScripts.FirstOrDefault(s => s.Description?.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
 	}
 
-	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
+	partial void OnSortSelectedChanged(ChangeComparereOption value) {
 		profilesCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => ProfileManagementService.DescendingComparer,
-			_ => ProfileManagementService.AscendingComparer
+			ChangeComparereOption.Descending => DescendingComparer,
+			_ => AscendingComparer
 		});
 	}
 	partial void OnSelectedBrowserItemChanged(SystemBrovserItem value) {
@@ -307,7 +265,9 @@ public partial class ProfilesViewModel : ViewModelObjectBase {
 	partial void OnSearchTextChanged(string value) {
 		if (value.IsNot()) {
 			PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
-			filter.OnNext(p => p.Title?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true && (Folder == null || Folder.id == 0 || (Folder != null && Folder.id != 0 && p.Dto?.folderId == Folder?.id)));
+			filter.OnNext(p =>
+			p.Title?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true &&
+			(Folder == null || Folder.Id == 0 || (Folder != null && Folder.Id != 0 && p.Dto?.folderId == Folder?.Id)));
 		} else {
 			PaginatorViewModel.UpdatePageCount(9);
 			filter.OnNext(FilterPredicate);
@@ -318,7 +278,7 @@ public partial class ProfilesViewModel : ViewModelObjectBase {
 	partial void OnFolderChanged(UPFolderViewModel? value) {
 		FoldersViewModel.Instance.SetSelectedFolder(value?.ToDto());
 		SearchText = string.Empty;
-		HasFolder = value?.id != default && value?.id != 0;
+		HasFolder = value?.Id != default && value?.Id != 0;
 		OnPropertyChanged(nameof(SelectedFolderTitle));
 		SetViewModelsFilter();
 	}
@@ -326,7 +286,7 @@ public partial class ProfilesViewModel : ViewModelObjectBase {
 	public async Task OpenAsync(UPFolderDto? folder) {
 		if (folder is not null) {
 			Folder = new UPFolderViewModel(folder!);
-			Folder.Tags = await  TagsRepo.Instance.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
+			Folder.Tags = await TagsRepo.Instance.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
 			OnPropertyChanged(nameof(SelectedFolderTitle));
 			UnselectItems();
 			SetViewModelsFilter();

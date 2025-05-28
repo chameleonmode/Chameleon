@@ -1,6 +1,6 @@
 ﻿using Chameleon.app.Avalonia;
-using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.client.Features.Projects;
+using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -11,15 +11,12 @@ using System.Reactive.Linq;
 
 namespace Chameleon.client.Features.ProfilesAndFolders.Search.ByTags.Controls;
 public partial class TagProfilesSearchViewModel : TagsSearchViewModelBase {
-
-	[ObservableProperty]
-	private ObsProfile? selectedProfile;
+	[ObservableProperty] ObsProfile? selectedProfile;
 
 	private readonly ReadOnlyObservableCollection<ObsProfile> profiles;
 	public ReadOnlyObservableCollection<ObsProfile> Profiles => profiles;
 
 	public TagProfilesSearchViewModel(TagItemDto tagItem) : base(tagItem) {
-
 		_ = UserProfilesRepo
 				.Connect()
 				.Filter(f => tagItem.Ids.Any(id => id == f.id.ToString()))

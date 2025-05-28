@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
-using Chameleon.app.Avalonia.Controls;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
@@ -10,81 +9,22 @@ using Chameleon.lib.WebBrowser.Services;
 using Chameleon.lib.Util;
 using static Chameleon.lib.Common.Constants.Enums;
 using Chameleon.lib.WebBrowser;
-using DynamicData.Binding;
 using Chameleon.lib.Helpers;
+using Chameleon.app.Avalonia;
+using Chameleon.client.Features.Projects.Profiles.Dialogs;
 
-namespace Chameleon.app.Avalonia.Models.Observable;
-public partial class UserProfileSidePanelViewModel : ViewModelObjectBase {
-	private readonly ReadOnlyObservableCollection<UPAddressDto> addresses;
-	private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
-	private readonly ReadOnlyObservableCollection<UPPersonDto> persons;
-
-	public ObservableCollection<CountryzDto> Countries { get; } = new ObservableCollection<CountryzDto>(CountryzRepo.Instance.Countryz);
-	public ReadOnlyObservableCollection<UPAddressDto> ProfileAddresses => addresses;
-	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins => logins;
-	public ReadOnlyObservableCollection<UPPersonDto> ProfilePersons => persons;
-
-	[ObservableProperty]
-	private UPLoginDto? selectedLogin;
-	[ObservableProperty]
-	private UPPersonDto? selectedPerson;
-	[ObservableProperty]
-	private UPAddressDto? selectedAddress;
-	[ObservableProperty]
-	private ObsProfile? userProfile;
-
-	public string? CountryName => Countries?.FirstOrDefault(x => SelectedAddress?.CountryId == x.id)?.Name;
-	public bool HasPersons => ProfilePersons.Count > 0;
-	public bool HasAddresses => ProfileAddresses?.Count > 0;
-	public bool HasLogins => ProfileLogins?.Count > 0;
-
-	public UserProfileSidePanelViewModel(UserProfileDto up) {
-		_ = UPAdditionalDataRepo.Instance.Personz
-			.Connect(i => i.ProfileId == up.id)
-			.Bind(out persons)
-			.Subscribe((i) => {
-				OnPropertyChanged(nameof(HasPersons));
-			});
-		//
-		_ = UPAdditionalDataRepo.Instance.Loginz
-			.Connect(i => i.ProfileId == up.id)
-			.Bind(out logins)
-			.Subscribe((i) => {
-				OnPropertyChanged(nameof(HasLogins));
-			});
-		//
-		_ = UPAdditionalDataRepo.Instance.Addrez
-			.Connect(i => i.ProfileId == up.id)
-			.Bind(out addresses)
-			.Subscribe((i) => {
-				OnPropertyChanged(nameof(HasAddresses));
-			});
-		userProfile = new ObsProfile(up);
-	}
-
-	public override Task InitAsync(object? param) {
-		return UPAdditionalDataRepo.Instance.Load();
-	}
-
-	partial void OnSelectedAddressChanged(UPAddressDto? value) => OnPropertyChanged(nameof(CountryName));
-}
-
-public class SnapCracklePopViewModel : ViewModelObjectBase {
-	public ObservableCollection<ObsProfile> RunningList { get; set; } = [];
-
-	public static SnapCracklePopViewModel Instance { get; } = new SnapCracklePopViewModel();
-}
+namespace Chameleon.client.Features.Projects.Profiles;
 
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 	[ObservableProperty] string isChromeRunning = "False";
 	[ObservableProperty] string isBraveRunning = "False";
 	[ObservableProperty] string isFFRunning = "False";
-	[ObservableProperty] bool isShowGlyph;
+	[ObservableProperty] bool isShowGlyph = true;
 	[ObservableProperty] bool isForeground;
 	[ObservableProperty] bool isFavorite;
 
 	//
-	public bool IsShowCheckboxColumn { get; }
+	public bool IsShowCheckboxColumn { get; init; } = true;
 	public bool IsSharedProfile { get; }
 
 	//
@@ -108,30 +48,19 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 
 	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins {get;}
 
-	public new event Action<ObsProfile>? OnSelectedChanged;
-
-	public ObsProfile(
-			UserProfileDto userProfile,
-			bool isShowCheckboxColumn = true,
-			bool isShowGlyph = true,
-			bool hasActionOptions = true,
-			Action<ObsProfile>? onSelectedChanged = default,
-			Action<ObsProfile>? onDeleted = default
-	) : base(
-			userProfile,
-			userProfile.title,
-			onSelectedChanged == null ? null : x => onSelectedChanged((ObsProfile)x)
+	public ObsProfile(UserProfileDto profile, Action<ObservableDtoViewModelBase<UserProfileDto>>? onSelectedChanged = default, Action<ObsProfile>? onDeleted = default) 
+	: base(
+			profile,
+			profile.title,
+			onSelectedChanged
 	) {
 		_ = UPAdditionalDataRepo.Instance.Loginz
-					.Connect(i => i.ProfileId == userProfile.id)
+					.Connect(i => i.ProfileId == profile.id)
 					.Bind(out var logins)
 					.Subscribe();
 		ProfileLogins = logins;
-		IsShowGlyph = isShowGlyph;
-		IsShowCheckboxColumn = isShowCheckboxColumn;
-		IsActionOptionsVisible = hasActionOptions;
-		IsSharedProfile = userProfile.creatorUserId != Auther.AuthSession?.UserId;
-		IsFavorite = userProfile.isFavourite;
+		IsSharedProfile = profile.creatorUserId != Auther.AuthSession?.UserId;
+		IsFavorite = profile.isFavourite;
 
 		AsyncCommandMap["OpenFirefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
 		AsyncCommandMap["OpenChrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);
@@ -139,16 +68,16 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 
 		AsyncCommandMap["Favorite"] = async () => {
 			IsFavorite = !IsFavorite;
-			_ = await UserProfilesRepo.SetProfileIsFavorite(userProfile, IsFavorite);
+			_ = await UserProfilesRepo.SetProfileIsFavorite(profile, IsFavorite);
 		};
 		AsyncCommandMap["DeleteUserProfile"] = async () => {
 			if (await MessageBox.Show(
 				title: "Delete User Profile",
-				content: $"Are you sure you want to delete {userProfile.title}?",
+				content: $"Are you sure you want to delete {profile.title}?",
 				btns: MBoxButtons.OkCancel,
 				fontIconInfo: "DeleteLines"
 			)) {
-				_ = await UserProfilesRepo.Instance.Delete(userProfile.id);
+				_ = await UserProfilesRepo.Instance.Delete(profile.id);
 				if (Navigator.Instance.CanGoBack && Navigator.Instance.IsCurrentView("IdentityView")) Navigator.Instance.GoBack();
 				
 				onDeleted?.Invoke(this);
@@ -157,7 +86,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 
 		CommandMap["OpenTopmostController"] = OpenTopmostController;
 		CommandMap["ShowViewProfile"] = () => DialogBox.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(
-			vm: new UserProfileSidePanelViewModel(userProfile),
+			vm: new UserProfileSidePanelViewModel(profile),
 			title: "Copy Pasta", 
 			width: 156
 		);
@@ -178,9 +107,6 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			}
 		});
 		browsers.ForEach(b => _ = SetRunning(b, true));
-
-		_ = this.WhenValueChanged(x => x.IsSelected)
-			.Subscribe(x => OnSelectedChanged?.Invoke(this));
 	}
 
 	public void View() {
@@ -194,7 +120,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			vm: SnapCracklePopViewModel.Instance,
 			v: SnapCracklePopUserControl.Instance,
 			initialize: vm => {
-				vm.RunningList.AddIfNotExists(new ObsProfile(Dto, false, false), p => p.Dto?.id == Dto.id);
+				vm.RunningList.AddIfNotExists(new ObsProfile(Dto){IsShowGlyph = false, IsShowCheckboxColumn = false }, p => p.Dto?.id == Dto.id);
 			},
 			onClosed: vm => {
 				vm.RunningList.Clear();

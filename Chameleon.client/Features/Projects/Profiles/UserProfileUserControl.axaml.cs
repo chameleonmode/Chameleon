@@ -3,9 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 
-using Chameleon.app.Avalonia.Models.Observable;
-
-namespace Chameleon.app.Avalonia.Controls;
+namespace Chameleon.client.Features.Projects.Profiles;
 
 public partial class UserProfileUserControl : UserControl {
 	public UserProfileUserControl() {

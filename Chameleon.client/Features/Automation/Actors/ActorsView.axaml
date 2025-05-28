@@ -3,14 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="850"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:afvc="using:Chameleon.app.Avalonia.Fluent.Controls"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:controls="using:Chameleon.client.UI.Controls"
+             xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
              xmlns:vm="using:Chameleon.client.Features.Automation.Actors"
              xmlns:vmv="using:Chameleon.client.Features.Automation.Actors.ViewModels"
              xmlns:models="using:Chameleon.AIR.Actors.Models"
-			 xmlns:modelsObservable="using:Chameleon.app.Avalonia.Models.Observable"
              xmlns:redditModels="using:Chameleon.AIR.Actors.Models.Reddit"
              x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
              x:DataType="vm:ActorsViewModel"
@@ -102,11 +102,6 @@
 
 			<DataTemplate x:Key="StartEditorTemplate" x:DataType="models:Start">
 				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-					<!-- 
-						<TextBlock Classes="sideLabel" Grid.Row="0" Grid.Column="0" Text="Feature:"/>
-						<TextBox Classes="sideInput" Grid.Row="0" Grid.Column="1" Text="{Binding Feature, Mode=TwoWay}"/> 
-					-->
-					<!-- Using &#x0a; for line breaks -->
 					<TextBlock Text="URL's:"
 						Grid.Row="0"
 						ToolTip.Tip="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)" />
@@ -289,18 +284,18 @@
 											ToolTip.Tip="already selected profiles"
 											Classes="b1" />
 										<Grid ColumnDefinitions="Auto,*">
-											<Button Content="Select..."
+											<Button Content="..."
 													Command="{Binding AsyncCfVCommand}"
 													CommandParameter="OpenProfileSelector"
 													Theme="{StaticResource AccentTextButton}"
-													HorizontalAlignment="Right"
+													ToolTip.Tip="Select N Edit"
 													Margin="4,6"/>
 											<ScrollViewer Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Auto">
 												<ItemsControl
 													ItemsPanel="{StaticResource HorizontalStackPanel}"
 													ItemsSource="{Binding SelectedProfiles}">
 													<ItemsControl.ItemTemplate>
-														<DataTemplate x:DataType="modelsObservable:ObsProfile">
+														<DataTemplate x:DataType="profiles:ObsProfile">
 															<ToggleButton IsChecked="{Binding Active}"
 																		  Content="{Binding Title}" />
 														</DataTemplate>

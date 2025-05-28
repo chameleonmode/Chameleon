@@ -8,7 +8,6 @@ using System.Reactive.Linq;
 using DynamicData;
 using DynamicData.PLinq;
 
-using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia;
 
 using Chameleon.lib.Util;
@@ -20,16 +19,14 @@ using Chameleon.client.Features.ProfilesAndFolders.Search.ByTags;
 using Chameleon.client.Features.ProfilesAndFolders.Search.ByTags.Controls;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects;
-using Chameleon.client.Features.Projects.Profiles.MyProfiles;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.client.Features;
+using Chameleon.client.Features.Projects.Profiles;
 
 namespace Chameleon.client;
 
 public partial class ViewModel : ObservableObjectBase {
-  public event Action<ObsProfile>? OnBoundProfilesProfileSelectedChanged;
-
   [ObservableProperty] MainAppSearchItem? selectedSearchTerm;
   [ObservableProperty] bool isSplashVisible = true;
   [ObservableProperty] bool infoBarOpen;
@@ -49,7 +46,7 @@ public partial class ViewModel : ObservableObjectBase {
     _ = UserProfilesRepo.Connect().Transform(i => new MainAppSearchItem() {
       Header = i.title ?? "xxx",
       Namespace = "Profile",
-      ViewModel = new ObsProfile(i, onSelectedChanged: OnBoundProfilesProfileSelectedChanged),
+      ViewModel = new ObsProfile(i) { IsShowCheckboxColumn = false },
       PageType = this.GetType()
     })
     .Bind(out _boundProfiles)

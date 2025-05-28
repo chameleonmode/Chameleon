@@ -1,5 +1,5 @@
-﻿using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
+﻿using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
+using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
@@ -18,12 +18,9 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private readonly BehaviorSubject<Func<UP, bool>> filter;
 	private readonly BehaviorSubject<Func<ObsAddressViewModel, bool>> adrezfilter;
 
-	[ObservableProperty]
-	private bool isSaving;
-	[ObservableProperty]
-	private ObsProfile? profileVM;
-	[ObservableProperty]
-	private UserProfileViewModel? userProfile = new(new UserProfileDto());
+	[ObservableProperty] bool isSaving;
+	[ObservableProperty] ObsProfile? profileVM;
+	[ObservableProperty]  UserProfileViewModel? userProfile = new(new UserProfileDto());
 
 	private readonly ReadOnlyObservableCollection<ObsAddressViewModel> addresses;
 	private readonly ReadOnlyObservableCollection<UPBusinessViewModel> businesses;
@@ -101,7 +98,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			UserProfile = new UserProfileViewModel(up);
 			UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString())
 				.ToStringAsync().RunInBackgroundWithResult();
-			ProfileVM = new ObsProfile(up, false);
+			ProfileVM = new ObsProfile(up){ IsShowCheckboxColumn = false };
 			filter.OnNext(FilterPredicate);
 			adrezfilter.OnNext(AdrezFilterPredicate);
 			Title = ProfileVM?.Title;
@@ -137,7 +134,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 				UserProfile.Tags = await tagsRepo
 					.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync()
 					.RunInBackgroundWithResult();
-				ProfileVM = new ObsProfile(UserProfile.ToDto(), false);
+				ProfileVM = new ObsProfile(UserProfile.ToDto()) { IsShowCheckboxColumn = false };
 				Toaster.Success($"Update was successful.");
 			}
 		} finally {

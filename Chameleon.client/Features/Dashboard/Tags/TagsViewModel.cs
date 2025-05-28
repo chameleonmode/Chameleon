@@ -1,5 +1,5 @@
-﻿using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.client.Features.Projects.Folders;
+﻿using Chameleon.client.Features.Projects.Folders;
+using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -40,7 +40,7 @@ public partial class TagsViewModel : Base {
 								.Where(ids => ids is not null)
 								.Select(ids => new Func<UserProfileDto, bool>(f => ids!.Any(id => id == f.id.ToString())))
 					)
-					.Transform(i => new ObsProfile(i, false))
+					.Transform(i => new ObsProfile(i){ IsShowCheckboxColumn = false})
 					.SortAndBind(out var profiles, profilesCompareObservable)
 					.Subscribe(_ => OnPropertyChanged(nameof(HasNoItems)));
 		Profiles = profiles;

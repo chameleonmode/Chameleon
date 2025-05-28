@@ -6,8 +6,7 @@ using Chameleon.lib.Const;
 using Chameleon.AIR.Actors.Models;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Util;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
-using Chameleon.client.Features.Projects.Profiles.MyProfiles;
+using Chameleon.client.Features.Projects.Profiles;
 
 namespace Chameleon.client.Features.Automation.Actors;
 

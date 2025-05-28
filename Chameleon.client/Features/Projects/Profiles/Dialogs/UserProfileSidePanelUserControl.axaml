@@ -5,13 +5,13 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:vm="using:Chameleon.app.Avalonia.Models.Observable"
-			 x:DataType="vm:UserProfileSidePanelViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Controls.UserProfileSidePanelUserControl">
+			 xmlns:local="using:Chameleon.client.Features.Projects.Profiles.Dialogs"
+             x:Class="Chameleon.client.Features.Projects.Profiles.Dialogs.UserProfileSidePanelUserControl"
+			 x:DataType="local:UserProfileSidePanelViewModel"
+			 x:CompileBindings="True">
 	<UserControl.Resources>
 		<ControlTheme x:Key="TabHead"
-					  x:DataType="vm:UserProfileSidePanelViewModel"
+					  x:DataType="local:UserProfileSidePanelViewModel"
 					  TargetType="ContentControl">
 			<Setter Property="Template">
 				<ControlTemplate>

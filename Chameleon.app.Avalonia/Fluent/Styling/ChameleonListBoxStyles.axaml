@@ -1,6 +1,5 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-					xmlns:controls="using:Chameleon.app.Avalonia.Controls"
 					xmlns:ui="using:FluentAvalonia.UI.Controls">
 	<Design.PreviewWith>
 		<Border Padding="50" 
@@ -155,9 +154,6 @@
 		</Border>
 	</Design.PreviewWith>
 
-	<DataTemplate x:Key="UserProfileUserControlDataTemplate">
-		<controls:UserProfileUserControl HorizontalAlignment="Stretch" />
-	</DataTemplate>
 	<DataTemplate x:Key="ObsSelectedTemplate">
 		<Border
 			Padding="8 0 0 0"

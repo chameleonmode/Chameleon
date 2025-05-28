@@ -1,4 +1,4 @@
-﻿using Chameleon.client.Features.Projects.Profiles.MyProfiles;
+﻿using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;

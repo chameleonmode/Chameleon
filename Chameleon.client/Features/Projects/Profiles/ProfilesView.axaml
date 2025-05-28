@@ -5,12 +5,11 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:local="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:uc="using:Chameleon.client.UI.UserControls"
 			 xmlns:converter="using:Chameleon.Common.ValueConverters"
-			 xmlns:vm="using:Chameleon.client.Features.Projects.Profiles.MyProfiles"
-             x:Class="Chameleon.client.Features.Projects.Profiles.MyProfiles.MyProfilesView"
-			 x:DataType="vm:ProfilesViewModel"
+			 xmlns:local="using:Chameleon.client.Features.Projects.Profiles"
+             x:Class="Chameleon.client.Features.Projects.Profiles.ProfilesView"
+			 x:DataType="local:ProfilesViewModel"
 			 x:CompileBindings="True">
 	<UserControl.Styles>
 		<Style Selector="ui|SymbolIcon.spinner">

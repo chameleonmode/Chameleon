@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
@@ -13,6 +12,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 using Chameleon.client.Features.Tenants.Members.Dialogs;
+using Chameleon.client.Features.Projects.Profiles;
 
 namespace Chameleon.client.Features.Tenants.Members.ViewModels;
 public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisProfileDto> {

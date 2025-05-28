@@ -6,7 +6,7 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:folders="using:Chameleon.client.Features.Projects.Folders"
-			 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles.MyProfiles"
+			 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
 			 xmlns:local="using:Chameleon.client.Features.Projects"
              x:Class="Chameleon.client.Features.Projects.ProjectsView"
 			 x:DataType="local:ProjectsViewModel"
@@ -33,7 +33,7 @@
 
 			<Grid ColumnDefinitions="3*,*">
 			<Panel DataContext="{Binding Profiles}">
-				<profiles:MyProfilesView />
+				<profiles:ProfilesView />
 			</Panel>
 			<Panel DataContext="{Binding Folders}" Grid.Column="1">
 				<folders:FoldersView />

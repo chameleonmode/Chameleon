@@ -1,9 +1,7 @@
 using Chameleon.AIR.Actors.Models;
-using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.client.Features.Automation.Actors.Dialogs;
 using Chameleon.client.Features.Automation.Actors.ViewModels;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
-using Chameleon.client.Features.Projects.Profiles.MyProfiles;
+using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.AIR.Scripts.Models;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;

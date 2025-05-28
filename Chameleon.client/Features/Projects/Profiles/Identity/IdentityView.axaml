@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-             xmlns:appuc="using:Chameleon.app.Avalonia.Controls"
+             xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
 			 xmlns:vm="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels"
 			 xmlns:folder="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity"
 			 x:DataType="folder:IdentityViewModel"
@@ -97,7 +97,7 @@
 	<Grid RowDefinitions="Auto,*">
 		<Grid ColumnDefinitions="*,Auto">
 			<Border DataContext="{Binding ProfileVM}">
-				<appuc:UserProfileUserControl Name="UPView" />
+				<profiles:UserProfileUserControl Name="UPView" />
 			</Border>
 
 			<StackPanel Grid.Column="1"

@@ -6,14 +6,14 @@ public partial class ViewModelObjectBase : ObservableObjectBase {
 	public bool Navigated { get; set; }
 
 	public ViewModelObjectBase() {
-		InitCommandMapping();
+		InitializeObject();
 	}
 
 	public ViewModelObjectBase(string? title) : this() {
 		Title = title;
 	}
 
-	public virtual void InitCommandMapping() { }
+	public virtual void InitializeObject() { }
 
 	[RelayCommand]
 	async Task Copy(object param) {

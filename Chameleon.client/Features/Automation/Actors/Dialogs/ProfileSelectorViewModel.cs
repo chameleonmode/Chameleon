@@ -1,7 +1,6 @@
-﻿using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
+﻿
 using Chameleon.client.Features.Projects.Folders;
-using Chameleon.client.Features.Projects.Profiles.MyProfiles;
+using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -30,7 +29,7 @@ public partial class ProfileOrFolderItem: ObservableObject, IDisposable {
 		isSelected = (Profile?.IsSelected ?? false) || initialIsSelected;
 
 		if (item is ObsProfile profile) {
-			Item = new ObsProfile(profile.Dto, isShowCheckboxColumn: false, isShowGlyph: true, hasActionOptions: false);
+			Item = new ObsProfile(profile.Dto){ IsShowCheckboxColumn = false, IsShowGlyph = true, IsActionOptionsVisible = false };
 		}
 
 		if (item is ObsFolder folder) {

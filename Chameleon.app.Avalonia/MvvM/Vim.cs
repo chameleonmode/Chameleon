@@ -1,6 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using Chameleon.lib.Common.Models.Dto;
+﻿using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
+using DynamicData.Binding;
 
 namespace Chameleon.lib.CommunityToolkit.MvvM;
 
@@ -16,10 +16,15 @@ public abstract partial class ObservableDtoViewModelBase<T>(T dto, string? title
 	[ObservableProperty] bool active;
 	[ObservableProperty] bool isActionOptionsVisible = true;
 
-	public override void InitCommandMapping() {
+	public override void InitializeObject() {
+		base.InitializeObject();
+		
 		CommandMap["Unselect"] = () => {
 			IsSelected = false;
 		};
+
+		_ = this.WhenValueChanged(x => x.IsSelected)
+		.Subscribe(x => OnSelectedChanged?.Invoke(this));
 	}
 
 	partial void OnIsSelectedChanged(bool value) {

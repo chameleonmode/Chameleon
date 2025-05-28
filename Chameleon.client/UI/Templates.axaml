@@ -1,7 +1,8 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="using:Chameleon.client.UI.Controls"
-                    xmlns:folders="using:Chameleon.client.Features.Projects.Folders">
+                    xmlns:folders="using:Chameleon.client.Features.Projects.Folders"
+                    xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles">
 	<ItemsPanelTemplate x:Key="HorizontalStackPanel">
 		<StackPanel Orientation="Horizontal" Spacing="6" />
 	</ItemsPanelTemplate>
@@ -24,5 +25,8 @@
 
 	<DataTemplate x:Key="UserFolderUserControlDataTemplate">
 		<folders:FolderUserControl HorizontalAlignment="Stretch" />
+	</DataTemplate>
+	<DataTemplate x:Key="UserProfileUserControlDataTemplate">
+		<profiles:UserProfileUserControl HorizontalAlignment="Stretch" />
 	</DataTemplate>
 </ResourceDictionary>

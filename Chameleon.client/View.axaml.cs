@@ -135,7 +135,7 @@ public partial class View : UserControl {
 		NavView.BackRequested += (s, e) => FrameView.GoBack();
 
 		//
-		FrameView.NavigationPageFactory = Features.ViewModel.Instance.NavigationFactory;
+		FrameView.NavigationPageFactory = ViewModel.Instance.NavigationFactory;
 		FrameView.Navigated += (s, e) => {
 			var page = pages
 			.SingleOrDefault(p => p.Value.Tag?.FullName == e.Content.GetType().FullName).Value;

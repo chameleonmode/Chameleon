@@ -5,8 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
              xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
              xmlns:vm="using:Chameleon.client.Features.Automation.Actors.Dialogs"
-             xmlns:modelsObservable="using:Chameleon.app.Avalonia.Models.Observable"
-             xmlns:controls="using:Chameleon.app.Avalonia.Controls"
+             xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
              xmlns:dd="using:DynamicData" 
 			 xmlns:System="using:System"
              x:DataType="vm:ProfileSelectorViewModel"
@@ -19,7 +18,7 @@
                           IsChecked="{Binding IsSelected, Mode=TwoWay}"
                           VerticalAlignment="Center"
                           Margin="0,0,8,0"/>
-				<controls:UserProfileUserControl Grid.Column="1"
+				<profiles:UserProfileUserControl Grid.Column="1"
                                                  DataContext="{Binding Profile}" />
 			</Grid>
 		</DataTemplate>

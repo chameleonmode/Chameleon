@@ -1,14 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.Services;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Util;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Helpers;
 using Chameleon.client.Features.Projects.Folders;
+using Chameleon.client.Features.Projects.Profiles;
 
 namespace Chameleon.client.Features.Tenants.Members.Dialogs;
 
@@ -20,11 +18,11 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	[ObservableProperty]
 	private bool showUserInfo;
 
-	public ProfileManagementService ProfileService => ProfileManagementService.Instance;
+	public ProfilesViewModel ProfileService => ProfilesViewModel.Instance;
 	public FoldersViewModel FolderService => FoldersViewModel.Instance;
 
 	//
-	public ReadOnlyObservableCollection<ObsProfile> Profiles => ProfileService.AllProfiles;
+	public ReadOnlyObservableCollection<ObsProfile> Profiles => ProfileService.Profiles;
 	public ObservableCollection<ObsProfile> SelectedProfiles { get; } = [];
 
 	//
@@ -34,42 +32,29 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	public InviteUserOrAddProfilesViewModel(bool userInfo = false) : base("Select Profiles & Folders") {
 		ShowUserInfo = userInfo;
 
-		Profiles.ForEach(p => {
-			p.IsActionOptionsVisible = false;
-			if (p.IsSelected) SelectedProfiles.Add(p);
-			p.OnSelectedChanged += OnProfileSelectedChanged;
+		Profiles.ForEach(profile => {
+			profile.IsActionOptionsVisible = false;
+			if (profile.IsSelected) SelectedProfiles.Add(profile);
+			profile.OnSelectedChanged += p => {
+				var obs = Profiles.FirstOrDefault(x => x.Dto.id == p.Dto.id) ?? new ObsProfile(p.Dto);
+
+				if (p.IsSelected && !SelectedProfiles.Contains(p)) SelectedProfiles.Add(obs);
+				else if (SelectedProfiles.Contains(obs)) _ = SelectedProfiles.Remove(obs);
+			};
 		});
 
-		Folders.ForEach(f => {
-			if (f.IsSelected) SelectedFolders.Add(f);
-			f.OnSelectedChanged += OnFolderSelectedChanged;
+		Folders.ForEach(folder => {
+			if (folder.IsSelected) SelectedFolders.Add(folder);
+			folder.OnSelectedChanged += f => {
+				var obs = Folders.FirstOrDefault(x => x.Dto.id == f.Dto.id) ?? new ObsFolder(f.Dto);
+				if (f.IsSelected && !SelectedFolders.Contains(f)) SelectedFolders.Add(obs);
+				else if (SelectedFolders.Contains(f)) _ = SelectedFolders.Remove(obs);
+
+				Profiles.Where(p => p.Dto!.folderId == f.Dto!.id).ForEach(item => {
+					item.IsSelected = f.IsSelected;
+				});
+			};
 		});
-	}
-
-	void OnProfileSelectedChanged(ObsProfile p) {
-		if (p.IsSelected) {
-			if (!SelectedProfiles.Contains(p))
-				SelectedProfiles.Add(p);
-		} else {
-			_ = SelectedProfiles.Remove(p);
-		}
-	}
-
-	void OnFolderSelectedChanged(ObservableDtoViewModelBase<UPFolderDto> f) {
-		if (f.IsSelected) {
-			if (!SelectedFolders.Contains(f)) {
-				SelectedFolders.Add(Folders.FirstOrDefault(x => x.Dto!.id == f.Dto!.id) ?? new ObsFolder(f.Dto!));
-			}
-		} else {
-			_ = SelectedFolders.Remove(Folders.FirstOrDefault(x => x.Dto!.id == f.Dto!.id) ?? new ObsFolder(f.Dto!));
-		}
-
-		var profiles = Profiles.Where(p => p.Dto!.folderId == f.Dto!.id);
-		if (profiles != null) {
-			foreach (var item in profiles) {
-				item.IsSelected = f.IsSelected;
-			}
-		}
 	}
 
 	public async Task<InviteUserOrAddProfilesViewModel?> ShowDialog() {

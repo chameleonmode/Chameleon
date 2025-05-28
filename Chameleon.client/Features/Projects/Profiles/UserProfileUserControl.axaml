@@ -2,15 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
 			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:avCommon="using:Chameleon.Avalonia.Common"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:dt="using:Chameleon.app.Avalonia.Models.Observable"
-			 x:DataType="dt:ObsProfile"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Controls.UserProfileUserControl">
+			 xmlns:local="using:Chameleon.client.Features.Projects.Profiles"
+             x:Class="Chameleon.client.Features.Projects.Profiles.UserProfileUserControl"
+			 x:DataType="local:ObsProfile"
+			 x:CompileBindings="True">
 	<UserControl.Styles>
 		<Style Selector=":is(Button)[Tag=True]">
 			<Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}"/>

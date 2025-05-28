@@ -2,9 +2,8 @@
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModels;
+namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.ViewModels;
 public partial class UPFolderViewModel : ObservableObjectBase {
-
 	public UPFolderViewModel(UPFolderDto folder) {
 		Id = folder.id;
 		Title = folder.title;
@@ -14,23 +13,12 @@ public partial class UPFolderViewModel : ObservableObjectBase {
 		CreatorUserId = folder.creatorUserId;
 	}
 
-	[ObservableProperty]
-	public int id;
-
-	[ObservableProperty]
-	public string? title;
-
-	[ObservableProperty]
-	public bool isFavorite;
-
-	[ObservableProperty]
-	public int profilesCount;
-
-	[ObservableProperty]
-	public long? creatorUserId;
-
-	[ObservableProperty]
-	private string? tags;
+	[ObservableProperty] int id;
+	[ObservableProperty] string? title;
+	[ObservableProperty] bool isFavorite;
+	[ObservableProperty] int profilesCount;
+	[ObservableProperty] long? creatorUserId;
+	[ObservableProperty] string? tags;
 
 	public UPFolderDto ToDto() {
 		return new UPFolderDto() {

@@ -12,8 +12,9 @@
 			 xmlns:defaultSearch="using:Chameleon.client.Features.ProfilesAndFolders.Search.Default"
 			 xmlns:tagSearch="using:Chameleon.client.Features.ProfilesAndFolders.Search.ByTags"
              xmlns:Features="using:Chameleon.client.Features" 
+             xmlns:local="using:Chameleon.client" 
 			 x:Class="Chameleon.client.View"
-             x:DataType="Features:ViewModel"
+             x:DataType="local:ViewModel"
 			 x:CompileBindings="True">
 	<UserControl.Styles>
 		<Style Selector="ui|NavigationView.MainAppNav">
