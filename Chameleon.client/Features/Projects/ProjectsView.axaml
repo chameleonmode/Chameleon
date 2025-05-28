@@ -5,10 +5,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:folder="using:Chameleon.client.Features.ProfilesAndFolders.Projects"
-			 x:DataType="folder:ProjectsViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.ProfilesAndFolders.Projects.ProjectsView">
+			 xmlns:folders="using:Chameleon.client.Features.Projects.Folders"
+			 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles.MyProfiles"
+			 xmlns:local="using:Chameleon.client.Features.Projects"
+             x:Class="Chameleon.client.Features.Projects.ProjectsView"
+			 x:DataType="local:ProjectsViewModel"
+			 x:CompileBindings="True">
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
 		<StackPanel>
 			<afv:PageHeaderControl TextType="Profiles"
@@ -30,11 +32,16 @@
 			</afv:PageHeaderControl>
 
 			<Grid ColumnDefinitions="3*,*">
-				<ContentControl Name="ProfilesPanel"
-					   DataContext= "{Binding Profiles}" />
-				<ContentControl Name="FoldersPanel"
+			<Panel DataContext="{Binding Profiles}">
+				<profiles:MyProfilesView />
+			</Panel>
+			<Panel DataContext="{Binding Folders}" Grid.Column="1">
+				<folders:FoldersView />
+			</Panel>
+				<!-- <ContentControl Name="ProfilesPanel" DataContext= "{Binding Profiles}" /> -->
+				<!-- <ContentControl Name="FoldersPanel"
 					   Grid.Column="1"
-					   DataContext= "{Binding Folders}" />
+					   DataContext= "{Binding Folders}" /> -->
 			</Grid>
 		</StackPanel>
 	</ScrollViewer>

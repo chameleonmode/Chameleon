@@ -1,6 +1,8 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.client.Features.Dashboard.Tags;
+using Chameleon.client.Features.Projects;
+using Chameleon.client.Features.Projects.Folders;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
@@ -15,9 +17,9 @@ using System.Reactive.Subjects;
 
 namespace Chameleon.client.Features.Dashboard;
 
-public abstract partial class Base(string? title) : ViewModelObjectBase(title) {
+public abstract partial class Base(string? title) : Projector(title) {
 	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(ProfileManagementService.AscendingComparer);
-	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(FolderManagementService.AscendingComparer);
+	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(FoldersViewModel.AscendingComparer);
 
 	[ObservableProperty]
 	private Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
@@ -26,10 +28,6 @@ public abstract partial class Base(string? title) : ViewModelObjectBase(title) {
 
 	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
 
-	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; protected set; } = new([]);
-	public ReadOnlyObservableCollection<ObsFolder> Folders { get; protected set; } = new([]);
-
-	public bool HasNoFolderItems => Folders.Count == 0;
 	public bool HasNoItems => Profiles.Count == 0;
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
@@ -41,8 +39,8 @@ public abstract partial class Base(string? title) : ViewModelObjectBase(title) {
 
 	partial void OnFolderSortSelectedChanged(Enums.ChangeComparereOption value) {
 		foldersCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => FolderManagementService.DescendingComparer,
-			_ => FolderManagementService.AscendingComparer
+			Enums.ChangeComparereOption.Descending => FoldersViewModel.DescendingComparer,
+			_ => FoldersViewModel.AscendingComparer
 		});
 	}
 }

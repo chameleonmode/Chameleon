@@ -108,7 +108,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 
 	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins {get;}
 
-	public event Action<ObsProfile>? OnSelectedChanged;
+	public new event Action<ObsProfile>? OnSelectedChanged;
 
 	public ObsProfile(
 			UserProfileDto userProfile,

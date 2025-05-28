@@ -7,7 +7,7 @@
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
 			 xmlns:ct="using:Chameleon.lib.CommunityToolkit.MvvM"
-			 xmlns:vmc="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles"
+			 xmlns:vmc="using:Chameleon.client.Features.Projects.Profiles.MyProfiles"
              x:Class="Chameleon.client.Features.Projects.Profiles.MyProfiles.Dialogs.AddUserProfilesPopupUserControl"
 			 x:DataType="vmc:AddUserProfilesPupViewModel"
 			 x:CompileBindings="True">

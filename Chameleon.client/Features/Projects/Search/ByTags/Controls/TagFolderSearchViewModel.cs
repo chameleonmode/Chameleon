@@ -1,7 +1,6 @@
 ﻿using Chameleon.app.Avalonia;
-using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.Services;
-using Chameleon.client.Features.ProfilesAndFolders.Projects;
+using Chameleon.client.Features.Projects;
+using Chameleon.client.Features.Projects.Folders;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -24,8 +23,8 @@ public partial class TagFolderSearchViewModel : TagsSearchViewModelBase {
 		_ = UserProfilesFolderRepo
 		.Connect()
 		.Filter(f => tagItem.Ids.Any(id => id == f.id.ToString()))
-		.Transform(i => new ObsFolder(i,null))
-		.SortAndBind(out folders, FolderManagementService.AscendingComparer)
+		.Transform(i => new ObsFolder(i))
+		.SortAndBind(out folders, FoldersViewModel.AscendingComparer)
 		.Subscribe();
 
 		_ = this.WhenValueChanged(x => x.SelectedFolder)

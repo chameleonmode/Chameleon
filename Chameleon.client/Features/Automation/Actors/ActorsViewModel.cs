@@ -7,6 +7,7 @@ using Chameleon.AIR.Actors.Models;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Util;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
+using Chameleon.client.Features.Projects.Profiles.MyProfiles;
 
 namespace Chameleon.client.Features.Automation.Actors;
 
@@ -60,6 +61,6 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
-		MyProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(UserProfilesRepo.Instance.ObservableCache.Count);
+		ProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(UserProfilesRepo.Instance.ObservableCache.Count);
 	}
 }

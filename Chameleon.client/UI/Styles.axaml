@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="using:Chameleon.client.UI.Controls">
+        xmlns:local="using:Chameleon.client.UI.Controls"
+        xmlns:folders="using:Chameleon.client.Features.Projects">
 	<Styles.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -17,5 +18,14 @@
 		<Setter Property="ItemsPanel" Value="{DynamicResource SingleColumnUniformGridTemplate}" />
 		<Setter Property="Theme" Value="{DynamicResource ListBoxNoScroller}" />
 		<Setter Property="ItemContainerTheme" Value="{DynamicResource GridViewItem}" />
+	</Style>
+	<Style Selector="ListBox#lbFolders" x:DataType="folders:Projector">
+		<Setter Property="Theme" Value="{StaticResource ListBoxNoScroller}" />
+		<Setter Property="ItemContainerTheme" Value="{StaticResource GridViewItem}" />
+		<Setter Property="ItemsPanel" Value="{StaticResource DoubleColumnUniformGridTemplate}" />
+		<Setter Property="ItemTemplate" Value="{StaticResource UserFolderUserControlDataTemplate}" />
+		<Setter Property="IsVisible" Value="{Binding !HasNoFolderItems}" />
+		<Setter Property="ItemsSource" Value="{Binding Folders}" />
+		<Setter Property="VerticalAlignment" Value="Top" />
 	</Style>
 </Styles>

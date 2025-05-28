@@ -8,6 +8,7 @@ using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Util;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Helpers;
+using Chameleon.client.Features.Projects.Folders;
 
 namespace Chameleon.client.Features.Tenants.Members.Dialogs;
 
@@ -20,14 +21,14 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	private bool showUserInfo;
 
 	public ProfileManagementService ProfileService => ProfileManagementService.Instance;
-	public FolderManagementService FolderService => FolderManagementService.Instance;
+	public FoldersViewModel FolderService => FoldersViewModel.Instance;
 
 	//
 	public ReadOnlyObservableCollection<ObsProfile> Profiles => ProfileService.AllProfiles;
 	public ObservableCollection<ObsProfile> SelectedProfiles { get; } = [];
 
 	//
-	public ReadOnlyObservableCollection<ObsFolder> Folders => FolderService.AllFolders;
+	public ReadOnlyObservableCollection<ObsFolder> Folders => FolderService.Folders;
 	public ObservableCollection<ObsFolder> SelectedFolders { get; } = [];
 
 	public InviteUserOrAddProfilesViewModel(bool userInfo = false) : base("Select Profiles & Folders") {
@@ -54,13 +55,13 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 		}
 	}
 
-	void OnFolderSelectedChanged(ObsFolder f) {
+	void OnFolderSelectedChanged(ObservableDtoViewModelBase<UPFolderDto> f) {
 		if (f.IsSelected) {
 			if (!SelectedFolders.Contains(f)) {
-				SelectedFolders.Add(f);
+				SelectedFolders.Add(Folders.FirstOrDefault(x => x.Dto!.id == f.Dto!.id) ?? new ObsFolder(f.Dto!));
 			}
 		} else {
-			_ = SelectedFolders.Remove(f);
+			_ = SelectedFolders.Remove(Folders.FirstOrDefault(x => x.Dto!.id == f.Dto!.id) ?? new ObsFolder(f.Dto!));
 		}
 
 		var profiles = Profiles.Where(p => p.Dto!.folderId == f.Dto!.id);

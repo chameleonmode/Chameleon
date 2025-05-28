@@ -17,7 +17,7 @@ using DynamicData;
 using static Chameleon.lib.Common.Constants.Enums.Api;
 using Chameleon.client.UI.UserControls.ViewModels;
 using DynamicData.Binding;
-using Chameleon.app.Avalonia.Services;
+using Chameleon.client.Features.Projects.Folders;
 
 namespace Chameleon.client.Features.Settings.Featured;
 public partial class ObsProxySetting : ViewModelObjectBase{
@@ -60,7 +60,7 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 	public static SortExpressionComparer<ObsProxySetting> AscendingComparer => SortExpressionComparer<ObsProxySetting>.Descending(p => p.ObsProfile.IsSelected).ThenByAscending(p => p.ObsProfile.Title!);
 	public static SortExpressionComparer<ObsProxySetting> DescendingComparer => SortExpressionComparer<ObsProxySetting>.Descending(p => p.ObsProfile.Title!);
 
-	private readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, Consts.PageinationPageItems));
+	private readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, 9));
 
 	private readonly ReadOnlyObservableCollection<ObsProxySetting> proxies;
 	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
@@ -91,8 +91,6 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		_ = UserProfilesRepo
 			.Connect()
 			.Transform(i=> new ObsProxySetting(new ObsProfile(i, false, onSelectedChanged: (p) => {
-				// PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
-				// PaginatorViewModel.UpdatePageCount(Math.Max(Consts.PageinationPageItems, Proxies.Count(p => p.ObsProfile.IsSelected)));
 				OnPropertyChanged(nameof(HasSelectedItems));
 				OnPropertyChanged(nameof(SelectedCount));
 			})))
@@ -103,8 +101,8 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 
 		_ = UserProfilesFolderRepo
 			.Connect()
-			.Transform(i => new ObsFolder(i,null))
-			.SortAndBind(out folders, FolderManagementService.AscendingComparer)
+			.Transform(i => new ObsFolder(i))
+			.SortAndBind(out folders, FoldersViewModel.AscendingComparer)
 			.Subscribe();
 		PaginatorViewModel = new PaginatorViewModel((p) => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
@@ -269,7 +267,7 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		foreach (var model in Proxies) {
 			model.ObsProfile.IsSelected = false;
 		}
-		PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
+		PaginatorViewModel.UpdatePageCount(9);
 	}
 	[RelayCommand]
 	private void SelectAll()

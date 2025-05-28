@@ -1,32 +1,35 @@
-﻿using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.app.Avalonia.Services;
+﻿using Chameleon.client.Features.Projects.Profiles.MyProfiles;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
-using System.Collections.ObjectModel;
-using UserProfilesViewModel = Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesViewModel;
+using DynamicData.Binding;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Folders;
+namespace Chameleon.client.Features.Projects.Folders;
 
-public partial class FoldersViewModel : ViewModelObjectBase {
+public class FolderChangedEventArgs(UPFolderDto? newCurrentFolderDto) : EventArgs {
+	public UPFolderDto? NewCurrentFolderDto { get; } = newCurrentFolderDto;
+}
+
+public partial class FoldersViewModel : Projector {
+	public static SortExpressionComparer<ObsFolder> AscendingComparer => SortExpressionComparer<ObsFolder>.Ascending(p => p.Dto!.title!);
+	public static SortExpressionComparer<ObsFolder> DescendingComparer => SortExpressionComparer<ObsFolder>.Descending(p => p.Dto!.title!);
+
+	public event Action<ObservableDtoViewModelBase<UPFolderDto>>? OnSelectedChanged;
 
 	[ObservableProperty] ObsFolder selectedFolder;
 
 	public ObsFolder AllProfiles { get; }
-	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
-	public event Action<ObsFolder>? OnSelectedChanged;
 
 	public FoldersViewModel() {
 		_ = UserProfilesFolderRepo.Connect()
-		.Transform(i => new ObsFolder(
-			folder: i,
-			hasActionOptions: false,
-			onSelectedChanged: f => OnSelectedChanged?.Invoke(f),
-			nameAlreadyExist: folderName => Folders?.Any(x => x.Dto.title == folderName) ?? false
-		))
-		.SortAndBind(out var folders, FolderManagementService.AscendingComparer)
+		.Transform(i => {
+			i.title ??= "All";
+			return new ObsFolder(folder: i, onSelectedChanged: (folder) => OnSelectedChanged?.Invoke(folder));
+		})
+		.SortAndBind(out var folders, AscendingComparer)
 		.Subscribe();
 		Folders = folders;
 		SelectedFolder = AllProfiles = folders[0];
@@ -41,41 +44,29 @@ public partial class FoldersViewModel : ViewModelObjectBase {
 
 			_ = OnNavigatingTo(folder);
 		};
-
-		FolderManagementService.Instance.CurrentFolderChanged += FolderManagementService_CurrentFolderChanged;
-	}
-
-	private void FolderManagementService_CurrentFolderChanged(object? sender, FolderChangedEventArgs e) {
-		_ = OnNavigatingTo(e.NewCurrentFolderDto);
 	}
 
 	public async Task OnNavigatingTo(UPFolderDto? p = null) {
 		if (p != null) {
-			foreach (var item in Folders)
-				item.IsSelected = item.Dto!.id == p.id;
-
-			var pvm = Folders.FirstOrDefault(vm => vm.Dto!.id == p.id);
-			if (pvm != null) {
-				await UserProfilesViewModel.Instance.OpenAsync(p);
-			}
+			Folders.ForEach(f => f.IsSelected = f.Dto.id == p.id);
+			if (Folders.Any(vm => vm.Dto.id == p.id)) await ProfilesViewModel.Instance.OpenAsync(p);
 		} else {
 			if (AllProfiles != null && !AllProfiles.Navigated) {
 				AllProfiles.Navigated = true;
-				await AllProfiles.AsyncCommandMap["Open"]();
+				SetSelectedFolder(AllProfiles.Dto);
 			}
 		}
 	}
 
 	public async void SetSelectedById(int id) {
 		_ = await LoadedTCS.Task;
-
 		await OnNavigatingTo(Folders.FirstOrDefault(m => m.Dto?.id == id)?.Dto);
 	}
 
 	internal void SetSelectedFolder(UPFolderDto? value) {
-		SelectedFolder = value == null ?
-			AllProfiles
-			: Folders.FirstOrDefault(vm => vm.Dto!.id == value.id) ?? AllProfiles;
+		SelectedFolder = value == null
+		? AllProfiles
+		: Folders.FirstOrDefault(vm => vm.Dto!.id == value.id) ?? AllProfiles;
 	}
 
 	public static FoldersViewModel Instance { get; } = new FoldersViewModel();

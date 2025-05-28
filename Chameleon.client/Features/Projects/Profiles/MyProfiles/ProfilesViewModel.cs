@@ -2,7 +2,6 @@
 using Chameleon.lib.Util;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.Services;
-using Chameleon.client.Features.ProfilesAndFolders.Folders;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles.ViewModels;
 using Chameleon.client.Features.Projects.Profiles.MyProfiles.Dialogs;
 using Chameleon.client.UI.UserControls.ViewModels;
@@ -25,11 +24,11 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
 using static Chameleon.lib.Common.Constants.Enums;
+using Chameleon.client.Features.Projects.Folders;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
+namespace Chameleon.client.Features.Projects.Profiles.MyProfiles;
 public partial class AddUserProfilesPupViewModel : ViewModelObjectBase {
-	[ObservableProperty]
-	private ObsFolder? folder;
+	[ObservableProperty] ObsFolder? folder;
 
 	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 	public ObservableCollection<ObsProfile> SelectedProfiles { get; } = [];
@@ -90,7 +89,7 @@ public record SystemBrovserItem(SystemBrowserType SystemBrowserType) {
 	public string IconName => SystemBrowserType.ToString().ToLower();
 }
 
-public partial class MyProfilesViewModel : ViewModelObjectBase {
+public partial class ProfilesViewModel : ViewModelObjectBase {
 	private CancellationTokenSource? cts;
 
 	[ObservableProperty] Arguments selectedPlaywrightScript;
@@ -120,24 +119,22 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 	public bool IsProfilesExist => UserProfilesRepo.Instance.ObservableCache.Items.Any();
 	public bool HasNoItems => Profiles.Count == 0;
 	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
-	public string SelectedFolderTitle => Folder?.Title ?? "All profiles";
+	public string SelectedFolderTitle => Folder?.Title ?? "x_x";
 	//
 	public Func<ObsProfile, bool> FilterPredicate => p => Folder == null || Folder.Id == 0 || (Folder != null && Folder.Id != 0 && p.Dto?.folderId == Folder?.Id);
 
 	private readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(ProfileManagementService.AscendingComparer);
-	private readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, Consts.PageinationPageItems));
+	private readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, 9));
 	private readonly BehaviorSubject<Func<ObsProfile, bool>> filter;
 
-	[ObservableProperty]
-	private Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
-
+	[ObservableProperty] ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
 	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
 
 	private readonly ReadOnlyObservableCollection<ObsProfile> profiles;
 	public ReadOnlyObservableCollection<ObsProfile> Profiles => profiles;
 	public event Action<ObsProfile>? OnSelectedChanged;
 
-	public MyProfilesViewModel() {
+	public ProfilesViewModel() {
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
 		_ = UserProfilesRepo
 			.Connect()
@@ -175,7 +172,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			foreach (var profile in Profiles) {
 				profile.IsSelected = false;
 			}
-			PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
+			PaginatorViewModel.UpdatePageCount(9);
 		};
 
 		AsyncCommandMap["SaveTags"] = async () => {
@@ -273,7 +270,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
-		PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
+		PaginatorViewModel.UpdatePageCount(9);
 		Profiles.ForEach(p => p.IsActionOptionsVisible = true);
 
 		PlaywrightScripts.Clear();
@@ -312,7 +309,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
 			filter.OnNext(p => p.Title?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true && (Folder == null || Folder.id == 0 || (Folder != null && Folder.id != 0 && p.Dto?.folderId == Folder?.id)));
 		} else {
-			PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
+			PaginatorViewModel.UpdatePageCount(9);
 			filter.OnNext(FilterPredicate);
 		}
 
@@ -392,7 +389,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		foreach (var profile in Profiles) {
 			profile.IsSelected = false;
 		}
-		PaginatorViewModel.UpdatePageCount(Consts.PageinationPageItems);
+		PaginatorViewModel.UpdatePageCount(9);
 	}
 
 	private async Task OpenSystemBrowser(SystemBrowserType browserType) {
@@ -470,5 +467,5 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		cts = null;
 	}
 
-	public static MyProfilesViewModel Instance { get; } = new MyProfilesViewModel();
+	public static ProfilesViewModel Instance { get; } = new ProfilesViewModel();
 }

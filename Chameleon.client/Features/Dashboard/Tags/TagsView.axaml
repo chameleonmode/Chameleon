@@ -51,15 +51,7 @@
 			</afv:ChameleonContentControl.Options>
 			<afv:ChameleonContentControl.Content>
 				<Panel>
-					<ListBox
-						Name="lbFolders"
-						ItemsSource="{Binding Folders}"
-						Theme="{StaticResource ListBoxNoScroller}"
-						ItemContainerTheme="{StaticResource GridViewItem}"
-						ItemsPanel="{StaticResource DoubleColumnUniformGridTemplate}"
-						ItemTemplate="{StaticResource UserFolderUserControlDataTemplate}"
-						IsVisible="{Binding !HasNoFolderItems}"
-						VerticalAlignment="Top"/>
+					<ListBox Name="lbFolders" />
 
 					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
 											Header="No folders selected yet"

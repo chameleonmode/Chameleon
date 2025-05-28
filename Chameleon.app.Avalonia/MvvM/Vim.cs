@@ -1,21 +1,21 @@
-﻿using Chameleon.lib.Common.Models.Interfaces;
+﻿using System.Collections.ObjectModel;
+using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.lib.CommunityToolkit.MvvM;
+
 public abstract class DtoViewModelBase<T>(T dto, string? title = null)
- : ViewModelObjectBase(title ?? dto.title)	where T : Dto {
+ : ViewModelObjectBase(title ?? dto.title) where T : Dto {
 	public T Dto { get; set; } = dto;
 }
 
-public abstract partial class ObservableDtoViewModelBase<T>(
-	T dto, 
-	string? title = null, 
-  Action<ObservableDtoViewModelBase<T>>? onSelectedChanged = default
-) : DtoViewModelBase<T>(dto, title) where T : Dto {
+public abstract partial class ObservableDtoViewModelBase<T>(T dto, string? title = null, Action<ObservableDtoViewModelBase<T>>? onSelectedChanged = default)
+: DtoViewModelBase<T>(dto, title) where T : Dto {
+	public event Action<ObservableDtoViewModelBase<T>>? OnSelectedChanged = onSelectedChanged;
 	[ObservableProperty] bool isSelected;
 	[ObservableProperty] bool active;
 	[ObservableProperty] bool isActionOptionsVisible = true;
-	
+
 	public override void InitCommandMapping() {
 		CommandMap["Unselect"] = () => {
 			IsSelected = false;
@@ -25,8 +25,9 @@ public abstract partial class ObservableDtoViewModelBase<T>(
 	partial void OnIsSelectedChanged(bool value) {
 		Active = value;
 		OnAnyIsSelectedChanged(value);
-		onSelectedChanged?.Invoke(this);
+		OnSelectedChanged?.Invoke(this);
 	}
 
 	public virtual void OnAnyIsSelectedChanged(bool value) { }
 }
+

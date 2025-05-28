@@ -1,7 +1,7 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.client.Features.ProfilesAndFolders.Folders;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
-using Chameleon.lib.Common.Constants;
+using Chameleon.client.Features.Projects.Folders;
+using Chameleon.client.Features.Projects.Profiles.MyProfiles;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -34,9 +34,8 @@ public partial class ProfileOrFolderItem: ObservableObject, IDisposable {
 		}
 
 		if (item is ObsFolder folder) {
-			Item = new ObsFolder(folder.Dto, hasActionOptions: false, onSelectedChanged: null, nameAlreadyExist: null);
+			Item = new ObsFolder(folder.Dto);
 		}
-
 
 		if (Profile != null) {
 			Profile.PropertyChanged += OriginalProfile_PropertyChanged;
@@ -183,8 +182,8 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 	private void RebuildAndFilterDisplayGroups(string? searchText) {
 
 		var filteredSourceProfiles = string.IsNullOrWhiteSpace(searchText)
-				? [..  MyProfilesViewModel.Instance.Profiles]
-				:  MyProfilesViewModel.Instance.Profiles.Where(p => p.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false);
+				? [..  ProfilesViewModel.Instance.Profiles]
+				:  ProfilesViewModel.Instance.Profiles.Where(p => p.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false);
 
 		var profileWrappers = filteredSourceProfiles
 		.Select(p => new ProfileOrFolderItem(p, initiallySelectedProfileIds.Contains(p.Dto?.id.ToString()) || p.IsSelected));
@@ -241,7 +240,7 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 				}
 			}
 
-			foreach (var originalProfile in MyProfilesViewModel.Instance.Profiles) {
+			foreach (var originalProfile in ProfilesViewModel.Instance.Profiles) {
 				if (originalProfile.Dto?.id != null) {
 					originalProfile.IsSelected = dialogSelectedProfileIds.Contains(originalProfile.Dto.id.ToString());
 				}

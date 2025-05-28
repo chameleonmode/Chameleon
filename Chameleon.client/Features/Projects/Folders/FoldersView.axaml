@@ -5,14 +5,13 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:vmc="using:Chameleon.client.Features.ProfilesAndFolders.Folders"
-			 xmlns:models="using:Chameleon.app.Avalonia.Models.Observable"
-			 x:DataType="vmc:FoldersViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.ProfilesAndFolders.Folders.FoldersView">
+			 xmlns:local="using:Chameleon.client.Features.Projects.Folders"
+             x:Class="Chameleon.client.Features.Projects.Folders.FoldersView"
+			 x:DataType="local:FoldersViewModel"
+			 x:CompileBindings="True">
 	<UserControl.Resources>
 		<ControlTheme x:Key="OpenListViewItemButtonDataTemplate"
-					  x:DataType="models:ObsFolder"
+					  x:DataType="local:ObsFolder"
 					  TargetType="ContentControl">
 			<Setter Property="Template">
 				<ControlTemplate>
@@ -72,7 +71,7 @@
 			</Setter>
 		</ControlTheme>
 		<DataTemplate x:Key="FoldersListViewTemplate"
-					  x:DataType="models:ObsFolder">
+					  x:DataType="local:ObsFolder">
 			<Panel>
 				<ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}" />
 				<Grid>

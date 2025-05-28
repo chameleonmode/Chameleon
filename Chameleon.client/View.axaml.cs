@@ -8,7 +8,6 @@ using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Windowing;
 using Chameleon.app.Avalonia;
-using Chameleon.client.Features.ProfilesAndFolders.Projects;
 using Chameleon.client.Features.Settings.Featured;
 namespace Chameleon.client;
 public class PageModelBase {
@@ -46,7 +45,7 @@ public partial class View : UserControl {
 			{
 				NavHeader = "Profiles",
 				IconKey = "ContactIcon",
-				Tag = typeof(ProjectsView)
+				Tag = typeof(Features.Projects.ProjectsView)
 			}
 		},
 		{

@@ -1,5 +1,5 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.client.Features.Dashboard;
+using Chameleon.client.Features.Projects.Folders;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -51,7 +51,7 @@ public partial class TagsViewModel : Base {
 								.Where(ids => ids is not null)
 								.Select(ids => new Func<UPFolderDto, bool>(f => ids!.Any(id => id == f.id.ToString())))
 					)
-					.Transform(i => new ObsFolder(i, true, null, null))
+					.Transform(i => new ObsFolder(i){ IsActionOptionsVisible = true})
 					.SortAndBind(out var folders, foldersCompareObservable)
 					.Subscribe(_ => OnPropertyChanged(nameof(HasNoFolderItems)));
 		Folders = folders;

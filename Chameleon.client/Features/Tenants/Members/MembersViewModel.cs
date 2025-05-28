@@ -13,6 +13,7 @@ using Chameleon.client.Features.Tenants.Members.ViewModels;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.client.Features.Tenants.Members.Dialogs;
 using Chameleon.app.Avalonia.Services;
+using Chameleon.client.Features.Projects.Folders;
 
 namespace Chameleon.client.Features.Tenants.Members;
 public partial class TenantMembersViewModel : ViewModelObjectBase {
@@ -65,8 +66,8 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 			.Subscribe();
 		Profiles = profiles;
 
-		_ = UserProfilesFolderRepo.Connect().Transform(i => new ObsFolder(i, false, null, null))
-			.SortAndBind(out var folders, FolderManagementService.AscendingComparer)
+		_ = UserProfilesFolderRepo.Connect().Transform(i => new ObsFolder(i))
+			.SortAndBind(out var folders, FoldersViewModel.AscendingComparer)
 			.Subscribe();
 		Folders = folders;
 

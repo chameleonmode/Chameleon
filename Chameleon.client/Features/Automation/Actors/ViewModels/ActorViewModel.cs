@@ -3,6 +3,7 @@ using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.client.Features.Automation.Actors.Dialogs;
 using Chameleon.client.Features.Automation.Actors.ViewModels;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
+using Chameleon.client.Features.Projects.Profiles.MyProfiles;
 using Chameleon.lib.AIR.Scripts.Models;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
@@ -72,7 +73,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		Tagz = tagz;
 
 		subscriptions.Add(
-			 MyProfilesViewModel.Instance.Profiles.ToObservableChangeSet()
+			 ProfilesViewModel.Instance.Profiles.ToObservableChangeSet()
 			.AutoRefresh(profile => profile.IsSelected)
 			.Filter(profile => profile.IsSelected)
 			.Sort(SortExpressionComparer<ObsProfile>.Ascending(p => p.Title ?? ""))
@@ -87,7 +88,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			.ToCollection()
 			.Subscribe(next =>
 			next.ForEach(t =>
-					 MyProfilesViewModel.Instance.Profiles
+					 ProfilesViewModel.Instance.Profiles
 					.Where(x => t.ProfileIds.Contains(x.Dto.ID))
 					.ForEach(p => p.Active = p.IsSelected = t.IsSelected)
 				)));
@@ -102,7 +103,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		];
 
 		profileSelections?.ForEach(id => {
-			 MyProfilesViewModel.Instance.Profiles
+			 ProfilesViewModel.Instance.Profiles
 			.Where(p => p.Dto.id == id)
 			.ForEach(p => p.IsSelected = true);
 		});

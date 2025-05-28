@@ -27,12 +27,7 @@
 								ItemsSource="{Binding SelectedFolders}"
 								ItemTemplate="{StaticResource ObsSelectedTemplate}"
 								ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}"/>
-						<ListBox
-							Theme="{StaticResource ListBoxNoScroller}"
-							ItemContainerTheme="{StaticResource GridViewItem}"
-							ItemsSource="{Binding Folders}"
-							ItemTemplate="{StaticResource UserFolderUserControlDataTemplate}"
-							ItemsPanel="{StaticResource DoubleColumnUniformGridTemplate}"/>
+						<ListBox Name="lbFolders" />
 					</StackPanel>
 				</Expander>
 				<Expander Header="Profiles">

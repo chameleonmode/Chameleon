@@ -23,12 +23,14 @@ using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
-using Chameleon.client.Features.ProfilesAndFolders.Projects;
 using Chameleon.client.Features.ProfilesAndFolders.Search;
 using Chameleon.client.Features.ProfilesAndFolders.Search.ByTags;
 using Chameleon.client.Features.ProfilesAndFolders.Search.ByTags.Controls;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.client.Features.Settings.Featured;
+using Chameleon.client.Features.Projects.Folders;
+using Chameleon.client.Features.Projects;
+using Chameleon.client.Features.Projects.Profiles.MyProfiles;
 
 namespace Chameleon.client.Features;
 
@@ -46,8 +48,8 @@ public static class Modules {
   public static IServiceCollection WithProfilesAndFolders(this IServiceCollection services) => services
   .AddSingleton<IdentityView>()
   .AddSingleton<IdentityViewModel>()
-  .AddSingleton<ProjectsView>()
-  .AddSingleton<ProjectsViewModel>();
+  .AddSingleton<Projects.ProjectsView>()
+  .AddSingleton<Projects.ProjectsViewModel>();
 
   public static IServiceCollection WithAllFeatures(this IServiceCollection services) => services
   .Automation()
@@ -117,7 +119,7 @@ public partial class ViewModel : ObservableObjectBase {
     _ = UserProfilesFolderRepo.Connect().Transform(i => new MainAppSearchItem() {
       Header = i.title ?? "xxx",
       Namespace = "Folder",
-      ViewModel = new ObsFolder(i, null),
+      ViewModel = new ObsFolder(i),
       PageType = this.GetType()
     })
     .Bind(out _boundFolders)
@@ -163,7 +165,7 @@ public partial class ViewModel : ObservableObjectBase {
     if (p.IsNot()) Navigator.NavigateToType(typeof(ProjectsView), p);
     else {
       SelectedSearchTerm = null;
-      MyProfilesViewModel.Instance.OnFilterTo();
+      ProfilesViewModel.Instance.OnFilterTo();
     }
   }
 

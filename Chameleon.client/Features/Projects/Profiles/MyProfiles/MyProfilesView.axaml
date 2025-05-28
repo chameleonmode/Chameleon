@@ -8,9 +8,9 @@
              xmlns:local="using:Chameleon.app.Avalonia.Controls"
 			 xmlns:uc="using:Chameleon.client.UI.UserControls"
 			 xmlns:converter="using:Chameleon.Common.ValueConverters"
-			 xmlns:vm="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles"
-             x:Class="Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesView"
-			 x:DataType="vm:MyProfilesViewModel"
+			 xmlns:vm="using:Chameleon.client.Features.Projects.Profiles.MyProfiles"
+             x:Class="Chameleon.client.Features.Projects.Profiles.MyProfiles.MyProfilesView"
+			 x:DataType="vm:ProfilesViewModel"
 			 x:CompileBindings="True">
 	<UserControl.Styles>
 		<Style Selector="ui|SymbolIcon.spinner">

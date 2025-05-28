@@ -1,4 +1,5 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.client.Features.Projects.Folders;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
 
@@ -14,7 +15,7 @@ public partial class FavouriteViewModel : Base {
 		Profiles = list;
 
 		_ = UserProfilesFolderRepo.Connect(i => i.isFavorite)
-			.Transform(i => new ObsFolder(i, true, null, null))
+			.Transform(i => new ObsFolder(i){ IsActionOptionsVisible = true })
 			.SortAndBind(out var flist, foldersCompareObservable)
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasNoFolderItems));

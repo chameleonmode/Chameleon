@@ -5,22 +5,26 @@ using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
 using Chameleon.lib.Helpers;
-using Chameleon.client.Features.ProfilesAndFolders.Folders;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
-using UserProfilesViewModel = Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesViewModel;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia;
+using Chameleon.client.Features.Projects.Folders;
+using System.Collections.ObjectModel;
+using Chameleon.client.Features.Projects.Profiles.MyProfiles;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Projects;
+namespace Chameleon.client.Features.Projects;
+public abstract partial class Projector(string? title = null) : ViewModelObjectBase(title) {
+  public ReadOnlyObservableCollection<ObsProfile> Profiles { get; protected set; } = new([]);
+  public ReadOnlyObservableCollection<ObsFolder> Folders { get; protected set; } = new([]);
+	public bool HasNoFolderItems => Folders.Count == 0;
+}
 public partial class ProjectsViewModel : ViewModelObjectBase {
-	public UserProfilesViewModel Profiles { get; } = UserProfilesViewModel.Instance;
+	public ProfilesViewModel Profiles { get; } = ProfilesViewModel.Instance;
 	public FoldersViewModel Folders { get; } = FoldersViewModel.Instance;
 
 	public bool IsCreateProfileBtnVisible => Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CanCreateProfiles == true;
 
-	public ProjectsViewModel()
-		: base("Profiles & Folders") {
-	}
+	public ProjectsViewModel() : base() { }
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
 		if (param is ObsFolder folder) {

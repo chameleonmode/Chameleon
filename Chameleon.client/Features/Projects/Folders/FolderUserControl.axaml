@@ -2,11 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-			 xmlns:dt="using:Chameleon.app.Avalonia.Models.Observable"
-			 x:DataType="dt:ObsFolder"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.app.Avalonia.Controls.FolderUserControl">
+			 xmlns:local="using:Chameleon.client.Features.Projects.Folders"
+             x:Class="Chameleon.client.Features.Projects.Folders.FolderUserControl"
+			 x:DataType="local:ObsFolder"
+			 x:CompileBindings="True">
 	<Grid ColumnDefinitions="Auto,Auto,*,Auto">
 		<StackPanel Orientation="Horizontal"
 					Margin="12 8">

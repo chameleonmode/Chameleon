@@ -1,18 +1,15 @@
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
-using Chameleon.app.Avalonia.Models.Observable;
-using Chameleon.client.Features.ProfilesAndFolders.Folders;
+using Chameleon.client.Features.Projects.Folders;
 using System.Diagnostics;
 using System.Globalization;
 
 namespace Chameleon.client.Features.Automation.Actors.Dialogs;
 
-public partial class ProfileSelectorView : UserControl
-{
-    public ProfileSelectorView()
-    {
-        InitializeComponent();
-    }
+public partial class ProfileSelectorView : UserControl {
+	public ProfileSelectorView() {
+		InitializeComponent();
+	}
 }
 
 public class FolderKeyToNameConverter : IValueConverter {
@@ -20,8 +17,7 @@ public class FolderKeyToNameConverter : IValueConverter {
 
 	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
 		if (value is long folderIdKey && Folders != null) {
-			if (folderIdKey == 0)
-			{
+			if (folderIdKey == 0) {
 				return "Other Profiles";
 			}
 

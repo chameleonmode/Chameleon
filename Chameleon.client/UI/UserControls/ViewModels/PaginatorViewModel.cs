@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using Chameleon.lib.Common.Constants;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -9,14 +8,12 @@ namespace Chameleon.client.UI.UserControls.ViewModels;
 public class PaginatorButtonViewModel(int index, bool isEllipsis = false) {
 	public int Index { get; } = index;
 	public bool IsEllipsis { get; } = isEllipsis;
-	public string Text { get; } = isEllipsis
-				? "..."
-				: (index + 1).ToString();
+	public string Text { get; } =
+	isEllipsis ? "..." : (index + 1).ToString();
 }
 
-public partial class PaginatorViewModel(
-	Action<PaginatorViewModel> changePageIndex,	int onPageItems = Consts.PageinationPageItems
-) : ViewModelObjectBase {
+public partial class PaginatorViewModel(Action<PaginatorViewModel> changePageIndex, int onPageItems = 9)
+: ViewModelObjectBase {
 	private bool _isUpdatingButtons;
 	[ObservableProperty]
 	private int pageCount;
@@ -42,7 +39,6 @@ public partial class PaginatorViewModel(
 
 	public bool PrevButtonIsEnabled => PageIndex > 0;
 	public bool NextButtonIsEnabled => PageIndex < PageCount - 1;
-
 
 	partial void OnPageCountChanged(int value) {
 		UpdatePaginatorButtons();

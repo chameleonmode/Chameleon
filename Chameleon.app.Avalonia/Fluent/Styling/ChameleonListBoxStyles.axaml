@@ -158,9 +158,6 @@
 	<DataTemplate x:Key="UserProfileUserControlDataTemplate">
 		<controls:UserProfileUserControl HorizontalAlignment="Stretch" />
 	</DataTemplate>
-	<DataTemplate x:Key="UserFolderUserControlDataTemplate">
-		<controls:FolderUserControl HorizontalAlignment="Stretch" />
-	</DataTemplate>
 	<DataTemplate x:Key="ObsSelectedTemplate">
 		<Border
 			Padding="8 0 0 0"

@@ -1,8 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
-using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.Av.Fluent.Common.Pages;
+using Chameleon.client.Features.Projects.Folders;
 
 using FluentAvalonia.UI.Media.Animation;
 
