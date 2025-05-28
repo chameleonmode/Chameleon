@@ -10,7 +10,6 @@ using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
@@ -210,12 +209,12 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			addvm.Folders.AddRange(FoldersViewModel.Instance.Folders);
 
 			if (
-				await Mbox.ShowTaskDialog<MoveUserProfilesPopupUserControl, MoveUserProfilesPopupViewModel>(new(
+				await MessageBox.ShowTaskDialog<MoveUserProfilesPopupUserControl, MoveUserProfilesPopupViewModel>(new(
 					Initialize: () => addvm,
 					Header: addvm.Title,
 					SubHeader: $"Select a folder to move the {GetSelectedProfiles.Count()} selected profiles:",
-					Symbas: Enums.Symbas.Folder,
-					Btns: Enums.MBoxButtons.OkCancel)) == Enums.TaskDialogResult.OK &&
+					Symbas: Symbas.Folder,
+					Btns: MBoxButtons.OkCancel)) == TaskDialogResult.OK &&
 					addvm.SelectedFolder is not null && addvm.Profiles.Any()
 			) {
 				_ = await UserProfilesRepo.MoveUserProfileToFolder(addvm.Profiles.Select(a => a.Dto!.id), addvm.SelectedFolder.Dto!.id);
@@ -232,7 +231,7 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 		AsyncCommandMap["Delete"] = async () => {
 			if (
 				GetSelectedProfiles.Any() &&
-				await Mbox.Show(
+				await MessageBox.Show(
 					"Delete User Profiles",
 					$"Are you sure you want to delete {SelectedCount} profiles?",
 					MBoxButtons.OkCancel,
@@ -257,12 +256,12 @@ public partial class MyProfilesViewModel : ViewModelObjectBase {
 			};
 
 			if (
-				await Mbox.ShowTaskDialog<AddUserProfilesPopupUserControl, AddUserProfilesPupViewModel>(new(
+				await MessageBox.ShowTaskDialog<AddUserProfilesPopupUserControl, AddUserProfilesPupViewModel>(new(
 					Initialize: () => addvm,
 					Header: addvm.Title,
 					SubHeader: $"Select profiles you want to add to {Folder!.Title} folder:",
-					Symbas: Enums.Symbas.Folder,
-					Btns: Enums.MBoxButtons.OkCancel)) == Enums.TaskDialogResult.OK
+					Symbas: Symbas.Folder,
+					Btns: MBoxButtons.OkCancel)) == TaskDialogResult.OK
 			) {
 				if (!addvm.SelectedProfiles.Any()) return;
 				_ = await UserProfilesRepo.MoveUserProfileToFolder(addvm.SelectedProfiles.Select(o => o.Dto.id), Folder!.Id);

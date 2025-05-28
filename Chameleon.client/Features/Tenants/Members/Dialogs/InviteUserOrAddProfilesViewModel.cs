@@ -4,10 +4,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.lib.CommunityToolkit.MvvM;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Util;
 using Chameleon.lib.Common.Models.Dto;
+using Chameleon.lib.Helpers;
 
 namespace Chameleon.client.Features.Tenants.Members.Dialogs;
 
@@ -72,14 +72,14 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	}
 
 	public async Task<InviteUserOrAddProfilesViewModel?> ShowDialog() {
-		var result = await Mbox.ShowTaskDialog<InviteUserOrAddProfilesUserControl, InviteUserOrAddProfilesViewModel>(new(
+		var result = await MessageBox.ShowTaskDialog<InviteUserOrAddProfilesUserControl, InviteUserOrAddProfilesViewModel>(new(
 			Initialize: () => this,
 			Header: "Select Profiles & Folders",
 			SubHeader: "Add profiles and folders to your selection.",
-			Symbas: Enums.Symbas.AddFriend,
-			Btns: Enums.MBoxButtons.OkCancel)
+			Symbas: Symbas.AddFriend,
+			Btns: MBoxButtons.OkCancel)
 		);
-		return result == Enums.TaskDialogResult.OK ? this : null;
+		return result == TaskDialogResult.OK ? this : null;
 	}
 	public async Task<InviteUserOrAddProfilesViewModel?> ShowDialog(
 		IEnumerable<AssisProfileDto> profilez,

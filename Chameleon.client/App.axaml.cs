@@ -17,7 +17,6 @@ using Chameleon.lib.Util;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
 using Chameleon.client.Features;
 using Chameleon.lib.Helpers;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Auth;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Api;
@@ -150,7 +149,7 @@ public partial class App : Application {
 				Toaster.Success($"Hello {(Session.Instance.Login?.LoginName) ?? "World"}");
 				await ViewModel.Instance.Init();
 			} catch (Exception ex) {
-				_ = await Mbox.ShowErrorAsync("Invalid Login", "Browser authentication must match application email.\n" + (ex.Message.Contains('\n') ? ex.Message[ex.Message.LastIndexOf('\n')..] : ex.Message));
+				_ = await MessageBox.ShowErrorAsync("Invalid Login", "Browser authentication must match application email.\n" + (ex.Message.Contains('\n') ? ex.Message[ex.Message.LastIndexOf('\n')..] : ex.Message));
 				await Session.Instance.Logout();
 				await RunAsync();
 			}
@@ -166,13 +165,13 @@ public partial class App : Application {
 			};
 
 			if (!loginSetings.AutoLogin &&
-				await Mbox.ShowTaskDialog<MboxLoginUserControl, MboxLoginViewModel>(new(
+				await MessageBox.ShowTaskDialog<MboxLoginUserControl, MboxLoginViewModel>(new(
 					() => loginvm,
 					"User Login",
 					"Enter the provided activation information",
-					Symbas: Enums.Symbas.ContactInfo,
-					Btns: Enums.MBoxButtons.OkCancel
-				)) == Enums.TaskDialogResult.Cancel) {
+					Symbas: Symbas.ContactInfo,
+					Btns: MBoxButtons.OkCancel
+				)) == TaskDialogResult.Cancel) {
 				return false;
 			}
 			ArgumentNullException.ThrowIfNull(loginvm.UserName, "UserName");
@@ -184,7 +183,7 @@ public partial class App : Application {
 			//var loginDetailsChanged = loginvm.UserName != loginSetings.LoginName || loginvm.LicenceKey != loginSetings.LicenseKey || loginvm.AutoLogin != loginSetings.AutoLogin;
 
 		} catch (Exception ex) {
-			_ = await Mbox.ShowErrorAsync("Error Logging In", ex.Message);
+			_ = await MessageBox.ShowErrorAsync("Error Logging In", ex.Message);
 			if (trys < 1)
 				return await RunAsync(trys++);
 		}

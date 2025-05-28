@@ -5,7 +5,6 @@ using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
@@ -38,7 +37,7 @@ public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisPro
 		if (Dto == null) return;
 
 		try {
-			if (await Mbox.Show("Unshare Profile", $"Are you sure you want to unshare {Dto.ProfileName}? This will not affect other profiles.")) {
+			if (await MessageBox.Show("Unshare Profile", $"Are you sure you want to unshare {Dto.ProfileName}? This will not affect other profiles.")) {
 				Toaster.Info("Unsharing profile...");
 				onProfileUnshare(this);
 				Toaster.Success($"{Dto.ProfileName} was unshared successfully");
@@ -65,7 +64,7 @@ public partial class AssistantUsersFolder(AssisShareFolderDto dto, Action<Assist
 		if (Dto == null) return;
 
 		try {
-			if (await Mbox.Show("Unshare Folder", $"Are you sure you want to unshare {Dto.FolderName}? This will not affect other folders.")) {
+			if (await MessageBox.Show("Unshare Folder", $"Are you sure you want to unshare {Dto.FolderName}? This will not affect other folders.")) {
 				Toaster.Info("Unsharing folder...");
 				onFolderUnshare(this);
 				Toaster.Success($"{Dto.FolderName} was unshared successfully");
@@ -151,7 +150,7 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 
 	[RelayCommand]
 	private async Task DeleteAssistant() {
-		if (await Mbox.Show("Delete User", $"Are you sure you want to delete {Dto!.UserName}", fontIconInfo: "Delete")) {
+		if (await MessageBox.Show("Delete User", $"Are you sure you want to delete {Dto!.UserName}", fontIconInfo: "Delete")) {
 			try {
 				_ = await UserAssistantRepo.Instance.Delete(Dto!.id);
 			} catch {

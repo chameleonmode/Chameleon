@@ -4,11 +4,12 @@ using chameleon.assets;
 
 using Chameleon.client.UI.UserControls;
 
-using Chameleon.lib.Const;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Interfaces.Services;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Chameleon.lib.Helpers;
+using Chameleon.lib;
 
 namespace Chameleon.client.Services;
 public partial class MBoxViewModel : ObservableObject {
@@ -16,7 +17,7 @@ public partial class MBoxViewModel : ObservableObject {
 	[ObservableProperty] string glyph = "E946";
 }
 public class MboxService(IDispatchService dispatcher) : IMboxService {
-	public async Task<Enums.MboxResult> Show(string title, string content, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo, string icon = "Info")
+	public async Task<MboxResult> Show(string title, string content, MBoxButtons btns = MBoxButtons.YesNo, string icon = "Info")
 	{
 		var c = new MBoxViewModel();
 		var icons = await Icons.Instance.FontIcons;
@@ -35,11 +36,11 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 				DefaultButton = ContentDialogButton.Primary,
 			};
 			var res = await dialog.ShowAsync();
-			return (Enums.MboxResult)res;
+			return (MboxResult)res;
 		});
 	}
 
-	public async Task<Enums.TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Variables.AppName, object? footer = null, Enums.Symbas symbas = Enums.Symbas.Alert, Enums.MBoxButtons btns = Enums.MBoxButtons.YesNo)
+	public async Task<TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Variables.AppName, object? footer = null, Symbas symbas = Symbas.Alert, MBoxButtons btns = MBoxButtons.YesNo)
 	{
 		while(App.MainWindow is null) {
 			await Task.Delay(250);
@@ -47,27 +48,27 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 		return await dispatcher.InvokeOnUiThread(async () => {
 			var btnsList = new List<TaskDialogButton>();
 			switch (btns) {
-				case Enums.MBoxButtons.YesNo:
+				case MBoxButtons.YesNo:
 					btnsList.Add(TaskDialogButton.YesButton);
 					btnsList.Add(TaskDialogButton.NoButton);
 					break;
-				case Enums.MBoxButtons.YesNoCancel:
+				case MBoxButtons.YesNoCancel:
 					btnsList.Add(TaskDialogButton.YesButton);
 					btnsList.Add(TaskDialogButton.NoButton);
 					btnsList.Add(TaskDialogButton.CancelButton);
 					break;
-				case Enums.MBoxButtons.Ok:
+				case MBoxButtons.Ok:
 					btnsList.Add(TaskDialogButton.OKButton);
 					break;
-				case Enums.MBoxButtons.OkCancel:
+				case MBoxButtons.OkCancel:
 					btnsList.Add(TaskDialogButton.OKButton);
 					btnsList.Add(TaskDialogButton.CancelButton);
 					break;
-				case Enums.MBoxButtons.RetryCancel:
+				case MBoxButtons.RetryCancel:
 					btnsList.Add(TaskDialogButton.RetryButton);
 					btnsList.Add(TaskDialogButton.CancelButton);
 					break;
-				case Enums.MBoxButtons.Close:
+				case MBoxButtons.Close:
 					btnsList.Add(TaskDialogButton.CloseButton);
 					break;
 			}
@@ -126,14 +127,14 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 
 			var result = await td.ShowAsync(true);
 			return result switch {
-				"myResult" => Enums.TaskDialogResult.OK,
-				TaskDialogStandardResult.Cancel => Enums.TaskDialogResult.Cancel,
-				TaskDialogStandardResult.Yes => Enums.TaskDialogResult.Yes,
-				TaskDialogStandardResult.No => Enums.TaskDialogResult.No,
-				TaskDialogStandardResult.Retry => Enums.TaskDialogResult.Retry,
-				TaskDialogStandardResult.Close => Enums.TaskDialogResult.Close,
-				TaskDialogStandardResult.OK => Enums.TaskDialogResult.OK,
-				_ => Enums.TaskDialogResult.None,
+				"myResult" => TaskDialogResult.OK,
+				TaskDialogStandardResult.Cancel => TaskDialogResult.Cancel,
+				TaskDialogStandardResult.Yes => TaskDialogResult.Yes,
+				TaskDialogStandardResult.No => TaskDialogResult.No,
+				TaskDialogStandardResult.Retry => TaskDialogResult.Retry,
+				TaskDialogStandardResult.Close => TaskDialogResult.Close,
+				TaskDialogStandardResult.OK => TaskDialogResult.OK,
+				_ => TaskDialogResult.None,
 			};
 		});
 

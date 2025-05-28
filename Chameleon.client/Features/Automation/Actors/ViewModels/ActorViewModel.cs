@@ -2,7 +2,6 @@ using Chameleon.AIR.Actors.Models;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.client.Features.Automation.Actors.Dialogs;
 using Chameleon.client.Features.Automation.Actors.ViewModels;
-using Chameleon.client.Features.ProfilesAndFolders.Folders;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.lib.AIR.Scripts.Models;
 using Chameleon.lib.Api.Repos;
@@ -21,8 +20,9 @@ using System.Reactive.Linq;
 using static Chameleon.lib.Common.Constants.Enums;
 namespace Chameleon.client.Features.Automation.Actors;
 
-public partial class Tag(TagDto Dto, bool selected = false)  : ObservableObject {
+public partial class Tag(TagDto dto, bool selected = false)  : ObservableObject {
 	[ObservableProperty] bool isSelected = selected;
+	public TagDto Dto { get; } = dto;
 
 	public IEnumerable<string> ProfileIds => Dto.Items
 	.Where(x => x.Key == TagItemType.Profile)

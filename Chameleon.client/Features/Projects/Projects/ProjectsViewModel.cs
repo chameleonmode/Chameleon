@@ -1,6 +1,5 @@
 ﻿using Chameleon.lib.Api;
 using Chameleon.lib.Common.Constants;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.Common.Util;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -59,7 +58,7 @@ public partial class ProjectsViewModel : ViewModelObjectBase {
 			Navigator.NavigateToType(typeof(IdentityView), p);
 		} catch (Exception ex) {
 			if (ex.Message == "limit_ex") {
-				if (await Mbox.Show("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
+				if (await MessageBox.Show("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles."))
 					ProUtil.GoToUrlDefault(Consts.PricingUrl);
 			} else {
 				Toaster.Error("Wooopsy?", ex.Message);

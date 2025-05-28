@@ -5,13 +5,13 @@ using Chameleon.app.Avalonia.Controls;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.WebBrowser.Services;
 using Chameleon.lib.Util;
 using static Chameleon.lib.Common.Constants.Enums;
 using Chameleon.lib.WebBrowser;
 using DynamicData.Binding;
+using Chameleon.lib.Helpers;
 
 namespace Chameleon.app.Avalonia.Models.Observable;
 public partial class UserProfileSidePanelViewModel : ViewModelObjectBase {
@@ -142,7 +142,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			_ = await UserProfilesRepo.SetProfileIsFavorite(userProfile, IsFavorite);
 		};
 		AsyncCommandMap["DeleteUserProfile"] = async () => {
-			if (await Mbox.Show(
+			if (await MessageBox.Show(
 				title: "Delete User Profile",
 				content: $"Are you sure you want to delete {userProfile.title}?",
 				btns: MBoxButtons.OkCancel,

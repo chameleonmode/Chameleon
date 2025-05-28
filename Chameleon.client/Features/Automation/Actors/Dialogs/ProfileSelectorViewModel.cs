@@ -2,8 +2,8 @@
 using Chameleon.client.Features.ProfilesAndFolders.Folders;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.lib.Common.Constants;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using DynamicData.Binding;
@@ -223,15 +223,15 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 	}
 
 	public async Task<bool> ShowDialogAsync() {
-		var result = await Mbox.ShowTaskDialog<ProfileSelectorView, ProfileSelectorViewModel>(new(
+		var result = await MessageBox.ShowTaskDialog<ProfileSelectorView, ProfileSelectorViewModel>(new(
 				Initialize: () => this,
 				Header: "Select Profiles",
 				SubHeader: "Select profiles to run the actor automation with. You can search and expand folders.",
-				Symbas: Enums.Symbas.People,
-				Btns: Enums.MBoxButtons.OkCancel)
+				Symbas: Symbas.People,
+				Btns: MBoxButtons.OkCancel)
 		);
 
-		if (result == Enums.TaskDialogResult.OK) {
+		if (result == TaskDialogResult.OK) {
 			var dialogSelectedProfileIds = new HashSet<string?>();
 			foreach (var group in DisplayGroups) {
 				foreach (var pfi in group.ProfileItems) {
@@ -250,7 +250,7 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 
 		Dispose();
 
-		return result == Enums.TaskDialogResult.OK && SelectedProfiles.Any();
+		return result == TaskDialogResult.OK && SelectedProfiles.Any();
 	}
 
 	public void Dispose() {

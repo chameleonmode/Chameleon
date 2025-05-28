@@ -21,13 +21,14 @@ public class FolderManagementService {
 	public UPFolderDto? CurrentFolderDto { get; private set; }
 	public event EventHandler<FolderChangedEventArgs>? CurrentFolderChanged;
 
-	public FolderManagementService() {
+	FolderManagementService() {
 		_ = UserProfilesFolderRepo.Connect()
 				.Transform(dto => new ObsFolder(dto, false, null, null))
 				.SortAndBind(out allFolders, AscendingComparer)
 				.DisposeMany()
 				.Subscribe();
 	}
+	public static FolderManagementService Instance { get; } = new FolderManagementService();
 
 	public async Task SetCurrentFolderAsync(UPFolderDto? folderDto) {
 
@@ -47,6 +48,4 @@ public class FolderManagementService {
 	protected virtual void OnCurrentFolderChanged(FolderChangedEventArgs e) {
 		CurrentFolderChanged?.Invoke(this, e);
 	}
-
-	public static FolderManagementService Instance { get; } = new FolderManagementService();
 }

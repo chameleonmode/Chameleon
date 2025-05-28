@@ -1,4 +1,3 @@
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
@@ -83,7 +82,7 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 
 	private async Task CreateNewUserAssistant() {
 		if (Assistantz.Count >= Auther.AuthSession?.LicenseLimits.MaxAssistantsCount) {
-			if (await Mbox.Show("USERS LIMIT REACHED", "You have reached the maximum number of users."))
+			if (await MessageBox.Show("USERS LIMIT REACHED", "You have reached the maximum number of users."))
 				ProcessUtil.OpenBrowser(Consts.PricingUrl);
 		} else {
 			if (await new InviteUserOrAddProfilesViewModel(true).ShowDialog() is { } result) {

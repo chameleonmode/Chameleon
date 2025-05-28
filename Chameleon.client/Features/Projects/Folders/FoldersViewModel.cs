@@ -9,48 +9,44 @@ using System.Collections.ObjectModel;
 using UserProfilesViewModel = Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles.MyProfilesViewModel;
 
 namespace Chameleon.client.Features.ProfilesAndFolders.Folders;
+
 public partial class FoldersViewModel : ViewModelObjectBase {
 
-	private FolderManagementService FolderManagementServices => FolderManagementService.Instance;
-
-	[ObservableProperty]
-	private ObsFolder selectedFolder;
+	[ObservableProperty] ObsFolder selectedFolder;
 
 	public ObsFolder AllProfiles { get; }
-	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
-	public ReadOnlyObservableCollection<ObsFolder> Folders => folders;
+	public ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public event Action<ObsFolder>? OnSelectedChanged;
 
 	public FoldersViewModel() {
 		_ = UserProfilesFolderRepo.Connect()
 		.Transform(i => new ObsFolder(
 			folder: i,
-		  hasActionOptions: false,
+			hasActionOptions: false,
 			onSelectedChanged: f => OnSelectedChanged?.Invoke(f),
 			nameAlreadyExist: folderName => Folders?.Any(x => x.Dto.title == folderName) ?? false
 		))
-		.SortAndBind(out folders, FolderManagementService.AscendingComparer)
+		.SortAndBind(out var folders, FolderManagementService.AscendingComparer)
 		.Subscribe();
+		Folders = folders;
 		SelectedFolder = AllProfiles = folders[0];
 
-		AsyncCommandMap["Create"] = Create;
+		AsyncCommandMap["Create"] = async () => {
+			var pcount = UserProfilesFolderRepo.Instance.ObservableCache.Items.Count;
+			var pname = $"New Folder - {pcount}";
+			while (UserProfilesRepo.Instance.ObservableCache.Items.Any(i => i.title == pname))
+				pname = $"New Folder - {++pcount}";
 
-		FolderManagementServices.CurrentFolderChanged += FolderManagementService_CurrentFolderChanged;
+			var folder = await UserProfilesFolderRepo.CreateFolder(pname);
+
+			_ = OnNavigatingTo(folder);
+		};
+
+		FolderManagementService.Instance.CurrentFolderChanged += FolderManagementService_CurrentFolderChanged;
 	}
 
 	private void FolderManagementService_CurrentFolderChanged(object? sender, FolderChangedEventArgs e) {
 		_ = OnNavigatingTo(e.NewCurrentFolderDto);
-	}
-
-	private async Task Create() {
-		var pcount = UserProfilesFolderRepo.Instance.ObservableCache.Items.Count;
-		var pname = $"New Folder - {pcount}";
-		while (UserProfilesRepo.Instance.ObservableCache.Items.Any(i => i.title == pname))
-			pname = $"New Folder - {++pcount}";
-
-		var folder = await UserProfilesFolderRepo.CreateFolder(pname);
-
-		_ = OnNavigatingTo(folder);
 	}
 
 	public async Task OnNavigatingTo(UPFolderDto? p = null) {
@@ -65,7 +61,7 @@ public partial class FoldersViewModel : ViewModelObjectBase {
 		} else {
 			if (AllProfiles != null && !AllProfiles.Navigated) {
 				AllProfiles.Navigated = true;
-				await AllProfiles.Open();
+				await AllProfiles.AsyncCommandMap["Open"]();
 			}
 		}
 	}

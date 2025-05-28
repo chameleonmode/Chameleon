@@ -3,7 +3,6 @@ using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
@@ -12,8 +11,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace Chameleon.app.Avalonia.Models.Observable;
 
 public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
-	private FolderManagementService FolderManagementServices => FolderManagementService.Instance;
-
 	public event Action<ObsFolder>? OnSelectedChanged;
 	public Func<string?, bool>? NameAlreadyExist { get; }
 
@@ -22,10 +19,10 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	[ObservableProperty] bool isRenamed;
 	[ObservableProperty] bool isActionOptionsVisible;
 
+	public bool IsContextMenuVisible => Dto!.id != 0;
 	public bool ShowFavoriteIcon => IsContextMenuItemEnabled && Dto?.id != 0;
 	public bool IsSharedFolder => Dto?.creatorUserId != null && Dto?.creatorUserId != Auther.AuthSession?.UserId;
 	public bool IsContextMenuItemEnabled => Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CreatorUserId == Dto?.creatorUserId;
-	public bool IsContextMenuVisible => Dto!.id != 0;
 	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => (p.folderId == null && Dto!.id == 0) || p.folderId == Dto!.id);
 
 	public ObsFolder(UPFolderDto folder, Func<string?, bool>? nameAlreadyExist) : base(folder) {
@@ -33,15 +30,82 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 		profilesCount = Dto.profilesCount;
 		NameAlreadyExist = nameAlreadyExist;
 
-		CommandMap["SetFavoriteFolder"] = SetFavoriteFolder;
-		CommandMap["ViewGroup"] = ViewGroup;
-		CommandMap["StartRename"] = StartRename;
-		CommandMap["ChangeProxies"] = ChangeProxies;
+		CommandMap["SetFavoriteFolder"] = () => {
+			IsFavorite = !IsFavorite;
 
-		AsyncCommandMap["Open"] = Open;
-		AsyncCommandMap["SetFavorite"] = SetFavorite;
-		AsyncCommandMap["Delete"] = Delete;
-		AsyncCommandMap["SaveRename"] = SaveRename;
+			Dto!.isFavorite = IsFavorite;
+			_ = UserProfilesFolderRepo.Instance.Put(Dto);
+		};
+		CommandMap["ViewGroup"] = () => Navigator.Instance.NavigateTo("ProjectsView", this);
+		CommandMap["StartRename"] = () => {
+			Title = Dto?.title;
+			IsRenamed = true;
+		};
+		CommandMap["ChangeProxies"] = () => Navigator.Instance.NavigateTo("FunctionalSettingsView", this); ;
+
+		AsyncCommandMap["Open"] = async () => {
+			await FolderManagementService.Instance.SetCurrentFolderAsync(Dto);
+			IsSelected = true;
+		};
+		AsyncCommandMap["SetFavorite"] = async () => {
+			IsFavorite = !IsFavorite;
+			Dto!.isFavorite = IsFavorite;
+
+			_ = await UserProfilesFolderRepo.Instance.Put(Dto);
+
+			OnPropertyChanged(nameof(Dto));
+		};
+		AsyncCommandMap["Delete"] = async () => {
+			if (await MessageBox.Show("Delete Folder",
+					$"Are you sure you want to delete {Dto!.title} folder? This will not affect individual profiles within the folder.",
+					MBoxButtons.OkCancel,
+					"DeleteLines")) {
+
+				var userProfiles = UserProfilesRepo.Instance.ObservableCache.Items.Where(p => p.folderId == Dto!.id);
+				var deletes = new List<Task>();
+				foreach (var item in userProfiles) {
+					item.folderId = null;
+					deletes.Add(UserProfilesRepo.Instance.Put(item));
+				}
+				await Task.WhenAll(deletes);
+				var res = await UserProfilesFolderRepo.Instance.Delete(Dto!.id);
+				if (!res.success) {
+
+				}
+				await FolderManagementService.Instance.SetCurrentFolderAsync(null);
+			}
+		};
+		AsyncCommandMap["SaveRename"] = async () => {
+			if (Title.Is()) {
+				return;
+			}
+
+			var wasSelected = IsSelected;
+			var orignalTitle = Dto!.title;
+			try {
+
+				if (NameAlreadyExist is null)
+					throw new ArgumentNullException("Name validation property can not be null");
+
+				if (NameAlreadyExist(this.Title)) {
+					Toaster.Error($"Folder named {this.Title} already exists");
+					return;
+				}
+				Dto.title = Title;
+				var res = await UserProfilesFolderRepo.Instance.Put(Dto);
+				if (res != null) {
+					IsRenamed = false;
+				}
+			} catch {
+				Dto.title = orignalTitle;
+			}
+
+			Title = Dto.title;
+
+			IsRenamed = false;
+
+			if (wasSelected) await AsyncCommandMap["Open"]();
+		};
 
 		UserProfilesRepo.Instance.OnProfileChanged += (profile) => {
 			if (profile.folderId == Dto!.id) {
@@ -67,90 +131,5 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 		}
 
 		OnSelectedChanged?.Invoke(this);
-	}
-
-	// CommandMap Commands
-	private void ViewGroup() {
-		Navigator.Instance.NavigateTo("ProjectsView", this);
-	}
-	private void SetFavoriteFolder() {
-		IsFavorite = !IsFavorite;
-
-		Dto!.isFavorite = IsFavorite;
-		_ = UserProfilesFolderRepo.Instance.Put(Dto);
-	}
-	private void StartRename() {
-		Title = Dto?.title;
-		IsRenamed = true;
-	}
-	private void ChangeProxies() {
-		Navigator.Instance.NavigateTo("FunctionalSettingsView", this);
-	}
-
-	// AsyncCommandMap Commands
-	public async Task Open() {
-		await FolderManagementServices.SetCurrentFolderAsync(Dto);
-		IsSelected = true;
-	}
-	private async Task SetFavorite() {
-		IsFavorite = !IsFavorite;
-		Dto!.isFavorite = IsFavorite;
-
-		_ = await UserProfilesFolderRepo.Instance.Put(Dto);
-
-		OnPropertyChanged(nameof(Dto));
-	}
-	private async Task Delete() {
-		if (await Mbox.Show("Delete Folder",
-				$"Are you sure you want to delete {Dto!.title} folder? This will not affect individual profiles within the folder.",
-				Enums.MBoxButtons.OkCancel,
-				"DeleteLines")) {
-
-			var userProfiles = UserProfilesRepo.Instance.ObservableCache.Items.Where(p => p.folderId == Dto!.id);
-			var deletes = new List<Task>();
-			foreach (var item in userProfiles) {
-				item.folderId = null;
-				deletes.Add(UserProfilesRepo.Instance.Put(item));
-			}
-			await Task.WhenAll(deletes);
-			var res = await UserProfilesFolderRepo.Instance.Delete(Dto!.id);
-			if (!res.success) {
-
-			}
-			await FolderManagementServices.SetCurrentFolderAsync(null);
-		}
-	}
-	private async Task SaveRename() {
-		if (Title.Is()) {
-			return;
-		}
-
-		var wasSelected = IsSelected;
-		var orignalTitle = Dto!.title;
-		try {
-
-			if (NameAlreadyExist is null)
-				throw new ArgumentNullException("Name validation property can not be null");
-
-			if (NameAlreadyExist(this.Title)) {
-				Toaster.Error($"Folder named {this.Title} already exists");
-				return;
-			}
-			Dto.title = Title;
-			var res = await UserProfilesFolderRepo.Instance.Put(Dto);
-			if (res != null) {
-				IsRenamed = false;
-			}
-		} catch {
-			Dto.title = orignalTitle;
-		}
-
-		Title = Dto.title;
-
-		IsRenamed = false;
-
-		if (wasSelected) {
-			await Open();
-		}
 	}
 }
