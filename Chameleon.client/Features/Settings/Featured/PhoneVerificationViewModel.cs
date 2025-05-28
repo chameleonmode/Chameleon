@@ -131,7 +131,7 @@ public partial class PVApiModel
 
 	public void Popout()
 	{
-		WShower.ShowTopmost<PVAUserControl, PVApiModel>(new PVApiModel(_pnapinstance) { 
+		DialogBox.ShowTopmost<PVAUserControl, PVApiModel>(new PVApiModel(_pnapinstance) { 
 			HasCancel = HasCancel
 		}, async vm => {
 			vm.IsVisibleSave = false;

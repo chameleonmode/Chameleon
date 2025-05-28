@@ -1,4 +1,6 @@
 ﻿using Chameleon.app.Avalonia.Models.Observable;
+using Chameleon.client.Features.ProfilesAndFolders.Folders;
+using Chameleon.client.Features.ProfilesAndFolders.Profiles.MyProfiles;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.ServiceManagers;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -139,8 +141,6 @@ public partial class GroupedProfiles : ObservableObject {
 }
 
 public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable {
-	private readonly ReadOnlyObservableCollection<ObsFolder> allFolders;
-	private readonly ReadOnlyObservableCollection<ObsProfile> allProfiles;
 	private readonly IDisposable filterSubscription;
 	private readonly HashSet<string?> initiallySelectedProfileIds = [];
 
@@ -162,13 +162,7 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 		}
 	}
 
-	public ProfileSelectorViewModel(
-				ReadOnlyObservableCollection<ObsFolder> allFolders,
-				ReadOnlyObservableCollection<ObsProfile> allProfiles,
-				IEnumerable<ObsProfile>? initiallySelectedProfiles)
-				: base("Select Profiles") {
-		this.allFolders = allFolders;
-		this.allProfiles = allProfiles;
+	public ProfileSelectorViewModel(IEnumerable<ObsProfile>? initiallySelectedProfiles) : base("Select Profiles") {
 
 		if (initiallySelectedProfiles != null) {
 			foreach (var p in initiallySelectedProfiles) {
@@ -189,16 +183,19 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 	private void RebuildAndFilterDisplayGroups(string? searchText) {
 
 		var filteredSourceProfiles = string.IsNullOrWhiteSpace(searchText)
-				? [.. allProfiles]
-				: allProfiles.Where(p => p.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false);
+				? [..  MyProfilesViewModel.Instance.Profiles]
+				:  MyProfilesViewModel.Instance.Profiles.Where(p => p.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false);
 
 		var profileWrappers = filteredSourceProfiles
-						.Select(p => new ProfileOrFolderItem(p, initiallySelectedProfileIds.Contains(p.Dto?.id.ToString()) || p.IsSelected));
+		.Select(p => new ProfileOrFolderItem(p, initiallySelectedProfileIds.Contains(p.Dto?.id.ToString()) || p.IsSelected));
 
 		var groupedProfileWrappers = profileWrappers.GroupBy(pfi => pfi.FolderIdKey);
 
-		var distinctFolders = allFolders.Where(f => f.Dto != null).GroupBy(f => f.Dto!.id)
-					 .Select(g => g.First()).OrderBy(f => f.Title);
+		var distinctFolders = FoldersViewModel.Instance.Folders
+		.Where(f => f.Dto != null)
+		.GroupBy(f => f.Dto!.id)
+		.Select(g => g.First())
+		.OrderBy(f => f.Title);
 
 		var resultGroup = new List<GroupedProfiles>();
 
@@ -244,7 +241,7 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 				}
 			}
 
-			foreach (var originalProfile in allProfiles) {
+			foreach (var originalProfile in MyProfilesViewModel.Instance.Profiles) {
 				if (originalProfile.Dto?.id != null) {
 					originalProfile.IsSelected = dialogSelectedProfileIds.Contains(originalProfile.Dto.id.ToString());
 				}

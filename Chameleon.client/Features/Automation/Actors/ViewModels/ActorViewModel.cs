@@ -19,25 +19,16 @@ using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using static Chameleon.lib.Common.Constants.Enums;
-// multiple storage state / results
 namespace Chameleon.client.Features.Automation.Actors;
 
-public partial class Tag : ObservableObject
-{
-	[ObservableProperty] bool isSelected;
-
-	public TagDto Dto { get; }
+public partial class Tag(TagDto Dto, bool selected = false)  : ObservableObject {
+	[ObservableProperty] bool isSelected = selected;
 
 	public IEnumerable<string> ProfileIds => Dto.Items
-																						 .Where(x => x.Key == TagItemType.Profile)
-																						 .SelectMany(x => x.Value);
+	.Where(x => x.Key == TagItemType.Profile)
+	.SelectMany(x => x.Value);
 
 	public string ToolTipText => $"{ProfileIds.Count()} Profiles";
-
-	public Tag(TagDto dto, bool isSelected = false) {
-		Dto = dto;
-		IsSelected = isSelected;
-	}
 }
 public record Selection(Script Script, bool Selected = false);
 public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<int> SelectedProfileIds);
@@ -48,9 +39,6 @@ public record BrowserOption(SystemBrowserType Option) {
 public partial class ActorViewModel : ViewModelObjectBase {
 	readonly CompositeDisposable subscriptions = [];
 
-	ReadOnlyObservableCollection<ObsFolder> Folders => FoldersViewModel.Instance.Folders;
-	ReadOnlyObservableCollection<ObsProfile> Profiles => MyProfilesViewModel.Instance.Profiles;
-  
 	CancellationTokenSource? cts;
 
 	[ObservableProperty] bool running;
@@ -66,11 +54,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		new (SystemBrowserType.Brave),
 	];
 
-	private readonly ReadOnlyObservableCollection<Tag> tagz;
-	public ReadOnlyObservableCollection<Tag> Tagz => tagz;
-
-	private readonly ReadOnlyObservableCollection<ObsProfile> selectedProfiles;
-	public ReadOnlyObservableCollection<ObsProfile> SelectedProfiles => selectedProfiles;
+	public ReadOnlyObservableCollection<Tag> Tagz { get; }
+	public ReadOnlyObservableCollection<ObsProfile> SelectedProfiles { get; }
 
 	public ActorViewModel(
 		IActor actor,
@@ -82,32 +67,30 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			TagsRepo.Connect()
 			.Filter(tag => tag.Items.Where(x => x.Key == TagItemType.Profile).Any())
 			.Transform(item => new Tag(item, selectedTags?.Contains(item.Name) ?? false))
-			.Bind(out tagz)
-			.Subscribe()
-		);
+			.Bind(out var tagz)
+			.Subscribe());
+		Tagz = tagz;
 
 		subscriptions.Add(
-			Profiles.ToObservableChangeSet()
+			 MyProfilesViewModel.Instance.Profiles.ToObservableChangeSet()
 			.AutoRefresh(profile => profile.IsSelected)
 			.Filter(profile => profile.IsSelected)
 			.Sort(SortExpressionComparer<ObsProfile>.Ascending(p => p.Title ?? ""))
 			.DistinctUntilChanged()
-			.Bind(out selectedProfiles)
-			.Subscribe()
-		);
+			.Bind(out var selectedProfiles)
+			.Subscribe());
+		SelectedProfiles = selectedProfiles;
 
 		subscriptions.Add(
 			tagz.ToObservableChangeSet()
 			.AutoRefresh(tag => tag.IsSelected)
 			.ToCollection()
-			.Subscribe(current =>
-				current
-				.ForEach(t =>
-					Profiles
+			.Subscribe(next =>
+			next.ForEach(t =>
+					 MyProfilesViewModel.Instance.Profiles
 					.Where(x => t.ProfileIds.Contains(x.Dto.ID))
 					.ForEach(p => p.Active = p.IsSelected = t.IsSelected)
-				))
-		);
+				)));
 
 		Actor = actor;
 		AiSettings = actor.Options.AI;
@@ -119,7 +102,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		];
 
 		profileSelections?.ForEach(id => {
-			Profiles
+			 MyProfilesViewModel.Instance.Profiles
 			.Where(p => p.Dto.id == id)
 			.ForEach(p => p.IsSelected = true);
 		});
@@ -132,7 +115,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			try {
 				var profiles = SelectedProfiles.Where(p => p.Active);
 				if (!profiles.Any()) throw new Exception("No profiles selected to run.");
-				
+
 				var selected = Selections.OrderBy(s => new Random().Next()).Where(s => s.Selected);
 				if (!selected.Any()) throw new Exception("No scripts selected to run.");
 
@@ -180,7 +163,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
 		};
 		AsyncCommandMap["OpenProfileSelector"] = async () => {
-			using var profileSelectorVM = new ProfileSelectorViewModel(Folders, Profiles, SelectedProfiles);
+			using var profileSelectorVM = new ProfileSelectorViewModel(SelectedProfiles);
 			_ = await profileSelectorVM.ShowDialogAsync();
 		};
 

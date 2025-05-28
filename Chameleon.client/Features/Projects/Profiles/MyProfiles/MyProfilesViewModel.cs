@@ -1,5 +1,5 @@
 ﻿using Avalonia.Collections;
-using Chameleon.app.Avalonia.Extensions;
+using Chameleon.lib.Util;
 using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.app.Avalonia.Services;
 using Chameleon.client.Features.ProfilesAndFolders.Folders;
@@ -15,7 +15,6 @@ using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
-using Chameleon.lib.Util;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

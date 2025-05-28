@@ -76,21 +76,12 @@ public class SnapCracklePopViewModel : ViewModelObjectBase {
 }
 
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
-
-	private INavigatorService NavigationService => Navigator.Instance;
-
-	[ObservableProperty]
-	private string isChromeRunning = "False";
-	[ObservableProperty]
-	private string isBraveRunning = "False";
-	[ObservableProperty]
-	private string isFFRunning = "False";
-	[ObservableProperty]
-	private bool isShowGlyph;
-	[ObservableProperty]
-	private bool isForeground;
-	[ObservableProperty]
-	private bool isFavorite;
+	[ObservableProperty] string isChromeRunning = "False";
+	[ObservableProperty] string isBraveRunning = "False";
+	[ObservableProperty] string isFFRunning = "False";
+	[ObservableProperty] bool isShowGlyph;
+	[ObservableProperty] bool isForeground;
+	[ObservableProperty] bool isFavorite;
 
 	//
 	public bool IsShowCheckboxColumn { get; }
@@ -145,6 +136,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		AsyncCommandMap["OpenFirefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
 		AsyncCommandMap["OpenChrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);
 		AsyncCommandMap["OpenBrave"] = () => OpenSystemBrowser(SystemBrowserType.Brave);
+
 		AsyncCommandMap["Favorite"] = async () => {
 			IsFavorite = !IsFavorite;
 			_ = await UserProfilesRepo.SetProfileIsFavorite(userProfile, IsFavorite);
@@ -157,15 +149,14 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 				fontIconInfo: "DeleteLines"
 			)) {
 				_ = await UserProfilesRepo.Instance.Delete(userProfile.id);
-				if (NavigationService.CanGoBack == true && NavigationService.IsCurrentView("IdentityView")) {
-					NavigationService.GoBack();
-				}
+				if (Navigator.Instance.CanGoBack && Navigator.Instance.IsCurrentView("IdentityView")) Navigator.Instance.GoBack();
+				
 				onDeleted?.Invoke(this);
 			}
 		};
 
 		CommandMap["OpenTopmostController"] = OpenTopmostController;
-		CommandMap["ShowViewProfile"] = () => WShower.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(
+		CommandMap["ShowViewProfile"] = () => DialogBox.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(
 			vm: new UserProfileSidePanelViewModel(userProfile),
 			title: "Copy Pasta", 
 			width: 156
@@ -192,12 +183,14 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			.Subscribe(x => OnSelectedChanged?.Invoke(this));
 	}
 
-	public void Open() {
-		NavigationService.NavigateTo("IdentityView", Dto);
+	public void View() {
+		if (!IsActionOptionsVisible) return;
+
+		Navigator.Instance.NavigateTo("IdentityView", Dto);
 	}
 
 	public void OpenTopmostController() {
-		WShower.ShowTopmost(
+		DialogBox.ShowTopmost(
 			vm: SnapCracklePopViewModel.Instance,
 			v: SnapCracklePopUserControl.Instance,
 			initialize: vm => {

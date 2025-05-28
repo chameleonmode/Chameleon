@@ -1,5 +1,4 @@
-﻿using Chameleon.app.Avalonia.Extensions;
-using Chameleon.app.Avalonia.Models.Observable;
+﻿using Chameleon.app.Avalonia.Models.Observable;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
