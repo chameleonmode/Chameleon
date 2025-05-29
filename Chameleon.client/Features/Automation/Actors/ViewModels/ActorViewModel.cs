@@ -22,7 +22,7 @@ namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class Tag(TagDto dto, bool selected = false)  : ObservableObject {
 
-	public Tag() : this(new TagDto("", [])) { }
+	public Tag() : this(new TagDto("", [])) { }//Important for deserialization
 
 	[ObservableProperty] bool isSelected = selected;
 	public TagDto Dto { get; } = dto;
