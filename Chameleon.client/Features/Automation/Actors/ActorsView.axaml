@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="850"
+             mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="1680"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:afvc="using:Chameleon.app.Avalonia.Fluent.Controls"
@@ -101,7 +101,7 @@
 			</DataTemplate>
 
 			<DataTemplate x:Key="StartEditorTemplate" x:DataType="models:Start">
-				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 					<TextBlock Text="URL's:"
 						Grid.Row="0"
 						ToolTip.Tip="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)" />

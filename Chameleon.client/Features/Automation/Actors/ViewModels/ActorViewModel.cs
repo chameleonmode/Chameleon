@@ -21,6 +21,9 @@ using static Chameleon.lib.Common.Constants.Enums;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class Tag(TagDto dto, bool selected = false)  : ObservableObject {
+
+	public Tag() : this(new TagDto("", [])) { }
+
 	[ObservableProperty] bool isSelected = selected;
 	public TagDto Dto { get; } = dto;
 
