@@ -49,18 +49,18 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			UserProfile = new UserProfileViewModel(up);
 			UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString())
 				.ToStringAsync().RunInBackgroundWithResult();
-			ProfileVM = new ObsProfile(up){ IsShowCheckboxColumn = false };
-			
+			ProfileVM = new ObsProfile(up) { IsShowCheckboxColumn = false };
+
 			PersonsVM = PersonsViewModel.Create(UserProfile);
 			BusinessesVM = BusinessesViewModel.Create(UserProfile);
 			AddressesVM = AddressesViewModel.Create(UserProfile);
 			LoginsVM = LoginsViewModel.Create(UserProfile);
-			
+
 			PersonsVM.UpdateFilter();
 			BusinessesVM.UpdateFilter();
 			AddressesVM.UpdateFilter();
 			LoginsVM.UpdateFilter();
-			
+
 			Title = ProfileVM?.Title;
 		}
 	}
@@ -73,105 +73,52 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	private async Task SaveChanges() {
 		if (IsSaving)
 			return; // Prevent multiple concurrent saves
-			
+
 		IsSaving = true;
 
 		try {
-			try {
-				await LoginsVM.SaveAll();
-			}
-			catch (Exception ex) {
-				Toaster.Error($"Error saving logins: {ex.Message}");
-				Debug.WriteLine($"Exception saving logins: {ex}");
-			}
-			
-			try {
-				await PersonsVM.SaveAll();
-			}
-			catch (Exception ex) {
-				Toaster.Error($"Error saving persons: {ex.Message}");
-				Debug.WriteLine($"Exception saving persons: {ex}");
-			}
-			
-			try {
-				await AddressesVM.SaveAll();
-			}
-			catch (Exception ex) {
-				Toaster.Error($"Error saving addresses: {ex.Message}");
-				Debug.WriteLine($"Exception saving addresses: {ex}");
-			}
-			
-			try {
-				await BusinessesVM.SaveAll();
-			}
-			catch (Exception ex) {
-				Toaster.Error($"Error saving businesses: {ex.Message}");
-				Debug.WriteLine($"Exception saving businesses: {ex}");
-			}
+			await LoginsVM.SaveAll();
+			await PersonsVM.SaveAll();
+			await AddressesVM.SaveAll();
+			await BusinessesVM.SaveAll();
 
 			if (UserProfile?.Validator?.IsValid == false) {
 				Toaster.Info("Profile validation failed. Some changes may not be saved.");
 			}
 
-			try {
-				var res = await UserProfilesRepo.Instance.Put(UserProfile!.ToDto());
-				if (res != null) {
-					try {
-						await tagsRepo
-							.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList())
-							.RunInBackground();
-					}
-					catch (Exception ex) {
-						Toaster.Error($"Error saving tags: {ex.Message}");
-						Debug.WriteLine($"Exception saving tags: {ex}");
-					}
+			var res = await UserProfilesRepo.Instance.Put(UserProfile!.ToDto());
+			if (res != null) {
+				await tagsRepo
+						.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList())
+						.RunInBackground();
 
-					UserProfile = new UserProfileViewModel(res);
-					
-					try {
-						UserProfile.Tags = await tagsRepo
-							.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync()
-							.RunInBackgroundWithResult();
-					}
-					catch (Exception ex) {
-						Debug.WriteLine($"Exception getting tags: {ex}");
-					}
-					
-					ProfileVM = new ObsProfile(UserProfile.ToDto()) { IsShowCheckboxColumn = false };
-					
-					PersonsVM = PersonsViewModel.Create(UserProfile);
-					BusinessesVM = BusinessesViewModel.Create(UserProfile);
-					AddressesVM = AddressesViewModel.Create(UserProfile);
-					LoginsVM = LoginsViewModel.Create(UserProfile);
-					
-					PersonsVM.UpdateFilter();
-					BusinessesVM.UpdateFilter();
-					AddressesVM.UpdateFilter();
-					LoginsVM.UpdateFilter();
-					
-					Toaster.Success($"Update was successful.");
-				}
-				else {
-					Toaster.Error("Failed to update profile. Server returned null response.");
-				}
+				UserProfile = new UserProfileViewModel(res);
+
+				UserProfile.Tags = await tagsRepo
+						.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync()
+						.RunInBackgroundWithResult();
+
+				ProfileVM = new ObsProfile(UserProfile.ToDto()) { IsShowCheckboxColumn = false };
+
+				PersonsVM = PersonsViewModel.Create(UserProfile);
+				BusinessesVM = BusinessesViewModel.Create(UserProfile);
+				AddressesVM = AddressesViewModel.Create(UserProfile);
+				LoginsVM = LoginsViewModel.Create(UserProfile);
+
+				PersonsVM.UpdateFilter();
+				BusinessesVM.UpdateFilter();
+				AddressesVM.UpdateFilter();
+				LoginsVM.UpdateFilter();
+
+				Toaster.Success($"Update was successful.");
+			} else {
+				Toaster.Error("Failed to update profile. Server returned null response.");
 			}
-			catch (Exception ex) {
-				Toaster.Error($"Error saving profile: {ex.Message}");
-				Debug.WriteLine($"Exception saving profile: {ex}");
-			}
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			Toaster.Error($"Unexpected error during save: {ex.Message}");
 			Debug.WriteLine($"Unexpected exception during save: {ex}");
-		}
-		finally {
-			try {
-				ShowValidationErrors();
-			}
-			catch (Exception ex) {
-				Debug.WriteLine($"Exception showing validation errors: {ex}");
-			}
-			
+		} finally {
+			ShowValidationErrors();
 			IsSaving = false;
 		}
 	}

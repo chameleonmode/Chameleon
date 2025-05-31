@@ -32,6 +32,7 @@ public partial class AddressesViewModel : ProfileSectionViewModel<UPAddressDto, 
 				.Filter(adrezfilter)
 				.Bind(out var addresses)
 				.Subscribe((i) => {
+					IsLoading = false;
 					OnPropertyChanged(nameof(HasItems));
 					OnPropertyChanged(nameof(HasAddresses));
 				});
@@ -40,41 +41,52 @@ public partial class AddressesViewModel : ProfileSectionViewModel<UPAddressDto, 
 	}
 
 	public override void UpdateFilter() {
+		IsLoading = true;
 		adrezfilter.OnNext(AdrezFilterPredicate);
 	}
 
-	[RelayCommand]
-	public async Task AddAddress() {
-		await AddItem();
-	}
-
 	public override async Task AddItem() {
-		if (Items.Any(x => IsNewItem(x)) || newlyAddedAddress.Count != 0) {
+		if (IsLoading || IsBusy)
+			return;
+
+		if (Items.Any(IsNewItem) || newlyAddedAddress.Count != 0) {
 			return;
 		}
 
-		var addedAddress = await UPAdditionalDataRepo.Instance.Addrez.Create(new UPAddressDto() {
-			ProfileId = userProfile?.Id
-		});
-		newlyAddedAddress.Add(addedAddress.id);
-		OnPropertyChanged(nameof(HasItems));
-		OnPropertyChanged(nameof(HasAddresses));
+		IsLoading = true;
+		try {
+			var addedAddress = await UPAdditionalDataRepo.Instance.Addrez.Create(new UPAddressDto() {
+				ProfileId = userProfile?.Id
+			});
+			newlyAddedAddress.Add(addedAddress.id);
+			OnPropertyChanged(nameof(HasItems));
+			OnPropertyChanged(nameof(HasAddresses));
+		}
+		finally {
+			IsLoading = false;
+		}
 	}
 
 	[RelayCommand]
 	public async Task OnSaveAddress(ObsAddressViewModel p) {
-		_ = p.IsValidationValid();
-		if (p.Dto != null) {
-			await UPAdditionalDataRepo
-					.Save(UPAdditionalDataRepo.Instance.Addrez, p.ToDto())
-					.RunInBackground();
-			if (p.Id == 0)
-				_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Addrez, p.ToDto());
-			
-			lock (newlyAddedAddress) {
-				if (newlyAddedAddress.Any(id => p.Id == id))
-					_ = newlyAddedAddress.Remove(p.Id);
+		IsLoading = true;
+		try {
+			_ = p.IsValidationValid();
+			if (p.Dto != null) {
+				await UPAdditionalDataRepo
+						.Save(UPAdditionalDataRepo.Instance.Addrez, p.ToDto())
+						.RunInBackground();
+				if (p.Id == 0)
+					_ = await UPAdditionalDataRepo.DeleteFromCache(UPAdditionalDataRepo.Instance.Addrez, p.ToDto());
+				
+				lock (newlyAddedAddress) {
+					if (newlyAddedAddress.Any(id => p.Id == id))
+						_ = newlyAddedAddress.Remove(p.Id);
+				}
 			}
+		}
+		finally {
+			IsLoading = false;
 		}
 	}
 
@@ -83,14 +95,20 @@ public partial class AddressesViewModel : ProfileSectionViewModel<UPAddressDto, 
 	}
 
 	public override async Task SaveAll() {
-		var itemsToSave = Items.ToList();
+		IsLoading = true;
+		try {
+			var itemsToSave = Items.ToList();
 
-		foreach (var item in itemsToSave) {
-			await SaveItem(item);
+			foreach (var item in itemsToSave) {
+				await SaveItem(item);
+			}
+
+			lock (newlyAddedAddress) {
+				newlyAddedAddress.Clear();
+			}
 		}
-
-		lock (newlyAddedAddress) {
-			newlyAddedAddress.Clear();
+		finally {
+			IsLoading = false;
 		}
 	}
 

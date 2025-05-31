@@ -11,15 +11,23 @@
     <Panel>
         <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
                               IsVisible="{Binding !HasItems}" />
-        <Grid RowDefinitions="Auto,*">
+        <Grid RowDefinitions="Auto,Auto,*">
             <HeaderedContentControl
                 Theme="{StaticResource TheseOptionsHeaderPanels}"
                 Header="{Binding Items.Count, StringFormat='You have {0} persons added.'}"
                 Content="Add Person"
-                Tag="AddPerson" />
+                Tag="AddPerson"/>
+                
+            <ProgressBar Grid.Row="1" 
+                       IsIndeterminate="True" 
+                       IsVisible="{Binding IsLoading}"
+                       Height="3"
+                       Margin="0,2,0,2"
+                       Foreground="{DynamicResource SystemAccentColor}" />
 
-            <ItemsControl Classes="TheseItemControls"
-                          ItemsSource="{Binding Path=Items}">
+            <ItemsControl Grid.Row="2"
+                        Classes="TheseItemControls"
+                        ItemsSource="{Binding Path=Items}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Expander Classes="TheseExpanders">
@@ -58,7 +66,8 @@
                                                          Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes"/>
 
                                 <Button Classes="TheseDeleteBtns"
-                                    Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}" />
+                                    Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}"
+                                    IsEnabled="{ReflectionBinding Path=$parent[ItemsControl].DataContext.IsNotLoading}" />
                             </StackPanel>
                         </Expander>
                     </DataTemplate>

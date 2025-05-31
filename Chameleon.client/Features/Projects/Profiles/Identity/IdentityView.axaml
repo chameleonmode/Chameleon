@@ -115,7 +115,8 @@
 					Classes="accent"
 					Theme="{StaticResource AccentSymbleIconButton}"
 					Command="{Binding AsyncCfVCommand}"
-					CommandParameter="SaveChanges"/>
+					CommandParameter="SaveChanges"
+					IsEnabled="{Binding !IsSaving}"/>
 			</StackPanel>
 		</Grid>
 

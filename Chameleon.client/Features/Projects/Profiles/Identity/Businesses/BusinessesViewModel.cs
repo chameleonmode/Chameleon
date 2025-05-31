@@ -2,8 +2,6 @@ using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Base;
 using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
-using DynamicData;
-using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Businesses;
 
