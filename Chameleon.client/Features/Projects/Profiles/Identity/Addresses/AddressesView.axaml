@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+             xmlns:vm="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels"
+             xmlns:addresses="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Addresses"
+             x:DataType="addresses:AddressesViewModel"
+             x:CompileBindings="True"
+             x:Class="Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Addresses.AddressesView">
+    <Panel>
+        <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+                              IsVisible="{Binding !HasItems}" />
+        <Grid RowDefinitions="Auto,*">
+            <HeaderedContentControl
+                Theme="{StaticResource TheseOptionsHeaderPanels}"
+                Header="{Binding Items.Count, StringFormat='You have {0} addresses added.'}"
+                Content="Add Address"
+                Tag="AddAddress" />
+
+            <ItemsControl Classes="TheseItemControls"
+                          ItemsSource="{Binding Path=Items}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Expander Classes="TheseExpanders">
+                            <StackPanel Spacing="18">
+                                <afv:HeaderdInputFieldsControl Title="Title"
+                                                         Text="{Binding Title, FallbackValue=Title}" PlaceholderText="Title" />
+
+                                <afv:HeaderdInputFieldsControl Title="AddressLine1"
+                                                         Text="{Binding AddressLine1, FallbackValue=AddressLine1}" PlaceholderText="AddressLine1" />
+
+                                <afv:HeaderdInputFieldsControl Title="AddressLine2"
+                                                         Text="{Binding AddressLine2, FallbackValue=AddressLine2}" PlaceholderText="AddressLine2" />
+
+                                <afv:HeaderdInputFieldsControl Title="City"
+                                                         Text="{Binding City, FallbackValue=City}" PlaceholderText="City"/>
+
+                                <afv:HeaderdInputFieldsControl Title="State"
+                                                         Text="{Binding State, FallbackValue=State}" PlaceholderText="State"/>
+
+                                <afv:HeaderdInputFieldsControl Title="Zip"
+                                                         Text="{Binding Zip, FallbackValue=Zip}" PlaceholderText="Zip" />
+
+                                <ComboBox ItemsSource="{Binding Countries}"
+                                      Margin="0 0 6 0"
+                                      PlaceholderText="Country"
+                                      HorizontalAlignment="Stretch"
+                                      SelectedValue="{Binding CountryId}"
+                                      SelectedValueBinding="{Binding id}"
+                                      DisplayMemberBinding="{Binding Name}">
+                                </ComboBox>
+
+                                <afv:HeaderdInputFieldsControl Title="Notes"
+                                                         Text="{Binding Dto.Notes, FallbackValue=Notes}" PlaceholderText="Notes" />
+
+                                <Button Classes="TheseDeleteBtns"
+                                    Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}" />
+                            </StackPanel>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Panel>
+</UserControl>

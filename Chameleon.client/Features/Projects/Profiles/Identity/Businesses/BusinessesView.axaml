@@ -1,0 +1,54 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+             xmlns:vm="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels"
+             xmlns:businesses="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Businesses"
+             x:DataType="businesses:BusinessesViewModel"
+             x:CompileBindings="True"
+             x:Class="Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Businesses.BusinessesView">
+    <Panel>
+        <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+                              IsVisible="{Binding !HasItems}" />
+        <Grid RowDefinitions="Auto,*">
+            <HeaderedContentControl
+                Theme="{StaticResource TheseOptionsHeaderPanels}"
+                Header="{Binding Items.Count, StringFormat='You have {0} businesses added.'}"
+                Content="Add Business"
+                Tag="AddBusiness" />
+
+            <ItemsControl Classes="TheseItemControls"
+                          ItemsSource="{Binding Path=Items}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Expander Classes="TheseExpanders">
+                            <StackPanel Spacing="18">
+                                <afv:HeaderdInputFieldsControl Title="Title"
+                                                         Text="{Binding Title, FallbackValue=Title}" PlaceholderText="Title"/>
+
+                                <afv:HeaderdInputFieldsControl Title="Company Name"
+                                                         Text="{Binding CompanyName, FallbackValue=CompanyName}" PlaceholderText="Company Name" />
+
+                                <afv:HeaderdInputFieldsControl Title="Department"
+                                                         Text="{Binding Department, FallbackValue=Department}" PlaceholderText="Department" />
+
+                                <afv:HeaderdInputFieldsControl Title="Phone Number"
+                                                         Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" PlaceholderText="PhoneNumber"/>
+
+                                <afv:HeaderdInputFieldsControl Title="Web Site"
+                                                         Text="{Binding WebSite, FallbackValue=WebSite}" PlaceholderText="Website" />
+
+                                <afv:HeaderdInputFieldsControl Title="Notes"
+                                                         Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes" />
+
+                                <Button Classes="TheseDeleteBtns"
+                                    Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}" />
+                            </StackPanel>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Panel>
+</UserControl>
