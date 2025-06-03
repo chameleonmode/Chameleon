@@ -1,0 +1,78 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+             xmlns:vm="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels"
+             xmlns:persons="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Persons"
+             x:DataType="persons:PersonsViewModel"
+             x:CompileBindings="True"
+             x:Class="Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Persons.PersonsView">
+    <Panel>
+        <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
+                              IsVisible="{Binding !HasItems}" />
+        <Grid RowDefinitions="Auto,Auto,*">
+            <HeaderedContentControl
+                Theme="{StaticResource TheseOptionsHeaderPanels}"
+                Header="{Binding Items.Count, StringFormat='You have {0} persons added.'}"
+                Content="Add Person"
+                Tag="AddPerson"/>
+                
+            <ProgressBar Grid.Row="1" 
+                       IsIndeterminate="True" 
+                       IsVisible="{Binding IsLoading}"
+                       Height="3"
+                       Margin="0,2,0,2"
+                       Foreground="{DynamicResource SystemAccentColor}" />
+
+            <ItemsControl Grid.Row="2"
+                        Classes="TheseItemControls"
+                        ItemsSource="{Binding Path=Items}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Expander Classes="TheseExpanders">
+                            <StackPanel Spacing="18">
+                                <afv:HeaderdInputFieldsControl Title="Title"
+                                                           Text="{Binding Title, FallbackValue=Title}" PlaceholderText="Name" />
+
+                                <afv:HeaderdInputFieldsControl Title="Name first, middle, last"
+                                                           Header="False">
+                                    <afv:HeaderdInputFieldsControl.TextBoxes>
+                                        <TextBox  Text="{Binding FirstName,FallbackValue=first}" Watermark="First" />
+                                        <TextBox  Text="{Binding MiddleName,FallbackValue=middle}" Watermark="Middle" />
+                                        <TextBox Text="{Binding LastName,FallbackValue=last}" Watermark="Last"/>
+                                    </afv:HeaderdInputFieldsControl.TextBoxes>
+                                </afv:HeaderdInputFieldsControl>
+
+                                <afv:HeaderdInputFieldsControl Title="Job Title"
+                                                         Text="{Binding JobTitle, FallbackValue=JobTitle}" PlaceholderText="Job Title" />
+
+                                <afv:HeaderdInputFieldsControl Title="Phone Number"
+                                                         Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" PlaceholderText="Phone Number" />
+
+                                <UniformGrid Rows="1">
+                                    <ListBox ItemsSource="{ReflectionBinding GenderTypeList}"
+                                         SelectedItem="{Binding Gender}"
+                                         Classes="RadioButtonListBox"/>
+                                </UniformGrid>
+
+                                <DatePicker SelectedDate="{Binding BirthDateOffset, FallbackValue=1/2/23}"
+                                        Margin="0"/>
+
+                                <afv:HeaderdInputFieldsControl Title="BirthPlace"
+                                                           Text="{Binding BirthPlace, FallbackValue=BirthPlace}" PlaceholderText="Birth Place" />
+
+                                <afv:HeaderdInputFieldsControl Title="Notes"
+                                                         Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes"/>
+
+                                <Button Classes="TheseDeleteBtns"
+                                    Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}"
+                                    IsEnabled="{ReflectionBinding Path=$parent[ItemsControl].DataContext.IsNotLoading}" />
+                            </StackPanel>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Panel>
+</UserControl>
