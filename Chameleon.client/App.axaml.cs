@@ -49,9 +49,9 @@ public partial class App : Application {
 		IoC.Instance.Configure(() => {
 			return new WritableConfiguration(new ConfigurationBuilder()
 				.SetBasePath(FilePaths.AppDataDir)
-				.AddJsonFile(Variables.AppSettingsFileName, optional: true, reloadOnChange: true)
+				.AddJsonFile(Project.AppSettingsFileName, optional: true, reloadOnChange: true)
 				.AddEnvironmentVariables()
-				.Build(), Path.Combine(FilePaths.AppDataDir, Variables.AppSettingsFileName));
+				.Build(), Path.Combine(FilePaths.AppDataDir, Project.AppSettingsFileName));
 		}, (services) => {
 			_ = services
 			.AddSingleton<IDispatchService, DispatchService>()

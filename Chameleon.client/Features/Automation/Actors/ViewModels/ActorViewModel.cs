@@ -16,18 +16,19 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Text.Json.Serialization;
 using static Chameleon.lib.Common.Constants.Enums;
 namespace Chameleon.client.Features.Automation.Actors;
 
-public partial class Tag(TagDto dto, bool selected = false)  : ObservableObject {
-	[ObservableProperty] bool isSelected = selected;
+public partial class Tag(TagDto dto, bool isSelected)  : ObservableObject {
+	[ObservableProperty] bool isSelected = isSelected;
 	public TagDto Dto { get; } = dto;
 
-	public IEnumerable<string> ProfileIds => Dto.Items
+	[JsonIgnore] public IEnumerable<string> ProfileIds => Dto.Items
 	.Where(x => x.Key == TagItemType.Profile)
 	.SelectMany(x => x.Value);
 
-	public string ToolTipText => $"{ProfileIds.Count()} Profiles";
+	[JsonIgnore] public string ToolTipText => $"{ProfileIds.Count()} Profiles";
 }
 public record Selection(Script Script, bool Selected = false);
 public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<int> SelectedProfileIds);
