@@ -85,15 +85,16 @@ public abstract partial class ProfileSectionViewModel<TDto, TViewModel> : ViewMo
 
 	[RelayCommand]
 	public virtual async Task AddItem() {
-		if (IsLoading)
+		if (IsLoading || IsBusy)
 			return;
+
 		if (Items.Any(IsNewItem)) {
 			return;
 		}
 
 		IsLoading = true;
 		try {
-			_ = await InitializeNewItem(CreateDto());
+			var newItem = await InitializeNewItem(CreateDto());
 			OnPropertyChanged(hasItemsPropertyName);
 			OnPropertyChanged(nameof(HasItems));
 		} finally {
@@ -120,10 +121,13 @@ public abstract partial class ProfileSectionViewModel<TDto, TViewModel> : ViewMo
 		IsLoading = true;
 		try {
 			_ = item.IsValidationValid();
-			await SaveItemToRepository(item);
+			var dto = GetDtoFromViewModel(item);
 
-			if (IsNewItem(item)) {
-				_ = await UPAdditionalDataRepo.DeleteFromCache(SourceRepository, GetDtoFromViewModel(item));
+			if (dto != null) {
+				if (IsNewItem(item)) {
+					_ = await UPAdditionalDataRepo.DeleteFromCache(SourceRepository, GetDtoFromViewModel(item));
+				}
+				await SaveItemToRepository(item);
 			}
 		} finally {
 			IsLoading = false;
@@ -140,7 +144,7 @@ public abstract partial class ProfileSectionViewModel<TDto, TViewModel> : ViewMo
 	public virtual async Task DeleteItem(TViewModel item) {
 		IsLoading = true;
 		try {
-			TDto dto = GetDtoFromViewModel(item);
+			var dto = GetDtoFromViewModel(item);
 
 			_ = IsNewItem(item)
 					? await UPAdditionalDataRepo.DeleteFromCache(SourceRepository, dto)
@@ -155,19 +159,18 @@ public abstract partial class ProfileSectionViewModel<TDto, TViewModel> : ViewMo
 
 	public virtual void ValidateAll() {
 		foreach (var item in Items) {
-			item.IsValidationValid();
+			_ = item.IsValidationValid();
 		}
 	}
 
 	public virtual async Task SaveAll() {
 		IsLoading = true;
 		try {
-			// Take a snapshot of the collection to avoid "Collection was modified" exception
-			var itemsToSave = Items.ToList();
+			var saveTasks = Items.Select(SaveItem).ToArray();
+			await Task.WhenAll(saveTasks);
 
-			foreach (var item in itemsToSave) {
-				await SaveItem(item);
-			}
+			await SourceRepository.Load();
+
 		} finally {
 			IsLoading = false;
 		}

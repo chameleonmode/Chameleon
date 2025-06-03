@@ -77,18 +77,24 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		IsSaving = true;
 
 		try {
-			await LoginsVM.SaveAll();
-			await PersonsVM.SaveAll();
-			await AddressesVM.SaveAll();
-			await BusinessesVM.SaveAll();
-
+			var saveAllTasks = Task.WhenAll(new[] {
+				LoginsVM.SaveAll().RunInBackground(),
+				PersonsVM.SaveAll().RunInBackground(),
+				AddressesVM.SaveAll().RunInBackground(),
+				BusinessesVM.SaveAll().RunInBackground()
+			});
+			
 			if (UserProfile?.Validator?.IsValid == false) {
 				Toaster.Info("Profile validation failed. Some changes may not be saved.");
 			}
 
 			var res = await UserProfilesRepo.Instance.Put(UserProfile!.ToDto());
+
+			await saveAllTasks;
+
 			if (res != null) {
-				await tagsRepo
+
+				_ = tagsRepo
 						.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList())
 						.RunInBackground();
 
