@@ -1,9 +1,8 @@
-﻿using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Addresses;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Businesses;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Logins;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Persons;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
-using Chameleon.client.Features.Projects.Profiles;
+﻿using Chameleon.client.Features.Projects.Profiles.Identity.Addresses;
+using Chameleon.client.Features.Projects.Profiles.Identity.Businesses;
+using Chameleon.client.Features.Projects.Profiles.Identity.Logins;
+using Chameleon.client.Features.Projects.Profiles.Identity.Persons;
+using Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
@@ -14,18 +13,15 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
+namespace Chameleon.client.Features.Projects.Profiles.Identity;
 public partial class IdentityViewModel : ViewModelObjectBase {
 	[ObservableProperty] bool isSaving;
 	[ObservableProperty] ObsProfile? profileVM;
-	[ObservableProperty] UserProfileViewModel? userProfile = new(new UserProfileDto());
-
-	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
-
-	[ObservableProperty] private PersonsViewModel personsVM;
-	[ObservableProperty] private BusinessesViewModel businessesVM;
-	[ObservableProperty] private AddressesViewModel addressesVM;
-	[ObservableProperty] private LoginsViewModel loginsVM;
+	[ObservableProperty] UserProfileViewModel userProfile = new(new UserProfileDto());
+	[ObservableProperty] PersonsViewModel personsVM;
+	[ObservableProperty] BusinessesViewModel businessesVM;
+	[ObservableProperty] AddressesViewModel addressesVM;
+	[ObservableProperty] LoginsViewModel loginsVM;
 
 	public IdentityViewModel() {
 
@@ -47,7 +43,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 		if (param is UserProfileDto up) {
 			UserProfile = new UserProfileViewModel(up);
-			UserProfile.Tags = await tagsRepo.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString())
+			UserProfile.Tags = await TagsRepo.Instance.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString())
 				.ToStringAsync().RunInBackgroundWithResult();
 			ProfileVM = new ObsProfile(up) { IsShowCheckboxColumn = false };
 
@@ -77,12 +73,12 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		IsSaving = true;
 
 		try {
-			var saveAllTasks = Task.WhenAll(new[] {
+			var saveAllTasks = Task.WhenAll([
 				LoginsVM.SaveAll().RunInBackground(),
 				PersonsVM.SaveAll().RunInBackground(),
 				AddressesVM.SaveAll().RunInBackground(),
 				BusinessesVM.SaveAll().RunInBackground()
-			});
+			]);
 			
 			if (UserProfile?.Validator?.IsValid == false) {
 				Toaster.Info("Profile validation failed. Some changes may not be saved.");
@@ -94,15 +90,15 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 			if (res != null) {
 
-				_ = tagsRepo
-						.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList())
-						.RunInBackground();
+				_ = TagsRepo.Instance
+				.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList())
+				.RunInBackground();
 
 				UserProfile = new UserProfileViewModel(res);
 
-				UserProfile.Tags = await tagsRepo
-						.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync()
-						.RunInBackgroundWithResult();
+				UserProfile.Tags = await TagsRepo.Instance
+				.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync()
+				.RunInBackgroundWithResult();
 
 				ProfileVM = new ObsProfile(UserProfile.ToDto()) { IsShowCheckboxColumn = false };
 

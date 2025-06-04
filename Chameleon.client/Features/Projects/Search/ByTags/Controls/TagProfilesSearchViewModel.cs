@@ -9,7 +9,7 @@ using DynamicData.Binding;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Search.ByTags.Controls;
+namespace Chameleon.client.Features.Projects.Search.ByTags.Controls;
 public partial class TagProfilesSearchViewModel : TagsSearchViewModelBase {
 	[ObservableProperty] ObsProfile? selectedProfile;
 

@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-             xmlns:vm="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels"
-             xmlns:businesses="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Businesses"
+             xmlns:vm="using:Chameleon.client.Features.Projects.Profiles.Identity.ViewModels"
+             xmlns:businesses="using:Chameleon.client.Features.Projects.Profiles.Identity.Businesses"
              x:DataType="businesses:BusinessesViewModel"
              x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Businesses.BusinessesView">
+             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Businesses.BusinessesView">
     <Panel>
         <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
                               IsVisible="{Binding !HasItems}" />

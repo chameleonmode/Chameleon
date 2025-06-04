@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Chameleon.lib.Const;
 using Chameleon.lib.Util;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
+using Chameleon.client.Features.Projects.Profiles.Identity;
 using Chameleon.client.Features;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Auth;

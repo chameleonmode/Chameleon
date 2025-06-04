@@ -1,10 +1,10 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
-using Chameleon.client.Features.ProfilesAndFolders.Search.ByTags.Controls;
+using Chameleon.client.Features.Projects.Search.ByTags.Controls;
 using Chameleon.lib.Common.Models.Dto;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Search.ByTags;
+namespace Chameleon.client.Features.Projects.Search.ByTags;
 public class TagsTemplateSelector : IDataTemplate {
 
 	[Content]

@@ -1,4 +1,3 @@
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -11,7 +10,7 @@ using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Base;
+namespace Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 
 public abstract partial class ProfileSectionViewModel<TDto, TViewModel> : ViewModelObjectBase
 		where TDto : UP, new()
@@ -29,8 +28,10 @@ public abstract partial class ProfileSectionViewModel<TDto, TViewModel> : ViewMo
 	public ReadOnlyObservableCollection<TViewModel> Items => items;
 
 	public bool HasItems => Items?.Count > 0;
+	
 
 	// Properties for legacy API compatibility - derived classes can use these or override them
+	public bool HasNoItems => !HasItems;
 	public virtual ReadOnlyObservableCollection<TViewModel> Persons => items;
 	public virtual bool HasPersons => HasItems;
 	public virtual ReadOnlyObservableCollection<TViewModel> Businesses => items;
@@ -115,8 +116,7 @@ public abstract partial class ProfileSectionViewModel<TDto, TViewModel> : ViewMo
 		}
 		return false;
 	}
-
-	[RelayCommand]
+	
 	public virtual async Task SaveItem(TViewModel item) {
 		IsLoading = true;
 		try {

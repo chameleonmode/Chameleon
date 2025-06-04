@@ -21,7 +21,7 @@ using System.Reactive.Subjects;
 using static Chameleon.lib.Common.Constants.Enums;
 using Chameleon.client.Features.Projects.Folders;
 using DynamicData.Binding;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.ViewModels;
+using Chameleon.client.Features.Projects.Profiles.ViewModels;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
 
 namespace Chameleon.client.Features.Projects.Profiles;

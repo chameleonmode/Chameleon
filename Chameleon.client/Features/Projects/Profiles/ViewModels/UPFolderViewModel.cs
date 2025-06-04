@@ -2,7 +2,7 @@
 using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.ViewModels;
+namespace Chameleon.client.Features.Projects.Profiles.ViewModels;
 public partial class UPFolderViewModel : ObservableObjectBase {
 	public UPFolderViewModel(UPFolderDto folder) {
 		Id = folder.id;

@@ -3,9 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:models="using:Chameleon.client.Features.ProfilesAndFolders.Search"
+			 xmlns:models="using:Chameleon.client.Features.Projects.Search"
 			 x:DataType="models:MainAppSearchItem"
-             x:Class="Chameleon.client.Features.ProfilesAndFolders.Search.Default.DefaultView">
+             x:Class="Chameleon.client.Features.Projects.Search.Default.DefaultView">
 	<Panel>
 		<StackPanel HorizontalAlignment="Left"
 					VerticalAlignment="Center">

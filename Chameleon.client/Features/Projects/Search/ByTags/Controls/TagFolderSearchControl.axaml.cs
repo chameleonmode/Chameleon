@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Search.ByTags.Controls;
+namespace Chameleon.client.Features.Projects.Search.ByTags.Controls;
 
 public partial class TagFolderSearchControl : UserControl {
 	public TagFolderSearchControl() {

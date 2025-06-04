@@ -2,7 +2,7 @@
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Search;
+namespace Chameleon.client.Features.Projects.Search;
 public class MainSearchTemplateSelector : IDataTemplate {
 
 	[Content]

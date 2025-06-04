@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.CommunityToolkit.MvvM;
 
 using Chameleon.lib.Helpers;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
+using Chameleon.client.Features.Projects.Profiles.Identity;
 using Chameleon.app.Avalonia;
 using Chameleon.client.Features.Projects.Folders;
 using System.Collections.ObjectModel;

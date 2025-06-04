@@ -37,7 +37,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 			_ = UserProfilesFolderRepo.Instance.Put(Dto);
 		};
 		CommandMap["ViewGroup"] = () => Navigator.Instance.NavigateTo("ProjectsView", this);
-		CommandMap["ChangeProxies"] = () => Navigator.Instance.NavigateTo("FunctionalSettingsView", this); ;
+		CommandMap["ChangeProxies"] = () => Navigator.Instance.NavigateTo("FunctionalSettingsView", this);
 
 		AsyncCommandMap["Open"] = async () => await FoldersViewModel.Instance.OnNavigatingTo(Dto);
 		AsyncCommandMap["SetFavorite"] = async () => {

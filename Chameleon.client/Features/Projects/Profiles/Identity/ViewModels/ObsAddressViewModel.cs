@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
+namespace Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 public partial class ObsAddressViewModel : UPAddressViewModel {
 	public ObservableCollection<CountryzDto> Countries { get; } = new ObservableCollection<CountryzDto>(CountryzRepo.Instance.Countryz);
 	[ObservableProperty]

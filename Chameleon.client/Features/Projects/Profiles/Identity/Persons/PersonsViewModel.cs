@@ -1,9 +1,8 @@
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Base;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
+using Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Persons;
+namespace Chameleon.client.Features.Projects.Profiles.Identity.Persons;
 
 public partial class PersonsViewModel : ProfileSectionViewModel<UPPersonDto, UPPersonViewModel> {
 	protected override UPRepo<UPPersonDto> SourceRepository => UPAdditionalDataRepo.Instance.Personz;

@@ -1,7 +1,7 @@
 using Avalonia;
 using Chameleon.Av.Fluent.Common.Pages;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
+namespace Chameleon.client.Features.Projects.Profiles.Identity;
 
 [Chameleon.lib.Common.Attributes.ViewModel(typeof(IdentityViewModel))]
 public partial class IdentityView : ChameleonPageBase {

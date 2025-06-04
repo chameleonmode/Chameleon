@@ -4,15 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
-			 xmlns:vm="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels"
-             xmlns:persons="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Persons"
-             xmlns:businesses="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Businesses"
-             xmlns:addresses="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Addresses"
-             xmlns:logins="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Logins"
-			 xmlns:folder="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity"
+			 xmlns:vm="using:Chameleon.client.Features.Projects.Profiles.Identity.ViewModels"
+             xmlns:persons="using:Chameleon.client.Features.Projects.Profiles.Identity.Persons"
+             xmlns:businesses="using:Chameleon.client.Features.Projects.Profiles.Identity.Businesses"
+             xmlns:addresses="using:Chameleon.client.Features.Projects.Profiles.Identity.Addresses"
+             xmlns:logins="using:Chameleon.client.Features.Projects.Profiles.Identity.Logins"
+			 xmlns:folder="using:Chameleon.client.Features.Projects.Profiles.Identity"
 			 x:DataType="folder:IdentityViewModel"
 			 x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.IdentityView">
+             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.IdentityView">
 	<UserControl.Resources>
 		<ControlTheme x:Key="TheseTabHeaderPanels"
 					  TargetType="HeaderedContentControl">
@@ -71,7 +71,6 @@
 			<Setter Property="CommandParameter" Value="{Binding}" />
 		</Style>
 		<Style Selector="Expander.TheseExpanders">
-			<Setter Property="IsExpanded" Value="{ReflectionBinding IsOpenSearchParameters, FallbackValue=True}" />
 			<Setter Property="Header" Value="{ReflectionBinding Title}" />
 			<Setter Property="Margin" Value="0 0 0 6" />
 			<Setter Property="Background" Value="{StaticResource LayerFillColorDefaultBrush}" />

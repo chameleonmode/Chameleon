@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-             xmlns:vm="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels"
-             xmlns:persons="using:Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Persons"
+             xmlns:vm="using:Chameleon.client.Features.Projects.Profiles.Identity.ViewModels"
+             xmlns:persons="using:Chameleon.client.Features.Projects.Profiles.Identity.Persons"
              x:DataType="persons:PersonsViewModel"
              x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Persons.PersonsView">
+             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Persons.PersonsView">
     <Panel>
         <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
                               IsVisible="{Binding !HasItems}" />
@@ -45,22 +45,18 @@
                                 </afv:HeaderdInputFieldsControl>
 
                                 <afv:HeaderdInputFieldsControl Title="Job Title"
-                                                         Text="{Binding JobTitle, FallbackValue=JobTitle}" PlaceholderText="Job Title" />
+                                Text="{Binding JobTitle, FallbackValue=JobTitle}" PlaceholderText="Job Title" />
 
                                 <afv:HeaderdInputFieldsControl Title="Phone Number"
-                                                         Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" PlaceholderText="Phone Number" />
+                                Text="{Binding PhoneNumber, FallbackValue=PhoneNumber}" PlaceholderText="Phone Number" />
 
-                                <UniformGrid Rows="1">
-                                    <ListBox ItemsSource="{ReflectionBinding GenderTypeList}"
-                                         SelectedItem="{Binding Gender}"
-                                         Classes="RadioButtonListBox"/>
-                                </UniformGrid>
+                                <StackPanel Margin="0 -6 0 0">
+                                    <TextBlock Text="Birth Date"  Margin="0 0 6 6" />
+                                    <DatePicker  SelectedDate="{Binding BirthDateOffset, FallbackValue=1/2/23}" />
+                                </StackPanel>
 
-                                <DatePicker SelectedDate="{Binding BirthDateOffset, FallbackValue=1/2/23}"
-                                        Margin="0"/>
-
-                                <afv:HeaderdInputFieldsControl Title="BirthPlace"
-                                                           Text="{Binding BirthPlace, FallbackValue=BirthPlace}" PlaceholderText="Birth Place" />
+                                <afv:HeaderdInputFieldsControl Title="Birth Place"
+                                Text="{Binding BirthPlace, FallbackValue=BirthPlace}" PlaceholderText="Birth Place" />
 
                                 <afv:HeaderdInputFieldsControl Title="Notes"
                                                          Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes"/>

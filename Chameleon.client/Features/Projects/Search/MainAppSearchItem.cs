@@ -1,4 +1,4 @@
-﻿namespace Chameleon.client.Features.ProfilesAndFolders.Search;
+﻿namespace Chameleon.client.Features.Projects.Search;
 
 public class SearchType {
 	public const string Default = nameof(Default);

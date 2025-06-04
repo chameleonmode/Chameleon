@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ReactiveValidation;
 using ReactiveValidation.Extensions;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
+namespace Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 public partial class UPAddressViewModel: ViewModelObjectBase {
 
 	public UPAddressViewModel(UPAddressDto address) {

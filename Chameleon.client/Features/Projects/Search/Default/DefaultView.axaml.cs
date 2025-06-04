@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Search.Default;
+namespace Chameleon.client.Features.Projects.Search.Default;
 
 public partial class DefaultView : UserControl
 {

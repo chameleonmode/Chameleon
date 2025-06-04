@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Abs.Platformatic;
 
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity;
+using Chameleon.client.Features.Projects.Profiles.Identity;
 using Chameleon.client.Features.Settings.Featured;
 
 namespace Chameleon.client.Features;

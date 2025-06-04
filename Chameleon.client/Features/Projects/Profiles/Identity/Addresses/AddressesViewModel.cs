@@ -1,9 +1,8 @@
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Base;
-using Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.ViewModels;
+using Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 
-namespace Chameleon.client.Features.ProfilesAndFolders.Profiles.Identity.Addresses;
+namespace Chameleon.client.Features.Projects.Profiles.Identity.Addresses;
 
 public partial class AddressesViewModel : ProfileSectionViewModel<UPAddressDto, ObsAddressViewModel> {
 	protected override UPRepo<UPAddressDto> SourceRepository => UPAdditionalDataRepo.Instance.Addrez;
