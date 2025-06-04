@@ -9,6 +9,7 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Const;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Util;
+using Chameleon.lib.WebBrowser;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using DynamicData.Binding;
@@ -124,29 +125,13 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 				Running = true;
 				cts = new CancellationTokenSource();
-				foreach (var profile in profiles) {
-					cts.Token.ThrowIfCancellationRequested();
 
-					var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
-					ArgumentNullException.ThrowIfNull(browser);
-
-					foreach (var selection in selected) {
-						cts.Token.ThrowIfCancellationRequested();
-
-						var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected), EditableSettings.ToRecord());
-						var json = JS.Serialize(opts);
-						Debug.WriteLine($@"Running script with:
-							  Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'
-						");
-						Debug.WriteLine($@"Opts: {json}");
-
-						await Run.Script(new() {
-							Port = browser.Settings.Port,
-							Script = selection.Script,
-							Opts = opts
-						}, cts.Token);
-					}
+				if (EditableSettings.Start.ExecuteOneScriptAccrosProfiles) {
+					await RunAllProfilesPerScriptAsync(profiles, selected);
+				} else {
+					await RunAllScriptsPerProfileAsync(profiles, selected);
 				}
+
 			} finally {
 				if (Running) CommandMap["Stop"]();
 				await AsyncCommandMap["Save"]();
@@ -175,5 +160,60 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			}
 			Running = false;
 		};
+	}
+
+	private async Task RunAllScriptsPerProfileAsync(IEnumerable<ObsProfile> profiles, IEnumerable<Selection> selected) {
+		foreach (var profile in profiles) {
+			cts!.Token.ThrowIfCancellationRequested();
+
+			var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
+			ArgumentNullException.ThrowIfNull(browser);
+
+			var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected), EditableSettings.ToRecord());
+			foreach (var selection in selected) {
+				await ExecuteScriptAsync(selection, opts, profile, browser);
+			}
+		}
+	}
+
+	private async Task RunAllProfilesPerScriptAsync(IEnumerable<ObsProfile> profiles, IEnumerable<Selection> selected) {
+		foreach (var selection in selected) {
+			cts!.Token.ThrowIfCancellationRequested();
+
+			Debug.WriteLine($"Starting Script '{selection.Script.Title}' across all profiles");
+			var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected), EditableSettings.ToRecord());
+
+			foreach (var profile in profiles) {
+				cts.Token.ThrowIfCancellationRequested();
+
+				var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
+				ArgumentNullException.ThrowIfNull(browser);
+
+				await ExecuteScriptAsync(selection, opts, profile, browser);
+			}
+
+			Debug.WriteLine($"Finished Script '{selection.Script.Title}'");
+			await Task.Delay(TimeSpan.FromSeconds(EditableSettings.RandomWaitPerProfile), cts.Token);
+		}
+	}
+
+	private async Task ExecuteScriptAsync(Selection selection, Opts opts, ObsProfile profile, IBrowserInstance? browser) {
+		try {
+			var json = JS.Serialize(opts);
+			Debug.WriteLine($@"Running script with:
+                                 Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'
+                            ");
+			Debug.WriteLine($@"Opts: {json}");
+
+			await Run.Script(new() {
+				Port = browser!.Settings.Port,
+				Script = selection.Script,
+				Opts = opts
+			}, cts!.Token);
+
+		} finally {
+			if (EditableSettings.Start.CloseOldBrowserProfileAfterRun)
+				browser!.Close();
+		}
 	}
 }
