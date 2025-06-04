@@ -34,14 +34,14 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		await base.OnNavigatedToAsync(param);
 
 		if (param is UserProfileDto up) {
+			ProfileVM = ProfilesViewModel.Instance.Profiles.First(p => p.Dto.id == up.id);
+			ProfileVM.IsShowCheckboxColumn = false;
 			UserProfile = new UserProfileIdentityVM(up) {
 				Tags = await TagsRepo.Instance
 				.GetTagsAsync(TagItemType.Profile, up.ID)
 				.ToStringAsync()
 				.RunInBackgroundWithResult()
 			};
-			ProfileVM = ProfilesViewModel.Instance.Profiles.First(p => p.Dto.id == up.id);
-			ProfileVM.IsShowCheckboxColumn = false;
 			PersonsVM = new(UserProfile);
 			BusinessesVM = new(UserProfile);
 			AddressesVM = new(UserProfile);
