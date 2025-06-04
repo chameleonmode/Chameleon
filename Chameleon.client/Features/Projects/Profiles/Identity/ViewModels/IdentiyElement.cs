@@ -18,7 +18,7 @@ public abstract partial class IdentiyElementVM<TDto, TViewModel> : ViewModelObje
 		where TDto : UP, new()
 		where TViewModel : MappableViewModelBase<TDto> {
 	readonly BehaviorSubject<Func<UP, bool>> filter;
-	[ObservableProperty] UserProfileViewModel userProfile;
+	[ObservableProperty] UserProfileIdentityVM userProfile;
 	[ObservableProperty] bool isLoading = true;
 	[ObservableProperty] bool isNotLoading;
 
@@ -32,7 +32,7 @@ public abstract partial class IdentiyElementVM<TDto, TViewModel> : ViewModelObje
 		return viewModel;
 	}
 
-	protected IdentiyElementVM(UserProfileViewModel userProfile) {
+	protected IdentiyElementVM(UserProfileIdentityVM userProfile) {
 		this.userProfile = userProfile;
 		filter = new BehaviorSubject<Func<UP, bool>>(p => p.ProfileId == UserProfile.Id);
 

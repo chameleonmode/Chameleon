@@ -28,6 +28,6 @@ public partial class UPLoginViewModel(UPLoginDto dto) : MappableViewModelBase<UP
 	}
 }
 
-public class LoginsViewModel(UserProfileViewModel userProfile) : IdentiyElementVM<UPLoginDto, UPLoginViewModel>(userProfile) {
+public class LoginsViewModel(UserProfileIdentityVM userProfile) : IdentiyElementVM<UPLoginDto, UPLoginViewModel>(userProfile) {
 	protected override UPRepo<UPLoginDto> SourceRepository => UPAdditionalDataRepo.Instance.Loginz;
 }

@@ -22,14 +22,11 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 	[ObservableProperty] bool isShowGlyph = true;
 	[ObservableProperty] bool isForeground;
 	[ObservableProperty] bool isFavorite;
+	[ObservableProperty] bool isShowCheckboxColumn = true;
 
 	//
-	public bool IsShowCheckboxColumn { get; init; } = true;
-	public bool IsSharedProfile { get; }
-
-	//
+	public bool IsSharedProfile => Dto.creatorUserId != Auther.AuthSession?.UserId;
 	public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
-	public bool IsDeleteProfileBtnVisible => !IsSharedProfile;
 	public Dictionary<SystemBrowserType, IBrowserInstance?> SBI { get; } = new() {
 		[SystemBrowserType.Chrome] = null,
 		[SystemBrowserType.Firefox] = null,
@@ -57,7 +54,6 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 					.Bind(out var logins)
 					.Subscribe();
 		ProfileLogins = logins;
-		IsSharedProfile = profile.creatorUserId != Auther.AuthSession?.UserId;
 		IsFavorite = profile.isFavourite;
 
 		AsyncCommandMap["OpenFirefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);

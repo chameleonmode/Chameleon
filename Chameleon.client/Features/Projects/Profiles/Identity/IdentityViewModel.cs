@@ -15,7 +15,7 @@ namespace Chameleon.client.Features.Projects.Profiles.Identity;
 
 public partial class IdentityViewModel : ViewModelObjectBase {
 	[ObservableProperty] bool isSaving;
-	[ObservableProperty] UserProfileViewModel? userProfile;
+	[ObservableProperty] UserProfileIdentityVM? userProfile;
 	[ObservableProperty] ObsProfile? profileVM;
 	[ObservableProperty] PersonsViewModel? personsVM;
 	[ObservableProperty] BusinessesViewModel? businessesVM;
@@ -34,12 +34,14 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		await base.OnNavigatedToAsync(param);
 
 		if (param is UserProfileDto up) {
-			UserProfile = new UserProfileViewModel(up);
-			UserProfile.Tags = await TagsRepo.Instance
-			.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString())
-			.ToStringAsync()
-			.RunInBackgroundWithResult();
-			ProfileVM = new ObsProfile(up) { IsShowCheckboxColumn = false };
+			UserProfile = new UserProfileIdentityVM(up) {
+				Tags = await TagsRepo.Instance
+				.GetTagsAsync(TagItemType.Profile, up.ID)
+				.ToStringAsync()
+				.RunInBackgroundWithResult()
+			};
+			ProfileVM = ProfilesViewModel.Instance.Profiles.First(p => p.Dto.id == up.id);
+			ProfileVM.IsShowCheckboxColumn = false;
 			PersonsVM = new(UserProfile);
 			BusinessesVM = new(UserProfile);
 			AddressesVM = new(UserProfile);
@@ -50,7 +52,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			AddressesVM.UpdateFilter();
 			LoginsVM.UpdateFilter();
 
-			Title = ProfileVM?.Title;
+			Title = ProfileVM.Title;
 		}
 	}
 

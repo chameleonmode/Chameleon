@@ -44,6 +44,6 @@ public partial class UPAddressViewModel(UPAddressDto dto) : MappableViewModelBas
 	}
 }
 
-public class AddressesViewModel(UserProfileViewModel userProfile) : IdentiyElementVM<UPAddressDto, UPAddressViewModel>(userProfile) {
+public class AddressesViewModel(UserProfileIdentityVM userProfile) : IdentiyElementVM<UPAddressDto, UPAddressViewModel>(userProfile) {
 	protected override UPRepo<UPAddressDto> SourceRepository => UPAdditionalDataRepo.Instance.Addrez;
 }

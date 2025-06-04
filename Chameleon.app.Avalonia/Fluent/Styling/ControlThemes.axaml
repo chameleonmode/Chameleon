@@ -171,18 +171,6 @@
 										 HorizontalAlignment="Left"
 										 MaxWidth="400"
 										 MinWidth="150" />
-							<!--<Button Content="three-dots"
-							Margin="0 26 0  0"
-							Theme="{StaticResource SvgIconButton}">
-								<Button.Flyout>
-									<ui:FAMenuFlyout Placement="Bottom">
-										<ui:MenuFlyoutItem Text="Sync Changes"
-														   IconSource="Sync"
-														   IsVisible="{Binding IsDeleteProfileBtnVisible}"
-														   Command="{Binding DeleteUserProfileCommand}" />
-									</ui:FAMenuFlyout>
-								</Button.Flyout>
-							</Button>-->
 							
 						</StackPanel>
 

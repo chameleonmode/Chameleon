@@ -37,6 +37,6 @@ public partial class UPBusinessViewModel(UPBusinessDto dto) : MappableViewModelB
 		return builder.Build(this);
 	}
 }
-public class BusinessesViewModel(UserProfileViewModel userProfile) : IdentiyElementVM<UPBusinessDto, UPBusinessViewModel>(userProfile) {
+public class BusinessesViewModel(UserProfileIdentityVM userProfile) : IdentiyElementVM<UPBusinessDto, UPBusinessViewModel>(userProfile) {
 	protected override UPRepo<UPBusinessDto> SourceRepository => UPAdditionalDataRepo.Instance.Biz;
 }

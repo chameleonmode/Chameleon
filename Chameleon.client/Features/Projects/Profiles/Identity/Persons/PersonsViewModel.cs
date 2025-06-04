@@ -43,6 +43,6 @@ public partial class UPPersonViewModel(UPPersonDto dto) : MappableViewModelBase<
 	}
 }
 
-public class PersonsViewModel(UserProfileViewModel userProfile) : IdentiyElementVM<UPPersonDto, UPPersonViewModel>(userProfile) {
+public class PersonsViewModel(UserProfileIdentityVM userProfile) : IdentiyElementVM<UPPersonDto, UPPersonViewModel>(userProfile) {
 	protected override UPRepo<UPPersonDto> SourceRepository => UPAdditionalDataRepo.Instance.Personz;
 }

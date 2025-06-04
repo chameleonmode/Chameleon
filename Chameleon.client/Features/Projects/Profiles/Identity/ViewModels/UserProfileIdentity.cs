@@ -6,9 +6,9 @@ using ReactiveValidation;
 using ReactiveValidation.Extensions;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
-public partial class UserProfileViewModel : ObservableObjectBase {
+public partial class UserProfileIdentityVM : ObservableObjectBase {
 
-	public UserProfileViewModel(UserProfileDto profile) {
+	public UserProfileIdentityVM(UserProfileDto profile) {
 		Id = profile.id;
 		Title = profile.title;
 		Notes = profile.notes;
@@ -41,7 +41,7 @@ public partial class UserProfileViewModel : ObservableObjectBase {
 	[ObservableProperty] WebrowserViewModel webBrowser;
 
 	protected override IObjectValidator GetValidator() {
-		var builder = new ValidationBuilder<UserProfileViewModel>();
+		var builder = new ValidationBuilder<UserProfileIdentityVM>();
 
 		_ = builder.RuleFor(vm => vm.Title)
 		.NotEmpty()

@@ -130,7 +130,7 @@
 							<ui:MenuFlyoutItem 
 								Text="Delete"
 								IconSource="Delete"
-								IsVisible="{Binding IsDeleteProfileBtnVisible}"
+								IsVisible="{Binding !IsSharedProfile}"
 								Command="{Binding AsyncCfVCommand}"
 								CommandParameter="DeleteUserProfile" />
 						</ui:FAMenuFlyout>

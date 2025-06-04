@@ -224,7 +224,7 @@ public partial class ProfilesViewModel : Projector {
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
 		PaginatorViewModel.UpdatePageCount(9);
-		Profiles.ForEach(p => p.IsActionOptionsVisible = true);
+		Profiles.ForEach(p => p.IsActionOptionsVisible = p.IsShowCheckboxColumn = true);
 
 		PlaywrightScripts.Clear();
 		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());

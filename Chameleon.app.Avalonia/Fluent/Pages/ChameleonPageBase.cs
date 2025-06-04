@@ -178,8 +178,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 		}
 
 		var svc = await TaskUtil.TryAwaitFor(() => ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this)), 2);   //TODO: might crash if wrong page
-		if (svc is null)
-			return;
+		if (svc is null) return;
 
 		var animation = svc.GetAnimation("ForwardAnimation");
 
