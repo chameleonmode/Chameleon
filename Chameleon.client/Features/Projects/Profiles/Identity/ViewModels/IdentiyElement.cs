@@ -26,18 +26,15 @@ public abstract partial class IdentiyElementVM<TDto, TViewModel> : ViewModelObje
 	public ReadOnlyObservableCollection<TViewModel> Items { get; }
 
 	public bool HasNoItems => Items.Count == 0;
-	public virtual Func<UP, bool> FilterPredicate => p => p.ProfileId == UserProfile.Id;
 
 	protected virtual TViewModel CreateViewModel(TDto dto) {
 		var viewModel = (TViewModel)Activator.CreateInstance(typeof(TViewModel), dto)!;
 		return viewModel;
 	}
 
-	protected virtual TDto CreateDto => new() { ProfileId = UserProfile?.Id };
-
 	protected IdentiyElementVM(UserProfileViewModel userProfile) {
 		this.userProfile = userProfile;
-		filter = new BehaviorSubject<Func<UP, bool>>(FilterPredicate);
+		filter = new BehaviorSubject<Func<UP, bool>>(p => p.ProfileId == UserProfile.Id);
 
 		_ = SourceRepository.Connect().Filter(filter)
 		.Transform(CreateViewModel)
@@ -55,13 +52,13 @@ public abstract partial class IdentiyElementVM<TDto, TViewModel> : ViewModelObje
 	}
 
 	public virtual void UpdateFilter() {
-		filter.OnNext(FilterPredicate);
+		filter.OnNext(filter.Value);
 		IsLoading = false;
 	}
 
 	public virtual async Task AddItem() {
 		if (IsBusy || Items.Any(IsNewItem)) return;
-		_ = await InitializeNewItem(CreateDto);
+		_ = await InitializeNewItem(new() { ProfileId = UserProfile?.Id });
 	}
 
 	protected virtual Task<TDto> InitializeNewItem(TDto dto) {
