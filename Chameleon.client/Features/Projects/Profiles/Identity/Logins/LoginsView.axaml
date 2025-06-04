@@ -51,7 +51,7 @@
                                                          Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes" />
 
                                 <Button Classes="TheseDeleteBtns"
-                                    Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteLoginCommand}"
+                                    Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}"
                                     IsEnabled="{ReflectionBinding Path=$parent[ItemsControl].DataContext.IsNotLoading}" />
                             </StackPanel>
                         </Expander>
