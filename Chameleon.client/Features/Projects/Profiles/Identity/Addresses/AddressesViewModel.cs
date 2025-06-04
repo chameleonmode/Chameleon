@@ -10,7 +10,6 @@ using ReactiveValidation.Extensions;
 namespace Chameleon.client.Features.Projects.Profiles.Identity.Addresses;
 
 public partial class UPAddressViewModel(UPAddressDto dto) : MappableViewModelBase<UPAddressDto>(dto) {
-	[ObservableProperty] int? profileId = dto.ProfileId;
 	[ObservableProperty] int? countryId = dto.CountryId;
 	[ObservableProperty] string? addressLine1 = dto.AddressLine1;
 	[ObservableProperty] string? addressLine2 = dto.AddressLine2;
@@ -45,11 +44,6 @@ public partial class UPAddressViewModel(UPAddressDto dto) : MappableViewModelBas
 	}
 }
 
-public class AddressesViewModel(UserProfileViewModel userProfile) : ProfileSectionViewModel<UPAddressDto, UPAddressViewModel>(userProfile) {
+public class AddressesViewModel(UserProfileViewModel userProfile) : IdentiyElementVM<UPAddressDto, UPAddressViewModel>(userProfile) {
 	protected override UPRepo<UPAddressDto> SourceRepository => UPAdditionalDataRepo.Instance.Addrez;
-	protected override UPAddressViewModel CreateViewModel(UPAddressDto dto) => new(dto);
-
-	public static AddressesViewModel Create(UserProfileViewModel userProfile) {
-		return new AddressesViewModel(userProfile);
-	}
 }

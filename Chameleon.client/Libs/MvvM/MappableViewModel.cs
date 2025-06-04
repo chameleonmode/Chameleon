@@ -4,8 +4,8 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 
 namespace Chameleon.client.Libs.MvvM;
 
-public abstract class MappableViewModelBase<T>(T dto) : DtoViewModelBase<T>(dto) where T : Dto{
-  public virtual T ToDto()  {
+public abstract class MappableViewModelBase<T>(T dto) : DtoViewModelBase<T>(dto) where T : Dto {
+  public virtual T ToDto() {
     var viewModelType = this.GetType();
     var dtoType = typeof(T);
 

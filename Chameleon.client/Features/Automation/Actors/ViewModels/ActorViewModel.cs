@@ -7,6 +7,7 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Const;
+using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Util;
 using Chameleon.lib.WebBrowser;
@@ -103,7 +104,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		];
 
 		profileSelections?.ForEach(id => {
-			 ProfilesViewModel.Instance.Profiles
+			ProfilesViewModel.Instance.Profiles
 			.Where(p => p.Dto.id == id)
 			.ForEach(p => p.IsSelected = true);
 		});
@@ -126,7 +127,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				Running = true;
 				cts = new CancellationTokenSource();
 
-				if (EditableSettings.Start.ExecuteOneScriptAccrosProfiles) {
+				if (EditableSettings.ExecuteOneScriptAccrosProfiles) {
 					await RunAllProfilesPerScriptAsync(profiles, selected);
 				} else {
 					await RunAllScriptsPerProfileAsync(profiles, selected);
@@ -162,17 +163,43 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		};
 	}
 
+	async Task BrowserShutdown(IBrowserInstance? browser) {
+		if (!EditableSettings.CloseOldBrowserProfileAfterRun || browser?.Brocess == null || browser.Brocess.HasExited) return;
+		try {
+			// First, try to close the main window gracefully
+			if (browser.Brocess.CloseMainWindow()) {
+				// Wait for the process to exit gracefully
+				if (await Task.Run(() => browser.Brocess.WaitForExit(5000))) {
+					Debug.WriteLine("Process closed gracefully.");
+				}
+			}
+
+			// If graceful close failed or timed out, force kill
+			Debug.WriteLine("Graceful close failed. Force killing process...");
+			browser.Brocess.Kill();
+
+			// Wait for the kill to complete
+			_ = await Task.Run(() => browser.Brocess.WaitForExit(5000));
+			Debug.WriteLine("Process forcefully terminated.");
+		} catch (Exception e) {
+			Toaster.Error($"Error closing browser: {e.Message}");
+		} finally {
+			if(browser.Brocess.HasExited)
+				browser.Close();
+			Debug.WriteLine("Browser instance disposed.");
+		}
+	}
 	private async Task RunAllScriptsPerProfileAsync(IEnumerable<ObsProfile> profiles, IEnumerable<Selection> selected) {
 		foreach (var profile in profiles) {
 			cts!.Token.ThrowIfCancellationRequested();
 
 			var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
-			ArgumentNullException.ThrowIfNull(browser);
 
 			var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected), EditableSettings.ToRecord());
 			foreach (var selection in selected) {
-				await ExecuteScriptAsync(selection, opts, profile, browser);
+				await ExecuteScriptAsync(selection, opts, profile, browser!);
 			}
+			await BrowserShutdown(browser);
 		}
 	}
 
@@ -187,33 +214,29 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				cts.Token.ThrowIfCancellationRequested();
 
 				var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
-				ArgumentNullException.ThrowIfNull(browser);
-
-				await ExecuteScriptAsync(selection, opts, profile, browser);
+				await ExecuteScriptAsync(selection, opts, profile, browser!);
+				await BrowserShutdown(browser);
 			}
-
-			Debug.WriteLine($"Finished Script '{selection.Script.Title}'");
-			await Task.Delay(TimeSpan.FromSeconds(EditableSettings.RandomWaitPerProfile), cts.Token);
 		}
 	}
 
-	private async Task ExecuteScriptAsync(Selection selection, Opts opts, ObsProfile profile, IBrowserInstance? browser) {
+	private async Task ExecuteScriptAsync(Selection selection, Opts opts, ObsProfile profile, IBrowserInstance browser) {
 		try {
 			var json = JS.Serialize(opts);
 			Debug.WriteLine($@"Running script with:
-                                 Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'
-                            ");
+        Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'
+      ");
 			Debug.WriteLine($@"Opts: {json}");
 
 			await Run.Script(new() {
-				Port = browser!.Settings.Port,
+				Port = browser.Settings.Port,
 				Script = selection.Script,
 				Opts = opts
 			}, cts!.Token);
 
+			await Task.Delay(TimeSpan.FromSeconds(EditableSettings.RandomWaitPerProfile), cts.Token);
 		} finally {
-			if (EditableSettings.Start.CloseOldBrowserProfileAfterRun)
-				browser!.Close();
+			Debug.WriteLine($"Finished Script '{selection.Script.Title}'");
 		}
 	}
 }

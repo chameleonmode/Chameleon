@@ -57,6 +57,16 @@
 							Tag="{TemplateBinding Content}"
 							CommandParameter="AddItem"
 							Command="{Binding AsyncCfVCommand}" />
+
+		<ProgressBar Grid.Row="1" 
+			Grid.ColumnSpan="2"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Top"
+            IsIndeterminate="True" 
+            IsVisible="{ReflectionBinding IsLoading}"
+            Height="3"
+            Margin="0,2,0,2"
+            Foreground="{DynamicResource SystemAccentColor}" />
 					</Grid>
 				</ControlTemplate>
 			</Setter>
@@ -78,23 +88,6 @@
 		<Style Selector="ItemsControl.TheseItemControls">
 			<Setter Property="Grid.Row" Value="1" />
 			<Setter Property="Margin" Value="0 20 0 0" />
-		</Style>
-
-		<Style Selector="ListBox.RadioButtonListBox">
-			<Setter Property="BorderBrush" Value="Transparent"/>
-		</Style>
-		<Style Selector="ListBox.RadioButtonListBox ListBoxItem">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate>
-						<Border Background="Transparent">
-							<RadioButton Content="{TemplateBinding ContentPresenter.Content}"
-										 VerticalAlignment="Center"
-										 IsChecked="{Binding Path=IsSelected,RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}"/>
-						</Border>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
 		</Style>
 	</UserControl.Styles>
 	<Grid RowDefinitions="Auto,*">
@@ -119,7 +112,7 @@
 			</StackPanel>
 
                 
-            <ProgressBar Grid.Row="1" 
+        <ProgressBar Grid.Row="1" 
 			Grid.ColumnSpan="2"
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Top"

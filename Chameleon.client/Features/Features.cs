@@ -48,16 +48,14 @@ public static class Modules {
   .AddSingleton<PhoneVerificationViewModel>()
   .AddSingleton<ProxyCreditViewModel>();
 
-  public static async Task Sync(bool reload = false) {
+  public static async Task Sync() {
     await DB.Instance.EnsureUser();
     var tasks = new List<Task>() {
       UserProfilesRepo.Instance.Load(),
       UserProfilesFolderRepo.Instance.Load(),
-      TagsRepo.Instance.Load()
+      TagsRepo.Instance.Load(),
+      UPAdditionalDataRepo.Instance.Load(),
     };
-    if (reload) {
-      tasks.Add(UPAdditionalDataRepo.Instance.Load());
-    }
     await Task.WhenAll(tasks);
   }
 }

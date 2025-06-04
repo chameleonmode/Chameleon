@@ -10,7 +10,6 @@ using Chameleon.client.Libs.MvvM;
 namespace Chameleon.client.Features.Projects.Profiles.Identity.Businesses;
 
 public partial class UPBusinessViewModel(UPBusinessDto dto) : MappableViewModelBase<UPBusinessDto>(dto) {
-	[ObservableProperty] int? profileId = dto.ProfileId;
 	[ObservableProperty] string? companyName = dto.CompanyName;
 	[ObservableProperty] string? department = dto.Department;
 	[ObservableProperty] string? phoneNumber = dto.PhoneNumber;
@@ -38,11 +37,6 @@ public partial class UPBusinessViewModel(UPBusinessDto dto) : MappableViewModelB
 		return builder.Build(this);
 	}
 }
-public class BusinessesViewModel(UserProfileViewModel userProfile) : ProfileSectionViewModel<UPBusinessDto, UPBusinessViewModel>(userProfile) {
+public class BusinessesViewModel(UserProfileViewModel userProfile) : IdentiyElementVM<UPBusinessDto, UPBusinessViewModel>(userProfile) {
 	protected override UPRepo<UPBusinessDto> SourceRepository => UPAdditionalDataRepo.Instance.Biz;
-	protected override UPBusinessViewModel CreateViewModel(UPBusinessDto dto) => new(dto);
-
-	public static BusinessesViewModel Create(UserProfileViewModel userProfile) {
-		return new BusinessesViewModel(userProfile);
-	}
 }

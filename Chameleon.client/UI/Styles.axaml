@@ -28,4 +28,18 @@
 		<Setter Property="ItemsSource" Value="{Binding Folders}" />
 		<Setter Property="VerticalAlignment" Value="Top" />
 	</Style>
+
+	<!--Stack Pannel-->
+	<Style Selector="StackPanel.shared">
+		<Setter Property="Grid.IsSharedSizeScope" Value="True" />
+		<Setter Property="Spacing" Value="6" />
+	</Style>
+
+	<!--TextBlock-->
+	<Style Selector="TextBlock.NoWrap">
+		<Setter Property="ToolTip.Tip" Value="{Binding $self.Text}" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="TextWrapping" Value="NoWrap" />
+		<Setter Property="Margin" Value="6" />
+	</Style>
 </Styles>

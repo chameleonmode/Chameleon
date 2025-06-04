@@ -10,7 +10,6 @@ using Chameleon.client.Libs.MvvM;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.Persons;
 public partial class UPPersonViewModel(UPPersonDto dto) : MappableViewModelBase<UPPersonDto>(dto) {
-	[ObservableProperty] int? profileId = dto.ProfileId;
 	[ObservableProperty] string? firstName = dto.FirstName;
 	[ObservableProperty] string? lastName = dto.LastName;
 	[ObservableProperty] string? middleName = dto.MiddleName;
@@ -23,8 +22,6 @@ public partial class UPPersonViewModel(UPPersonDto dto) : MappableViewModelBase<
 	[ObservableProperty] DateTime birthDate = dto.BirthDate;
 
 	public DateTimeOffset BirthDateOffset => new(BirthDate);
-
-	public string Gendertext => Gender.ToString();
 
 	protected override IObjectValidator GetValidator() {
 		var builder = new ValidationBuilder<UPPersonViewModel>();
@@ -46,11 +43,6 @@ public partial class UPPersonViewModel(UPPersonDto dto) : MappableViewModelBase<
 	}
 }
 
-public class PersonsViewModel(UserProfileViewModel userProfile) : ProfileSectionViewModel<UPPersonDto, UPPersonViewModel>(userProfile) {
+public class PersonsViewModel(UserProfileViewModel userProfile) : IdentiyElementVM<UPPersonDto, UPPersonViewModel>(userProfile) {
 	protected override UPRepo<UPPersonDto> SourceRepository => UPAdditionalDataRepo.Instance.Personz;
-	protected override UPPersonViewModel CreateViewModel(UPPersonDto dto) => new(dto);
-
-	public static PersonsViewModel Create(UserProfileViewModel userProfile) {
-		return new PersonsViewModel(userProfile);
-	}
 }

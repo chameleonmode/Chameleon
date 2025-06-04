@@ -5,9 +5,9 @@
              xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:vm="using:Chameleon.client.Features.Projects.Profiles.Identity.ViewModels"
              xmlns:addresses="using:Chameleon.client.Features.Projects.Profiles.Identity.Addresses"
+             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Addresses.AddressesView"
              x:DataType="addresses:AddressesViewModel"
-             x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Addresses.AddressesView">
+             x:CompileBindings="True">
     <Panel>
     <!-- <ControlTheme x:Key="HasNoItemsTheme" TargetType="HeaderedContentControl"> -->
         <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" />

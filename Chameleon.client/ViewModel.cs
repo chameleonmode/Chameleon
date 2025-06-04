@@ -108,8 +108,8 @@ public partial class ViewModel : ObservableObjectBase {
     // For example, you might want to load initial data from a repository or service
     await Modules.Sync();
     IsSplashVisible = false;
-    // #if DEBUG
-    // #else
+    #if DEBUG
+    #else
     try {
       var current = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
       var appClientInfo = await Service.Routes.App.GetLatestVersion;
@@ -121,7 +121,7 @@ public partial class ViewModel : ObservableObjectBase {
     } catch (Exception e) {
       Toaster.Error(e.Message);
     }
-    // #endif
+    #endif
   }
 
   public static ViewModel Instance { get; } = new();

@@ -15,8 +15,8 @@ namespace Chameleon.client.Features.Projects.Profiles.Identity;
 
 public partial class IdentityViewModel : ViewModelObjectBase {
 	[ObservableProperty] bool isSaving;
+	[ObservableProperty] UserProfileViewModel? userProfile;
 	[ObservableProperty] ObsProfile? profileVM;
-	[ObservableProperty] UserProfileViewModel userProfile = new(new UserProfileDto());
 	[ObservableProperty] PersonsViewModel? personsVM;
 	[ObservableProperty] BusinessesViewModel? businessesVM;
 	[ObservableProperty] AddressesViewModel? addressesVM;
@@ -28,7 +28,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
-		_ = UPAdditionalDataRepo.Instance.Load();
 	}
 
 	public override async Task OnNavigatedToAsync(object? param) {
@@ -41,11 +40,10 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			.ToStringAsync()
 			.RunInBackgroundWithResult();
 			ProfileVM = new ObsProfile(up) { IsShowCheckboxColumn = false };
-
-			PersonsVM = PersonsViewModel.Create(UserProfile);
-			BusinessesVM = BusinessesViewModel.Create(UserProfile);
-			AddressesVM = AddressesViewModel.Create(UserProfile);
-			LoginsVM = LoginsViewModel.Create(UserProfile);
+			PersonsVM = new(UserProfile);
+			BusinessesVM = new(UserProfile);
+			AddressesVM = new(UserProfile);
+			LoginsVM = new(UserProfile);
 
 			PersonsVM.UpdateFilter();
 			BusinessesVM.UpdateFilter();
@@ -67,7 +65,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 				BusinessesVM!.SaveAll().RunInBackground()
 			]);
 
-			if (UserProfile.Validator?.IsValid == false) {
+			if (UserProfile!.Validator?.IsValid == false) {
 				Toaster.Info("Profile validation failed. Some changes may not be saved.");
 			}
 
@@ -76,23 +74,13 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			await saveAllTasks;
 
 			if (res != null) {
-
 				_ = TagsRepo.Instance
-				.SaveTagsAsync(TagItemType.Profile, UserProfile!.Id.ToString(), UserProfile.Tags.ToTagsList())
+				.SaveTagsAsync(TagItemType.Profile, UserProfile.Id.ToString(), UserProfile.Tags.ToTagsList())
 				.RunInBackground();
-
-				UserProfile = new UserProfileViewModel(res);
 
 				UserProfile.Tags = await TagsRepo.Instance
 				.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync()
 				.RunInBackgroundWithResult();
-
-				ProfileVM = new ObsProfile(UserProfile.ToDto()) { IsShowCheckboxColumn = false };
-
-				PersonsVM = PersonsViewModel.Create(UserProfile);
-				BusinessesVM = BusinessesViewModel.Create(UserProfile);
-				AddressesVM = AddressesViewModel.Create(UserProfile);
-				LoginsVM = LoginsViewModel.Create(UserProfile);
 
 				PersonsVM.UpdateFilter();
 				BusinessesVM.UpdateFilter();
@@ -103,9 +91,6 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			} else {
 				Toaster.Error("Failed to update profile. Server returned null response.");
 			}
-		} catch (Exception ex) {
-			Toaster.Error($"Unexpected error during save: {ex.Message}");
-			Debug.WriteLine($"Unexpected exception during save: {ex}");
 		} finally {
 			ShowValidationErrors();
 			IsSaving = false;

@@ -8,7 +8,6 @@ using ReactiveValidation.Extensions;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.Logins;
 public partial class UPLoginViewModel(UPLoginDto dto) : MappableViewModelBase<UPLoginDto>(dto) {
-	[ObservableProperty] int? profileId = dto.ProfileId;
 	[ObservableProperty] string? webSite = dto.WebSite;
 	[ObservableProperty] string? email = dto.Email;
 	[ObservableProperty] string? userName = dto.UserName;
@@ -29,11 +28,6 @@ public partial class UPLoginViewModel(UPLoginDto dto) : MappableViewModelBase<UP
 	}
 }
 
-public class LoginsViewModel(UserProfileViewModel userProfile) : ProfileSectionViewModel<UPLoginDto, UPLoginViewModel>(userProfile) {
+public class LoginsViewModel(UserProfileViewModel userProfile) : IdentiyElementVM<UPLoginDto, UPLoginViewModel>(userProfile) {
 	protected override UPRepo<UPLoginDto> SourceRepository => UPAdditionalDataRepo.Instance.Loginz;
-	protected override UPLoginViewModel CreateViewModel(UPLoginDto dto) => new(dto);
-
-	public static LoginsViewModel Create(UserProfileViewModel userProfile) {
-		return new LoginsViewModel(userProfile);
-	}
 }

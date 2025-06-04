@@ -70,7 +70,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		Tagz = tagz;
 
 		AsyncCommandMap["SyncChanges"] = async () => {
-			await Modules.Sync(true);
+			await Modules.Sync();
 			await CheckForCookies();
 		};
 		AsyncCommandMap["SyncCookiesClear"] = async () => {
