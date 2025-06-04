@@ -340,13 +340,13 @@
 					<StackPanel Orientation="Horizontal" Spacing="18">
 						<ToggleSwitch 
 							ToolTip.Tip="to start in a new tab (recommended)"
-							IsChecked="{Binding Start.New}" OffContent="Current" OnContent="New"/>
+							IsChecked="{Binding Start.New}" OffContent="Current Tab" OnContent="New Tab"/>
 						<ToggleSwitch 
 							ToolTip.Tip="Close browser instances for the previous profile before moving to the next"
-							IsChecked="{Binding CloseOldBrowserProfileAfterRun}" OffContent="Open" OnContent="Close"/>
+							IsChecked="{Binding CloseOldBrowserProfileAfterRun}" OffContent="Keep Open" OnContent="Close After"/>
 						<ToggleSwitch 
 							ToolTip.Tip="Run each selected script one at a time for each selected profile"
-							IsChecked="{Binding ExecuteOneScriptAccrosProfiles}" OffContent="Regular" OnContent="Reversed"/>
+							IsChecked="{Binding ExecuteOneScriptAccrosProfiles}" OffContent="Regular Run" OnContent="Reversed Run"/>
 					</StackPanel>
 				</controls:Inputter>
 			</StackPanel>
