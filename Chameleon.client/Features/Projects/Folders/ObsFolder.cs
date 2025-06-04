@@ -22,7 +22,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => (p.folderId == null && Dto!.id == 0) || p.folderId == Dto!.id);
 
 	public ObsFolder(UPFolderDto folder,  Action<ObservableDtoViewModelBase<UPFolderDto>>? onSelectedChanged = default) 
-	: base(folder, folder.title, onSelectedChanged) {
+	: base(folder, onSelectedChanged) {
 		isFavorite = Dto.isFavorite;
 		profilesCount = Dto.profilesCount;
 

@@ -3,33 +3,26 @@ using Chameleon.client.Features.Projects.Profiles.Identity.Businesses;
 using Chameleon.client.Features.Projects.Profiles.Identity.Logins;
 using Chameleon.client.Features.Projects.Profiles.Identity.Persons;
 using Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
-using Chameleon.lib;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity;
+
 public partial class IdentityViewModel : ViewModelObjectBase {
 	[ObservableProperty] bool isSaving;
 	[ObservableProperty] ObsProfile? profileVM;
 	[ObservableProperty] UserProfileViewModel userProfile = new(new UserProfileDto());
-	[ObservableProperty] PersonsViewModel personsVM;
-	[ObservableProperty] BusinessesViewModel businessesVM;
-	[ObservableProperty] AddressesViewModel addressesVM;
-	[ObservableProperty] LoginsViewModel loginsVM;
+	[ObservableProperty] PersonsViewModel? personsVM;
+	[ObservableProperty] BusinessesViewModel? businessesVM;
+	[ObservableProperty] AddressesViewModel? addressesVM;
+	[ObservableProperty] LoginsViewModel? loginsVM;
 
 	public IdentityViewModel() {
-
-		personsVM = PersonsViewModel.Create(null);
-		businessesVM = BusinessesViewModel.Create(null);
-		addressesVM = AddressesViewModel.Create(null);
-		loginsVM = LoginsViewModel.Create(null);
-
 		AsyncCommandMap["SaveChanges"] = SaveChanges;
 	}
 
@@ -43,8 +36,10 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 		if (param is UserProfileDto up) {
 			UserProfile = new UserProfileViewModel(up);
-			UserProfile.Tags = await TagsRepo.Instance.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString())
-				.ToStringAsync().RunInBackgroundWithResult();
+			UserProfile.Tags = await TagsRepo.Instance
+			.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString())
+			.ToStringAsync()
+			.RunInBackgroundWithResult();
 			ProfileVM = new ObsProfile(up) { IsShowCheckboxColumn = false };
 
 			PersonsVM = PersonsViewModel.Create(UserProfile);
@@ -61,26 +56,18 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		}
 	}
 
-	[RelayCommand]
-	private Task Discard() {
-		return UPAdditionalDataRepo.Instance.Load();
-	}
-
 	private async Task SaveChanges() {
-		if (IsSaving)
-			return; // Prevent multiple concurrent saves
-
-		IsSaving = true;
-
+		if (IsSaving) return; // Prevent multiple concurrent saves
 		try {
+			IsSaving = true;
 			var saveAllTasks = Task.WhenAll([
-				LoginsVM.SaveAll().RunInBackground(),
-				PersonsVM.SaveAll().RunInBackground(),
-				AddressesVM.SaveAll().RunInBackground(),
-				BusinessesVM.SaveAll().RunInBackground()
+				LoginsVM!.SaveAll().RunInBackground(),
+				PersonsVM!.SaveAll().RunInBackground(),
+				AddressesVM!.SaveAll().RunInBackground(),
+				BusinessesVM!.SaveAll().RunInBackground()
 			]);
-			
-			if (UserProfile?.Validator?.IsValid == false) {
+
+			if (UserProfile.Validator?.IsValid == false) {
 				Toaster.Info("Profile validation failed. Some changes may not be saved.");
 			}
 
@@ -126,11 +113,9 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	}
 
 	void ShowValidationErrors() {
-		LoginsVM.ValidateAll();
-		PersonsVM.ValidateAll();
-		AddressesVM.ValidateAll();
-		BusinessesVM.ValidateAll();
+		LoginsVM?.ValidateAll();
+		PersonsVM?.ValidateAll();
+		AddressesVM?.ValidateAll();
+		BusinessesVM?.ValidateAll();
 	}
-
-	public static IdentityViewModel Instance { get; } = IoC.GetService<IdentityViewModel>()!;
 }

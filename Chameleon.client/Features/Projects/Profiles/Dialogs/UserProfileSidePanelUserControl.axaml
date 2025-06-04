@@ -86,11 +86,11 @@
 						<HeaderedContentControl Header="FirstName"
 												Tag="{Binding SelectedPerson.FirstName}"
 												Theme="{StaticResource CopyPasta}" />
-						<HeaderedContentControl Header="LastName"
-												Tag="{Binding SelectedPerson.LastName}"
-												Theme="{StaticResource CopyPasta}" />
 						<HeaderedContentControl Header="MiddleName"
 												Tag="{Binding SelectedPerson.MiddleName}"
+												Theme="{StaticResource CopyPasta}" />
+						<HeaderedContentControl Header="LastName"
+												Tag="{Binding SelectedPerson.LastName}"
 												Theme="{StaticResource CopyPasta}" />
 						<HeaderedContentControl Header="JobTitle"
 												Tag="{Binding SelectedPerson.JobTitle}"
@@ -100,9 +100,6 @@
 												Theme="{StaticResource CopyPasta}" />
 						<HeaderedContentControl Header="BirthDate"
 												Tag="{Binding SelectedPerson.BirthDate, StringFormat=yyyy/MM/dd}"
-												Theme="{StaticResource CopyPasta}" />
-						<HeaderedContentControl Header="Gender"
-												Tag="{Binding SelectedPerson.Gendertext}"
 												Theme="{StaticResource CopyPasta}" />
 						<HeaderedContentControl Header="Notes"
 												Tag="{Binding SelectedPerson.Notes}"

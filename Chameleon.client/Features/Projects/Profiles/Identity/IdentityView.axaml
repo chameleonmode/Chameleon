@@ -55,7 +55,7 @@
 							Content="plus-in-circle"
 							Theme="{StaticResource SvgIconTextButton}"
 							Tag="{TemplateBinding Content}"
-							CommandParameter="{TemplateBinding Tag}"
+							CommandParameter="AddItem"
 							Command="{Binding AsyncCfVCommand}" />
 					</Grid>
 				</ControlTemplate>
@@ -117,6 +117,17 @@
 					CommandParameter="SaveChanges"
 					IsEnabled="{Binding !IsSaving}"/>
 			</StackPanel>
+
+                
+            <ProgressBar Grid.Row="1" 
+			Grid.ColumnSpan="2"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Top"
+            IsIndeterminate="True" 
+            IsVisible="{Binding IsSaving}"
+            Height="3"
+            Margin="0,2,0,2"
+            Foreground="{DynamicResource SystemAccentColor}" />
 		</Grid>
 
 		<TabControl Grid.Row="2"

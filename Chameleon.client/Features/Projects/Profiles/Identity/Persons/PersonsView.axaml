@@ -9,21 +9,13 @@
              x:CompileBindings="True"
              x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Persons.PersonsView">
     <Panel>
-        <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
-                              IsVisible="{Binding !HasItems}" />
+        <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" />
         <Grid RowDefinitions="Auto,Auto,*">
             <HeaderedContentControl
                 Theme="{StaticResource TheseOptionsHeaderPanels}"
                 Header="{Binding Items.Count, StringFormat='You have {0} persons added.'}"
                 Content="Add Person"
                 Tag="AddPerson"/>
-                
-            <ProgressBar Grid.Row="1" 
-                       IsIndeterminate="True" 
-                       IsVisible="{Binding IsLoading}"
-                       Height="3"
-                       Margin="0,2,0,2"
-                       Foreground="{DynamicResource SystemAccentColor}" />
 
             <ItemsControl Grid.Row="2"
                         Classes="TheseItemControls"
@@ -59,7 +51,7 @@
                                 Text="{Binding BirthPlace, FallbackValue=BirthPlace}" PlaceholderText="Birth Place" />
 
                                 <afv:HeaderdInputFieldsControl Title="Notes"
-                                                         Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes"/>
+                                Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes"/>
 
                                 <Button Classes="TheseDeleteBtns"
                                     Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}"

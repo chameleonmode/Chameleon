@@ -1,3 +1,4 @@
+using Chameleon.client.Libs.MvvM;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -14,32 +15,18 @@ namespace Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 
 public abstract partial class ProfileSectionViewModel<TDto, TViewModel> : ViewModelObjectBase
 		where TDto : UP, new()
-		where TViewModel : ViewModelObjectBase {
+		where TViewModel : MappableViewModelBase<TDto> {
 	protected readonly BehaviorSubject<Func<UP, bool>> filter;
 	protected readonly ReadOnlyObservableCollection<TViewModel> items;
 	protected readonly UserProfileViewModel? userProfile;
-	protected readonly string collectionPropertyName;
-	protected readonly string hasItemsPropertyName;
 
 	[ObservableProperty] private bool isLoading;
 
 	[ObservableProperty] private bool isNotLoading;
 
 	public ReadOnlyObservableCollection<TViewModel> Items => items;
-
-	public bool HasItems => Items?.Count > 0;
 	
-
-	// Properties for legacy API compatibility - derived classes can use these or override them
-	public bool HasNoItems => !HasItems;
-	public virtual ReadOnlyObservableCollection<TViewModel> Persons => items;
-	public virtual bool HasPersons => HasItems;
-	public virtual ReadOnlyObservableCollection<TViewModel> Businesses => items;
-	public virtual bool HasBusiness => HasItems;
-	public virtual ReadOnlyObservableCollection<TViewModel> Addresses => items;
-	public virtual bool HasAddresses => HasItems;
-	public virtual ReadOnlyObservableCollection<TViewModel> Logins => items;
-	public virtual bool HasLogins => HasItems;
+	public bool HasNoItems => Items?.Count == 0;
 
 	public virtual Func<UP, bool> FilterPredicate => p => p.ProfileId == userProfile?.Id;
 
@@ -47,57 +34,39 @@ public abstract partial class ProfileSectionViewModel<TDto, TViewModel> : ViewMo
 
 	protected abstract TViewModel CreateViewModel(TDto dto);
 
-	protected virtual TDto CreateDto() {
-		return new TDto { ProfileId = userProfile?.Id };
-	}
+	protected virtual TDto CreateDto => new() { ProfileId = userProfile?.Id };
 
-	protected ProfileSectionViewModel(
-			UserProfileViewModel? userProfile,
-			string collectionPropertyName,
-			string hasItemsPropertyName) {
+	protected ProfileSectionViewModel(UserProfileViewModel userProfile) {
 		this.userProfile = userProfile;
-		this.collectionPropertyName = collectionPropertyName;
-		this.hasItemsPropertyName = hasItemsPropertyName;
 
 		filter = new BehaviorSubject<Func<UP, bool>>(FilterPredicate);
 		IsLoading = true;
 
-		_ = SourceRepository
-				.Connect()
-				.Filter(filter)
-				.Transform(CreateViewModel)
-				.Bind(out items)
-				.Subscribe((i) => {
-					IsLoading = false;
-					OnPropertyChanged(hasItemsPropertyName);
-					OnPropertyChanged(nameof(HasItems));
-				});
+		_ = SourceRepository.Connect().Filter(filter)
+		.Transform(CreateViewModel)
+		.Bind(out items)
+		.Subscribe((i) => {
+			IsLoading = false;
+			OnPropertyChanged(nameof(HasNoItems));
+		});
 
 		_ = this.WhenValueChanged(x => x.IsLoading)
-			.DistinctUntilChanged()
-			.Subscribe(isLoad => IsNotLoading = !isLoad);
+		.DistinctUntilChanged()
+		.Subscribe(isLoad => IsNotLoading = !isLoad);
+		
+		AsyncCommandMap["AddItem"] = AddItem;
 	}
 
 	public virtual void UpdateFilter() {
-		IsLoading = true;
 		filter.OnNext(FilterPredicate);
-		IsLoading = false;
 	}
 
-	[RelayCommand]
 	public virtual async Task AddItem() {
-		if (IsLoading || IsBusy)
-			return;
-
-		if (Items.Any(IsNewItem)) {
-			return;
-		}
-
-		IsLoading = true;
+		if (IsLoading || IsBusy || Items.Any(IsNewItem)) return;
 		try {
-			var newItem = await InitializeNewItem(CreateDto());
-			OnPropertyChanged(hasItemsPropertyName);
-			OnPropertyChanged(nameof(HasItems));
+			IsLoading = true;
+			var newItem = await InitializeNewItem(CreateDto);
+			OnPropertyChanged(nameof(HasNoItems));
 		} finally {
 			IsLoading = false;
 		}
@@ -109,23 +78,19 @@ public abstract partial class ProfileSectionViewModel<TDto, TViewModel> : ViewMo
 
 	protected virtual bool IsNewItem(TViewModel item) {
 		// Default implementation assumes item has an Id property that is 0 for new items
-		var idProperty = item.GetType().GetProperty("Id");
-		if (idProperty != null) {
-			var id = idProperty.GetValue(item);
-			return id != null && (int)id == 0;
-		}
-		return false;
+		var id = item.GetType().GetProperty("Id")?.GetValue(item) as int?;
+		return id != null && (int)id == 0;
 	}
-	
+
 	public virtual async Task SaveItem(TViewModel item) {
 		IsLoading = true;
 		try {
 			_ = item.IsValidationValid();
-			var dto = GetDtoFromViewModel(item);
+			var dto = item.ToDto();
 
 			if (dto != null) {
 				if (IsNewItem(item)) {
-					_ = await UPAdditionalDataRepo.DeleteFromCache(SourceRepository, GetDtoFromViewModel(item));
+					_ = await UPAdditionalDataRepo.DeleteFromCache(SourceRepository, dto);
 				}
 				await SaveItemToRepository(item);
 			}
@@ -135,23 +100,21 @@ public abstract partial class ProfileSectionViewModel<TDto, TViewModel> : ViewMo
 	}
 
 	protected virtual Task SaveItemToRepository(TViewModel item) {
-		return UPAdditionalDataRepo.Save(SourceRepository, GetDtoFromViewModel(item)).RunInBackground();
+		return UPAdditionalDataRepo.Save(SourceRepository, item.ToDto()).RunInBackground();
 	}
 
-	protected abstract TDto GetDtoFromViewModel(TViewModel item);
 
 	[RelayCommand]
 	public virtual async Task DeleteItem(TViewModel item) {
 		IsLoading = true;
 		try {
-			var dto = GetDtoFromViewModel(item);
+			var dto = item.ToDto();
 
 			_ = IsNewItem(item)
 					? await UPAdditionalDataRepo.DeleteFromCache(SourceRepository, dto)
 					: await UPAdditionalDataRepo.Delete(SourceRepository, dto).RunInBackgroundWithResult();
 
-			OnPropertyChanged(hasItemsPropertyName);
-			OnPropertyChanged(nameof(HasItems));
+			OnPropertyChanged(nameof(HasNoItems));
 		} finally {
 			IsLoading = false;
 		}

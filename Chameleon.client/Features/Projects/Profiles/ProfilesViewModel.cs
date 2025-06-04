@@ -91,21 +91,18 @@ public partial class ProfilesViewModel : Projector {
 	? UserProfilesRepo.Instance.ObservableCache.Count
 	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.Id);
 
-
 	public ProfilesViewModel() {
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
-		_ = UserProfilesRepo
-			.Connect()
-			.Transform(i => new ObsProfile(i,
-				onSelectedChanged: p => {
-					OnPropertyChanged(nameof(HasSelectedItems));
-					OnPropertyChanged(nameof(SelectedCount));
-				},
-				onDeleted: p => SetViewModelsFilter()))
-			.Filter(filter)
-			.SortAndPage(AscendingComparer, pageRequests)
-			.SortAndBind(out var profiles, profilesCompareObservable)
-			.Subscribe();
+		_ = UserProfilesRepo.Connect()
+		.Transform(i => new ObsProfile(i,
+			onSelectedChanged: p => {
+				OnPropertyChanged(nameof(HasSelectedItems));
+				OnPropertyChanged(nameof(SelectedCount));
+			},
+			onDeleted: p => SetViewModelsFilter()))
+		.Filter(filter)
+		.SortAndPage(AscendingComparer, pageRequests)
+		.SortAndBind(out var profiles, profilesCompareObservable).Subscribe();
 		Profiles = profiles;
 
 		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
@@ -119,9 +116,7 @@ public partial class ProfilesViewModel : Projector {
 
 		SelectedBrowserItem = BrowserItems[0];
 
-		CommandMap["SelectAll"] = () => {
-			SelectAll();
-		};
+		CommandMap["SelectAll"] = SelectAll;
 		CommandMap["SelectAllProfilesFromFolder"] = () => {
 			PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
 			SelectAll();

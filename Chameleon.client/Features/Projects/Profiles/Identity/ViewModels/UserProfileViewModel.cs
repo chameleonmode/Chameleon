@@ -25,55 +25,28 @@ public partial class UserProfileViewModel : ObservableObjectBase {
 		WebBrowser = new(profile.webBrowser);
 	}
 
-	[ObservableProperty]
-	public string? title;
-
-	[ObservableProperty]
-	public int id;
-
-	[ObservableProperty]
-	public int creatorUserId;
-
-	[ObservableProperty]
-	public int? folderId;
-
-	[ObservableProperty]
-	public bool isFavourite;
-
-	[ObservableProperty]
-	public string? notes;
-
-	[ObservableProperty]
-	public int proxyId;
-
-	[ObservableProperty]
-	public float limitCache;
-
-	[ObservableProperty]
-	public object? youtubeApiKey;
-
-	[ObservableProperty]
-	public object? youtubeClientId;
-
-	[ObservableProperty]
-	public object? youtubeClientSecret;
-
-	[ObservableProperty]
-	public object? wordPressSettings;
-
-	[ObservableProperty]
-	public ProxyViewModel proxy = new(new ProxDto());
-
-	[ObservableProperty]
-	public WebrowserViewModel webBrowser;
+	[ObservableProperty] int id;
+	[ObservableProperty] string? title;
+	[ObservableProperty]  int creatorUserId;
+	[ObservableProperty] int? folderId;
+	[ObservableProperty] bool isFavourite;
+	[ObservableProperty]  string? notes;
+	[ObservableProperty] int proxyId;
+	[ObservableProperty] float limitCache;
+	[ObservableProperty] object? youtubeApiKey;
+	[ObservableProperty] object? youtubeClientId;
+	[ObservableProperty] object? youtubeClientSecret;
+	[ObservableProperty] object? wordPressSettings;
+	[ObservableProperty] ProxyViewModel proxy = new(new ProxDto());
+	[ObservableProperty] WebrowserViewModel webBrowser;
 
 	protected override IObjectValidator GetValidator() {
 		var builder = new ValidationBuilder<UserProfileViewModel>();
 
 		_ = builder.RuleFor(vm => vm.Title)
-							 .NotEmpty()
-							 .MaxLength(50)
-							 .WithMessage("Title is requried");
+		.NotEmpty()
+		.MaxLength(50)
+		.WithMessage("Title is requried");
 
 		return builder.Build(this);
 	}

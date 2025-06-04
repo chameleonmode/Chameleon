@@ -48,12 +48,10 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 
 	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins {get;}
 
-	public ObsProfile(UserProfileDto profile, Action<ObservableDtoViewModelBase<UserProfileDto>>? onSelectedChanged = default, Action<ObsProfile>? onDeleted = default) 
-	: base(
-			profile,
-			profile.title,
-			onSelectedChanged
-	) {
+	public ObsProfile(UserProfileDto profile,
+	Action<ObservableDtoViewModelBase<UserProfileDto>>? onSelectedChanged = default,
+	Action<ObsProfile>? onDeleted = default)
+	: base(profile, onSelectedChanged) {
 		_ = UPAdditionalDataRepo.Instance.Loginz
 					.Connect(i => i.ProfileId == profile.id)
 					.Bind(out var logins)

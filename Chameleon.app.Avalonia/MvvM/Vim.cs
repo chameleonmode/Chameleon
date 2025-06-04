@@ -4,13 +4,18 @@ using DynamicData.Binding;
 
 namespace Chameleon.lib.CommunityToolkit.MvvM;
 
-public abstract class DtoViewModelBase<T>(T dto, string? title = null)
- : ViewModelObjectBase(title ?? dto.title) where T : Dto {
-	public T Dto { get; set; } = dto;
+public abstract class DtoViewModelBase<T>
+ : ViewModelObjectBase where T : Dto {
+	public T Dto { get; set; }
+	public DtoViewModelBase(T dto) {
+		Dto = dto;
+		Title = dto.title;
+		Tags = dto.Tags;
+	}
 }
 
-public abstract partial class ObservableDtoViewModelBase<T>(T dto, string? title = null, Action<ObservableDtoViewModelBase<T>>? onSelectedChanged = default)
-: DtoViewModelBase<T>(dto, title) where T : Dto {
+public abstract partial class ObservableDtoViewModelBase<T>(T dto, Action<ObservableDtoViewModelBase<T>>? onSelectedChanged = default)
+: DtoViewModelBase<T>(dto) where T : Dto {
 	public event Action<ObservableDtoViewModelBase<T>>? OnSelectedChanged = onSelectedChanged;
 	[ObservableProperty] bool isSelected;
 	[ObservableProperty] bool active;
@@ -18,7 +23,7 @@ public abstract partial class ObservableDtoViewModelBase<T>(T dto, string? title
 
 	public override void InitializeObject() {
 		base.InitializeObject();
-		
+
 		CommandMap["Unselect"] = () => {
 			IsSelected = false;
 		};
