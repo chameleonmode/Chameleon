@@ -22,17 +22,17 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 	private readonly TagsRepo tagsRepo = TagsRepo.Instance;
 
-	public PersonsViewModel PersonsVM { get; private set; }
-	public BusinessesViewModel BusinessesVM { get; private set; }
-	public AddressesViewModel AddressesVM { get; private set; }
-	public LoginsViewModel LoginsVM { get; private set; }
+	[ObservableProperty] private PersonsViewModel personsVM;
+	[ObservableProperty] private BusinessesViewModel businessesVM;
+	[ObservableProperty] private AddressesViewModel addressesVM;
+	[ObservableProperty] private LoginsViewModel loginsVM;
 
 	public IdentityViewModel() {
 
-		PersonsVM = PersonsViewModel.Create(null);
-		BusinessesVM = BusinessesViewModel.Create(null);
-		AddressesVM = AddressesViewModel.Create(null);
-		LoginsVM = LoginsViewModel.Create(null);
+		personsVM = PersonsViewModel.Create(null);
+		businessesVM = BusinessesViewModel.Create(null);
+		addressesVM = AddressesViewModel.Create(null);
+		loginsVM = LoginsViewModel.Create(null);
 
 		AsyncCommandMap["SaveChanges"] = SaveChanges;
 	}

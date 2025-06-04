@@ -164,7 +164,9 @@
 						Theme="{StaticResource TheseTabHeaderPanels}"/>
 				</TabItem.Header>
 				<TabItem.Content>
-                    <persons:PersonsView DataContext="{Binding PersonsVM}" />
+					<Panel DataContext="{Binding PersonsVM}">
+						<persons:PersonsView />
+					</Panel>
 				</TabItem.Content>
 			</TabItem>
 			<TabItem>
@@ -175,7 +177,9 @@
 						Theme="{StaticResource TheseTabHeaderPanels}"/>
 				</TabItem.Header>
 				<TabItem.Content>
-                    <businesses:BusinessesView DataContext="{Binding BusinessesVM}" />
+					<Panel DataContext="{Binding BusinessesVM}">
+						<businesses:BusinessesView  />
+					</Panel>
 				</TabItem.Content>
 			</TabItem>
 			<TabItem>
@@ -186,7 +190,9 @@
 						Theme="{StaticResource TheseTabHeaderPanels}"/>
 				</TabItem.Header>
 				<TabItem.Content>
-                    <addresses:AddressesView DataContext="{Binding AddressesVM}" />
+					<Panel DataContext="{Binding AddressesVM}">
+						<addresses:AddressesView  />
+					</Panel>
 				</TabItem.Content>
 			</TabItem>
 			<TabItem>
@@ -197,7 +203,9 @@
 						Theme="{StaticResource TheseTabHeaderPanels}"/>
 				</TabItem.Header>
 				<TabItem.Content>
-                    <logins:LoginsView DataContext="{Binding LoginsVM}" />
+					<Panel DataContext="{Binding LoginsVM}">
+						<logins:LoginsView />
+					</Panel>
 				</TabItem.Content>
 			</TabItem>
 		</TabControl>
