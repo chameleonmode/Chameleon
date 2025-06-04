@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="850"
+             mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="1680"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:afvc="using:Chameleon.app.Avalonia.Fluent.Controls"
@@ -101,7 +101,7 @@
 			</DataTemplate>
 
 			<DataTemplate x:Key="StartEditorTemplate" x:DataType="models:Start">
-				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 					<TextBlock Text="URL's:"
 						Grid.Row="0"
 						ToolTip.Tip="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)" />
@@ -175,6 +175,26 @@
 						Grid.Row="6" 
 						Grid.Column="1" 
 						IsChecked="{Binding All, Mode=TwoWay}" OffContent="" OnContent=""/>
+					<ToggleSwitch
+						Grid.Row="6"
+						Grid.Column="1"
+						IsChecked="{Binding All, Mode=TwoWay}" OffContent="" OnContent=""/>
+					<TextBlock
+						Grid.Row="7"
+						Text="Close old profile browsers"
+						ToolTip.Tip="Closing browser instances for the previous profile before moving to the next"/>
+					<ToggleSwitch
+						Grid.Row="7"
+						Grid.Column="1"
+						IsChecked="{Binding CloseOldBrowserProfileAfterRun, Mode=TwoWay}" OffContent="" OnContent=""/>
+					<TextBlock
+						Grid.Row="8"
+						Text="Sequential Script Execution per Profile"
+						ToolTip.Tip=" Iterate through all selected profiles, and for each profile, run exactly one script from the selected list before moving to the next profile"/>
+					<ToggleSwitch
+						Grid.Row="8"
+						Grid.Column="1"
+						IsChecked="{Binding ExecuteOneScriptAccrosProfiles, Mode=TwoWay}" OffContent="" OnContent=""/>
 				</Grid>
 			</DataTemplate>
 
@@ -190,7 +210,7 @@
 			</DataTemplate>
 
 			<DataTemplate x:Key="TimeoutsEditorTemplate" x:DataType="models:Timeouts">
-				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+				<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 					<TextBlock Text="Navigate:"
 						Grid.Row="0"
 						ToolTip.Tip="max time to wait for page load"/>
@@ -217,11 +237,20 @@
 						Grid.Column="1"
 						Value="{Binding Wait, Mode=TwoWay}" />
 
-					<TextBlock Text="Naps:"
+					<TextBlock Text="Random Sleep:"
 						Grid.Row="3"
+						Grid.Column="0"
+						ToolTip.Tip="Timeouts between each script iteration on the same profile in seconds"/>
+					<ui:NumberBox
+						Grid.Row="3"
+						Grid.Column="1"
+						Value="{ReflectionBinding DataContext.RandomWaitPerProfile, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}, Mode=TwoWay}" />
+
+					<TextBlock Text="Naps:"
+						Grid.Row="4"
 						ToolTip.Tip="milliseconds between actions to simulate natural user interactions" />
 					<ContentControl
-						Grid.Row="3"
+						Grid.Row="4"
 						Grid.Column="1"
 						Classes="sideInput"
 						VerticalAlignment="Center"
