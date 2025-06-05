@@ -94,24 +94,23 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					.ForEach(p => p.Active = p.IsSelected = t.IsSelected)
 				)));
 
-		Actor = actor;
-		AiSettings = actor.Options.AI;
-		Selections = [.. actor.Scripts.Select(s => {
-			if (s is not Script script) return null;
-				var selected = selections?.FirstOrDefault(x => x.Script.File == script.File)?.Selected ?? false;
-				return new Selection(script, selected);
-			}).Where(s => s != null)
-		];
-
 		profileSelections?.ForEach(id => {
 			ProfilesViewModel.Instance.Profiles
 			.Where(p => p.Dto.id == id)
 			.ForEach(p => p.IsSelected = true);
 		});
 
+		Actor = actor;
+		AiSettings = actor.Options.AI;
 		EditableArgs = new(actor.Options.Args);
 		EditableSettings = new(actor.Options.Settings);
 		Browser = BrowserOptions.First();
+		Selections = [.. actor.Scripts.Select(s => {
+			if (s is not Script script) return null;
+				var selected = selections?.FirstOrDefault(x => x.Script.File == script.File)?.Selected ?? false;
+				return new Selection(script, selected);
+			}).Where(s => s != null)
+		];
 
 		AsyncCommandMap["Run"] = async () => {
 			try {
@@ -126,13 +125,9 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 				Running = true;
 				cts = new CancellationTokenSource();
-
-				if (EditableSettings.ExecuteOneScriptAccrosProfiles) {
-					await RunAllProfilesPerScriptAsync(profiles, selected);
-				} else {
-					await RunAllScriptsPerProfileAsync(profiles, selected);
-				}
-
+				await (EditableSettings.ExecuteOneScriptAccrosProfiles
+				? RunAllProfilesPerScriptAsync(profiles, selected)
+				: RunAllScriptsPerProfileAsync(profiles, selected));
 			} finally {
 				if (Running) CommandMap["Stop"]();
 				await AsyncCommandMap["Save"]();

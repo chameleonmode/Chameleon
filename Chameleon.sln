@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution", ".solution", "{
 		Directory.Packages.props = Directory.Packages.props
 		LICENSE = LICENSE
 		README.md = README.md
+		Chameleon.Desktop\Info.plist = Chameleon.Desktop\Info.plist
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia", "Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj", "{8C417AF0-D948-4637-B38B-DDC6E058C83D}"
