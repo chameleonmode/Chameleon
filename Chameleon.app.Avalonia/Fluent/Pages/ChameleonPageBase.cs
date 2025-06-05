@@ -59,6 +59,15 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 	}
 	public static readonly StyledProperty<string>
 		DescriptionProperty = AvaloniaProperty.Register<ChameleonPageBase, string>(nameof(Description));
+
+	public bool ShowHeaderRegion {
+		get => GetValue(ShowHeaderRegionProperty);
+		set => SetValue(ShowHeaderRegionProperty, value);
+	}
+
+	public static readonly StyledProperty<bool>
+		ShowHeaderRegionProperty = AvaloniaProperty.Register<ChameleonPageBase, bool>(nameof(ShowHeaderRegionProperty), true);
+
 	#endregion
 
 	#region overrides
@@ -175,6 +184,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 		if (DataContext is ViewModelObjectBase pageViewModel) {
 			await pageViewModel.OnNavigatedToAsync(e.Parameter);
 			ControlName ??= pageViewModel.Title ?? "xxx";
+			ShowHeaderRegion = pageViewModel.ShowHeaderRegion;
 		}
 
 		var svc = await TaskUtil.TryAwaitFor(() => ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this)), 2);   //TODO: might crash if wrong page

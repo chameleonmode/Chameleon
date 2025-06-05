@@ -310,7 +310,7 @@
                            Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}">
 					<Panel Name="HeaderRegion"
                            DockPanel.Dock="Top"
-                           ClipToBounds="False">
+                           ClipToBounds="False" IsVisible="{TemplateBinding ShowHeaderRegion}">
 						<!--<Border Background="{DynamicResource PageHeaderBackgroundBrush}"
                                 OpacityMask="{DynamicResource HeaderOpacityMaskBrush}"
                                 Height="80"

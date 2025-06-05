@@ -52,6 +52,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			LoginsVM.UpdateFilter();
 
 			Title = ProfileVM.Title;
+			ShowHeaderRegion = false;
 		}
 	}
 
