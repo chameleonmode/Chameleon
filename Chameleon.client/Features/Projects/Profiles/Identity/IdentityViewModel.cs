@@ -33,7 +33,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		await base.OnNavigatedToAsync(param);
 
 		if (param is UserProfileDto up) {
-			ProfileVM = ProfilesViewModel.Instance.Profiles.First(p => p.Dto.id == up.id);
+			ProfileVM = ProfilesViewModel.Instance.Profiles.FirstOrDefault(p => p.Dto.id == up.id) ?? new (up);
 			ProfileVM.IsShowCheckboxColumn = false;
 			UserProfile = new UserProfileIdentityVM(up) {
 				Tags = await TagsRepo.Instance

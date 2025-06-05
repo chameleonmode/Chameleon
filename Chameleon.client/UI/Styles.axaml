@@ -34,6 +34,13 @@
 		<Setter Property="Grid.IsSharedSizeScope" Value="True" />
 		<Setter Property="Spacing" Value="9" />
 	</Style>
+	<Style Selector="StackPanel.horizo">
+		<Setter Property="Spacing" Value="6" />
+		<Setter Property="Orientation" Value="Horizontal" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+		<Setter Property="Grid.IsSharedSizeScope" Value="True" />
+	</Style>
 
 	<!--TextBlock-->
 	<Style Selector="TextBlock.NoWrap">

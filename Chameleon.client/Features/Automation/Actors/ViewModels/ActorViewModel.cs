@@ -177,15 +177,14 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			// If graceful close failed or timed out, force kill
 			Debug.WriteLine("Graceful close failed. Force killing process...");
 			browser.Brocess.Kill();
+				browser.Close();
 
 			// Wait for the kill to complete
-			_ = await Task.Run(() => browser.Brocess.WaitForExit(5000));
+			_ = await Task.Run(() => browser.Brocess?.WaitForExit(5000));
 			Debug.WriteLine("Process forcefully terminated.");
 		} catch (Exception e) {
-			Toaster.Error($"Error closing browser: {e.Message}");
+			Debug.WriteLine($"Error closing browser: {e.Message}");
 		} finally {
-			if(browser.Brocess.HasExited)
-				browser.Close();
 			Debug.WriteLine("Browser instance disposed.");
 		}
 	}
@@ -195,9 +194,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 			var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
 
-			var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected), EditableSettings.ToRecord());
 			foreach (var selection in selected) {
-				await ExecuteScriptAsync(selection, opts, profile, browser!);
+				await ExecuteScriptAsync(selection, profile, browser!);
 			}
 			await BrowserShutdown(browser);
 		}
@@ -208,26 +206,35 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			cts!.Token.ThrowIfCancellationRequested();
 
 			Debug.WriteLine($"Starting Script '{selection.Script.Title}' across all profiles");
-			var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected), EditableSettings.ToRecord());
 
 			foreach (var profile in profiles) {
 				cts.Token.ThrowIfCancellationRequested();
 
 				var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
-				await ExecuteScriptAsync(selection, opts, profile, browser!);
+				await ExecuteScriptAsync(selection, profile, browser!);
 				await BrowserShutdown(browser);
 			}
 		}
 	}
 
-	private async Task ExecuteScriptAsync(Selection selection, Opts opts, ObsProfile profile, IBrowserInstance browser) {
+	private async Task ExecuteScriptAsync(Selection selection, ObsProfile profile, IBrowserInstance browser) {
 		try {
+			var settings = EditableSettings.ToRecord(
+				selection.Script.Title == "Surf"
+				? new Start(
+								Feature: EditableSettings.Start.Feature,
+								Url: EditableSettings.Start.Url,
+								Attempts: EditableSettings.Start.Attempts,
+								Variations: EditableSettings.Start.Variations,
+								Iterations: EditableSettings.Start.Iterations,
+								Rando: new Rando(0, 0))
+				: EditableSettings.Start);
+			var opts = new Opts(AiSettings, EditableArgs.ToDictionary(Selections.Where(s=>s.Selected)), settings);
 			var json = JS.Serialize(opts);
 			Debug.WriteLine($@"Running script with:
         Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'
       ");
 			Debug.WriteLine($@"Opts: {json}");
-
 			await Run.Script(new() {
 				Port = browser.Settings.Port,
 				Script = selection.Script,

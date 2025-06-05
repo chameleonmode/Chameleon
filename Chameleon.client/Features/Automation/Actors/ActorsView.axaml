@@ -50,54 +50,6 @@
 		</Style>
 	</UserControl.Styles>
 
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<DataTemplate x:Key="ArgsTemplate" x:DataType="vmv:ArgsViewModel">
-				<StackPanel Classes="shared">
-
-				<controls:Inputter Title="Search:"
-					Description="comma seperated list of search terms"
-					Watermark="comma seperated list of search terms"
-					Text="{Binding Search}" 
-					Theme="{StaticResource Inputz}"
-				/>
-
-				<controls:Inputter Title="Scope:"
-					Description="scope of the search">
-					<ComboBox
-						ItemsSource="{Binding AvailableScopes}"
-						SelectedItem="{Binding SelectedScope}" />
-				</controls:Inputter>
-
-				<controls:Inputter Title="Sort:"
-					Description="sort order of the search">
-					<ComboBox
-						ItemsSource="{Binding AvailableSorts}"
-						SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
-				</controls:Inputter>
-
-				<controls:Inputter Title="Filter:"
-					Description="filter to apply to the search">
-					<ComboBox
-						ItemsSource="{Binding AvailableFilters}"
-						SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" />
-				</controls:Inputter>
-				</StackPanel>
-			</DataTemplate>
-
-						<DataTemplate x:Key="RandoEditorTemplate" x:DataType="models:Rando">
-							<StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-								<TextBlock Text="Min:"/>
-								<ui:NumberBox Value="{Binding Min, Mode=TwoWay}"
-									SpinButtonPlacementMode="Compact" />
-								<TextBlock Text="Max:"/>
-								<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"
-									SpinButtonPlacementMode="Compact" />
-							</StackPanel>
-						</DataTemplate>
-		</ResourceDictionary>
-	</UserControl.Resources>
-
 	<Grid RowDefinitions="Auto, *">
 		<afv:ChameleonContentControl Title="Agents"
                                      TitleDescription="Robotic Automation Agents">
@@ -106,10 +58,45 @@
 						 Classes="uniColumn">
 					<ListBox.ItemTemplate>
 						<DataTemplate x:DataType="vm:ActorViewModel">
-							<ui:SettingsExpander Header="{Binding EditableSettings.Start.Feature}"
-								IsExpanded="True">
-								<ui:SettingsExpanderItem>
+							<ui:SettingsExpander IsExpanded="True">
+							<ui:SettingsExpander.Header>
+							<Panel>
+								<TextBlock 
+									Text="{Binding EditableSettings.Start.Feature}"
+									Classes="b1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Left"
+								/>
+							</Panel>
+							</ui:SettingsExpander.Header>
+							<ui:SettingsExpanderItem>
 									<StackPanel Spacing="6">
+	<afv:ChameleonContentControl Title="Robotomations"
+	TitleDescription="auto robo autonomous roboto automations">
+		<afv:ChameleonContentControl.TitleContent>			
+		<Grid ColumnDefinitions="*,Auto"
+				  HorizontalAlignment="Right">
+				<StackPanel Margin="0 0 2 2"
+							Orientation="Horizontal">
+				</StackPanel>
+
+					<StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Spacing="6"	Grid.Column="1">
+						<ToggleSwitch 
+							ToolTip.Tip="to start in a new tab (recommended)"
+							IsChecked="{Binding EditableSettings.Start.New}" OffContent="Active Tab" OnContent="New Tab"/>
+						<ToggleSwitch 
+							ToolTip.Tip="Close browser instances for the previous profile before moving to the next"
+							IsChecked="{Binding EditableSettings.CloseOldBrowserProfileAfterRun}" OffContent="Keep Open" OnContent="Close"/>
+						<ToggleSwitch 
+							ToolTip.Tip="Run all selected automations for each profile, or run all profiles for each automation"
+							IsChecked="{Binding EditableSettings.ExecuteOneScriptAccrosProfiles}" OffContent="Each Profile" OnContent="Each Selection"/>
+					</StackPanel>
+			</Grid>
+		</afv:ChameleonContentControl.TitleContent>
+
+		<afv:ChameleonContentControl.Header>
+		<StackPanel>
+<StackPanel Spacing="6">
 										<TextBlock Text="Tags"
 											Margin="4 6"
 											ToolTip.Tip="select a tag that contain a grouping of profiles to inceptionalize"
@@ -127,6 +114,7 @@
 												</ItemsControl.ItemTemplate>
 											</ItemsControl>
 										</ScrollViewer>
+										
 										<TextBlock Text="Profiles"
 											Margin="4 12 4 6"
 											ToolTip.Tip="already selected profiles"
@@ -151,8 +139,9 @@
 												</ItemsControl>
 											</ScrollViewer>
 										</Grid>
-										<TextBlock Text="Robotomations"
-											ToolTip.Tip="auto robo autonomous roboto automations"
+										
+										<TextBlock Text="Automations"
+											ToolTip.Tip="auto robo autonomous roboto"
 											Margin="4 12 4 6"
 											Classes="b1" />
 										<ItemsControl
@@ -166,235 +155,235 @@
 												</DataTemplate>
 											</ItemsControl.ItemTemplate>
 										</ItemsControl>
+</StackPanel>
+		</StackPanel>
+		</afv:ChameleonContentControl.Header>
 
-										<Expander Header="Options" IsExpanded="True" Margin="0 16 0 0">
-											<StackPanel>
-												<ContentControl
-													Content="{Binding EditableArgs}"
-													ContentTemplate="{StaticResource ArgsTemplate}"
-													Margin="6 0 6 6" />
+		<afv:ChameleonContentControl.Content>
 
-												<ContentControl Content="{Binding AiSettings}">
-													<ContentControl.ContentTemplate>
-														<DataTemplate x:DataType="models:AI">
-															<StackPanel Spacing="6">
-																<Expander Header="Inception" 
-																	Margin="0 6"
-																	IsExpanded="True">
-																	<Expander.Header>
-																		<TextBlock Text="Inception" />
-																	</Expander.Header>
-																	<ContentControl Content="{Binding Decorators}">
-																		<ContentControl.ContentTemplate>
-																			<DataTemplate x:DataType="models:Decorations">
-																				<StackPanel Classes="shared">
-																					<TextBlock Classes="caption"
-																						Margin="0 0 0 8">
-																						<Run Text="prompt decorations helps keep the model 'on brand'" />
-																					</TextBlock>
 
-																					<controls:Inputter Title="System:"
-																						Description="most helpful for the model consistency"
-																						Watermark="You are helpful..."
-																						Text="{Binding System, Mode=TwoWay}"
-																						Theme="{StaticResource Inputz}"
-																					/>
 
-																					<controls:Inputter Title="Human:"
-																						Description="Human persona description"
-																						Watermark="...(eg. reddit content creator, reddit user, etc.)"
-																						Text="{Binding Human, Mode=TwoWay}" 
-																						Theme="{StaticResource Inputz}"
-																					/>
+<StackPanel Margin="0 8 0 0">
+				<StackPanel Classes="shared" Margin="6 0 6 6">
+					<controls:Inputter Title="Search:"
+						Description="comma seperated list of search terms"
+						Watermark="comma seperated list of search terms"
+						Text="{Binding EditableArgs.Search}" 
+						Theme="{StaticResource Inputz}"
+					/>
+					<controls:Inputter Title="Scope:"
+						Description="scope of the search">
+						<ComboBox
+							ItemsSource="{Binding EditableArgs.AvailableScopes}"
+							SelectedItem="{Binding EditableArgs.SelectedScope}" />
+					</controls:Inputter>
+					<controls:Inputter Title="Sort:"
+						Description="sort order of the search">
+						<ComboBox
+							ItemsSource="{Binding EditableArgs.AvailableSorts}"
+							SelectedItem="{Binding EditableArgs.SelectedSort, Mode=TwoWay}"/>
+					</controls:Inputter>
+					<controls:Inputter Title="Filter:"
+						Description="filter to apply to the search">
+						<ComboBox
+							ItemsSource="{Binding EditableArgs.AvailableFilters}"
+							SelectedItem="{Binding EditableArgs.SelectedFilter, Mode=TwoWay}" />
+					</controls:Inputter>
+				</StackPanel>
 
-																					<controls:Inputter Title="Audience:"
-																						Description="Target audience"
-																						Watermark="...(eg: reddit users who are interested in..., reddit users who are looking for..., etc.)"
-																						Text="{Binding Audience, Mode=TwoWay}" 
-																						Theme="{StaticResource Inputz}"
-																					/>
+				<ContentControl Content="{Binding AiSettings}">
+					<ContentControl.ContentTemplate>
+						<DataTemplate x:DataType="models:AI">
+							<StackPanel Spacing="6">
+								<Expander Header="Inception" 
+									Margin="0 6"
+									IsExpanded="True">
+									<ContentControl Content="{Binding Decorators}">
+										<ContentControl.ContentTemplate>
+											<DataTemplate x:DataType="models:Decorations">
+												<StackPanel Classes="shared">
+													<TextBlock Classes="caption"
+														Margin="0 0 0 8">
+														<Run Text="prompt decorations helps keep the model 'on brand'" />
+													</TextBlock>
+													<controls:Inputter Title="System:"
+														Description="most helpful for the model consistency"
+														Watermark="You are helpful..."
+														Text="{Binding System, Mode=TwoWay}"
+														Theme="{StaticResource Inputz}"
+													/>
+													<controls:Inputter Title="Human:"
+														Description="Human persona description"
+														Watermark="...(eg. reddit content creator, reddit user, etc.)"
+														Text="{Binding Human, Mode=TwoWay}" 
+														Theme="{StaticResource Inputz}"
+													/>
+													<controls:Inputter Title="Audience:"
+														Description="Target audience"
+														Watermark="...(eg: reddit users who are interested in..., reddit users who are looking for..., etc.)"
+														Text="{Binding Audience, Mode=TwoWay}" 
+														Theme="{StaticResource Inputz}"
+													/>
+													<controls:Inputter Title="Background:"
+														Description="Background context"
+														Watermark="...(eg: I am surfing reddit... You... etc.)"
+														Text="{Binding Background, Mode=TwoWay}" 
+														Theme="{StaticResource Inputz}"
+													/>
+													<controls:Inputter Title="Tone:"
+														Description="Communication tone"
+														Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
+														Text="{Binding Tone, Mode=TwoWay}" 
+														Theme="{StaticResource Inputz}"
+													/>
+												</StackPanel>
+											</DataTemplate>
+										</ContentControl.ContentTemplate>
+									</ContentControl>
+								</Expander>
+							</StackPanel>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
 
-																					<controls:Inputter Title="Background:"
-																						Description="Background context"
-																						Watermark="...(eg: I am surfing reddit... You... etc.)"
-																						Text="{Binding Background, Mode=TwoWay}" 
-																						Theme="{StaticResource Inputz}"
-																					/>
+				<ContentControl Content="{Binding EditableSettings}">
+					<ContentControl.ContentTemplate>
+						<DataTemplate x:DataType="vmv:SettingsViewModel">
+							<Expander Header="Run" IsExpanded="True" Margin="0 6">
+								<StackPanel Classes="shared">
 
-																					<controls:Inputter Title="Tone:"
-																						Description="Communication tone"
-																						Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
-																						Text="{Binding Tone, Mode=TwoWay}" 
-																						Theme="{StaticResource Inputz}"
-																					/>
-																				</StackPanel>
-																			</DataTemplate>
-																		</ContentControl.ContentTemplate>
-																	</ContentControl>
-																</Expander>
-															</StackPanel>
-														</DataTemplate>
-													</ContentControl.ContentTemplate>
-												</ContentControl>
+									<controls:Inputter Title="URL's:"
+										Description="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)">
+										<TextBox
+											AcceptsReturn="True"
+        					 				TextWrapping="Wrap"
+											Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*"
+											Text="{Binding Start.Url}"/>
+									</controls:Inputter>
 
-												<ContentControl Content="{Binding EditableSettings}">
-													<ContentControl.ContentTemplate>
-														<DataTemplate x:DataType="vmv:SettingsViewModel">
-															<StackPanel Spacing="6">
-		<Expander Header="Run" IsExpanded="True" Margin="0 6">
-			<StackPanel Classes="shared">
+										<controls:Inputter Title="Auto:" Description="Controls for the robotomation behavior and keyword generation">
+											<UniformGrid Columns="4" Rows="1">
+												<controls:Inputter Title="Keywords:"
+													Description="Adds AI related keywords based on search terms">
+													<ui:NumberBox
+														Value="{Binding Start.Variations.Min}"
+														SpinButtonPlacementMode="Compact" />
+												</controls:Inputter>
 
-				<controls:Inputter Title="Switches:"
-					Description="toggle on or off">
-					<StackPanel Orientation="Horizontal" Spacing="18">
-						<ToggleSwitch 
-							ToolTip.Tip="to start in a new tab (recommended)"
-							IsChecked="{Binding Start.New}" OffContent="Current Tab" OnContent="New Tab"/>
-						<ToggleSwitch 
-							ToolTip.Tip="Close browser instances for the previous profile before moving to the next"
-							IsChecked="{Binding CloseOldBrowserProfileAfterRun}" OffContent="Keep Open" OnContent="Close After"/>
-						<ToggleSwitch 
-							ToolTip.Tip="Run each selected script one at a time for each selected profile"
-							IsChecked="{Binding ExecuteOneScriptAccrosProfiles}" OffContent="Regular Run" OnContent="Reversed Run"/>
-					</StackPanel>
-				</controls:Inputter>
-													
-				<controls:Inputter Title="URL's:"
-					Description="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)"					>
-					<TextBox
-						AcceptsReturn="True"
-         				TextWrapping="Wrap"
-						Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*"
-						Text="{Binding Start.Url}"/>
-				</controls:Inputter>
+												<controls:Inputter Title="Runs:"
+													Description="Number of times to run each automation per search term">
+													<ui:NumberBox
+														Value="{Binding Start.Iterations.Min}"
+														SpinButtonPlacementMode="Compact" />
+												</controls:Inputter>
 
-				<controls:Inputter Title="Attempts:"
-					Description="each task is retried a number of times before moving to the next task">
-								<StackPanel Orientation="Horizontal" Spacing="6">
-									<TextBlock Text="Max:"
-										ToolTip.Tip="maximum number of attempts to try untill a successfull iteration" />
-									<ui:NumberBox 
-										Value="{Binding Start.Attempts}"
-										SpinButtonPlacementMode="Compact" />
-									<TextBlock Text="Sleep:"
-										ToolTip.Tip="Amount of time to delay after finnishing all attempts and moving to the next task" />
-									<ui:NumberBox 
-										Value="{Binding RandomWaitPerProfile}"
-										SpinButtonPlacementMode="Compact"  />
+												<controls:Inputter Title="Attempts:"
+													Description="Maximum attempts until successful iteration">
+													<ui:NumberBox
+														Value="{Binding Start.Attempts}"
+														SpinButtonPlacementMode="Compact" />
+												</controls:Inputter>
+
+												<controls:Inputter Title="Rando:"
+													Description="Min-max activity value for voting and joining">
+													<ui:NumberBox
+														Value="{Binding Start.Rando.Min}"
+														SpinButtonPlacementMode="Compact" />
+												</controls:Inputter>
+											</UniformGrid>
+										</controls:Inputter>
+
+											<controls:Inputter Title="Timers:">
+												<UniformGrid Columns="4" Rows="1">
+													<controls:Inputter Title="Navigate:"
+														Description="for page load">
+															<ui:NumberBox
+																Value="{Binding Timeouts.Navigate}"
+																SpinButtonPlacementMode="Compact" />
+													</controls:Inputter>
+													<controls:Inputter Title="Default:"
+														Description="in general">
+															<ui:NumberBox
+																Value="{Binding Timeouts.Default}"
+																SpinButtonPlacementMode="Compact" />
+													</controls:Inputter>
+													<controls:Inputter Title="Wait:"
+														Description="for actions to complete">
+															<ui:NumberBox
+																Value="{Binding Timeouts.Wait}"
+																SpinButtonPlacementMode="Compact" />
+													</controls:Inputter>
+													<controls:Inputter Title="Delay:"
+														Description="after finnishing all attempts and moving to the next task">
+															<ui:NumberBox
+																Value="{Binding RandomWaitPerProfile}"
+																SpinButtonPlacementMode="Compact" />
+													</controls:Inputter>
+												</UniformGrid>
+											</controls:Inputter>
+
+													<controls:Inputter Title="Naps:" Description="milliseconds between actions to simulate natural user interactions">
+														<UniformGrid Columns="3" Rows="1">
+															<controls:Inputter Title="Min:"
+																Description="minimum wait time">
+																<ui:NumberBox
+																	Value="{Binding Timeouts.Naps.Min}"
+																	SpinButtonPlacementMode="Compact" />
+															</controls:Inputter>
+															<controls:Inputter Title="Max:"
+																Description="maximum wait time">
+																<ui:NumberBox
+																	Value="{Binding Timeouts.Naps.Max}"
+																	SpinButtonPlacementMode="Compact" />
+															</controls:Inputter>
+															<controls:Inputter Title="Multi:"
+																Description="time multiplier">
+																<ui:NumberBox
+																	Value="{Binding Timeouts.Naps.Multiplier, TargetNullValue='0'}"
+																	SpinButtonPlacementMode="Compact" />
+															</controls:Inputter>
+														</UniformGrid>
+													</controls:Inputter>
 								</StackPanel>
-				</controls:Inputter>
+							</Expander>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+</StackPanel>
+		</afv:ChameleonContentControl.Content>
+	</afv:ChameleonContentControl>
+	</StackPanel>
+							</ui:SettingsExpanderItem>
 
-				<controls:Inputter Title="AI Keywords:"
-					Description="Adds AI related keywords when set above 1-1">					
-					<ContentControl 
-						Content="{Binding Start.Variations}"
-						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
-				</controls:Inputter>
-
-				<controls:Inputter Title="Automations:"
-					Description="Amount of iterations to run per search term. (for example each keyword will result in a search result of multiple posts. This setting allows for control over ho many times an automation such as Join will select a post with a joinable subreddit join/subscribe to it then go back to the search results and repeat the process of finding a joinable subreddit under the same keyword for a min-max amount of times. All other automations run in the same way.)">					
-					<ContentControl 
-						Content="{Binding Start.Iterations}"
-						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
-				</controls:Inputter>
-
-				<controls:Inputter Title="Randomization:"
-					Description="Predictable hash value to reference min-max activity while performing things such as voting, joining a subreddit set to 0-0 and select only the vote automation to act as a 'search warm up' (to seed the account with random activity of time spent to nudge its TikTok algorithm to link your account to those keywords).">
-					<ContentControl 
-						Content="{Binding Start.Rando}"
-						ContentTemplate="{StaticResource RandoEditorTemplate}" />
-				</controls:Inputter>
-
-				<controls:Inputter Title="Timeouts:">
-					<StackPanel Orientation="Horizontal" Spacing="18">
-						<StackPanel Orientation="Horizontal" Spacing="6">
-							<TextBlock Text="Navigate:"
-								ToolTip.Tip="max time to wait for page load"/>
-							<ui:NumberBox
-								Value="{Binding Timeouts.Navigate}"
-								SpinButtonPlacementMode="Compact"/>
-							<TextBlock Text="Default:"
-								ToolTip.Tip="max time to wait in general"/>
-							<ui:NumberBox
-								Value="{Binding Timeouts.Default}"
-								SpinButtonPlacementMode="Compact"/>
-							<TextBlock Text="Wait:"
-								ToolTip.Tip="max time to wait for actions to complete"/>
-							<ui:NumberBox
-								Value="{Binding Timeouts.Wait}"
-								SpinButtonPlacementMode="Compact"/>
-						</StackPanel>
-					</StackPanel>
-				</controls:Inputter>
-
-				<controls:Inputter Title="Naps:"
-					Description="milliseconds between actions to simulate natural user interactions">
-								<StackPanel Orientation="Horizontal" Spacing="6">
-									<TextBlock Text="Min:"/>
-									<ui:NumberBox
-										Value="{Binding Timeouts.Naps.Min}"
-										SpinButtonPlacementMode="Compact"/>
-									<TextBlock Text="Max:"/>
-									<ui:NumberBox
-										Value="{Binding Timeouts.Naps.Max}"
-										SpinButtonPlacementMode="Compact"/>
-									<TextBlock Text="Multiplier:"/>
-									<ui:NumberBox
-										Value="{Binding Timeouts.Naps.Multiplier, TargetNullValue='0'}"
-										SpinButtonPlacementMode="Compact" />
-									<TextBlock Text="Sleep:"/>
-									<ui:NumberBox 
-										Value="{Binding RandomWaitPerProfile}"
-										SpinButtonPlacementMode="Compact"  />
-								</StackPanel>
-				</controls:Inputter>
-			</StackPanel>
-		</Expander>
-																<Expander Header="Timeouts" Margin="0 6">
-																</Expander>
-															</StackPanel>
-														</DataTemplate>
-													</ContentControl.ContentTemplate>
-												</ContentControl>
-											</StackPanel>
-										</Expander>
-									</StackPanel>
-								</ui:SettingsExpanderItem>
-
-								<ui:SettingsExpander.Footer>
-									<StackPanel
-										Orientation="Horizontal"
-										Spacing="6"
-										HorizontalAlignment="Right">
-										<ui:FAComboBox
-											HorizontalAlignment="Left"
-											SelectedItem="{Binding Browser}"
-											ItemsSource="{Binding BrowserOptions}">
-											<ui:FAComboBox.ItemTemplate>
-												<DataTemplate>
-													<afv:SvgIconControl
-														IconName="{Binding IconName}"
-														Height="20"
-														Width="20"/>
-												</DataTemplate>
-											</ui:FAComboBox.ItemTemplate>
-										</ui:FAComboBox>
-										<Button Content="Save"
-											CommandParameter="Save"
-											IsVisible="{Binding !Running}"
-											Command="{Binding AsyncCfVCommand}" />
-
-										<Button Content="Run"
-											CommandParameter="Run"
-											IsVisible="{Binding !Running}"
-											Command="{Binding AsyncCfVCommand}" />
-
-										<Button Content="Stop"
-											CommandParameter="Stop"
-											IsVisible="{Binding Running}"
-											Command="{Binding CfVCommand}" />
-									</StackPanel>
-								</ui:SettingsExpander.Footer>
+							<ui:SettingsExpander.Footer>
+										<StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="6">
+											<ui:FAComboBox
+												HorizontalAlignment="Left"
+												SelectedItem="{Binding Browser}"
+												ItemsSource="{Binding BrowserOptions}">
+												<ui:FAComboBox.ItemTemplate>
+													<DataTemplate>
+														<afv:SvgIconControl
+															IconName="{Binding IconName}"
+															Height="20"
+															Width="20"/>
+													</DataTemplate>
+												</ui:FAComboBox.ItemTemplate>
+											</ui:FAComboBox>
+											<Button Content="Save"
+												CommandParameter="Save"
+												IsVisible="{Binding !Running}"
+												Command="{Binding AsyncCfVCommand}" />
+											<Button Content="Run"
+												CommandParameter="Run"
+												IsVisible="{Binding !Running}"
+												Command="{Binding AsyncCfVCommand}" />
+											<Button Content="Stop"
+												CommandParameter="Stop"
+												IsVisible="{Binding Running}"
+												Command="{Binding CfVCommand}" />
+										</StackPanel>
+							</ui:SettingsExpander.Footer>
 							</ui:SettingsExpander>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
