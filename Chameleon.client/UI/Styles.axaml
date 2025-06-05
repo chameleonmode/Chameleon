@@ -32,7 +32,7 @@
 	<!--Stack Pannel-->
 	<Style Selector="StackPanel.shared">
 		<Setter Property="Grid.IsSharedSizeScope" Value="True" />
-		<Setter Property="Spacing" Value="12" />
+		<Setter Property="Spacing" Value="9" />
 	</Style>
 
 	<!--TextBlock-->

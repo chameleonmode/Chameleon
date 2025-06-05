@@ -59,27 +59,25 @@
 					Description="comma seperated list of search terms"
 					Watermark="comma seperated list of search terms"
 					Text="{Binding Search}" 
+					Theme="{StaticResource Inputz}"
 				/>
 
 				<controls:Inputter Title="Scope:"
-					Description="scope of the search"
-					Theme="{StaticResource Inputz}">
+					Description="scope of the search">
 					<ComboBox
 						ItemsSource="{Binding AvailableScopes}"
 						SelectedItem="{Binding SelectedScope}" />
 				</controls:Inputter>
 
 				<controls:Inputter Title="Sort:"
-					Description="sort order of the search"
-					Theme="{StaticResource Inputz}">
+					Description="sort order of the search">
 					<ComboBox
 						ItemsSource="{Binding AvailableSorts}"
 						SelectedItem="{Binding SelectedSort, Mode=TwoWay}"/>
 				</controls:Inputter>
 
 				<controls:Inputter Title="Filter:"
-					Description="filter to apply to the search"
-					Theme="{StaticResource Inputz}">
+					Description="filter to apply to the search">
 					<ComboBox
 						ItemsSource="{Binding AvailableFilters}"
 						SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" />
@@ -95,59 +93,6 @@
 								<TextBlock Text="Max:"/>
 								<ui:NumberBox Value="{Binding Max, Mode=TwoWay}"
 									SpinButtonPlacementMode="Compact" />
-							</StackPanel>
-						</DataTemplate>
-
-						<DataTemplate x:Key="TimeoutsEditorTemplate" x:DataType="models:Timeouts">
-							<StackPanel Classes="shared">
-								<controls:Inputter Title="Navigate:"
-									Description="max time to wait for page load"
-									Theme="{StaticResource Inputz}">
-									<ui:NumberBox Value="{Binding Navigate, Mode=TwoWay}"/>
-								</controls:Inputter>
-
-								<controls:Inputter Title="Default:"
-									Description="max time to wait in general"
-									Theme="{StaticResource Inputz}">
-									<ui:NumberBox Value="{Binding Default, Mode=TwoWay}"/>
-								</controls:Inputter>
-
-								<controls:Inputter Title="Wait:"
-									Description="max time to wait for actions to complete"
-									Theme="{StaticResource Inputz}">
-									<ui:NumberBox Value="{Binding Wait, Mode=TwoWay}" />
-								</controls:Inputter>
-
-								<controls:Inputter Title="Sleep:"
-									Description="Timeout between each script iteration on the same profile in seconds"
-									Theme="{StaticResource Inputz}">
-									<ui:NumberBox Value="{ReflectionBinding DataContext.RandomWaitPerProfile, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}, Mode=TwoWay}" />
-								</controls:Inputter>
-
-								<controls:Inputter Title="Naps:"
-									Description="milliseconds between actions to simulate natural user interactions"
-									Theme="{StaticResource Inputz}">
-									<ContentControl Content="{Binding Naps}">
-										<ContentControl.ContentTemplate>
-											<DataTemplate x:DataType="models:Rando">
-												<StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-													<TextBlock Text="Min:"/>
-													<ui:NumberBox
-														Value="{Binding Min, Mode=TwoWay}"
-														SpinButtonPlacementMode="Compact"/>
-													<TextBlock Text="Max:"/>
-													<ui:NumberBox
-														Value="{Binding Max, Mode=TwoWay}"
-														SpinButtonPlacementMode="Compact"/>
-													<TextBlock Text="Multiplier:"/>
-													<ui:NumberBox
-														Value="{Binding Multiplier, Mode=TwoWay, TargetNullValue='0'}"
-														SpinButtonPlacementMode="Compact" />
-												</StackPanel>
-											</DataTemplate>
-										</ContentControl.ContentTemplate>
-									</ContentControl>
-								</controls:Inputter>
 							</StackPanel>
 						</DataTemplate>
 		</ResourceDictionary>
@@ -251,31 +196,36 @@
 																					<controls:Inputter Title="System:"
 																						Description="most helpful for the model consistency"
 																						Watermark="You are helpful..."
-																						Text="{Binding System, Mode=TwoWay}" 
+																						Text="{Binding System, Mode=TwoWay}"
+																						Theme="{StaticResource Inputz}"
 																					/>
 
 																					<controls:Inputter Title="Human:"
 																						Description="Human persona description"
 																						Watermark="...(eg. reddit content creator, reddit user, etc.)"
 																						Text="{Binding Human, Mode=TwoWay}" 
+																						Theme="{StaticResource Inputz}"
 																					/>
 
 																					<controls:Inputter Title="Audience:"
 																						Description="Target audience"
 																						Watermark="...(eg: reddit users who are interested in..., reddit users who are looking for..., etc.)"
 																						Text="{Binding Audience, Mode=TwoWay}" 
+																						Theme="{StaticResource Inputz}"
 																					/>
 
 																					<controls:Inputter Title="Background:"
 																						Description="Background context"
 																						Watermark="...(eg: I am surfing reddit... You... etc.)"
 																						Text="{Binding Background, Mode=TwoWay}" 
+																						Theme="{StaticResource Inputz}"
 																					/>
 
 																					<controls:Inputter Title="Tone:"
 																						Description="Communication tone"
 																						Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
 																						Text="{Binding Tone, Mode=TwoWay}" 
+																						Theme="{StaticResource Inputz}"
 																					/>
 																				</StackPanel>
 																			</DataTemplate>
@@ -292,51 +242,10 @@
 														<DataTemplate x:DataType="vmv:SettingsViewModel">
 															<StackPanel Spacing="6">
 		<Expander Header="Run" IsExpanded="True" Margin="0 6">
-			<StackPanel Classes="shared">									
-				<controls:Inputter Title="URL's:"
-					Description="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)"					
-					Theme="{StaticResource Inputz}">
-					<TextBox
-						AcceptsReturn="True"
-         				TextWrapping="Wrap"
-						Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*"
-						Text="{Binding Start.Url}"/>
-				</controls:Inputter>
-
-				<controls:Inputter Title="Max Attempts:"
-					Description="maximum number of attempts to try untill a successfull iteration"
-					Theme="{StaticResource Inputz}">
-					<ui:NumberBox 
-						Value="{Binding Start.Attempts}"/>
-				</controls:Inputter>
-
-				<controls:Inputter Title="AI Keywords:"
-					Description="Adds AI related keywords when set above 1-1"
-					Theme="{StaticResource Inputz}">					
-					<ContentControl 
-						Content="{Binding Start.Variations}"
-						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
-				</controls:Inputter>
-
-				<controls:Inputter Title="Automations:"
-					Description="Amount of iterations to run per search term. (for example each keyword will result in a search result of multiple posts. This setting allows for control over ho many times an automation such as Join will select a post with a joinable subreddit join/subscribe to it then go back to the search results and repeat the process of finding a joinable subreddit under the same keyword for a min-max amount of times. All other automations run in the same way.)"
-					Theme="{StaticResource Inputz}">					
-					<ContentControl 
-						Content="{Binding Start.Iterations}"
-						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
-				</controls:Inputter>
-
-				<controls:Inputter Title="Randomization:"
-					Description="Predictable hash value to reference min-max activity while performing things such as voting, joining a subreddit set to 0-0 and select only the vote automation to act as a 'search warm up' (to seed the account with random activity of time spent to nudge its TikTok algorithm to link your account to those keywords)."
-					Theme="{StaticResource Inputz}">
-					<ContentControl 
-						Content="{Binding Start.Rando}"
-						ContentTemplate="{StaticResource RandoEditorTemplate}" />
-				</controls:Inputter>
+			<StackPanel Classes="shared">
 
 				<controls:Inputter Title="Switches:"
-					Description="toggle on or off"
-					Theme="{StaticResource Inputz}">
+					Description="toggle on or off">
 					<StackPanel Orientation="Horizontal" Spacing="18">
 						<ToggleSwitch 
 							ToolTip.Tip="to start in a new tab (recommended)"
@@ -349,12 +258,99 @@
 							IsChecked="{Binding ExecuteOneScriptAccrosProfiles}" OffContent="Regular Run" OnContent="Reversed Run"/>
 					</StackPanel>
 				</controls:Inputter>
+													
+				<controls:Inputter Title="URL's:"
+					Description="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)"					>
+					<TextBox
+						AcceptsReturn="True"
+         				TextWrapping="Wrap"
+						Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*"
+						Text="{Binding Start.Url}"/>
+				</controls:Inputter>
+
+				<controls:Inputter Title="Attempts:"
+					Description="each task is retried a number of times before moving to the next task">
+								<StackPanel Orientation="Horizontal" Spacing="6">
+									<TextBlock Text="Max:"
+										ToolTip.Tip="maximum number of attempts to try untill a successfull iteration" />
+									<ui:NumberBox 
+										Value="{Binding Start.Attempts}"
+										SpinButtonPlacementMode="Compact" />
+									<TextBlock Text="Sleep:"
+										ToolTip.Tip="Amount of time to delay after finnishing all attempts and moving to the next task" />
+									<ui:NumberBox 
+										Value="{Binding RandomWaitPerProfile}"
+										SpinButtonPlacementMode="Compact"  />
+								</StackPanel>
+				</controls:Inputter>
+
+				<controls:Inputter Title="AI Keywords:"
+					Description="Adds AI related keywords when set above 1-1">					
+					<ContentControl 
+						Content="{Binding Start.Variations}"
+						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
+				</controls:Inputter>
+
+				<controls:Inputter Title="Automations:"
+					Description="Amount of iterations to run per search term. (for example each keyword will result in a search result of multiple posts. This setting allows for control over ho many times an automation such as Join will select a post with a joinable subreddit join/subscribe to it then go back to the search results and repeat the process of finding a joinable subreddit under the same keyword for a min-max amount of times. All other automations run in the same way.)">					
+					<ContentControl 
+						Content="{Binding Start.Iterations}"
+						ContentTemplate="{StaticResource RandoEditorTemplate}"/>
+				</controls:Inputter>
+
+				<controls:Inputter Title="Randomization:"
+					Description="Predictable hash value to reference min-max activity while performing things such as voting, joining a subreddit set to 0-0 and select only the vote automation to act as a 'search warm up' (to seed the account with random activity of time spent to nudge its TikTok algorithm to link your account to those keywords).">
+					<ContentControl 
+						Content="{Binding Start.Rando}"
+						ContentTemplate="{StaticResource RandoEditorTemplate}" />
+				</controls:Inputter>
+
+				<controls:Inputter Title="Timeouts:">
+					<StackPanel Orientation="Horizontal" Spacing="18">
+						<StackPanel Orientation="Horizontal" Spacing="6">
+							<TextBlock Text="Navigate:"
+								ToolTip.Tip="max time to wait for page load"/>
+							<ui:NumberBox
+								Value="{Binding Timeouts.Navigate}"
+								SpinButtonPlacementMode="Compact"/>
+							<TextBlock Text="Default:"
+								ToolTip.Tip="max time to wait in general"/>
+							<ui:NumberBox
+								Value="{Binding Timeouts.Default}"
+								SpinButtonPlacementMode="Compact"/>
+							<TextBlock Text="Wait:"
+								ToolTip.Tip="max time to wait for actions to complete"/>
+							<ui:NumberBox
+								Value="{Binding Timeouts.Wait}"
+								SpinButtonPlacementMode="Compact"/>
+						</StackPanel>
+					</StackPanel>
+				</controls:Inputter>
+
+				<controls:Inputter Title="Naps:"
+					Description="milliseconds between actions to simulate natural user interactions">
+								<StackPanel Orientation="Horizontal" Spacing="6">
+									<TextBlock Text="Min:"/>
+									<ui:NumberBox
+										Value="{Binding Timeouts.Naps.Min}"
+										SpinButtonPlacementMode="Compact"/>
+									<TextBlock Text="Max:"/>
+									<ui:NumberBox
+										Value="{Binding Timeouts.Naps.Max}"
+										SpinButtonPlacementMode="Compact"/>
+									<TextBlock Text="Multiplier:"/>
+									<ui:NumberBox
+										Value="{Binding Timeouts.Naps.Multiplier, TargetNullValue='0'}"
+										SpinButtonPlacementMode="Compact" />
+									<TextBlock Text="Sleep:"/>
+									<ui:NumberBox 
+										Value="{Binding RandomWaitPerProfile}"
+										SpinButtonPlacementMode="Compact"  />
+								</StackPanel>
+				</controls:Inputter>
 			</StackPanel>
 		</Expander>
 																<Expander Header="Timeouts" Margin="0 6">
-																	<ContentControl
-																		Content="{Binding Timeouts}"
-																		ContentTemplate="{StaticResource TimeoutsEditorTemplate}"/>
 																</Expander>
 															</StackPanel>
 														</DataTemplate>

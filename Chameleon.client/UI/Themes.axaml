@@ -78,7 +78,7 @@
 		</Style>
 	</ControlTheme>
 
-	<ControlTheme x:Key="{x:Type local:Inputter}" TargetType="local:Inputter">
+	<ControlTheme x:Key="Inputz" TargetType="local:Inputter">
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Grid>
@@ -107,7 +107,8 @@
 		</Setter>
 	</ControlTheme>
 
-	<ControlTheme x:Key="Inputz" TargetType="local:Inputter">
+	<ControlTheme x:Key="{x:Type local:Inputter}" TargetType="local:Inputter">
+	<Setter Property="Margin" Value="8 0 0 0"/>
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Grid>
@@ -126,7 +127,7 @@
 						Name="ContentsPresenter"
 						Content="{TemplateBinding Content}" 
 						Grid.Column="1"
-						Margin="8 0 0 0"
+						Margin="{TemplateBinding Margin}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Stretch"
 					/>
