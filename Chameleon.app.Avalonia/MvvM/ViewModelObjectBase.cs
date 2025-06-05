@@ -1,8 +1,11 @@
 ﻿using Chameleon.lib.Helpers;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.lib.CommunityToolkit.MvvM;
 public partial class ViewModelObjectBase : ObservableObjectBase {
+
+	[ObservableProperty] bool showHeaderRegion = true;
 	public bool Navigated { get; set; }
 
 	public ViewModelObjectBase() {
