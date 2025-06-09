@@ -21,13 +21,41 @@ using System.Reactive.Subjects;
 using static Chameleon.lib.Common.Constants.Enums;
 using Chameleon.client.Features.Projects.Folders;
 using DynamicData.Binding;
-using Chameleon.client.Features.Projects.Profiles.ViewModels;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
 public record SystemBrovserItem(SystemBrowserType SystemBrowserType) {
 	public string IconName => SystemBrowserType.ToString().ToLower();
+}
+
+public partial class UPFolderViewModel : ObservableObjectBase {
+	public UPFolderViewModel(UPFolderDto folder) {
+		Id = folder.id;
+		Title = folder.title;
+		Tags = folder.Tags;
+		IsFavorite = folder.isFavorite;
+		ProfilesCount = folder.profilesCount;
+		CreatorUserId = folder.creatorUserId;
+	}
+
+	[ObservableProperty] int id;
+	[ObservableProperty] string? title;
+	[ObservableProperty] bool isFavorite;
+	[ObservableProperty] int profilesCount;
+	[ObservableProperty] long? creatorUserId;
+	[ObservableProperty] string? tags;
+
+	public UPFolderDto ToDto() {
+		return new UPFolderDto() {
+			id = Id,
+			title = Title,
+			Tags = Tags,
+			isFavorite = IsFavorite,
+			profilesCount = ProfilesCount,
+			creatorUserId = CreatorUserId
+		};
+	}
 }
 
 public partial class ProfilesViewModel : Projector {
@@ -58,7 +86,7 @@ public partial class ProfilesViewModel : Projector {
 	];
 	public ChangeComparereOption[] Sorts { get; } = (ChangeComparereOption[])Enum.GetValues(typeof(ChangeComparereOption));
 
-  public bool HasFolder => Folder != null && Folder.Id != 0;
+	public bool HasFolder => Folder != null && Folder.Id != 0;
 	public bool HasNoItems => Profiles.Count == 0;
 	public string SelectedFolderTitle => Folder?.Title ?? "x_x";
 	public int SelectedCount => GetSelectedProfiles?.Count() ?? 0;
@@ -72,7 +100,7 @@ public partial class ProfilesViewModel : Projector {
 	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.Id);
 
 	public ProfilesViewModel() {
-		filter = new BehaviorSubject<Func<ObsProfile, bool>>(p =>Folder == null || Folder.Id == 0 || p.Dto.folderId == Folder.Id);
+		filter = new BehaviorSubject<Func<ObsProfile, bool>>(p => Folder == null || Folder.Id == 0 || p.Dto.folderId == Folder.Id);
 		_ = UserProfilesRepo.Connect()
 		.Transform(i => new ObsProfile(i,
 			onSelectedChanged: p => {
@@ -108,8 +136,8 @@ public partial class ProfilesViewModel : Projector {
 
 		AsyncCommandMap["SaveTags"] = () => TagsRepo.Instance.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
 		AsyncCommandMap["chrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);
-		AsyncCommandMap["brave"] =  () => OpenSystemBrowser(SystemBrowserType.Brave);
-		AsyncCommandMap["firefox"] = () =>  OpenSystemBrowser(SystemBrowserType.Firefox);
+		AsyncCommandMap["brave"] = () => OpenSystemBrowser(SystemBrowserType.Brave);
+		AsyncCommandMap["firefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
 		AsyncCommandMap["hwinds"] = () => {
 			GetSelectedProfiles?.ForEach(profile => {
 				profile.OpenTopmostController();
@@ -261,7 +289,7 @@ public partial class ProfilesViewModel : Projector {
 
 		SelectedBrowserItem =
 		Enum.TryParse<SystemBrowserType>(IoC.GetValue<string>("LastSelectedBrowser"), out var browserEnum)
-		? BrowserItems.FirstOrDefault(b => b.SystemBrowserType == browserEnum) ?? BrowserItems[0] 
+		? BrowserItems.FirstOrDefault(b => b.SystemBrowserType == browserEnum) ?? BrowserItems[0]
 		: BrowserItems[0];
 
 		SelectedPlaywrightScript = PlaywrightScripts
@@ -364,6 +392,11 @@ public partial class ProfilesViewModel : Projector {
 		cts?.Cancel();
 		cts?.Dispose();
 		cts = null;
+	}
+
+	[RelayCommand]
+	void UnselectItems() {
+		CommandMap["UnselectItems"]();
 	}
 
 	public static ProfilesViewModel Instance { get; } = new ProfilesViewModel();
