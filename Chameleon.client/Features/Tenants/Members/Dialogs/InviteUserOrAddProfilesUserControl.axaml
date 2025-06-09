@@ -3,12 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="450"
-			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:local="using:Chameleon.client.Features.Tenants.Members.Dialogs"
+						 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
+						 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+						 xmlns:local="using:Chameleon.client.Features.Tenants.Members.Dialogs"
              x:Class="Chameleon.client.Features.Tenants.Members.Dialogs.InviteUserOrAddProfilesUserControl"
-			 x:DataType="local:InviteUserOrAddProfilesViewModel"
-			 x:CompileBindings="True">
+						 x:DataType="local:InviteUserOrAddProfilesViewModel"
+						 x:CompileBindings="True">
 	<dialogs:ChameleonDialogControl>
 		<dialogs:ChameleonDialogControl.DialogInputs>
 			<dialogs:DialogInputHost TextLabel="Username:"
@@ -26,7 +26,7 @@
 						<ItemsControl
 								ItemsSource="{Binding SelectedFolders}"
 								ItemTemplate="{StaticResource ObsSelectedTemplate}"
-								ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}"/>
+								ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}" />
 						<ListBox Name="lbFolders" />
 					</StackPanel>
 				</Expander>

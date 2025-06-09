@@ -6,7 +6,6 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Rendering.Composition;
 using Avalonia.Styling;
-
 using Chameleon.Av.Fluent.Common.Controls;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
@@ -15,7 +14,7 @@ using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
 
-namespace Chameleon.Av.Fluent.Common.Pages;
+namespace Chameleon.client.UI.Pages;
 
 public class ChameleonPageBase : AutoViewModelLocatorControl {
 	private bool _isSmallWidth2;

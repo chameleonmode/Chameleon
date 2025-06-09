@@ -5,7 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
-			 xmlns:userControls="using:Chameleon.client.UI.UserControls"
+			 xmlns:userControls="using:Chameleon.client.UI.Components"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
 			 xmlns:m="using:Chameleon.client.Features.Projects.Search"
 			 xmlns:searchFolder="using:Chameleon.client.Features.Projects.Search"

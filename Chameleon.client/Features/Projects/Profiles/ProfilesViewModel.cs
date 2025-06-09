@@ -1,33 +1,30 @@
 ﻿using Avalonia.Collections;
+
+using DynamicData;
+using DynamicData.Binding;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+using System.Collections.ObjectModel;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+
 using Chameleon.lib.Util;
-using Chameleon.client.UI.UserControls.ViewModels;
 using Chameleon.lib;
+using Chameleon.lib.WebBrowser;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.CommunityToolkit.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
-
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-
-using DynamicData;
-
-using System.Collections.ObjectModel;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-
-using static Chameleon.lib.Common.Constants.Enums;
+using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.client.Features.Projects.Folders;
-using DynamicData.Binding;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.client.Features.Projects.Profiles;
-
-public record SystemBrovserItem(SystemBrowserType SystemBrowserType) {
-	public string IconName => SystemBrowserType.ToString().ToLower();
-}
 
 public partial class UPFolderViewModel : ObservableObjectBase {
 	public UPFolderViewModel(UPFolderDto folder) {
@@ -69,7 +66,7 @@ public partial class ProfilesViewModel : Projector {
 
 	[ObservableProperty] Arguments selectedPlaywrightScript;
 	[ObservableProperty] PaginatorViewModel paginatorViewModel;
-	[ObservableProperty] SystemBrovserItem selectedBrowserItem;
+	[ObservableProperty] BrowserOption selectedBrowserItem;
 	[ObservableProperty] int totalCount;
 	[ObservableProperty] bool isVisibleRunButton = true;
 	[ObservableProperty] bool isVisibleStopButton;
@@ -80,9 +77,9 @@ public partial class ProfilesViewModel : Projector {
 	[ObservableProperty] ChangeComparereOption sortSelected = ChangeComparereOption.Ascending;
 
 	public AvaloniaList<Arguments> PlaywrightScripts { get; } = [];
-	public ObservableCollection<SystemBrovserItem> BrowserItems { get; } = [
-		new SystemBrovserItem(SystemBrowserType.Chrome),
-		new SystemBrovserItem(SystemBrowserType.Brave),
+	public ObservableCollection<BrowserOption> BrowserItems { get; } = [
+		new BrowserOption(SystemBrowserType.Chrome),
+		new BrowserOption(SystemBrowserType.Brave),
 	];
 	public ChangeComparereOption[] Sorts { get; } = (ChangeComparereOption[])Enum.GetValues(typeof(ChangeComparereOption));
 
@@ -183,7 +180,7 @@ public partial class ProfilesViewModel : Projector {
 							}
 						}
 
-						var browser = await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(cts.Token);
+						var browser = await profile.OpenSystemBrowser(SelectedBrowserItem.Option).WaitAsync(cts.Token);
 						ArgumentNullException.ThrowIfNull(browser, nameof(browser));
 
 						SelectedPlaywrightScript.Port = browser.Settings.Port;
@@ -277,7 +274,6 @@ public partial class ProfilesViewModel : Projector {
 
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
-		Profiles.ForEach(p => p.IsActionOptionsVisible = p.IsShowCheckboxColumn = true);
 		PaginatorViewModel.UpdatePageCount(9);
 
 		PlaywrightScripts.Clear();
@@ -289,7 +285,7 @@ public partial class ProfilesViewModel : Projector {
 
 		SelectedBrowserItem =
 		Enum.TryParse<SystemBrowserType>(IoC.GetValue<string>("LastSelectedBrowser"), out var browserEnum)
-		? BrowserItems.FirstOrDefault(b => b.SystemBrowserType == browserEnum) ?? BrowserItems[0]
+		? BrowserItems.FirstOrDefault(b => b.Option == browserEnum) ?? BrowserItems[0]
 		: BrowserItems[0];
 
 		SelectedPlaywrightScript = PlaywrightScripts
@@ -302,10 +298,10 @@ public partial class ProfilesViewModel : Projector {
 			_ => AscendingComparer
 		});
 	}
-	partial void OnSelectedBrowserItemChanged(SystemBrovserItem value) {
+	partial void OnSelectedBrowserItemChanged(BrowserOption value) {
 		var cur = IoC.GetValue<string>("LastSelectedBrowser");
-		if (cur != value.SystemBrowserType.ToString())
-			IoC.SetValue(value.SystemBrowserType.ToString(), "LastSelectedBrowser");
+		if (cur != value.Option.ToString())
+			IoC.SetValue(value.Option.ToString(), "LastSelectedBrowser");
 	}
 	partial void OnSelectedPlaywrightScriptChanged(Arguments value) {
 		var cur = IoC.GetValue<string>("LastRunScriptId");

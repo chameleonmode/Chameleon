@@ -3,14 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="850"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:paginator="using:Chameleon.app.Avalonia.Views"
-             xmlns:controls="using:Chameleon.app.Avalonia.Controls"
-			 xmlns:local="using:Chameleon.client.Features.Tenants.Members"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
+						 xmlns:local="using:Chameleon.client.Features.Tenants.Members"
              x:Class="Chameleon.client.Features.Tenants.Members.TenantMembersView"
-			 x:DataType="local:TenantMembersViewModel"
-			 x:CompileBindings="True">
+						 x:DataType="local:TenantMembersViewModel"
+						 x:CompileBindings="True">
 	<UserControl.Styles>
 		<Style Selector="ListBox.no-scroll">
 			<Setter Property="Theme" Value="{StaticResource ListBoxNoScroller}" />

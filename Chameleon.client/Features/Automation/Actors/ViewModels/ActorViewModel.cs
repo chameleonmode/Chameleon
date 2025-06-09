@@ -39,9 +39,6 @@ public partial class Tag(TagDto dto, bool isSelected) : ObservableObject {
 }
 public record Selection(Script Script, bool Selected = false);
 public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<int> SelectedProfileIds);
-public record BrowserOption(SystemBrowserType Option) {
-	public string IconName { get; } = Option.ToString().ToLower();
-}
 
 public partial class ActorViewModel : ViewModelObjectBase {
 	readonly CompositeDisposable subscriptions = [];
@@ -52,11 +49,11 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	[ObservableProperty] AIR.Actors.Models.AI aiSettings;
 	[ObservableProperty] ArgsViewModel editableArgs;
 	[ObservableProperty] SettingsViewModel editableSettings;
-	[ObservableProperty] BrowserOption browser;
+	[ObservableProperty] lib.WebBrowser.BrowserOption browser;
 
 	public IActor Actor { get; }
 	public List<Selection> Selections { get; }
-	public IEnumerable<BrowserOption> BrowserOptions { get; } = [
+	public IEnumerable<lib.WebBrowser.BrowserOption> BrowserOptions { get; } = [
 		new (SystemBrowserType.Chrome),
 		new (SystemBrowserType.Brave),
 	];

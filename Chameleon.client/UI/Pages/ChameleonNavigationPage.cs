@@ -4,7 +4,6 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
-
 using Chameleon.Av.Fluent.Common.Controls;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.Util;
@@ -14,7 +13,7 @@ using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
 
-namespace Chameleon.Av.Fluent.Common.Pages;
+namespace Chameleon.client.UI.Pages;
 
 public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 	private Visual? _animationPageParent;

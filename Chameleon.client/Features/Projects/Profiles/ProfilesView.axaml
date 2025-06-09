@@ -3,14 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:uc="using:Chameleon.client.UI.UserControls"
-			 xmlns:converter="using:Chameleon.Common.ValueConverters"
-			 xmlns:local="using:Chameleon.client.Features.Projects.Profiles"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
+						 xmlns:afvc="using:Chameleon.Av.Fluent.Common.Controls"
+						 xmlns:uc="using:Chameleon.client.UI.Components"
+						 xmlns:local="using:Chameleon.client.Features.Projects.Profiles"
              x:Class="Chameleon.client.Features.Projects.Profiles.ProfilesView"
-			 x:DataType="local:ProfilesViewModel"
-			 x:CompileBindings="True">
+						 x:DataType="local:ProfilesViewModel"
+						 x:CompileBindings="True">
 	<UserControl.Styles>
 		<Style Selector="ui|SymbolIcon.spinner">
 			<Style.Animations>
@@ -137,8 +137,8 @@
 						Command="{Binding AsyncCfVCommand}"
 						CommandParameter="AddProfilesToFolder" />
 				</StackPanel>
-				<afv:HeaderdInputFieldsControl Title="Tags:" Text="{Binding Folder.Tags, FallbackValue=reddit-account}">
-					<afv:HeaderdInputFieldsControl.Buttons>
+				<afvc:HeaderdInputFieldsControl Title="Tags:" Text="{Binding Folder.Tags, FallbackValue=reddit-account}">
+					<afvc:HeaderdInputFieldsControl.Buttons>
 						<Button
 							Content="Save"
 							ToolTip.Tip="Save"
@@ -146,8 +146,8 @@
 							Command="{Binding AsyncCfVCommand}"
 							Classes="accent"
 							Theme="{DynamicResource AccentSymbleIconButton}" />
-					</afv:HeaderdInputFieldsControl.Buttons>
-				</afv:HeaderdInputFieldsControl>
+					</afvc:HeaderdInputFieldsControl.Buttons>
+				</afvc:HeaderdInputFieldsControl>
 				<ui:FAComboBox
 					Width="200"
 					IsEditable="False"
@@ -188,13 +188,8 @@
 						ItemsSource="{Binding BrowserItems}">
 						<ui:FAComboBox.ItemTemplate>
 							<DataTemplate>
-								<StackPanel
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center">
-									<afv:SvgIconControl
-										IconName="{Binding IconName}"
-										Height="20"
-										Width="20"/>
+								<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+									<afvc:SvgIconControl IconName="{Binding IconName}" Height="20" Width="20"/>
 								</StackPanel>
 							</DataTemplate>
 						</ui:FAComboBox.ItemTemplate>
@@ -281,10 +276,7 @@
 							<Binding Path="!IsProfilesExist"/>
 						</MultiBinding>
 					</Panel.IsVisible>
-					<afv:SvgIconControl
-								  IconName="not-profiles"
-								  Width="128"
-								  Margin="0 0 0 178" />
+					<afvc:SvgIconControl IconName="not-profiles" Width="128" Margin="0 0 0 178" />
 				</Panel>
 			</Panel>
 		</afv:ChameleonContentControl.Content>

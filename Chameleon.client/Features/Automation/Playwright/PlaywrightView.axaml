@@ -4,8 +4,9 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1280"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
-	xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+	xmlns:ui="using:FluentAvalonia.UI.Controls"
+	xmlns:afv="using:Chameleon.client.UI.Controls"
+	xmlns:afvc="using:Chameleon.Av.Fluent.Common.Controls"
 	xmlns:vm="using:Chameleon.client.Features.Automation.Playwright"
 	x:Class="Chameleon.client.Features.Automation.Playwright.PlaywrightView"
 	x:DataType="vm:PlaywrightViewModel"
@@ -42,7 +43,7 @@
 							<ListBox.ItemTemplate>
 								<DataTemplate>
 									<StackPanel Spacing="6" Margin="6">
-										<afv:HeaderdInputFieldsControl 
+										<afvc:HeaderdInputFieldsControl 
 											Title="{Binding Key}"
 											Text="{Binding Value}" />
 									</StackPanel>

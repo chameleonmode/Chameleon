@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:vm="using:Chameleon.client.UI.UserControls.ViewModels"
-             x:Class="Chameleon.client.UI.UserControls.PaginatorView"
+			 xmlns:vm="using:Chameleon.client.UI.Components.ViewModels"
+             x:Class="Chameleon.client.UI.Components.PaginatorView"
 			 x:DataType="vm:PaginatorViewModel"
 			 x:CompileBindings="False">
 

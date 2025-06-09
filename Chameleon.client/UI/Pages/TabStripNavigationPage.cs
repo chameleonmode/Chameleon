@@ -5,9 +5,7 @@ using Avalonia.Controls.Primitives;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 
-using Chameleon.Av.Fluent.Common.Pages;
-
-namespace Chameleon.client.UI.Fluent.Pages;
+namespace Chameleon.client.UI.Pages;
 
 public abstract class TabStripNavigationPage : ChameleonNavigationPage {
 	public abstract TabStrip Strip { get; }

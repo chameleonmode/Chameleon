@@ -3,15 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="1480"
-			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:interfaces="using:Chameleon.Interfaces.Proxies"
-			 xmlns:uc="using:Chameleon.client.UI.UserControls"
-			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:vm="using:Chameleon.client.Features.Settings.Featured"
-			 x:DataType="vm:UserProxySettingsViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.Settings.Featured.UserProxySettingsView">
+						 xmlns:ui="using:FluentAvalonia.UI.Controls"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
+						 xmlns:uc="using:Chameleon.client.UI.Components"
+						 xmlns:afvc="using:Chameleon.Av.Fluent.Common.Controls"
+						 xmlns:vm="using:Chameleon.client.Features.Settings.Featured"
+             x:Class="Chameleon.client.Features.Settings.Featured.UserProxySettingsView"
+						 x:DataType="vm:UserProxySettingsViewModel"
+						 x:CompileBindings="True">
 	<Grid RowDefinitions="*,Auto">
 				<afv:ChameleonContentControl Title="Proxies list"
 											 TitleDescription="Select proxies to edit them">
@@ -109,9 +108,9 @@
 
 													<Grid Grid.Column="2"
 														  Margin="12 0">
-														<afv:HeaderdInputFieldsControl Title="{Binding ObsProfile.Title}"
+														<afvc:HeaderdInputFieldsControl Title="{Binding ObsProfile.Title}"
 																							 Header="False">
-															<afv:HeaderdInputFieldsControl.TextBoxes>
+															<afvc:HeaderdInputFieldsControl.TextBoxes>
 																<TextBox Text="{Binding Path=Host}"
 																		 IsReadOnly="True" />
 																<TextBox Text="{Binding Path=Port}"
@@ -120,8 +119,8 @@
 																		 IsReadOnly="True" />
 																<TextBox Text="{Binding Path=Password}"
 																		 IsReadOnly="True" />
-															</afv:HeaderdInputFieldsControl.TextBoxes>
-														</afv:HeaderdInputFieldsControl>
+															</afvc:HeaderdInputFieldsControl.TextBoxes>
+														</afvc:HeaderdInputFieldsControl>
 													</Grid>
 												</Grid>
 										</DataTemplate>
@@ -194,16 +193,16 @@
 											</ItemsControl.ItemsPanel>
 											<ItemsControl.ItemTemplate>
 												<DataTemplate>
-													<afv:HeaderdInputFieldsControl Title="{Binding ObsProfile.Title}"
+													<afvc:HeaderdInputFieldsControl Title="{Binding ObsProfile.Title}"
 																				   IsVisible="{Binding ObsProfile.IsSelected}"
 																				   Header="False">
-														<afv:HeaderdInputFieldsControl.TextBoxes>
+														<afvc:HeaderdInputFieldsControl.TextBoxes>
 															<TextBox Text="{Binding Path=Host}" />
 															<TextBox Text="{Binding Path=Port}"/>
 															<TextBox Text="{Binding Path=UserName}"/>
 															<TextBox Text="{Binding Path=Password}" />
-														</afv:HeaderdInputFieldsControl.TextBoxes>
-													</afv:HeaderdInputFieldsControl>
+														</afvc:HeaderdInputFieldsControl.TextBoxes>
+													</afvc:HeaderdInputFieldsControl>
 												</DataTemplate>
 											</ItemsControl.ItemTemplate>
 										</ItemsControl>

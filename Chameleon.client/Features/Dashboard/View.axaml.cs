@@ -1,4 +1,4 @@
-using Chameleon.Av.Fluent.Common.Pages;
+using Chameleon.client.UI.Pages;
 
 namespace Chameleon.client.Features.Dashboard;
 [lib.Common.Attributes.ViewModel(typeof(ViewModel))]

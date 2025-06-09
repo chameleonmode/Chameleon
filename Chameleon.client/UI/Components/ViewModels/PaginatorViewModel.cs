@@ -3,7 +3,7 @@ using Chameleon.lib.CommunityToolkit.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Chameleon.client.UI.UserControls.ViewModels;
+namespace Chameleon.client.UI.Components.ViewModels;
 
 public class PaginatorButtonViewModel(int index, bool isEllipsis = false) {
 	public int Index { get; } = index;

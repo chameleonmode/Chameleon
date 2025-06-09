@@ -2,7 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using FluentAvalonia.UI.Windowing;
 
-namespace Chameleon.client.UI.UserControls;
+namespace Chameleon.client.UI.Components;
 
 public partial class SplashScreen : UserControl, IApplicationSplashScreen {
     public SplashScreen() {

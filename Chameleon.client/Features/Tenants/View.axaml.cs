@@ -1,6 +1,6 @@
 using Avalonia.Controls.Primitives;
 using Chameleon.client.Features.Tenants.Members;
-using Chameleon.client.UI.Fluent.Pages;
+using Chameleon.client.UI.Pages;
 using FluentAvalonia.UI.Controls;
 
 namespace Chameleon.client.Features.Tenants;

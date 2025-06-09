@@ -2,7 +2,7 @@
 
 using chameleon.assets;
 
-using Chameleon.client.UI.UserControls;
+using Chameleon.client.UI.Components;
 
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Common.Interfaces.Services;

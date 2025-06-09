@@ -14,18 +14,18 @@
 
 	<StyleInclude Source="Fluent/Styles.axaml" />
 
-	<Style Selector="ListBox.uniColumn">
+	<Style Selector="ListBox.uni">
 		<Setter Property="ItemsPanel" Value="{DynamicResource SingleColumnUniformGridTemplate}" />
 		<Setter Property="Theme" Value="{DynamicResource ListBoxNoScroller}" />
 		<Setter Property="ItemContainerTheme" Value="{DynamicResource GridViewItem}" />
 	</Style>
-	<Style Selector="ListBox#lbFolders" x:DataType="folders:Projector">
+	<Style Selector="ListBox#lbFolders">
 		<Setter Property="Theme" Value="{StaticResource ListBoxNoScroller}" />
 		<Setter Property="ItemContainerTheme" Value="{StaticResource GridViewItem}" />
 		<Setter Property="ItemsPanel" Value="{StaticResource DoubleColumnUniformGridTemplate}" />
 		<Setter Property="ItemTemplate" Value="{StaticResource UserFolderUserControlDataTemplate}" />
-		<Setter Property="IsVisible" Value="{Binding !HasNoFolderItems}" />
-		<Setter Property="ItemsSource" Value="{Binding Folders}" />
+		<Setter Property="IsVisible" Value="{ReflectionBinding !HasNoFolderItems}" />
+		<Setter Property="ItemsSource" Value="{ReflectionBinding Folders}" />
 		<Setter Property="VerticalAlignment" Value="Top" />
 	</Style>
 

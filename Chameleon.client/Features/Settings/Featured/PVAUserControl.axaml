@@ -3,13 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="520" d:DesignHeight="520"
-			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+						 xmlns:ui="using:FluentAvalonia.UI.Controls"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
+						 xmlns:afvc="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:vm="using:Chameleon.client.Features.Settings.Featured"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 x:DataType="vm:PVApiModel"
-			 xmlns:local="using:Chameleon.Avalonia.Controls.Settings.Functional"
-			 x:CompileBindings="False"
-             x:Class="Chameleon.client.Features.Settings.Featured.PVAUserControl">
+             x:Class="Chameleon.client.Features.Settings.Featured.PVAUserControl"
+			 			 x:DataType="vm:PVApiModel"
+			 			 x:CompileBindings="False">
 	<UserControl.Resources>
 		<ControlTheme x:Key="ThesePVApisCP"
 			TargetType="HeaderedContentControl">
@@ -122,7 +122,7 @@
 		</afv:ChameleonContentControl.TitleContent>
 
 		<afv:ChameleonContentControl.Header>
-			<afv:HeaderdInputFieldsControl
+			<afvc:HeaderdInputFieldsControl
 				Margin="0 8 0 0"
 				Width="490"
 				HorizontalAlignment="Left"
@@ -134,13 +134,13 @@
 		<afv:ChameleonContentControl.Content>
 			<StackPanel Spacing="8"
 						HorizontalAlignment="Left">
-				<afv:HeaderdInputFieldsControl
+				<afvc:HeaderdInputFieldsControl
 					Width="480"
 					HorizontalAlignment="Left"
 					Title="Phone Number"
 					Text="{Binding GetNumberData}"
 					Tag="copy">
-					<afv:HeaderdInputFieldsControl.Buttons>
+					<afvc:HeaderdInputFieldsControl.Buttons>
 						<Button
 							Content="Phone"
 							ToolTip.Tip="Get Number"
@@ -148,15 +148,15 @@
 							Command="{Binding AsyncCfVCommand}"
 							Classes="accent"
 							Theme="{DynamicResource AccentSymbleIconButton}" />
-					</afv:HeaderdInputFieldsControl.Buttons>
-				</afv:HeaderdInputFieldsControl>
-				<afv:HeaderdInputFieldsControl
+					</afvc:HeaderdInputFieldsControl.Buttons>
+				</afvc:HeaderdInputFieldsControl>
+				<afvc:HeaderdInputFieldsControl
 					Width="480"
 					HorizontalAlignment="Left"
 					Title="Code"
 					Text="{Binding ReceiveSMSData}"
 					Tag="copy">
-					<afv:HeaderdInputFieldsControl.Buttons>
+					<afvc:HeaderdInputFieldsControl.Buttons>
 						<Button
 							IsEnabled="{Binding GetNumberData, Converter={x:Static ObjectConverters.IsNotNull}}"
 							Content="Message"
@@ -165,8 +165,8 @@
 							Command="{Binding AsyncCfVCommand}"
 							Classes="accent"
 							Theme="{DynamicResource AccentSymbleIconButton}" />
-					</afv:HeaderdInputFieldsControl.Buttons>
-				</afv:HeaderdInputFieldsControl>
+					</afvc:HeaderdInputFieldsControl.Buttons>
+				</afvc:HeaderdInputFieldsControl>
 
 				<Panel Margin="0 0 0 0">
 					<TextBlock

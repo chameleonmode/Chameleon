@@ -4,9 +4,8 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="1680"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:afvc="using:Chameleon.app.Avalonia.Fluent.Controls"
-			 xmlns:controls="using:Chameleon.client.UI.Controls"
+			 xmlns:afv="using:Chameleon.client.UI.Controls"
+			 xmlns:afvc="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
 			 xmlns:vm="using:Chameleon.client.Features.Automation.Actors"
 			 xmlns:vmv="using:Chameleon.client.Features.Automation.Actors.ViewModels"
@@ -52,11 +51,9 @@
 	</UserControl.Styles>
 
 	<Grid RowDefinitions="Auto, *">
-		<afv:ChameleonContentControl Title="Agents"
-									 TitleDescription="Robotic Automation Agents">
+		<afv:ChameleonContentControl Title="Agents" TitleDescription="Robotic Automation Agents">
 			<afv:ChameleonContentControl.Content>
-				<ListBox ItemsSource="{Binding Actors}"
-						 Classes="uniColumn">
+				<ListBox ItemsSource="{Binding Actors}" Classes="uni">
 					<ListBox.ItemTemplate>
 						<DataTemplate x:DataType="vm:ActorViewModel">
 							<ui:SettingsExpander IsExpanded="True">
@@ -166,26 +163,26 @@
 											<afv:ChameleonContentControl.Content>
 												<StackPanel Margin="0 8 0 0">
 													<StackPanel Classes="shared" Margin="6 0 6 6">
-														<controls:Inputter Title="Search:"
+														<afv:Inputter Title="Search:"
 																		   Description="comma seperated list of search terms"
 																		   Watermark="comma seperated list of search terms"
 																		   Text="{Binding EditableArgs.Search}"
 																		   Theme="{StaticResource Inputz}"/>
-														<controls:Inputter Title="Scope:"
+														<afv:Inputter Title="Scope:"
 																		   Description="scope of the search">
 															<ComboBox ItemsSource="{Binding EditableArgs.AvailableScopes}"
 																	  SelectedItem="{Binding EditableArgs.SelectedScope}"/>
-														</controls:Inputter>
-														<controls:Inputter Title="Sort:"
+														</afv:Inputter>
+														<afv:Inputter Title="Sort:"
 																		   Description="sort order of the search">
 															<ComboBox ItemsSource="{Binding EditableArgs.AvailableSorts}"
 																	  SelectedItem="{Binding EditableArgs.SelectedSort, Mode=TwoWay}"/>
-														</controls:Inputter>
-														<controls:Inputter Title="Filter:"
+														</afv:Inputter>
+														<afv:Inputter Title="Filter:"
 																		   Description="filter to apply to the search">
 															<ComboBox ItemsSource="{Binding EditableArgs.AvailableFilters}"
 																	  SelectedItem="{Binding EditableArgs.SelectedFilter, Mode=TwoWay}"/>
-														</controls:Inputter>
+														</afv:Inputter>
 													</StackPanel>
 
 													<ContentControl Content="{Binding AiSettings}">
@@ -203,27 +200,27 @@
 																								   Margin="0 0 0 8">
 																							<Run Text="prompt decorations helps keep the model 'on brand'"/>
 																						</TextBlock>
-																						<controls:Inputter Title="System:"
+																						<afv:Inputter Title="System:"
 																										   Description="most helpful for the model consistency"
 																										   Watermark="You are helpful..."
 																										   Text="{Binding System, Mode=TwoWay}"
 																										   Theme="{StaticResource Inputz}"/>
-																						<controls:Inputter Title="Human:"
+																						<afv:Inputter Title="Human:"
 																										   Description="Human persona description"
 																										   Watermark="...(eg. reddit content creator, reddit user, etc.)"
 																										   Text="{Binding Human, Mode=TwoWay}"
 																										   Theme="{StaticResource Inputz}"/>
-																						<controls:Inputter Title="Audience:"
+																						<afv:Inputter Title="Audience:"
 																										   Description="Target audience"
 																										   Watermark="...(eg: reddit users who are interested in..., reddit users who are looking for..., etc.)"
 																										   Text="{Binding Audience, Mode=TwoWay}"
 																										   Theme="{StaticResource Inputz}"/>
-																						<controls:Inputter Title="Background:"
+																						<afv:Inputter Title="Background:"
 																										   Description="Background context"
 																										   Watermark="...(eg: I am surfing reddit... You... etc.)"
 																										   Text="{Binding Background, Mode=TwoWay}"
 																										   Theme="{StaticResource Inputz}"/>
-																						<controls:Inputter Title="Tone:"
+																						<afv:Inputter Title="Tone:"
 																										   Description="Communication tone"
 																										   Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
 																										   Text="{Binding Tone, Mode=TwoWay}"
@@ -243,88 +240,88 @@
 															<DataTemplate x:DataType="vmv:SettingsViewModel">
 																<Expander Header="Run" IsExpanded="True" Margin="0 6">
 																	<StackPanel Classes="shared">
-																		<controls:Inputter Title="URL's:"
+																		<afv:Inputter Title="URL's:"
 																						   Description="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)">
 																			<TextBox AcceptsReturn="True"
 																					 TextWrapping="Wrap"
 																					 Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*"
 																					 Text="{Binding Start.Url}"/>
-																		</controls:Inputter>
+																		</afv:Inputter>
 
-																		<controls:Inputter Title="Auto:" 
+																		<afv:Inputter Title="Auto:" 
 																						   Description="Controls for the robotomation behavior and keyword generation">
 																			<UniformGrid Columns="4" Rows="1">
-																				<controls:Inputter Title="Keywords:"
+																				<afv:Inputter Title="Keywords:"
 																								   Description="Adds AI related keywords based on search terms">
 																					<ui:NumberBox Value="{Binding Start.Variations.Min}"
 																								  SpinButtonPlacementMode="Compact"/>
-																				</controls:Inputter>
+																				</afv:Inputter>
 
-																				<controls:Inputter Title="Runs:"
+																				<afv:Inputter Title="Runs:"
 																								   Description="Number of times to run each automation per search term">
 																					<ui:NumberBox Value="{Binding Start.Iterations.Min}"
 																								  SpinButtonPlacementMode="Compact"/>
-																				</controls:Inputter>
+																				</afv:Inputter>
 
-																				<controls:Inputter Title="Attempts:"
+																				<afv:Inputter Title="Attempts:"
 																								   Description="Maximum attempts until successful iteration">
 																					<ui:NumberBox Value="{Binding Start.Attempts}"
 																								  SpinButtonPlacementMode="Compact"/>
-																				</controls:Inputter>
+																				</afv:Inputter>
 
-																				<controls:Inputter Title="Rando:"
+																				<afv:Inputter Title="Rando:"
 																								   Description="Min-max activity value for voting and joining">
 																					<ui:NumberBox Value="{Binding Start.Rando.Min}"
 																								  SpinButtonPlacementMode="Compact"/>
-																				</controls:Inputter>
+																				</afv:Inputter>
 																			</UniformGrid>
-																		</controls:Inputter>
+																		</afv:Inputter>
 
-																		<controls:Inputter Title="Timers:">
+																		<afv:Inputter Title="Timers:">
 																			<UniformGrid Columns="4" Rows="1">
-																				<controls:Inputter Title="Navigate:"
+																				<afv:Inputter Title="Navigate:"
 																								   Description="for page load">
 																					<ui:NumberBox Value="{Binding Timeouts.Navigate}"
 																								  SpinButtonPlacementMode="Compact"/>
-																				</controls:Inputter>
-																				<controls:Inputter Title="Default:"
+																				</afv:Inputter>
+																				<afv:Inputter Title="Default:"
 																								   Description="in general">
 																					<ui:NumberBox Value="{Binding Timeouts.Default}"
 																								  SpinButtonPlacementMode="Compact"/>
-																				</controls:Inputter>
-																				<controls:Inputter Title="Wait:"
+																				</afv:Inputter>
+																				<afv:Inputter Title="Wait:"
 																								   Description="for actions to complete">
 																					<ui:NumberBox Value="{Binding Timeouts.Wait}"
 																								  SpinButtonPlacementMode="Compact"/>
-																				</controls:Inputter>
-																				<controls:Inputter Title="Delay:"
+																				</afv:Inputter>
+																				<afv:Inputter Title="Delay:"
 																								   Description="after finnishing all attempts and moving to the next task">
 																					<ui:NumberBox Value="{Binding RandomWaitPerProfile}"
 																								  SpinButtonPlacementMode="Compact"/>
-																				</controls:Inputter>
+																				</afv:Inputter>
 																			</UniformGrid>
-																		</controls:Inputter>
+																		</afv:Inputter>
 
-																		<controls:Inputter Title="Naps:" 
+																		<afv:Inputter Title="Naps:" 
 																						   Description="milliseconds between actions to simulate natural user interactions">
 																			<UniformGrid Columns="3" Rows="1">
-																				<controls:Inputter Title="Min:"
+																				<afv:Inputter Title="Min:"
 																								   Description="minimum wait time">
 																					<ui:NumberBox Value="{Binding Timeouts.Naps.Min}"
 																								  SpinButtonPlacementMode="Compact"/>
-																				</controls:Inputter>
-																				<controls:Inputter Title="Max:"
+																				</afv:Inputter>
+																				<afv:Inputter Title="Max:"
 																								   Description="maximum wait time">
 																					<ui:NumberBox Value="{Binding Timeouts.Naps.Max}"
 																								  SpinButtonPlacementMode="Compact"/>
-																				</controls:Inputter>
-																				<controls:Inputter Title="Multi:"
+																				</afv:Inputter>
+																				<afv:Inputter Title="Multi:"
 																								   Description="time multiplier">
 																					<ui:NumberBox Value="{Binding Timeouts.Naps.Multiplier, TargetNullValue='0'}"
 																								  SpinButtonPlacementMode="Compact"/>
-																				</controls:Inputter>
+																				</afv:Inputter>
 																			</UniformGrid>
-																		</controls:Inputter>
+																		</afv:Inputter>
 																	</StackPanel>
 																</Expander>
 															</DataTemplate>
@@ -337,31 +334,27 @@
 								</ui:SettingsExpanderItem>
 
 								<ui:SettingsExpander.Footer>
-									<StackPanel HorizontalAlignment="Right" 
-												Orientation="Horizontal" 
-												Spacing="6">
+									<StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="6">
 										<ui:FAComboBox HorizontalAlignment="Left"
 													   SelectedItem="{Binding Browser}"
 													   ItemsSource="{Binding BrowserOptions}">
 											<ui:FAComboBox.ItemTemplate>
 												<DataTemplate>
-													<afv:SvgIconControl IconName="{Binding IconName}"
-																		Height="20"
-																		Width="20"/>
+													<afvc:SvgIconControl IconName="{Binding IconName}" Height="20" Width="20"/>
 												</DataTemplate>
 											</ui:FAComboBox.ItemTemplate>
 										</ui:FAComboBox>
 										<Button Content="Save"
-												CommandParameter="Save"
 												IsVisible="{Binding !Running}"
+												CommandParameter="Save"
 												Command="{Binding AsyncCfVCommand}"/>
 										<Button Content="Run"
-												CommandParameter="Run"
 												IsVisible="{Binding !Running}"
+												CommandParameter="Run"
 												Command="{Binding AsyncCfVCommand}"/>
 										<Button Content="Stop"
-												CommandParameter="Stop"
 												IsVisible="{Binding Running}"
+												CommandParameter="Stop"
 												Command="{Binding CfVCommand}"/>
 									</StackPanel>
 								</ui:SettingsExpander.Footer>

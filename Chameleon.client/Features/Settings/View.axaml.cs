@@ -1,5 +1,5 @@
 using Avalonia.Interactivity;
-using Chameleon.Av.Fluent.Common.Pages;
+using Chameleon.client.UI.Pages;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
 

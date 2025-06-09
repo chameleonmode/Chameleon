@@ -45,4 +45,8 @@
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Fluent/Pages/" />
+  </ItemGroup>
+
 </Project>

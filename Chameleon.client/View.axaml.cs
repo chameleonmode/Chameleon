@@ -3,12 +3,12 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
-using Chameleon.Av.Fluent.Common.Pages;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Windowing;
 using Chameleon.app.Avalonia;
 using Chameleon.client.Features.Settings.Featured;
+using Chameleon.client.UI.Pages;
 namespace Chameleon.client;
 public class PageModelBase {
 	public Type? Tag { get; set; }

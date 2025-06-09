@@ -3,12 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+						 xmlns:ui="using:FluentAvalonia.UI.Controls"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
              x:Class="Chameleon.client.Features.Dashboard.Favorite.FavouriteView"
-			 xmlns:local="using:Chameleon.client.Features.Dashboard.Favorite"
-			 x:DataType="local:FavouriteViewModel"
-			 x:CompileBindings="True">
+			 			 xmlns:local="using:Chameleon.client.Features.Dashboard.Favorite"
+			 			 x:DataType="local:FavouriteViewModel"
+			 			 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto,Auto">
 		<afv:ChameleonContentControl
 			Title="Favorite Profiles"
@@ -31,9 +31,7 @@
 						ItemsPanel="{StaticResource SingleColumnUniformGridTemplate}"
 						ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}"
 						VerticalAlignment="Top" />
-
-					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
-											Header="No favorite profiles selected yet"/>
+					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" Header="No favorite profiles selected yet"/>
 				</Panel>
 			</afv:ChameleonContentControl.Content>
 		</afv:ChameleonContentControl>

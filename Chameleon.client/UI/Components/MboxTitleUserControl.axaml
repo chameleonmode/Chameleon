@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Chameleon.client.UI.UserControls.MboxTitleUserControl"
+             x:Class="Chameleon.client.UI.Components.MboxTitleUserControl"
 			 x:CompileBindings="False">
 	<Panel Name="HeaderHost">
 		<ui:FontIcon

@@ -17,16 +17,12 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 	private string? assistantEmail;
 	[ObservableProperty]
 	private bool showUserInfo;
-
-	public ProfilesViewModel ProfileService => ProfilesViewModel.Instance;
-	public FoldersViewModel FolderService => FoldersViewModel.Instance;
-
 	//
-	public ReadOnlyObservableCollection<ObsProfile> Profiles => ProfileService.Profiles;
+	public ReadOnlyObservableCollection<ObsProfile> Profiles =>  ProfilesViewModel.Instance.Profiles;
 	public ObservableCollection<ObsProfile> SelectedProfiles { get; } = [];
 
 	//
-	public ReadOnlyObservableCollection<ObsFolder> Folders => FolderService.Folders;
+	public ReadOnlyObservableCollection<ObsFolder> Folders => FoldersViewModel.Instance.Folders;
 	public ObservableCollection<ObsFolder> SelectedFolders { get; } = [];
 
 	public InviteUserOrAddProfilesViewModel(bool userInfo = false) : base("Select Profiles & Folders") {
@@ -65,6 +61,7 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 			Symbas: Symbas.AddFriend,
 			Btns: MBoxButtons.OkCancel)
 		);
+		ProfilesViewModel.Instance.Profiles.ForEach(p => p.IsActionOptionsVisible = p.IsShowCheckboxColumn = true);
 		return result == TaskDialogResult.OK ? this : null;
 	}
 	public async Task<InviteUserOrAddProfilesViewModel?> ShowDialog(

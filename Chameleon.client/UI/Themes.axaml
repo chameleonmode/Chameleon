@@ -1,8 +1,7 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="using:Chameleon.client.UI.Controls">
-	<ControlTheme x:Key="ListBoxNoScroller" TargetType="ListBox"
-		BasedOn="{StaticResource {x:Type ListBox}}">
+	<ControlTheme x:Key="ListBoxNoScroller" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border BorderBrush="{TemplateBinding BorderBrush}"
@@ -108,7 +107,7 @@
 	</ControlTheme>
 
 	<ControlTheme x:Key="{x:Type local:Inputter}" TargetType="local:Inputter">
-	<Setter Property="Margin" Value="8 0 0 0"/>
+		<Setter Property="Margin" Value="8 0 0 0"/>
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Grid>
@@ -132,6 +131,52 @@
 						HorizontalAlignment="Stretch"
 					/>
 				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+	<ControlTheme x:Key="HasSelectedItemsBorder" TargetType="HeaderedContentControl">
+		<Setter Property="IsVisible" Value="{ReflectionBinding HasSelectedItems}" />
+		<Setter Property="VerticalAlignment" Value="Bottom" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="MinWidth" Value="420" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border
+					Background="{StaticResource LayerFillColorDefaultBrush}"
+					HorizontalAlignment="Center"
+					Height="50"
+					CornerRadius="{StaticResource ControlCornerRadius}"
+					Margin="0 0 0 3"
+					BoxShadow="0 8 32 0 #66000000">
+					<Grid Margin="24 0"
+						 ColumnDefinitions="*,Auto">
+						<TextBlock VerticalAlignment="Center">
+							<Run Text="{ReflectionBinding SelectedCount}" />
+							<Run Text=" Selected" />
+						</TextBlock>
+
+						<StackPanel Orientation="Horizontal"
+									Grid.Column="1">
+							<Border
+								BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+								Margin="18 6"
+								BorderThickness="1 0 0 0"
+								IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+
+							<ContentPresenter Content="{TemplateBinding Header}" />
+
+							<Border BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
+									Margin="18 6"
+									BorderThickness="1 0 0 0" />
+
+							<Button Theme="{StaticResource TransparentButton}"
+									Classes="accent"
+									Content="Unselect"
+									Command="{ReflectionBinding UnselectItemsCommand}" />
+						</StackPanel>
+					</Grid>
+				</Border>
 			</ControlTemplate>
 		</Setter>
 	</ControlTheme>

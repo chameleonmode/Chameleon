@@ -1,5 +1,5 @@
 using Avalonia;
-using Chameleon.Av.Fluent.Common.Pages;
+using Chameleon.client.UI.Pages;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity;
 

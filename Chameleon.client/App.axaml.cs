@@ -19,7 +19,7 @@ using Chameleon.lib.Helpers;
 using Chameleon.lib.Auth;
 using Chameleon.lib.Api;
 using Chameleon.client.Services;
-using Chameleon.client.UI.UserControls;
+using Chameleon.client.UI.Components;
 using FluentAvalonia.UI.Windowing;
 using Chameleon.client.Features.Settings.Featured;
 using Chameleon.client.UI.Dialogs;
