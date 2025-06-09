@@ -76,6 +76,16 @@
 			<Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushDisabled}" />
 		</Style>
 	</Style>
+	
+	<!-- ui|NumberBox -->
+	<Style Selector="ui|NumberBox">
+		<Setter Property="Minimum" Value="0"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="SpinButtonPlacementMode" Value="Inline"/>
+		<Setter Property="AcceptsExpression" Value="False"/>
+		<Setter Property="ValidationMode" Value="InvalidInputOverwritten"/>
+	</Style>
 
 	<!-- Pages -->
 	<Style Selector="pages|ChameleonPageBase">

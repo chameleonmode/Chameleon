@@ -13,12 +13,7 @@
 			 x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
 			 x:DataType="vm:ActorsViewModel"
 			 x:CompileBindings="True">
-	
 	<UserControl.Styles>
-		<Style Selector="TextBlock">
-			<Setter Property="VerticalAlignment" Value="Center"/>
-		</Style>
-
 		<Style Selector="TextBox">
 			<Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -37,15 +32,6 @@
 		<Style Selector="ToggleSwitch">
 			<Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="HorizontalAlignment" Value="Left"/>
-		</Style>
-
-		<Style Selector="ui|NumberBox">
-			<Setter Property="Minimum" Value="0"/>
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="SpinButtonPlacementMode" Value="Inline"/>
-			<Setter Property="AcceptsExpression" Value="False"/>
-			<Setter Property="ValidationMode" Value="InvalidInputOverwritten"/>
 		</Style>
 	</UserControl.Styles>
 
@@ -67,8 +53,7 @@
 								
 								<ui:SettingsExpanderItem>
 									<StackPanel Spacing="6">
-										<afv:ChameleonContentControl Title="Robotomations"
-																	 TitleDescription="auto robo autonomous roboto automations">
+										<afv:ChameleonContentControl Title="Robotomation" TitleDescription="auto robo autonomous roboto automations">
 											<afv:ChameleonContentControl.TitleContent>
 												<Grid ColumnDefinitions="*,Auto"
 													  HorizontalAlignment="Right">
@@ -163,25 +148,24 @@
 												<StackPanel Margin="0 8 0 0">
 													<StackPanel Classes="shared" Margin="6 0 6 6">
 														<afv:Inputter Title="Search:"
-																		   Description="comma seperated list of search terms"
-																		   Watermark="comma seperated list of search terms"
-																		   Text="{Binding EditableArgs.Search}"
-																		   Theme="{StaticResource Inputz}"/>
-														<afv:Inputter Title="Scope:"
-																		   Description="scope of the search">
-															<ComboBox ItemsSource="{Binding EditableArgs.AvailableScopes}"
-																	  SelectedItem="{Binding EditableArgs.SelectedScope}"/>
-														</afv:Inputter>
-														<afv:Inputter Title="Sort:"
-																		   Description="sort order of the search">
-															<ComboBox ItemsSource="{Binding EditableArgs.AvailableSorts}"
-																	  SelectedItem="{Binding EditableArgs.SelectedSort, Mode=TwoWay}"/>
-														</afv:Inputter>
-														<afv:Inputter Title="Filter:"
-																		   Description="filter to apply to the search">
-															<ComboBox ItemsSource="{Binding EditableArgs.AvailableFilters}"
-																	  SelectedItem="{Binding EditableArgs.SelectedFilter, Mode=TwoWay}"/>
-														</afv:Inputter>
+															 Description="comma seperated list of search terms"
+															 Watermark="comma seperated list of search terms"
+															 Text="{Binding EditableArgs.Search}"
+															 Theme="{StaticResource Inputz}"/>
+														<UniformGrid Columns="3" Rows="1">
+															<afv:Inputter Title="Scope:" Description="scope of the search">
+																<ComboBox ItemsSource="{Binding EditableArgs.AvailableScopes}"
+																	 SelectedItem="{Binding EditableArgs.SelectedScope}" />
+															</afv:Inputter>
+															<afv:Inputter Title="Sort:" Description="sort order of the search">
+																<ComboBox ItemsSource="{Binding EditableArgs.AvailableSorts}"
+																	 SelectedItem="{Binding EditableArgs.SelectedSort, Mode=TwoWay}" />
+															</afv:Inputter>
+															<afv:Inputter Title="Filter:" Description="filter to apply to the search">
+																<ComboBox ItemsSource="{Binding EditableArgs.AvailableFilters}"
+																	 SelectedItem="{Binding EditableArgs.SelectedFilter, Mode=TwoWay}" />
+															</afv:Inputter>
+														</UniformGrid>
 													</StackPanel>
 
 													<ContentControl Content="{Binding AiSettings}">
@@ -278,46 +262,38 @@
 
 																		<afv:Inputter Title="Timers:">
 																			<UniformGrid Columns="4" Rows="1">
-																				<afv:Inputter Title="Navigate:"
-																								   Description="for page load">
+																				<afv:Inputter Title="Navigate:" Description="for page load">
 																					<ui:NumberBox Value="{Binding Timeouts.Navigate}"
-																								  SpinButtonPlacementMode="Compact"/>
+																						 SpinButtonPlacementMode="Compact" />
 																				</afv:Inputter>
-																				<afv:Inputter Title="Default:"
-																								   Description="in general">
+																				<afv:Inputter Title="Default:" Description="in general">
 																					<ui:NumberBox Value="{Binding Timeouts.Default}"
-																								  SpinButtonPlacementMode="Compact"/>
+																						 SpinButtonPlacementMode="Compact" />
 																				</afv:Inputter>
-																				<afv:Inputter Title="Wait:"
-																								   Description="for actions to complete">
+																				<afv:Inputter Title="Wait:" Description="for actions to complete">
 																					<ui:NumberBox Value="{Binding Timeouts.Wait}"
-																								  SpinButtonPlacementMode="Compact"/>
+																						 SpinButtonPlacementMode="Compact" />
 																				</afv:Inputter>
-																				<afv:Inputter Title="Delay:"
-																								   Description="after finnishing all attempts and moving to the next task">
+																				<afv:Inputter Title="Delay:" Description="before starting the next task">
 																					<ui:NumberBox Value="{Binding RandomWaitPerProfile}"
-																								  SpinButtonPlacementMode="Compact"/>
+																						 SpinButtonPlacementMode="Compact" />
 																				</afv:Inputter>
 																			</UniformGrid>
 																		</afv:Inputter>
 
-																		<afv:Inputter Title="Naps:" 
-																						   Description="milliseconds between actions to simulate natural user interactions">
+																		<afv:Inputter Title="Naps:" Description="in millisecond to simulate natural user interactions">
 																			<UniformGrid Columns="3" Rows="1">
-																				<afv:Inputter Title="Min:"
-																								   Description="minimum wait time">
+																				<afv:Inputter Title="Min:" Description="minimum wait time">
 																					<ui:NumberBox Value="{Binding Timeouts.Naps.Min}"
-																								  SpinButtonPlacementMode="Compact"/>
+																						 SpinButtonPlacementMode="Compact" />
 																				</afv:Inputter>
-																				<afv:Inputter Title="Max:"
-																								   Description="maximum wait time">
+																				<afv:Inputter Title="Max:" Description="maximum wait time">
 																					<ui:NumberBox Value="{Binding Timeouts.Naps.Max}"
-																								  SpinButtonPlacementMode="Compact"/>
+																						 SpinButtonPlacementMode="Compact" />
 																				</afv:Inputter>
-																				<afv:Inputter Title="Multi:"
-																								   Description="time multiplier">
+																				<afv:Inputter Title="Multi:" Description="time multiplier">
 																					<ui:NumberBox Value="{Binding Timeouts.Naps.Multiplier, TargetNullValue='0'}"
-																								  SpinButtonPlacementMode="Compact"/>
+																						 SpinButtonPlacementMode="Compact" />
 																				</afv:Inputter>
 																			</UniformGrid>
 																		</afv:Inputter>
