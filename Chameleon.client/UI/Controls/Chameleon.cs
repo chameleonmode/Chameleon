@@ -6,22 +6,12 @@ using Avalonia.Interactivity;
 namespace Chameleon.client.UI.Controls;
 
 public class ChameleonContentControl : HeaderedContentControl {
-	private Button? expandOptionsButton;
 	public ChameleonContentControl() {
 		PseudoClasses.Add(":optionsfull");
-		AttachedToVisualTree += (s, e) => {
-			_ = ((VisualRoot as Window)?
-			.GetObservable(TopLevel.ClientSizeProperty)
-			.Subscribe(s => {
-				IsOptionsExpanded = s.Width < 690; //ResponsiveConstants.MaxWindowWidth1080;
-				_ = (expandOptionsButton?.SetValue(IsVisibleProperty, IsOptionsExpanded));
-				UpdateIcon();
-			}));
-		};
 	}
 
 	public static readonly StyledProperty<string> IconShevronProperty =
-	AvaloniaProperty.Register<ChameleonContentControl, string>(nameof(IconShevron));
+	AvaloniaProperty.Register<ChameleonContentControl, string>(nameof(IconShevron), "ChevronUp");
 	public string IconShevron {
 		get => GetValue(IconShevronProperty);
 		set => SetValue(IconShevronProperty, value);
@@ -70,14 +60,9 @@ public class ChameleonContentControl : HeaderedContentControl {
 	}
 	protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
 		base.OnApplyTemplate(e);
-		//_optionsHost = e.NameScope.Find<Border>("OptionsRegion");
-		//_exampleThemeScopeProvider = e.NameScope.Find<ThemeVariantScope>("ThemeScopeProvider");
-
-		expandOptionsButton = e.NameScope.Find<Button>("ShowHideOptionsButton");
-		if (expandOptionsButton is null) return;
-		expandOptionsButton.Click += (s, e) => {
+		var expandOptionsButton = e.NameScope.Find<Button>("ShowHideOptionsButton");
+		if (expandOptionsButton is not null) expandOptionsButton.Click += (s, e) => {
 			IsOptionsExpanded = !IsOptionsExpanded;
-			UpdateIcon();
 		};
 	}
 
@@ -85,13 +70,11 @@ public class ChameleonContentControl : HeaderedContentControl {
 		base.OnPropertyChanged(change);
 		if (Options is null) return;
 		else if (change.Property == OptionsProperty) PseudoClasses.Set(":options", change.NewValue != null);
+		else if (change.Property == IsOptionsExpandedProperty) IconShevron = IsOptionsExpanded ? "ChevronUp" : "ChevronDown";
 		else if (change.Property == BoundsProperty) {
 			var wid = change.GetNewValue<Rect>().Width;
 			PseudoClasses.Set(":mediumWidth", wid < 690);
 			PseudoClasses.Set(":smallWidth", wid < 480);
 		}
-	}
-	private void UpdateIcon() {
-		IconShevron = IsOptionsExpanded ? "ChevronUp" : "ChevronDown";
 	}
 }

@@ -72,8 +72,8 @@ public class Navigator : INavigatorService {
 		if (string.IsNullOrWhiteSpace(viewKey))
 			throw new ArgumentNullException(nameof(viewKey));
 
-		if (registeredViews.TryGetValue(viewKey, out var viewType)) 			Navigator.NavigateToType(viewType, parameter);
-else {
+		if (registeredViews.TryGetValue(viewKey, out var viewType)) Navigator.NavigateToType(viewType, parameter);
+		else {
 			throw new ArgumentException($"No view registered with the key: {viewKey}", nameof(viewKey));
 		}
 	}

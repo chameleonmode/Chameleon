@@ -174,24 +174,17 @@
 									</ContentPresenter>
 
 									<!-- Options Area -->
-									<Border VerticalAlignment="Top"
-											Name="OptionsHost"
+									<Border Name="OptionsHost"
+											VerticalAlignment="Top"
 											Margin="12 0 12 12"
 											Padding="12"
-											CornerRadius="{DynamicResource OverlayCornerRadius}"
 											Grid.Column="1"
 											Grid.Row="1"
-											Background="{DynamicResource LayerFillColorDefaultBrush}"
-											BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
 											BorderThickness="1"
 											Opacity="1"
-											IsVisible="False">
-										<Border.Transitions>
-											<Transitions>
-												<DoubleTransition Property="Opacity"
-																	Duration="00:00:00.167" />
-											</Transitions>
-										</Border.Transitions>
+											CornerRadius="{DynamicResource OverlayCornerRadius}"
+											Background="{DynamicResource LayerFillColorDefaultBrush}"
+											BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">
 										<StackPanel>
 											<DockPanel LastChildFill="False">
 												<TextBlock Text="Options"
@@ -204,8 +197,7 @@
 												<Button Name="ShowHideOptionsButton"
 														Theme="{StaticResource TransparentButton}"
 														DockPanel.Dock="Right"
-														Margin="6 0 0 0"
-														IsVisible="False">
+														Margin="6 0 0 0">
 													<ui:SymbolIcon Symbol="{TemplateBinding IconShevron}" />
 												</Button>
 											</DockPanel>

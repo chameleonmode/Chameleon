@@ -18,6 +18,7 @@ public abstract class TabStripNavigationPage : ChameleonNavigationPage {
 		Strip.SelectionChanged += (sender, e) => {
 			Navigate(Strip.SelectedIndex, null);
 		};
+		Frame.NavigationPageFactory = ViewModel.Instance.NavigationFactory;
 	}
 
 	protected override void OnLoaded(RoutedEventArgs e) {
