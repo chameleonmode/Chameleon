@@ -53,7 +53,7 @@
 								<TextBox Text="{TemplateBinding Text, Mode=TwoWay}" 
 									MaxLength="10000"
 									VerticalAlignment="Top"
-								    Watermark="{TemplateBinding PlaceholderText}"/>
+								  Watermark="{TemplateBinding PlaceholderText}"/>
 							</DataValidationErrors>
 
 							<Button Grid.Column="1"
