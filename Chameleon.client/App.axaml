@@ -10,7 +10,7 @@
     Using Theme Variants:         https://docs.avaloniaui.net/docs/guides/styles-and-resources/how-to-use-theme-variants
 -->
 	<Application.Resources>
-		<FontFamily x:Key="ContentControlThemeFontFamily">avares://Chameleon.app.Avalonia/Assets/Fonts/Nunito#Nunito</FontFamily>
+		<FontFamily x:Key="ContentControlThemeFontFamily">Assets/Fonts/Nunito#Nunito</FontFamily>
 	</Application.Resources>
 
 	<Application.Styles>

@@ -65,7 +65,7 @@ public class PageHeader : TemplatedControl {
 			_ => "Chameleon"
 		};
 
-		using var s = AssetLoader.Open(new Uri($"avares://Chameleon.app.Avalonia/Assets/Images/logo-merge.png"));
+		using var s = AssetLoader.Open(new Uri($"avares://Chameleon.client/Assets/logo-merge.png"));
 		_text1.Source = new Bitmap(s);
 	}
 

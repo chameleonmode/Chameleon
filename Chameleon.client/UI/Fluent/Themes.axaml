@@ -14,13 +14,8 @@
 				<GradientStop Color="#85000000" Offset="0.92" />
 				<GradientStop Color="#00000000" Offset="1" />
 			</LinearGradientBrush>
-
-			<ImageBrush x:Key="PageHeaderBackgroundBrush"
-				Source="avares://Chameleon.app.Avalonia/Assets/Images/FAHeaderBackground_Dark.png"
-				AlignmentY="Center"
-				Stretch="UniformToFill" />
 			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
-      	Source="avares://Chameleon.app.Avalonia/Assets/Images/logo-long.png"
+      	Source="Assets/logo-long.png"
       	AlignmentY="Center"
       	Stretch="UniformToFill" />
 		</ResourceDictionary>
@@ -34,13 +29,8 @@
 				<GradientStop Color="#85000000" Offset="0.92" />
 				<GradientStop Color="#00000000" Offset="1" />
 			</LinearGradientBrush>
-
-			<ImageBrush x:Key="PageHeaderBackgroundBrush"
-				Source="avares://Chameleon.app.Avalonia/Assets/Images/FAHeaderBackground.png"
-				AlignmentY="Center"
-				Stretch="UniformToFill" />
 			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
-        Source="avares://Chameleon.app.Avalonia/Assets/Images/logo-long.png"
+        Source="Assets/logo-long.png"
         AlignmentY="Center"
         Stretch="UniformToFill" />
 		</ResourceDictionary>
@@ -49,14 +39,8 @@
 				<GradientStop Color="#00000000" />
 				<GradientStop Color="#33000000" Offset="1" />
 			</LinearGradientBrush>
-
-			<ImageBrush x:Key="PageHeaderBackgroundBrush"
-				Source="avares://Chameleon.app.Avalonia/Assets/Images/FAHeaderBackground_Dark.png"
-				AlignmentY="Center"
-				Stretch="UniformToFill" />
-
 			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
-      	Source="avares://Chameleon.app.Avalonia/Assets/Images/logo-long.png"
+      	Source="Assets/logo-long.png"
       	AlignmentY="Center"
       	Stretch="UniformToFill" />
 		</ResourceDictionary>

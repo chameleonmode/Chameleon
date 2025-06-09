@@ -140,7 +140,7 @@
               Background="Transparent">
 			<Image Margin="12 6"
                    IsHitTestVisible="False"
-                   Source="avares://Chameleon.app.Avalonia/Assets/logosymbol.ico"
+                   Source="Assets/logosymbol.ico"
                    DockPanel.Dock="Left"
                    Name="WindowLogoIcon"
                    RenderOptions.BitmapInterpolationMode="HighQuality">

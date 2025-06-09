@@ -25,7 +25,6 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="../Chameleon.app.Avalonia/Chameleon.app.Avalonia.csproj" />
     <ProjectReference Include="../Chameleon.client/Chameleon.client.csproj" />
   </ItemGroup>
 </Project>

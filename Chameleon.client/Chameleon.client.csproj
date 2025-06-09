@@ -16,42 +16,21 @@
 	  <PackageReference Include="Avalonia.Svg" />
 	  <PackageReference Include="Avalonia.Svg.Skia" />
 	  <PackageReference Include="FluentAvaloniaUI" />
-    <PackageReference Include="CommunityToolkit.Mvvm" />
+	  <PackageReference Include="ReactiveValidation.Avalonia" />
+	  <PackageReference Include="DynamicData" />
+	  <PackageReference Include="CommunityToolkit.Mvvm" />
 
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.assets\chameleon.assets.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib\Chameleon.lib.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.AIR\Chameleon.lib.AIR.csproj" />
-    <ProjectReference Include="..\Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Features/Automation/AI/ChameleonAIR/View.axaml.cs">
-      <DependentUpon>View.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Features/Automation/Playwright/PlaywrightView.axaml.cs">
-      <DependentUpon>PlaywrightView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Features/Projects/Profiles/ProfilesView.axaml.cs">
-      <DependentUpon>ProfilesView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Features/Settings/View.axaml.cs">
-      <DependentUpon>View.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Features/Tenants/Members/MembersView.axaml.cs">
-      <DependentUpon>MembersView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="UI/Windows/Acrylic.axaml.cs">
-      <DependentUpon>Acrylic.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="View.axaml.cs">
-      <DependentUpon>View.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UI/Dialogs/" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Api\Chameleon.lib.Api.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Common\Chameleon.lib.Common.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Playwright\Chameleon.lib.Playwright.csproj" />
+    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj" />
   </ItemGroup>
 </Project>

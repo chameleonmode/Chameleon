@@ -5,7 +5,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
         x:Class="Chameleon.client.UI.Windows.Acrylic"
-        Icon="avares://Chameleon.app.Avalonia/Assets/logosymbol.ico"
+        Icon="Assets/logosymbol.ico"
         Title="Copy Pasta"
 		SizeToContent="Height"
 		TransparencyLevelHint="AcrylicBlur"
