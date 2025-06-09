@@ -15,7 +15,7 @@
 				<GradientStop Color="#00000000" Offset="1" />
 			</LinearGradientBrush>
 			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
-      	Source="Assets/logo-long.png"
+      	Source="avares://Chameleon.client/Assets/logo-long.png"
       	AlignmentY="Center"
       	Stretch="UniformToFill" />
 		</ResourceDictionary>
@@ -30,7 +30,7 @@
 				<GradientStop Color="#00000000" Offset="1" />
 			</LinearGradientBrush>
 			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
-        Source="Assets/logo-long.png"
+        Source="avares://Chameleon.client/Assets/logo-long.png"
         AlignmentY="Center"
         Stretch="UniformToFill" />
 		</ResourceDictionary>
@@ -40,7 +40,7 @@
 				<GradientStop Color="#33000000" Offset="1" />
 			</LinearGradientBrush>
 			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
-      	Source="Assets/logo-long.png"
+      	Source="avares://Chameleon.client/Assets/logo-long.png"
       	AlignmentY="Center"
       	Stretch="UniformToFill" />
 		</ResourceDictionary>

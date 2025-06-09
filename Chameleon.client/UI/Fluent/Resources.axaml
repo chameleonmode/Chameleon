@@ -59,7 +59,7 @@
 	<ui:SymbolIconSource x:Key="GoIcon" Symbol="ChevronRight" />
 	<ui:SymbolIconSource Symbol="Save"  x:Key="SaveIcon" />
 
-	<ui:BitmapIconSource x:Key="logosymbolIcon" UriSource="Assets/logosymbol.ico" />
-	<ui:ImageIconSource x:Key="logo_big" Source="Assets/logo-big.png" />
-	<ui:ImageIconSource x:Key="logo_symbol" Source="Assets/logo-symbol.png" />
+	<ui:BitmapIconSource x:Key="logosymbolIcon" UriSource="avares://Chameleon.client/Assets/logosymbol.ico" />
+	<ui:ImageIconSource x:Key="logo_big" Source="avares://Chameleon.client/Assets/logo-big.png" />
+	<ui:ImageIconSource x:Key="logo_symbol" Source="avares://Chameleon.client/Assets/logo-symbol.png" />
 </ResourceDictionary>

@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution", ".solution", "{
 		Chameleon.Desktop\Info.plist = Chameleon.Desktop\Info.plist
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chameleon.app.Avalonia", "Chameleon.app.Avalonia\Chameleon.app.Avalonia.csproj", "{8C417AF0-D948-4637-B38B-DDC6E058C83D}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{0B86C57C-40CF-4737-8F82-864548769102}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{AC2F00CB-88A2-44C8-ABDF-DD66EA1E0911}"
@@ -72,18 +70,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|x64.Build.0 = Debug|Any CPU
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Debug|x86.Build.0 = Debug|Any CPU
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Release|x64.ActiveCfg = Release|Any CPU
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Release|x64.Build.0 = Release|Any CPU
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Release|x86.ActiveCfg = Release|Any CPU
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D}.Release|x86.Build.0 = Release|Any CPU
 		{F84616F6-D90C-40BC-9BD8-279010530232}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F84616F6-D90C-40BC-9BD8-279010530232}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F84616F6-D90C-40BC-9BD8-279010530232}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -209,7 +195,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{8C417AF0-D948-4637-B38B-DDC6E058C83D} = {0B86C57C-40CF-4737-8F82-864548769102}
 		{AC2F00CB-88A2-44C8-ABDF-DD66EA1E0911} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{A0E66BE5-8196-4E24-8CB9-731AFBED22BD} = {FC83F63E-8D9E-4EB3-88FB-5D7FA13EE98E}
 		{F84616F6-D90C-40BC-9BD8-279010530232} = {0B86C57C-40CF-4737-8F82-864548769102}

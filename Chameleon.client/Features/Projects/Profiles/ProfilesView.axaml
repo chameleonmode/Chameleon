@@ -251,7 +251,7 @@
 		<afv:ChameleonContentControl.Content>
 				<Panel>
 					<ListBox Name="lbProfiles" Classes="uni" />
-					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" Header="No profiles"/>
+					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" Header="Empty Folder"/>
 				</Panel>
 		</afv:ChameleonContentControl.Content>
 	</afv:ChameleonContentControl>
