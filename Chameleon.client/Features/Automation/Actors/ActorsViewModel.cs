@@ -54,12 +54,12 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
-		await lib.Playwright.Project.Initialized.Task;	
+		_ = await lib.Playwright.Project.Initialized.Task;
+		ProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(UserProfilesRepo.Instance.ObservableCache.Count);
 		if (!Loaded) await LoadActorStates();
 	}
 
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
-		ProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(UserProfilesRepo.Instance.ObservableCache.Count);
 	}
 }

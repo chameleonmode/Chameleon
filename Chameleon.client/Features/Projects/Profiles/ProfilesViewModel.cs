@@ -83,16 +83,13 @@ public partial class ProfilesViewModel : Projector {
 	public bool IsProfilesExist => UserProfilesRepo.Instance.ObservableCache.Items.Any();
 	private IEnumerable<ObsProfile> GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
 	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
-	public Func<ObsProfile, bool> FilterPredicate =>
-	p => Folder == null || Folder.Id == 0 ||
-	(Folder != null && Folder.Id != 0 && p.Dto?.folderId == Folder?.Id);
 	public int MaxInFolderItems =>
 	Folder == null || Folder.Id == 0
 	? UserProfilesRepo.Instance.ObservableCache.Count
 	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.Id);
 
 	public ProfilesViewModel() {
-		filter = new BehaviorSubject<Func<ObsProfile, bool>>(FilterPredicate);
+		filter = new BehaviorSubject<Func<ObsProfile, bool>>(p =>Folder == null || Folder.Id == 0 || p.Dto.folderId == Folder.Id);
 		_ = UserProfilesRepo.Connect()
 		.Transform(i => new ObsProfile(i,
 			onSelectedChanged: p => {
@@ -122,24 +119,14 @@ public partial class ProfilesViewModel : Projector {
 			SelectAll();
 		};
 		CommandMap["UnselectItems"] = () => {
-			foreach (var profile in Profiles) {
-				profile.IsSelected = false;
-			}
+			UnselectItems();
 			PaginatorViewModel.UpdatePageCount(9);
 		};
 
-		AsyncCommandMap["SaveTags"] = async () => {
-			_ = await TagsRepo.Instance.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
-		};
-		AsyncCommandMap["chrome"] = async () => {
-			await OpenSystemBrowser(SystemBrowserType.Chrome);
-		};
-		AsyncCommandMap["brave"] = async () => {
-			await OpenSystemBrowser(SystemBrowserType.Brave);
-		};
-		AsyncCommandMap["firefox"] = async () => {
-			await OpenSystemBrowser(SystemBrowserType.Firefox);
-		};
+		AsyncCommandMap["SaveTags"] = () => TagsRepo.Instance.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
+		AsyncCommandMap["chrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);
+		AsyncCommandMap["brave"] =  () => OpenSystemBrowser(SystemBrowserType.Brave);
+		AsyncCommandMap["firefox"] = () =>  OpenSystemBrowser(SystemBrowserType.Firefox);
 		AsyncCommandMap["hwinds"] = () => {
 			GetSelectedProfiles?.ForEach(profile => {
 				profile.OpenTopmostController();
@@ -147,7 +134,63 @@ public partial class ProfilesViewModel : Projector {
 			return Task.CompletedTask;
 		};
 		AsyncCommandMap["play"] = async () => {
-			await RunAutomation();
+			if (!GetSelectedProfiles.Any()) {
+				Toaster.Error("Select one or more profiles to run the automation.");
+				return;
+			}
+
+			IsVisibleRunButton = false;
+			IsVisibleStopButton = true;
+			var cts = new CancellationTokenSource();
+			try {
+				foreach (var profile in GetSelectedProfiles) {
+					// Stop loop if canceled
+					cts.Token.ThrowIfCancellationRequested();
+					try {
+						var description = SelectedPlaywrightScript.Description;
+						if (
+								description != null &&
+								description.Parameters.TryGetValue("email", out var email) &&
+								description.Parameters.TryGetValue("password", out var password) &&
+								(email.Is() || email == "email" || password.Is() || password == "password")
+							) {
+							await UPAdditionalDataRepo.Instance.Loginz.Load();
+							var google =
+								description.Parameters["title"].Equals("google", StringComparison.CurrentCultureIgnoreCase) ||
+								description.Parameters["website"].Equals("google.com", StringComparison.CurrentCultureIgnoreCase);
+							if (!await TaskUtil.AwaitFor(() => profile.ProfileLogins.Count > 0, 4) && !google) {
+								throw new Exception("No logins found in the profile.");
+							}
+							if (profile.ProfileLogins.Count > 0 || !google) {
+								var login = profile.ProfileLogins.FirstOrDefault(l =>
+									(l.title.IsNot() && l.title!.Equals(description.Parameters["title"], StringComparison.CurrentCultureIgnoreCase)) ||
+									(l.WebSite.IsNot() && l.WebSite!.Equals(description.Parameters["website"], StringComparison.CurrentCultureIgnoreCase))
+								) ?? profile.ProfileLogins[0];
+
+								description.Parameters["email"] = login?.Email ?? email ?? string.Empty;
+								description.Parameters["password"] = login?.Password ?? password ?? string.Empty;
+							}
+						}
+
+						var browser = await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(cts.Token);
+						ArgumentNullException.ThrowIfNull(browser, nameof(browser));
+
+						SelectedPlaywrightScript.Port = browser.Settings.Port;
+						SelectedPlaywrightScript.Record = IsRecordSelected;
+						await Run.Script(SelectedPlaywrightScript, cts.Token);
+					} catch (Exception ex) {
+						// Log or handle the exception if closing the process fails
+						Toaster.Error($"{ex.Message}");
+					}
+				}
+			} catch (Exception ex) {
+				Toaster.Error($"{ex.Message}");
+			} finally {
+				StopAutomation();
+				IsVisibleRunButton = true;
+				IsVisibleStopButton = false;
+				IsVisibleWaitButton = false;
+			}
 		};
 		AsyncCommandMap["Move"] = async () => {
 			if (!GetSelectedProfiles.Any()) return;
@@ -223,8 +266,8 @@ public partial class ProfilesViewModel : Projector {
 
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
-		PaginatorViewModel.UpdatePageCount(9);
 		Profiles.ForEach(p => p.IsActionOptionsVisible = p.IsShowCheckboxColumn = true);
+		PaginatorViewModel.UpdatePageCount(9);
 
 		PlaywrightScripts.Clear();
 		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());
@@ -233,12 +276,13 @@ public partial class ProfilesViewModel : Projector {
 			PlaywrightScripts.AddRange(await BundledScriptsService.GetUserScripts(usd));
 		}
 
-		//InintializeLastSelectedAutomation();
 		SelectedBrowserItem =
-			Enum.TryParse<SystemBrowserType>(IoC.GetValue<string>("LastSelectedBrowser"), out var browserEnum)
-			? BrowserItems.FirstOrDefault(b => b.SystemBrowserType == browserEnum) ?? BrowserItems[0] : BrowserItems[0];
-		SelectedPlaywrightScript =
-			PlaywrightScripts.FirstOrDefault(s => s.Description?.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
+		Enum.TryParse<SystemBrowserType>(IoC.GetValue<string>("LastSelectedBrowser"), out var browserEnum)
+		? BrowserItems.FirstOrDefault(b => b.SystemBrowserType == browserEnum) ?? BrowserItems[0] 
+		: BrowserItems[0];
+
+		SelectedPlaywrightScript = PlaywrightScripts
+		.FirstOrDefault(s => s.Description?.Title == IoC.GetValue<string>("LastRunScriptId")) ?? PlaywrightScripts[0];
 	}
 
 	partial void OnSortSelectedChanged(ChangeComparereOption value) {
@@ -265,28 +309,34 @@ public partial class ProfilesViewModel : Projector {
 			(Folder == null || Folder.Id == 0 || (Folder != null && Folder.Id != 0 && p.Dto?.folderId == Folder?.Id)));
 		} else {
 			PaginatorViewModel.UpdatePageCount(9);
-			filter.OnNext(FilterPredicate);
+			filter.OnNext(filter.Value);
 		}
 
 		SetViewModelsFilter(false);
 	}
 	partial void OnFolderChanged(UPFolderViewModel? value) {
-		FoldersViewModel.Instance.SetSelectedFolder(value?.ToDto());
 		SearchText = string.Empty;
 		HasFolder = value?.Id != default && value?.Id != 0;
-		OnPropertyChanged(nameof(SelectedFolderTitle));
 		SetViewModelsFilter();
+	}
+
+	private async Task OpenSystemBrowser(SystemBrowserType browserType) {
+		foreach (var profile in GetSelectedProfiles) {
+			_ = await profile.OpenSystemBrowser(browserType);
+		}
 	}
 
 	public async Task OpenAsync(UPFolderDto? folder) {
 		if (folder is not null) {
-			Folder = new UPFolderViewModel(folder!);
+			Folder = new UPFolderViewModel(folder);
 			Folder.Tags = await TagsRepo.Instance.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
-			OnPropertyChanged(nameof(SelectedFolderTitle));
 			UnselectItems();
 			SetViewModelsFilter();
 		}
 	}
+
+	private void UnselectItems() => Profiles.ForEach(p => p.IsSelected = false);
+
 	public async Task<UserProfileDto?> CreateNewProfile() {
 		var folderId = HasFolder ? Folder?.Id : null;
 
@@ -304,112 +354,29 @@ public partial class ProfilesViewModel : Projector {
 	}
 	public async void OnFilterTo(ObsProfile? p = null) {
 		_ = await LoadedTCS.Task;
-		await Task.Delay(100);
 
-		if (p != null) {
-			if (p.Dto?.folderId is int fid && fid != 0)
-				FoldersViewModel.Instance.SetSelectedById(fid);
-			else
-				await FoldersViewModel.Instance.OnNavigatingTo(null);
+		if (p?.Dto.folderId is int fid && fid != 0) FoldersViewModel.Instance.SetSelectedById(fid);
+		else if (p != null) await FoldersViewModel.Instance.OnNavigatingTo(null);
+		else FoldersViewModel.Instance.SetSelectedById(0);
 
-			SearchText = p.Title ?? string.Empty;
-		} else {
-			FoldersViewModel.Instance.SetSelectedById(0);
-			SearchText = string.Empty;
-		}
-
-		OnPropertyChanged(nameof(SearchText));
+		SearchText = p?.Title ?? string.Empty;
 	}
 
 	public void SetViewModelsFilter(bool onext = true) {
-		if (onext)
-			filter.OnNext(FilterPredicate);
+		if (onext) filter.OnNext(filter.Value);
 
 		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
 
 		OnPropertyChanged(nameof(HasNoItems));
 		OnPropertyChanged(nameof(IsProfilesExist));
 		OnPropertyChanged(nameof(HasSelectedItems));
+		OnPropertyChanged(nameof(SelectedFolderTitle));
 		OnPropertyChanged(nameof(HasProfileWithoutFolder));
 	}
 
 	private void SelectAll() {
 		foreach (var profile in Profiles) {
 			profile.IsSelected = true;
-		}
-	}
-
-	[RelayCommand]
-	private void UnselectItems() {
-		foreach (var profile in Profiles) {
-			profile.IsSelected = false;
-		}
-		PaginatorViewModel.UpdatePageCount(9);
-	}
-
-	private async Task OpenSystemBrowser(SystemBrowserType browserType) {
-		foreach (var profile in GetSelectedProfiles) {
-			_ = await profile.OpenSystemBrowser(browserType);
-		}
-	}
-
-	private async Task RunAutomation() {
-		if (!GetSelectedProfiles.Any()) {
-			Toaster.Error("Select one or more profiles to run the automation.");
-			return;
-		}
-
-		IsVisibleRunButton = false;
-		IsVisibleStopButton = true;
-		var cts = new CancellationTokenSource();
-		try {
-			foreach (var profile in GetSelectedProfiles) {
-				// Stop loop if canceled
-				cts.Token.ThrowIfCancellationRequested();
-				try {
-					var description = SelectedPlaywrightScript.Description;
-					if (
-							description != null &&
-							description.Parameters.TryGetValue("email", out var email) &&
-							description.Parameters.TryGetValue("password", out var password) &&
-							(email.Is() || email == "email" || password.Is() || password == "password")
-						) {
-						await UPAdditionalDataRepo.Instance.Loginz.Load();
-						var google =
-							description.Parameters["title"].Equals("google", StringComparison.CurrentCultureIgnoreCase) ||
-							description.Parameters["website"].Equals("google.com", StringComparison.CurrentCultureIgnoreCase);
-						if (!await TaskUtil.AwaitFor(() => profile.ProfileLogins.Count > 0, 4) && !google) {
-							throw new Exception("No logins found in the profile.");
-						}
-						if (profile.ProfileLogins.Count > 0 || !google) {
-							var login = profile.ProfileLogins.FirstOrDefault(l =>
-								(l.title.IsNot() && l.title!.Equals(description.Parameters["title"], StringComparison.CurrentCultureIgnoreCase)) ||
-								(l.WebSite.IsNot() && l.WebSite!.Equals(description.Parameters["website"], StringComparison.CurrentCultureIgnoreCase))
-							) ?? profile.ProfileLogins[0];
-
-							description.Parameters["email"] = login?.Email ?? email ?? string.Empty;
-							description.Parameters["password"] = login?.Password ?? password ?? string.Empty;
-						}
-					}
-
-					var browser = await profile.OpenSystemBrowser(SelectedBrowserItem.SystemBrowserType).WaitAsync(cts.Token);
-					ArgumentNullException.ThrowIfNull(browser, nameof(browser));
-
-					SelectedPlaywrightScript.Port = browser.Settings.Port;
-					SelectedPlaywrightScript.Record = IsRecordSelected;
-					await Run.Script(SelectedPlaywrightScript, cts.Token);
-				} catch (Exception ex) {
-					// Log or handle the exception if closing the process fails
-					Toaster.Error($"{ex.Message}");
-				}
-			}
-		} catch (Exception ex) {
-			Toaster.Error($"{ex.Message}");
-		} finally {
-			StopAutomation();
-			IsVisibleRunButton = true;
-			IsVisibleStopButton = false;
-			IsVisibleWaitButton = false;
 		}
 	}
 

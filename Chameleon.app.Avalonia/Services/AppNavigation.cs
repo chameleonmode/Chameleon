@@ -13,8 +13,6 @@ public interface INavigatorService {
 	void NavigateToType(Type viewType, object? parameter = null);
 	void RegisterView(string viewKey, Type viewType);
 	bool IsCurrentView(string viewKey);
-	bool CanGoBack { get; }
-	void GoBack();
 }
 
 public class Navigator: INavigatorService {
@@ -24,12 +22,11 @@ public class Navigator: INavigatorService {
 	private Panel? overlayHost;
 
 	public Frame? Frame { get; set; }
+	public static void GoBack() {
+		if(Instance.Frame?.CanGoBack == true) Instance.Frame?.GoBack();
+	}
 
-	public bool CanGoBack => Frame?.CanGoBack ?? false;
-	public void GoBack() => Frame?.GoBack();
-
-	public static void SetFrame(Frame f)
-	{
+	public static void SetFrame(Frame f) {
 		Instance.Frame = f;
 	}
 

@@ -4,8 +4,7 @@ using DynamicData.Binding;
 
 namespace Chameleon.lib.CommunityToolkit.MvvM;
 
-public abstract class DtoViewModelBase<T>
- : ViewModelObjectBase where T : Dto {
+public abstract class DtoViewModelBase<T> : ViewModelObjectBase where T : Dto {
 	public T Dto { get; set; }
 	public DtoViewModelBase(T dto) {
 		Dto = dto;

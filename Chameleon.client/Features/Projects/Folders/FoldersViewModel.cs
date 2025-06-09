@@ -49,13 +49,16 @@ public partial class FoldersViewModel : Projector {
 	public async Task OnNavigatingTo(UPFolderDto? p = null) {
 		if (p != null) {
 			Folders.ForEach(f => f.IsSelected = f.Dto.id == p.id);
-			if (Folders.Any(vm => vm.Dto.id == p.id)) await ProfilesViewModel.Instance.OpenAsync(p);
-		} else {
-			if (AllProfiles != null && !AllProfiles.Navigated) {
-				AllProfiles.Navigated = true;
-				SetSelectedFolder(AllProfiles.Dto);
+			if (Folders.Any(vm => vm.Dto.id == p.id)) {
+				await ProfilesViewModel.Instance.OpenAsync(p);
+				Instance.SetSelectedFolder(p);
 			}
-		}
+		} else {
+				if (AllProfiles != null && !AllProfiles.Navigated) {
+					AllProfiles.Navigated = true;
+					SetSelectedFolder(AllProfiles.Dto);
+				}
+			}
 	}
 
 	public async void SetSelectedById(int id) {

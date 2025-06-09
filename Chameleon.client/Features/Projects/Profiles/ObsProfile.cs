@@ -21,20 +21,20 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 	[ObservableProperty] string isFFRunning = "False";
 	[ObservableProperty] bool isShowGlyph = true;
 	[ObservableProperty] bool isForeground;
-	[ObservableProperty] bool isFavorite;
 	[ObservableProperty] bool isShowCheckboxColumn = true;
 
-	//
-	public bool IsSharedProfile => Dto.creatorUserId != Auther.AuthSession?.UserId;
-	public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
 	public Dictionary<SystemBrowserType, IBrowserInstance?> SBI { get; } = new() {
 		[SystemBrowserType.Chrome] = null,
 		[SystemBrowserType.Firefox] = null,
 		[SystemBrowserType.Brave] = null
 	};
 
+	public bool IsSharedProfile => Dto.creatorUserId != Auther.AuthSession?.UserId;
+	public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
+	public bool IsFavorite => Dto.isFavourite;
+
 	public BrowserProfile SystemBrowserProfile => new() {
-		Id = Dto!.id,
+		Id = Dto.id,
 		Proxy = new BrowserProxy() {
 			Host = Dto.proxy?.host,
 			Port = Dto.proxy?.port ?? 0,
@@ -42,27 +42,28 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			Password = Dto.proxy?.password
 		}
 	};
-
-	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins {get;}
+	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins {
+		get {
+			_ = UPAdditionalDataRepo.Instance.Loginz
+			.Connect(i => i.ProfileId == Dto.id)
+			.Bind(out var logins)
+			.Subscribe();
+			return logins;
+		}
+	}
 
 	public ObsProfile(UserProfileDto profile,
-	Action<ObservableDtoViewModelBase<UserProfileDto>>? onSelectedChanged = default,
-	Action<ObsProfile>? onDeleted = default)
+		Action<ObservableDtoViewModelBase<UserProfileDto>>? onSelectedChanged = default,
+		Action<ObsProfile>? onDeleted = default)
 	: base(profile, onSelectedChanged) {
-		_ = UPAdditionalDataRepo.Instance.Loginz
-					.Connect(i => i.ProfileId == profile.id)
-					.Bind(out var logins)
-					.Subscribe();
-		ProfileLogins = logins;
-		IsFavorite = profile.isFavourite;
 
 		AsyncCommandMap["OpenFirefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
 		AsyncCommandMap["OpenChrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);
 		AsyncCommandMap["OpenBrave"] = () => OpenSystemBrowser(SystemBrowserType.Brave);
 
 		AsyncCommandMap["Favorite"] = async () => {
-			IsFavorite = !IsFavorite;
-			_ = await UserProfilesRepo.SetProfileIsFavorite(profile, IsFavorite);
+			_ = await UserProfilesRepo.SetProfileIsFavorite(profile);
+			OnPropertyChanged(nameof(IsFavorite));
 		};
 		AsyncCommandMap["DeleteUserProfile"] = async () => {
 			if (await MessageBox.Show(
@@ -72,7 +73,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 				fontIconInfo: "DeleteLines"
 			)) {
 				_ = await UserProfilesRepo.Instance.Delete(profile.id);
-				if (Navigator.Instance.CanGoBack && Navigator.Instance.IsCurrentView("IdentityView")) Navigator.Instance.GoBack();
+				if (Navigator.Instance.IsCurrentView("IdentityView")) Navigator.GoBack();
 				
 				onDeleted?.Invoke(this);
 			}

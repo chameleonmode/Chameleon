@@ -84,7 +84,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		SelectedProfiles = selectedProfiles;
 
 		subscriptions.Add(
-			tagz.ToObservableChangeSet()
+			Tagz.ToObservableChangeSet()
 			.AutoRefresh(tag => tag.IsSelected)
 			.ToCollection()
 			.Subscribe(next =>
