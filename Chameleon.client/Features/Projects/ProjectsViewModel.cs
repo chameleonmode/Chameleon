@@ -17,6 +17,8 @@ public abstract partial class Projector(string? title = null) : ViewModelObjectB
 	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; protected set; } = new([]);
 	public ReadOnlyObservableCollection<ObsFolder> Folders { get; protected set; } = new([]);
 	public bool HasNoFolderItems => Folders.Count == 0;
+	public bool HasNoItems => Profiles.Count == 0;
+	// public bool IsProfilesExist => UserProfilesRepo.Instance.ObservableCache.Items.Any();
 }
 public partial class ProjectsViewModel : ViewModelObjectBase {
 	public ProfilesViewModel Profiles => ProfilesViewModel.Instance;

@@ -27,8 +27,6 @@ public abstract partial class Base(string? title) : Projector(title) {
 
 	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
 
-	public bool HasNoItems => Profiles.Count == 0;
-
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
 		profilesCompareObservable.OnNext(value switch {
 			Enums.ChangeComparereOption.Descending => ProfilesViewModel.DescendingComparer,

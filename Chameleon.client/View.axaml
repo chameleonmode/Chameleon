@@ -3,19 +3,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
-			 xmlns:userControls="using:Chameleon.client.UI.Components"
-			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
-			 xmlns:m="using:Chameleon.client.Features.Projects.Search"
-			 xmlns:searchFolder="using:Chameleon.client.Features.Projects.Search"
-			 xmlns:defaultSearch="using:Chameleon.client.Features.Projects.Search.Default"
-			 xmlns:tagSearch="using:Chameleon.client.Features.Projects.Search.ByTags"
+			 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+			 			 xmlns:userControls="using:Chameleon.client.UI.Components"
+			 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Dialogs"
+			 			 xmlns:m="using:Chameleon.client.Features.Projects.Search"
+			 			 xmlns:searchFolder="using:Chameleon.client.Features.Projects.Search"
+			 			 xmlns:defaultSearch="using:Chameleon.client.Features.Projects.Search.Default"
+			 			 xmlns:tagSearch="using:Chameleon.client.Features.Projects.Search.ByTags"
              xmlns:Features="using:Chameleon.client.Features" 
              xmlns:local="using:Chameleon.client" 
-			 x:Class="Chameleon.client.View"
+			 			 x:Class="Chameleon.client.View"
              x:DataType="local:ViewModel"
-			 x:CompileBindings="True">
+			 			 x:CompileBindings="True">
 	<UserControl.Styles>
 		<Style Selector="ui|NavigationView.MainAppNav">
 			<Setter Property="IsPaneToggleButtonVisible" Value="False" />
@@ -54,7 +54,6 @@
 										Height="20"
 										CornerRadius="{StaticResource ControlCornerRadius}"/>
 							</Panel>
-
 
 							<DockPanel>
 								<ContentPresenter Name="ContentPresenter"

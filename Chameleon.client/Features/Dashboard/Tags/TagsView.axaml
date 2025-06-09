@@ -23,16 +23,8 @@
 			</afv:ChameleonContentControl.Options>
 			<afv:ChameleonContentControl.Content>
 				<Panel>
-					<ListBox
-						Name="lbProfiles"
-						ItemsSource="{Binding Profiles}"
-						Theme="{StaticResource ListBoxNoScroller}"
-						ItemContainerTheme="{StaticResource GridViewItem}"
-						ItemsPanel="{StaticResource SingleColumnUniformGridTemplate}"
-						ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}"
-						VerticalAlignment="Top" />
-
-					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" Header="No profiles selected yet"/>
+					<ListBox Name="lbProfiles" Classes="uni" />
+					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" Header="No favorite profiles selected yet"/>
 				</Panel>
 			</afv:ChameleonContentControl.Content>
 		</afv:ChameleonContentControl>

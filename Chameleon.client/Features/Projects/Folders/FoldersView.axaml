@@ -19,29 +19,18 @@
 					<Panel>
 						<Button
 							Theme="{StaticResource TransparentButton}"
-							HorizontalAlignment="Stretch"
-							BorderThickness="0"
-							Padding="0"
 							Height="40"
+							Padding="0"
+							BorderThickness="0"
+							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Stretch"
 							CommandParameter="Open"
 							Command="{Binding AsyncCfVCommand}">
-							<Grid IsVisible="{Binding !IsRenamed}">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
-								<Viewbox
-									Width="20"
-									Height="20"
-									Margin="12 8"
-									VerticalAlignment="Center"
-									Name="IconHost"
-									Tag="{Binding Dto}">
+							<Grid IsVisible="{Binding !IsRenamed}" ColumnDefinitions="Auto,*">
+								<Viewbox Name="IconHost" Width="20" Height="20" Margin="12 8" VerticalAlignment="Center" Tag="{Binding Dto}">
 									<Grid VerticalAlignment="Center">
-										<afvc:SvgIconControl IconName="folder"  />
-										<afvc:SvgIconControl IconName="selected-folder" IsVisible="{Binding IsSelected}" />
+										<ui:SymbolIcon Symbol="Folder" IsVisible="{Binding !IsSelected}" Foreground="{DynamicResource AccentButtonBackground}" />
+										<ui:SymbolIcon Symbol="FolderFilled" IsVisible="{Binding IsSelected}" Foreground="{DynamicResource AccentButtonBackground}" />
 										<Grid
 											IsVisible="{Binding IsSharedFolder}"
 											VerticalAlignment="Bottom"
@@ -52,10 +41,7 @@
 									</Grid>
 								</Viewbox>
 
-								<TextBlock
-									VerticalAlignment="Center"
-									Text="{Binding Title}"
-									Grid.Column="1"/>
+								<TextBlock VerticalAlignment="Center" Text="{Binding Title}" Grid.Column="1" />
 							</Grid>
 						</Button>
 
@@ -63,7 +49,7 @@
 								IsVisible="{Binding IsSelected}"
 								VerticalAlignment="Center"
 								Height="40"
-								BorderThickness="0 0 0 1"/>
+								BorderThickness="0 0 0 1" />
 					</Panel>
 				</ControlTemplate>
 			</Setter>
@@ -135,12 +121,9 @@
 			</Panel>
 		</DataTemplate>
 	</UserControl.Resources>
-	<afv:ChameleonContentControl Title="Folders"
-								 Header=""
-								 TitleDescription="Select a folder to view profiles">
+	<afv:ChameleonContentControl Title="Folders" TitleDescription="Select a folder to view profiles">
 		<afv:ChameleonContentControl.TitleContent>
-			<StackPanel Orientation="Horizontal"
-						HorizontalAlignment="Right">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 				<Button Tag="New"
 						Margin="0 0 6 6"
 						Content="new-folder"

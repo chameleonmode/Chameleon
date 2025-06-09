@@ -84,11 +84,9 @@ public partial class ProfilesViewModel : Projector {
 	public ChangeComparereOption[] Sorts { get; } = (ChangeComparereOption[])Enum.GetValues(typeof(ChangeComparereOption));
 
 	public bool HasFolder => Folder != null && Folder.Id != 0;
-	public bool HasNoItems => Profiles.Count == 0;
 	public string SelectedFolderTitle => Folder?.Title ?? "x_x";
 	public int SelectedCount => GetSelectedProfiles?.Count() ?? 0;
 	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
-	public bool IsProfilesExist => UserProfilesRepo.Instance.ObservableCache.Items.Any();
 	private IEnumerable<ObsProfile> GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
 	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
 	public int MaxInFolderItems =>
@@ -369,7 +367,6 @@ public partial class ProfilesViewModel : Projector {
 
 		OnPropertyChanged(nameof(HasFolder));
 		OnPropertyChanged(nameof(HasNoItems));
-		OnPropertyChanged(nameof(IsProfilesExist));
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedFolderTitle));
 		OnPropertyChanged(nameof(HasProfileWithoutFolder));

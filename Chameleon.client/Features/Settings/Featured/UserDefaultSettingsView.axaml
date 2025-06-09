@@ -84,19 +84,19 @@
 						<ListBox ItemsSource="{Binding ViewModels}">
 							<ListBox.ItemTemplate>
 								<DataTemplate>
-									<Grid Margin="{StaticResource ChameleonInnerControlMargin}"
+									<Grid Margin="4"
 										  ColumnDefinitions="Auto,*,Auto">
 										<CheckBox Grid.Column="0"
 												  IsChecked="{Binding IsChecked}"/>
 										<TextBox Grid.Column="1"
-												  Margin="{StaticResource ChameleonInnerControlMargin}"
-												 Text="{Binding DefaultUrl}"  />
+												  Margin="4"
+												  Text="{Binding DefaultUrl}"  />
 										<Button Theme="{DynamicResource TransparentButton}"
-												Grid.Column="2"
-												 Margin="{StaticResource ChameleonInnerControlMargin}"
-												Content="Delete"
+												 Grid.Column="2"
+												 Margin="4"
+												 Content="Delete"
 												 Classes="accent"
-												Command="{Binding DeleteDefaultSettingsCommand}">
+												 Command="{Binding DeleteDefaultSettingsCommand}">
 											<ui:SymbolIcon Symbol="Delete" />
 										</Button>
 									</Grid>

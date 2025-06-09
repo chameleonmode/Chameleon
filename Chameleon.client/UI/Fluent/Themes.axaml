@@ -167,8 +167,7 @@
 														Grid.Row="1">
 										<ContentPresenter.Transitions>
 											<Transitions>
-												<ThicknessTransition Duration="00:00:00.167"
-																	 Property="Padding" />
+												<ThicknessTransition Duration="00:00:00.167" Property="Padding" />
 											</Transitions>
 										</ContentPresenter.Transitions>
 									</ContentPresenter>
@@ -176,12 +175,13 @@
 									<!-- Options Area -->
 									<Border Name="OptionsHost"
 											VerticalAlignment="Top"
-											Margin="12 0 12 12"
-											Padding="12"
 											Grid.Column="1"
 											Grid.Row="1"
+											Margin="12 0 12 12"
+											Padding="12"
 											BorderThickness="1"
 											Opacity="1"
+											IsVisible="False"
 											CornerRadius="{DynamicResource OverlayCornerRadius}"
 											Background="{DynamicResource LayerFillColorDefaultBrush}"
 											BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">

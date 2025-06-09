@@ -1,8 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia;
 using Avalonia.Controls.Primitives;
-using Avalonia.Interactivity;
-
 namespace Chameleon.client.UI.Controls;
 
 public class ChameleonContentControl : HeaderedContentControl {

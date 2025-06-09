@@ -6,6 +6,7 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceInclude Source="Fluent/Themes.axaml" />
+				<ResourceInclude Source="Fluent/Resources.axaml" />
 				<ResourceInclude Source="Themes.axaml" />
 				<ResourceInclude Source="Templates.axaml" />
 			</ResourceDictionary.MergedDictionaries>
@@ -19,14 +20,19 @@
 		<Setter Property="Theme" Value="{DynamicResource ListBoxNoScroller}" />
 		<Setter Property="ItemContainerTheme" Value="{DynamicResource GridViewItem}" />
 	</Style>
+	<Style Selector="ListBox#lbProfiles">
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="ItemTemplate" Value="{StaticResource UserProfileUserControlDataTemplate}" />
+		<Setter Property="ItemsSource" Value="{ReflectionBinding Profiles}" />
+	</Style>
 	<Style Selector="ListBox#lbFolders">
+		<Setter Property="VerticalAlignment" Value="Top" />
 		<Setter Property="Theme" Value="{StaticResource ListBoxNoScroller}" />
 		<Setter Property="ItemContainerTheme" Value="{StaticResource GridViewItem}" />
 		<Setter Property="ItemsPanel" Value="{StaticResource DoubleColumnUniformGridTemplate}" />
 		<Setter Property="ItemTemplate" Value="{StaticResource UserFolderUserControlDataTemplate}" />
 		<Setter Property="IsVisible" Value="{ReflectionBinding !HasNoFolderItems}" />
 		<Setter Property="ItemsSource" Value="{ReflectionBinding Folders}" />
-		<Setter Property="VerticalAlignment" Value="Top" />
 	</Style>
 
 	<!--Stack Pannel-->

@@ -10,11 +10,6 @@
     Using Theme Variants:         https://docs.avaloniaui.net/docs/guides/styles-and-resources/how-to-use-theme-variants
 -->
 	<Application.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceInclude Source="avares://Chameleon.app.Avalonia/Fluent/Styling/Resources.axaml" />
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
 		<FontFamily x:Key="ContentControlThemeFontFamily">avares://Chameleon.app.Avalonia/Assets/Fonts/Nunito#Nunito</FontFamily>
 	</Application.Resources>
 

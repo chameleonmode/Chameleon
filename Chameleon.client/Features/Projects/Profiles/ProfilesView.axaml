@@ -106,9 +106,7 @@
 		</afv:ChameleonContentControl.Header>
 
 		<afv:ChameleonContentControl.Options>
-			<StackPanel
-				IsVisible="{Binding IsProfilesExist}"
-				Spacing="12">
+			<StackPanel IsVisible="{Binding !HasNoItems}" Spacing="12">
 				<Button
 					Content="select-all"
 					Tag="Select all"
@@ -121,13 +119,11 @@
 					Theme="{StaticResource SvgIconTextButton}"
 					Command="{Binding CfVCommand}"
 					CommandParameter="SelectAllProfilesFromFolder" />
-				<StackPanel
-					Orientation="Horizontal"
-					Margin="2 0 0 0">
+				<StackPanel Orientation="Horizontal" Margin="2 0 0 0">
 					<StackPanel.IsVisible>
 						<MultiBinding Converter="{x:Static BoolConverters.And}">
 							<Binding Path="HasFolder"/>
-							<Binding Path="IsProfilesExist"/>
+							<Binding Path="!HasNoItems"/>
 						</MultiBinding>
 					</StackPanel.IsVisible>
 					<Button
@@ -137,7 +133,7 @@
 						Command="{Binding AsyncCfVCommand}"
 						CommandParameter="AddProfilesToFolder" />
 				</StackPanel>
-				<afvc:HeaderdInputFieldsControl Title="Tags:" Text="{Binding Folder.Tags, FallbackValue=reddit-account}">
+				<afvc:HeaderdInputFieldsControl Title="Tags:" Text="{Binding Folder.Tags, FallbackValue=somaccount}">
 					<afvc:HeaderdInputFieldsControl.Buttons>
 						<Button
 							Content="Save"
@@ -149,10 +145,10 @@
 					</afvc:HeaderdInputFieldsControl.Buttons>
 				</afvc:HeaderdInputFieldsControl>
 				<ui:FAComboBox
+					Header="Sort:"
 					Width="200"
 					IsEditable="False"
 					HorizontalAlignment="Right"
-					Header="Sort:"
 					ItemsSource="{Binding Sorts}"
 					SelectedItem="{Binding SortSelected}" />
 
@@ -254,31 +250,10 @@
 		</afv:ChameleonContentControl.Options>
 
 		<afv:ChameleonContentControl.Content>
-			<Panel>
-				<Panel VerticalAlignment="Top">
-					<Panel.IsVisible>
-						<MultiBinding Converter="{x:Static BoolConverters.And}">
-							<Binding Path="!HasNoItems"/>
-							<Binding Path="IsProfilesExist"/>
-						</MultiBinding>
-					</Panel.IsVisible>
-					<ListBox
-						ItemContainerTheme="{StaticResource GridViewItem}"
-						ItemsPanel="{StaticResource SingleColumnUniformGridTemplate}"
-						Name="lbProfiles"
-						ItemsSource="{Binding Profiles}"
-						ItemTemplate="{StaticResource UserProfileUserControlDataTemplate}" />
-				</Panel>
 				<Panel>
-					<Panel.IsVisible>
-						<MultiBinding Converter="{x:Static BoolConverters.Or}">
-							<Binding Path="HasNoItems" />
-							<Binding Path="!IsProfilesExist"/>
-						</MultiBinding>
-					</Panel.IsVisible>
-					<afvc:SvgIconControl IconName="not-profiles" Width="128" Margin="0 0 0 178" />
+					<ListBox Name="lbProfiles" Classes="uni" />
+					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" Header="No profiles"/>
 				</Panel>
-			</Panel>
 		</afv:ChameleonContentControl.Content>
 	</afv:ChameleonContentControl>
 </UserControl>
