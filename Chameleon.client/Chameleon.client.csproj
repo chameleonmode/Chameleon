@@ -50,4 +50,8 @@
       <DependentUpon>View.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UI/Dialogs/" />
+  </ItemGroup>
 </Project>

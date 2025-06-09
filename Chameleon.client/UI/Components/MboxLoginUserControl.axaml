@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
+						 xmlns:vm="using:Chameleon.client.UI.Components.ViewModels"
+             x:Class="Chameleon.client.UI.Components.MboxLoginUserControl"
+						 x:DataType="vm:MboxLoginViewModel">
+	<afv:ChameleonDialogControl>
+		<afv:ChameleonDialogControl.DialogInputs>
+			<afv:DialogInputHost TextLabel="Email:" Text="{Binding UserName}" />
+			<afv:DialogInputHost TextLabel="Licence Key:" Text="{Binding LicenceKey}" />
+		</afv:ChameleonDialogControl.DialogInputs>
+		<afv:ChameleonDialogControl.Content>
+			<CheckBox Margin="0 18 0 0" Content="Auto Login" IsChecked="{Binding AutoLogin}" />
+		</afv:ChameleonDialogControl.Content>
+	</afv:ChameleonDialogControl>
+</UserControl>

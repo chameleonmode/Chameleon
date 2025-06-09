@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
-             xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
              xmlns:vm="using:Chameleon.client.Features.Automation.Actors.Dialogs"
              xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
              xmlns:dd="using:DynamicData" 
@@ -25,8 +25,8 @@
 
 	</UserControl.Resources>
 
-	<dialogs:ChameleonDialogControl>
-		<dialogs:ChameleonDialogControl.Content>
+	<afv:ChameleonDialogControl>
+		<afv:ChameleonDialogControl.Content>
 			<StackPanel Spacing="10">
 				<TextBox Text="{Binding SearchText, Mode=TwoWay}"
 						 Watermark="Search..."
@@ -63,6 +63,6 @@
 				</ScrollViewer>
 
 			</StackPanel>
-		</dialogs:ChameleonDialogControl.Content>
-	</dialogs:ChameleonDialogControl>
+		</afv:ChameleonDialogControl.Content>
+	</afv:ChameleonDialogControl>
 </UserControl>

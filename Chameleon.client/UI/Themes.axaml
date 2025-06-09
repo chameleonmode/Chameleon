@@ -138,6 +138,75 @@
 		</Setter>
 	</ControlTheme>
 
+	<ControlTheme TargetType="local:HeaderdInputFieldsControl" x:Key="{x:Type local:HeaderdInputFieldsControl}">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid RowDefinitions="Auto,Auto,*">
+					<Grid.Styles>
+						<Style Selector="TextBox">
+							<Setter Property="Margin" Value="0 0 6 6"/>
+						</Style>
+					</Grid.Styles>
+					<TextBlock Margin="0 0 0 4"
+							   IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNull}}"
+							   Text="{TemplateBinding Title}" />
+					<TextBlock Margin="0 0 0 -6"
+							   IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNotNull}}"
+							   Text="{TemplateBinding Title}" />				
+					
+					<Grid Grid.Row="1"
+						VerticalAlignment="Top"
+						IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNull}}"
+						ColumnDefinitions="*,Auto">
+						<Panel>
+							<!-- DataValidationErrors -->
+							<DataValidationErrors Name="PART_DataValidation" Errors="{TemplateBinding (DataValidationErrors.Errors)}">
+								<TextBox Text="{TemplateBinding Text, Mode=TwoWay}" 
+									MaxLength="10000"
+									VerticalAlignment="Top"
+								  Watermark="{TemplateBinding PlaceholderText}"/>
+							</DataValidationErrors>
+
+							<Button Grid.Column="1"
+								HorizontalAlignment="Right"
+								Margin="0 -6 4 0"
+								Theme="{StaticResource SvgIconButton}"
+								Command="{ReflectionBinding CopyCommand}"
+								CommandParameter="{TemplateBinding Text}"
+								IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNotNull}}"
+								Content="{TemplateBinding Tag}" />
+						</Panel>
+
+							<ItemsControl Grid.Column="1"
+										  Margin="-2 -4 4 0"
+										  ItemsSource="{TemplateBinding Buttons}"
+										  KeyboardNavigation.TabNavigation="Continue">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<UniformGrid Rows="1" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+							</ItemsControl>
+					</Grid>
+
+					<!-- TextBoxes -->
+					<ItemsControl Name="TextBoxesHost"
+						ItemsSource="{TemplateBinding TextBoxes}"
+						Grid.Row="2"
+						VerticalAlignment="Top"
+						HorizontalAlignment="Stretch"
+						KeyboardNavigation.TabNavigation="Continue">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<local:UniformWidthPanel />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+					</ItemsControl>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
 	<ControlTheme x:Key="HasSelectedItemsBorder" TargetType="HeaderedContentControl">
 		<Setter Property="IsVisible" Value="{ReflectionBinding HasSelectedItems}" />
 		<Setter Property="VerticalAlignment" Value="Bottom" />
@@ -221,75 +290,6 @@
 		</Setter>
 	</ControlTheme>
 
-	<ControlTheme TargetType="local:HeaderdInputFieldsControl" x:Key="{x:Type local:HeaderdInputFieldsControl}">
-		<Setter Property="Template">
-			<ControlTemplate>
-				<Grid RowDefinitions="Auto,Auto,*">
-					<Grid.Styles>
-						<Style Selector="TextBox">
-							<Setter Property="Margin" Value="0 0 6 6"/>
-						</Style>
-					</Grid.Styles>
-					<TextBlock Margin="0 0 0 4"
-							   IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNull}}"
-							   Text="{TemplateBinding Title}" />
-					<TextBlock Margin="0 0 0 -6"
-							   IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNotNull}}"
-							   Text="{TemplateBinding Title}" />				
-					
-					<Grid Grid.Row="1"
-						VerticalAlignment="Top"
-						IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNull}}"
-						ColumnDefinitions="*,Auto">
-						<Panel>
-							<!-- DataValidationErrors -->
-							<DataValidationErrors Name="PART_DataValidation" Errors="{TemplateBinding (DataValidationErrors.Errors)}">
-								<TextBox Text="{TemplateBinding Text, Mode=TwoWay}" 
-									MaxLength="10000"
-									VerticalAlignment="Top"
-								  Watermark="{TemplateBinding PlaceholderText}"/>
-							</DataValidationErrors>
-
-							<Button Grid.Column="1"
-								HorizontalAlignment="Right"
-								Margin="0 -6 4 0"
-								Theme="{StaticResource SvgIconButton}"
-								Command="{ReflectionBinding CopyCommand}"
-								CommandParameter="{TemplateBinding Text}"
-								IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNotNull}}"
-								Content="{TemplateBinding Tag}" />
-						</Panel>
-
-							<ItemsControl Grid.Column="1"
-										  Margin="-2 -4 4 0"
-										  ItemsSource="{TemplateBinding Buttons}"
-										  KeyboardNavigation.TabNavigation="Continue">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<UniformGrid Rows="1" />
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-							</ItemsControl>
-					</Grid>
-
-					<!-- TextBoxes -->
-					<ItemsControl Name="TextBoxesHost"
-						ItemsSource="{TemplateBinding TextBoxes}"
-						Grid.Row="2"
-						VerticalAlignment="Top"
-						HorizontalAlignment="Stretch"
-						KeyboardNavigation.TabNavigation="Continue">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<local:UniformWidthPanel />
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-					</ItemsControl>
-				</Grid>
-			</ControlTemplate>
-		</Setter>
-	</ControlTheme>
-
 	<ControlTheme TargetType="local:SvgIcon" x:Key="{x:Type local:SvgIcon}">
 		<Setter Property="Template">
 			<ControlTemplate>
@@ -339,6 +339,76 @@
 						<TextBlock Text="{TemplateBinding Tag}" Margin="0 0 12 0" VerticalAlignment="Center"/>
 					</StackPanel> 		  
 				</Border>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+	
+	<ControlTheme TargetType="local:ChameleonDialogControl" x:Key="{x:Type local:ChameleonDialogControl}">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ThemeVariantScope Name="ThemeScopeProvider">
+					<StackPanel>
+						<!-- Header -->
+						<ContentPresenter Name="HeaderPresenter"
+										  Content="{TemplateBinding Header}"
+										  ContentTemplate="{TemplateBinding HeaderTemplate}"
+										  FontSize="14"
+										  FontWeight="SemiBold"
+										  HorizontalContentAlignment="Center"
+										  VerticalContentAlignment="Center" />
+
+
+						<TextBlock Text="{TemplateBinding TitleDescription}"
+								   IsVisible="{TemplateBinding TitleDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+								   TextWrapping="Wrap"/>
+						<!--Input Options-->
+						<ItemsControl Name="DialogsHost">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Spacing="2" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+						</ItemsControl>
+
+						<!-- Area -->
+						<Border Name="ControlPreviewAreaHost"
+								Margin="0 6 0 0"
+								BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+								BorderThickness="0"
+								TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+								CornerRadius="{DynamicResource ControlCornerRadius}">
+							<ContentPresenter Name="ContentsPresenter"
+											  Content="{TemplateBinding Content}"
+											  ContentTemplate="{TemplateBinding ContentTemplate}"
+											  HorizontalAlignment="Stretch"
+											  VerticalAlignment="Stretch"
+											  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+											  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+								<ContentPresenter.Transitions>
+									<Transitions>
+										<ThicknessTransition Duration="00:00:00.167" Property="Padding" />
+									</Transitions>
+								</ContentPresenter.Transitions>
+							</ContentPresenter>
+						</Border>
+					</StackPanel>
+				</ThemeVariantScope>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^ /template/ Border#ControlPreviewAreaHost">
+			<Setter Property="CornerRadius"
+					Value="{Binding Source={StaticResource OverlayCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}" />
+		</Style>
+	</ControlTheme>
+	
+	<ControlTheme x:Key="{x:Type local:DialogInputHost}" TargetType="local:DialogInputHost">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<StackPanel>
+					<TextBlock Name="TextLabel" Text="{TemplateBinding TextLabel}" Margin="0 6"/>
+					<TextBox Name="TextPresenter" Text="{TemplateBinding Text, Mode=TwoWay}"  Margin="0 0 0 6" />
+				</StackPanel>
 			</ControlTemplate>
 		</Setter>
 	</ControlTheme>

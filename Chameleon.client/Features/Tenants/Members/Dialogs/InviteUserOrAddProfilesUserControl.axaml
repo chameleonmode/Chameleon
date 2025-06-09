@@ -3,23 +3,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="450"
-						 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
-						 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
 						 xmlns:local="using:Chameleon.client.Features.Tenants.Members.Dialogs"
              x:Class="Chameleon.client.Features.Tenants.Members.Dialogs.InviteUserOrAddProfilesUserControl"
 						 x:DataType="local:InviteUserOrAddProfilesViewModel"
 						 x:CompileBindings="True">
-	<dialogs:ChameleonDialogControl>
-		<dialogs:ChameleonDialogControl.DialogInputs>
-			<dialogs:DialogInputHost TextLabel="Username:"
+	<afv:ChameleonDialogControl>
+		<afv:ChameleonDialogControl.DialogInputs>
+			<afv:DialogInputHost TextLabel="Username:"
 									 Text="{Binding AssistantName}"
 									 IsVisible="{Binding ShowUserInfo}"/>
-			<dialogs:DialogInputHost TextLabel="Email:"
+			<afv:DialogInputHost TextLabel="Email:"
 									 Text="{Binding AssistantEmail}"
 									 IsVisible="{Binding ShowUserInfo}"/>
-		</dialogs:ChameleonDialogControl.DialogInputs>
+		</afv:ChameleonDialogControl.DialogInputs>
 
-		<dialogs:ChameleonDialogControl.Content>
+		<afv:ChameleonDialogControl.Content>
 			<StackPanel Spacing="6">
 				<Expander Header="Folders">
 					<StackPanel>
@@ -45,6 +44,6 @@
 					</StackPanel>
 				</Expander>
 			</StackPanel>
-		</dialogs:ChameleonDialogControl.Content>
-	</dialogs:ChameleonDialogControl>
+		</afv:ChameleonDialogControl.Content>
+	</afv:ChameleonDialogControl>
 </UserControl>

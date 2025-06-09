@@ -3,15 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="350"
-             xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
              xmlns:vm="using:Chameleon.client.Features.Automation.Actors.Dialogs"
              xmlns:actorVM="using:Chameleon.client.Features.Automation.Actors"
              x:DataType="vm:ScriptsSelectorViewModel"
              x:CompileBindings="True"
              x:Class="Chameleon.client.Features.Automation.Actors.Dialogs.ScriptsSelectorView">
-
-	<dialogs:ChameleonDialogControl>
-		<dialogs:ChameleonDialogControl.Content>
+	<afv:ChameleonDialogControl>
+		<afv:ChameleonDialogControl.Content>
 			<ScrollViewer>
 				<ItemsControl ItemsSource="{Binding AvailableSelections}"
                               Margin="0,10,0,0">
@@ -29,6 +28,6 @@
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 			</ScrollViewer>
-		</dialogs:ChameleonDialogControl.Content>
-	</dialogs:ChameleonDialogControl>
+		</afv:ChameleonDialogControl.Content>
+	</afv:ChameleonDialogControl>
 </UserControl>

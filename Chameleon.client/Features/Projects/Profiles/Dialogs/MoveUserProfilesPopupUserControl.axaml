@@ -4,16 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
-			 xmlns:local="using:Chameleon.client.Features.Projects.Profiles.Dialogs"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
+						 xmlns:local="using:Chameleon.client.Features.Projects.Profiles.Dialogs"
              x:Class="Chameleon.client.Features.Projects.Profiles.Dialogs.MoveUserProfilesPopupUserControl"
-			 x:DataType="local:MoveUserProfilesPopupViewModel"
-			 x:CompileBindings="True">
-	<dialogs:ChameleonDialogControl>
-		<dialogs:ChameleonDialogControl.Content>
-			<StackPanel Margin="10"
-						Spacing="6">
+						 x:DataType="local:MoveUserProfilesPopupViewModel"
+						 x:CompileBindings="True">
+	<afv:ChameleonDialogControl>
+		<afv:ChameleonDialogControl.Content>
+			<StackPanel Margin="10" Spacing="6">
 				<TextBlock 
 					Text="{Binding SelectedFolder.Title,FallbackValue=Select a Folder}"
 					IsVisible="{Binding SelectedFolder.Title, Converter={x:Static ObjectConverters.IsNull}}"
@@ -21,13 +19,12 @@
 					Theme="{StaticResource SubtitleTextBlockStyle}"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Center"/>
-
 				<ui:FAComboBox HorizontalAlignment="Stretch"
 							   DisplayMemberBinding="{Binding Title}"
 							   SelectedItem="{Binding SelectedFolder}"
 							   ItemsSource="{Binding Folders}"
 							   IsTextSearchEnabled="True" />
 			</StackPanel>
-		</dialogs:ChameleonDialogControl.Content>
-	</dialogs:ChameleonDialogControl>
+		</afv:ChameleonDialogControl.Content>
+	</afv:ChameleonDialogControl>
 </UserControl>

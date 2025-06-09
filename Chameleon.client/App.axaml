@@ -3,7 +3,7 @@
              xmlns:sty="using:FluentAvalonia.Styling"
              x:Class="Chameleon.client.App"
              RequestedThemeVariant="Default"
-			 Name="Chameleon">
+						 Name="Chameleon">
 <!--
     Additional resources 
     Using Control Themes:         https://docs.avaloniaui.net/docs/basics/user-interface/styling/control-themes
@@ -14,10 +14,10 @@
 	</Application.Resources>
 
 	<Application.Styles>
-		<sty:FluentAvaloniaTheme PreferSystemTheme="True" PreferUserAccentColor="True"
-								 TextVerticalAlignmentOverrideBehavior="AlwaysEnabled" />
+		<sty:FluentAvaloniaTheme PreferSystemTheme="True" 
+				PreferUserAccentColor="True"
+				TextVerticalAlignmentOverrideBehavior="AlwaysEnabled" />
 		<StyleInclude Source="UI/Styles.axaml" />
-		<StyleInclude Source="avares://Chameleon.app.Avalonia/Fluent/Styling/ChameleonStyles.axaml" />
 	</Application.Styles>
 
 	<NativeMenu.Menu>

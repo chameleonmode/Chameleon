@@ -4,15 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
-			 xmlns:ct="using:Chameleon.client.MvvM"
-			 xmlns:local="using:Chameleon.client.Features.Projects.Profiles.Dialogs"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
+						 xmlns:local="using:Chameleon.client.Features.Projects.Profiles.Dialogs"
              x:Class="Chameleon.client.Features.Projects.Profiles.Dialogs.AddUserProfilesPopupUserControl"
-			 x:DataType="local:AddUserProfilesPupViewModel"
-			 x:CompileBindings="True">
-	<dialogs:ChameleonDialogControl>
-		<dialogs:ChameleonDialogControl.Content>
+						 x:DataType="local:AddUserProfilesPupViewModel"
+						 x:CompileBindings="True">
+	<afv:ChameleonDialogControl>
+		<afv:ChameleonDialogControl.Content>
 			<Grid RowDefinitions="Auto,*">
 				<ItemsControl
 						ItemsSource="{Binding SelectedProfiles}"
@@ -28,6 +26,6 @@
 						ItemsPanel="{StaticResource DoubleColumnUniformGridTemplate}"/>
 				</Expander>
 			</Grid>
-		</dialogs:ChameleonDialogControl.Content>
-	</dialogs:ChameleonDialogControl>
+		</afv:ChameleonDialogControl.Content>
+	</afv:ChameleonDialogControl>
 </UserControl>

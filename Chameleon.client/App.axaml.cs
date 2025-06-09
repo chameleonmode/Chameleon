@@ -20,7 +20,7 @@ using Chameleon.client.Services;
 using Chameleon.client.UI.Components;
 using FluentAvalonia.UI.Windowing;
 using Chameleon.client.Features.Settings.Featured;
-using Chameleon.client.UI.Dialogs;
+using Chameleon.client.UI.Components.ViewModels;
 
 namespace Chameleon.client;
 
