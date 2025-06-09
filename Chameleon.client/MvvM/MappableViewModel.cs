@@ -1,8 +1,9 @@
-﻿using Chameleon.lib.Common.Models.Dto;
-using CommunityToolkit.Mvvm.ComponentModel;
+using System.Reflection;
 using DynamicData.Binding;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Chameleon.lib.Common.Models.Dto;
 
-namespace Chameleon.lib.CommunityToolkit.MvvM;
+namespace Chameleon.client.MvvM;
 
 public abstract class DtoViewModelBase<T> : ViewModelObjectBase where T : Dto {
 	public T Dto { get; set; }
@@ -40,3 +41,28 @@ public abstract partial class ObservableDtoViewModelBase<T>(T dto, Action<Observ
 	public virtual void OnAnyIsSelectedChanged(bool value) { }
 }
 
+public abstract class MappableViewModelBase<T>(T dto) : DtoViewModelBase<T>(dto) where T : Dto {
+  public virtual T ToDto() {
+    var viewModelType = GetType();
+    var dtoType = typeof(T);
+
+    var viewModelProperties = viewModelType
+    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+    .Where(p => p.CanRead);
+
+    var dtoProperties = dtoType
+    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+    .Where(p => p.CanWrite)
+    .ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase);
+
+    foreach (var vmProp in viewModelProperties) {
+      if (dtoProperties.TryGetValue(vmProp.Name, out var dtoProp) &&
+        dtoProp.PropertyType.IsAssignableFrom(vmProp.PropertyType)) {
+        var value = vmProp.GetValue(this);
+        dtoProp.SetValue(Dto, value);
+      }
+    }
+
+    return Dto;
+  }
+}

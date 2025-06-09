@@ -16,7 +16,7 @@ using Chameleon.lib.WebBrowser;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.Util;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.client.UI.Components.ViewModels;

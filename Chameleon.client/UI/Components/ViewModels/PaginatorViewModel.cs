@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 

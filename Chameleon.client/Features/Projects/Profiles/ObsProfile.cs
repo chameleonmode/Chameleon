@@ -4,14 +4,14 @@ using DynamicData;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 using Chameleon.lib.WebBrowser.Services;
 using Chameleon.lib.Util;
 using static Chameleon.lib.Common.Constants.Enums;
 using Chameleon.lib.WebBrowser;
 using Chameleon.lib.Helpers;
-using Chameleon.app.Avalonia;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
+using Chameleon.client.Services;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 

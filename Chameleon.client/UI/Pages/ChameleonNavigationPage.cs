@@ -4,10 +4,10 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
-using Chameleon.Av.Fluent.Common.Controls;
+using Chameleon.client.UI.Controls;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.Util;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
@@ -25,9 +25,6 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 		// Back/Forward navigation and not just explicit page invokes
 		AddHandler(Frame.NavigatingFromEvent, OnNavigatingFrom, RoutingStrategies.Direct);
 		AddHandler(Frame.NavigatedToEvent, OnNavigatedTo, RoutingStrategies.Direct);
-
-		//Tapped += OnPageTapped;
-		//DoubleTapped += OnPageTapped;
 	}
 
 	public virtual void OnAfterNavigatedToViewModel(object param) { }
@@ -42,13 +39,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 			_ = ExUtil.TryCatch(() => {
 				var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
 				var anim = svc.GetAnimation("BackAnimation");
-
-				if (anim == null)
-					return false;
-
-				GetNavAnimationVisuals(_navParam);
-
-				if (_animationPage == null) return false;
+				if (anim == null || !GetNavAnimationVisuals()) return false;
 
 				// In WinUI, ConnectedAnimation is somehow exempt from all clipping behaviors
 				// Here, we are not, so disable ClipToBounds on all elements in the SettingsExpander
@@ -57,7 +48,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 				// the animation will be cut off, but the back animation is pretty fast and mostly is
 				// only visible closer to the element so we're ok, I think
 				var x = _animationPage.GetVisualParent();
-				while (x is not ScrollContentPresenter && x != null) {
+				while (x is not ScrollContentPresenter and not null) {
 					x.ClipToBounds = false;
 					x = x.GetVisualParent();
 				}
@@ -73,10 +64,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 
 	private void OnNavigatingFrom(object? sender, NavigatingCancelEventArgs e) {
 		_navParam = e.Parameter;
-
-		GetNavAnimationVisuals(_navParam);
-
-		if (_animationPage is not null) {
+		if (GetNavAnimationVisuals()) {
 			var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
 			try {
 				_ = svc.PrepareToAnimate("ForwardAnimation", _animationPage);
@@ -87,20 +75,20 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 		}
 	}
 
-	private void GetNavAnimationVisuals(object? navParam) {
+	private bool GetNavAnimationVisuals() {
 		_animationPage = _animationPageParent = null;
 
-		if (navParam is string command) {
+		if (_navParam is string command) {
 			_animationPageParent = this
 				.GetVisualDescendants()?
 				.Where(x => x is ICommandSource { CommandParameter: string cmd } && cmd == command)?
 				.FirstOrDefault();
-				
+
 			_animationPage = _animationPageParent?
 				.GetVisualDescendants()?
 				.Where(x => x.Name == "IconHost")?
 				.FirstOrDefault();
-		} else if (navParam is UserProfileDto iprofile) {
+		} else if (_navParam is UserProfileDto iprofile) {
 			_animationPageParent = this
 					.GetVisualDescendants()?
 					.Where(x => x is ListBox && x.Name == "lbProfiles")?
@@ -116,7 +104,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 					.FirstOrDefault();
 			}
 			_animationPage ??= _animationPageParent;
-		} else if (navParam is UPFolderDto f) {
+		} else if (_navParam is UPFolderDto f) {
 			_animationPageParent = this
 					.GetVisualDescendants()
 					.Where(x => x.DataContext is DtoViewModelBase<UPFolderDto>)?
@@ -126,5 +114,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 					 .Where(x => x.Name == "IconHost" && ((x as Control)?.Tag as UPFolderDto)?.id == f.id)?
 					 .FirstOrDefault();
 		}
+
+		return _animationPage is not null;
 	}
 }

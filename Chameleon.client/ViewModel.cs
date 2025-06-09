@@ -8,10 +8,8 @@ using System.Reactive.Linq;
 using DynamicData;
 using DynamicData.PLinq;
 
-using Chameleon.app.Avalonia;
-
 using Chameleon.lib.Util;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Common.Models.Dto;
 using Chameleon.client.Features.Projects.Search;
@@ -23,6 +21,7 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.client.Features;
 using Chameleon.client.Features.Projects.Profiles;
+using Chameleon.client.Services;
 
 namespace Chameleon.client;
 

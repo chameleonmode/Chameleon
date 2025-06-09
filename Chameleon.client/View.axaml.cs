@@ -6,9 +6,9 @@ using Avalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using FluentAvalonia.UI.Windowing;
-using Chameleon.app.Avalonia;
 using Chameleon.client.Features.Settings.Featured;
 using Chameleon.client.UI.Pages;
+using Chameleon.client.Services;
 namespace Chameleon.client;
 public class PageModelBase {
 	public Type? Tag { get; set; }

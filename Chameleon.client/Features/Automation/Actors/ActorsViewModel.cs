@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 using RedditActor = Chameleon.AIR.Actors.Models.Reddit.Actor;
 using Chameleon.lib.Const;
 using Chameleon.AIR.Actors.Models;

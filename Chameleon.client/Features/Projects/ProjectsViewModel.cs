@@ -4,13 +4,12 @@ using Chameleon.lib.Api;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.Common.Constants;
-using Chameleon.lib.CommunityToolkit.MvvM;
-
-using Chameleon.app.Avalonia;
+using Chameleon.client.MvvM;
 
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.client.Features.Projects.Profiles.Identity;
+using Chameleon.client.Services;
 
 namespace Chameleon.client.Features.Projects;
 

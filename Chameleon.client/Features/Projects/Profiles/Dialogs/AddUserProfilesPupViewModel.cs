@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 

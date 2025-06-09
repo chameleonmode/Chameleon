@@ -6,7 +6,7 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:dialogs="using:Chameleon.Av.Fluent.Common.Controls.Dialogs"
-			 xmlns:ct="using:Chameleon.lib.CommunityToolkit.MvvM"
+			 xmlns:ct="using:Chameleon.client.MvvM"
 			 xmlns:local="using:Chameleon.client.Features.Projects.Profiles.Dialogs"
              x:Class="Chameleon.client.Features.Projects.Profiles.Dialogs.AddUserProfilesPopupUserControl"
 			 x:DataType="local:AddUserProfilesPupViewModel"

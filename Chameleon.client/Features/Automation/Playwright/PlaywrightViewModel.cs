@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 using Chameleon.lib;
 using Chameleon.lib.Playwright.Services;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 
 using Chameleon.client.Features.Automation.Playwright.ViewModels;
 using Chameleon.lib.Util;

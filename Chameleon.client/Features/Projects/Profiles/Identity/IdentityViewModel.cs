@@ -5,7 +5,7 @@ using Chameleon.client.Features.Projects.Profiles.Identity.Persons;
 using Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;

@@ -5,7 +5,7 @@ using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ReactiveValidation;
 using ReactiveValidation.Extensions;
-using Chameleon.client.Libs.MvvM;
+using Chameleon.client.MvvM;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.Businesses;
 

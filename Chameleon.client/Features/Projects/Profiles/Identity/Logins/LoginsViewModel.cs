@@ -1,5 +1,5 @@
 using Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
-using Chameleon.client.Libs.MvvM;
+using Chameleon.client.MvvM;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;

@@ -6,9 +6,9 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Rendering.Composition;
 using Avalonia.Styling;
-using Chameleon.Av.Fluent.Common.Controls;
+using Chameleon.client.UI.Controls;
 using Chameleon.lib.Common.Util;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;

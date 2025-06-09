@@ -1,27 +1,22 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-
 using Chameleon.lib;
 using Chameleon.lib.Common.Interfaces.Sys;
 
 using System.Reflection;
 
-namespace Chameleon.Av.Fluent.Common.Controls;
+namespace Chameleon.client.UI.Controls;
+
 public class AutoViewModelInitControl : UserControl {
-	protected override void OnLoaded(RoutedEventArgs e)
-	{
+	protected override void OnLoaded(RoutedEventArgs e) {
 		base.OnLoaded(e);
-		if (DataContext is IAmInitializer i) {
-			_ = i.InitializeAsync(e);
-		}
+		_ = (DataContext as IAmInitializer)?.InitializeAsync(e);
 	}
 }
 
 public class AutoViewModelLocatorControl : AutoViewModelInitControl {
-	public AutoViewModelLocatorControl()
-	{
-		DataContext ??= AutoLocateVM() ??
-				throw new NullReferenceException($"ViewModel for {GetType().Name} not found.");
+	public AutoViewModelLocatorControl() {
+		DataContext ??= AutoLocateVM() ?? throw new NullReferenceException($"ViewModel for {GetType().Name} not found.");
 	}
 
 	/// <summary>
@@ -29,10 +24,9 @@ public class AutoViewModelLocatorControl : AutoViewModelInitControl {
 	/// retuns null if not fond
 	/// </summary>
 	/// <returns>ViewModel or Null</returns>
-	private object? AutoLocateVM()
-	{
+	private object? AutoLocateVM() {
 		var viewType = GetType();
-		if(viewType.GetCustomAttribute<Chameleon.lib.Common.Attributes.ViewModelAttribute>()?.Type is Type t)
+		if (viewType.GetCustomAttribute<lib.Common.Attributes.ViewModelAttribute>()?.Type is Type t)
 			return IoC.GetService(t);
 
 		var vmt =

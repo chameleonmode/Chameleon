@@ -1,6 +1,6 @@
-﻿using Chameleon.app.Avalonia;
-using Chameleon.client.Features.Projects;
+﻿using Chameleon.client.Features.Projects;
 using Chameleon.client.Features.Projects.Folders;
+using Chameleon.client.Services;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;

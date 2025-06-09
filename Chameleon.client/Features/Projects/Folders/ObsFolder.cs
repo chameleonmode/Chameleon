@@ -1,8 +1,8 @@
-﻿using Chameleon.app.Avalonia;
+﻿using Chameleon.client.Services;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Models.Dto;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 

@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 
 namespace Chameleon.client.Features.Projects.Profiles.Dialogs;
 

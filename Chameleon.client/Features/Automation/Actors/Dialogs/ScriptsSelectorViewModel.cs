@@ -1,4 +1,4 @@
-﻿using Chameleon.lib.CommunityToolkit.MvvM;
+﻿using Chameleon.client.MvvM;
 using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Helpers;
 

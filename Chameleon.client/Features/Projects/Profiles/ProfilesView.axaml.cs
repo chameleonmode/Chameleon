@@ -1,4 +1,4 @@
-using Chameleon.Av.Fluent.Common.Controls;
+using Chameleon.client.UI.Controls;
 
 namespace Chameleon.client.Features.Projects.Profiles; 
 [Chameleon.lib.Common.Attributes.ViewModel(typeof(ProfilesViewModel))]

@@ -4,8 +4,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
-
-using Chameleon.app.Avalonia;
 using Chameleon.lib;
 using Chameleon.lib.Common.Interfaces.Services;
 using Chameleon.lib.Interfaces.Services;

@@ -5,7 +5,8 @@ using CommunityToolkit.Mvvm.Input;
 using ReactiveValidation;
 using System.Collections;
 using System.ComponentModel;
-namespace Chameleon.lib.CommunityToolkit.MvvM;
+
+namespace Chameleon.client.MvvM;
 
 public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewModel, IValidatableObject {
 	[ObservableProperty] string? title;
@@ -54,7 +55,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewM
 	}
 
 	[RelayCommand]
-	public async Task AsyncCfV(string what){
+	public async Task AsyncCfV(string what) {
 		try {
 			await AsyncCommandMap[what]();
 		} catch (Exception e) {
@@ -94,7 +95,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewM
 		return builder.Build(this);
 	}
 
-	public bool IsValidationValid(){
+	public bool IsValidationValid() {
 		var validationMessages = Validator?.ValidationMessages ?? [];
 		if (!validationMessages.Any()) return Validator?.IsValid ?? true;
 

@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using Chameleon.client.Features.Automation.Playwright.Models;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 using Chameleon.lib.Playwright;
 using Chameleon.lib.Playwright.Services;
 using CommunityToolkit.Mvvm.ComponentModel;

@@ -6,7 +6,7 @@ using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ReactiveValidation;
 using ReactiveValidation.Extensions;
-using Chameleon.client.Libs.MvvM;
+using Chameleon.client.MvvM;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.Persons;
 public partial class UPPersonViewModel(UPPersonDto dto) : MappableViewModelBase<UPPersonDto>(dto) {

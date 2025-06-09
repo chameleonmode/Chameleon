@@ -5,7 +5,7 @@ using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
 using CommunityToolkit.Mvvm.ComponentModel;

@@ -1,7 +1,7 @@
 ﻿
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
-using Chameleon.lib.CommunityToolkit.MvvM;
+using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
