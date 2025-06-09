@@ -5,7 +5,6 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
 						 xmlns:ui="using:FluentAvalonia.UI.Controls"
 						 xmlns:afv="using:Chameleon.client.UI.Controls"
-						 xmlns:afvc="using:Chameleon.Av.Fluent.Common.Controls"
 						 xmlns:vm="using:Chameleon.client.Features.Settings.Featured"
              x:Class="Chameleon.client.Features.Settings.Featured.ProxyCreditView"
 						 x:DataType="vm:ProxyCreditViewModel"
@@ -99,15 +98,9 @@
 										HorizontalAlignment="Left"
 										Command="{Binding PurchaseCreditCommand}">
 									<Button.Content>
-										<StackPanel Orientation="Horizontal" 
-													VerticalAlignment="Center" 
-													HorizontalAlignment="Center">
-											<afvc:SvgIconControl IconName="purchase"
-                                              Width="14"
-                                              Height="14"
-                                              Margin="0 0 8 0"/>
-											<TextBlock Text="Purchase"
-													   FontSize="14"/>
+										<StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+											<afv:SvgIcon IconName="purchase" Width="14" Height="14"  Margin="0 0 8 0"/>
+											<TextBlock Text="Purchase" FontSize="14"/>
 										</StackPanel>
 									</Button.Content>
 								</Button>
@@ -181,7 +174,7 @@
 						<ItemsControl Grid.Row="1" ItemsSource="{Binding Accesses}">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>				
-									<afvc:HeaderdInputFieldsControl Text="{Binding Url}" Tag="copy" />
+									<afv:HeaderdInputFieldsControl Text="{Binding Url}" Tag="copy" />
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>

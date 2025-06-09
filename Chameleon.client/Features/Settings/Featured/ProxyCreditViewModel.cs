@@ -32,8 +32,7 @@ public partial class ProxyCreditViewModel : ViewModelObjectBase {
 
 	public List<int> CountsProxies { get; } = [5, 10, 100, 500];
 
-	public ProxyCreditViewModel() : base("Proxy Credit")
-	{
+	public ProxyCreditViewModel() : base("Proxy Credit") {
 		CreditPlans.Add(new(19, "5GB", true));
 		CreditPlans.Add(new(29, "10GB"));
 		CreditPlans.Add(new(49, "20GB"));
@@ -42,15 +41,13 @@ public partial class ProxyCreditViewModel : ViewModelObjectBase {
 		AddObsProxyAccessItems(countProxies);
 	}
 
-	public void AddObsProxyAccessItems(int amout)
-	{
+	public void AddObsProxyAccessItems(int amout) {
 		for (var i = 0; i < amout; i++) {
 			Accesses.Add(new ObsProxyAccess());
 		}
 	}
 
-	public override async Task InitAsync(object? param)
-	{
+	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
 
 		if (Loaded)
@@ -69,21 +66,18 @@ public partial class ProxyCreditViewModel : ViewModelObjectBase {
 		await UpdateBalanceAsync();
 	}
 
-	private async Task UpdateBalanceAsync()
-	{
+	private async Task UpdateBalanceAsync() {
 		var credits = await ProxyCreditRepo.GetCredits();
 		Balance = credits.Amount;
 	}
 
 	[RelayCommand]//
-	public async Task CopyAllUrls()
-	{
+	public async Task CopyAllUrls() {
 		var list = Accesses.Select(a => a.Url);
 		await CopyPasta.Copy(string.Join(Environment.NewLine, list));
 	}
 	[RelayCommand]
-	private async Task PurchaseCredit()
-	{
+	private async Task PurchaseCredit() {
 		var res = await ProxyCreditRepo.CreateOrder(SelectedCreditPlan.Amount);
 		if (res?.Url != null) {
 			ProcessUtil.OpenBrowser(res.Url);
@@ -91,19 +85,16 @@ public partial class ProxyCreditViewModel : ViewModelObjectBase {
 	}
 
 	[RelayCommand]
-	private async Task Refresh()
-	{
+	private async Task Refresh() {
 		await UpdateBalanceAsync();
 	}
 	[RelayCommand]
-	private async Task RefreshProxies()
-	{
+	private async Task RefreshProxies() {
 		await UpdateProxyAccessAsync();
 	}
 
 	[RelayCommand]
-	private async Task RefreshProxiesCount()
-	{
+	private async Task RefreshProxiesCount() {
 		var currentCount = Accesses.Count;
 
 		if (currentCount > CountProxies) {
@@ -115,8 +106,7 @@ public partial class ProxyCreditViewModel : ViewModelObjectBase {
 		}
 	}
 
-	private async Task UpdateProxyAccessAsync()
-	{
+	private async Task UpdateProxyAccessAsync() {
 		var request = new ProxyAccessRequestDto {
 			HostType = ProxyHostType.Hostname,
 			IpType = ProxyIpType.Sticky,

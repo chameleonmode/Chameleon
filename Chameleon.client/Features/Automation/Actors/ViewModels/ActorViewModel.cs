@@ -90,11 +90,11 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			.AutoRefresh(tag => tag.IsSelected)
 			.ToCollection()
 			.Subscribe(next =>
-			next.ForEach(t =>
+				next.ForEach(t =>
 					 ProfilesViewModel.Instance.Profiles
 					.Where(x => t.ProfileIds.Contains(x.Dto.ID))
 					.ForEach(p => p.Active = p.IsSelected = t.IsSelected)
-				)));
+			)));
 
 		profileSelections?.ForEach(id => {
 			ProfilesViewModel.Instance.Profiles

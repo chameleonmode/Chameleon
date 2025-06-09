@@ -2,44 +2,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
              xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
-			 xmlns:vm="using:Chameleon.client.Features.Projects.Profiles.Identity.ViewModels"
              xmlns:persons="using:Chameleon.client.Features.Projects.Profiles.Identity.Persons"
              xmlns:businesses="using:Chameleon.client.Features.Projects.Profiles.Identity.Businesses"
              xmlns:addresses="using:Chameleon.client.Features.Projects.Profiles.Identity.Addresses"
              xmlns:logins="using:Chameleon.client.Features.Projects.Profiles.Identity.Logins"
-			 xmlns:folder="using:Chameleon.client.Features.Projects.Profiles.Identity"
-			 x:DataType="folder:IdentityViewModel"
-			 x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.IdentityView">
+						 xmlns:local="using:Chameleon.client.Features.Projects.Profiles.Identity"
+             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.IdentityView"
+						 x:DataType="local:IdentityViewModel"
+						 x:CompileBindings="True">
 	<UserControl.Resources>
-		<ControlTheme x:Key="TheseTabHeaderPanels"
-					  TargetType="HeaderedContentControl">
-			<Setter Property="Template">
-				<ControlTemplate>
-					<Panel Width="144"
-						   Height="36">
-						<StackPanel
-							Orientation="Horizontal"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center">
-							<afv:SvgIconControl
-								Height="18"
-								IconName="{TemplateBinding Content}" />
-							<TextBlock
-								Text="{TemplateBinding Header}"
-								VerticalAlignment="Center"
-								Theme="{StaticResource SubtitleTextBlockStyle}"
-								Margin="6 0 0 0"/>
-						</StackPanel>
-					</Panel>
-				</ControlTemplate>
-			</Setter>
-		</ControlTheme>
-
-		<ControlTheme x:Key="TheseOptionsHeaderPanels"
-					  TargetType="HeaderedContentControl">
+		<ControlTheme x:Key="TheseOptionsHeaderPanels" TargetType="HeaderedContentControl">
 			<Setter Property="Template">
 				<ControlTemplate>
 					<Grid VerticalAlignment="Center">
@@ -58,15 +32,15 @@
 							CommandParameter="AddItem"
 							Command="{Binding AsyncCfVCommand}" />
 
-		<ProgressBar Grid.Row="1" 
-			Grid.ColumnSpan="2"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Top"
-            IsIndeterminate="True" 
-            IsVisible="{ReflectionBinding IsLoading}"
-            Height="3"
-            Margin="0,2,0,2"
-            Foreground="{DynamicResource SystemAccentColor}" />
+							<ProgressBar Grid.Row="1" 
+								Grid.ColumnSpan="2"
+								HorizontalAlignment="Stretch"
+								VerticalAlignment="Top"
+    					  IsIndeterminate="True" 
+    					  IsVisible="{ReflectionBinding IsLoading}"
+    					  Height="3"
+    					  Margin="0,2,0,2"
+    					  Foreground="{DynamicResource SystemAccentColor}" />
 					</Grid>
 				</ControlTemplate>
 			</Setter>
@@ -130,10 +104,7 @@
 					BorderThickness="0">
 			<TabItem>
 				<TabItem.Header>
-					<HeaderedContentControl
-						Content="profile-main"
-						Header="Main"
-						Theme="{StaticResource TheseTabHeaderPanels}"/>
+					<ContentControl Theme="{StaticResource TabHead}" Content="profile-main" Tag="Main" />
 				</TabItem.Header>
 				<TabItem.Content>
 					<StackPanel Spacing="18">
@@ -161,10 +132,7 @@
 			</TabItem>
 			<TabItem>
 				<TabItem.Header>
-					<HeaderedContentControl
-						Content="profile-persons"
-						Header="Persons"
-						Theme="{StaticResource TheseTabHeaderPanels}"/>
+					<ContentControl Theme="{StaticResource TabHead}"  Content="profile-persons" Tag="Persons" />
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel DataContext="{Binding PersonsVM}">
@@ -174,10 +142,7 @@
 			</TabItem>
 			<TabItem>
 				<TabItem.Header>
-					<HeaderedContentControl
-						Content="profile-businesses"
-						Header="Businesses"
-						Theme="{StaticResource TheseTabHeaderPanels}"/>
+					<ContentControl Theme="{StaticResource TabHead}" Content="profile-businesses" Tag="Businesses"/>
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel DataContext="{Binding BusinessesVM}">
@@ -187,10 +152,7 @@
 			</TabItem>
 			<TabItem>
 				<TabItem.Header>
-					<HeaderedContentControl
-						Content="profile-addresses"
-						Header="Addresses"
-						Theme="{StaticResource TheseTabHeaderPanels}"/>
+					<ContentControl Theme="{StaticResource TabHead}" Content="profile-addresses" Tag="Addresses" />
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel DataContext="{Binding AddressesVM}">
@@ -200,10 +162,7 @@
 			</TabItem>
 			<TabItem>
 				<TabItem.Header>
-					<HeaderedContentControl
-						Content="profile-logins"
-						Header="Logins"
-						Theme="{StaticResource TheseTabHeaderPanels}"/>
+					<ContentControl Theme="{StaticResource TabHead}" Content="profile-logins" Tag="Logins" />
 				</TabItem.Header>
 				<TabItem.Content>
 					<Panel DataContext="{Binding LoginsVM}">

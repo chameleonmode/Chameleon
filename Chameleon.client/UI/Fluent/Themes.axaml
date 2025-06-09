@@ -1,7 +1,66 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
-		xmlns:afv="using:Chameleon.client.UI.Controls">
+   	xmlns:st="using:FluentAvalonia.Styling"
+		xmlns:local="using:Chameleon.client.UI.Controls">
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Default">
+			<LinearGradientBrush StartPoint="0,0" EndPoint="0%,100%" x:Key="HeaderOpacityMaskBrush">
+				<GradientStop Color="#FF000000" Offset="0" />
+				<GradientStop Color="#FF000000" Offset="0.8" />
+				<GradientStop Color="#EE000000" Offset="0.83" />
+				<GradientStop Color="#DD000000" Offset="0.86" />
+				<GradientStop Color="#BB000000" Offset="0.89" />
+				<GradientStop Color="#85000000" Offset="0.92" />
+				<GradientStop Color="#00000000" Offset="1" />
+			</LinearGradientBrush>
+
+			<ImageBrush x:Key="PageHeaderBackgroundBrush"
+				Source="avares://Chameleon.app.Avalonia/Assets/Images/FAHeaderBackground_Dark.png"
+				AlignmentY="Center"
+				Stretch="UniformToFill" />
+			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
+      	Source="avares://Chameleon.app.Avalonia/Assets/Images/logo-long.png"
+      	AlignmentY="Center"
+      	Stretch="UniformToFill" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Dark">
+			<LinearGradientBrush StartPoint="0,0" EndPoint="0%,100%"  x:Key="HeaderOpacityMaskBrush">
+				<GradientStop Color="#FF000000" Offset="0" />
+				<GradientStop Color="#FF000000" Offset="0.8" />
+				<GradientStop Color="#EE000000" Offset="0.83" />
+				<GradientStop Color="#DD000000" Offset="0.86" />
+				<GradientStop Color="#BB000000" Offset="0.89" />
+				<GradientStop Color="#85000000" Offset="0.92" />
+				<GradientStop Color="#00000000" Offset="1" />
+			</LinearGradientBrush>
+
+			<ImageBrush x:Key="PageHeaderBackgroundBrush"
+				Source="avares://Chameleon.app.Avalonia/Assets/Images/FAHeaderBackground.png"
+				AlignmentY="Center"
+				Stretch="UniformToFill" />
+			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
+        Source="avares://Chameleon.app.Avalonia/Assets/Images/logo-long.png"
+        AlignmentY="Center"
+        Stretch="UniformToFill" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="{x:Static st:FluentAvaloniaTheme.HighContrastTheme}">
+			<LinearGradientBrush StartPoint="0,0" EndPoint="0%,100%" x:Key="HeaderOpacityMaskBrush">
+				<GradientStop Color="#00000000" />
+				<GradientStop Color="#33000000" Offset="1" />
+			</LinearGradientBrush>
+
+			<ImageBrush x:Key="PageHeaderBackgroundBrush"
+				Source="avares://Chameleon.app.Avalonia/Assets/Images/FAHeaderBackground_Dark.png"
+				AlignmentY="Center"
+				Stretch="UniformToFill" />
+
+			<ImageBrush x:Key="PageHeaderBackgroundBrushBG"
+      	Source="avares://Chameleon.app.Avalonia/Assets/Images/logo-long.png"
+      	AlignmentY="Center"
+      	Stretch="UniformToFill" />
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
 	<!---->
   <ControlTheme x:Key="ActiveTabStripItemTheme" TargetType="TabStripItem">
 		<Setter Property="Background" Value="Transparent" />
@@ -100,8 +159,175 @@
 			</ControlTemplate>
 		</Setter>
 	</ControlTheme>
+
+	<ControlTheme x:Key="AccentSymbleIconButton" TargetType="Button">
+		<Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+		<Setter Property="Foreground" Value="{DynamicResource ButtonForeground}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}" />
+		<Setter Property="BorderThickness" Value="{DynamicResource ButtonBorderThemeThickness}" />
+		<Setter Property="Padding" Value="{StaticResource ButtonPadding}" />
+		<Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="CornerRadius" Value="180" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Template">
+			<ControlTemplate>
+					<Border
+						Name="Root"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}">
+						<Border Name="Pnl"
+								Background="Transparent"
+								CornerRadius="{TemplateBinding CornerRadius}">
+							<ui:SymbolIcon
+								Name="SmblIcon"
+								Symbol="{TemplateBinding Content}"
+								Margin="0 0 0 0"/>
+						</Border>
+					</Border>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^ /template/ Border#Pnl">
+			<Setter Property="Transitions">
+				<Transitions>
+					<BrushTransition Duration="00:00:00.083" Property="Background" />
+				</Transitions>
+			</Setter>
+		</Style>
+
+		<Style Selector="^:pointerover">
+			<Style Selector="^ /template/ Border#Pnl">
+				<Setter Property="Background" Value="{DynamicResource ButtonBackgroundPointerOver}" />
+				<Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushPointerOver}" />
+			</Style>
+		</Style>
+
+		<Style Selector="^:pressed">
+			<Style Selector="^ /template/ Border#Pnl">
+				<Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+				<Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushPressed}" />
+			</Style>
+		</Style>
+
+		<Style Selector="^:disabled">
+			<Style Selector="^ /template/ Border#Pnl">
+				<Setter Property="Background" Value="{DynamicResource ButtonBackgroundDisabled}" />
+				<Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushDisabled}" />
+			</Style>
+		</Style>
+
+
+		<!--Accent Button Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"-->
+		<Style Selector="^.accent">
+			<Style Selector="^ /template/ Border#Pnl">
+				<Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" />
+				<Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrush}" />
+			</Style>
+
+			<Style Selector="^ /template/ ui|SymbolIcon#SmblIcon">
+				<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+			</Style>
+
+			<Style Selector="^:pointerover /template/ Border#Pnl">
+				<Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundPointerOver}" />
+				<Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushPointerOver}" />
+			</Style>
+
+			<Style Selector="^:pressed /template/ Border#Pnl">
+				<Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundPressed}" />
+				<Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushPressed}" />
+			</Style>
+
+			<Style Selector="^:disabled /template/ Border#Pnl">
+				<Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundDisabled}" />
+				<Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushDisabled}" />
+			</Style>
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="SymbleIconTextButton" TargetType="Button">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Rootz" CornerRadius="{TemplateBinding CornerRadius}">
+					<StackPanel Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="{TemplateBinding Content}" Margin="0 0 5 0"/>
+						<TextBlock Text="{TemplateBinding Tag}"/>
+					</StackPanel>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
 	
-	<ControlTheme TargetType="afv:ChameleonContentControl" x:Key="{x:Type afv:ChameleonContentControl}">
+	<ControlTheme TargetType="local:PageHeader" x:Key="{x:Type local:PageHeader}">
+		<Setter Property="Height" Value="296" />
+		<Setter Property="Template">
+			<ControlTemplate>
+					<Grid ColumnDefinitions="Auto,*,Auto">
+						<Image Name="TitleTextImageHost"
+            		VerticalAlignment="Top"
+            		HorizontalAlignment="Left"
+            		MaxWidth="400"
+            		Margin="30 0 0 0"
+            		MinWidth="150"
+            		IsVisible="False"
+            		RenderOptions.BitmapInterpolationMode="HighQuality">
+						<Image.Transitions>
+								<Transitions>
+									<ThicknessTransition Duration="00:00:00.25" Property="Margin" Easing="0,0 0,1" />
+								</Transitions>
+							</Image.Transitions>
+						</Image>
+						<ui:FontIcon Name="TitleTextFontHost"
+								Glyph="Dashboard"
+								FontSize="36"
+								FontWeight="SemiBold"
+								VerticalAlignment="Top"
+								HorizontalAlignment="Left"
+								MaxWidth="400"
+								MinWidth="150" />
+						<ContentPresenter 
+						 		Grid.Column="2"
+								HorizontalAlignment="Right"
+								VerticalAlignment="Center"
+								Name="TitleContentPresenter"
+								Content="{TemplateBinding  ContentObject}" />
+					</Grid>
+			</ControlTemplate>
+		</Setter>
+
+		<Setter Property="Transitions">
+			<Transitions>
+				<DoubleTransition Property="Height" Duration="00:00:00.25" Easing="0,0 0,1" />
+			</Transitions>
+		</Setter>
+		<Style Selector="^.smallest">
+			<Setter Property="Height" Value="69" />
+			<Style Selector="^ /template/ Image#TitleTextImageHost">
+				<Setter Property="Margin" Value="12 12 0 16" />
+			</Style>
+		</Style>
+		<Style Selector="^.smaller">
+			<Setter Property="Height" Value="150" />
+			<Style Selector="^ /template/ Image#TitleTextImageHost">
+				<Setter Property="Margin" Value="12 12 0 16" />
+			</Style>
+		</Style>
+		<Style Selector="^.small">
+			<Setter Property="Height" Value="200" />
+			<Style Selector="^ /template/ Image#TitleTextImageHost">
+				<Setter Property="Margin" Value="12 12 0 16" />
+			</Style>
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme TargetType="local:ChameleonContentControl" x:Key="{x:Type local:ChameleonContentControl}">
 		<Setter Property="Margin" Value="12 0 12 12" />
 		<Setter Property="Template">
 			<ControlTemplate>

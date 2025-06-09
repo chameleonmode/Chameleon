@@ -6,13 +6,23 @@ using Avalonia.Styling;
 using System.Globalization;
 
 using Chameleon.lib.Util;
-using BN = Avalonia.Data.BindingNotification;
+using Avalonia.Data;
+using Avalonia.Controls.Primitives;
 
-namespace Chameleon.app.Avalonia.Converters.ValueConverters;
+namespace Chameleon.client.UI.Controls;
+
+public class SvgIcon : TemplatedControl {
+	public static readonly StyledProperty<string?> IconNameProperty =
+	AvaloniaProperty.Register<SvgIcon, string?>(nameof(IconName));
+
+	public string? IconName {
+		get => GetValue(IconNameProperty);
+		set => SetValue(IconNameProperty, value);
+	}
+}
 
 public class SvgNameToDataConverter : IValueConverter {
-	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-	{
+	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
 		if (value == null || value.ToString().Is()) value = "x";
 
 		var uri = $"avares://Chameleon.app.Avalonia/Assets/Svgs/{value}.svg";
@@ -31,8 +41,7 @@ public class SvgNameToDataConverter : IValueConverter {
 		return data;
 	}
 
-	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-	{
-		return BN.UnsetValue;
+	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
+		return BindingNotification.UnsetValue;
 	}
 }

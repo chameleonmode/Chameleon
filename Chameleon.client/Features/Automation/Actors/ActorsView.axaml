@@ -5,7 +5,6 @@
 			 mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="1680"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.client.UI.Controls"
-			 xmlns:afvc="using:Chameleon.Av.Fluent.Common.Controls"
 			 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
 			 xmlns:vm="using:Chameleon.client.Features.Automation.Actors"
 			 xmlns:vmv="using:Chameleon.client.Features.Automation.Actors.ViewModels"
@@ -340,7 +339,7 @@
 													   ItemsSource="{Binding BrowserOptions}">
 											<ui:FAComboBox.ItemTemplate>
 												<DataTemplate>
-													<afvc:SvgIconControl IconName="{Binding IconName}" Height="20" Width="20"/>
+													<afv:SvgIcon IconName="{Binding IconName}" Height="20" Width="20"/>
 												</DataTemplate>
 											</ui:FAComboBox.ItemTemplate>
 										</ui:FAComboBox>

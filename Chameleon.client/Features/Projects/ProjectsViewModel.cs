@@ -10,6 +10,7 @@ using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.client.Features.Projects.Profiles.Identity;
 using Chameleon.client.Services;
+using Chameleon.lib.Util;
 
 namespace Chameleon.client.Features.Projects;
 
@@ -42,6 +43,11 @@ public partial class ProjectsViewModel : ViewModelObjectBase {
 	}
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
+		Profiles.Profiles.ForEach(p => {
+			// p.IsSelected = false;
+			p.IsActionOptionsVisible = p.IsShowCheckboxColumn = true;
+		});
+		Profiles.PaginatorViewModel.UpdatePageCount(9);
 		if (param is ObsFolder folder) {
 			if (!folder.Navigated || Folders.SelectedFolder?.Dto?.id == folder.Dto?.id) {
 				await Folders.OnNavigatingTo(folder.Dto);
@@ -53,10 +59,8 @@ public partial class ProjectsViewModel : ViewModelObjectBase {
 				up.Navigated = true;
 			}
 		} else {
-			if (Folders.SelectedFolder != null)
-				await Folders.OnNavigatingTo(Folders.SelectedFolder.Dto);
-			else
-				await Folders.OnNavigatingTo(null);
+			if (Folders.SelectedFolder != null) await Folders.OnNavigatingTo(Folders.SelectedFolder.Dto);
+			else await Folders.OnNavigatingTo(null);
 
 			if (param is string p)
 				Profiles.SearchText = p;

@@ -43,9 +43,7 @@
 							<ListBox.ItemTemplate>
 								<DataTemplate>
 									<StackPanel Spacing="6" Margin="6">
-										<afvc:HeaderdInputFieldsControl 
-											Title="{Binding Key}"
-											Text="{Binding Value}" />
+										<afv:HeaderdInputFieldsControl Title="{Binding Key}" Text="{Binding Value}" />
 									</StackPanel>
 								</DataTemplate>
 							</ListBox.ItemTemplate>

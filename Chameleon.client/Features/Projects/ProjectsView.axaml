@@ -4,18 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:folders="using:Chameleon.client.Features.Projects.Folders"
-			 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
-			 xmlns:local="using:Chameleon.client.Features.Projects"
+						 xmlns:afv="using:Chameleon.client.UI.Controls"
+						 xmlns:folders="using:Chameleon.client.Features.Projects.Folders"
+						 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
+						 xmlns:local="using:Chameleon.client.Features.Projects"
              x:Class="Chameleon.client.Features.Projects.ProjectsView"
-			 x:DataType="local:ProjectsViewModel"
-			 x:CompileBindings="True">
+						 x:DataType="local:ProjectsViewModel"
+						 x:CompileBindings="True">
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
 		<StackPanel>
-			<afv:PageHeaderControl TextType="Profiles"
-								   Classes="smallest">
-				<afv:PageHeaderControl.ContentObject>
+			<afv:PageHeader TextType="Profiles" Classes="smallest">
+				<afv:PageHeader.ContentObject>
 					<StackPanel Orientation="Horizontal">
 						<Button Margin="6 -18 8 0"
 								Classes="accent"
@@ -28,8 +27,8 @@
 							</StackPanel>
 						</Button>
 					</StackPanel>
-				</afv:PageHeaderControl.ContentObject>
-			</afv:PageHeaderControl>
+				</afv:PageHeader.ContentObject>
+			</afv:PageHeader>
 
 			<Grid ColumnDefinitions="3*,*">
 				<Panel DataContext="{Binding Profiles}">

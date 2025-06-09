@@ -1,6 +1,9 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+										xmlns:svg="using:Avalonia.Controls.Skia"
                     xmlns:local="using:Chameleon.client.UI.Controls">
+	<local:SvgNameToDataConverter x:Key="svgz" />
+
 	<ControlTheme x:Key="ListBoxNoScroller" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
 		<Setter Property="Template">
 			<ControlTemplate>
@@ -176,6 +179,165 @@
 									Command="{ReflectionBinding UnselectItemsCommand}" />
 						</StackPanel>
 					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+	<ControlTheme x:Key="TabHead" TargetType="ContentControl">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Panel Width="144" Height="36">
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+						<local:SvgIcon Height="18" IconName="{TemplateBinding Content}" />
+						<TextBlock Classes="h4" Text="{TemplateBinding Tag}" Margin="6 0 0 0"/>
+					</StackPanel>
+				</Panel>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+	<ControlTheme x:Key="CopyPasta" TargetType="HeaderedContentControl">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Panel>
+					<Panel VerticalAlignment="Center">
+						<TextBox Text="{TemplateBinding Tag}"
+								 Width="420"
+								 Height="36"
+								 Margin="0 6 0 0"
+								 HorizontalAlignment="Left"
+								 IsReadOnly="True"/>
+						<TextBlock Margin="0 0 0 2" Classes="caption" Text="{TemplateBinding Header}" />
+					</Panel>
+					<Button Margin="0 6 0 0"
+							HorizontalAlignment="Right"
+							Content="copy"
+							Command="{ReflectionBinding CopyCommand}"
+							CommandParameter="{TemplateBinding Tag}"
+							Theme="{StaticResource SvgIconButton}" />
+				</Panel>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+	<ControlTheme TargetType="local:HeaderdInputFieldsControl" x:Key="{x:Type local:HeaderdInputFieldsControl}">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid RowDefinitions="Auto,Auto,*">
+					<Grid.Styles>
+						<Style Selector="TextBox">
+							<Setter Property="Margin" Value="0 0 6 6"/>
+						</Style>
+					</Grid.Styles>
+					<TextBlock Margin="0 0 0 4"
+							   IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNull}}"
+							   Text="{TemplateBinding Title}" />
+					<TextBlock Margin="0 0 0 -6"
+							   IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNotNull}}"
+							   Text="{TemplateBinding Title}" />				
+					
+					<Grid Grid.Row="1"
+						VerticalAlignment="Top"
+						IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNull}}"
+						ColumnDefinitions="*,Auto">
+						<Panel>
+							<!-- DataValidationErrors -->
+							<DataValidationErrors Name="PART_DataValidation" Errors="{TemplateBinding (DataValidationErrors.Errors)}">
+								<TextBox Text="{TemplateBinding Text, Mode=TwoWay}" 
+									MaxLength="10000"
+									VerticalAlignment="Top"
+								  Watermark="{TemplateBinding PlaceholderText}"/>
+							</DataValidationErrors>
+
+							<Button Grid.Column="1"
+								HorizontalAlignment="Right"
+								Margin="0 -6 4 0"
+								Theme="{StaticResource SvgIconButton}"
+								Command="{ReflectionBinding CopyCommand}"
+								CommandParameter="{TemplateBinding Text}"
+								IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNotNull}}"
+								Content="{TemplateBinding Tag}" />
+						</Panel>
+
+							<ItemsControl Grid.Column="1"
+										  Margin="-2 -4 4 0"
+										  ItemsSource="{TemplateBinding Buttons}"
+										  KeyboardNavigation.TabNavigation="Continue">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<UniformGrid Rows="1" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+							</ItemsControl>
+					</Grid>
+
+					<!-- TextBoxes -->
+					<ItemsControl Name="TextBoxesHost"
+						ItemsSource="{TemplateBinding TextBoxes}"
+						Grid.Row="2"
+						VerticalAlignment="Top"
+						HorizontalAlignment="Stretch"
+						KeyboardNavigation.TabNavigation="Continue">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<local:UniformWidthPanel />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+					</ItemsControl>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+	<ControlTheme TargetType="local:SvgIcon" x:Key="{x:Type local:SvgIcon}">
+		<Setter Property="Template">
+			<ControlTemplate>
+					<Svg Source="{TemplateBinding IconName, Converter={StaticResource svgz}}" />
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+	<ControlTheme x:Key="FavoriteButton" TargetType="Button">
+		<Setter Property="CornerRadius" Value="180" />
+		<Setter Property="Width" Value="34" />
+		<Setter Property="Height" Value="34" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Rootz" CornerRadius="{TemplateBinding CornerRadius}">
+					<Panel Background="Transparent">
+						<local:SvgIcon IconName="not-favorites" IsVisible="{ReflectionBinding !IsFavorite}" Width="15" Height="15" />
+						<local:SvgIcon IconName="in-favorites" IsVisible="{ReflectionBinding IsFavorite}" Width="12" Height="12" />
+					</Panel>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+	<ControlTheme x:Key="SvgIconButton" TargetType="Button">
+		<Setter Property="CornerRadius" Value="180" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Rootz" CornerRadius="{TemplateBinding CornerRadius}">
+					<Panel Background="Transparent">
+						<local:SvgIcon IconName="{TemplateBinding Content}" Width="18" Height="18"/>
+					</Panel>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+	<ControlTheme x:Key="SvgIconTextButton" TargetType="Button">
+		<Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Rootz" CornerRadius="{TemplateBinding CornerRadius}">
+					<StackPanel Orientation="Horizontal" Margin="6">
+						<local:SvgIcon IconName="{TemplateBinding Content}" Margin="0 0 10 0" Width="16" Height="16" />
+						<TextBlock Text="{TemplateBinding Tag}" Margin="0 0 12 0" VerticalAlignment="Center"/>
+					</StackPanel> 		  
 				</Border>
 			</ControlTemplate>
 		</Setter>

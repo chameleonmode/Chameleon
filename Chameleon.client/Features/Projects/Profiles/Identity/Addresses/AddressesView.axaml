@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+			 xmlns:afv="using:Chameleon.client.UI.Controls"
              xmlns:vm="using:Chameleon.client.Features.Projects.Profiles.Identity.ViewModels"
              xmlns:addresses="using:Chameleon.client.Features.Projects.Profiles.Identity.Addresses"
              x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Addresses.AddressesView"

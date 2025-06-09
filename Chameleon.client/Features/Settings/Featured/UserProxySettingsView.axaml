@@ -6,7 +6,6 @@
 						 xmlns:ui="using:FluentAvalonia.UI.Controls"
 						 xmlns:afv="using:Chameleon.client.UI.Controls"
 						 xmlns:uc="using:Chameleon.client.UI.Components"
-						 xmlns:afvc="using:Chameleon.Av.Fluent.Common.Controls"
 						 xmlns:vm="using:Chameleon.client.Features.Settings.Featured"
              x:Class="Chameleon.client.Features.Settings.Featured.UserProxySettingsView"
 						 x:DataType="vm:UserProxySettingsViewModel"
@@ -108,9 +107,9 @@
 
 													<Grid Grid.Column="2"
 														  Margin="12 0">
-														<afvc:HeaderdInputFieldsControl Title="{Binding ObsProfile.Title}"
+														<afv:HeaderdInputFieldsControl Title="{Binding ObsProfile.Title}"
 																							 Header="False">
-															<afvc:HeaderdInputFieldsControl.TextBoxes>
+															<afv:HeaderdInputFieldsControl.TextBoxes>
 																<TextBox Text="{Binding Path=Host}"
 																		 IsReadOnly="True" />
 																<TextBox Text="{Binding Path=Port}"
@@ -119,8 +118,8 @@
 																		 IsReadOnly="True" />
 																<TextBox Text="{Binding Path=Password}"
 																		 IsReadOnly="True" />
-															</afvc:HeaderdInputFieldsControl.TextBoxes>
-														</afvc:HeaderdInputFieldsControl>
+															</afv:HeaderdInputFieldsControl.TextBoxes>
+														</afv:HeaderdInputFieldsControl>
 													</Grid>
 												</Grid>
 										</DataTemplate>
@@ -193,16 +192,16 @@
 											</ItemsControl.ItemsPanel>
 											<ItemsControl.ItemTemplate>
 												<DataTemplate>
-													<afvc:HeaderdInputFieldsControl Title="{Binding ObsProfile.Title}"
+													<afv:HeaderdInputFieldsControl Title="{Binding ObsProfile.Title}"
 																				   IsVisible="{Binding ObsProfile.IsSelected}"
 																				   Header="False">
-														<afvc:HeaderdInputFieldsControl.TextBoxes>
+														<afv:HeaderdInputFieldsControl.TextBoxes>
 															<TextBox Text="{Binding Path=Host}" />
 															<TextBox Text="{Binding Path=Port}"/>
 															<TextBox Text="{Binding Path=UserName}"/>
 															<TextBox Text="{Binding Path=Password}" />
-														</afvc:HeaderdInputFieldsControl.TextBoxes>
-													</afvc:HeaderdInputFieldsControl>
+														</afv:HeaderdInputFieldsControl.TextBoxes>
+													</afv:HeaderdInputFieldsControl>
 												</DataTemplate>
 											</ItemsControl.ItemTemplate>
 										</ItemsControl>

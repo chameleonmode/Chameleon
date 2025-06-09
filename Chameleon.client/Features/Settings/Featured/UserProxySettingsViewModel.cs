@@ -19,15 +19,15 @@ using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 
 namespace Chameleon.client.Features.Settings.Featured;
-public partial class ObsProxySetting : ViewModelObjectBase{
+
+public partial class ObsProxySetting : ViewModelObjectBase {
 	[ObservableProperty] string? host;
 	[ObservableProperty] int port = 80;
 	[ObservableProperty] string? userName;
 	[ObservableProperty] string? password;
 	[ObservableProperty] ObsProfile obsProfile;
 
-	public ObsProxySetting(ObsProfile profile)
-	{
+	public ObsProxySetting(ObsProfile profile) {
 		obsProfile = profile;
 		host = obsProfile.Dto!.proxy!.host;
 		port = obsProfile.Dto.proxy.port;
@@ -35,15 +35,13 @@ public partial class ObsProxySetting : ViewModelObjectBase{
 		password = obsProfile.Dto.proxy.password;
 	}
 
-	partial void OnPortChanged(int value)
-	{
+	partial void OnPortChanged(int value) {
 		if (value < 0 || value >= 65535) {
 			Port = 0;
 		}
 	}
 
-	public void SetProfile()
-	{
+	public void SetProfile() {
 		ObsProfile.Dto!.proxy!.host = Host;
 		ObsProfile.Dto.proxy.port = Port;
 		ObsProfile.Dto.proxy.userName = UserName;
@@ -75,24 +73,23 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 	public ReadOnlyObservableCollection<ObsFolder> Folders => folders;
 	public ReadOnlyObservableCollection<ObsProxySetting> Proxies => proxies;
 	public Func<ObsProxySetting, bool> FilterPredicate => p =>
-		SelectedFolder == null || SelectedFolder.Dto?.id == 0 || 
+		SelectedFolder == null || SelectedFolder.Dto?.id == 0 ||
 		(SelectedFolder != null && SelectedFolder.Dto?.id != 0 && p.ObsProfile.Dto?.folderId == SelectedFolder.Dto?.id);
 	public List<ObsProxySetting> SelectedProfiles => Proxies.Where(p => p.ObsProfile.IsSelected).ToList();
 	public bool HasSelectedItems => Proxies.Any(setting => setting.ObsProfile.IsSelected);
 	public int SelectedCount => Proxies.Count(setting => setting.ObsProfile.IsSelected);
-	public int MaxInFolderItems => SelectedFolder == null || SelectedFolder.Dto!.id == 0 
-		? UserProfilesRepo.Instance.ObservableCache.Count 
+	public int MaxInFolderItems => SelectedFolder == null || SelectedFolder.Dto!.id == 0
+		? UserProfilesRepo.Instance.ObservableCache.Count
 		: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == SelectedFolder.Dto!.id);
-	public UserProxySettingsViewModel() : base("Proxy")
-	{
+	public UserProxySettingsViewModel() : base("Proxy") {
 		filter = new BehaviorSubject<Func<ObsProxySetting, bool>>(FilterPredicate);
 
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i=> new ObsProxySetting(new ObsProfile(i, onSelectedChanged: (p) => {
+			.Transform(i => new ObsProxySetting(new ObsProfile(i, onSelectedChanged: (p) => {
 				OnPropertyChanged(nameof(HasSelectedItems));
 				OnPropertyChanged(nameof(SelectedCount));
-			}){IsShowCheckboxColumn = false}))
+			}) { IsShowCheckboxColumn = false }))
 			.Filter(filter)
 			.SortAndPage(AscendingComparer, pageRequests)
 			.Bind(out proxies)
@@ -109,8 +106,7 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		TotalCount = PaginatorViewModel.TotalCount;
 		SelectedFolder = folders[0];
 	}
-	public override async Task InitAsync(object? param)
-	{
+	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
 
 		if (!Loaded) {
@@ -125,18 +121,16 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 			Country = Countries.First();
 		}
 	}
-	public override async Task OnNavigatedToAsync(object? param)
-	{
+	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
 
 		if (param is ObsFolder folderId) {
 			_ = await LoadedTCS.Task;
-			SelectedFolder = Folders.FirstOrDefault(f=>f.Dto!.id == folderId.Dto!.id) ?? Folders[0];
+			SelectedFolder = Folders.FirstOrDefault(f => f.Dto!.id == folderId.Dto!.id) ?? Folders[0];
 		}
 	}
 
-	partial void OnSelectedFolderChanged(ObsFolder? value)
-	{
+	partial void OnSelectedFolderChanged(ObsFolder? value) {
 		UnselectItems();
 		filter.OnNext(FilterPredicate);
 		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
@@ -145,10 +139,9 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		//OnPropertyChanged(nameof(HasSelectedItems));
 		//OnPropertyChanged(nameof(SelectedCount));
 	}
-	
+
 	[RelayCommand]
-	public async Task FillProxies()
-	{
+	public async Task FillProxies() {
 		var profiles = SelectedProfiles;
 		if (profiles.Count == 0) {
 			return;
@@ -177,9 +170,8 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		}
 	}
 	[RelayCommand]
-	public async Task ApplyProxy()
-	{
-		if(SelectedProfiles.Count == 0) {
+	public async Task ApplyProxy() {
+		if (SelectedProfiles.Count == 0) {
 			return;
 		}
 
@@ -188,7 +180,7 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 				foreach (var model in SelectedProfiles) {
 					if (
 						model.ObsProfile.Dto!.proxy.host != model.Host ||
-					  model.ObsProfile.Dto!.proxy.port != model.Port ||
+						model.ObsProfile.Dto!.proxy.port != model.Port ||
 						model.ObsProfile.Dto!.proxy.userName != model.UserName ||
 						model.ObsProfile.Dto!.proxy.password != model.Password) {
 						await ApplyProxy(null, model);
@@ -197,15 +189,14 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 			}
 		} else {
 			var proxies = ParseProxiesSettings(ApplingProxy!.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries));
-			await ApplyProxy(proxies,	SelectedProfiles);
+			await ApplyProxy(proxies, SelectedProfiles);
 		}
 
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedCount));
 		Toaster.Success($"Update was successful.");
 	}
-	private static async Task ApplyProxy(List<ProxDto> proxies, List<ObsProxySetting> models)
-	{
+	private static async Task ApplyProxy(List<ProxDto> proxies, List<ObsProxySetting> models) {
 		if (proxies.Count == 1) {
 			for (var i = 0; i < models.Count; ++i) {
 				await ApplyProxy(proxies[0], models[i]);
@@ -213,15 +204,14 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		} else {
 			var minCount = Math.Min(proxies.Count, models.Count);
 
-		  List<Task> tasks = [];
+			List<Task> tasks = [];
 			for (var i = 0; i < minCount; ++i) {
 				tasks.Add(ApplyProxy(proxies[i], models[i]));
 			}
 			await Task.WhenAll(tasks);
 		}
 	}
-	private static async Task ApplyProxy(ProxDto? proxySettings, ObsProxySetting model)
-	{
+	private static async Task ApplyProxy(ProxDto? proxySettings, ObsProxySetting model) {
 		if (proxySettings != null) {
 			model.Host = proxySettings.host;
 			model.Port = proxySettings.port;
@@ -231,8 +221,7 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		model.SetProfile();
 		_ = await UserProfilesRepo.Instance.Put(model.ObsProfile.Dto!);
 	}
-	private static List<ProxDto> ParseProxiesSettings(string[] proxyList)
-	{
+	private static List<ProxDto> ParseProxiesSettings(string[] proxyList) {
 		var proxies = new List<ProxDto>();
 		foreach (var applingProxy in proxyList) {
 			var applingProxies = applingProxy
@@ -259,25 +248,22 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		}
 		return proxies;
 	}
-	
+
 	[RelayCommand]
-	private void UnselectItems()
-	{
+	private void UnselectItems() {
 		foreach (var model in Proxies) {
 			model.ObsProfile.IsSelected = false;
 		}
 		PaginatorViewModel.UpdatePageCount(9);
 	}
 	[RelayCommand]
-	private void SelectAll()
-	{
+	private void SelectAll() {
 		foreach (var model in Proxies) {
 			model.ObsProfile.IsSelected = true;
 		}
 	}
 	[RelayCommand]
-	private void SelectAllFromFolder()
-	{
+	private void SelectAllFromFolder() {
 		PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
 		SelectAll();
 	}

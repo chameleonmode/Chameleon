@@ -12,9 +12,10 @@
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Styles.Resources>
-
 	<StyleInclude Source="Fluent/Styles.axaml" />
 
+
+	<!--ListBox-->
 	<Style Selector="ListBox.uni">
 		<Setter Property="ItemsPanel" Value="{DynamicResource SingleColumnUniformGridTemplate}" />
 		<Setter Property="Theme" Value="{DynamicResource ListBoxNoScroller}" />
@@ -35,7 +36,7 @@
 		<Setter Property="ItemsSource" Value="{ReflectionBinding Folders}" />
 	</Style>
 
-	<!--Stack Pannel-->
+	<!--StackPannel-->
 	<Style Selector="StackPanel.shared">
 		<Setter Property="Grid.IsSharedSizeScope" Value="True" />
 		<Setter Property="Spacing" Value="9" />

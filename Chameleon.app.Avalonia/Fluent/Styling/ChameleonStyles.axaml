@@ -149,19 +149,9 @@
 	<Styles.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceInclude Source="/Fluent/Styling/ChameleonButtonStyles.axaml" />
 				<ResourceInclude Source="/Fluent/Styling/ChameleonDialogControlStyles.axaml" />
-				<ResourceInclude Source="/Fluent/Styling/ControlThemes.axaml" />
-				<ResourceInclude Source="/Fluent/Styling/SvgIconsResourceDictionary.axaml" />
-				<ResourceInclude Source="/Fluent/Styling/HeaderdInputFieldsResourceDictionary.axaml" />
-				<ResourceInclude Source="/Fluent/Styling/ChameleonListBoxStyles.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
-
-		<Thickness x:Key="ContentDialogActualTitleMargin">12</Thickness>
-		<Thickness x:Key="ContentDialogFooterMargin">0 0 0 16</Thickness>
-		<Thickness x:Key="ContentDialogTitleFieldMargin">12,0,0,12</Thickness>
-		<Thickness x:Key="ContentDialogTextboxFieldMargin">12,0,12,12</Thickness>
 	</Styles.Resources>
 	
 

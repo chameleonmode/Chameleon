@@ -5,7 +5,6 @@
              mc:Ignorable="d" d:DesignWidth="520" d:DesignHeight="520"
 						 xmlns:ui="using:FluentAvalonia.UI.Controls"
 						 xmlns:afv="using:Chameleon.client.UI.Controls"
-						 xmlns:afvc="using:Chameleon.Av.Fluent.Common.Controls"
              xmlns:vm="using:Chameleon.client.Features.Settings.Featured"
              x:Class="Chameleon.client.Features.Settings.Featured.PVAUserControl"
 			 			 x:DataType="vm:PVApiModel"
@@ -122,7 +121,7 @@
 		</afv:ChameleonContentControl.TitleContent>
 
 		<afv:ChameleonContentControl.Header>
-			<afvc:HeaderdInputFieldsControl
+			<afv:HeaderdInputFieldsControl
 				Margin="0 8 0 0"
 				Width="490"
 				HorizontalAlignment="Left"
@@ -134,29 +133,29 @@
 		<afv:ChameleonContentControl.Content>
 			<StackPanel Spacing="8"
 						HorizontalAlignment="Left">
-				<afvc:HeaderdInputFieldsControl
+				<afv:HeaderdInputFieldsControl
 					Width="480"
 					HorizontalAlignment="Left"
 					Title="Phone Number"
 					Text="{Binding GetNumberData}"
 					Tag="copy">
-					<afvc:HeaderdInputFieldsControl.Buttons>
+					<afv:HeaderdInputFieldsControl.Buttons>
 						<Button
 							Content="Phone"
 							ToolTip.Tip="Get Number"
 							CommandParameter="GetNumber"
 							Command="{Binding AsyncCfVCommand}"
 							Classes="accent"
-							Theme="{DynamicResource AccentSymbleIconButton}" />
-					</afvc:HeaderdInputFieldsControl.Buttons>
-				</afvc:HeaderdInputFieldsControl>
-				<afvc:HeaderdInputFieldsControl
+							Theme="{StaticResource AccentSymbleIconButton}" />
+					</afv:HeaderdInputFieldsControl.Buttons>
+				</afv:HeaderdInputFieldsControl>
+				<afv:HeaderdInputFieldsControl
 					Width="480"
 					HorizontalAlignment="Left"
 					Title="Code"
 					Text="{Binding ReceiveSMSData}"
 					Tag="copy">
-					<afvc:HeaderdInputFieldsControl.Buttons>
+					<afv:HeaderdInputFieldsControl.Buttons>
 						<Button
 							IsEnabled="{Binding GetNumberData, Converter={x:Static ObjectConverters.IsNotNull}}"
 							Content="Message"
@@ -165,8 +164,8 @@
 							Command="{Binding AsyncCfVCommand}"
 							Classes="accent"
 							Theme="{DynamicResource AccentSymbleIconButton}" />
-					</afvc:HeaderdInputFieldsControl.Buttons>
-				</afvc:HeaderdInputFieldsControl>
+					</afv:HeaderdInputFieldsControl.Buttons>
+				</afv:HeaderdInputFieldsControl>
 
 				<Panel Margin="0 0 0 0">
 					<TextBlock

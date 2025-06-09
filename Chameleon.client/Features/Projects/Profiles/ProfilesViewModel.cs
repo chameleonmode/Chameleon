@@ -272,7 +272,6 @@ public partial class ProfilesViewModel : Projector {
 
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
-		PaginatorViewModel.UpdatePageCount(9);
 
 		PlaywrightScripts.Clear();
 		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());
