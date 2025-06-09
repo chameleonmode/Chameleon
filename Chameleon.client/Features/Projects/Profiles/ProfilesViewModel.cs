@@ -26,23 +26,6 @@ using Chameleon.client.Features.Projects.Profiles.Dialogs;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
-public partial class MoveUserProfilesPopupViewModel : ViewModelObjectBase {
-	[ObservableProperty] ObsFolder? selectedFolder;
-	[ObservableProperty] bool listIsVisible = true;
-
-	public ObservableCollection<ObsFolder> Folders { get; } = [];
-	public ObservableCollection<ObsProfile> Profiles { get; } = [];
-
-	public bool HasSelected => SelectedFolder != null;
-
-	partial void OnSelectedFolderChanged(ObsFolder? value) => OnPropertyChanged(nameof(HasSelected));
-
-	[RelayCommand]
-	private void SelectFolder(ObsFolder selectedFolder) {
-		SelectedFolder = selectedFolder;
-	}
-}
-
 public record SystemBrovserItem(SystemBrowserType SystemBrowserType) {
 	public string IconName => SystemBrowserType.ToString().ToLower();
 }
@@ -60,7 +43,6 @@ public partial class ProfilesViewModel : Projector {
 	[ObservableProperty] PaginatorViewModel paginatorViewModel;
 	[ObservableProperty] SystemBrovserItem selectedBrowserItem;
 	[ObservableProperty] int totalCount;
-	[ObservableProperty] bool hasFolder;
 	[ObservableProperty] bool isVisibleRunButton = true;
 	[ObservableProperty] bool isVisibleStopButton;
 	[ObservableProperty] bool isVisibleWaitButton;
@@ -76,6 +58,7 @@ public partial class ProfilesViewModel : Projector {
 	];
 	public ChangeComparereOption[] Sorts { get; } = (ChangeComparereOption[])Enum.GetValues(typeof(ChangeComparereOption));
 
+  public bool HasFolder => Folder != null && Folder.Id != 0;
 	public bool HasNoItems => Profiles.Count == 0;
 	public string SelectedFolderTitle => Folder?.Title ?? "x_x";
 	public int SelectedCount => GetSelectedProfiles?.Count() ?? 0;
@@ -119,7 +102,7 @@ public partial class ProfilesViewModel : Projector {
 			SelectAll();
 		};
 		CommandMap["UnselectItems"] = () => {
-			UnselectItems();
+			Profiles.ForEach(p => p.IsSelected = false);
 			PaginatorViewModel.UpdatePageCount(9);
 		};
 
@@ -314,11 +297,6 @@ public partial class ProfilesViewModel : Projector {
 
 		SetViewModelsFilter(false);
 	}
-	partial void OnFolderChanged(UPFolderViewModel? value) {
-		SearchText = string.Empty;
-		HasFolder = value?.Id != default && value?.Id != 0;
-		SetViewModelsFilter();
-	}
 
 	private async Task OpenSystemBrowser(SystemBrowserType browserType) {
 		foreach (var profile in GetSelectedProfiles) {
@@ -330,12 +308,10 @@ public partial class ProfilesViewModel : Projector {
 		if (folder is not null) {
 			Folder = new UPFolderViewModel(folder);
 			Folder.Tags = await TagsRepo.Instance.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
-			UnselectItems();
+			SearchText = string.Empty;
 			SetViewModelsFilter();
 		}
 	}
-
-	private void UnselectItems() => Profiles.ForEach(p => p.IsSelected = false);
 
 	public async Task<UserProfileDto?> CreateNewProfile() {
 		var folderId = HasFolder ? Folder?.Id : null;
@@ -367,6 +343,7 @@ public partial class ProfilesViewModel : Projector {
 
 		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
 
+		OnPropertyChanged(nameof(HasFolder));
 		OnPropertyChanged(nameof(HasNoItems));
 		OnPropertyChanged(nameof(IsProfilesExist));
 		OnPropertyChanged(nameof(HasSelectedItems));

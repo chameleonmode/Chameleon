@@ -22,15 +22,20 @@ using System.Text.Json.Serialization;
 using static Chameleon.lib.Common.Constants.Enums;
 namespace Chameleon.client.Features.Automation.Actors;
 
-public partial class Tag(TagDto dto, bool isSelected)  : ObservableObject {
+public partial class Tag(TagDto dto, bool isSelected) : ObservableObject {
 	[ObservableProperty] bool isSelected = isSelected;
 	public TagDto Dto { get; } = dto;
 
-	[JsonIgnore] public IEnumerable<string> ProfileIds => Dto.Items
+	[JsonIgnore]
+	public IEnumerable<string> ProfileIds => Dto.Items
 	.Where(x => x.Key == TagItemType.Profile)
 	.SelectMany(x => x.Value);
 
 	[JsonIgnore] public string ToolTipText => $"{ProfileIds.Count()} Profiles";
+
+	public void RaiseSelectedChanged() {
+		OnPropertyChanged(nameof(IsSelected));
+	}
 }
 public record Selection(Script Script, bool Selected = false);
 public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<int> SelectedProfileIds);

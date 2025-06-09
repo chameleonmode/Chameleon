@@ -11,10 +11,8 @@ using Chameleon.client.Features.Projects.Folders;
 namespace Chameleon.client.Features.Projects.Profiles.Dialogs;
 
 public partial class MoveUserProfilesPopupViewModel : ViewModelObjectBase {
-	[ObservableProperty]
-	private ObsFolder? selectedFolder;
-	[ObservableProperty]
-	private bool listIsVisible = true;
+	[ObservableProperty] ObsFolder? selectedFolder;
+	[ObservableProperty] bool listIsVisible = true;
 
 	public ObservableCollection<ObsFolder> Folders { get; } = [];
 	public ObservableCollection<ObsProfile> Profiles { get; } = [];
