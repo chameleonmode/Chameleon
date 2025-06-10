@@ -288,6 +288,8 @@
 	</ControlTheme>
 
 	<ControlTheme TargetType="local:SvgIcon" x:Key="{x:Type local:SvgIcon}">
+		<Setter Property="Width" Value="18" />
+		<Setter Property="Height" Value="18" />
 		<Setter Property="Template">
 			<ControlTemplate>
 					<Svg Source="{TemplateBinding IconName, Converter={StaticResource svgz}}" />
@@ -297,21 +299,21 @@
 
 	<ControlTheme x:Key="FavoriteButton" TargetType="Button">
 		<Setter Property="CornerRadius" Value="180" />
-		<Setter Property="Width" Value="34" />
-		<Setter Property="Height" Value="34" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="32" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border Name="Rootz" CornerRadius="{TemplateBinding CornerRadius}">
-					<Panel Background="Transparent">
-						<local:SvgIcon IconName="not-favorites" IsVisible="{ReflectionBinding !IsFavorite}" Width="15" Height="15" />
-						<local:SvgIcon IconName="in-favorites" IsVisible="{ReflectionBinding IsFavorite}" Width="12" Height="12" />
+					<Panel Background="Transparent" Margin="0 0 0 0">
+						<local:SvgIcon IconName="not-favorites" IsVisible="{ReflectionBinding !IsFavorite}" />
+						<local:SvgIcon IconName="in-favorites" IsVisible="{ReflectionBinding IsFavorite}" />
 					</Panel>
 				</Border>
 			</ControlTemplate>
 		</Setter>
 	</ControlTheme>
 
-	<ControlTheme x:Key="SvgIconButton" TargetType="Button">
+	<ControlTheme x:Key="SvgIconButtonz" TargetType="Button">
 		<Setter Property="CornerRadius" Value="180" />
 		<Setter Property="Width" Value="32" />
 		<Setter Property="Height" Value="32" />
@@ -319,11 +321,44 @@
 			<ControlTemplate>
 				<Border Name="Rootz" CornerRadius="{TemplateBinding CornerRadius}">
 					<Panel Background="Transparent">
-						<local:SvgIcon IconName="{TemplateBinding Content}" Width="18" Height="18"/>
+						<local:SvgIcon IconName="{TemplateBinding Content}" />
 					</Panel>
 				</Border>
 			</ControlTemplate>
 		</Setter>
+	</ControlTheme>
+
+
+	<ControlTheme x:Key="SvgIconButton" TargetType="Button">
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="180" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Root"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+					<Border Name="Panel"
+							Background="Transparent"
+							CornerRadius="{TemplateBinding CornerRadius}">
+						<local:SvgIcon IconName="{TemplateBinding Content}" Width="18" Height="18"/>
+					</Border>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^:pointerover /template/ Border#Panel">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ Border#Panel">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector="^:disabled /template/ Border#Panel">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
+		</Style>
 	</ControlTheme>
 
 	<ControlTheme x:Key="SvgIconTextButton" TargetType="Button">

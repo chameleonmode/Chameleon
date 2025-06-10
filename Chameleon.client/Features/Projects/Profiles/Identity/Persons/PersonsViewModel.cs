@@ -18,7 +18,6 @@ public partial class UPPersonViewModel(UPPersonDto dto) : MappableViewModelBase<
 	[ObservableProperty] string? email = dto.Email;
 	[ObservableProperty] string? birthPlace = dto.BirthPlace;
 	[ObservableProperty] string? notes = dto.Notes;
-	[ObservableProperty] Enums.GenderType gender = dto.Gender;
 	[ObservableProperty] DateTime birthDate = dto.BirthDate;
 
 	public DateTimeOffset BirthDateOffset => new(BirthDate);

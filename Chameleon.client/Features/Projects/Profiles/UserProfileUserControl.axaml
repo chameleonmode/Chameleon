@@ -25,9 +25,9 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Border Tag="{Binding IsForeground}" Padding="6">
+	<Border Padding="6">
 		<Grid ColumnDefinitions="Auto,Auto,*,Auto">
-			<StackPanel Orientation="Horizontal"	ToolTip.Tip="{Binding Title, FallbackValue=x}">
+			<StackPanel Orientation="Horizontal" ToolTip.Tip="{Binding Title, FallbackValue=x}">
 				<CheckBox Margin="6 0 -6 0" IsChecked="{Binding IsSelected}" IsVisible="{Binding IsShowCheckboxColumn}" />
 
 				<Panel Name="IconHost" Tag="{Binding Dto}" VerticalAlignment="Center">
@@ -68,7 +68,7 @@
 					Rows="1">
 				<Button
 					Content="chrome"
-					Tag="{Binding IsChromeRunning}"
+					Tag="{Binding IsChromeRunning, Mode=TwoWay}"
 					Theme="{StaticResource SvgIconButton}"
 					Command="{Binding AsyncCfVCommand}"
 					CommandParameter="OpenChrome" />

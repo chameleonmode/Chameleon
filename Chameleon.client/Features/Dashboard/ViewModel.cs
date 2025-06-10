@@ -17,29 +17,28 @@ using Chameleon.lib.Util;
 
 namespace Chameleon.client.Features.Dashboard;
 
-public abstract partial class Base(string? title) : ViewModelObjectBase(title) {
-	[ObservableProperty] Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
+public abstract partial class Dashboarder(string? title) : ViewModelObjectBase(title) {
+	[ObservableProperty] Enums.ChangeComparereOption sort = Enums.ChangeComparereOption.Ascending;
 	[ObservableProperty] Enums.ChangeComparereOption folderSortSelected = Enums.ChangeComparereOption.Ascending;
 
 	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
 	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Profiler.AscendingComparer);
-	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(FoldersViewModel.AscendingComparer);
+	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Folderer.AscendingComparer);
 	public abstract ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 	public abstract ReadOnlyObservableCollection<ObsFolder> Folders { get; }
-	public bool HasNoItems =>  Profiles.Count == 0;
+	public bool HasNoItems => Profiles.Count == 0;
 	public bool HasNoFolderItems => Folders.Count == 0;
 
-	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
+	partial void OnSortChanged(Enums.ChangeComparereOption value) {
 		profilesCompareObservable.OnNext(value switch {
 			Enums.ChangeComparereOption.Descending => Profiler.DescendingComparer,
 			_ => ProfilesViewModel.AscendingComparer
 		});
 	}
-
 	partial void OnFolderSortSelectedChanged(Enums.ChangeComparereOption value) {
 		foldersCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => FoldersViewModel.DescendingComparer,
-			_ => FoldersViewModel.AscendingComparer
+			Enums.ChangeComparereOption.Descending => Folderer.DescendingComparer,
+			_ => Folderer.AscendingComparer
 		});
 	}
 }
@@ -113,4 +112,5 @@ public partial class ViewModel : ViewModelObjectBase {
 		await PlaywrightCookiesSyncService.Instance.SyncCookies(systemBrowserType);
 		Toaster.Success("Cookies Synced");
 	}
+	public static ViewModel Instance { get; } = new();
 }

@@ -64,8 +64,7 @@ public partial class ProfilesViewModel : Profiler {
 	[ObservableProperty] bool isVisibleWaitButton;
 	[ObservableProperty] bool isRecordSelected;
 	[ObservableProperty] string searchText = string.Empty;
-	[ObservableProperty] ChangeComparereOption sortSelected = ChangeComparereOption.Ascending;
-	public readonly BehaviorSubject<IComparer<ObsProfile>> CompareObservable = new(AscendingComparer);
+	[ObservableProperty] ChangeComparereOption sort = ChangeComparereOption.Ascending;
 	readonly BehaviorSubject<Func<ObsProfile, bool>> filter;
 	readonly BehaviorSubject<IPageRequest> pageRequests;
 	CancellationTokenSource? cts;
@@ -265,7 +264,7 @@ public partial class ProfilesViewModel : Profiler {
 		SelectedBrowserItem ??= BrowserItems[0];
 	}
 
-	partial void OnSortSelectedChanged(ChangeComparereOption value) {
+	partial void OnSortChanged(ChangeComparereOption value) {
 		CompareObservable.OnNext(value switch {
 			ChangeComparereOption.Descending => DescendingComparer,
 			_ => AscendingComparer

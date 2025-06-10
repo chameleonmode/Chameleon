@@ -1,10 +1,10 @@
-using Avalonia.Controls;
+using Chameleon.client.UI.Controls;
 
 namespace Chameleon.client.Features.Dashboard.Favorite;
 
-public partial class FavouriteView : UserControl {
+public partial class FavouriteView : AutoViewModelLocatorControl {
     public FavouriteView() {
         InitializeComponent();
-        DataContext = FavouriteViewModel.Instance;
     }
+    protected override object? ViewModel => FavouriteViewModel.Instance;
 }

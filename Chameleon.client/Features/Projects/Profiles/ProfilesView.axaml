@@ -141,7 +141,7 @@
 					IsEditable="False"
 					HorizontalAlignment="Right"
 					ItemsSource="{Binding Sorts}"
-					SelectedItem="{Binding SortSelected}" />
+					SelectedItem="{Binding Sort}" />
 
 				<!--Automation Section in Options container-->
 				<!--Scripts-->

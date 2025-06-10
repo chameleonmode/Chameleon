@@ -19,11 +19,14 @@ using System.Reactive.Linq;
 using DynamicData.Binding;
 using Chameleon.client.UI.Components.ViewModels;
 using Microsoft.AspNetCore.SignalR;
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.client.Features.Projects;
 public abstract partial class Profiler : ViewModelObjectBase {
 	public static SortExpressionComparer<ObsProfile> AscendingComparer => SortExpressionComparer<ObsProfile>.Ascending(p => p.Dto!.title!);
 	public static SortExpressionComparer<ObsProfile> DescendingComparer => SortExpressionComparer<ObsProfile>.Descending(p => p.Dto!.title!);
+	public readonly BehaviorSubject<IComparer<ObsProfile>> CompareObservable = new(AscendingComparer);
+
 	public IObservable<IChangeSet<ObsProfile, int>> Shared { get; }
 	public ReadOnlyObservableCollection<ObsProfile> ObsProfiles { get; }
 	public abstract ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
@@ -86,13 +89,6 @@ public abstract partial class Folderer : ViewModelObjectBase {
 	}
 }
 
-public abstract partial class Projector(string? title = null) : ViewModelObjectBase(title) {
-	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; protected set; } = new([]);
-	public ReadOnlyObservableCollection<ObsFolder> Folders { get; protected set; } = new([]);
-	public bool HasNoFolderItems => Folders.Count == 0;
-	public bool HasNoItems => Profiles.Count == 0;
-	// public bool IsProfilesExist => UserProfilesRepo.Instance.ObservableCache.Items.Any();
-}
 public partial class ViewModel : ViewModelObjectBase {
 	public bool IsCreateProfileBtnVisible { get; } = Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CanCreateProfiles == true;
 

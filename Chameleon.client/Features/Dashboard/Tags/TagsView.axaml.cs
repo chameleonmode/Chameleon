@@ -1,10 +1,10 @@
-using Avalonia.Controls;
+using Chameleon.client.UI.Controls;
 
 namespace Chameleon.client.Features.Dashboard.Tags;
 
-public partial class TagsView : UserControl {
+public partial class TagsView : AutoViewModelLocatorControl {
     public TagsView() {
         InitializeComponent();
-        DataContext = TagsViewModel.Instance;
     }
+    protected override object? ViewModel => TagsViewModel.Instance;
 }

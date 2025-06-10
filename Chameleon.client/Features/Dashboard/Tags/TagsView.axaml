@@ -18,7 +18,7 @@
 					Header="Sort by:"
 					HorizontalAlignment="Right"
 					ItemsSource="{Binding Sorts}"
-					SelectedItem="{Binding SortSelected}"
+					SelectedItem="{Binding Sort}"
 					IsEditable="False"/>
 			</afv:ChameleonContentControl.Options>
 			<afv:ChameleonContentControl.Content>

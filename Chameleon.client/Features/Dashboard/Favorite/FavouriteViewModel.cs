@@ -5,7 +5,7 @@ using Chameleon.lib.Api.Repos;
 using DynamicData;
 
 namespace Chameleon.client.Features.Dashboard.Favorite;
-public partial class FavouriteViewModel : Base {
+public partial class FavouriteViewModel : Dashboarder {
 	public override ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 	public override ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public FavouriteViewModel() : base("Favourites") {

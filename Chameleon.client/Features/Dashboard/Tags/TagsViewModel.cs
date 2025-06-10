@@ -11,7 +11,7 @@ using System.Reactive.Linq;
 
 namespace Chameleon.client.Features.Dashboard.Tags;
 
-public partial class TagsViewModel : Base {
+public partial class TagsViewModel : Dashboarder {
 	[ObservableProperty] string selectedTagName = "";
 	[ObservableProperty] IEnumerable<string> folderTagIds = [];
 	[ObservableProperty] IEnumerable<string> profileTagIds = [];

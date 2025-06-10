@@ -20,6 +20,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text.Json.Serialization;
 using static Chameleon.lib.Common.Constants.Enums;
+using Chameleon.lib.WebBrowser.Browsers;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class Tag(TagDto dto, bool isSelected) : ObservableObject {
@@ -189,7 +190,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		foreach (var profile in profiles) {
 			cts!.Token.ThrowIfCancellationRequested();
 
-			var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
+			var browser = await profile.OpenSystemBrowser(Browser.Option, false).WaitAsync(cts.Token);
 
 			foreach (var selection in selected) {
 				await ExecuteScriptAsync(selection, profile, browser!);
@@ -207,7 +208,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			foreach (var profile in profiles) {
 				cts.Token.ThrowIfCancellationRequested();
 
-				var browser = await profile.OpenSystemBrowser(Browser.Option).WaitAsync(cts.Token);
+				var browser = await profile.OpenSystemBrowser(Browser.Option, false).WaitAsync(cts.Token);
 				await ExecuteScriptAsync(selection, profile, browser!);
 				await BrowserShutdown(browser);
 			}

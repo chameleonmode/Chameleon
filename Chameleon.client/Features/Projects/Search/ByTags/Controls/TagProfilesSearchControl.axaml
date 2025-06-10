@@ -3,19 +3,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			  xmlns:folder="using:Chameleon.client.Features.Projects.Search.ByTags.Controls"
-			 x:DataType="folder:TagProfilesSearchViewModel"
-			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+						 xmlns:folder="using:Chameleon.client.Features.Projects.Search.ByTags.Controls"
+						 x:DataType="folder:TagProfilesSearchViewModel"
+						 xmlns:ui="using:FluentAvalonia.UI.Controls"
              x:Class="Chameleon.client.Features.Projects.Search.ByTags.Controls.TagProfilesSearchControl">
 	<StackPanel Margin="0,2">
 		<Label>Profiles</Label>
 		<ListBox ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<Border Tag="{Binding IsForeground}" ToolTip.Tip="{Binding Title, FallbackValue=Cannot find name}" Padding="0,4">
+					<Border ToolTip.Tip="{Binding Title, FallbackValue=Cannot find name}" Padding="0,4">
 						<Grid ColumnDefinitions="Auto,Auto,*,Auto">
-							<StackPanel Grid.Column="0"
-										Orientation="Horizontal">
+							<StackPanel Grid.Column="0" Orientation="Horizontal">
 								<Panel
 									  Name="IconHost"
 									  Tag="{Binding Dto}"
