@@ -76,7 +76,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		Tagz = tagz;
 
 		subscriptions.Add(
-			 ProfilesViewModel.Instance.Profiles.ToObservableChangeSet()
+			 ProfilesViewModel.Instance.ObsProfiles.ToObservableChangeSet()
 			.AutoRefresh(profile => profile.IsSelected)
 			.Filter(profile => profile.IsSelected)
 			.Sort(SortExpressionComparer<ObsProfile>.Ascending(p => p.Title ?? ""))
@@ -91,13 +91,13 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			.ToCollection()
 			.Subscribe(next =>
 				next.ForEach(t =>
-					 ProfilesViewModel.Instance.Profiles
+					 ProfilesViewModel.Instance.ObsProfiles
 					.Where(x => t.ProfileIds.Contains(x.Dto.ID))
 					.ForEach(p => p.Active = p.IsSelected = t.IsSelected)
 			)));
 
 		profileSelections?.ForEach(id => {
-			ProfilesViewModel.Instance.Profiles
+			ProfilesViewModel.Instance.ObsProfiles
 			.Where(p => p.Dto.id == id)
 			.ForEach(p => p.IsSelected = true);
 		});

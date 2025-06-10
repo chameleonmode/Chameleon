@@ -4,9 +4,7 @@ using Chameleon.client.MvvM;
 using RedditActor = Chameleon.AIR.Actors.Models.Reddit.Actor;
 using Chameleon.lib.Const;
 using Chameleon.AIR.Actors.Models;
-using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Util;
-using Chameleon.client.Features.Projects.Profiles;
 
 namespace Chameleon.client.Features.Automation.Actors;
 
@@ -55,7 +53,6 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
 		_ = await lib.Playwright.Project.Initialized.Task;
-		ProfilesViewModel.Instance.PaginatorViewModel.UpdatePageCount(UserProfilesRepo.Instance.ObservableCache.Count);
 		if (!Loaded) await LoadActorStates();
 	}
 

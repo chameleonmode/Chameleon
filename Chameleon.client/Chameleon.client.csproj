@@ -33,4 +33,10 @@
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Playwright\Chameleon.lib.Playwright.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Features/Projects/View.axaml.cs">
+      <DependentUpon>View.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

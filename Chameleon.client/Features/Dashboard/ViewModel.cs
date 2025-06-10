@@ -1,5 +1,4 @@
 ﻿using Chameleon.client.Features.Dashboard.Tags;
-using Chameleon.client.Features.Projects;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Abs.Platformatic;
@@ -13,23 +12,25 @@ using DynamicData;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Chameleon.client.Features.Projects;
 
 namespace Chameleon.client.Features.Dashboard;
 
-public abstract partial class Base(string? title) : Projector(title) {
-	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(ProfilesViewModel.AscendingComparer);
-	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(FoldersViewModel.AscendingComparer);
-
-	[ObservableProperty]
-	private Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
-	[ObservableProperty]
-	private Enums.ChangeComparereOption folderSortSelected = Enums.ChangeComparereOption.Ascending;
+public abstract partial class Base(string? title) : ViewModelObjectBase(title) {
+	[ObservableProperty] Enums.ChangeComparereOption sortSelected = Enums.ChangeComparereOption.Ascending;
+	[ObservableProperty] Enums.ChangeComparereOption folderSortSelected = Enums.ChangeComparereOption.Ascending;
 
 	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
+	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Profiler.AscendingComparer);
+	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(FoldersViewModel.AscendingComparer);
+	public abstract ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
+	public abstract ReadOnlyObservableCollection<ObsFolder> Folders { get; }
+	public bool HasNoItems =>  !Projects.Profiles.ProfilesViewModel.Instance.HasFaves;
+	public bool HasNoFolderItems => Folders.Count == 0;
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
 		profilesCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => ProfilesViewModel.DescendingComparer,
+			Enums.ChangeComparereOption.Descending => Profiler.DescendingComparer,
 			_ => ProfilesViewModel.AscendingComparer
 		});
 	}

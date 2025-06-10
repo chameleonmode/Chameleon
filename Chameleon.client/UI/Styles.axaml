@@ -17,10 +17,32 @@
 
 	<!--ListBox-->
 	<Style Selector="ListBox.uni">
-		<Setter Property="ItemsPanel" Value="{DynamicResource SingleColumnUniformGridTemplate}" />
 		<Setter Property="Theme" Value="{DynamicResource ListBoxNoScroller}" />
 		<Setter Property="ItemContainerTheme" Value="{DynamicResource GridViewItem}" />
+		<Setter Property="ItemsPanel" Value="{DynamicResource SingleColumnUniformGridTemplate}" />
 	</Style>
+  <Style Selector="ListBox.with-scroller">
+		<Setter Property="ItemsPanel" Value="{DynamicResource SingleColumnUniformGridTemplate}" />
+		<Setter Property="ItemContainerTheme" Value="{DynamicResource GridViewItem}" />
+    <!-- Optional: set defaults for scrollbar visibility -->
+    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border
+          Background="{TemplateBinding Background}"
+          BorderBrush="{TemplateBinding BorderBrush}"
+          BorderThickness="{TemplateBinding BorderThickness}"
+          Padding="{TemplateBinding Padding}">
+          
+          <!-- Here's the ScrollViewer -->
+          <ScrollViewer Name="PART_ScrollViewer">
+            <ItemsPresenter />
+          </ScrollViewer>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
 	<Style Selector="ListBox#lbProfiles">
 		<Setter Property="VerticalAlignment" Value="Top" />
 		<Setter Property="ItemTemplate" Value="{StaticResource UserProfileUserControlDataTemplate}" />

@@ -8,9 +8,8 @@
 						 xmlns:folders="using:Chameleon.client.Features.Projects.Folders"
 						 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
 						 xmlns:local="using:Chameleon.client.Features.Projects"
-             x:Class="Chameleon.client.Features.Projects.ProjectsView"
-						 x:DataType="local:ProjectsViewModel"
-						 x:CompileBindings="True">
+             x:Class="Chameleon.client.Features.Projects.View"
+						 x:DataType="local:ViewModel">
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
 		<StackPanel>
 			<afv:PageHeader TextType="Profiles" Classes="smallest">
@@ -31,12 +30,8 @@
 			</afv:PageHeader>
 
 			<Grid ColumnDefinitions="3*,*">
-				<Panel DataContext="{Binding Profiles}">
 					<profiles:ProfilesView />
-				</Panel>
-				<Panel DataContext="{Binding Folders}" Grid.Column="1">
-					<folders:FoldersView />
-				</Panel>
+					<folders:FoldersView Grid.Column="1" />
 			</Grid>
 		</StackPanel>
 	</ScrollViewer>

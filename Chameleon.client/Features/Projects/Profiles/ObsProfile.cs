@@ -53,9 +53,11 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 	}
 
 	public ObsProfile(UserProfileDto profile,
-		Action<ObservableDtoViewModelBase<UserProfileDto>>? onSelectedChanged = default,
+		Action<ObsProfile>? onSelectedChanged = default,
 		Action<ObsProfile>? onDeleted = default)
-	: base(profile, onSelectedChanged) {
+	: base(profile, onSelectedChanged: onSelectedChanged != null ? (vm) => onSelectedChanged((ObsProfile)vm) : null) {
+
+		
 
 		AsyncCommandMap["OpenFirefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
 		AsyncCommandMap["OpenChrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);

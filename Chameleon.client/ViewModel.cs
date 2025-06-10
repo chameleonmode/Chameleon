@@ -90,12 +90,12 @@ public partial class ViewModel : ObservableObjectBase {
     if (newValue.ViewModel is ViewModelObjectBase nfs)
       nfs.Navigated = false;
 
-    Navigator.NavigateToType(typeof(ProjectsView), newValue.ViewModel);
+    Navigator.NavigateToType(typeof(View), newValue.ViewModel);
   }
 
   [RelayCommand]
   void ClickSearch(string p) {
-    if (p.IsNot()) Navigator.NavigateToType(typeof(ProjectsView), p);
+    if (p.IsNot()) Navigator.NavigateToType(typeof(View), p);
     else {
       SelectedSearchTerm = null;
       ProfilesViewModel.Instance.OnFilterTo();

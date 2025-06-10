@@ -361,13 +361,8 @@
 														IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 								</StackPanel>
 
-								<Grid Grid.Row="1"
-										ColumnDefinitions="*,Auto"
-										RowDefinitions="Auto,*,Auto,Auto">
-									<Rectangle Name="TopRowPlaceholder"
-												 IsHitTestVisible="False"
-												 IsVisible="False"
-												 MinHeight="36" />
+								<Grid Grid.Row="1" ColumnDefinitions="*,Auto" RowDefinitions="Auto,*,Auto,Auto">
+									<Rectangle Name="TopRowPlaceholder" IsHitTestVisible="False" IsVisible="False" MinHeight="36" />
 
 									<ContentPresenter Name="ContentsPresenter"
 														Content="{TemplateBinding Content}"

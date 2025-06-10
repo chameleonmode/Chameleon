@@ -12,6 +12,7 @@ using Chameleon.client.MvvM;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
+using Chameleon.client.Features.Projects.Profiles;
 
 namespace Chameleon.client.UI.Pages;
 
@@ -28,7 +29,6 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 	}
 
 	public virtual void OnAfterNavigatedToViewModel(object param) { }
-	public virtual void OnAfterNavigatedTo() { }
 	private async void OnNavigatedTo(object? sender, NavigationEventArgs e) {
 		if (DataContext is ViewModelObjectBase pageViewModel) {
 			await Task.Delay(64);
@@ -58,20 +58,18 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 				return true;
 			});
 		}
-
-		OnAfterNavigatedTo();
 	}
 
 	private void OnNavigatingFrom(object? sender, NavigatingCancelEventArgs e) {
 		_navParam = e.Parameter;
 		if (GetNavAnimationVisuals()) {
 			var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-			try {
-				_ = svc.PrepareToAnimate("ForwardAnimation", _animationPage);
-			} catch {
+			_ = ExUtil.TryCatch(() => {
+				return svc.PrepareToAnimate("ForwardAnimation", _animationPage);
+			}, () => {
 				_ = svc.GetAnimation("ForwardAnimation");
 				_animationPage = _animationPageParent = null;
-			}
+			});
 		}
 	}
 

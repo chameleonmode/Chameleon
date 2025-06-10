@@ -45,7 +45,7 @@ public partial class View : UserControl {
 			{
 				NavHeader = "Profiles",
 				IconKey = "ContactIcon",
-				Tag = typeof(Features.Projects.ProjectsView)
+				Tag = typeof(Features.Projects.View)
 			}
 		},
 		{

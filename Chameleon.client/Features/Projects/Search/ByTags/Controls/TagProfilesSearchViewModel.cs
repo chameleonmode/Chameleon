@@ -26,6 +26,6 @@ public partial class TagProfilesSearchViewModel : TagsSearchViewModelBase {
 
 		_ = this.WhenValueChanged(x => x.SelectedProfile)
 				.Where(profile => profile is not null)
-				.Subscribe(profile => Navigator.NavigateToType(typeof(ProjectsView), profile));
+				.Subscribe(profile => Navigator.NavigateToType(typeof(View), profile));
 	}
 }

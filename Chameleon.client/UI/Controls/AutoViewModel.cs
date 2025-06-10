@@ -16,7 +16,7 @@ public class AutoViewModelInitControl : UserControl {
 
 public class AutoViewModelLocatorControl : AutoViewModelInitControl {
 	public AutoViewModelLocatorControl() {
-		DataContext ??= AutoLocateVM() ?? throw new NullReferenceException($"ViewModel for {GetType().Name} not found.");
+		DataContext ??= ViewModel ?? throw new NullReferenceException($"ViewModel for {GetType().Name} not found.");
 	}
 
 	/// <summary>
@@ -24,18 +24,20 @@ public class AutoViewModelLocatorControl : AutoViewModelInitControl {
 	/// retuns null if not fond
 	/// </summary>
 	/// <returns>ViewModel or Null</returns>
-	private object? AutoLocateVM() {
-		var viewType = GetType();
-		if (viewType.GetCustomAttribute<lib.Common.Attributes.ViewModelAttribute>()?.Type is Type t)
-			return IoC.GetService(t);
+	protected virtual object? ViewModel {
+		get {
+			var viewType = GetType();
+			if (viewType.GetCustomAttribute<lib.Common.Attributes.ViewModelAttribute>()?.Type is Type t)
+				return IoC.GetService(t);
 
-		var vmt =
-			Type.GetType($"{viewType.Namespace}.ViewModels.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}") ??
-			Type.GetType($"{viewType.Namespace}.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}") ??
-			Type.GetType($"{viewType.Namespace?.Replace(".Views", ".ViewModels")}.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}");
+			var vmt =
+				Type.GetType($"{viewType.Namespace}.ViewModels.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}") ??
+				Type.GetType($"{viewType.Namespace}.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}") ??
+				Type.GetType($"{viewType.Namespace?.Replace(".Views", ".ViewModels")}.{viewType.Name}Model, {viewType.GetTypeInfo().Assembly.FullName}");
 
-		ArgumentNullException.ThrowIfNull(vmt, nameof(vmt));
+			ArgumentNullException.ThrowIfNull(vmt, nameof(vmt));
 
-		return IoC.GetService(vmt);
+			return IoC.GetService(vmt);
+		}
 	}
 }

@@ -108,7 +108,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 			}
 
 			UserScripts.UpdateMapped(
-				await BundledScriptsService.GetUserScripts(UserScriptsDirectory), s => new(s, []), (x, y) => x.Filepath == y.Description!.FilePath
+				await BundledScriptsService.GetUserScripts(), s => new(s, []), (x, y) => x.Filepath == y.Description!.FilePath
 			);
 			await Task.Delay(250);
 		} finally {

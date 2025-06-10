@@ -22,8 +22,7 @@ public static class Modules {
   public static IServiceCollection WithProfilesAndFolders(this IServiceCollection services) => services
   .AddSingleton<IdentityView>()
   .AddSingleton<IdentityViewModel>()
-  .AddSingleton<Projects.ProjectsView>()
-  .AddSingleton<Projects.ProjectsViewModel>();
+  .AddSingleton<Projects.View>();
 
   public static IServiceCollection WithAllFeatures(this IServiceCollection services) => services
   .Automation()

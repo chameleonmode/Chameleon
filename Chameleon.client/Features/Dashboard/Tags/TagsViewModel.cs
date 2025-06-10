@@ -5,6 +5,8 @@ using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using DynamicData.Binding;
+using DynamicData.PLinq;
+using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 
 namespace Chameleon.client.Features.Dashboard.Tags;
@@ -13,7 +15,8 @@ public partial class TagsViewModel : Base {
 	[ObservableProperty] string selectedTagName = "";
 	[ObservableProperty] IEnumerable<string> folderTagIds = [];
 	[ObservableProperty] IEnumerable<string> profileTagIds = [];
-
+	public override ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
+	public override ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public TagsViewModel() : base("Tags") {
 		var tagItems = TagsRepo.Connect()
 			.Filter(tag => tag.Name == SelectedTagName);
@@ -34,14 +37,23 @@ public partial class TagsViewModel : Base {
 					.SelectMany(x => x.Value).Distinct();
 			});
 
-		_ = UserProfilesRepo.Connect()
+		// _ = UserProfilesRepo.Connect()
+		// 			.Filter(
+		// 				this.WhenValueChanged(vm => vm.ProfileTagIds)
+		// 						.Where(ids => ids is not null)
+		// 						.Select(ids => new Func<UserProfileDto, bool>(f => ids!.Any(id => id == f.id.ToString())))
+		// 			)
+		// 			.Transform(i => new ObsProfile(i){ IsShowCheckboxColumn = false})
+		// 			.SortAndBind(out var profiles, profilesCompareObservable)
+		// 			.Subscribe(_ => OnPropertyChanged(nameof(HasNoItems)));
+	_ = ProfilesViewModel.Instance.Shared
 					.Filter(
 						this.WhenValueChanged(vm => vm.ProfileTagIds)
 								.Where(ids => ids is not null)
-								.Select(ids => new Func<UserProfileDto, bool>(f => ids!.Any(id => id == f.id.ToString())))
+								.Select(ids => new Func<ObsProfile, bool>(f => ids!.Any(id => id == f.Dto.id.ToString())))
 					)
-					.Transform(i => new ObsProfile(i){ IsShowCheckboxColumn = false})
 					.SortAndBind(out var profiles, profilesCompareObservable)
+					.Transform(i => { i.IsShowCheckboxColumn = false; return i;})
 					.Subscribe(_ => OnPropertyChanged(nameof(HasNoItems)));
 		Profiles = profiles;
 

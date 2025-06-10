@@ -54,10 +54,10 @@ public partial class FoldersViewModel : Projector {
 				Instance.SetSelectedFolder(p);
 			}
 		} else {
-				if (AllProfiles != null && !AllProfiles.Navigated) {
-					AllProfiles.Navigated = true;
-					SetSelectedFolder(AllProfiles.Dto);
-				}
+				// if (AllProfiles != null && !AllProfiles.Navigated) {
+				// 	AllProfiles.Navigated = true;
+				// 	SetSelectedFolder(AllProfiles.Dto);
+				// }
 			}
 	}
 
