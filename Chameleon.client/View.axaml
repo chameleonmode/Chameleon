@@ -135,9 +135,7 @@
 		</Style>
 	</UserControl.Styles>
 	<Grid RowDefinitions="Auto,*">
-		<Grid Name="TitleBarHost"
-              ColumnDefinitions="Auto,Auto,*,Auto"
-              Background="Transparent">
+		<Grid Name="TitleBarHost" ColumnDefinitions="Auto,Auto,*,Auto">
 			<Image Margin="12 6"
                    IsHitTestVisible="False"
                    Source="Assets/logosymbol.ico"

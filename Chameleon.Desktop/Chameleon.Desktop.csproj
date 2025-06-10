@@ -7,6 +7,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
 	  <ApplicationIcon>logo-symbol.ico</ApplicationIcon>
 	  <UseAppHost>true</UseAppHost>
+    <ImplicitUsings>enable</ImplicitUsings>
 	  <AssemblyName>Chameleon</AssemblyName>
   </PropertyGroup>
   <ItemGroup>

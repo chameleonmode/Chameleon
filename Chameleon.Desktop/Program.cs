@@ -1,6 +1,4 @@
-﻿using System;
-using Avalonia;
-using Chameleon.client;
+﻿using Avalonia;
 
 namespace Chameleon.Desktop;
 
@@ -14,9 +12,9 @@ class Program {
 
 	// Avalonia configuration, don't remove; also used by visual designer.
 	public static AppBuilder BuildAvaloniaApp() {
-		GC.KeepAlive(typeof(Avalonia.Svg.Skia.SvgImageExtension).Assembly);
-		GC.KeepAlive(typeof(Avalonia.Svg.Skia.Svg).Assembly);
-		return AppBuilder.Configure<App>()
+		// GC.KeepAlive(typeof(Avalonia.Svg.Skia.SvgImageExtension).Assembly);
+		// GC.KeepAlive(typeof(Avalonia.Svg.Skia.Svg).Assembly);
+		return AppBuilder.Configure<client.App>()
 				.UsePlatformDetect()
 				.WithInterFont()
 				.UseSkia()
