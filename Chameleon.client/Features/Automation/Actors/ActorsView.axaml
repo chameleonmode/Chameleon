@@ -260,7 +260,7 @@
 																			</UniformGrid>
 																		</afv:Inputter>
 
-																		<afv:Inputter Title="Timers:">
+																		<afv:Inputter Title="Timers:" Description="in seconds">
 																			<UniformGrid Columns="4" Rows="1">
 																				<afv:Inputter Title="Navigate:" Description="for page load">
 																					<ui:NumberBox Value="{Binding Timeouts.Navigate}"
@@ -283,11 +283,11 @@
 
 																		<afv:Inputter Title="Naps:" Description="in millisecond to simulate natural user interactions">
 																			<UniformGrid Columns="3" Rows="1">
-																				<afv:Inputter Title="Min:" Description="minimum wait time">
+																				<afv:Inputter Title="Min:">
 																					<ui:NumberBox Value="{Binding Timeouts.Naps.Min}"
 																						 SpinButtonPlacementMode="Compact" />
 																				</afv:Inputter>
-																				<afv:Inputter Title="Max:" Description="maximum wait time">
+																				<afv:Inputter Title="Max:">
 																					<ui:NumberBox Value="{Binding Timeouts.Naps.Max}"
 																						 SpinButtonPlacementMode="Compact" />
 																				</afv:Inputter>
@@ -309,13 +309,12 @@
 								</ui:SettingsExpanderItem>
 
 								<ui:SettingsExpander.Footer>
-									<StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="6">
-										<ui:FAComboBox HorizontalAlignment="Left"
-													   SelectedItem="{Binding Browser}"
-													   ItemsSource="{Binding BrowserOptions}">
+									<StackPanel Classes="zontal">
+										<ui:FAComboBox SelectedItem="{Binding Browser}" ItemsSource="{Binding BrowserOptions}">
 											<ui:FAComboBox.ItemTemplate>
 												<DataTemplate>
-													<afv:SvgIcon IconName="{Binding IconName}" Height="20" Width="20"/>
+													<afv:SvgIcon IconName="{Binding IconName}"
+														Height="20" Width="20" />
 												</DataTemplate>
 											</ui:FAComboBox.ItemTemplate>
 										</ui:FAComboBox>

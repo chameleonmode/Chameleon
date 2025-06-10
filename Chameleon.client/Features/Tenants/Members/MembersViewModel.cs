@@ -49,7 +49,7 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 		Assistantz = assistants;
 
 		_ = UserProfilesRepo.Connect().Transform(i => new ObsProfile(i,
-				onSelectedChanged: p => {
+				selectedChanged: p => {
 					var obs = Profiles?.FirstOrDefault(x => x.Dto.id == p.Dto.id);
 					if (obs == null) return;
 					

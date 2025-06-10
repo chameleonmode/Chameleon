@@ -21,8 +21,8 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	public bool IsContextMenuItemEnabled => Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CreatorUserId == Dto?.creatorUserId;
 	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => (p.folderId == null && Dto!.id == 0) || p.folderId == Dto!.id);
 
-	public ObsFolder(UPFolderDto folder,  Action<ObservableDtoViewModelBase<UPFolderDto>>? onSelectedChanged = default) 
-	: base(folder, onSelectedChanged) {
+	public ObsFolder(UPFolderDto folder,  Action<ObsFolder>? onSelectedChanged = default) 
+	: base(folder, onSelectedChanged: onSelectedChanged != null ? (vm) => onSelectedChanged((ObsFolder)vm) : null) {
 		isFavorite = Dto.isFavorite;
 		profilesCount = Dto.profilesCount;
 
@@ -39,7 +39,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 		CommandMap["ViewGroup"] = () => Navigator.Instance.NavigateTo("ProjectsView", this);
 		CommandMap["ChangeProxies"] = () => Navigator.Instance.NavigateTo("FunctionalSettingsView", this);
 
-		AsyncCommandMap["Open"] = async () => await FoldersViewModel.Instance.OnNavigatingTo(Dto);
+		AsyncCommandMap["Open"] = async () => await FoldersViewModel.Instance.OnNavigatingTo(this);
 		AsyncCommandMap["SetFavorite"] = async () => {
 			IsFavorite = !IsFavorite;
 			Dto!.isFavorite = IsFavorite;
@@ -64,7 +64,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 				var res = await UserProfilesFolderRepo.Instance.Delete(Dto!.id);
 				if (!res.success) throw new InvalidOperationException($"Failed to delete folder {Dto.title}:");
 				IsSelected = false;
-				FoldersViewModel.Instance.SetSelectedFolder(null);
+				_ = FoldersViewModel.Instance.OnNavigatingTo(null);
 			}
 		};
 		AsyncCommandMap["SaveRename"] = async () => {

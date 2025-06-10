@@ -36,17 +36,7 @@ public partial class TagsViewModel : Base {
 					.Where(x => x.Key == TagItemType.Profile)
 					.SelectMany(x => x.Value).Distinct();
 			});
-
-		// _ = UserProfilesRepo.Connect()
-		// 			.Filter(
-		// 				this.WhenValueChanged(vm => vm.ProfileTagIds)
-		// 						.Where(ids => ids is not null)
-		// 						.Select(ids => new Func<UserProfileDto, bool>(f => ids!.Any(id => id == f.id.ToString())))
-		// 			)
-		// 			.Transform(i => new ObsProfile(i){ IsShowCheckboxColumn = false})
-		// 			.SortAndBind(out var profiles, profilesCompareObservable)
-		// 			.Subscribe(_ => OnPropertyChanged(nameof(HasNoItems)));
-	_ = ProfilesViewModel.Instance.Shared
+		_ = ProfilesViewModel.Instance.Shared
 					.Filter(
 						this.WhenValueChanged(vm => vm.ProfileTagIds)
 								.Where(ids => ids is not null)

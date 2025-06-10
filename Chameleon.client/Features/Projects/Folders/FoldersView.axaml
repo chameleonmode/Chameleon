@@ -54,8 +54,7 @@
 				</ControlTemplate>
 			</Setter>
 		</ControlTheme>
-		<DataTemplate x:Key="FoldersListViewTemplate"
-					  x:DataType="local:ObsFolder">
+		<DataTemplate x:Key="FoldersListViewTemplate" x:DataType="local:ObsFolder">
 			<Panel>
 				<ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}" />
 				<Grid>
@@ -75,9 +74,7 @@
 						  Command="{Binding AsyncCfVCommand}"/>
 					</Grid>
 
-					<StackPanel Orientation="Horizontal"
-						IsVisible="{Binding !IsRenamed}"
-						HorizontalAlignment="Right">
+					<StackPanel Orientation="Horizontal" IsVisible="{Binding !IsRenamed}" HorizontalAlignment="Right">
 						<Button
 							IsVisible="{Binding IsContextMenuVisible}"
 							Grid.Column="1"

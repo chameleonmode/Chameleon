@@ -86,7 +86,7 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 
 		_ = UserProfilesRepo
 			.Connect()
-			.Transform(i => new ObsProxySetting(new ObsProfile(i, onSelectedChanged: (p) => {
+			.Transform(i => new ObsProxySetting(new ObsProfile(i, selectedChanged: (p) => {
 				OnPropertyChanged(nameof(HasSelectedItems));
 				OnPropertyChanged(nameof(SelectedCount));
 			}) { IsShowCheckboxColumn = false }))

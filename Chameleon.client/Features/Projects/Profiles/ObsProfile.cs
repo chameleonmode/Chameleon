@@ -52,17 +52,11 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		}
 	}
 
-	public ObsProfile(UserProfileDto profile,
-		Action<ObsProfile>? onSelectedChanged = default,
-		Action<ObsProfile>? onDeleted = default)
-	: base(profile, onSelectedChanged: onSelectedChanged != null ? (vm) => onSelectedChanged((ObsProfile)vm) : null) {
-
-		
-
+	public ObsProfile(UserProfileDto profile, Action<ObsProfile>? selectedChanged = default, Action<ObsProfile>? onDeleted = default)
+	: base(profile, onSelectedChanged: selectedChanged != null ? (vm) => selectedChanged((ObsProfile)vm) : null) {
 		AsyncCommandMap["OpenFirefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
 		AsyncCommandMap["OpenChrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);
 		AsyncCommandMap["OpenBrave"] = () => OpenSystemBrowser(SystemBrowserType.Brave);
-
 		AsyncCommandMap["Favorite"] = async () => {
 			_ = await UserProfilesRepo.SetProfileIsFavorite(profile);
 			OnPropertyChanged(nameof(IsFavorite));

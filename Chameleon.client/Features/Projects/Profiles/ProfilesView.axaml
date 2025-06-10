@@ -35,39 +35,31 @@
 
 		<afv:ChameleonContentControl.Header>
 			<StackPanel>
-				<TextBox
-					HorizontalAlignment="Left"
-					Margin="0 0 -6 6"
-					Width="300"
-					Text="{Binding SearchText}" />
+				<TextBox HorizontalAlignment="Left" Margin="0 0 -6 6" Width="300" Text="{Binding SearchText}" />
 
 				<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
 					<HeaderedContentControl.Header>
 						<StackPanel Orientation="Horizontal">
 							<Button
 								Content="chrome"
-								ToolTip.Tip="Open In System Chrome"
 								Theme="{StaticResource SvgIconButton}"
 								Command="{Binding AsyncCfVCommand}"
 								CommandParameter="chrome" />
 							<Button
 								Content="firefox"
 								Margin="3 0 0 0"
-								ToolTip.Tip="Open In System Firefox"
 								Theme="{StaticResource SvgIconButton}"
 								Command="{Binding AsyncCfVCommand}"
 								CommandParameter="firefox" />
 							<Button
 								Content="brave"
 								Margin="3 0 0 0"
-								ToolTip.Tip="Open In System Brave"
 								Theme="{StaticResource SvgIconButton}"
 								Command="{Binding AsyncCfVCommand}"
 								CommandParameter="brave" />
 							<Button
 								Content="chameleon-logo"
 								Margin="3 0 0 0"
-								ToolTip.Tip="Open In Chameleon Browser"
 								Theme="{StaticResource SvgIconButton}"
 								Command="{Binding AsyncCfVCommand}"
 								CommandParameter="hwinds" />

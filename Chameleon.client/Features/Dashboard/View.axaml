@@ -76,12 +76,10 @@
 				</ItemsControl>
 			</ScrollViewer>
 
-			<Panel Grid.Row="2"
-				IsVisible="{Binding IsFavouriteSelected}">
+			<Panel Grid.Row="2" IsVisible="{Binding IsFavouriteSelected}">
 				<favourite:FavouriteView />
 			</Panel>
-			<Panel Grid.Row="2"
-				IsVisible="{Binding !IsFavouriteSelected}">
+			<Panel Grid.Row="2" IsVisible="{Binding !IsFavouriteSelected}">
 				<tags:TagsView />
 			</Panel>
 		</Grid>

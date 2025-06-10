@@ -56,17 +56,23 @@ public partial class UPFolderViewModel : ObservableObjectBase {
 }
 
 public partial class ProfilesViewModel : Profiler {
-	CancellationTokenSource? cts;
-
+	[ObservableProperty] UPFolderViewModel? folder;
 	[ObservableProperty] Arguments? selectedPlaywrightScript;
-	[ObservableProperty] BrowserOption selectedBrowserItem;
-	[ObservableProperty] int totalCount;
+	[ObservableProperty] BrowserOption? selectedBrowserItem;
 	[ObservableProperty] bool isVisibleRunButton = true;
 	[ObservableProperty] bool isVisibleStopButton;
 	[ObservableProperty] bool isVisibleWaitButton;
 	[ObservableProperty] bool isRecordSelected;
 	[ObservableProperty] string searchText = string.Empty;
 	[ObservableProperty] ChangeComparereOption sortSelected = ChangeComparereOption.Ascending;
+	public readonly BehaviorSubject<IComparer<ObsProfile>> CompareObservable = new(AscendingComparer);
+	readonly BehaviorSubject<Func<ObsProfile, bool>> filter;
+	readonly BehaviorSubject<IPageRequest> pageRequests;
+	CancellationTokenSource? cts;
+
+	public override ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
+
+	public PaginatorViewModel PaginatorViewModel { get; }
 
 	public AvaloniaList<Arguments> PlaywrightScripts { get; } = [];
 	public ObservableCollection<BrowserOption> BrowserItems { get; } = [
@@ -77,15 +83,26 @@ public partial class ProfilesViewModel : Profiler {
 
 	public bool HasFolder => Folder != null && Folder.Id != 0;
 	public string SelectedFolderTitle => Folder?.Title ?? "x_x";
-	public bool HasProfileWithoutFolder => Profiles != null && Profiles.Any(profile => profile.Dto?.folderId != null);
+	public int TotalCount => PaginatorViewModel.TotalCount = MaxInFolderItems;
 	public int MaxInFolderItems =>
 	Folder == null || Folder.Id == 0
 	? UserProfilesRepo.Instance.ObservableCache.Count
 	: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder.Id);
 
 	public ProfilesViewModel() {
-		TotalCount = PaginatorViewModel.TotalCount;
-		SelectedBrowserItem = BrowserItems[0];
+		pageRequests = new(new PageRequest(0, 9));
+		filter = new BehaviorSubject<Func<ObsProfile, bool>>(p => Folder == null || Folder.Id == 0 || p.Dto.folderId == Folder.Id);
+		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
+			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
+		};
+
+		// 2) Your paged view
+		_ = Shared
+		.Filter(filter)
+		.SortAndPage(AscendingComparer, pageRequests)
+		.SortAndBind(out var profiles, CompareObservable)
+		.Subscribe();
+		Profiles = profiles;
 
 		CommandMap["SelectAll"] = SelectAll;
 		CommandMap["SelectAllProfilesFromFolder"] = () => {
@@ -108,7 +125,7 @@ public partial class ProfilesViewModel : Profiler {
 			return Task.CompletedTask;
 		};
 		AsyncCommandMap["play"] = async () => {
-			if (!GetSelectedProfiles.Any() || SelectedPlaywrightScript is null) {
+			if (!GetSelectedProfiles.Any() || SelectedPlaywrightScript is null || SelectedBrowserItem is null) {
 				Toaster.Error("Select one or more profiles to run the automation.");
 				return;
 			}
@@ -240,24 +257,24 @@ public partial class ProfilesViewModel : Profiler {
 
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
-		Profiles.ForEach(p => p.IsActionOptionsVisible = p.IsShowCheckboxColumn = true);
 
 		PlaywrightScripts.Clear();
 		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());
 		PlaywrightScripts.AddRange(await BundledScriptsService.GetUserScripts());
 		SelectedPlaywrightScript ??= PlaywrightScripts[0];
+		SelectedBrowserItem ??= BrowserItems[0];
 	}
 
 	partial void OnSortSelectedChanged(ChangeComparereOption value) {
-		profilesCompareObservable.OnNext(value switch {
+		CompareObservable.OnNext(value switch {
 			ChangeComparereOption.Descending => DescendingComparer,
 			_ => AscendingComparer
 		});
 	}
-	partial void OnSelectedBrowserItemChanged(BrowserOption value) {
+	partial void OnSelectedBrowserItemChanged(BrowserOption? value) {
 		var cur = IoC.GetValue<string>("LastSelectedBrowser");
-		if (cur != value.Option.ToString())
-			IoC.SetValue(value.Option.ToString(), "LastSelectedBrowser");
+		if (cur != value?.Option.ToString())
+			IoC.SetValue(value?.Option.ToString(), "LastSelectedBrowser");
 	}
 	partial void OnSelectedPlaywrightScriptChanged(Arguments? value) {
 		var cur = IoC.GetValue<string>("LastRunScriptId");
@@ -311,9 +328,9 @@ public partial class ProfilesViewModel : Profiler {
 	public async void OnFilterTo(ObsProfile? p = null) {
 		_ = await LoadedTCS.Task;
 
-		if (p?.Dto.folderId is int fid && fid != 0) FoldersViewModel.Instance.SetSelectedById(fid);
+		if (p?.Dto.folderId is int fid && fid != 0) await FoldersViewModel.Instance.OnNavigatingTo(null);
 		else if (p != null) await FoldersViewModel.Instance.OnNavigatingTo(null);
-		else FoldersViewModel.Instance.SetSelectedById(0);
+		else FoldersViewModel.Instance.SetSelected(0);
 
 		SearchText = p?.Title ?? string.Empty;
 	}
@@ -326,13 +343,11 @@ public partial class ProfilesViewModel : Profiler {
 	public void SetViewModelsFilter(bool onext = true) {
 		if (onext) filter.OnNext(filter.Value);
 
-		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
-
+		OnPropertyChanged(nameof(TotalCount));
 		OnPropertyChanged(nameof(HasFolder));
 		OnPropertyChanged(nameof(HasNoItems));
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedFolderTitle));
-		OnPropertyChanged(nameof(HasProfileWithoutFolder));
 	}
 
 	private void SelectAll() {

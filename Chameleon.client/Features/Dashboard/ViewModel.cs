@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Chameleon.client.Features.Projects;
+using Chameleon.lib.Util;
 
 namespace Chameleon.client.Features.Dashboard;
 
@@ -25,7 +26,7 @@ public abstract partial class Base(string? title) : ViewModelObjectBase(title) {
 	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(FoldersViewModel.AscendingComparer);
 	public abstract ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 	public abstract ReadOnlyObservableCollection<ObsFolder> Folders { get; }
-	public bool HasNoItems =>  !Projects.Profiles.ProfilesViewModel.Instance.HasFaves;
+	public bool HasNoItems =>  Profiles.Count == 0;
 	public bool HasNoFolderItems => Folders.Count == 0;
 
 	partial void OnSortSelectedChanged(Enums.ChangeComparereOption value) {
@@ -83,13 +84,18 @@ public partial class ViewModel : ViewModelObjectBase {
 		AsyncCommandMap["SyncCookiesFirefox"] = async () =>  await SyncCookies(Enums.SystemBrowserType.Firefox);
 	}
 
+	public override Task InitAsync(object? param) {
+		ProfilesViewModel.Instance.ObsProfiles.ForEach(p => p.IsShowCheckboxColumn = false);
+		return base.InitAsync(param);
+	} 
+
 	partial void OnSelectedTagChanged(TagViewModel? oldValue, TagViewModel? newValue) {
 		if (newValue == null) return;
 
 		IsFavouriteSelected = newValue.Name == "Favourites";
-		
+
 		if (!IsFavouriteSelected) TagsViewModel.Instance.SelectedTagName = newValue.Name;
-		
+
 		if (!newValue.IsSelected) newValue.IsSelected = true;
 		if (oldValue != null && oldValue.IsSelected) oldValue.IsSelected = false;
 	}

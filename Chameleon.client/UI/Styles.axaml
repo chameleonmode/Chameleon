@@ -54,7 +54,6 @@
 		<Setter Property="ItemContainerTheme" Value="{StaticResource GridViewItem}" />
 		<Setter Property="ItemsPanel" Value="{StaticResource DoubleColumnUniformGridTemplate}" />
 		<Setter Property="ItemTemplate" Value="{StaticResource UserFolderUserControlDataTemplate}" />
-		<Setter Property="IsVisible" Value="{ReflectionBinding !HasNoFolderItems}" />
 		<Setter Property="ItemsSource" Value="{ReflectionBinding Folders}" />
 	</Style>
 
@@ -63,12 +62,11 @@
 		<Setter Property="Grid.IsSharedSizeScope" Value="True" />
 		<Setter Property="Spacing" Value="9" />
 	</Style>
-	<Style Selector="StackPanel.horizo">
+	<Style Selector="StackPanel.zontal">
 		<Setter Property="Spacing" Value="6" />
 		<Setter Property="Orientation" Value="Horizontal" />
 		<Setter Property="VerticalAlignment" Value="Center" />
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
-		<Setter Property="Grid.IsSharedSizeScope" Value="True" />
 	</Style>
 
 	<!--TextBlock-->

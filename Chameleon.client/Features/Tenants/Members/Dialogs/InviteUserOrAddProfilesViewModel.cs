@@ -31,7 +31,7 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 		ShowUserInfo = userInfo;
 		_ = UserProfilesRepo.Connect()
 		.Transform(i => new ObsProfile(i,
-			onSelectedChanged: p => {
+			selectedChanged: p => {
 				var obs = ProfilesViewModel.Instance.Profiles.FirstOrDefault(x => x.Dto.id == i.id) ?? new ObsProfile(i);
 				if (p.IsSelected && !SelectedProfiles.Contains(p)) SelectedProfiles.Add(obs);
 				else if (!p.IsSelected && SelectedProfiles.Contains(p)) _ = SelectedProfiles.Remove(obs);
