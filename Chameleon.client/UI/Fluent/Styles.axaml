@@ -6,14 +6,14 @@
 		<Setter Property="IsNavigationStackEnabled" Value="False" />
 	</Style>
 
-    <Style Selector="TabStrip#ActiveTabStrip">
+	<Style Selector="TabStrip#ActiveTabStrip">
 		<Setter Property="ItemContainerTheme" Value="{DynamicResource ActiveTabStripItemTheme}" />
-		<Setter Property="Background" Value="{DynamicResource ControlOnImageFillColorDefaultBrush}" />
+		<Setter Property="Background" Value="{DynamicResource ControlFillColorTransparentBrush}" />
 		<Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
 		<Setter Property="ItemsPanel" Value="{StaticResource DefaultPanel}" />
-		<Setter Property="Margin" Value="4" />
 		<Setter Property="HorizontalAlignment" Value="Right" />
 		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Margin" Value="4" />
 		<Setter Property="ZIndex" Value="72" />
 	</Style>
 
@@ -47,7 +47,7 @@
 	<Style Selector="Button.icon">
 		<Setter Property="Theme" Value="{DynamicResource AccentSymbleIconButton}" />
 	</Style>
-		<Style Selector="Button.clear">
+	<Style Selector="Button.clear">
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="BorderBrush" Value="Transparent" />
 		<Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
@@ -103,9 +103,7 @@
 									RowDefinitions="*,Auto"
 									Margin="0 12 0 0"
 									ClipToBounds="False">
-								<Panel Name="PageDetails"
-									Margin="2 0 0 0"
-									ClipToBounds="False">
+								<Panel Name="PageDetails" Margin="2 0 0 0" ClipToBounds="False">
 									<Border Width="50" 
 											Height="50"
                 	    CornerRadius="{DynamicResource OverlayCornerRadius}"

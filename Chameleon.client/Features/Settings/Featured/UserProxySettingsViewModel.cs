@@ -58,9 +58,6 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 	public static SortExpressionComparer<ObsProxySetting> DescendingComparer => SortExpressionComparer<ObsProxySetting>.Descending(p => p.ObsProfile.Title!);
 
 	private readonly BehaviorSubject<IPageRequest> pageRequests = new(new PageRequest(0, 9));
-
-	private readonly ReadOnlyObservableCollection<ObsProxySetting> proxies;
-	private readonly ReadOnlyObservableCollection<ObsFolder> folders;
 	private readonly BehaviorSubject<Func<ObsProxySetting, bool>> filter;
 
 	[ObservableProperty] ProxCountryDto? country;
@@ -70,8 +67,8 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 	[ObservableProperty] PaginatorViewModel paginatorViewModel;
 
 	public ObservableCollection<ProxCountryDto> Countries { get; } = [];
-	public ReadOnlyObservableCollection<ObsFolder> Folders => folders;
-	public ReadOnlyObservableCollection<ObsProxySetting> Proxies => proxies;
+	public ReadOnlyObservableCollection<ObsProxySetting> Proxies { get; }
+	public ReadOnlyObservableCollection<ObsFolder> Folders => FoldersViewModel.Instance.Folders;
 	public Func<ObsProxySetting, bool> FilterPredicate => p =>
 		SelectedFolder == null || SelectedFolder.Dto?.id == 0 ||
 		(SelectedFolder != null && SelectedFolder.Dto?.id != 0 && p.ObsProfile.Dto?.folderId == SelectedFolder.Dto?.id);
@@ -84,68 +81,49 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 	public UserProxySettingsViewModel() : base("Proxy") {
 		filter = new BehaviorSubject<Func<ObsProxySetting, bool>>(FilterPredicate);
 
-		_ = UserProfilesRepo
-			.Connect()
-			.Transform(i => new ObsProxySetting(new ObsProfile(i, selectedChanged: (p) => {
-				OnPropertyChanged(nameof(HasSelectedItems));
-				OnPropertyChanged(nameof(SelectedCount));
-			}) { IsShowCheckboxColumn = false }))
-			.Filter(filter)
-			.SortAndPage(AscendingComparer, pageRequests)
-			.Bind(out proxies)
-			.Subscribe();
-
-		_ = UserProfilesFolderRepo
-			.Connect()
-			.Transform(i => new ObsFolder(i))
-			.SortAndBind(out folders, FoldersViewModel.AscendingComparer)
-			.Subscribe();
+		_ = UserProfilesRepo.Connect()
+		.Transform(i => new ObsProxySetting(new(i, selectedChanged: (p) => {
+			OnPropertyChanged(nameof(HasSelectedItems));
+			OnPropertyChanged(nameof(SelectedCount));
+		}) { IsShowCheckboxColumn = false }))
+		.Filter(filter)
+		.SortAndPage(AscendingComparer, pageRequests)
+		.Bind(out var proxies).Subscribe();
+		Proxies = proxies;
 		PaginatorViewModel = new PaginatorViewModel((p) => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
 		TotalCount = PaginatorViewModel.TotalCount;
-		SelectedFolder = folders[0];
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
 
-		if (!Loaded) {
+		if (Countries.Count == 0) {
 			var countries = await ProxyAccessRepo.GetCountries();
-			Countries.Clear();
-
 			Countries.Add(new() {
 				Name = "Random Country"
 			});
 			Countries.AddRange(countries);
-
 			Country = Countries.First();
 		}
 	}
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
-
-		if (param is ObsFolder folderId) {
-			_ = await LoadedTCS.Task;
-			SelectedFolder = Folders.FirstOrDefault(f => f.Dto!.id == folderId.Dto!.id) ?? Folders[0];
-		}
+		SelectedFolder = FoldersViewModel.Instance.SelectedFolder;
+		SelectedFolder ??= Folders[0];
 	}
 
 	partial void OnSelectedFolderChanged(ObsFolder? value) {
 		UnselectItems();
 		filter.OnNext(FilterPredicate);
 		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
-		//PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
-		//PaginatorViewModel.UpdatePageCount(Math.Max(Consts.PageinationPageItems, Proxies.Count(p => p.ObsProfile.IsSelected)));
-		//OnPropertyChanged(nameof(HasSelectedItems));
-		//OnPropertyChanged(nameof(SelectedCount));
 	}
 
 	[RelayCommand]
 	public async Task FillProxies() {
 		var profiles = SelectedProfiles;
-		if (profiles.Count == 0) {
-			return;
-		}
+		if (profiles.Count == 0) return;
+		
 		try {
 			var urls = await ProxyAccessRepo.GetAccess(new ProxyAccessRequestDto {
 				HostType = ProxyHostType.Hostname,

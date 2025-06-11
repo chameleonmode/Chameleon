@@ -50,14 +50,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	[ObservableProperty] AIR.Actors.Models.AI aiSettings;
 	[ObservableProperty] ArgsViewModel editableArgs;
 	[ObservableProperty] SettingsViewModel editableSettings;
-	[ObservableProperty] lib.WebBrowser.BrowserOption browser;
-
 	public IActor Actor { get; }
 	public List<Selection> Selections { get; }
-	public IEnumerable<lib.WebBrowser.BrowserOption> BrowserOptions { get; } = [
-		new (SystemBrowserType.Chrome),
-		new (SystemBrowserType.Brave),
-	];
 
 	public ReadOnlyObservableCollection<Tag> Tagz { get; }
 	public ReadOnlyObservableCollection<ObsProfile> SelectedProfiles { get; }
@@ -107,7 +101,6 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		AiSettings = actor.Options.AI;
 		EditableArgs = new(actor.Options.Args);
 		EditableSettings = new(actor.Options.Settings);
-		Browser = BrowserOptions.First();
 		Selections = [.. actor.Scripts.Select(s => {
 			if (s is not Script script) return null;
 				var selected = selections?.FirstOrDefault(x => x.Script.File == script.File)?.Selected ?? false;
@@ -190,7 +183,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		foreach (var profile in profiles) {
 			cts!.Token.ThrowIfCancellationRequested();
 
-			var browser = await profile.OpenSystemBrowser(Browser.Option, false).WaitAsync(cts.Token);
+			var browser = await profile.OpenSystemBrowser(ActorsViewModel.Instance.Browser.Option, false).WaitAsync(cts.Token);
 
 			foreach (var selection in selected) {
 				await ExecuteScriptAsync(selection, profile, browser!);
@@ -208,7 +201,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			foreach (var profile in profiles) {
 				cts.Token.ThrowIfCancellationRequested();
 
-				var browser = await profile.OpenSystemBrowser(Browser.Option, false).WaitAsync(cts.Token);
+				var browser = await profile.OpenSystemBrowser(ActorsViewModel.Instance.Browser.Option, false).WaitAsync(cts.Token);
 				await ExecuteScriptAsync(selection, profile, browser!);
 				await BrowserShutdown(browser);
 			}
@@ -239,7 +232,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				Opts = opts
 			}, cts!.Token);
 
-			await Task.Delay(TimeSpan.FromSeconds(EditableSettings.RandomWaitPerProfile), cts.Token);
+			await Task.Delay(TimeSpan.FromSeconds(EditableSettings.Delay), cts.Token);
 		} finally {
 			Debug.WriteLine($"Finished Script '{selection.Script.Title}'");
 		}

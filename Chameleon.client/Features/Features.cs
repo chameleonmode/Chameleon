@@ -16,7 +16,6 @@ public static class Modules {
   .AddSingleton<Automation.AI.ChameleonAIR.ViewModel>()
   .AddSingleton<Automation.Playwright.PlaywrightView>()
   .AddSingleton<Automation.Playwright.PlaywrightViewModel>()
-  .AddSingleton<Automation.Actors.ActorsViewModel>()
   .AddSingleton<Automation.Actors.ActorsView>();
 
   public static IServiceCollection WithProfilesAndFolders(this IServiceCollection services) => services

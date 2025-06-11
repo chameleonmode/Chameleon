@@ -17,6 +17,8 @@
 
 	<!-- Marginz and paddingz -->
 	<Thickness x:Key="ScrollviewerAppPageMargin">20 20 20 0</Thickness>
+	<Thickness x:Key="ContentDialogPadding">8 8 8 8</Thickness>
+	<Thickness x:Key="ContentDialogTitleMargin">0,0,0,6</Thickness>
 
 	<!-- page Icons-->	
 	<ui:SymbolIconSource Symbol="Home" x:Key="HomeIcon" />

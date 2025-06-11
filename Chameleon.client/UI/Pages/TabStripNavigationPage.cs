@@ -4,6 +4,7 @@ using Avalonia.Controls.Primitives;
 
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
+using Avalonia.Controls;
 
 namespace Chameleon.client.UI.Pages;
 
@@ -14,27 +15,36 @@ public abstract class TabStripNavigationPage : ChameleonNavigationPage {
 
 	public int LastSelectedIndex { get; set; } = -1;
 
-	public void SetEvents() {
-		Strip.SelectionChanged += (sender, e) => {
-			Navigate(Strip.SelectedIndex, null);
-		};
-		Frame.NavigationPageFactory = client.ViewModel.Instance.NavigationFactory;
+	private void Selected_Changed(object? sender, SelectionChangedEventArgs e) {
+		Navigate(Strip.SelectedIndex);
 	}
 
+	public override void OnAfterNavigatedToViewModel(object param) {
+		base.OnAfterNavigatedToViewModel(param);
+		Frame.NavigationPageFactory ??= client.ViewModel.Instance.NavigationFactory;
+		if (LastSelectedIndex == -1) Navigate(0, param);
+		else Strip.SelectedIndex = LastSelectedIndex;
+		Strip.SelectionChanged += Selected_Changed;
+ }
 	protected override void OnLoaded(RoutedEventArgs e) {
 		base.OnLoaded(e);
-		Navigate(Strip!.SelectedIndex, null);
 	}
 
-	private void Navigate(int index, object? parameter) {
-		_ = Frame?.Navigate(GetNavigationTarget(index), parameter,
+	public override void NavigatingFrom(object? param) {
+		base.NavigatingFrom(param);
+		Strip.SelectionChanged -= Selected_Changed;
+	}
+
+	private void Navigate(int index, object? param = null) {
+		_ = Frame.Navigate(GetNavigationTarget(index), param,
 			new SlideNavigationTransitionInfo {
-				Effect = LastSelectedIndex < 0 ? SlideNavigationTransitionEffect.FromBottom
-					: LastSelectedIndex > index ? SlideNavigationTransitionEffect.FromRight : SlideNavigationTransitionEffect.FromLeft,
+				Effect = LastSelectedIndex == 0 ? SlideNavigationTransitionEffect.FromBottom
+				: LastSelectedIndex > index ? SlideNavigationTransitionEffect.FromRight
+				: SlideNavigationTransitionEffect.FromLeft,
 				FromHorizontalOffset = 70
 			}
 		);
 
-		LastSelectedIndex = Strip!.SelectedIndex;
+		LastSelectedIndex = Strip.SelectedIndex;
 	}
 }

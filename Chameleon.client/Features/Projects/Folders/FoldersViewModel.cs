@@ -3,7 +3,7 @@ using Chameleon.lib.Api.Repos;
 
 namespace Chameleon.client.Features.Projects.Folders;
 public partial class FoldersViewModel : Folderer {
-	public ObsFolder? SelectedFolder{ get; private set; }
+	public ObsFolder? SelectedFolder{ get; internal set; }
 	
 	public ObsFolder AllProfiles => Folders[0];
 

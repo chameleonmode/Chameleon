@@ -10,4 +10,6 @@ public partial class ActorsView : ChameleonPageBase {
 		Description = "AI Robot Agents & Automationed Actors";
 		PreviewImage = App.TryGetResource<IconSource>("SpiderIconWithCircles");
 	}
+	protected override object? ViewModel => ActorsViewModel.Instance;
+
 }

@@ -5,13 +5,25 @@ using RedditActor = Chameleon.AIR.Actors.Models.Reddit.Actor;
 using Chameleon.lib.Const;
 using Chameleon.AIR.Actors.Models;
 using Chameleon.lib.Util;
+using CommunityToolkit.Mvvm.ComponentModel;
+using static Chameleon.lib.Common.Constants.Enums;
 
 namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class ActorsViewModel : ViewModelObjectBase {
+	[ObservableProperty] lib.WebBrowser.BrowserOption browser;
+	[ObservableProperty] ActorViewModel? selectedActor;
+
+	public IEnumerable<lib.WebBrowser.BrowserOption> BrowserOptions { get; } = [
+		new (SystemBrowserType.Chrome),
+		new (SystemBrowserType.Brave),
+	];
 	public ObservableCollection<ActorViewModel> Actors { get; set; } = [];
 
-	public ActorsViewModel() { }
+	public ActorsViewModel() {
+
+		Browser = BrowserOptions.First();
+	 }
 
 	private async Task LoadActorStates() {
 		Actors.Clear();
@@ -49,6 +61,7 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 			Debug.WriteLine("No saved Reddit actor found, adding default.");
 			Actors.Add(new ActorViewModel(new RedditActor()));
 		}
+		SelectedActor = Actors[0];
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
@@ -59,4 +72,6 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
 	}
+
+	public static ActorsViewModel Instance { get; } = new();
 }

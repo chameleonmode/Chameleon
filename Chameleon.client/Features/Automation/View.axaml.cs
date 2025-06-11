@@ -10,7 +10,6 @@ namespace Chameleon.client.Features.Automation;
 public partial class View : TabStripNavigationPage {
   public View() {
     InitializeComponent();
-    SetEvents();
   }
   public override TabStrip Strip => ActiveTabStrip;
   public override Frame Frame => NavigationFrame;

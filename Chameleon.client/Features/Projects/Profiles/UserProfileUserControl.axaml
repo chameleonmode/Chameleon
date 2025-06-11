@@ -25,7 +25,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Border Padding="6">
+	<Border Padding="6" Background="Transparent">
 		<Grid ColumnDefinitions="Auto,Auto,*,Auto">
 			<StackPanel Orientation="Horizontal" ToolTip.Tip="{Binding Title, FallbackValue=x}">
 				<CheckBox Margin="6 0 -6 0" IsChecked="{Binding IsSelected}" IsVisible="{Binding IsShowCheckboxColumn}" />

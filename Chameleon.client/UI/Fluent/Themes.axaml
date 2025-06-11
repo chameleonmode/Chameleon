@@ -45,9 +45,6 @@
       	Stretch="UniformToFill" />
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
-	<!-- Variables -->
-	<Thickness x:Key="ContentDialogPadding">8 8 8 8</Thickness>
-	<Thickness x:Key="ContentDialogTitleMargin">0,0,0,6</Thickness>
 
 	<!-- Control Themes -->
   <ControlTheme x:Key="ActiveTabStripItemTheme" TargetType="TabStripItem">
@@ -63,14 +60,8 @@
 						Background="{TemplateBinding Background}"
 						ToolTip.Tip="{TemplateBinding Content}">
 					<Panel>
-						<Viewbox Width="28"
-								 Height="28"
-								 HorizontalAlignment="Left"
-								 VerticalAlignment="Center"
-								 Margin="12 6">
-							<ui:IconSourceElement IconSource="{TemplateBinding Tag}" 
-													MinHeight="12"
-													MinWidth="12" />
+						<Viewbox Width="28" Height="28"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12 6" Cursor="Hand">
+							<ui:IconSourceElement IconSource="{TemplateBinding Tag}" MinHeight="12" MinWidth="12" />
 						</Viewbox>
 						<Rectangle Name="PART_SelectedPipe"
 									 Fill="{DynamicResource AccentFillColorDefaultBrush}"

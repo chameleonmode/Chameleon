@@ -29,6 +29,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 	}
 
 	public virtual void OnAfterNavigatedToViewModel(object param) { }
+	public virtual void NavigatingFrom(object? param) { }
 	private async void OnNavigatedTo(object? sender, NavigationEventArgs e) {
 		if (DataContext is ViewModelObjectBase pageViewModel) {
 			await Task.Delay(64);
@@ -61,6 +62,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 	}
 
 	private void OnNavigatingFrom(object? sender, NavigatingCancelEventArgs e) {
+		NavigatingFrom(sender);
 		_navParam = e.Parameter;
 		if (GetNavAnimationVisuals()) {
 			var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));

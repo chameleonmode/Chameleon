@@ -69,6 +69,7 @@ public partial class App : Application {
 			}
 		});
 
+		Navigator.Instance.RegisterView("Features.Projects.View", typeof(Features.Projects.View));
 		Navigator.Instance.RegisterView(nameof(IdentityView), typeof(IdentityView));
 		Navigator.Instance.RegisterView(nameof(FunctionalSettingsView), typeof(FunctionalSettingsView));
 	}
