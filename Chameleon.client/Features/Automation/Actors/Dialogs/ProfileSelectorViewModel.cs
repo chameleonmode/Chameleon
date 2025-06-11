@@ -181,8 +181,8 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 	private void RebuildAndFilterDisplayGroups(string? searchText) {
 
 		var filteredSourceProfiles = string.IsNullOrWhiteSpace(searchText)
-				? [..  ProfilesViewModel.Instance.Profiles]
-				:  ProfilesViewModel.Instance.Profiles.Where(p => p.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false);
+				? [..  ProfilesViewModel.Instance.ObsProfiles]
+				:  ProfilesViewModel.Instance.ObsProfiles.Where(p => p.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false);
 
 		var profileWrappers = filteredSourceProfiles
 		.Select(p => new ProfileOrFolderItem(p, initiallySelectedProfileIds.Contains(p.Dto?.id.ToString()) || p.IsSelected));
@@ -239,7 +239,7 @@ public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable
 				}
 			}
 
-			foreach (var originalProfile in ProfilesViewModel.Instance.Profiles) {
+			foreach (var originalProfile in ProfilesViewModel.Instance.ObsProfiles) {
 				if (originalProfile.Dto?.id != null) {
 					originalProfile.IsSelected = dialogSelectedProfileIds.Contains(originalProfile.Dto.id.ToString());
 				}
