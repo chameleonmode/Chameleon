@@ -86,8 +86,12 @@
 																	  IsChecked="{Binding EditableSettings.Start.New}" 
 																	  OffContent="Active Tab" 
 																	  OnContent="New Tab"/>
+														<ToggleSwitch ToolTip.Tip="all or 1 search term per run"
+																	  IsChecked="{Binding EditableSettings.AsQue}" 
+																	  OffContent="All Terms" 
+																	  OnContent="One Term"/>
 														<ToggleSwitch ToolTip.Tip="Run all selected automations for each profile, or run all profiles for each automation"
-																	  IsChecked="{Binding EditableSettings.ExecuteOneScriptAccrosProfiles}" 
+																	  IsChecked="{Binding EditableSettings.EachProfile}" 
 																	  OffContent="Each Profile" 
 																	  OnContent="Each Selection"/>
 														<ToggleSwitch ToolTip.Tip="Close browser instances for the previous profile before moving to the next"
@@ -101,27 +105,18 @@
 											<afv:ChameleonContentControl.Header>
 												<StackPanel>
 													<StackPanel Spacing="6">
-														<TextBlock Text="Tags"
-																   Margin="4 6"
-																   ToolTip.Tip="select a tag that contain a grouping of profiles to inceptionalize"
-																   Classes="b1"/>
+														<TextBlock Text="Tags"  Classes="b1" Margin="4 6"  ToolTip.Tip="select a tag that contain a grouping of profiles to inceptionalize" />
 														<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
-															<ItemsControl ItemsPanel="{StaticResource HorizontalStackPanel}"
-																		  ItemsSource="{Binding Tagz}">
+															<ItemsControl ItemsPanel="{StaticResource HorizontalStackPanel}" ItemsSource="{Binding Tagz}">
 																<ItemsControl.ItemTemplate>
 																	<DataTemplate x:DataType="vm:Tag">
-																		<ToggleButton IsChecked="{Binding IsSelected}"
-																					  Content="{Binding Dto.Name}"
-																					  ToolTip.Tip="{Binding ToolTipText}"/>
+																		<ToggleButton IsChecked="{Binding IsSelected}" Content="{Binding Dto.Name}" ToolTip.Tip="{Binding ToolTipText}"/>
 																	</DataTemplate>
 																</ItemsControl.ItemTemplate>
 															</ItemsControl>
 														</ScrollViewer>
 
-														<TextBlock Text="Profiles"
-																   Margin="4 12 4 6"
-																   ToolTip.Tip="already selected profiles"
-																   Classes="b1"/>
+														<TextBlock Text="Profiles" Margin="4 12 4 6" ToolTip.Tip="selected profiles" Classes="b1"/>
 														<Grid ColumnDefinitions="Auto,*">
 															<Button Content="..."
 																	Command="{Binding AsyncCfVCommand}"
@@ -248,28 +243,29 @@
 																		<afv:Inputter Title="Auto:" 
 																						   Description="Controls for the robotomation behavior and keyword generation">
 																			<UniformGrid Columns="4" Rows="1">
+																			 <UniformGrid.Styles>
+																			 		<Style Selector="ui|NumberBox">
+																						<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
+																					</Style>
+																			 </UniformGrid.Styles>
 																				<afv:Inputter Title="Keywords:"
 																								   Description="Adds AI related keywords based on search terms">
-																					<ui:NumberBox Value="{Binding Start.Variations.Min}"
-																								  SpinButtonPlacementMode="Compact"/>
+																					<ui:NumberBox Value="{Binding Start.Variations.Min}" />
 																				</afv:Inputter>
 
 																				<afv:Inputter Title="Runs:"
 																								   Description="Number of times to run each automation per search term">
-																					<ui:NumberBox Value="{Binding Start.Iterations.Min}"
-																								  SpinButtonPlacementMode="Compact"/>
+																					<ui:NumberBox Value="{Binding Start.Iterations.Min}" />
 																				</afv:Inputter>
 
 																				<afv:Inputter Title="Attempts:"
-																								   Description="Maximum attempts until successful iteration">
-																					<ui:NumberBox Value="{Binding Start.Attempts}"
-																								  SpinButtonPlacementMode="Compact"/>
+																								   Description="Maximum re-try on unexpected situations">
+																					<ui:NumberBox Value="{Binding Start.Attempts}"/>
 																				</afv:Inputter>
 
 																				<afv:Inputter Title="Rando:"
 																								   Description="Min-max activity value for voting and joining">
-																					<ui:NumberBox Value="{Binding Start.Rando.Min}"
-																								  SpinButtonPlacementMode="Compact"/>
+																					<ui:NumberBox Value="{Binding Rando}" />
 																				</afv:Inputter>
 																			</UniformGrid>
 																		</afv:Inputter>
@@ -296,7 +292,7 @@
 																			</UniformGrid>
 																		</afv:Inputter>
 
-																		<afv:Inputter Title="Naps:" Description="in millisecond to simulate natural user interactions">
+																		<afv:Inputter Title="Sleepers:" Description="in milliseconds">
 																			<UniformGrid Columns="3" Rows="1">
 																				<afv:Inputter Title="Min:">
 																					<ui:NumberBox Value="{Binding Timeouts.Naps.Min}"

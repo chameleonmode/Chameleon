@@ -62,16 +62,14 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		IEnumerable<string>? selectedTags = null,
 		IEnumerable<int>? profileSelections = null
 	) {
-		subscriptions.Add(
-			TagsRepo.Connect()
+		subscriptions.Add(TagsRepo.Connect()
 			.Filter(tag => tag.Items.Where(x => x.Key == TagItemType.Profile).Any())
 			.Transform(item => new Tag(item, selectedTags?.Contains(item.Name) ?? false))
 			.Bind(out var tagz)
 			.Subscribe());
 		Tagz = tagz;
 
-		subscriptions.Add(
-			 ProfilesViewModel.Instance.ObsProfiles.ToObservableChangeSet()
+		subscriptions.Add(ProfilesViewModel.Instance.ObsProfiles.ToObservableChangeSet()
 			.AutoRefresh(profile => profile.IsSelected)
 			.Filter(profile => profile.IsSelected)
 			.Sort(SortExpressionComparer<ObsProfile>.Ascending(p => p.Title ?? ""))
@@ -80,8 +78,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			.Subscribe());
 		SelectedProfiles = selectedProfiles;
 
-		subscriptions.Add(
-			Tagz.ToObservableChangeSet()
+		subscriptions.Add(Tagz.ToObservableChangeSet()
 			.AutoRefresh(tag => tag.IsSelected)
 			.ToCollection()
 			.Subscribe(next =>
@@ -108,133 +105,110 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			}).Where(s => s != null)
 		];
 
-		AsyncCommandMap["Run"] = async () => {
-			try {
-				var profiles = SelectedProfiles.Where(p => p.Active);
-				if (!profiles.Any()) throw new Exception("No profiles selected to run.");
-
-				var selected = Selections.OrderBy(s => new Random().Next()).Where(s => s.Selected);
-				if (!selected.Any()) throw new Exception("No scripts selected to run.");
-
-				var things = EditableArgs.Search.Is() && EditableSettings.Start.Url.Is();
-				if (things) throw new Exception("Search and URL's cannot be empty together.");
-
-				Running = true;
-				cts = new CancellationTokenSource();
-				await (EditableSettings.ExecuteOneScriptAccrosProfiles
-				? RunAllProfilesPerScriptAsync(profiles, selected)
-				: RunAllScriptsPerProfileAsync(profiles, selected));
-			} finally {
-				if (Running) CommandMap["Stop"]();
-				await AsyncCommandMap["Save"]();
-			}
-		};
-		AsyncCommandMap["Save"] = async () => {
-			Actor.Options.Settings.Start.Feature.ThrowIfNullOrEmpty();
-			var currentArgs = EditableArgs.ToDictionary([]);
-			var currentSettings = EditableSettings.ToRecord();
-			var currentOpts = new Opts(AiSettings, currentArgs, currentSettings);
-			var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.IsSelected), SelectedProfiles.Select(x => x.Dto.id));
-			var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
-			var jsonContent = JS.Serialize(stateToSave, JS.EnumConverter);
-			await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
-		};
+		AsyncCommandMap["Run"] = Runerer;
+		AsyncCommandMap["Save"] = Save;
 		AsyncCommandMap["OpenProfileSelector"] = async () => {
 			using var profileSelectorVM = new ProfileSelectorViewModel(SelectedProfiles);
 			_ = await profileSelectorVM.ShowDialogAsync();
 		};
 
-		CommandMap["Stop"] = () => {
-			if (cts != null) {
-				cts.Cancel();
-				cts.Dispose();
-				cts = null;
-			}
-			Running = false;
-		};
+		CommandMap["Stop"] = Stop;
 	}
 
-	async Task BrowserShutdown(IBrowserInstance? browser) {
-		if (!EditableSettings.CloseOldBrowserProfileAfterRun || browser?.Brocess == null || browser.Brocess.HasExited) return;
+	private async Task Save() {
+		Actor.Options.Settings.Start.Feature.ThrowIfNullOrEmpty();
+		var currentArgs = EditableArgs.ToDictionary([], EditableArgs.Search.Split(','));
+		var currentSettings = EditableSettings.ToRecord();
+		var currentOpts = new Opts(AiSettings, currentArgs, currentSettings);
+		var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.IsSelected), SelectedProfiles.Select(x => x.Dto.id));
+		var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
+		var jsonContent = JS.Serialize(stateToSave, JS.EnumConverter);
+		await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
+	}
+
+	public async Task Runerer() {
+		cts = new CancellationTokenSource();
+		Running = true;
 		try {
-			// First, try to close the main window gracefully
-			if (browser.Brocess.CloseMainWindow()) {
-				// Wait for the process to exit gracefully
-				if (await Task.Run(() => browser.Brocess.WaitForExit(5000))) {
-					Debug.WriteLine("Process closed gracefully.");
+			var profiles = SelectedProfiles.Where(p => p.Active);
+			if (!profiles.Any()) throw new Exception("No profiles selected to run.");
+
+			var selected = Selections.OrderBy(s => new Random().Next()).Where(s => s.Selected);
+			if (!selected.Any()) throw new Exception("No scripts selected to run.");
+
+			var things = EditableArgs.Search.Is() && EditableSettings.Start.Url.Is();
+			if (things) throw new Exception("Search and URL's cannot be empty together.");
+			var executionIndex = -1;
+			var terms = EditableArgs.Search.Contains(',') ? EditableArgs.Search.Split(",").Select(x => x.Trim()) : [EditableArgs.Search.Trim()];
+			var urls = EditableSettings.Start.Url?.Split('\n').Where(x => x.IsNot()).Select(x => x.Trim()) ?? [];
+
+			async Task<IBrowserInstance?> ExecuteScriptAsync(Selection selection, ObsProfile profile) {
+				Toaster.Info($"Starting '{selection.Script.Title}");
+				if (executionIndex++ >= terms.Count() && executionIndex >= terms.Count()) executionIndex = 0;
+
+				var termer = !EditableSettings.AsQue ? terms
+				: executionIndex >= terms.Count() ? []
+				: [terms.ElementAt(executionIndex)];
+
+				EditableSettings.Start.Urls = !termer.Any() && !EditableSettings.AsQue ? urls
+				: executionIndex >= urls.Count() ? []
+				: [urls.ElementAt(executionIndex)];
+
+				var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected, termer), EditableSettings.ToRecord(selection.Script.Title == "Surf" ? new(0, 0) : null));
+				Debug.WriteLine($"Running: \n\t '{profile.Title}', '{selection.Script.Title}', '{opts.Settings.Start.Feature}', {JS.Serialize(opts)}");
+
+				var browser = await profile.OpenSystemBrowser(ActorsViewModel.Instance.Browser.Option, false).WaitAsync(cts!.Token);
+				await Run.Script(new() { Port = browser!.Settings.Port, Script = selection.Script, Opts = opts }, cts!.Token);
+				await Task.Delay(TimeSpan.FromSeconds(EditableSettings.Delay), cts.Token);
+				Toaster.Info($"Finished Script '{selection.Script.Title}'");
+				return browser;
+			}
+			async Task BrowserShutdown(IBrowserInstance? browser) {
+				if (!EditableSettings.CloseOldBrowserProfileAfterRun || browser?.Brocess == null || browser.Brocess.HasExited) return;
+				try {
+					// First, try to close the main window gracefully
+					if (browser.Brocess.CloseMainWindow()) {
+						// Wait for the process to exit gracefully
+						if (await Task.Run(() => browser.Brocess.WaitForExit(5000))) {
+							Debug.WriteLine("Process closed gracefully.");
+						}
+					}
+
+					// If graceful close failed or timed out, force kill
+					Debug.WriteLine("Graceful close failed. Force killing process...");
+					browser.Brocess.Kill();
+					browser.Close();
+
+					// Wait for the kill to complete
+					_ = await Task.Run(() => browser.Brocess?.WaitForExit(5000));
+					Debug.WriteLine("Process forcefully terminated.");
+				} catch (Exception e) {
+					Debug.WriteLine($"Error closing browser: {e.Message}");
+				} finally {
+					Debug.WriteLine("Browser instance disposed.");
 				}
 			}
 
-			// If graceful close failed or timed out, force kill
-			Debug.WriteLine("Graceful close failed. Force killing process...");
-			browser.Brocess.Kill();
-				browser.Close();
-
-			// Wait for the kill to complete
-			_ = await Task.Run(() => browser.Brocess?.WaitForExit(5000));
-			Debug.WriteLine("Process forcefully terminated.");
-		} catch (Exception e) {
-			Debug.WriteLine($"Error closing browser: {e.Message}");
-		} finally {
-			Debug.WriteLine("Browser instance disposed.");
-		}
-	}
-	private async Task RunAllScriptsPerProfileAsync(IEnumerable<ObsProfile> profiles, IEnumerable<Selection> selected) {
-		foreach (var profile in profiles) {
-			cts!.Token.ThrowIfCancellationRequested();
-
-			var browser = await profile.OpenSystemBrowser(ActorsViewModel.Instance.Browser.Option, false).WaitAsync(cts.Token);
-
-			foreach (var selection in selected) {
-				await ExecuteScriptAsync(selection, profile, browser!);
-			}
-			await BrowserShutdown(browser);
-		}
+			if (EditableSettings.EachProfile) foreach (var selection in selected) {
+					foreach (var profile in profiles) {
+						var browser = await ExecuteScriptAsync(selection, profile);
+						await BrowserShutdown(browser);
+					}
+				}
+			else foreach (var profile in profiles) {
+					IBrowserInstance? browser = null;
+					foreach (var selection in selected) {
+						browser = await ExecuteScriptAsync(selection, profile);
+					}
+					await BrowserShutdown(browser);
+				}
+		} finally { Stop(); }
 	}
 
-	private async Task RunAllProfilesPerScriptAsync(IEnumerable<ObsProfile> profiles, IEnumerable<Selection> selected) {
-		foreach (var selection in selected) {
-			cts!.Token.ThrowIfCancellationRequested();
-
-			Debug.WriteLine($"Starting Script '{selection.Script.Title}' across all profiles");
-
-			foreach (var profile in profiles) {
-				cts.Token.ThrowIfCancellationRequested();
-
-				var browser = await profile.OpenSystemBrowser(ActorsViewModel.Instance.Browser.Option, false).WaitAsync(cts.Token);
-				await ExecuteScriptAsync(selection, profile, browser!);
-				await BrowserShutdown(browser);
-			}
-		}
-	}
-
-	private async Task ExecuteScriptAsync(Selection selection, ObsProfile profile, IBrowserInstance browser) {
-		try {
-			var settings = EditableSettings.ToRecord(
-				selection.Script.Title == "Surf"
-				? new Start(
-								Feature: EditableSettings.Start.Feature,
-								Url: EditableSettings.Start.Url,
-								Attempts: EditableSettings.Start.Attempts,
-								Variations: EditableSettings.Start.Variations,
-								Iterations: EditableSettings.Start.Iterations,
-								Rando: new Rando(0, 0))
-				: EditableSettings.Start);
-			var opts = new Opts(AiSettings, EditableArgs.ToDictionary(Selections.Where(s=>s.Selected)), settings);
-			var json = JS.Serialize(opts);
-			Debug.WriteLine($@"Running script with:
-        Profile '{profile.Title}', Script '{selection.Script.Title}' with Feature '{opts.Settings.Start.Feature}'
-      ");
-			Debug.WriteLine($@"Opts: {json}");
-			await Run.Script(new() {
-				Port = browser.Settings.Port,
-				Script = selection.Script,
-				Opts = opts
-			}, cts!.Token);
-
-			await Task.Delay(TimeSpan.FromSeconds(EditableSettings.Delay), cts.Token);
-		} finally {
-			Debug.WriteLine($"Finished Script '{selection.Script.Title}'");
-		}
+	private void Stop() {
+		cts?.Cancel();
+		cts?.Dispose();
+		cts = null;
+		Running = false;
 	}
 }

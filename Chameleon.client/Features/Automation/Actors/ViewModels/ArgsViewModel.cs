@@ -23,9 +23,9 @@ public partial class ArgsViewModel : ObservableObject {
 		SelectedFilter = GetValue(sourceArgs, "Filter", Filter.All);
 	}
 
-	public DictionaryArgs ToDictionary(IEnumerable<Selection> selections) {
+	public DictionaryArgs ToDictionary(IEnumerable<Selection> selections, IEnumerable<string> terms) {
 		return new DictionaryArgs {
-			["search"] = Search.Contains(',') ? Search.Split(",").Select(x => x.Trim()) : [Search.Trim()],
+			["search"] = terms,
 			["scope"] = SelectedScope.ToString(),
 			["sort"] = SelectedSort.ToString(),
 			["filter"] = SelectedFilter.ToString(),

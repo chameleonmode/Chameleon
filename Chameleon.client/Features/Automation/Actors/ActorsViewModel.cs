@@ -21,7 +21,6 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 	public ObservableCollection<ActorViewModel> Actors { get; set; } = [];
 
 	public ActorsViewModel() {
-
 		Browser = BrowserOptions.First();
 	 }
 
@@ -44,12 +43,14 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 					Settings: loadedState.Options.Settings ?? actor.Options.Settings
 				);
 
-				Actors.Add(new(
+				var vm = new ActorViewModel(
 					actor,
 				 	selections: loadedState.Selections,
 				 	selectedTags: loadedState.SelectedTags.Select(x => x.Dto.Name),
 					profileSelections: loadedState.SelectedProfileIds
-				));
+				);
+				vm.EditableSettings.Rando = actor.Options.Settings.Start.Rando.Min;
+				Actors.Add(vm);
 				Debug.WriteLine($"Loaded actor state from: {filePath}");
 			} catch (Exception ex) {
 				Debug.WriteLine($"Error loading actor state from {filePath}: {ex}");
