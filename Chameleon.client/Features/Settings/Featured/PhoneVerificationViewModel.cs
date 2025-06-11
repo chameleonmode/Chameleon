@@ -1,20 +1,35 @@
 ﻿using Avalonia.Collections;
 using Chameleon.lib.Util;
-using Chameleon.lib.Common.Records;
 using Chameleon.lib.Common.Util;
 using Chameleon.lib.Common.Util.ThirdParty.SMSapi.Codesverify;
-using Chameleon.lib.Common.Util.ThirdParty.SMSapi.Interfaces;
 using Chameleon.lib.Common.Util.ThirdParty.SMSapi.SMSPool;
 using Chameleon.lib.Common.Util.ThirdParty.SMSapi.SMSPVA;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Chameleon.lib.Common.Util.ThirdParty;
 
 namespace Chameleon.client.Features.Settings.Featured;
 
-public partial class PVApiModel
-		: ViewModelObjectBase, IPVApiModel {
+public interface IPVApiModel {
+	string? ApiKey { get; set; }
+
+	string? GetNumberData { get; set; }
+	string? ReceiveSMSData { get; set; }
+	string? LastFormatedResponse { get; set; }
+
+	bool IsVisible { get; set; }
+	bool IsVisibleSave { get; set; }
+	bool IsAwaiting { get; set; }
+	bool CanCancel { get; set; }
+
+	IList<RCountry>? Countries { get; set; }
+	RCountry? SelectedCountry { get; set; }
+	IList<RService>? Apps { get; set; }
+	RService? SelectedApp { get; set; }
+}
+public partial class PVApiModel : ViewModelObjectBase, IPVApiModel {
 	private readonly IPVAInstance _pnapinstance;
 
 	[ObservableProperty]
@@ -139,9 +154,7 @@ public partial class PVApiModel
 	}
 }
 
-public partial class PhoneVerificationViewModel()
-			 : ViewModelObjectBase("Phone Verification")
-			 , IPhoneVerificationViewModel {
+public partial class PhoneVerificationViewModel() : ViewModelObjectBase("Phone Verification") {
 	public AvaloniaList<IPVApiModel> PVApis { get; set; } =
 	[
 			new PVApiModel(CodesVerifyAPI.Instance){ HasCancel = false},

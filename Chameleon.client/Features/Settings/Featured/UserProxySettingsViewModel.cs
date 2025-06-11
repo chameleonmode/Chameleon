@@ -11,10 +11,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using DynamicData;
-
-using static Chameleon.lib.Common.Constants.Enums.Api;
-using Chameleon.client.UI.Components.ViewModels;
 using DynamicData.Binding;
+
+using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 

@@ -5,15 +5,15 @@ using chameleon.assets;
 using Chameleon.client.UI.Components;
 
 using Chameleon.lib.Common.Constants;
-using Chameleon.lib.Common.Interfaces.Services;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.lib.Helpers;
 using Chameleon.lib;
+using Chameleon.lib.Services;
 
 namespace Chameleon.client.Services;
 public partial class MBoxViewModel : ObservableObject {
-	[ObservableProperty] string title = Project.AppName;
+	[ObservableProperty] string title = Const.AppName;
 	[ObservableProperty] string glyph = "E946";
 }
 public class MboxService(IDispatchService dispatcher) : IMboxService {
@@ -40,7 +40,7 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 		});
 	}
 
-	public async Task<TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Project.AppName, object? footer = null, Symbas symbas = Symbas.Alert, MBoxButtons btns = MBoxButtons.YesNo)
+	public async Task<TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Const.AppName, object? footer = null, Symbas symbas = Symbas.Alert, MBoxButtons btns = MBoxButtons.YesNo)
 	{
 		while(App.MainWindow is null) {
 			await Task.Delay(250);

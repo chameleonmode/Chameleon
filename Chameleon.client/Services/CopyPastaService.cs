@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 using Chameleon.lib.Helpers;
-using Chameleon.lib.Interfaces.Services;
+using Chameleon.lib.Services;
 
 namespace Chameleon.client.Services;
 //ICopyPastaService

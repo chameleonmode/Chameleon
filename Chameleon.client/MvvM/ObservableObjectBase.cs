@@ -1,5 +1,4 @@
-﻿using Chameleon.lib.Common.Interfaces.Systemics;
-using Chameleon.lib.Helpers;
+﻿using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveValidation;
@@ -7,8 +6,11 @@ using System.Collections;
 using System.ComponentModel;
 
 namespace Chameleon.client.MvvM;
-
-public abstract partial class ObservableObjectBase : ObservableObject, IAmaViewModel, IValidatableObject {
+public interface IInitializer {
+	TaskCompletionSource<bool> LoadedTCS { get; }
+	Task InitializeAsync(object? param = null);
+}
+public abstract partial class ObservableObjectBase : ObservableObject, IInitializer, IValidatableObject {
 	[ObservableProperty] string? title;
 	[ObservableProperty] string? tags;
 	[ObservableProperty] bool loaded;

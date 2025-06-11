@@ -1,8 +1,7 @@
 ﻿using Avalonia.Controls.Notifications;
 using Avalonia.Controls;
 using Avalonia;
-using Chameleon.lib.Common.Interfaces.Services;
-using Chameleon.lib.Interfaces.Services;
+using Chameleon.lib.Services;
 
 namespace Chameleon.client.Services;
 public class ToasterService(IDispatchService dispatcher)

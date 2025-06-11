@@ -5,8 +5,6 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Chameleon.lib;
-using Chameleon.lib.Common.Interfaces.Services;
-using Chameleon.lib.Interfaces.Services;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +19,7 @@ using Chameleon.client.UI.Components;
 using FluentAvalonia.UI.Windowing;
 using Chameleon.client.Features.Settings.Featured;
 using Chameleon.client.UI.Components.ViewModels;
+using Chameleon.lib.Services;
 
 namespace Chameleon.client;
 
@@ -45,9 +44,9 @@ public partial class App : Application {
 		IoC.Instance.Configure(() => {
 			return new WritableConfiguration(new ConfigurationBuilder()
 				.SetBasePath(FilePaths.AppDataDir)
-				.AddJsonFile(Project.AppSettingsFileName, optional: true, reloadOnChange: true)
+				.AddJsonFile(Const.AppSettingsFileName, optional: true, reloadOnChange: true)
 				.AddEnvironmentVariables()
-				.Build(), Path.Combine(FilePaths.AppDataDir, Project.AppSettingsFileName));
+				.Build(), Path.Combine(FilePaths.AppDataDir, Const.AppSettingsFileName));
 		}, (services) => {
 			_ = services
 			.AddSingleton<IDispatchService, DispatchService>()

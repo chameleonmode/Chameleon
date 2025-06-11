@@ -3,7 +3,7 @@ using Chameleon.client.UI.Pages;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity;
 
-[Chameleon.lib.Common.Attributes.ViewModel(typeof(IdentityViewModel))]
+[MvvM.ViewModel(typeof(IdentityViewModel))]
 public partial class IdentityView : ChameleonPageBase {
     public IdentityView() {
         InitializeComponent();

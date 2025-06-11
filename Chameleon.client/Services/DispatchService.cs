@@ -1,5 +1,5 @@
 ﻿using Avalonia.Threading;
-using Chameleon.lib.Common.Interfaces.Services;
+using Chameleon.lib.Services;
 
 namespace Chameleon.client.Services;
 

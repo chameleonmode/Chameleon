@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Chameleon.client.MvvM;
 using Chameleon.lib;
-using Chameleon.lib.Common.Interfaces.Sys;
 
 using System.Reflection;
 
@@ -10,7 +10,7 @@ namespace Chameleon.client.UI.Controls;
 public class AutoViewModelInitControl : UserControl {
 	protected override void OnLoaded(RoutedEventArgs e) {
 		base.OnLoaded(e);
-		_ = (DataContext as IAmInitializer)?.InitializeAsync(e);
+		_ = (DataContext as IInitializer)?.InitializeAsync(e);
 	}
 }
 
@@ -27,7 +27,7 @@ public class AutoViewModelLocatorControl : AutoViewModelInitControl {
 	protected virtual object? ViewModel {
 		get {
 			var viewType = GetType();
-			if (viewType.GetCustomAttribute<lib.Common.Attributes.ViewModelAttribute>()?.Type is Type t)
+			if (viewType.GetCustomAttribute<ViewModelAttribute>()?.Type is Type t)
 				return IoC.GetService(t);
 
 			var vmt =

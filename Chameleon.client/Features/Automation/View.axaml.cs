@@ -6,7 +6,7 @@ using Chameleon.client.UI.Pages;
 
 namespace Chameleon.client.Features.Automation;
 
-[lib.Common.Attributes.ViewModel(typeof(ViewModel))]
+[MvvM.ViewModel(typeof(ViewModel))]
 public partial class View : TabStripNavigationPage {
   public View() {
     InitializeComponent();

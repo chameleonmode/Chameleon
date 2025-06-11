@@ -20,6 +20,7 @@ using DynamicData.Binding;
 using Chameleon.client.UI.Components.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 using static Chameleon.lib.Common.Constants.Enums;
+using Chameleon.lib;
 
 namespace Chameleon.client.Features.Projects;
 public abstract partial class Profiler : ViewModelObjectBase {
@@ -101,7 +102,7 @@ public partial class ViewModel : ViewModelObjectBase {
 				if (
 					ex.Message == "limit_ex" &&
 					await MessageBox.Show("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles.")
-				) ProUtil.GoToUrlDefault(Consts.PricingUrl);
+				) ProUtil.GoToUrlDefault(Const.PricingUrl);
 				else throw;
 			}
 		};

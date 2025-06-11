@@ -10,9 +10,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using DynamicData;
-
-using static Chameleon.lib.Common.Constants.Enums.Api;
-
 namespace Chameleon.client.Features.Settings.Featured;
 
 public record CreditPlan(decimal Amount, string Size, bool IsChecked = false);

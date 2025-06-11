@@ -13,6 +13,7 @@ using Chameleon.lib.Abs.Platformatic;
 using Chameleon.client.Features.Tenants.Members.Dialogs;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
+using Chameleon.lib;
 
 namespace Chameleon.client.Features.Tenants.Members;
 public partial class TenantMembersViewModel : ViewModelObjectBase {
@@ -78,7 +79,7 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 	private async Task CreateNewUserAssistant() {
 		if (Assistantz.Count >= Auther.AuthSession?.LicenseLimits.MaxAssistantsCount) {
 			if (await MessageBox.Show("USERS LIMIT REACHED", "You have reached the maximum number of users."))
-				ProcessUtil.OpenBrowser(Consts.PricingUrl);
+				ProcessUtil.OpenBrowser(Const.PricingUrl);
 		} else {
 			if (await new InviteUserOrAddProfilesViewModel(true).ShowDialog() is { } result) {
 				try {

@@ -5,7 +5,7 @@ using Chameleon.lib.Util;
 
 namespace Chameleon.client.Features.Settings;
 
-[lib.Common.Attributes.ViewModel(typeof(ViewModel))]
+[MvvM.ViewModel(typeof(ViewModel))]
 public partial class View : ChameleonNavigationPage {
 	public View()
 	{

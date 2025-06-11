@@ -5,7 +5,7 @@ using FluentAvalonia.UI.Controls;
 
 namespace Chameleon.client.Features.Tenants;
 
-[lib.Common.Attributes.ViewModel(typeof(ViewModel))]
+[MvvM.ViewModel(typeof(ViewModel))]
 public partial class View : TabStripNavigationPage {
 	public View() {
 		InitializeComponent();

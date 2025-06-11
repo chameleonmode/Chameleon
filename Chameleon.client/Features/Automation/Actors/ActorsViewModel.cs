@@ -2,11 +2,11 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Chameleon.client.MvvM;
 using RedditActor = Chameleon.AIR.Actors.Models.Reddit.Actor;
-using Chameleon.lib.Const;
 using Chameleon.AIR.Actors.Models;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using static Chameleon.lib.Common.Constants.Enums;
+using Chameleon.lib;
 
 namespace Chameleon.client.Features.Automation.Actors;
 
