@@ -4,7 +4,6 @@ using Chameleon.client.Features.Automation.Actors.ViewModels;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.AIR.Scripts.Models;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Models.Dto;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
@@ -19,6 +18,7 @@ using System.Reactive.Linq;
 using System.Text.Json.Serialization;
 using Chameleon.lib.WebBrowser.Browsers;
 using Chameleon.lib;
+using Chameleon.lib.Api.Dto;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class Tag(TagDto dto, bool isSelected) : ObservableObject {

@@ -14,7 +14,6 @@ using Chameleon.lib.Util;
 using Chameleon.lib;
 using Chameleon.lib.WebBrowser;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.Util;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
@@ -23,6 +22,7 @@ using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
 using static Chameleon.lib.Common.Constants.Enums;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 

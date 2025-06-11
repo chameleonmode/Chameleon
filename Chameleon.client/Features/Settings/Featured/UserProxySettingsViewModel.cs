@@ -3,7 +3,6 @@ using System.Reactive.Subjects;
 
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Util;
-using Chameleon.lib.Common.Models.Dto;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 
@@ -16,6 +15,7 @@ using DynamicData.Binding;
 using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Settings.Featured;
 

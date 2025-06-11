@@ -3,12 +3,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 using Chameleon.client.MvvM;
 using Chameleon.lib.Util;
-using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Helpers;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Tenants.Members.Dialogs;
 

@@ -1,11 +1,11 @@
 using Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 using Chameleon.lib.Util;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ReactiveValidation;
 using ReactiveValidation.Extensions;
 using Chameleon.client.MvvM;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.Businesses;
 

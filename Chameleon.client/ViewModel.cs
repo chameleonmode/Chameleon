@@ -11,7 +11,6 @@ using DynamicData.PLinq;
 using Chameleon.lib.Util;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
-using Chameleon.lib.Common.Models.Dto;
 using Chameleon.client.Features.Projects.Search;
 using Chameleon.client.Features.Projects.Search.ByTags;
 using Chameleon.client.Features.Projects.Search.ByTags.Controls;
@@ -22,6 +21,7 @@ using Chameleon.lib.Abs.Platformatic;
 using Chameleon.client.Features;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.client.Services;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client;
 

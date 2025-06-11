@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Models.Dto;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
@@ -10,6 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using DynamicData;
+using Chameleon.lib.Api.Dto;
 namespace Chameleon.client.Features.Settings.Featured;
 
 public record CreditPlan(decimal Amount, string Size, bool IsChecked = false);

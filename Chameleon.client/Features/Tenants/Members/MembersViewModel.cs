@@ -1,9 +1,7 @@
 using Chameleon.client.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
-using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Constants;
 using DynamicData;
 using Chameleon.lib.Api;
 using Chameleon.lib.Util;
@@ -14,6 +12,7 @@ using Chameleon.client.Features.Tenants.Members.Dialogs;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Tenants.Members;
 public partial class TenantMembersViewModel : ViewModelObjectBase {

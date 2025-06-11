@@ -3,7 +3,6 @@ using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Common.Constants;
-using Chameleon.lib.Common.Models.Dto;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
@@ -13,6 +12,7 @@ using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 using Chameleon.client.Features.Tenants.Members.Dialogs;
 using Chameleon.client.Features.Projects.Profiles;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Tenants.Members.ViewModels;
 public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisProfileDto> {

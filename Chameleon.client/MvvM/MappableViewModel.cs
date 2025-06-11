@@ -1,7 +1,7 @@
 using System.Reflection;
 using DynamicData.Binding;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Chameleon.lib.Common.Models.Dto;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.MvvM;
 

@@ -2,7 +2,7 @@
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
 using Chameleon.client.Features.Projects.Search.ByTags.Controls;
-using Chameleon.lib.Common.Models.Dto;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Search.ByTags;
 public class TagsTemplateSelector : IDataTemplate {

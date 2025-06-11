@@ -1,4 +1,4 @@
-﻿using Chameleon.lib.Common.Models.Dto;
+﻿using Chameleon.lib.Api.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.client.Features.Projects.Search.ByTags;

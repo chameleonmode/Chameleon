@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Models.Dto;
 using Chameleon.client.MvvM;
 using Chameleon.lib.WebBrowser.Services;
 using Chameleon.lib.Util;
@@ -13,6 +12,7 @@ using Chameleon.lib.Helpers;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
 using Chameleon.client.Services;
 using Chameleon.lib.WebBrowser.Browsers;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 

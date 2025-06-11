@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
 using Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 using Chameleon.client.MvvM;
+using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ReactiveValidation;
 using ReactiveValidation.Extensions;

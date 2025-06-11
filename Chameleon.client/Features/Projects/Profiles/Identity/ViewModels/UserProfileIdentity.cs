@@ -1,9 +1,9 @@
-﻿using Chameleon.lib.Common.Models.Dto;
-using Chameleon.client.MvvM;
+﻿using Chameleon.client.MvvM;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ReactiveValidation;
 using ReactiveValidation.Extensions;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 public partial class UserProfileIdentityVM : ObservableObjectBase {

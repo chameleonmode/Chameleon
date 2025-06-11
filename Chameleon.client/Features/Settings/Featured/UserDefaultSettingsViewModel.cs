@@ -3,12 +3,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
 using Chameleon.lib.Util;
 using Chameleon.lib;
 using Chameleon.lib.WebBrowser;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Settings.Featured;
 public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action OnSelectedChanged, Action<BrowserSettingDto> OnSettingsDeleted) : ViewModelObjectBase {

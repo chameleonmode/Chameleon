@@ -5,7 +5,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Chameleon.client.UI.Controls;
-using Chameleon.lib.Common.Models.Dto;
 using Chameleon.lib.Common.Util;
 using Chameleon.client.MvvM;
 
@@ -13,6 +12,7 @@ using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
 using Chameleon.client.Features.Projects.Profiles;
+using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.UI.Pages;
 

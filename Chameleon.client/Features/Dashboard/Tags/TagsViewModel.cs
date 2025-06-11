@@ -1,7 +1,7 @@
 ﻿using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
+using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Models.Dto;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using DynamicData.Binding;
