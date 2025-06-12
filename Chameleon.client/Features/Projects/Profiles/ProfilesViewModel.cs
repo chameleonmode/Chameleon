@@ -282,17 +282,7 @@ public partial class ProfilesViewModel : Profiler {
 			IoC.SetValue(value.Description?.Title, "LastRunScriptId");
 	}
 	partial void OnSearchTextChanged(string value) {
-		if (value.IsNot()) {
-			PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
-			filter.OnNext(p =>
-			p.Title?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true &&
-			(Folder == null || Folder.Id == 0 || (Folder != null && Folder.Id != 0 && p.Dto?.folderId == Folder?.Id)));
-		} else {
-			PaginatorViewModel.UpdatePageCount(9);
-			filter.OnNext(filter.Value);
-		}
-
-		SetViewModelsFilter(false);
+		SetViewModelsFilter();
 	}
 
 	private async Task OpenSystemBrowser(SystemBrowserType browserType) {
@@ -327,25 +317,24 @@ public partial class ProfilesViewModel : Profiler {
 	}
 	public async void OnFilterTo(ObsProfile? p = null) {
 		_ = await LoadedTCS.Task;
-
-		if (p?.Dto.folderId is int fid && fid != 0) await FoldersViewModel.Instance.OnNavigatingTo(null);
-		else if (p != null) await FoldersViewModel.Instance.OnNavigatingTo(null);
-		else FoldersViewModel.Instance.SetSelected(0);
-
 		SearchText = p?.Title ?? string.Empty;
 	}
 
 	public override ObsProfile Deleted(ObsProfile profile) {
 		SetViewModelsFilter();
 		return base.Deleted(profile);
-	} 
+	}
 
-	public void SetViewModelsFilter(bool onext = true) {
-		if (onext) filter.OnNext(filter.Value);
+	public void SetViewModelsFilter() {
+		PaginatorViewModel.UpdatePageCount(SearchText.Length > 3 ? MaxInFolderItems : 9);
+		filter.OnNext(p =>
+			(Folder == null || Folder.Id == 0 || p.Dto.folderId == Folder.Id) &&
+			(SearchText.Length < 3 || p.Title == null || p.Title.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase))
+		);
 
 		OnPropertyChanged(nameof(TotalCount));
 		OnPropertyChanged(nameof(HasFolder));
-		OnPropertyChanged(nameof(HasNoItems));
+		OnPropertyChanged(nameof(HasProfiles));
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedFolderTitle));
 	}

@@ -15,7 +15,6 @@ using Chameleon.client.Features.Projects.Search;
 using Chameleon.client.Features.Projects.Search.ByTags;
 using Chameleon.client.Features.Projects.Search.ByTags.Controls;
 using Chameleon.client.Features.Projects.Folders;
-using Chameleon.client.Features.Projects;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.client.Features;

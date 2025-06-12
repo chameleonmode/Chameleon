@@ -29,7 +29,7 @@ public abstract partial class Profiler : ViewModelObjectBase {
 	public IObservable<IChangeSet<ObsProfile, int>> Shared { get; }
 	public ReadOnlyObservableCollection<ObsProfile> ObsProfiles { get; }
 	public abstract ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
-	public bool HasNoItems => Profiles.Count == 0;
+	public bool HasProfiles => Profiles.Count > 0;
 	public int SelectedCount => GetSelectedProfiles?.Count() ?? 0;
 	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
 	public IEnumerable<ObsProfile> GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
@@ -131,13 +131,13 @@ public partial class ViewModel : ViewModelObjectBase {
 	}
 	public override async Task OnNavigatedToAsync(object? param) {
 		await base.OnNavigatedToAsync(param);
-		if (param is ObsFolder folder) await FoldersViewModel.Instance.OnNavigatingTo(folder);
-		else if (param is ObsProfile up) ProfilesViewModel.Instance.OnFilterTo(up);
+		await FoldersViewModel.Instance.OnNavigatingTo(param is ObsFolder folder ? folder
+		: FoldersViewModel.Instance.SelectedFolder);
+		if (param is ObsProfile up) ProfilesViewModel.Instance.OnFilterTo(up);
 		else {
-			await FoldersViewModel.Instance.OnNavigatingTo(FoldersViewModel.Instance.SelectedFolder);
 			if (param is string p) ProfilesViewModel.Instance.SearchText = p;
 		}
-		ProfilesViewModel.Instance.ObsProfiles.ForEach(p => p.IsActionOptionsVisible = p.IsShowCheckboxColumn = true);
+		ProfilesViewModel.Instance.ObsProfiles.ForEach(p => p.IsShowCheckboxColumn = true);
 	}
 	public static ViewModel Instance { get; } = new();
 }
