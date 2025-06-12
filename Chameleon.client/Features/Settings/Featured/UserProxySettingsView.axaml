@@ -150,7 +150,8 @@
 												Content="Apply changes"
 												HorizontalAlignment="Right"
 												Classes="accent"
-												Command="{Binding ApplyProxyCommand}"/>
+												Command="{Binding AsyncCfVCommand}"
+												CommandParameter="ApplyProxy"/>
 									</Grid>
 
 									<StackPanel Grid.Row="1"

@@ -93,6 +93,8 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
 		TotalCount = PaginatorViewModel.TotalCount;
+
+		AsyncCommandMap["ApplyProxy"] = ApplyProxy;
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
@@ -171,7 +173,7 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedCount));
-		Toaster.Success($"Update was successful.");
+		Toaster.Success($"Update operation completed.");
 	}
 	private static async Task ApplyProxy(List<ProxDto> proxies, List<ObsProxySetting> models) {
 		if (proxies.Count == 1) {
@@ -189,14 +191,18 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		}
 	}
 	private static async Task ApplyProxy(ProxDto? proxySettings, ObsProxySetting model) {
-		if (proxySettings != null) {
-			model.Host = proxySettings.host;
-			model.Port = proxySettings.port;
-			model.UserName = proxySettings.userName;
-			model.Password = proxySettings.password;
+		try {
+			if (proxySettings != null) {
+				model.Host = proxySettings.host;
+				model.Port = proxySettings.port;
+				model.UserName = proxySettings.userName;
+				model.Password = proxySettings.password;
+			}
+			model.SetProfile();
+			_ = await UserProfilesRepo.Instance.Put(model.ObsProfile.Dto!);
+		} catch (Exception ex) {
+			Toaster.Error($"Failed to apply proxy for profile '{model.ObsProfile.Title}': {ex.Message}");
 		}
-		model.SetProfile();
-		_ = await UserProfilesRepo.Instance.Put(model.ObsProfile.Dto!);
 	}
 	private static List<ProxDto> ParseProxiesSettings(string[] proxyList) {
 		var proxies = new List<ProxDto>();
