@@ -86,6 +86,7 @@
 																	  IsChecked="{Binding EditableSettings.Start.New}" 
 																	  OffContent="Active Tab" 
 																	  OnContent="New Tab"/>
+														<!-- TODO: 
 														<ToggleSwitch ToolTip.Tip="Run all actionable actions or one each"
 																	  IsChecked="{Binding EditableSettings.AsQue}" 
 																	  OffContent="Run All" 
@@ -93,7 +94,7 @@
 														<ToggleSwitch ToolTip.Tip="Run all selected automations for each profile, or run all profiles for each automation"
 																	  IsChecked="{Binding EditableSettings.EachProfile}" 
 																	  OffContent="Each Profile" 
-																	  OnContent="Each Selection"/>
+																	  OnContent="Each Selection"/> -->
 														<ToggleSwitch ToolTip.Tip="Close browser instances for the previous profile before moving to the next"
 																	  IsChecked="{Binding EditableSettings.CloseOldBrowserProfileAfterRun}" 
 																	  OffContent="Keep Open" 
@@ -137,18 +138,6 @@
 																</ItemsControl>
 															</ScrollViewer>
 														</Grid>
-
-														<!-- <TextBlock Text="Automations"
-																   ToolTip.Tip="auto robo autonomous roboto"
-																   Margin="4 12 4 6"
-																   Classes="b1"/>
-														<ItemsControl ItemsSource="{Binding Selections}" ItemsPanel="{StaticResource HorizontalStackPanel}">
-															<ItemsControl.ItemTemplate>
-																<DataTemplate x:DataType="vm:Selection">
-																	<ToggleButton IsChecked="{Binding Selected}" Content="{Binding Script.Title}"  ToolTip.Tip="{Binding Script.Description}"/>
-																</DataTemplate>
-															</ItemsControl.ItemTemplate>
-														</ItemsControl> -->
 													</StackPanel>
 												</StackPanel>
 											</afv:ChameleonContentControl.Header>
@@ -179,50 +168,45 @@
 															</afv:Inputter>
 														</UniformGrid>
 
-
-																	<StackPanel Classes="shared" DataContext="{Binding EditableSettings}">
-																						<!-- <TextBlock Classes="caption"
-																								   Margin="0 0 0 8">
-																							<Run Text="Control settings for auto robo behavior and generation"/>
-																						</TextBlock> -->
-																		<afv:Inputter Title="Auto:" Description="auto robo generation and behavior">
-																			<UniformGrid Rows="1">
-																			 <UniformGrid.Styles>
-																			 		<Style Selector="ui|NumberBox">
-																						<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
-																						<Setter Property="Maximum" Value="999"/>
-																					</Style>
-																			 		<Style Selector="afv|Inputter">
-																						<Setter Property="Margin" Value="4 0 0 0"/>
-																					</Style>
-																			 </UniformGrid.Styles>
-																				<afv:Inputter Title="Terms:"
-																								   Description="Adds AI related keywords based on search terms">
-																					<ui:NumberBox Value="{Binding Start.Variations.Min}" />
-																				</afv:Inputter>
-																				<afv:Inputter Title="Runs:"
-																								   Description="Number of times to run each automation per search term">
-																					<ui:NumberBox Value="{Binding Start.Iterations.Min}" />
-																				</afv:Inputter>
-																				<afv:Inputter Title="Retry:"
-																								   Description="Maximum re-try on unexpected situations">
-																					<ui:NumberBox Value="{Binding Start.Attempts}"/>
-																				</afv:Inputter>
-																				<afv:Inputter Title="Rando:"
-																								   Description="Min-max activity value for voting and joining">
-																					<ui:NumberBox Value="{Binding Rando}" />
-																				</afv:Inputter>
-																				<afv:Inputter Title="Speed:"
-																									 Description="robo movement speed in milliseconds">
-																					<ui:NumberBox Value="{Binding Timeouts.Naps.Min}" />
-																				</afv:Inputter>
-																				<afv:Inputter Title="Delay:"
-																									 Description="auto loop speed between runs in seconds">
-																					<ui:NumberBox Value="{Binding Delay}" />
-																				</afv:Inputter>
-																			</UniformGrid>
-																		</afv:Inputter>
-																	</StackPanel>
+														<StackPanel Classes="shared" DataContext="{Binding EditableSettings}">
+															<afv:Inputter Title="Auto:" Description="auto robo generation and behavior">
+																<UniformGrid Rows="1">
+																 <UniformGrid.Styles>
+																 		<Style Selector="ui|NumberBox">
+																			<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
+																			<Setter Property="Maximum" Value="999"/>
+																		</Style>
+																 		<Style Selector="afv|Inputter">
+																			<Setter Property="Margin" Value="4 0 0 0"/>
+																		</Style>
+																 </UniformGrid.Styles>
+																	<afv:Inputter Title="Terms:"
+																					   Description="Adds AI related keywords based on search terms">
+																		<ui:NumberBox Value="{Binding Start.Variations.Min}" />
+																	</afv:Inputter>
+																	<afv:Inputter Title="Runs:"
+																					   Description="Number of times to run each automation per search term">
+																		<ui:NumberBox Value="{Binding Start.Iterations.Min}" />
+																	</afv:Inputter>
+																	<afv:Inputter Title="Retry:"
+																					   Description="Maximum re-try on unexpected situations">
+																		<ui:NumberBox Value="{Binding Start.Attempts}"/>
+																	</afv:Inputter>
+																	<afv:Inputter Title="Rando:"
+																					   Description="Min-max activity value for voting and joining">
+																		<ui:NumberBox Value="{Binding Rando}" />
+																	</afv:Inputter>
+																	<afv:Inputter Title="Speed:"
+																						 Description="robo movement speed in milliseconds">
+																		<ui:NumberBox Value="{Binding Timeouts.Naps.Min}" />
+																	</afv:Inputter>
+																	<afv:Inputter Title="Delay:"
+																						 Description="auto loop speed between runs in seconds">
+																		<ui:NumberBox Value="{Binding Delay}" />
+																	</afv:Inputter>
+																</UniformGrid>
+															</afv:Inputter>
+														</StackPanel>
 													</StackPanel>
 
 													<ContentControl Content="{Binding AiSettings}">
@@ -274,85 +258,6 @@
 															</DataTemplate>
 														</ContentControl.ContentTemplate>
 													</ContentControl>
-
-													<!-- <ContentControl Content="{Binding EditableSettings}">
-														<ContentControl.ContentTemplate>
-															<DataTemplate x:DataType="vmv:SettingsViewModel">
-																<Expander Header="Run" IsExpanded="True" Margin="0 6">
-																	<StackPanel Classes="shared">
-																		<afv:Inputter Title="Auto:" 
-																						   Description="Controls for auto robo behavior and keyword generation">
-																			<UniformGrid Columns="4" Rows="1">
-																			 <UniformGrid.Styles>
-																			 		<Style Selector="ui|NumberBox">
-																						<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
-																					</Style>
-																			 </UniformGrid.Styles>
-																				<afv:Inputter Title="Keywords:"
-																								   Description="Adds AI related keywords based on search terms">
-																					<ui:NumberBox Value="{Binding Start.Variations.Min}" />
-																				</afv:Inputter>
-
-																				<afv:Inputter Title="Runs:"
-																								   Description="Number of times to run each automation per search term">
-																					<ui:NumberBox Value="{Binding Start.Iterations.Min}" />
-																				</afv:Inputter>
-
-																				<afv:Inputter Title="Attempts:"
-																								   Description="Maximum re-try on unexpected situations">
-																					<ui:NumberBox Value="{Binding Start.Attempts}"/>
-																				</afv:Inputter>
-
-																				<afv:Inputter Title="Rando:"
-																								   Description="Min-max activity value for voting and joining">
-																					<ui:NumberBox Value="{Binding Rando}" />
-																				</afv:Inputter>
-																			</UniformGrid>
-																		</afv:Inputter>
-
-																		<afv:Inputter Title="Timers:" Description="in seconds">
-																			<UniformGrid Columns="4" Rows="1">
-																			 <UniformGrid.Styles>
-																			 		<Style Selector="ui|NumberBox">
-																						<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
-																					</Style>
-																			 </UniformGrid.Styles>
-																				<afv:Inputter Title="Delay:" Description="before starting the next task">
-																					<ui:NumberBox Value="{Binding Delay}" />
-																				</afv:Inputter>
-																				<afv:Inputter Title="Navigate:" Description="for page load">
-																					<ui:NumberBox Value="{Binding Timeouts.Navigate}" />
-																				</afv:Inputter>
-																				<afv:Inputter Title="Default:" Description="in general">
-																					<ui:NumberBox Value="{Binding Timeouts.Default}" />
-																				</afv:Inputter>
-																				<afv:Inputter Title="Wait:" Description="for actions to complete">
-																					<ui:NumberBox Value="{Binding Timeouts.Wait}" />
-																				</afv:Inputter>
-																			</UniformGrid>
-																		</afv:Inputter>
-
-																		<afv:Inputter Title="Sleepers:" Description="in milliseconds">
-																			<UniformGrid Columns="3" Rows="1">
-																				<afv:Inputter Title="Min:">
-																					<ui:NumberBox Value="{Binding Timeouts.Naps.Min}"
-																						 SpinButtonPlacementMode="Compact" />
-																				</afv:Inputter>
-																				<afv:Inputter Title="Max:">
-																					<ui:NumberBox Value="{Binding Timeouts.Naps.Max}"
-																						 SpinButtonPlacementMode="Compact" />
-																				</afv:Inputter>
-																				<afv:Inputter Title="Multi:" Description="time multiplier">
-																					<ui:NumberBox Value="{Binding Timeouts.Naps.Multiplier, TargetNullValue='0'}"
-																						 SpinButtonPlacementMode="Compact" />
-																				</afv:Inputter>
-																			</UniformGrid>
-																		</afv:Inputter>
-																	</StackPanel>
-																</Expander>
-															</DataTemplate>
-														</ContentControl.ContentTemplate>
-													</ContentControl> -->
 												</StackPanel>
 											</afv:ChameleonContentControl.Content>
 										</afv:ChameleonContentControl>

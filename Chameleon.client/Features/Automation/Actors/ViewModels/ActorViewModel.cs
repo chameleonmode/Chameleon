@@ -138,20 +138,14 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			if (things) throw new Exception("Search and URL's cannot be empty together.");
 			var selectionIndex = -1;
 			var executionIndex = -1;
-			var terms = EditableArgs.Search.Contains(',') ? EditableArgs.Search.Split(",").Select(x => x.Trim()) : [EditableArgs.Search.Trim()];
+			var terms = EditableArgs.Search.Split(',').Select(x => x.Trim());
 			var urls = EditableSettings.Start.Url?.Split('\n').Where(x => x.IsNot()).Select(x => x.Trim()) ?? [];
 
 			async Task<IBrowserInstance?> ExecuteScriptAsync(Selection selection, ObsProfile profile) {
 				Toaster.Info($"Starting '{selection.Script.Title}");
 				if (executionIndex++ >= terms.Count() && executionIndex >= terms.Count()) executionIndex = 0;
-
-				var termer = !EditableSettings.AsQue ? terms
-				: executionIndex >= terms.Count() ? []
-				: [terms.ElementAt(executionIndex)];
-
-				EditableSettings.Start.Urls = !termer.Any() && !EditableSettings.AsQue ? urls
-				: executionIndex >= urls.Count() ? []
-				: [urls.ElementAt(executionIndex)];
+				string[] termer = executionIndex < terms.Count() ? [terms.ElementAt(executionIndex)] : [];
+				EditableSettings.Start.Urls = termer.Length == 0 ? [urls.ElementAt(executionIndex)]: [];
 
 				var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected, termer), EditableSettings.ToRecord(selection.Script.Title == "Surf" ? new(0, 0) : null));
 				Debug.WriteLine($"Running: \n\t '{profile.Title}', '{selection.Script.Title}', '{opts.Settings.Start.Feature}', {JS.Serialize(opts)}");
@@ -188,21 +182,28 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				}
 			}
 
-			if (EditableSettings.EachProfile) foreach (var selection in selected) {
-					foreach (var profile in profiles) {
-						var browser = await ExecuteScriptAsync(selection, profile);
-						await BrowserShutdown(browser);
-					}
-				}
-			else foreach (var profile in profiles) {
-					IBrowserInstance? browser = null;
-					foreach (var selection in EditableSettings.AsQue
-					? [selected.ElementAt(selectionIndex++ >= selected.Count() ? selectionIndex = 0 : selectionIndex)] : selected) {
-						browser = await ExecuteScriptAsync(selection, profile);
-						if (EditableSettings.AsQue) await BrowserShutdown(browser);
-					}
-					if (!EditableSettings.AsQue) await BrowserShutdown(browser);
-				}
+			// TODO:
+			// if (EditableSettings.EachProfile) foreach (var selection in selected) {
+			// 		foreach (var profile in profiles) {
+			// 			var browser = await ExecuteScriptAsync(selection, profile);
+			// 			await BrowserShutdown(browser);
+			// 		}
+			// 	}
+			// else foreach (var profile in profiles) {
+			// 		IBrowserInstance? browser = null;
+			// 		foreach (var selection in EditableSettings.AsQue
+			// 		? [selected.ElementAt(selectionIndex++ >= selected.Count() ? selectionIndex = 0 : selectionIndex)] : selected) {
+			// 			browser = await ExecuteScriptAsync(selection, profile);
+			// 			if (EditableSettings.AsQue) await BrowserShutdown(browser);
+			// 		}
+			// 		if (!EditableSettings.AsQue) await BrowserShutdown(browser);
+			// 	}
+			foreach (var profile in profiles) {
+				var selection = selected.ElementAt(
+					selectionIndex++ >= selected.Count() ? selectionIndex = 0 : selectionIndex);
+				var browser = await ExecuteScriptAsync(selection, profile);
+				await BrowserShutdown(browser);
+			}
 		} finally { Stoperer(); }
 	}
 
