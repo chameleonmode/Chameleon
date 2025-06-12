@@ -1,5 +1,4 @@
 ﻿using Chameleon.AIR.Actors.Models;
-using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.client.Features.Automation.Actors.ViewModels;
@@ -18,6 +17,8 @@ public partial class SettingsViewModel(AIR.Actors.Models.Settings source) : Obse
 		return new(Start, Timeouts);
 	}
 
-	partial void OnAsQueChanged(bool value) => EachProfile = !value;
+	partial void OnAsQueChanged(bool value) => EachProfile = value ? false : EachProfile;
+	partial void OnEachProfileChanged(bool value) => AsQue = value ? false : AsQue;
+
 
 }

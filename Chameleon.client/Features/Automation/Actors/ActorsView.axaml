@@ -155,26 +155,74 @@
 
 											<afv:ChameleonContentControl.Content>
 												<StackPanel Margin="0 8 0 0">
+
 													<StackPanel Classes="shared" Margin="6 0 6 6">
 														<afv:Inputter Title="Search:"
 															 Description="comma seperated list of search terms"
 															 Watermark="comma seperated list of search terms"
 															 Text="{Binding EditableArgs.Search}"
-															 Theme="{StaticResource Inputz}"/>
+															 Theme="{StaticResource Inputz}"/>																		
+															<afv:Inputter Title="URL's:"
+																 Description="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)">
+																	<TextBox Text="{Binding EditableSettings.Start.Url}" AcceptsReturn="True" TextWrapping="Wrap"
+																	 	Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*" />
+															</afv:Inputter>
 														<UniformGrid Columns="3" Rows="1">
 															<afv:Inputter Title="Scope:" Description="scope of the search">
-																<ComboBox ItemsSource="{Binding EditableArgs.AvailableScopes}"
-																	 SelectedItem="{Binding EditableArgs.SelectedScope}" />
+																<ComboBox ItemsSource="{Binding EditableArgs.AvailableScopes}" SelectedItem="{Binding EditableArgs.SelectedScope}" />
 															</afv:Inputter>
 															<afv:Inputter Title="Sort:" Description="sort order of the search">
-																<ComboBox ItemsSource="{Binding EditableArgs.AvailableSorts}"
-																	 SelectedItem="{Binding EditableArgs.SelectedSort, Mode=TwoWay}" />
+																<ComboBox ItemsSource="{Binding EditableArgs.AvailableSorts}" SelectedItem="{Binding EditableArgs.SelectedSort}" />
 															</afv:Inputter>
 															<afv:Inputter Title="Filter:" Description="filter to apply to the search">
-																<ComboBox ItemsSource="{Binding EditableArgs.AvailableFilters}"
-																	 SelectedItem="{Binding EditableArgs.SelectedFilter, Mode=TwoWay}" />
+																<ComboBox ItemsSource="{Binding EditableArgs.AvailableFilters}"  SelectedItem="{Binding EditableArgs.SelectedFilter}" />
 															</afv:Inputter>
 														</UniformGrid>
+
+
+																	<StackPanel Classes="shared" DataContext="{Binding EditableSettings}">
+																						<!-- <TextBlock Classes="caption"
+																								   Margin="0 0 0 8">
+																							<Run Text="Control settings for auto robo behavior and generation"/>
+																						</TextBlock> -->
+																		<afv:Inputter Title="Auto:" Description="auto robo generation and behavior">
+																			<UniformGrid Rows="1">
+																			 <UniformGrid.Styles>
+																			 		<Style Selector="ui|NumberBox">
+																						<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
+																						<Setter Property="Maximum" Value="999"/>
+																					</Style>
+																			 		<Style Selector="afv|Inputter">
+																						<Setter Property="Margin" Value="4 0 0 0"/>
+																					</Style>
+																			 </UniformGrid.Styles>
+																				<afv:Inputter Title="Terms:"
+																								   Description="Adds AI related keywords based on search terms">
+																					<ui:NumberBox Value="{Binding Start.Variations.Min}" />
+																				</afv:Inputter>
+																				<afv:Inputter Title="Runs:"
+																								   Description="Number of times to run each automation per search term">
+																					<ui:NumberBox Value="{Binding Start.Iterations.Min}" />
+																				</afv:Inputter>
+																				<afv:Inputter Title="Retry:"
+																								   Description="Maximum re-try on unexpected situations">
+																					<ui:NumberBox Value="{Binding Start.Attempts}"/>
+																				</afv:Inputter>
+																				<afv:Inputter Title="Rando:"
+																								   Description="Min-max activity value for voting and joining">
+																					<ui:NumberBox Value="{Binding Rando}" />
+																				</afv:Inputter>
+																				<afv:Inputter Title="Speed:"
+																									 Description="robo movement speed in milliseconds">
+																					<ui:NumberBox Value="{Binding Timeouts.Naps.Min}" />
+																				</afv:Inputter>
+																				<afv:Inputter Title="Delay:"
+																									 Description="auto loop speed between runs in seconds">
+																					<ui:NumberBox Value="{Binding Delay}" />
+																				</afv:Inputter>
+																			</UniformGrid>
+																		</afv:Inputter>
+																	</StackPanel>
 													</StackPanel>
 
 													<ContentControl Content="{Binding AiSettings}">
@@ -190,7 +238,7 @@
 																					<StackPanel Classes="shared">
 																						<TextBlock Classes="caption"
 																								   Margin="0 0 0 8">
-																							<Run Text="prompt decorations helps keep the model 'on brand'"/>
+																							<Run Text="prompt decorations helps keep the auto robo model 'on brand'"/>
 																						</TextBlock>
 																						<afv:Inputter Title="System:"
 																										   Description="most helpful for the model consistency"
@@ -227,21 +275,13 @@
 														</ContentControl.ContentTemplate>
 													</ContentControl>
 
-													<ContentControl Content="{Binding EditableSettings}">
+													<!-- <ContentControl Content="{Binding EditableSettings}">
 														<ContentControl.ContentTemplate>
 															<DataTemplate x:DataType="vmv:SettingsViewModel">
 																<Expander Header="Run" IsExpanded="True" Margin="0 6">
 																	<StackPanel Classes="shared">
-																		<afv:Inputter Title="URL's:"
-																						   Description="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)">
-																			<TextBox AcceptsReturn="True"
-																					 TextWrapping="Wrap"
-																					 Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*"
-																					 Text="{Binding Start.Url}"/>
-																		</afv:Inputter>
-
 																		<afv:Inputter Title="Auto:" 
-																						   Description="Controls for the robotomation behavior and keyword generation">
+																						   Description="Controls for auto robo behavior and keyword generation">
 																			<UniformGrid Columns="4" Rows="1">
 																			 <UniformGrid.Styles>
 																			 		<Style Selector="ui|NumberBox">
@@ -312,7 +352,7 @@
 																</Expander>
 															</DataTemplate>
 														</ContentControl.ContentTemplate>
-													</ContentControl>
+													</ContentControl> -->
 												</StackPanel>
 											</afv:ChameleonContentControl.Content>
 										</afv:ChameleonContentControl>
