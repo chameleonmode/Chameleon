@@ -12,7 +12,7 @@ using Chameleon.lib.WebBrowser;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class ActorsViewModel : ViewModelObjectBase {
-	[ObservableProperty] BrowserOption browser;
+	[ObservableProperty] BrowserOption selectedBrowserOption;
 	[ObservableProperty] ActorViewModel? selectedActor;
 
 	public IEnumerable<BrowserOption> BrowserOptions { get; } = [
@@ -22,7 +22,7 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 	public ObservableCollection<ActorViewModel> Actors { get; set; } = [];
 
 	public ActorsViewModel() {
-		Browser = BrowserOptions.First();
+		SelectedBrowserOption = BrowserOptions.First();
 	 }
 
 	private async Task LoadActorStates() {

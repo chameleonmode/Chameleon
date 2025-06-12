@@ -44,6 +44,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 	}
 	public virtual Task InitAsync(object? param) => Task.CompletedTask;
 	public virtual Task OnNavigatedToAsync(object? param) => LoadedTCS.Task;
+	public virtual void SetViewModelsFilter() { }
 	public Task InvokeInitializeAsyncCommand(object? p = null) => InitializeAsyncCommand.ExecuteAsync(p);
 	public Task InitializeAsync(object? param) => InvokeInitializeAsyncCommand(param);
 
@@ -51,6 +52,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 	public void CfV(string what) {
 		try {
 			CommandMap[what]();
+			SetViewModelsFilter();
 		} catch (Exception e) {
 			Toaster.Error(what, e.Message);
 		}
@@ -60,6 +62,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 	public async Task AsyncCfV(string what) {
 		try {
 			await AsyncCommandMap[what]();
+			SetViewModelsFilter();
 		} catch (Exception e) {
 			Toaster.Error(what, e.Message);
 		}

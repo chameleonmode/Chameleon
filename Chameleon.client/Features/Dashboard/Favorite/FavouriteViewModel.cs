@@ -11,7 +11,7 @@ public partial class FavouriteViewModel : Dashboarder {
 	public override ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public FavouriteViewModel() : base("Favourites") {
 		_ = ProfilesViewModel.Instance.Shared.Filter(p => p.Dto.isFavourite)     // only favourites
-		.SortAndBind(out var profiles, Profiler.AscendingComparer)
+		.SortAndBind(out var profiles, Profiler.CompareObservable)
 		.Transform(i => { i.IsShowCheckboxColumn = false; return i;})
 		.Subscribe(_ => OnPropertyChanged(nameof(HasProfiles)));
 		Profiles = profiles;
@@ -25,7 +25,7 @@ public partial class FavouriteViewModel : Dashboarder {
 
 		_ = UserProfilesFolderRepo.Connect(i => i.isFavorite)
 			.Transform(i => new ObsFolder(i) { IsActionOptionsVisible = true })
-			.SortAndBind(out var flist, Folderer.AscendingComparer)
+			.SortAndBind(out var flist, Folderer.CompareObservable)
 			.Subscribe((i) => {
 				OnPropertyChanged(nameof(HasFolders));
 			});

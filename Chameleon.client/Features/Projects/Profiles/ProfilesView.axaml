@@ -171,8 +171,8 @@
 					<ui:FAComboBox
 						MaxWidth="66"
 						HorizontalAlignment="Left"
-						SelectedItem="{Binding SelectedBrowserItem}"
-						ItemsSource="{Binding BrowserItems}">
+						SelectedItem="{Binding SelectedBrowserOption}"
+						ItemsSource="{Binding BrowserOptions}">
 						<ui:FAComboBox.ItemTemplate>
 							<DataTemplate>
 								<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -214,7 +214,8 @@
 						<Button
 							Classes="accent"
 							Width="72"
-							Command="{Binding StopAutomationCommand}"
+							Command="{Binding CfVCommand}"
+							CommandParameter="StopAutomation"
 							IsVisible="{Binding IsVisibleStopButton}">
 							<StackPanel Orientation="Horizontal">
 								<ui:SymbolIcon

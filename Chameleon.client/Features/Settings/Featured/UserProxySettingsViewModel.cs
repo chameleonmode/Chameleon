@@ -113,7 +113,6 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 	}
 
 	partial void OnSelectedFolderChanged(ObsFolder? value) {
-		UnselectItems();
 		filter.OnNext(FilterPredicate);
 		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
 	}

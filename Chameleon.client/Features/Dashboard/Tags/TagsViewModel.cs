@@ -10,7 +10,6 @@ using DynamicData.PLinq;
 using FluentAvalonia.Core;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 
 namespace Chameleon.client.Features.Dashboard.Tags;
 
@@ -45,7 +44,7 @@ public partial class TagsViewModel : Dashboarder {
 								.Where(ids => ids is not null)
 								.Select(ids => new Func<ObsProfile, bool>(f => ids!.Any(id => id == f.Dto.id.ToString())))
 					)
-					.SortAndBind(out var profiles, Profiler.AscendingComparer)
+					.SortAndBind(out var profiles, Profiler.CompareObservable)
 					.Transform(i => { i.IsShowCheckboxColumn = false; return i;})
 					.Subscribe(_ => OnPropertyChanged(nameof(HasProfiles)));
 		Profiles = profiles;
@@ -57,7 +56,7 @@ public partial class TagsViewModel : Dashboarder {
 								.Select(ids => new Func<UPFolderDto, bool>(f => ids!.Any(id => id == f.id.ToString())))
 					)
 					.Transform(i => new ObsFolder(i){ IsActionOptionsVisible = true})
-					.SortAndBind(out var folders, Folderer.AscendingComparer)
+					.SortAndBind(out var folders, Folderer.CompareObservable)
 					.Subscribe(_ => OnPropertyChanged(nameof(HasFolders)));
 		Folders = folders;
 	}

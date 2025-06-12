@@ -94,11 +94,8 @@ public partial class ViewModel : ObservableObjectBase {
 
   [RelayCommand]
   void ClickSearch(string p) {
-    if (p.IsNot()) Navigator.NavigateToType(typeof(Features.Projects.View), p);
-    else {
-      SelectedSearchTerm = null;
-      ProfilesViewModel.Instance.OnFilterTo();
-    }
+    Navigator.NavigateToType(typeof(Features.Projects.View), p);
+    ProfilesViewModel.Instance.SearchText = p;
   }
 
   public async Task Init() {

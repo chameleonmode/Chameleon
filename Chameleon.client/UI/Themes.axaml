@@ -242,7 +242,8 @@
 							<Button Theme="{StaticResource TransparentButton}"
 									Classes="accent"
 									Content="Unselect"
-									Command="{ReflectionBinding UnselectItemsCommand}" />
+									CommandParameter="UnselectItems"
+									Command="{ReflectionBinding CfVCommand}" />
 						</StackPanel>
 					</Grid>
 				</Border>

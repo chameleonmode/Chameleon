@@ -150,7 +150,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected, termer), EditableSettings.ToRecord(selection.Script.Title == "Surf" ? new(0, 0) : null));
 				Debug.WriteLine($"Running: \n\t '{profile.Title}', '{selection.Script.Title}', '{opts.Settings.Start.Feature}', {JS.Serialize(opts)}");
 
-				var browser = await profile.OpenSystemBrowser(ActorsViewModel.Instance.Browser.Option, false).WaitAsync(cts!.Token);
+				var browser = await profile.OpenSystemBrowser(ActorsViewModel.Instance.SelectedBrowserOption.Option, false).WaitAsync(cts!.Token);
 				await Run.Script(new() { Port = browser!.Settings.Port, Script = selection.Script, Opts = opts }, cts!.Token);
 				await Task.Delay(TimeSpan.FromSeconds(EditableSettings.Delay), cts.Token);
 				Toaster.Info($"Finished Script '{selection.Script.Title}'");

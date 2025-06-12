@@ -18,7 +18,7 @@
 			<afv:ChameleonContentControl.TitleContent>
 				<Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Right">
 					<StackPanel Classes="zontal" Grid.Column="1" Margin="4">
-					<ui:FAComboBox SelectedItem="{Binding Browser}" ItemsSource="{Binding BrowserOptions}">
+					<ui:FAComboBox SelectedItem="{Binding SelectedBrowserOption}" ItemsSource="{Binding BrowserOptions}">
 						<ui:FAComboBox.ItemTemplate>
 							<DataTemplate>
 								<afv:SvgIcon IconName="{Binding IconName}" Height="20" Width="20" />
