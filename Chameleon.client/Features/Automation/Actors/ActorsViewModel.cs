@@ -5,16 +5,17 @@ using RedditActor = Chameleon.AIR.Actors.Models.Reddit.Actor;
 using Chameleon.AIR.Actors.Models;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
-using static Chameleon.lib.Common.Constants.Enums;
+
 using Chameleon.lib;
+using Chameleon.lib.WebBrowser;
 
 namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class ActorsViewModel : ViewModelObjectBase {
-	[ObservableProperty] lib.WebBrowser.BrowserOption browser;
+	[ObservableProperty] BrowserOption browser;
 	[ObservableProperty] ActorViewModel? selectedActor;
 
-	public IEnumerable<lib.WebBrowser.BrowserOption> BrowserOptions { get; } = [
+	public IEnumerable<BrowserOption> BrowserOptions { get; } = [
 		new (SystemBrowserType.Chrome),
 		new (SystemBrowserType.Brave),
 	];

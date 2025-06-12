@@ -14,14 +14,15 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Chameleon.client.Features.Projects;
 using Chameleon.lib.Util;
+using Chameleon.lib.WebBrowser;
 
 namespace Chameleon.client.Features.Dashboard;
 
 public abstract partial class Dashboarder(string? title) : ViewModelObjectBase(title) {
-	[ObservableProperty] Enums.ChangeComparereOption sort = Enums.ChangeComparereOption.Ascending;
-	[ObservableProperty] Enums.ChangeComparereOption folderSortSelected = Enums.ChangeComparereOption.Ascending;
+	[ObservableProperty] ChangeComparereOption sort = ChangeComparereOption.Ascending;
+	[ObservableProperty] ChangeComparereOption folderSortSelected = ChangeComparereOption.Ascending;
 
-	public Enums.ChangeComparereOption[] Sorts { get; } = (Enums.ChangeComparereOption[])Enum.GetValues(typeof(Enums.ChangeComparereOption));
+	public ChangeComparereOption[] Sorts { get; } = (ChangeComparereOption[])Enum.GetValues(typeof(ChangeComparereOption));
 	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Profiler.AscendingComparer);
 	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Folderer.AscendingComparer);
 	public abstract ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
@@ -29,15 +30,15 @@ public abstract partial class Dashboarder(string? title) : ViewModelObjectBase(t
 	public bool HasNoItems => Profiles.Count == 0;
 	public bool HasNoFolderItems => Folders.Count == 0;
 
-	partial void OnSortChanged(Enums.ChangeComparereOption value) {
+	partial void OnSortChanged(ChangeComparereOption value) {
 		profilesCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => Profiler.DescendingComparer,
+			ChangeComparereOption.Descending => Profiler.DescendingComparer,
 			_ => ProfilesViewModel.AscendingComparer
 		});
 	}
-	partial void OnFolderSortSelectedChanged(Enums.ChangeComparereOption value) {
+	partial void OnFolderSortSelectedChanged(ChangeComparereOption value) {
 		foldersCompareObservable.OnNext(value switch {
-			Enums.ChangeComparereOption.Descending => Folderer.DescendingComparer,
+			ChangeComparereOption.Descending => Folderer.DescendingComparer,
 			_ => Folderer.AscendingComparer
 		});
 	}
@@ -78,9 +79,9 @@ public partial class ViewModel : ViewModelObjectBase {
 
 			await CheckForCookies();
 		};
-		AsyncCommandMap["SyncCookiesChrome"] = async () => await SyncCookies(Enums.SystemBrowserType.Chrome);;
-		AsyncCommandMap["SyncCookiesBrave"] = async () => await SyncCookies(Enums.SystemBrowserType.Brave);
-		AsyncCommandMap["SyncCookiesFirefox"] = async () =>  await SyncCookies(Enums.SystemBrowserType.Firefox);
+		AsyncCommandMap["SyncCookiesChrome"] = async () => await SyncCookies(SystemBrowserType.Chrome);;
+		AsyncCommandMap["SyncCookiesBrave"] = async () => await SyncCookies(SystemBrowserType.Brave);
+		AsyncCommandMap["SyncCookiesFirefox"] = async () =>  await SyncCookies(SystemBrowserType.Firefox);
 	}
 
 	public override Task InitAsync(object? param) {
@@ -108,7 +109,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		}
 	}
 
-	static async Task SyncCookies(Enums.SystemBrowserType systemBrowserType) {
+	static async Task SyncCookies(SystemBrowserType systemBrowserType) {
 		await PlaywrightCookiesSyncService.Instance.SyncCookies(systemBrowserType);
 		Toaster.Success("Cookies Synced");
 	}

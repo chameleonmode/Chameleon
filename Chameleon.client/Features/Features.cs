@@ -7,7 +7,7 @@ using Chameleon.client.Features.Projects.Profiles.Identity;
 using Chameleon.client.Features.Settings.Featured;
 
 namespace Chameleon.client.Features;
-
+	public enum ChangeComparereOption { Ascending, Descending }
 public static class Modules {
   public static IServiceCollection Automation(this IServiceCollection services) => services
   .AddSingleton<Automation.View>()

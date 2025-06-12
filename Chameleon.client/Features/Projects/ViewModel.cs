@@ -19,7 +19,7 @@ using System.Reactive.Linq;
 using DynamicData.Binding;
 using Chameleon.client.UI.Components.ViewModels;
 using Microsoft.AspNetCore.SignalR;
-using static Chameleon.lib.Common.Constants.Enums;
+
 using Chameleon.lib;
 
 namespace Chameleon.client.Features.Projects;

@@ -17,4 +17,7 @@ public partial class SettingsViewModel(AIR.Actors.Models.Settings source) : Obse
 		Timeouts.Artifacto["delay"] = Delay;
 		return new(Start, Timeouts);
 	}
+
+	partial void OnAsQueChanged(bool value) => EachProfile = !value;
+
 }

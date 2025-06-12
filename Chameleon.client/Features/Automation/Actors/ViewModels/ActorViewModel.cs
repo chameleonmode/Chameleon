@@ -104,16 +104,16 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		];
 
 		AsyncCommandMap["Run"] = Runerer;
-		AsyncCommandMap["Save"] = Save;
+		AsyncCommandMap["Save"] = Saverer;
 		AsyncCommandMap["OpenProfileSelector"] = async () => {
 			using var profileSelectorVM = new ProfileSelectorViewModel(SelectedProfiles);
 			_ = await profileSelectorVM.ShowDialogAsync();
 		};
 
-		CommandMap["Stop"] = Stop;
+		CommandMap["Stop"] = Stoperer;
 	}
 
-	private async Task Save() {
+	private async Task Saverer() {
 		Actor.Options.Settings.Start.Feature.ThrowIfNullOrEmpty();
 		var currentArgs = EditableArgs.ToDictionary([], EditableArgs.Search.Split(','));
 		var currentSettings = EditableSettings.ToRecord();
@@ -136,6 +136,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 			var things = EditableArgs.Search.Is() && EditableSettings.Start.Url.Is();
 			if (things) throw new Exception("Search and URL's cannot be empty together.");
+			var selectionIndex = -1;
 			var executionIndex = -1;
 			var terms = EditableArgs.Search.Contains(',') ? EditableArgs.Search.Split(",").Select(x => x.Trim()) : [EditableArgs.Search.Trim()];
 			var urls = EditableSettings.Start.Url?.Split('\n').Where(x => x.IsNot()).Select(x => x.Trim()) ?? [];
@@ -195,15 +196,17 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				}
 			else foreach (var profile in profiles) {
 					IBrowserInstance? browser = null;
-					foreach (var selection in selected) {
+					foreach (var selection in EditableSettings.AsQue
+					? [selected.ElementAt(selectionIndex++ >= selected.Count() ? selectionIndex = 0 : selectionIndex)] : selected) {
 						browser = await ExecuteScriptAsync(selection, profile);
+						if (EditableSettings.AsQue) await BrowserShutdown(browser);
 					}
-					await BrowserShutdown(browser);
+					if (!EditableSettings.AsQue) await BrowserShutdown(browser);
 				}
-		} finally { Stop(); }
+		} finally { Stoperer(); }
 	}
 
-	private void Stop() {
+	private void Stoperer() {
 		cts?.Cancel();
 		cts?.Dispose();
 		cts = null;

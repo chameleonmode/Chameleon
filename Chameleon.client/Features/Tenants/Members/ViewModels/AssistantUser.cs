@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Constants;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
@@ -13,24 +12,25 @@ using DynamicData;
 using Chameleon.client.Features.Tenants.Members.Dialogs;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Dto;
+using Chameleon.lib.WebBrowser;
 
 namespace Chameleon.client.Features.Tenants.Members.ViewModels;
 public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisProfileDto> {
 	private readonly Action<AssistantUsersProfile> onProfileUnshare;
-	private readonly Func<AssistantUsersProfile, Enums.SystemBrowserType, Task> onSendCookies;
+	private readonly Func<AssistantUsersProfile, SystemBrowserType, Task> onSendCookies;
 
 	public AssistantUsersProfile(
 		AssisProfileDto dto,
 		Action<AssistantUsersProfile> onProfileUnshare,
-		Func<AssistantUsersProfile, Enums.SystemBrowserType, Task> onSendCookies)
+		Func<AssistantUsersProfile, SystemBrowserType, Task> onSendCookies)
 		: base(dto) {
 		this.onProfileUnshare = onProfileUnshare;
 		this.onSendCookies = onSendCookies;
 
 		AsyncCommandMap["Unshare"] = Unshare;
-		AsyncCommandMap["SyncCookiesChrome"] = () => SendCookies(Enums.SystemBrowserType.Chrome);
-		AsyncCommandMap["SyncCookiesBrave"] = () => SendCookies(Enums.SystemBrowserType.Brave);
-		AsyncCommandMap["SyncCookiesFirefox"] = () => SendCookies(Enums.SystemBrowserType.Firefox);
+		AsyncCommandMap["SyncCookiesChrome"] = () => SendCookies(SystemBrowserType.Chrome);
+		AsyncCommandMap["SyncCookiesBrave"] = () => SendCookies(SystemBrowserType.Brave);
+		AsyncCommandMap["SyncCookiesFirefox"] = () => SendCookies(SystemBrowserType.Firefox);
 	}
 
 	private async Task Unshare() {
@@ -47,7 +47,7 @@ public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisPro
 		}
 	}
 
-	public async Task SendCookies(Enums.SystemBrowserType bt) {
+	public async Task SendCookies(SystemBrowserType bt) {
 		try {
 			Toaster.Info("Sending cookies...");
 			await onSendCookies(this, bt);

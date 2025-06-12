@@ -6,7 +6,7 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.client.MvvM;
 using Chameleon.lib.WebBrowser.Services;
 using Chameleon.lib.Util;
-using static Chameleon.lib.Common.Constants.Enums;
+
 using Chameleon.lib.WebBrowser;
 using Chameleon.lib.Helpers;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;

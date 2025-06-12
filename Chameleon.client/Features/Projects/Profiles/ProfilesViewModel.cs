@@ -21,7 +21,7 @@ using Chameleon.lib.Playwright.Services;
 using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
-using static Chameleon.lib.Common.Constants.Enums;
+
 using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles;
