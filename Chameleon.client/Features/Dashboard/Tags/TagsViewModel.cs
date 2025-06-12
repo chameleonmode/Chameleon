@@ -1,4 +1,5 @@
-﻿using Chameleon.client.Features.Projects.Folders;
+﻿using Chameleon.client.Features.Projects;
+using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Api.Repos;
@@ -6,8 +7,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using DynamicData.Binding;
 using DynamicData.PLinq;
+using FluentAvalonia.Core;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace Chameleon.client.Features.Dashboard.Tags;
 
@@ -28,7 +31,7 @@ public partial class TagsViewModel : Dashboarder {
 				var items = changeSet
 										.Select(change => change.Current)
 										.SelectMany(x => x.Items);
-										
+
 				FolderTagIds = items
 					.Where(x => x.Key == TagItemType.Folder)
 					.SelectMany(x => x.Value).Distinct();
@@ -42,9 +45,9 @@ public partial class TagsViewModel : Dashboarder {
 								.Where(ids => ids is not null)
 								.Select(ids => new Func<ObsProfile, bool>(f => ids!.Any(id => id == f.Dto.id.ToString())))
 					)
-					.SortAndBind(out var profiles, profilesCompareObservable)
+					.SortAndBind(out var profiles, Profiler.AscendingComparer)
 					.Transform(i => { i.IsShowCheckboxColumn = false; return i;})
-					.Subscribe(_ => OnPropertyChanged(nameof(HasNoItems)));
+					.Subscribe(_ => OnPropertyChanged(nameof(HasProfiles)));
 		Profiles = profiles;
 
 		_ = UserProfilesFolderRepo.Connect()
@@ -54,8 +57,8 @@ public partial class TagsViewModel : Dashboarder {
 								.Select(ids => new Func<UPFolderDto, bool>(f => ids!.Any(id => id == f.id.ToString())))
 					)
 					.Transform(i => new ObsFolder(i){ IsActionOptionsVisible = true})
-					.SortAndBind(out var folders, foldersCompareObservable)
-					.Subscribe(_ => OnPropertyChanged(nameof(HasNoFolderItems)));
+					.SortAndBind(out var folders, Folderer.AscendingComparer)
+					.Subscribe(_ => OnPropertyChanged(nameof(HasFolders)));
 		Folders = folders;
 	}
 

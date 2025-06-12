@@ -1,9 +1,7 @@
 ﻿using Chameleon.client.Features.Dashboard.Tags;
-using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Constants;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
@@ -11,38 +9,15 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using Chameleon.client.Features.Projects;
 using Chameleon.lib.Util;
 using Chameleon.lib.WebBrowser;
+using Chameleon.client.Features.Dashboard.Favorite;
 
 namespace Chameleon.client.Features.Dashboard;
 
-public abstract partial class Dashboarder(string? title) : ViewModelObjectBase(title) {
-	[ObservableProperty] ChangeComparereOption sort = ChangeComparereOption.Ascending;
-	[ObservableProperty] ChangeComparereOption folderSortSelected = ChangeComparereOption.Ascending;
+public abstract partial class Dashboarder(string? title) : Projector(title) { }
 
-	public ChangeComparereOption[] Sorts { get; } = (ChangeComparereOption[])Enum.GetValues(typeof(ChangeComparereOption));
-	protected readonly BehaviorSubject<IComparer<ObsProfile>> profilesCompareObservable = new(Profiler.AscendingComparer);
-	protected readonly BehaviorSubject<IComparer<ObsFolder>> foldersCompareObservable = new(Folderer.AscendingComparer);
-	public abstract ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
-	public abstract ReadOnlyObservableCollection<ObsFolder> Folders { get; }
-	public bool HasNoItems => Profiles.Count == 0;
-	public bool HasNoFolderItems => Folders.Count == 0;
-
-	partial void OnSortChanged(ChangeComparereOption value) {
-		profilesCompareObservable.OnNext(value switch {
-			ChangeComparereOption.Descending => Profiler.DescendingComparer,
-			_ => ProfilesViewModel.AscendingComparer
-		});
-	}
-	partial void OnFolderSortSelectedChanged(ChangeComparereOption value) {
-		foldersCompareObservable.OnNext(value switch {
-			ChangeComparereOption.Descending => Folderer.DescendingComparer,
-			_ => Folderer.AscendingComparer
-		});
-	}
-}
 
 public partial class TagViewModel(Action<TagViewModel> OnSelectChanged) : ObservableObject {
 	[ObservableProperty] string name = null!;
@@ -93,7 +68,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		if (newValue == null) return;
 
 		IsFavouriteSelected = newValue.Name == "Favourites";
-
+		
 		if (!IsFavouriteSelected) TagsViewModel.Instance.SelectedTagName = newValue.Name;
 
 		if (!newValue.IsSelected) newValue.IsSelected = true;

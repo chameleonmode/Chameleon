@@ -10,42 +10,31 @@
 						 x:DataType="local:TagsViewModel"
 						 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto,Auto">
-		<afv:ChameleonContentControl
-			Title="{Binding SelectedTagName,StringFormat='#{0} profiles'}"
-			TitleDescription="{Binding #lbProfiles.ItemCount, StringFormat='You have {0} profiles.'}">
-			<afv:ChameleonContentControl.Options>
-				<ui:FAComboBox
-					Header="Sort by:"
-					HorizontalAlignment="Right"
-					ItemsSource="{Binding Sorts}"
-					SelectedItem="{Binding Sort}"
-					IsEditable="False"/>
-			</afv:ChameleonContentControl.Options>
+		<afv:ChameleonContentControl Title="{Binding SelectedTagName, StringFormat='#{0} profiles'}"
+				 TitleDescription="{Binding #lbProfiles.ItemCount, StringFormat='You have {0} profiles.'}">
+			<afv:ChameleonContentControl.TitleContent>
+				<ui:FAComboBox ItemsSource="{Binding Sorts}" SelectedItem="{Binding Sort}" />
+			</afv:ChameleonContentControl.TitleContent>
+
 			<afv:ChameleonContentControl.Content>
 				<Panel>
 					<ListBox Name="lbProfiles" Classes="uni" />
-					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" Header="No favorite profiles selected yet"/>
+					<HeaderedContentControl Classes="no-profiles" />
 				</Panel>
 			</afv:ChameleonContentControl.Content>
 		</afv:ChameleonContentControl>
 
-		<afv:ChameleonContentControl
-			Grid.Row="1"
-			Title="{Binding SelectedTagName,StringFormat='#{0} folders'}"
-			TitleDescription="{Binding #lbFolders.ItemCount, StringFormat='You have {0} folders.'}">
-			<afv:ChameleonContentControl.Options>
-				<ui:FAComboBox Header="Sort by:"
-							   HorizontalAlignment="Right"
-							   ItemsSource="{Binding Sorts}"
-							   SelectedItem="{Binding FolderSortSelected}"
-							   IsEditable="False"/>
-			</afv:ChameleonContentControl.Options>
+		<afv:ChameleonContentControl Title="{Binding SelectedTagName, StringFormat='#{0} folders'}"
+				 TitleDescription="{Binding #lbFolders.ItemCount, StringFormat='You have {0} folders.'}"
+				 Grid.Row="1">
+			<afv:ChameleonContentControl.TitleContent>
+				<ui:FAComboBox ItemsSource="{Binding Sorts}" SelectedItem="{Binding SortFolder}" />
+			</afv:ChameleonContentControl.TitleContent>
+			
 			<afv:ChameleonContentControl.Content>
 				<Panel>
 					<ListBox Name="lbFolders" />
-					<HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}"
-											Header="No folders selected yet"
-											IsVisible="{Binding HasNoFolderItems}" />
+					<HeaderedContentControl Classes="no-folders" />
 				</Panel>
 			</afv:ChameleonContentControl.Content>
 		</afv:ChameleonContentControl>

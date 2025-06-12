@@ -13,28 +13,6 @@
 			 x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
 			 x:DataType="vm:ActorsViewModel"
 			 x:CompileBindings="True">
-	<UserControl.Styles>
-		<Style Selector="TextBox">
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
-		</Style>
-
-		<Style Selector="ContentControl">
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
-		</Style>
-
-		<Style Selector="ComboBox">
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="VerticalAlignment" Value="Center"/>
-		</Style>
-
-		<Style Selector="ToggleSwitch">
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="HorizontalAlignment" Value="Left"/>
-		</Style>
-	</UserControl.Styles>
-
 	<Grid RowDefinitions="Auto, *">
 		<afv:ChameleonContentControl Title="Agents" TitleDescription="Robotic Automation Agents">
 			<afv:ChameleonContentControl.TitleContent>
@@ -104,41 +82,36 @@
 											</afv:ChameleonContentControl.TitleContent>
 
 											<afv:ChameleonContentControl.Header>
-												<StackPanel>
-													<StackPanel Spacing="6">
-														<TextBlock Text="Tags"  Classes="b1" Margin="4 6"  ToolTip.Tip="select a tag that contain a grouping of profiles to inceptionalize" />
-														<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
-															<ItemsControl ItemsPanel="{StaticResource HorizontalStackPanel}" ItemsSource="{Binding Tagz}">
+												<StackPanel Spacing="6">
+													<TextBlock Text="Tags" Classes="b1" Margin="4 6" ToolTip.Tip="activate and select hashtagged profiles" />
+													<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
+														<ItemsControl ItemsPanel="{StaticResource HorizontalStackPanel}" ItemsSource="{Binding Tagz}">
+															<ItemsControl.ItemTemplate>
+																<DataTemplate x:DataType="vm:Tag">
+																	<ToggleButton IsChecked="{Binding IsSelected}" Content="{Binding Dto.Name}" ToolTip.Tip="{Binding ToolTipText}"/>
+																</DataTemplate>
+															</ItemsControl.ItemTemplate>
+														</ItemsControl>
+													</ScrollViewer>
+
+													<TextBlock Text="Profiles" Margin="4 12 4 6" Classes="b1" ToolTip.Tip="activate and select profiles" />
+													<Grid ColumnDefinitions="Auto,*">
+														<Button Content="..."
+																Command="{Binding AsyncCfVCommand}"
+																CommandParameter="OpenProfileSelector"
+																Theme="{StaticResource AccentTextButton}"
+																ToolTip.Tip="Select N Edit"
+																Margin="4,6"/>
+														<ScrollViewer Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+															<ItemsControl ItemsPanel="{StaticResource HorizontalStackPanel}" ItemsSource="{Binding SelectedProfiles}">
 																<ItemsControl.ItemTemplate>
-																	<DataTemplate x:DataType="vm:Tag">
-																		<ToggleButton IsChecked="{Binding IsSelected}" Content="{Binding Dto.Name}" ToolTip.Tip="{Binding ToolTipText}"/>
+																	<DataTemplate x:DataType="profiles:ObsProfile">
+																		<ToggleButton IsChecked="{Binding Active}" Content="{Binding Title}"/>
 																	</DataTemplate>
 																</ItemsControl.ItemTemplate>
 															</ItemsControl>
 														</ScrollViewer>
-
-														<TextBlock Text="Profiles" Margin="4 12 4 6" ToolTip.Tip="selected profiles" Classes="b1"/>
-														<Grid ColumnDefinitions="Auto,*">
-															<Button Content="..."
-																	Command="{Binding AsyncCfVCommand}"
-																	CommandParameter="OpenProfileSelector"
-																	Theme="{StaticResource AccentTextButton}"
-																	ToolTip.Tip="Select N Edit"
-																	Margin="4,6"/>
-															<ScrollViewer Grid.Column="1" 
-																		  ScrollViewer.HorizontalScrollBarVisibility="Auto">
-																<ItemsControl ItemsPanel="{StaticResource HorizontalStackPanel}"
-																			  ItemsSource="{Binding SelectedProfiles}">
-																	<ItemsControl.ItemTemplate>
-																		<DataTemplate x:DataType="profiles:ObsProfile">
-																			<ToggleButton IsChecked="{Binding Active}"
-																						  Content="{Binding Title}"/>
-																		</DataTemplate>
-																	</ItemsControl.ItemTemplate>
-																</ItemsControl>
-															</ScrollViewer>
-														</Grid>
-													</StackPanel>
+													</Grid>
 												</StackPanel>
 											</afv:ChameleonContentControl.Header>
 
@@ -181,27 +154,27 @@
 																		</Style>
 																 </UniformGrid.Styles>
 																	<afv:Inputter Title="Terms:"
-																					   Description="Adds AI related keywords based on search terms">
+																			 Description="Adds AI related keywords based on search terms">
 																		<ui:NumberBox Value="{Binding Start.Variations.Min}" />
 																	</afv:Inputter>
 																	<afv:Inputter Title="Rerun:"
-																					   Description="Number of times to rerun each search term to a different listing">
+																			 Description="Number of times to rerun each search term to a different listing">
 																		<ui:NumberBox Value="{Binding Start.Iterations.Min}" />
 																	</afv:Inputter>
 																	<afv:Inputter Title="Retry:"
-																					   Description="Maximum retry on unexpected situations">
+																			 Description="Maximum retry on unexpected situations">
 																		<ui:NumberBox Value="{Binding Start.Attempts}"/>
 																	</afv:Inputter>
 																	<afv:Inputter Title="Rando:"
-																					   Description="Min-max activity value for voting and joining">
+																			 Description="Min-max activity value for voting and joining">
 																		<ui:NumberBox Value="{Binding Rando}" />
 																	</afv:Inputter>
 																	<afv:Inputter Title="Speed:"
-																						 Description="robo movement speed in milliseconds">
+																			 Description="robo movement speed in milliseconds">
 																		<ui:NumberBox Value="{Binding Timeouts.Naps.Min}" />
 																	</afv:Inputter>
 																	<afv:Inputter Title="Delay:"
-																						 Description="auto loop speed between runs in seconds">
+																			 Description="auto loop speed between runs in seconds">
 																		<ui:NumberBox Value="{Binding Delay}" />
 																	</afv:Inputter>
 																</UniformGrid>

@@ -78,6 +78,7 @@ public partial class ProfilesViewModel : Profiler {
 		new BrowserOption(SystemBrowserType.Chrome),
 		new BrowserOption(SystemBrowserType.Brave),
 	];
+	
 	public ChangeComparereOption[] Sorts { get; } = (ChangeComparereOption[])Enum.GetValues(typeof(ChangeComparereOption));
 
 	public bool HasFolder => Folder != null && Folder.Id != 0;

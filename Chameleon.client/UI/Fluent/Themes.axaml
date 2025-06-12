@@ -314,6 +314,13 @@
 
 					<!-- Header -->
 					<Grid ColumnDefinitions="Auto,*">
+					 <Grid.Styles>
+					 	<Style Selector="ui|FAComboBox">
+							<Setter Property="Margin" Value="6" />
+							<Setter Property="HorizontalAlignment" Value="Right" />
+							<Setter Property="IsEditable" Value="False" />
+						</Style>
+					 </Grid.Styles>
 						<TextBlock Text="{TemplateBinding Title}"
 									 Padding="12"
 									 Theme="{StaticResource SubtitleTextBlockStyle}" />

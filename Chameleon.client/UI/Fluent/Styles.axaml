@@ -17,6 +17,18 @@
 		<Setter Property="ZIndex" Value="72" />
 	</Style>
 
+	<!-- ContentControl -->
+	<Style Selector="HeaderedContentControl.no-profiles">
+		<Setter Property="Theme" Value="{StaticResource HasNoItemsTheme}" />
+		<Setter Property="Header" Value="No Profiles" />
+		<Setter Property="IsVisible" Value="{ReflectionBinding !HasProfiles}" />
+	</Style>
+	<Style Selector="HeaderedContentControl.no-folders">
+		<Setter Property="Theme" Value="{StaticResource HasNoItemsTheme}" />
+		<Setter Property="IsVisible" Value="{ReflectionBinding !HasFolders}" />
+		<Setter Property="Header" Value="No Folders" />
+	</Style>
+
 	<!-- TextBlock -->
 	<Style Selector="TextBlock">
 		<Setter Property="VerticalAlignment" Value="Center" />

@@ -13,20 +13,18 @@ using Chameleon.client.Services;
 using Chameleon.lib.Util;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
-using System.Reactive.Subjects;
-using CommunityToolkit.Mvvm.ComponentModel;
+using System.Reactive.Subjects; 
 using System.Reactive.Linq;
 using DynamicData.Binding;
-using Chameleon.client.UI.Components.ViewModels;
-using Microsoft.AspNetCore.SignalR;
 
 using Chameleon.lib;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.client.Features.Projects;
 public abstract partial class Profiler : ViewModelObjectBase {
 	public static SortExpressionComparer<ObsProfile> AscendingComparer => SortExpressionComparer<ObsProfile>.Ascending(p => p.Dto!.title!);
 	public static SortExpressionComparer<ObsProfile> DescendingComparer => SortExpressionComparer<ObsProfile>.Descending(p => p.Dto!.title!);
-	public readonly BehaviorSubject<IComparer<ObsProfile>> CompareObservable = new(AscendingComparer);
+	public static readonly BehaviorSubject<IComparer<ObsProfile>> CompareObservable = new(AscendingComparer);
 
 	public IObservable<IChangeSet<ObsProfile, int>> Shared { get; }
 	public ReadOnlyObservableCollection<ObsProfile> ObsProfiles { get; }
@@ -63,6 +61,7 @@ public abstract partial class Profiler : ViewModelObjectBase {
 public abstract partial class Folderer : ViewModelObjectBase {
 	public static SortExpressionComparer<ObsFolder> AscendingComparer => SortExpressionComparer<ObsFolder>.Ascending(p => p.Dto!.title!);
 	public static SortExpressionComparer<ObsFolder> DescendingComparer => SortExpressionComparer<ObsFolder>.Descending(p => p.Dto!.title!);
+	public static readonly BehaviorSubject<IComparer<ObsFolder>> CompareObservable = new(AscendingComparer);
 	public IObservable<IChangeSet<ObsFolder, int>> Shared { get; }
 	public virtual ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public bool HasNoItems => Folders.Count == 0;
@@ -90,10 +89,33 @@ public abstract partial class Folderer : ViewModelObjectBase {
 	}
 }
 
+public abstract partial class Projector(string? title = null) : ViewModelObjectBase(title) {
+	public ChangeComparereOption[] Sorts { get; } = (ChangeComparereOption[])Enum.GetValues(typeof(ChangeComparereOption));
+	[ObservableProperty] ChangeComparereOption sort = ChangeComparereOption.Ascending;
+	[ObservableProperty] ChangeComparereOption sortFolder = ChangeComparereOption.Ascending;
+	public abstract ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
+	public abstract ReadOnlyObservableCollection<ObsFolder> Folders { get; }
+	public bool HasProfiles => Profiles.Count > 0;
+	public bool HasFolders => Folders.Count > 0;
+
+	partial void OnSortChanged(ChangeComparereOption value) {
+		Profiler.CompareObservable.OnNext(value switch {
+			ChangeComparereOption.Descending => Profiler.DescendingComparer,
+			_ => Profiler.AscendingComparer
+		});
+	}
+	partial void OnSortFolderChanged(ChangeComparereOption value) {
+		Folderer.CompareObservable.OnNext(value switch {
+			ChangeComparereOption.Descending => Folderer.DescendingComparer,
+			_ => Folderer.AscendingComparer
+		});
+	}
+}
+
 public partial class ViewModel : ViewModelObjectBase {
 	public bool IsCreateProfileBtnVisible { get; } = Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CanCreateProfiles == true;
 
-	ViewModel(): base("") {
+	ViewModel() : base("") {
 		AsyncCommandMap["CreateProfile"] = async () => {
 			try {
 				var p = await ProfilesViewModel.Instance.CreateNewProfile();

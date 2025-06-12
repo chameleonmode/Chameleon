@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Chameleon.client.Features.Projects;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Repos;
@@ -10,9 +11,9 @@ public partial class FavouriteViewModel : Dashboarder {
 	public override ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public FavouriteViewModel() : base("Favourites") {
 		_ = ProfilesViewModel.Instance.Shared.Filter(p => p.Dto.isFavourite)     // only favourites
-		.SortAndBind(out var profiles, profilesCompareObservable)
+		.SortAndBind(out var profiles, Profiler.AscendingComparer)
 		.Transform(i => { i.IsShowCheckboxColumn = false; return i;})
-		.Subscribe(_ => OnPropertyChanged(nameof(HasNoItems)));
+		.Subscribe(_ => OnPropertyChanged(nameof(HasProfiles)));
 		Profiles = profiles;
 		// _ = UserProfilesRepo.Connect(i => i.isFavourite)
 		// 	.Transform(i => new ObsProfile(i){ IsShowCheckboxColumn = false})
@@ -24,9 +25,9 @@ public partial class FavouriteViewModel : Dashboarder {
 
 		_ = UserProfilesFolderRepo.Connect(i => i.isFavorite)
 			.Transform(i => new ObsFolder(i) { IsActionOptionsVisible = true })
-			.SortAndBind(out var flist, foldersCompareObservable)
+			.SortAndBind(out var flist, Folderer.AscendingComparer)
 			.Subscribe((i) => {
-				OnPropertyChanged(nameof(HasNoFolderItems));
+				OnPropertyChanged(nameof(HasFolders));
 			});
 		Folders = flist;
 	}
