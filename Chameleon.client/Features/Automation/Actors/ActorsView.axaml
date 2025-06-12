@@ -86,10 +86,10 @@
 																	  IsChecked="{Binding EditableSettings.Start.New}" 
 																	  OffContent="Active Tab" 
 																	  OnContent="New Tab"/>
-														<ToggleSwitch ToolTip.Tip="all or 1 search term per run"
+														<ToggleSwitch ToolTip.Tip="Run all actionable actions or one each"
 																	  IsChecked="{Binding EditableSettings.AsQue}" 
-																	  OffContent="All Terms" 
-																	  OnContent="One Term"/>
+																	  OffContent="Run All" 
+																	  OnContent="One Each"/>
 														<ToggleSwitch ToolTip.Tip="Run all selected automations for each profile, or run all profiles for each automation"
 																	  IsChecked="{Binding EditableSettings.EachProfile}" 
 																	  OffContent="Each Profile" 
