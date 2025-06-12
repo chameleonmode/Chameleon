@@ -184,12 +184,12 @@
 																					   Description="Adds AI related keywords based on search terms">
 																		<ui:NumberBox Value="{Binding Start.Variations.Min}" />
 																	</afv:Inputter>
-																	<afv:Inputter Title="Runs:"
-																					   Description="Number of times to run each automation per search term">
+																	<afv:Inputter Title="Rerun:"
+																					   Description="Number of times to rerun each search term to a different listing">
 																		<ui:NumberBox Value="{Binding Start.Iterations.Min}" />
 																	</afv:Inputter>
 																	<afv:Inputter Title="Retry:"
-																					   Description="Maximum re-try on unexpected situations">
+																					   Description="Maximum retry on unexpected situations">
 																		<ui:NumberBox Value="{Binding Start.Attempts}"/>
 																	</afv:Inputter>
 																	<afv:Inputter Title="Rando:"
