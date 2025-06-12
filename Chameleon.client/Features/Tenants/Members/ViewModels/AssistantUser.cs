@@ -109,24 +109,47 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 			onProfileUnshare: async op => {
 				_ = await UserAssistantRepo.DeleteAssistantProfile(Dto.id, op.Dto.ProfileId);
 				_ = Profilez.Remove(op);
-			},
-			onSendCookies: async (op, bt) => {
+			}, onSendCookies: async (op, bt) => {
 				var profile = allProfiles.FirstOrDefault(x => x.Dto!.id == op.Dto!.ProfileId)
 				?? throw new InvalidOperationException("Profile not found");
 
-				var cookies = await Util.GetCookies(new(new(bt, profile.SystemBrowserProfile), profile.SBI[bt]?.Settings.Port));
-				if (cookies.Count > 0) {
-					await DB.Instance.EnsureUser();
-					var email = Dto!.id != Auther.AuthSession?.UserId ? Dto!.EmailAddress
-						: DB.Instance.DBusers?.SingleOrDefault(u => u.LicenseKey != null)?.Email;
-					var data = await DB.Routes.Cooky.SendCookies(email!, op.Dto!.ProfileId.ToString(), cookies);
-					if (data != null) {
-						Toaster.Success($"Cookies sent successfully");
-					} else {
-						Toaster.Error($"Failed to send cookies");
+				try {
+					var browserInstance = await profile.OpenSystemBrowser(bt) 
+					?? throw new InvalidOperationException($"Failed to start {bt} browser for profile {profile.Dto!.title}");
+
+					using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+					var isLoaded = await browserInstance.LoadedTCS.Task.WaitAsync(cts.Token);
+
+					if (!isLoaded) {
+						throw new InvalidOperationException($"Browser failed to initialize within the timeout period");
 					}
-				} else {
-					Toaster.Info("No cookies to send in the local profile cache");
+
+					var port = browserInstance.Settings.Port;
+					if (port <= 0) {
+						throw new InvalidOperationException($"Invalid debugging port: {port}");
+					}
+
+					var cookies = await Util.GetCookies(new(new(bt, profile.SystemBrowserProfile), port));
+
+					if (cookies.Count > 0) {
+						await DB.Instance.EnsureUser();
+						var email = Dto!.id != Auther.AuthSession?.UserId ? Dto!.EmailAddress
+							: DB.Instance.DBusers?.SingleOrDefault(u => u.LicenseKey != null)?.Email;
+						var data = await DB.Routes.Cooky.SendCookies(email!, op.Dto!.ProfileId.ToString(), cookies);
+						if (data != null) {
+							Toaster.Success($"Cookies sent successfully ({cookies.Count} cookies)");
+						} else {
+							Toaster.Error($"Failed to send cookies to server");
+						}
+					} else {
+						Toaster.Info("No cookies found in the browser profile");
+					}
+				} catch (TimeoutException) {
+					Toaster.Error("Browser initialization timed out. Please try again.");
+				} catch (OperationCanceledException) {
+					Toaster.Error("Browser initialization was cancelled or timed out.");
+				} catch (Exception ex) {
+					Toaster.Error($"Failed to extract cookies: {ex.Message}");
 				}
 			}
 		)));

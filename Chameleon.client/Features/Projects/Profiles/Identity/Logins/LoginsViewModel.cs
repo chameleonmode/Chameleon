@@ -24,6 +24,18 @@ public partial class UPLoginViewModel(UPLoginDto dto) : MappableViewModelBase<UP
 		_ = builder.RuleFor(vm => vm.Email)
 		.NotEmpty().WithMessage("Email is empty");
 
+		_ = builder.RuleFor(vm => vm.WebSite)
+		.Must(uri => {
+			if (string.IsNullOrEmpty(uri)) {
+				return true; 
+			}
+			var potentialUri = uri.Contains("://") ? uri : $"http://{uri}";
+			return Uri.TryCreate(potentialUri, UriKind.Absolute, out var resultUri) && (resultUri.HostNameType == UriHostNameType.Dns
+				? resultUri.Host.Contains('.')
+				: resultUri.HostNameType is UriHostNameType.IPv4 or UriHostNameType.IPv6);
+		})
+		.WithMessage("Please enter a valid website URL (e.g., example.com)");
+
 		return builder.Build(this);
 	}
 }
