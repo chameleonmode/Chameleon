@@ -78,10 +78,8 @@ public partial class AssistantUsersFolder(AssisShareFolderDto dto, Action<Assist
 public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 
 	private readonly ReadOnlyObservableCollection<ObsProfile> allProfiles;
-	[ObservableProperty]
-	bool canCreateProfiles;
-	[ObservableProperty]
-	bool isNotActive;
+	[ObservableProperty] bool canCreateProfiles;
+	[ObservableProperty] bool isNotActive;
 	//
 	public ObservableCollection<AssistantUsersProfile> Profilez { get; } = [];
 	public ObservableCollection<AssistantUsersFolder> Folderz { get; } = [];
@@ -105,7 +103,9 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 	private async Task InitProfiles() {
 		var profiles = await UserAssistantRepo.GetAllAssistantProfilesById(Dto!.id);
 		Profilez.Clear();
-		Profilez.AddRange(profiles.Select(p => new AssistantUsersProfile(p,
+		Profilez.AddRange(profiles
+			.Where(p => !Profilez.Any(existing => existing.Dto.ProfileId == p.ProfileId))
+			.Select(p => new AssistantUsersProfile(p,
 			onProfileUnshare: async op => {
 				_ = await UserAssistantRepo.DeleteAssistantProfile(Dto.id, op.Dto.ProfileId);
 				_ = Profilez.Remove(op);
@@ -213,33 +213,34 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 			) {
 				// Profilez
 				await Profilez.Empty(
-					async profile => {
-						return !result.SelectedProfiles.Any(p => p.Dto.id == profile.Dto.ProfileId) &&
-							(await UserAssistantRepo.DeleteAssistantProfile(Dto.id, profile.Dto.ProfileId)).success;
-					}
+					async x => !result.SelectedProfiles.Any(p => p.Dto.id == x.Dto.ProfileId)
+					 && (await UserAssistantRepo.DeleteAssistantProfile(Dto.id, x.Dto.ProfileId)).success
 				);
 
-				if ((await UserAssistantRepo.AddProfiles(Dto.id,
-						result.SelectedProfiles
-							.Where(p => !Profilez.Any(profile => profile.Dto.ProfileId == p.Dto.id))
-							.Select(p => p.Dto!.id)
-				))?.success == true) {
+				var profilesToAdd = result.SelectedProfiles
+					.Where(p => !Profilez.Any(profile => profile.Dto.ProfileId == p.Dto.id))
+					.Select(p => p.Dto!.id)
+					.ToList();
+
+				if (profilesToAdd.Count != 0 && 
+					(await UserAssistantRepo.AddProfiles(Dto.id, profilesToAdd))?.success == true) {
 					await InitProfiles();
 					Toaster.Success($"profile(s) shared successfully");
 				}
 
 				// Folderz
 				await Folderz.Empty(
-					async folder => {
-						return !result.SelectedFolders.Any(f => f.Dto.id == folder.Dto.id) &&
-							(await ShareFoldersRepo.Instance.Delete(folder.Dto.id)).success;
-					}
+					async folder => result.SelectedFolders.Any(f => f.Dto.id == folder.Dto.id)
+					&& (await ShareFoldersRepo.Instance.Delete(folder.Dto.id)).success
 				);
-				if ((await ShareFoldersRepo.Share(Dto.id,
-						result.SelectedFolders
-							.Where(p => !Folderz.Any(folder => folder.Dto.FolderId == p.Dto.id))
-							.Select(p => p.Dto!.id)
-				)).Length != 0) {
+
+				var foldersToAdd = result.SelectedFolders
+					.Where(f => !Folderz.Any(folder => folder.Dto.FolderId == f.Dto.id))
+					.Select(f => f.Dto!.id)
+					.ToList();
+
+				if (foldersToAdd.Count != 0 && 
+					(await ShareFoldersRepo.Share(Dto.id, foldersToAdd)).Length != 0) {
 					await InitFolders();
 					Toaster.Success($"folder(s) shared successfully");
 				}

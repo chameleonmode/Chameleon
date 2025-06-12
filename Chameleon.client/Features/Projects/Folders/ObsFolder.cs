@@ -21,8 +21,8 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 	public bool IsContextMenuItemEnabled => Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CreatorUserId == Dto?.creatorUserId;
 	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => (p.folderId == null && Dto!.id == 0) || p.folderId == Dto!.id);
 
-	public ObsFolder(UPFolderDto folder,  Action<ObsFolder>? onSelectedChanged = default) 
-	: base(folder, onSelectedChanged: onSelectedChanged != null ? (vm) => onSelectedChanged((ObsFolder)vm) : null) {
+	public ObsFolder(UPFolderDto folder,  Action<ObsFolder>? selectedChanged = default)
+	: base(folder, onSelectedChanged: (vm) => selectedChanged?.Invoke((ObsFolder)vm)) {
 		isFavorite = Dto.isFavorite;
 		profilesCount = Dto.profilesCount;
 

@@ -188,8 +188,7 @@
 											</ScrollViewer>
 										</ui:SettingsExpanderItem>
 									</ui:SettingsExpander>
-									<ui:SettingsExpander Header="Profiles"
-														 IconSource="Contact">
+									<ui:SettingsExpander Header="Profiles" IconSource="Contact">
 										<ui:SettingsExpanderItem>
 											<ScrollViewer
 												VerticalScrollBarVisibility="Auto"
@@ -214,20 +213,10 @@
 																		Theme="{DynamicResource AccentSymbleIconButton}">
 																	<Button.Flyout>
 																		<ui:FAMenuFlyout>
-																			<ui:MenuFlyoutSubItem IconSource="Share"
-																								  Text="Share Cookies">
-																				<ui:MenuFlyoutItem
-																					Text="Chrome"
-																					CommandParameter="SyncCookiesChrome"
-																					Command="{Binding AsyncCfVCommand}" />
-																				<ui:MenuFlyoutItem
-																					Text="Brave"
-																					CommandParameter="SyncCookiesBrave"
-																					Command="{Binding AsyncCfVCommand}" />
-																				<ui:MenuFlyoutItem
-																					Text="Firefox"
-																					CommandParameter="SyncCookiesFirefox"
-																					Command="{Binding AsyncCfVCommand}" />
+																			<ui:MenuFlyoutSubItem IconSource="Share" Text="Share Cookies">
+																				<ui:MenuFlyoutItem Classes="sync-chrome" />
+																				<ui:MenuFlyoutItem Classes="sync-brave" />
+																				<ui:MenuFlyoutItem Classes="sync-firefox" />
 																			</ui:MenuFlyoutSubItem>
 
 																			<ui:MenuFlyoutSeparator />

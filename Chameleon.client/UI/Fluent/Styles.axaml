@@ -16,6 +16,22 @@
 		<Setter Property="Margin" Value="4" />
 		<Setter Property="ZIndex" Value="72" />
 	</Style>
+	<!--ui:MenuFlyoutSubItem sync cooky-->
+	<Style Selector="ui|MenuFlyoutItem">
+		<Setter Property="Command" Value="{ReflectionBinding AsyncCfVCommand}" />
+		<Style Selector="^.sync-chrome">
+			<Setter Property="Text" Value="Chrome" />
+			<Setter Property="CommandParameter" Value="SyncCookiesChrome" />
+		</Style>
+		<Style Selector="^.sync-brave">
+			<Setter Property="Text" Value="Brave" />
+			<Setter Property="CommandParameter" Value="SyncCookiesBrave" />
+		</Style>
+		<Style Selector="^.sync-firefox">
+			<Setter Property="Text" Value="Firefox" />
+			<Setter Property="CommandParameter" Value="SyncCookiesFirefox" />
+		</Style>
+	</Style>
 
 	<!-- ContentControl -->
 	<Style Selector="HeaderedContentControl.no-profiles">

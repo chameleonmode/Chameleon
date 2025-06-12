@@ -1,15 +1,15 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:avCommon="using:Chameleon.Avalonia.Common"
-			 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
-			 xmlns:local="using:Chameleon.client.Features.Projects.Profiles"
-             x:Class="Chameleon.client.Features.Projects.Profiles.UserProfileUserControl"
-			 x:DataType="local:ObsProfile"
-			 x:CompileBindings="True">
+		 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
+		 xmlns:ui="using:FluentAvalonia.UI.Controls"
+		 xmlns:avCommon="using:Chameleon.Avalonia.Common"
+		 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+		 xmlns:local="using:Chameleon.client.Features.Projects.Profiles"
+		 x:Class="Chameleon.client.Features.Projects.Profiles.UserProfileUserControl"
+		 x:DataType="local:ObsProfile"
+		 x:CompileBindings="True">
 	<UserControl.Styles>
 		<Style Selector=":is(Button)[Tag=True]">
 			<Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}"/>
@@ -100,6 +100,18 @@
 						Theme="{StaticResource SvgIconButton}">
 					<Button.Flyout>
 						<ui:FAMenuFlyout Placement="Bottom">
+							<!-- <ui:MenuFlyoutSubItem IconSource="Import" Text="Import Cookies">
+								<ui:MenuFlyoutItem Classes="sync-chrome" />
+								<ui:MenuFlyoutItem Classes="sync-brave" />
+								<ui:MenuFlyoutItem Classes="sync-firefox" />
+							</ui:MenuFlyoutSubItem>
+							<ui:MenuFlyoutSubItem IconSource="Export" Text="Export Cookies">
+								<ui:MenuFlyoutItem Classes="sync-chrome" CommandParameter="ExportCookiesChrome" />
+								<ui:MenuFlyoutItem Classes="sync-brave" CommandParameter="ExportCookiesBrave"/>
+								<ui:MenuFlyoutItem Classes="sync-firefox" CommandParameter="ExportCookiesFirefox"/>
+							</ui:MenuFlyoutSubItem>
+
+							<ui:MenuFlyoutSeparator /> -->
 							<ui:MenuFlyoutItem 
 								Text="Delete"
 								IconSource="Delete"

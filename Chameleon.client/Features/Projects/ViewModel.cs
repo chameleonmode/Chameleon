@@ -69,7 +69,7 @@ public abstract partial class Folderer : ViewModelObjectBase {
 		Shared = UserProfilesFolderRepo.Connect()
 		.Transform(i => {
 			i.title ??= "All";
-			return new ObsFolder(folder: i, onSelectedChanged: SelectedChanged);
+			return new ObsFolder(folder: i, selectedChanged: SelectedChanged);
 		})
 		.Publish()    // <-- multicast
 		.RefCount();  // <-- auto-connect when first subscriber appears

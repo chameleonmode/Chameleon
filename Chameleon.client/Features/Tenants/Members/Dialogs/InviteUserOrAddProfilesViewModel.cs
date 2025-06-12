@@ -13,12 +13,9 @@ using Chameleon.lib.Api.Dto;
 namespace Chameleon.client.Features.Tenants.Members.Dialogs;
 
 public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
-	[ObservableProperty]
-	private string? assistantName;
-	[ObservableProperty]
-	private string? assistantEmail;
-	[ObservableProperty]
-	private bool showUserInfo;
+	[ObservableProperty] string? assistantName;
+	[ObservableProperty] string? assistantEmail;
+	[ObservableProperty] bool showUserInfo;
 	//
 	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; } 
 	public ObservableCollection<ObsProfile> SelectedProfiles { get; } = [];
@@ -32,10 +29,14 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 		_ = UserProfilesRepo.Connect()
 		.Transform(i => new ObsProfile(i,
 			selectedChanged: p => {
-				var obs = ProfilesViewModel.Instance.Profiles.FirstOrDefault(x => x.Dto.id == i.id) ?? new ObsProfile(i);
-				if (p.IsSelected && !SelectedProfiles.Contains(p)) SelectedProfiles.Add(obs);
-				else if (!p.IsSelected && SelectedProfiles.Contains(p)) _ = SelectedProfiles.Remove(obs);
-		}){ IsActionOptionsVisible = false })
+				if (p.IsSelected) {
+					if (!SelectedProfiles.Contains(p)) {
+						SelectedProfiles.Add(p);
+					}
+				} else {
+					SelectedProfiles.Remove(p);
+				}
+			}) { IsActionOptionsVisible = false })
 		.Bind(out var profiles).Subscribe();
 		Profiles = profiles;
 
@@ -43,16 +44,18 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 		.Transform(i => {
 			i.title ??= "All";
 			return new ObsFolder(i,
-			 onSelectedChanged: f => {
-				var obs = FoldersViewModel.Instance.Folders.FirstOrDefault(x => x.Dto.id == i.id) ?? new ObsFolder(i);
-				if (f.IsSelected && !SelectedFolders.Contains(f)) SelectedFolders.Add(obs);
-				else if (!f.IsSelected && SelectedFolders.Contains(f)) _ = SelectedFolders.Remove(obs);
-
+			selectedChanged: x => {
+				if (x.IsSelected) {
+					if (!SelectedFolders.Contains(x)) {
+						SelectedFolders.Add(x);
+					}
+				} else {
+					SelectedFolders.Remove(x);
+				}
 				Profiles.Where(p => p.Dto.folderId == i.id).ForEach(item => {
-					item.IsSelected = f.IsSelected;
+					item.IsSelected = x.IsSelected;
 				});
-			}){ IsActionOptionsVisible = false };
-		})
+			}) { IsActionOptionsVisible = false };})
 		.Bind(out var folders).Subscribe();
 		Folders = folders;
 	}
@@ -65,19 +68,21 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 			Symbas: Symbas.AddFriend,
 			Btns: MBoxButtons.OkCancel)
 		);
-		ProfilesViewModel.Instance.Profiles.ForEach(p => p.IsActionOptionsVisible = p.IsShowCheckboxColumn = true);
 		return result == TaskDialogResult.OK ? this : null;
 	}
 	public async Task<InviteUserOrAddProfilesViewModel?> ShowDialog(
 		IEnumerable<AssisProfileDto> profilez,
 		IEnumerable<AssisShareFolderDto> folderz
 	) {
+		SelectedProfiles.Clear();
 		Profiles.ForEach(i => {
 			i.IsSelected = profilez.Any(x => x.ProfileId == i.Dto.id);
 		});
+		SelectedFolders.Clear();
 		Folders.ForEach(i => {
 			i.IsSelected = folderz.Any(x => x.FolderId == i.Dto.id);
 		});
+
 		return await ShowDialog();
 	}
 }
