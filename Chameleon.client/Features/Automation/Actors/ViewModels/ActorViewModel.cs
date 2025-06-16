@@ -34,19 +34,18 @@ public record Selection(Script Script, bool Selected = false);
 public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<int> SelectedProfileIds);
 
 public partial class ActorViewModel : ViewModelObjectBase {
-	readonly CompositeDisposable subscriptions = [];
-
 	CancellationTokenSource? cts;
-
 	[ObservableProperty] bool running;
 	[ObservableProperty] AIR.Actors.Models.AI aiSettings;
 	[ObservableProperty] ArgsViewModel editableArgs;
 	[ObservableProperty] SettingsViewModel editableSettings;
-	public IActor Actor { get; }
-	public ObservableCollection<Selection> Selections { get; set; } = [];
 
+	public IActor Actor { get; }
 	public ReadOnlyObservableCollection<Tag> Tagz { get; }
 	public ReadOnlyObservableCollection<ObsProfile> SelectedProfiles { get; }
+
+	public ObservableCollection<Selection> Selections { get; } = [];
+	public CompositeDisposable Subscriptions { get; } = [];
 
 	public ActorViewModel(IActor actor) {
 		Actor = actor;
@@ -54,23 +53,22 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		EditableArgs = new(Actor.Options.Args);
 		EditableSettings = new(Actor.Options.Settings);
 
-		subscriptions.Add(TagsRepo.Connect()
+		Subscriptions.Add(TagsRepo.Connect()
 			.Filter(tag => tag.Items.Where(x => x.Key == TagItemType.Profile).Any())
 			.Transform(item => new Tag(item))
 			.Bind(out var tagz)
 			.Subscribe());
 		Tagz = tagz;
 
-		subscriptions.Add(ProfilesViewModel.Instance.ObsProfiles.ToObservableChangeSet()
+		Subscriptions.Add(ProfilesViewModel.Instance.ObsProfiles.ToObservableChangeSet()
 			.AutoRefresh(profile => profile.IsSelected)
 			.Filter(profile => profile.IsSelected)
-			.Sort(SortExpressionComparer<ObsProfile>.Ascending(p => p.Title ?? ""))
 			.DistinctUntilChanged()
 			.Bind(out var selectedProfiles)
 			.Subscribe());
 		SelectedProfiles = selectedProfiles;
 
-		subscriptions.Add(Tagz.ToObservableChangeSet()
+		Subscriptions.Add(Tagz.ToObservableChangeSet()
 			.AutoRefresh(tag => tag.IsSelected).ToCollection()
 			.Subscribe(next =>
 				next.ForEach(t =>

@@ -8,5 +8,6 @@ echo "[Info] (mac/status):\n\t bash macstatus.sh <notarization UUID>"
 echo "bash macstatus.sh" | pbcopy
 
 bash winbuild.sh
+echo "[Info] (mac/status):\n\t bash macship.sh"
+echo "bash macship.sh" | pbcopy
 bash winpload.sh
-bash macship.sh

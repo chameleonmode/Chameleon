@@ -22,8 +22,8 @@ using Chameleon.lib.Util;
 
 namespace Chameleon.client.Features.Projects;
 public abstract partial class Profiler : Profilearee {
-	public static readonly SortExpressionComparer<ObsProfile> AscendingComparer = SortExpressionComparer<ObsProfile>.Ascending(p => p.Dto!.title!);
-	public static readonly SortExpressionComparer<ObsProfile> DescendingComparer = SortExpressionComparer<ObsProfile>.Descending(p => p.Dto!.title!);
+	public static readonly SortExpressionComparer<ObsProfile> AscendingComparer = SortExpressionComparer<ObsProfile>.Ascending(p => p.Dto.title ?? "");
+	public static readonly SortExpressionComparer<ObsProfile> DescendingComparer = SortExpressionComparer<ObsProfile>.Descending(p => p.Dto.title ?? "");
 	public static readonly BehaviorSubject<IComparer<ObsProfile>> CompareObservable = new(AscendingComparer);
 	public IObservable<IChangeSet<ObsProfile, int>> Shared { get; }
 	public ReadOnlyObservableCollection<ObsProfile> ObsProfiles { get; }
