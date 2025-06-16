@@ -16,25 +16,19 @@ using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text.Json.Serialization;
-using Chameleon.lib.WebBrowser.Browsers;
 using Chameleon.lib;
 using Chameleon.lib.Api.Dto;
 namespace Chameleon.client.Features.Automation.Actors;
 
-public partial class Tag(TagDto dto, bool isSelected) : ObservableObject {
-	[ObservableProperty] bool isSelected = isSelected;
+public partial class Tag(TagDto dto) : ObservableObject {
 	public TagDto Dto { get; } = dto;
+	[ObservableProperty] bool isSelected;
 
-	[JsonIgnore]
-	public IEnumerable<string> ProfileIds => Dto.Items
+	[JsonIgnore] public IEnumerable<string> ProfileIds => Dto.Items
 	.Where(x => x.Key == TagItemType.Profile)
 	.SelectMany(x => x.Value);
 
 	[JsonIgnore] public string ToolTipText => $"{ProfileIds.Count()} Profiles";
-
-	public void RaiseSelectedChanged() {
-		OnPropertyChanged(nameof(IsSelected));
-	}
 }
 public record Selection(Script Script, bool Selected = false);
 public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<int> SelectedProfileIds);
@@ -49,20 +43,20 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	[ObservableProperty] ArgsViewModel editableArgs;
 	[ObservableProperty] SettingsViewModel editableSettings;
 	public IActor Actor { get; }
-	public List<Selection> Selections { get; }
+	public ObservableCollection<Selection> Selections { get; set; } = [];
 
 	public ReadOnlyObservableCollection<Tag> Tagz { get; }
 	public ReadOnlyObservableCollection<ObsProfile> SelectedProfiles { get; }
 
-	public ActorViewModel(
-		IActor actor,
-		IEnumerable<Selection>? selections = null,
-		IEnumerable<string>? selectedTags = null,
-		IEnumerable<int>? profileSelections = null
-	) {
+	public ActorViewModel(IActor actor) {
+		Actor = actor;
+		AiSettings = Actor.Options.AI;
+		EditableArgs = new(Actor.Options.Args);
+		EditableSettings = new(Actor.Options.Settings);
+
 		subscriptions.Add(TagsRepo.Connect()
 			.Filter(tag => tag.Items.Where(x => x.Key == TagItemType.Profile).Any())
-			.Transform(item => new Tag(item, selectedTags?.Contains(item.Name) ?? false))
+			.Transform(item => new Tag(item))
 			.Bind(out var tagz)
 			.Subscribe());
 		Tagz = tagz;
@@ -77,31 +71,13 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		SelectedProfiles = selectedProfiles;
 
 		subscriptions.Add(Tagz.ToObservableChangeSet()
-			.AutoRefresh(tag => tag.IsSelected)
-			.ToCollection()
+			.AutoRefresh(tag => tag.IsSelected).ToCollection()
 			.Subscribe(next =>
 				next.ForEach(t =>
 					 ProfilesViewModel.Instance.ObsProfiles
 					.Where(x => t.ProfileIds.Contains(x.Dto.ID))
 					.ForEach(p => p.Active = p.IsSelected = t.IsSelected)
 			)));
-
-		profileSelections?.ForEach(id => {
-			ProfilesViewModel.Instance.ObsProfiles
-			.Where(p => p.Dto.id == id)
-			.ForEach(p => p.IsSelected = true);
-		});
-
-		Actor = actor;
-		AiSettings = actor.Options.AI;
-		EditableArgs = new(actor.Options.Args);
-		EditableSettings = new(actor.Options.Settings);
-		Selections = [.. actor.Scripts.Select(s => {
-			if (s is not Script script) return null;
-				var selected = selections?.FirstOrDefault(x => x.Script.File == script.File)?.Selected ?? false;
-				return new Selection(script, selected);
-			}).Where(s => s != null)
-		];
 
 		AsyncCommandMap["Run"] = Runerer;
 		AsyncCommandMap["Save"] = Saverer;
@@ -113,6 +89,25 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		CommandMap["Stop"] = Stoperer;
 	}
 
+	public void LoadFromCache(IEnumerable<Selection>? selections, IEnumerable<string>? tags, IEnumerable<int>? profiles) {
+		tags?.ForEach(id => {
+			Tagz.Where(p => p.Dto.Name == id)
+			.ForEach(p => p.IsSelected = true);
+		});
+		profiles?.ForEach(id => {
+			ProfilesViewModel.Instance.ObsProfiles
+			.Where(p => p.Dto.id == id)
+			.ForEach(p => p.IsSelected = true);
+		});
+		Actor.Scripts.Where(s => s is Script).Select(s => {
+			var selected = selections?.FirstOrDefault(x => x.Script.Title == s.Title)?.Selected ?? false;
+			return new Selection((Script)s, selected);
+		}).ForEach(Selections.Add);
+		AiSettings = Actor.Options.AI;
+		EditableArgs = new(Actor.Options.Args);
+		EditableSettings = new(Actor.Options.Settings);
+	}
+
 	private async Task Saverer() {
 		Actor.Options.Settings.Start.Feature.ThrowIfNullOrEmpty();
 		var currentArgs = EditableArgs.ToDictionary([], EditableArgs.Search.Split(','));
@@ -120,8 +115,9 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		var currentOpts = new Opts(AiSettings, currentArgs, currentSettings);
 		var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.IsSelected), SelectedProfiles.Select(x => x.Dto.id));
 		var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
-		var jsonContent = JS.Serialize(stateToSave, JS.EnumConverter);
+		var jsonContent = JSON.Serialize(stateToSave, JSON.EnumConverter);
 		await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
+		Toaster.Success("Saved");
 	}
 
 	public async Task Runerer() {
@@ -134,51 +130,28 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			var selected = Selections.OrderBy(s => new Random().Next()).Where(s => s.Selected);
 			if (!selected.Any()) throw new Exception("No scripts selected to run.");
 
-			var things = EditableArgs.Search.Is() && EditableSettings.Start.Url.Is();
-			if (things) throw new Exception("Search and URL's cannot be empty together.");
-			var selectionIndex = -1;
-			var executionIndex = -1;
 			var terms = EditableArgs.Search.Split(',').Select(x => x.Trim());
 			var urls = EditableSettings.Start.Url?.Split('\n').Where(x => x.IsNot()).Select(x => x.Trim()) ?? [];
+			if (!terms.Any() && !urls.Any()) throw new Exception("Search and URL's cannot be empty together.");
+			int selectionIndex = -1, executionIndex = -1;
 
-			async Task<IBrowserInstance?> ExecuteScriptAsync(Selection selection, ObsProfile profile) {
-				Toaster.Info($"Starting '{selection.Script.Title}");
-				if (executionIndex++ >= terms.Count() && executionIndex >= terms.Count()) executionIndex = 0;
+			async Task ExecuteScriptAsync(Selection selection, ObsProfile profile) {
+				Toaster.Info($"Starting: '{selection.Script.Title}");
+				if (++executionIndex >= terms.Count() && executionIndex >= urls.Count()) executionIndex = 0;
 				string[] termer = executionIndex < terms.Count() ? [terms.ElementAt(executionIndex)] : [];
-				EditableSettings.Start.Urls = termer.Length == 0 ? [urls.ElementAt(executionIndex)]: [];
+				EditableSettings.Start.Urls = termer.Length == 0 ? [urls.ElementAt(executionIndex)] : [];
 
 				var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected, termer), EditableSettings.ToRecord(selection.Script.Title == "Surf" ? new(0, 0) : null));
-				Debug.WriteLine($"Running: \n\t '{profile.Title}', '{selection.Script.Title}', '{opts.Settings.Start.Feature}', {JS.Serialize(opts)}");
+				Debug.WriteLine($"Running: \n\t '{profile.Title}', '{selection.Script.Title}', '{opts.Settings.Start.Feature}', {JSON.Serialize(opts)}");
 
-				var browser = await profile.OpenSystemBrowser(ActorsViewModel.Instance.SelectedBrowserOption.Option, false).WaitAsync(cts!.Token);
-				await Run.Script(new() { Port = browser!.Settings.Port, Script = selection.Script, Opts = opts }, cts!.Token);
+				var browser = await profile.OpenSystemBrowser(ActorsViewModel.Instance.SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
+				await Run.Script(new() { Port = browser!.Settings.Port, Script = selection.Script, Opts = opts }, cts.Token);
+				Toaster.Info($"Finished: '{selection.Script.Title}'", $"Waitnig '{EditableSettings.Delay}'");
+
 				await Task.Delay(TimeSpan.FromSeconds(EditableSettings.Delay), cts.Token);
-				Toaster.Info($"Finished Script '{selection.Script.Title}'");
-				return browser;
-			}
-			async Task BrowserShutdown(IBrowserInstance? browser) {
-				if (!EditableSettings.CloseOldBrowserProfileAfterRun || browser?.Brocess == null || browser.Brocess.HasExited) return;
-				try {
-					// First, try to close the main window gracefully
-					if (browser.Brocess.CloseMainWindow()) {
-						// Wait for the process to exit gracefully
-						if (await Task.Run(() => browser.Brocess.WaitForExit(5000))) {
-							Debug.WriteLine("Process closed gracefully.");
-						}
-					}
-
-					// If graceful close failed or timed out, force kill
-					Debug.WriteLine("Graceful close failed. Force killing process...");
-					browser.Brocess.Kill();
+				if (EditableSettings.CloseOldBrowserProfileAfterRun) {
+					await ProcessUtil.TryKillProcess(browser.Brocess);
 					browser.Close();
-
-					// Wait for the kill to complete
-					_ = await Task.Run(() => browser.Brocess?.WaitForExit(5000));
-					Debug.WriteLine("Process forcefully terminated.");
-				} catch (Exception e) {
-					Debug.WriteLine($"Error closing browser: {e.Message}");
-				} finally {
-					Debug.WriteLine("Browser instance disposed.");
 				}
 			}
 
@@ -199,10 +172,9 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			// 		if (!EditableSettings.AsQue) await BrowserShutdown(browser);
 			// 	}
 			foreach (var profile in profiles) {
-				var selection = selected.ElementAt(
-					selectionIndex++ >= selected.Count() ? selectionIndex = 0 : selectionIndex);
-				var browser = await ExecuteScriptAsync(selection, profile);
-				await BrowserShutdown(browser);
+				if (++selectionIndex >= selected.Count()) selectionIndex = 0;
+				var selection = selected.ElementAt(selectionIndex);
+				await ExecuteScriptAsync(selection, profile);
 			}
 		} finally { Stoperer(); }
 	}

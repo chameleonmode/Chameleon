@@ -14,9 +14,19 @@
 	</Styles.Resources>
 	<StyleInclude Source="Fluent/Styles.axaml" />
 
+	<!--ItemsControl-->
+	<Style Selector="ItemsControl.uni-clm">
+		<Setter Property="ItemsPanel" Value="{DynamicResource SingleColumnUniformGridTemplate}" />
+	</Style>
+	<Style Selector="ItemsControl.uni-row">
+		<Setter Property="ItemsPanel" Value="{DynamicResource SingleRowUniformGridTemplate}" />
+	</Style>
+	<Style Selector="ItemsControl.sp-zontal">
+		<Setter Property="ItemsPanel" Value="{DynamicResource HorizontalStackPanel}" />
+	</Style>
 
 	<!--ListBox-->
-	<Style Selector="ListBox.uni">
+	<Style Selector="ListBox.uni-clm">
 		<Setter Property="Theme" Value="{DynamicResource ListBoxNoScroller}" />
 		<Setter Property="ItemContainerTheme" Value="{DynamicResource GridViewItem}" />
 		<Setter Property="ItemsPanel" Value="{DynamicResource SingleColumnUniformGridTemplate}" />
@@ -60,16 +70,29 @@
 		<Setter Property="ItemsSource" Value="{ReflectionBinding Folders}" />
 	</Style>
 
+	<!--ScrollViewer-->
+	<Style Selector="ScrollViewer">
+		<Setter Property="BringIntoViewOnFocusChange" Value="False" />
+	</Style>
+
 	<!--StackPannel-->
 	<Style Selector="StackPanel.shared">
+		<Setter Property="Spacing" Value="6" />
 		<Setter Property="Grid.IsSharedSizeScope" Value="True" />
-		<Setter Property="Spacing" Value="9" />
 	</Style>
 	<Style Selector="StackPanel.zontal">
 		<Setter Property="Spacing" Value="6" />
 		<Setter Property="Orientation" Value="Horizontal" />
 		<Setter Property="VerticalAlignment" Value="Center" />
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
+	</Style>
+
+	<!-- Button -->
+	<Style Selector="Button">
+		<Setter Property="Command" Value="{ReflectionBinding CfVCommand}" />
+		<Style Selector="^.async">
+			<Setter Property="Command" Value="{ReflectionBinding AsyncCfVCommand}" />
+		</Style>
 	</Style>
 
 	<!--TextBlock-->

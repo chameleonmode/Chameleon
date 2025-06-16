@@ -64,10 +64,7 @@
 								Command="{Binding AsyncCfVCommand}"
 								CommandParameter="hwinds" />
 
-							<Border
-								BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
-								Margin="18 6"
-								BorderThickness="1 0 0 0" />
+							<Border Classes="divider" Margin="18 6" />
 
 							<Button
 								Content="up-folder"
@@ -243,7 +240,7 @@
 
 		<afv:ChameleonContentControl.Content>
 				<Panel>
-					<ListBox Name="lbProfiles" Classes="uni" />
+					<ListBox Name="lbProfiles" Classes="uni-clm" />
 					<HeaderedContentControl Classes="no-profiles" />
 				</Panel>
 		</afv:ChameleonContentControl.Content>

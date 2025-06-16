@@ -1,5 +1,4 @@
 ﻿using Chameleon.client.MvvM;
-using Chameleon.lib.Common.Constants;
 using Chameleon.lib.Helpers;
 
 namespace Chameleon.client.Features.Automation.Actors.Dialogs;

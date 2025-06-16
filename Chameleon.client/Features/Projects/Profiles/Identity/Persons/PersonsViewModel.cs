@@ -1,7 +1,6 @@
 using Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 using Chameleon.lib.Util;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Common.Constants;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ReactiveValidation;
 using ReactiveValidation.Extensions;

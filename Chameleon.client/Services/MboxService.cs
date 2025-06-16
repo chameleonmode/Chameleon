@@ -4,8 +4,6 @@ using chameleon.assets;
 
 using Chameleon.client.UI.Components;
 
-using Chameleon.lib.Common.Constants;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.lib.Helpers;
 using Chameleon.lib;

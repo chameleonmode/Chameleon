@@ -12,12 +12,10 @@ using System.Reactive.Linq;
 using Chameleon.client.Features.Projects;
 using Chameleon.lib.Util;
 using Chameleon.lib.WebBrowser;
-using Chameleon.client.Features.Dashboard.Favorite;
 
 namespace Chameleon.client.Features.Dashboard;
 
 public abstract partial class Dashboarder(string? title) : Projector(title) { }
-
 
 public partial class TagViewModel(Action<TagViewModel> OnSelectChanged) : ObservableObject {
 	[ObservableProperty] string name = null!;

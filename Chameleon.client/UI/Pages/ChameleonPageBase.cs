@@ -7,12 +7,12 @@ using Avalonia.Media;
 using Avalonia.Rendering.Composition;
 using Avalonia.Styling;
 using Chameleon.client.UI.Controls;
-using Chameleon.lib.Common.Util;
 using Chameleon.client.MvvM;
 
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
+using Chameleon.lib.Util;
 
 namespace Chameleon.client.UI.Pages;
 
@@ -163,7 +163,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 		if (animate is null) return;
 
 		// Only setup the ConnectedAnimation if it makes sense
-		_ = ExUtil.TryCatch(() => {
+		_ = Exceptionz.TryCatch(() => {
 			var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
 			_ = svc.PrepareToAnimate("BackAnimation", animate);
 			return true;

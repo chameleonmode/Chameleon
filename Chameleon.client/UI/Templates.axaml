@@ -13,6 +13,10 @@
 
 	<ItemsPanelTemplate x:Key="SingleColumnUniformGridTemplate">
 		<UniformGrid Columns="1"/>
+	</ItemsPanelTemplate>	
+	
+	<ItemsPanelTemplate x:Key="SingleRowUniformGridTemplate">
+		<UniformGrid Rows="1"/>
 	</ItemsPanelTemplate>
 
 	<ItemsPanelTemplate x:Key="DoubleColumnUniformGridTemplate">

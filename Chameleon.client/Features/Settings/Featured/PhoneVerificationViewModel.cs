@@ -1,6 +1,5 @@
 ﻿using Avalonia.Collections;
 using Chameleon.lib.Util;
-using Chameleon.lib.Common.Util;
 using Chameleon.lib.Common.Util.ThirdParty.SMSapi.Codesverify;
 using Chameleon.lib.Common.Util.ThirdParty.SMSapi.SMSPool;
 using Chameleon.lib.Common.Util.ThirdParty.SMSapi.SMSPVA;
@@ -139,7 +138,7 @@ public partial class PVApiModel : ViewModelObjectBase, IPVApiModel {
 	private async Task MakeRequest(Func<Task> func, Action<string> onErr)
 	{
 		IsAwaiting = true;
-		await ExUtil.AsyncTryCatch(func, e => onErr(e.Message));
+		await Exceptionz.AsyncTryCatch(func, e => onErr(e.Message));
 		IsAwaiting = false;
 	}
 

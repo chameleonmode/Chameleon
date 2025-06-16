@@ -155,19 +155,13 @@
 		<Setter Property="Height" Value="32" />
 		<Setter Property="Template">
 			<ControlTemplate>
-					<Border
-						Name="Root"
+					<Border Name="Root"
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
 						CornerRadius="{TemplateBinding CornerRadius}">
-						<Border Name="Pnl"
-								Background="Transparent"
-								CornerRadius="{TemplateBinding CornerRadius}">
-							<ui:SymbolIcon
-								Name="SmblIcon"
-								Symbol="{TemplateBinding Content}"
-								Margin="0 0 0 0"/>
+						<Border Name="Pnl" Background="Transparent" CornerRadius="{TemplateBinding CornerRadius}">
+							<ui:SymbolIcon Name="SmblIcon" Symbol="{TemplateBinding Content}" Margin="0 0 0 0" />
 						</Border>
 					</Border>
 			</ControlTemplate>
@@ -321,15 +315,8 @@
 							<Setter Property="IsEditable" Value="False" />
 						</Style>
 					 </Grid.Styles>
-						<TextBlock Text="{TemplateBinding Title}"
-									 Padding="12"
-									 Theme="{StaticResource SubtitleTextBlockStyle}" />
-
-						<ContentPresenter Grid.Column="1"
-											Name="TitlePresenter"
-											Content="{TemplateBinding TitleContent}"
-											HorizontalAlignment="Stretch"
-											VerticalAlignment="Bottom"/>
+						<TextBlock Text="{TemplateBinding Title}" Padding="12" Classes="h4" IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+						<ContentPresenter Grid.Column="1" Name="TitlePresenter" Content="{TemplateBinding TitleContent}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
 					</Grid>
 
 					<!-- Content Area -->

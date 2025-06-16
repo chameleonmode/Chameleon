@@ -19,51 +19,39 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 		new (SystemBrowserType.Chrome),
 		new (SystemBrowserType.Brave),
 	];
-	public ObservableCollection<ActorViewModel> Actors { get; set; } = [];
+	public ObservableCollection<ActorViewModel> Actors { get; set; } = [new (new RedditActor())];
 
 	public ActorsViewModel() {
 		SelectedBrowserOption = BrowserOptions.First();
+		SelectedActor = Actors[0];
 	 }
 
 	private async Task LoadActorStates() {
-		Actors.Clear();
-
 		foreach (var filePath in Directory.EnumerateFiles(FilePaths.Roboto, "*.json")) {
 			try {
 				var jsonContent = await File.ReadAllTextAsync(filePath);
-				var loadedState = JS.Deserialize<State>(jsonContent, JS.EnumConverter);
+				var loadedState = JSON.Deserialize<State>(jsonContent, JSON.EnumConverter);
 				ArgumentNullException.ThrowIfNull(loadedState, nameof(loadedState));
 
-				var actor = loadedState.Options.Settings.Start.Feature.ToLowerInvariant() switch {
-					"reddit" => new RedditActor(),
+				var vm = loadedState.Options.Settings.Start.Feature.ToLowerInvariant() switch {
+					"reddit" => Actors[0],
 					_ => throw new NotSupportedException($"Feature '{loadedState?.Options.Settings.Start.Feature}' is not supported.")
 				};
-				actor.Options = new Opts(
-					AI: loadedState.Options.AI ?? actor.Options.AI,
-					Args: loadedState.Options.Args ?? actor.Options.Args,
-					Settings: loadedState.Options.Settings ?? actor.Options.Settings
+				vm.Actor.Options = new Opts(
+					AI: loadedState.Options.AI ?? vm.Actor.Options.AI,
+					Args: loadedState.Options.Args ?? vm.Actor.Options.Args,
+					Settings: loadedState.Options.Settings ?? vm.Actor.Options.Settings
 				);
-
-				var vm = new ActorViewModel(
-					actor,
-				 	selections: loadedState.Selections,
-				 	selectedTags: loadedState.SelectedTags.Select(x => x.Dto.Name),
-					profileSelections: loadedState.SelectedProfileIds
-				);
-				vm.EditableSettings.Rando = actor.Options.Settings.Start.Rando.Min;
-				Actors.Add(vm);
+				vm.LoadFromCache(selections: loadedState.Selections,
+				 	tags: loadedState.SelectedTags.Select(x => x.Dto.Name),
+					profiles: loadedState.SelectedProfileIds);
+				vm.EditableSettings.Rando = vm.Actor.Options.Settings.Start.Rando.Min;
 				Debug.WriteLine($"Loaded actor state from: {filePath}");
 			} catch (Exception ex) {
 				Debug.WriteLine($"Error loading actor state from {filePath}: {ex}");
 				File.Delete(filePath);
 			}
 		}
-
-		if (!Actors.Any(a => a.Actor is RedditActor)) {
-			Debug.WriteLine("No saved Reddit actor found, adding default.");
-			Actors.Add(new ActorViewModel(new RedditActor()));
-		}
-		SelectedActor = Actors[0];
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);

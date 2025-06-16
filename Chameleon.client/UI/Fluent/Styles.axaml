@@ -72,16 +72,28 @@
   </Style>
 
 	<!-- Button -->
-	<Style Selector="Button.icon">
-		<Setter Property="Theme" Value="{DynamicResource AccentSymbleIconButton}" />
-	</Style>
-	<Style Selector="Button.clear">
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderBrush" Value="Transparent" />
-		<Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
+	<Style Selector="Button">
+		<Style Selector="^.icon">
+			<Setter Property="Theme" Value="{DynamicResource AccentSymbleIconButton}" />
+		</Style>
+		<Style Selector="^.text">
+			<Setter Property="Theme" Value="{DynamicResource AccentTextButton}" />
+		</Style>
+		<Style Selector="^.clear">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderBrush" Value="Transparent" />
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
+		</Style>
 	</Style>
 
 	<!--Border-->
+	<Style Selector="Border">
+		<Style Selector="^.divider">
+			<Setter Property="BorderBrush" Value="{DynamicResource DividerStrokeColorDefaultBrush}" />
+			<Setter Property="BorderThickness" Value="1 0 0 0" />
+			<Setter Property="Margin" Value="9 6" />
+		</Style>
+	</Style>
 	<Style Selector="Border#Rootz">
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="BorderBrush" Value="Transparent" />

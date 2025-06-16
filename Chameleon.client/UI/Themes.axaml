@@ -78,28 +78,32 @@
 	</ControlTheme>
 
 	<ControlTheme x:Key="Inputz" TargetType="local:Inputter">
+		<Setter Property="Margin" Value="2 0 0 0"/>
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Grid>
 				    <Grid.ColumnDefinitions>
-            			<ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn"/>
-            			<ColumnDefinition Width="*"/>
-        			</Grid.ColumnDefinitions>
+            	<ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn"/>
+            	<ColumnDefinition Width="*"/>
+        		</Grid.ColumnDefinitions>
 					<TextBlock 
 						Name="TitleTextBlock"
 						Text="{TemplateBinding Title}" 
 						ToolTip.Tip="{TemplateBinding Description}"
 						VerticalAlignment="Center"
-						Margin="0 0 0 0"
+						Margin="4 0 0 0"
 					/>	
 					<TextBox 
 						Text="{TemplateBinding Text, Mode=TwoWay}" 
+						AcceptsReturn="{TemplateBinding Tag}"
+						TextWrapping="Wrap"
 						Watermark="{TemplateBinding Watermark}"
 						Grid.Column="1"
-						Margin="8 0 0 0"
+						Margin="{TemplateBinding Margin}"
 						MaxLength="10000"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Stretch"
+						IsVisible="{TemplateBinding Text, Converter={x:Static ObjectConverters.IsNotNull}}"
 					/>
 				</Grid>
 			</ControlTemplate>
@@ -107,20 +111,21 @@
 	</ControlTheme>
 
 	<ControlTheme x:Key="{x:Type local:Inputter}" TargetType="local:Inputter">
-		<Setter Property="Margin" Value="8 0 0 0"/>
+		<Setter Property="Margin" Value="2 0 0 0"/>
+		<Setter Property="Tag" Value="False"/>
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Grid>
 				    <Grid.ColumnDefinitions>
-            			<ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn"/>
-            			<ColumnDefinition Width="*"/>
-        			</Grid.ColumnDefinitions>
+            	<ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn"/>
+            	<ColumnDefinition Width="*"/>
+        		</Grid.ColumnDefinitions>
 					<TextBlock 
 						Name="TitleTextBlock"
 						Text="{TemplateBinding Title}" 
 						ToolTip.Tip="{TemplateBinding Description}"
 						VerticalAlignment="Center"
-						Margin="0 0 0 0"
+						Margin="4 0 0 0"
 					/>	
 					<ContentPresenter 
 						Name="ContentsPresenter"
@@ -129,6 +134,19 @@
 						Margin="{TemplateBinding Margin}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Stretch"
+						IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+					/>
+					<TextBox 
+						Text="{TemplateBinding Text, Mode=TwoWay}" 
+						AcceptsReturn="{TemplateBinding Tag}"
+						TextWrapping="Wrap"
+						Watermark="{TemplateBinding Watermark}"
+						Grid.Column="1"
+						Margin="{TemplateBinding Margin}"
+						MaxLength="10000"
+						VerticalAlignment="Center"
+						HorizontalAlignment="Stretch"
+						IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNull}}"
 					/>
 				</Grid>
 			</ControlTemplate>
@@ -151,10 +169,8 @@
 							   IsVisible="{TemplateBinding Tag, Converter={x:Static ObjectConverters.IsNotNull}}"
 							   Text="{TemplateBinding Title}" />				
 					
-					<Grid Grid.Row="1"
-						VerticalAlignment="Top"
-						IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNull}}"
-						ColumnDefinitions="*,Auto">
+					<Grid Grid.Row="1" VerticalAlignment="Top" ColumnDefinitions="*,Auto"
+						IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNull}}">
 						<Panel>
 							<!-- DataValidationErrors -->
 							<DataValidationErrors Name="PART_DataValidation" Errors="{TemplateBinding (DataValidationErrors.Errors)}">

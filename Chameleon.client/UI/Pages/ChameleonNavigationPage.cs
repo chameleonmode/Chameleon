@@ -5,7 +5,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Chameleon.client.UI.Controls;
-using Chameleon.lib.Common.Util;
 using Chameleon.client.MvvM;
 
 using FluentAvalonia.UI.Controls;
@@ -13,6 +12,7 @@ using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Dto;
+using Chameleon.lib.Util;
 
 namespace Chameleon.client.UI.Pages;
 
@@ -37,7 +37,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 			OnAfterNavigatedToViewModel(e.Parameter);
 		}
 		if (_animationPage != null && _animationPageParent != null) {
-			_ = ExUtil.TryCatch(() => {
+			_ = Exceptionz.TryCatch(() => {
 				var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
 				var anim = svc.GetAnimation("BackAnimation");
 				if (anim == null || !GetNavAnimationVisuals()) return false;
@@ -66,7 +66,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 		_navParam = e.Parameter;
 		if (GetNavAnimationVisuals()) {
 			var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-			_ = ExUtil.TryCatch(() => {
+			_ = Exceptionz.TryCatch(() => {
 				return svc.PrepareToAnimate("ForwardAnimation", _animationPage);
 			}, () => {
 				_ = svc.GetAnimation("ForwardAnimation");

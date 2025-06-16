@@ -14,75 +14,62 @@
 			 x:DataType="vm:ActorsViewModel"
 			 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto, *">
-		<afv:ChameleonContentControl Title="Agents" TitleDescription="Robotic Automation Agents">
+		<afv:ChameleonContentControl Title="Autonomous Agents" TitleDescription="Robotic Automation Agents">
 			<afv:ChameleonContentControl.TitleContent>
-				<Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Right">
-					<StackPanel Classes="zontal" Grid.Column="1" Margin="4">
-					<ui:FAComboBox SelectedItem="{Binding SelectedBrowserOption}" ItemsSource="{Binding BrowserOptions}">
-						<ui:FAComboBox.ItemTemplate>
-							<DataTemplate>
-								<afv:SvgIcon IconName="{Binding IconName}" Height="20" Width="20" />
-							</DataTemplate>
-						</ui:FAComboBox.ItemTemplate>
-					</ui:FAComboBox>
-					<Button Content="Save"
-							IsVisible="{Binding !SelectedActor.Running}"
-							Command="{Binding SelectedActor.AsyncCfVCommand}"
-							CommandParameter="Save"/>
-					<Button Content="Run"
-							IsVisible="{Binding !SelectedActor.Running}"
-							Command="{Binding SelectedActor.AsyncCfVCommand}"
-							CommandParameter="Run"/>
-					<Button Content="Stop"
-							IsVisible="{Binding SelectedActor.Running}"
-							Command="{Binding SelectedActor.CfVCommand}"
-							CommandParameter="Stop"/>
-					</StackPanel>
-				</Grid>
+					<StackPanel Classes="zontal" HorizontalAlignment="Right" Margin="4 0">
+						<ToggleSwitch IsChecked="{Binding SelectedActor.EditableSettings.Start.New}" 
+							 ToolTip.Tip="to start in a new tab" 
+							 OffContent="Active" OnContent="New" />
+						<!-- TODO: 
+						<ToggleSwitch ToolTip.Tip="Run all actionable actions or one each"
+									  IsChecked="{Binding EditableSettings.AsQue}" 
+									  OffContent="Run All" OnContent="One Each"/>
+						<ToggleSwitch ToolTip.Tip="Run all selected automations for each profile, or run all profiles for each automation"
+									  IsChecked="{Binding EditableSettings.EachProfile}" 
+									  OffContent="Each Profile"  OnContent="Each Selection"/> -->
+						<ToggleSwitch IsChecked="{Binding SelectedActor.EditableSettings.CloseOldBrowserProfileAfterRun}"
+							 ToolTip.Tip="Close or keep open browser instances for the previous profile before moving to the next"
+							 OffContent="Open" OnContent="Close"/>
+						<ui:FAComboBox SelectedItem="{Binding SelectedBrowserOption}" ItemsSource="{Binding BrowserOptions}">
+							<ui:FAComboBox.ItemTemplate>
+								<DataTemplate>
+									<afv:SvgIcon IconName="{Binding IconName}" Height="20" Width="20" />
+								</DataTemplate>
+							</ui:FAComboBox.ItemTemplate>
+						</ui:FAComboBox>
+						<Border Classes="divider" />
+						<Button Content="Save"
+								Command="{Binding SelectedActor.AsyncCfVCommand}"
+								CommandParameter="Save"/>
+						</StackPanel>
 			</afv:ChameleonContentControl.TitleContent>
 			<afv:ChameleonContentControl.Content>
-				<ListBox ItemsSource="{Binding Actors}" Classes="uni">
-					<ListBox.ItemTemplate>
+				<ItemsControl Classes="uni-clm" ItemsSource="{Binding Actors}">
+					<ItemsControl.ItemTemplate>
 						<DataTemplate x:DataType="vm:ActorViewModel">
-							<ui:SettingsExpander IsExpanded="True">
-								<ui:SettingsExpander.Header>
-									<Panel>
-										<TextBlock Text="{Binding EditableSettings.Start.Feature}"
-												   Classes="b1"
-												   VerticalAlignment="Center"
-												   HorizontalAlignment="Left"/>
-									</Panel>
-								</ui:SettingsExpander.Header>
-								
+							<ui:SettingsExpander Header="{Binding EditableSettings.Start.Feature}" IsExpanded="True" Background="Transparent">
 								<ui:SettingsExpanderItem>
-									<StackPanel Spacing="6">
-										<afv:ChameleonContentControl Title="Robotomation" TitleDescription="auto robo autonomous roboto automations">
+									<StackPanel>
+										<afv:ChameleonContentControl Title="Options" TitleDescription="auto robo autonomous roboto automations">
 											<afv:ChameleonContentControl.TitleContent>
-												<Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Right">
-													<StackPanel Classes="zontal" Grid.Column="1">
-														<ToggleSwitch ToolTip.Tip="to start in a new tab (recommended)"
-																	  IsChecked="{Binding EditableSettings.Start.New}" 
-																	  OffContent="Active Tab" 
-																	  OnContent="New Tab"/>
-														<!-- TODO: 
-														<ToggleSwitch ToolTip.Tip="Run all actionable actions or one each"
-																	  IsChecked="{Binding EditableSettings.AsQue}" 
-																	  OffContent="Run All" 
-																	  OnContent="One Each"/>
-														<ToggleSwitch ToolTip.Tip="Run all selected automations for each profile, or run all profiles for each automation"
-																	  IsChecked="{Binding EditableSettings.EachProfile}" 
-																	  OffContent="Each Profile" 
-																	  OnContent="Each Selection"/> -->
-														<ToggleSwitch ToolTip.Tip="Close browser instances for the previous profile before moving to the next"
-																	  IsChecked="{Binding EditableSettings.CloseOldBrowserProfileAfterRun}" 
-																	  OffContent="Keep Open" 
-																	  OnContent="Close"/>
+													<StackPanel Classes="zontal" HorizontalAlignment="Right" Margin="0 6">
+														<UniformGrid Rows="1">
+															<ComboBox ToolTip.Tip="Scope"
+																 ItemsSource="{Binding EditableArgs.AvailableScopes}"
+																 SelectedItem="{Binding EditableArgs.SelectedScope}" />
+															<ComboBox ToolTip.Tip="Sort"
+																 ItemsSource="{Binding EditableArgs.AvailableSorts}"
+																 SelectedItem="{Binding EditableArgs.SelectedSort}" 
+																 Margin="4 0" />
+															<ComboBox ToolTip.Tip="Filter"
+																 ItemsSource="{Binding EditableArgs.AvailableFilters}"
+																 SelectedItem="{Binding EditableArgs.SelectedFilter}" />
+												 		</UniformGrid>
 													</StackPanel>
-												</Grid>
 											</afv:ChameleonContentControl.TitleContent>
 
 											<afv:ChameleonContentControl.Header>
-												<StackPanel Spacing="6">
+												<StackPanel>
 													<TextBlock Text="Tags" Classes="b1" Margin="4 6" ToolTip.Tip="activate and select hashtagged profiles" />
 													<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
 														<ItemsControl ItemsPanel="{StaticResource HorizontalStackPanel}" ItemsSource="{Binding Tagz}">
@@ -96,12 +83,7 @@
 
 													<TextBlock Text="Profiles" Margin="4 12 4 6" Classes="b1" ToolTip.Tip="activate and select profiles" />
 													<Grid ColumnDefinitions="Auto,*">
-														<Button Content="..."
-																Command="{Binding AsyncCfVCommand}"
-																CommandParameter="OpenProfileSelector"
-																Theme="{StaticResource AccentTextButton}"
-																ToolTip.Tip="Select N Edit"
-																Margin="4,6"/>
+														<Button Content="More" Classes="async icon" CommandParameter="OpenProfileSelector" ToolTip.Tip="Edit" Margin="4,6"/>
 														<ScrollViewer Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Auto">
 															<ItemsControl ItemsPanel="{StaticResource HorizontalStackPanel}" ItemsSource="{Binding SelectedProfiles}">
 																<ItemsControl.ItemTemplate>
@@ -116,121 +98,70 @@
 											</afv:ChameleonContentControl.Header>
 
 											<afv:ChameleonContentControl.Content>
-												<StackPanel Margin="0 8 0 0">
+												<StackPanel Classes="shared">
 
-													<StackPanel Classes="shared" Margin="6 0 6 6">
-														<afv:Inputter Title="Search:"
-															 Description="comma seperated list of search terms"
-															 Watermark="comma seperated list of search terms"
-															 Text="{Binding EditableArgs.Search}"
-															 Theme="{StaticResource Inputz}"/>																		
-															<afv:Inputter Title="URL's:"
-																 Description="(experimental) list of urls (&#x0a;https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*&#x0a;)">
-																	<TextBox Text="{Binding EditableSettings.Start.Url}" AcceptsReturn="True" TextWrapping="Wrap"
-																	 	Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*" />
-															</afv:Inputter>
-														<UniformGrid Columns="3" Rows="1">
-															<afv:Inputter Title="Scope:" Description="scope of the search">
-																<ComboBox ItemsSource="{Binding EditableArgs.AvailableScopes}" SelectedItem="{Binding EditableArgs.SelectedScope}" />
-															</afv:Inputter>
-															<afv:Inputter Title="Sort:" Description="sort order of the search">
-																<ComboBox ItemsSource="{Binding EditableArgs.AvailableSorts}" SelectedItem="{Binding EditableArgs.SelectedSort}" />
-															</afv:Inputter>
-															<afv:Inputter Title="Filter:" Description="filter to apply to the search">
-																<ComboBox ItemsSource="{Binding EditableArgs.AvailableFilters}"  SelectedItem="{Binding EditableArgs.SelectedFilter}" />
-															</afv:Inputter>
-														</UniformGrid>
+													<afv:Inputter Title="Search:"
+														 Description="comma seperated list of search terms"
+														 Watermark="comma seperated list of search terms"
+														 Text="{Binding EditableArgs.Search}" />											
+													<afv:Inputter Title="URL's:"
+														 Tag="True"
+														 Text="{Binding EditableSettings.Start.Url}"
+														 Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*" 
+														 Description="list of urls seperated by a new line" />
+													
+													<UniformGrid Rows="1" DataContext="{Binding EditableSettings}">
+													 	<UniformGrid.Styles>
+													 		<Style Selector="ui|NumberBox">
+																<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
+																<Setter Property="Maximum" Value="999"/>
+															</Style>
+													 	</UniformGrid.Styles>
+														<afv:Inputter Title="Terms:" Description="Adds AI related keywords based on search terms">
+															<ui:NumberBox Value="{Binding Start.Variations.Min}" />
+														</afv:Inputter>
+														<afv:Inputter Title="Rerun:" Description="Number of times to rerun each search term to a different listing">
+															<ui:NumberBox Value="{Binding Start.Iterations.Min}" />
+														</afv:Inputter>
+														<afv:Inputter Title="Retry:" Description="Maximum retry on unexpected situations">
+															<ui:NumberBox Value="{Binding Start.Attempts}"/>
+														</afv:Inputter>
+														<afv:Inputter Title="Rando:" Description="Min-max activity value for voting and joining">
+															<ui:NumberBox Value="{Binding Rando}" />
+														</afv:Inputter>
+														<afv:Inputter Title="Speed:" Description="robo movement speed in milliseconds">
+															<ui:NumberBox Value="{Binding Timeouts.Naps.Min}" />
+														</afv:Inputter>
+														<afv:Inputter Title="Delay:" Description="auto loop speed between runs in seconds">
+															<ui:NumberBox Value="{Binding Delay}" />
+														</afv:Inputter>
+													</UniformGrid>
 
-														<StackPanel Classes="shared" DataContext="{Binding EditableSettings}">
-															<afv:Inputter Title="Auto:" Description="auto robo generation and behavior">
-																<UniformGrid Rows="1">
-																 <UniformGrid.Styles>
-																 		<Style Selector="ui|NumberBox">
-																			<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
-																			<Setter Property="Maximum" Value="999"/>
-																		</Style>
-																 		<Style Selector="afv|Inputter">
-																			<Setter Property="Margin" Value="4 0 0 0"/>
-																		</Style>
-																 </UniformGrid.Styles>
-																	<afv:Inputter Title="Terms:"
-																			 Description="Adds AI related keywords based on search terms">
-																		<ui:NumberBox Value="{Binding Start.Variations.Min}" />
-																	</afv:Inputter>
-																	<afv:Inputter Title="Rerun:"
-																			 Description="Number of times to rerun each search term to a different listing">
-																		<ui:NumberBox Value="{Binding Start.Iterations.Min}" />
-																	</afv:Inputter>
-																	<afv:Inputter Title="Retry:"
-																			 Description="Maximum retry on unexpected situations">
-																		<ui:NumberBox Value="{Binding Start.Attempts}"/>
-																	</afv:Inputter>
-																	<afv:Inputter Title="Rando:"
-																			 Description="Min-max activity value for voting and joining">
-																		<ui:NumberBox Value="{Binding Rando}" />
-																	</afv:Inputter>
-																	<afv:Inputter Title="Speed:"
-																			 Description="robo movement speed in milliseconds">
-																		<ui:NumberBox Value="{Binding Timeouts.Naps.Min}" />
-																	</afv:Inputter>
-																	<afv:Inputter Title="Delay:"
-																			 Description="auto loop speed between runs in seconds">
-																		<ui:NumberBox Value="{Binding Delay}" />
-																	</afv:Inputter>
-																</UniformGrid>
-															</afv:Inputter>
+													<Expander Header="Inception" Margin="0 9 0 0" IsExpanded="True">
+														<StackPanel Classes="shared">
+															<TextBlock Text="prompt decorations helps keep the auto robo model 'on brand'" Classes="caption" Margin="0 0 0 8" />
+															<afv:Inputter Title="System:"
+																			   Description="most helpful for the model consistency"
+																			   Watermark="You are helpful..."
+																			   Text="{Binding AiSettings.Decorators.System, Mode=TwoWay}" />
+															<afv:Inputter Title="Human:"
+																			   Description="Human persona description"
+																			   Watermark="...(eg. reddit content creator, reddit user, etc.)"
+																			   Text="{Binding AiSettings.Decorators.Human, Mode=TwoWay}" />
+															<afv:Inputter Title="Audience:"
+																			   Description="Target audience"
+																			   Watermark="...(eg: reddit users who are interested in..., reddit users who are looking for..., etc.)"
+																			   Text="{Binding AiSettings.Decorators.Audience, Mode=TwoWay}" />
+															<afv:Inputter Title="Background:"
+																			   Description="Background context"
+																			   Watermark="...(eg: I am surfing reddit... You... etc.)"
+																			   Text="{Binding AiSettings.Decorators.Background, Mode=TwoWay}" />
+															<afv:Inputter Title="Tone:"
+																			   Description="Communication tone"
+																			   Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
+																			   Text="{Binding AiSettings.Decorators.Tone, Mode=TwoWay}" />
 														</StackPanel>
-													</StackPanel>
-
-													<ContentControl Content="{Binding AiSettings}">
-														<ContentControl.ContentTemplate>
-															<DataTemplate x:DataType="models:AI">
-																<StackPanel Spacing="6">
-																	<Expander Header="Inception"
-																			  Margin="0 6"
-																			  IsExpanded="True">
-																		<ContentControl Content="{Binding Decorators}">
-																			<ContentControl.ContentTemplate>
-																				<DataTemplate x:DataType="models:Decorations">
-																					<StackPanel Classes="shared">
-																						<TextBlock Classes="caption"
-																								   Margin="0 0 0 8">
-																							<Run Text="prompt decorations helps keep the auto robo model 'on brand'"/>
-																						</TextBlock>
-																						<afv:Inputter Title="System:"
-																										   Description="most helpful for the model consistency"
-																										   Watermark="You are helpful..."
-																										   Text="{Binding System, Mode=TwoWay}"
-																										   Theme="{StaticResource Inputz}"/>
-																						<afv:Inputter Title="Human:"
-																										   Description="Human persona description"
-																										   Watermark="...(eg. reddit content creator, reddit user, etc.)"
-																										   Text="{Binding Human, Mode=TwoWay}"
-																										   Theme="{StaticResource Inputz}"/>
-																						<afv:Inputter Title="Audience:"
-																										   Description="Target audience"
-																										   Watermark="...(eg: reddit users who are interested in..., reddit users who are looking for..., etc.)"
-																										   Text="{Binding Audience, Mode=TwoWay}"
-																										   Theme="{StaticResource Inputz}"/>
-																						<afv:Inputter Title="Background:"
-																										   Description="Background context"
-																										   Watermark="...(eg: I am surfing reddit... You... etc.)"
-																										   Text="{Binding Background, Mode=TwoWay}"
-																										   Theme="{StaticResource Inputz}"/>
-																						<afv:Inputter Title="Tone:"
-																										   Description="Communication tone"
-																										   Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
-																										   Text="{Binding Tone, Mode=TwoWay}"
-																										   Theme="{StaticResource Inputz}"/>
-																					</StackPanel>
-																				</DataTemplate>
-																			</ContentControl.ContentTemplate>
-																		</ContentControl>
-																	</Expander>
-																</StackPanel>
-															</DataTemplate>
-														</ContentControl.ContentTemplate>
-													</ContentControl>
+													</Expander>
 												</StackPanel>
 											</afv:ChameleonContentControl.Content>
 										</afv:ChameleonContentControl>
@@ -238,18 +169,29 @@
 								</ui:SettingsExpanderItem>
 
 								<ui:SettingsExpander.Footer>
-														<ItemsControl ItemsSource="{Binding Selections}" ItemsPanel="{StaticResource HorizontalStackPanel}">
-															<ItemsControl.ItemTemplate>
-																<DataTemplate x:DataType="vm:Selection">
-																	<ToggleButton IsChecked="{Binding Selected}" Content="{Binding Script.Title}"  ToolTip.Tip="{Binding Script.Description}"/>
-																</DataTemplate>
-															</ItemsControl.ItemTemplate>
-														</ItemsControl>
+								<StackPanel Classes="zontal">
+									<ItemsControl ItemsSource="{Binding Selections}" Classes="sp-zontal" >
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<ToggleButton IsChecked="{Binding Selected}" Content="{Binding Script.Title}" ToolTip.Tip="{Binding Script.Description}"/>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+									<Border Classes="divider" />
+										<Button Content="Run"
+												IsVisible="{Binding !Running}"
+												Command="{Binding AsyncCfVCommand}"
+												CommandParameter="Run"/>
+										<Button Content="Stop"
+												IsVisible="{Binding Running}"
+												Command="{Binding CfVCommand}"
+												CommandParameter="Stop"/>
+									</StackPanel>
 								</ui:SettingsExpander.Footer>
 							</ui:SettingsExpander>
 						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
 			</afv:ChameleonContentControl.Content>
 		</afv:ChameleonContentControl>
 	</Grid>

@@ -103,6 +103,8 @@ public abstract partial class Projector(string? title = null) : Profilearee(titl
 	public abstract ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public bool HasFolders => Folders.Count > 0;
 
+	public bool HasNoItems => !HasFolders && !HasProfiles;
+
 	partial void OnSortFolderChanged(ChangeComparereOption value) {
 		Folderer.CompareObservable.OnNext(value switch {
 			ChangeComparereOption.Descending => Folderer.DescendingComparer,
@@ -123,7 +125,7 @@ public partial class ViewModel : ViewModelObjectBase {
 				if (
 					ex.Message == "limit_ex" &&
 					await MessageBox.Show("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles.")
-				) ProUtil.GoToUrlDefault(Const.PricingUrl);
+				) ProcessUtil.OpenBrowser(Const.PricingUrl);
 				else throw;
 			}
 		};

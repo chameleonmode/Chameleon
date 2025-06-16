@@ -35,6 +35,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Features/Projects/Profiles/UserProfile.axaml.cs">
+      <DependentUpon>UserProfile.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Features/Projects/View.axaml.cs">
       <DependentUpon>View.axaml</DependentUpon>
     </Compile>
