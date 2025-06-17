@@ -16,7 +16,7 @@ public partial class ArgsViewModel : ObservableObject {
 	public IEnumerable<Sort> AvailableSorts { get; } = Enum.GetValues<Sort>();
 	public IEnumerable<Filter> AvailableFilters { get; } = Enum.GetValues<Filter>();
 
-	public ArgsViewModel(DictionaryArgs sourceArgs) {
+	public void Set(DictionaryArgs sourceArgs) {
 		Search = GetValue(sourceArgs, "Search", string.Empty) ?? string.Empty;
 		SelectedScope = GetValue(sourceArgs, "Scope", Scope.Posts);
 		SelectedSort = GetValue(sourceArgs, "Sort", Sort.Relevance);
@@ -60,7 +60,13 @@ public partial class ArgsViewModel : ObservableObject {
 						Debug.WriteLine($"Detected array for key '{key}'. Attempting to extract first string element.");
 						var arrayEnumerator = jsonElement.EnumerateArray();
 						if (arrayEnumerator.MoveNext() && arrayEnumerator.Current.ValueKind == JsonValueKind.String) {
-							return (T)(object)arrayEnumerator.Current.GetString()!;
+							var stringValues = new List<string>();
+							do {
+								if (arrayEnumerator.Current.ValueKind == JsonValueKind.String) {
+									stringValues.Add(arrayEnumerator.Current.GetString()!);
+								}
+							} while (arrayEnumerator.MoveNext());
+							return (T)(object)string.Join(", ", stringValues);
 						} else {
 							Debug.WriteLine($"'{key}' key had unexpected array format or non-string element: {jsonElement.GetRawText()}");
 							return defaultValue;

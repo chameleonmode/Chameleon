@@ -101,7 +101,7 @@
 														 Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*" 
 														 Description="list of urls seperated by a new line" />
 													
-													<UniformGrid Rows="1" DataContext="{Binding EditableSettings}">
+													<UniformGrid Rows="1">
 													 	<UniformGrid.Styles>
 													 		<Style Selector="ui|NumberBox">
 																<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
@@ -109,22 +109,22 @@
 															</Style>
 													 	</UniformGrid.Styles>
 														<afv:Inputter Title="Terms:" Description="Adds AI related keywords based on search terms">
-															<ui:NumberBox Value="{Binding Start.Variations.Min}" />
+															<ui:NumberBox Value="{Binding EditableSettings.Start.Variations.Min}" />
 														</afv:Inputter>
 														<afv:Inputter Title="Rerun:" Description="Number of times to rerun each search term to a different listing">
-															<ui:NumberBox Value="{Binding Start.Iterations.Min}" />
+															<ui:NumberBox Value="{Binding EditableSettings.Start.Iterations.Min}" />
 														</afv:Inputter>
 														<afv:Inputter Title="Retry:" Description="Maximum retry on unexpected situations">
-															<ui:NumberBox Value="{Binding Start.Attempts}"/>
+															<ui:NumberBox Value="{Binding EditableSettings.Start.Attempts}"/>
 														</afv:Inputter>
 														<afv:Inputter Title="Rando:" Description="Min-max activity value for voting and joining">
-															<ui:NumberBox Value="{Binding Rando}" />
+															<ui:NumberBox Value="{Binding EditableSettings.Rando}" />
 														</afv:Inputter>
 														<afv:Inputter Title="Speed:" Description="robo movement speed in milliseconds">
-															<ui:NumberBox Value="{Binding Timeouts.Naps.Min}" />
+															<ui:NumberBox Value="{Binding EditableSettings.Timeouts.Naps.Min}" />
 														</afv:Inputter>
 														<afv:Inputter Title="Delay:" Description="auto loop speed between runs in seconds">
-															<ui:NumberBox Value="{Binding Delay}" />
+															<ui:NumberBox Value="{Binding EditableSettings.Delay}" />
 														</afv:Inputter>
 													</UniformGrid>
 
