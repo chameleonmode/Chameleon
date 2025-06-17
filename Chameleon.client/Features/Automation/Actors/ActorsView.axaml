@@ -6,65 +6,43 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:afv="using:Chameleon.client.UI.Controls"
 			 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
-			 xmlns:vm="using:Chameleon.client.Features.Automation.Actors"
+			 xmlns:local="using:Chameleon.client.Features.Automation.Actors"
 			 xmlns:vmv="using:Chameleon.client.Features.Automation.Actors.ViewModels"
 			 xmlns:models="using:Chameleon.AIR.Actors.Models"
 			 xmlns:redditModels="using:Chameleon.AIR.Actors.Models.Reddit"
 			 x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
-			 x:DataType="vm:ActorsViewModel"
+			 x:DataType="local:ActorsViewModel"
 			 x:CompileBindings="True">
 	<Grid RowDefinitions="Auto, *">
 		<afv:ChameleonContentControl Title="Autonomous Agents" TitleDescription="Robotic Automation Agents">
 			<afv:ChameleonContentControl.TitleContent>
-					<StackPanel Classes="zontal" HorizontalAlignment="Right" Margin="4 0">
-						<ToggleSwitch IsChecked="{Binding SelectedActor.EditableSettings.Start.New}" 
-							 ToolTip.Tip="to start in a new tab" 
-							 OffContent="Active" OnContent="New" />
-						<!-- TODO: 
-						<ToggleSwitch ToolTip.Tip="Run all actionable actions or one each"
-									  IsChecked="{Binding EditableSettings.AsQue}" 
-									  OffContent="Run All" OnContent="One Each"/>
-						<ToggleSwitch ToolTip.Tip="Run all selected automations for each profile, or run all profiles for each automation"
-									  IsChecked="{Binding EditableSettings.EachProfile}" 
-									  OffContent="Each Profile"  OnContent="Each Selection"/> -->
-						<ToggleSwitch IsChecked="{Binding SelectedActor.EditableSettings.CloseOldBrowserProfileAfterRun}"
-							 ToolTip.Tip="Close or keep open browser instances for the previous profile before moving to the next"
-							 OffContent="Open" OnContent="Close"/>
-						<ui:FAComboBox SelectedItem="{Binding SelectedBrowserOption}" ItemsSource="{Binding BrowserOptions}">
-							<ui:FAComboBox.ItemTemplate>
-								<DataTemplate>
-									<afv:SvgIcon IconName="{Binding IconName}" Height="20" Width="20" />
-								</DataTemplate>
-							</ui:FAComboBox.ItemTemplate>
-						</ui:FAComboBox>
-						<Border Classes="divider" />
-						<Button Content="Save"
-								Command="{Binding SelectedActor.AsyncCfVCommand}"
-								CommandParameter="Save"/>
+					<StackPanel Classes="zontal" HorizontalAlignment="Right" Margin="4">
+						<Button Content="Save" Classes="icon clear async" />
 						</StackPanel>
 			</afv:ChameleonContentControl.TitleContent>
 			<afv:ChameleonContentControl.Content>
 				<ItemsControl Classes="uni-clm" ItemsSource="{Binding Actors}">
 					<ItemsControl.ItemTemplate>
-						<DataTemplate x:DataType="vm:ActorViewModel">
+						<DataTemplate x:DataType="local:ActorViewModel">
 							<ui:SettingsExpander Header="{Binding EditableSettings.Start.Feature}" IsExpanded="True" Background="Transparent">
 								<ui:SettingsExpanderItem>
 									<StackPanel>
 										<afv:ChameleonContentControl Title="Options" TitleDescription="auto robo autonomous roboto automations">
 											<afv:ChameleonContentControl.TitleContent>
-													<StackPanel Classes="zontal" HorizontalAlignment="Right" Margin="0 6">
-														<UniformGrid Rows="1">
-															<ComboBox ToolTip.Tip="Scope"
-																 ItemsSource="{Binding EditableArgs.AvailableScopes}"
-																 SelectedItem="{Binding EditableArgs.SelectedScope}" />
-															<ComboBox ToolTip.Tip="Sort"
-																 ItemsSource="{Binding EditableArgs.AvailableSorts}"
-																 SelectedItem="{Binding EditableArgs.SelectedSort}" 
-																 Margin="4 0" />
-															<ComboBox ToolTip.Tip="Filter"
-																 ItemsSource="{Binding EditableArgs.AvailableFilters}"
-																 SelectedItem="{Binding EditableArgs.SelectedFilter}" />
-												 		</UniformGrid>
+													<StackPanel Classes="zontal" HorizontalAlignment="Right" Margin="0 0">
+														<ToggleSwitch IsChecked="{Binding EditableSettings.Start.New}" 
+															 ToolTip.Tip="to start in a new tab" 
+															 OffContent="Active" OnContent="New" />
+														<!-- TODO: 
+														<ToggleSwitch ToolTip.Tip="Run all actionable actions or one each"
+																	  IsChecked="{Binding EditableSettings.AsQue}" 
+																	  OffContent="Run All" OnContent="One Each"/>
+														<ToggleSwitch ToolTip.Tip="Run all selected automations for each profile, or run all profiles for each automation"
+																	  IsChecked="{Binding EditableSettings.EachProfile}" 
+																	  OffContent="Each Profile"  OnContent="Each Selection"/> -->
+														<ToggleSwitch IsChecked="{Binding EditableSettings.CloseOldBrowserProfileAfterRun}"
+															 ToolTip.Tip="Close or keep open browser instances for the previous profile before moving to the next"
+															 OffContent="Open" OnContent="Close"/>
 													</StackPanel>
 											</afv:ChameleonContentControl.TitleContent>
 
@@ -74,7 +52,7 @@
 													<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
 														<ItemsControl ItemsPanel="{StaticResource HorizontalStackPanel}" ItemsSource="{Binding Tagz}">
 															<ItemsControl.ItemTemplate>
-																<DataTemplate x:DataType="vm:Tag">
+																<DataTemplate x:DataType="local:Tag">
 																	<ToggleButton IsChecked="{Binding IsSelected}" Content="{Binding Dto.Name}" ToolTip.Tip="{Binding ToolTipText}"/>
 																</DataTemplate>
 															</ItemsControl.ItemTemplate>
@@ -99,11 +77,24 @@
 
 											<afv:ChameleonContentControl.Content>
 												<StackPanel Classes="shared">
+														<UniformGrid Rows="1" Margin="0 6">
+															<ComboBox ToolTip.Tip="Scope"
+																 ItemsSource="{Binding EditableArgs.AvailableScopes}"
+																 SelectedItem="{Binding EditableArgs.SelectedScope}" />
+															<ComboBox ToolTip.Tip="Sort"
+																 ItemsSource="{Binding EditableArgs.AvailableSorts}"
+																 SelectedItem="{Binding EditableArgs.SelectedSort}" 
+																 Margin="6 0" />
+															<ComboBox ToolTip.Tip="Filter"
+																 ItemsSource="{Binding EditableArgs.AvailableFilters}"
+																 SelectedItem="{Binding EditableArgs.SelectedFilter}" />
+												 		</UniformGrid>
 
 													<afv:Inputter Title="Search:"
 														 Description="comma seperated list of search terms"
 														 Watermark="comma seperated list of search terms"
 														 Text="{Binding EditableArgs.Search}" />											
+														 
 													<afv:Inputter Title="URL's:"
 														 Tag="True"
 														 Text="{Binding EditableSettings.Start.Url}"
@@ -139,7 +130,7 @@
 
 													<Expander Header="Inception" Margin="0 9 0 0" IsExpanded="True">
 														<StackPanel Classes="shared">
-															<TextBlock Text="prompt decorations helps keep the auto robo model 'on brand'" Classes="caption" Margin="0 0 0 8" />
+															<TextBlock Text="these options help keep the auto robo model 'on brand' and controls how it acts" Classes="caption" Margin="0 0 0 8" />
 															<afv:Inputter Title="System:"
 																			   Description="most helpful for the model consistency"
 																			   Watermark="You are helpful..."
@@ -173,19 +164,22 @@
 									<ItemsControl ItemsSource="{Binding Selections}" Classes="sp-zontal" >
 										<ItemsControl.ItemTemplate>
 											<DataTemplate>
-												<ToggleButton IsChecked="{Binding Selected}" Content="{Binding Script.Title}" ToolTip.Tip="{Binding Script.Description}"/>
+												<ToggleButton IsChecked="{Binding Selected}" 
+													Content="{Binding Script.Title}" 
+													ToolTip.Tip="{Binding Script.Description}" />
 											</DataTemplate>
 										</ItemsControl.ItemTemplate>
 									</ItemsControl>
 									<Border Classes="divider" />
-										<Button Content="Run"
-												IsVisible="{Binding !Running}"
-												Command="{Binding AsyncCfVCommand}"
-												CommandParameter="Run"/>
-										<Button Content="Stop"
-												IsVisible="{Binding Running}"
-												Command="{Binding CfVCommand}"
-												CommandParameter="Stop"/>
+										<ComboBox SelectedItem="{Binding SelectedBrowserOption}" ItemsSource="{x:Static local:ActorsViewModel.BrowserOptions}">
+											<ComboBox.ItemTemplate>
+												<DataTemplate>
+													<afv:SvgIcon IconName="{Binding IconName}" Height="20" Width="20" />
+												</DataTemplate>
+											</ComboBox.ItemTemplate>
+										</ComboBox>
+										<Button Content="Play" Classes="icon async" IsVisible="{Binding !Running}" />
+										<Button Content="Stop" Classes="icon cfv" IsVisible="{Binding Running}" />
 									</StackPanel>
 								</ui:SettingsExpander.Footer>
 							</ui:SettingsExpander>

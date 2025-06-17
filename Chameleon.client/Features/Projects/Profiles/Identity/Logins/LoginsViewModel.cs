@@ -26,9 +26,8 @@ public partial class UPLoginViewModel(UPLoginDto dto) : MappableViewModelBase<UP
 
 		_ = builder.RuleFor(vm => vm.WebSite)
 		.Must(uri => {
-			if (string.IsNullOrEmpty(uri)) {
-				return true; 
-			}
+			if (string.IsNullOrEmpty(uri)) return true; 
+			
 			var potentialUri = uri.Contains("://") ? uri : $"http://{uri}";
 			return Uri.TryCreate(potentialUri, UriKind.Absolute, out var resultUri) && (resultUri.HostNameType == UriHostNameType.Dns
 				? resultUri.Host.Contains('.')

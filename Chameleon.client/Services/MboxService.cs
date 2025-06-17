@@ -10,13 +10,13 @@ using Chameleon.lib;
 using Chameleon.lib.Services;
 
 namespace Chameleon.client.Services;
+
 public partial class MBoxViewModel : ObservableObject {
 	[ObservableProperty] string title = Const.AppName;
 	[ObservableProperty] string glyph = "E946";
 }
 public class MboxService(IDispatchService dispatcher) : IMboxService {
-	public async Task<MboxResult> Show(string title, string content, MBoxButtons btns = MBoxButtons.YesNo, string icon = "Info")
-	{
+	public async Task<MboxResult> Show(string title, string content, MBoxButtons btns = MBoxButtons.YesNo, string icon = "Info") {
 		var c = new MBoxViewModel();
 		var icons = await Icons.Instance.FontIcons;
 		c.Title = title;
@@ -38,9 +38,8 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 		});
 	}
 
-	public async Task<TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Const.AppName, object? footer = null, Symbas symbas = Symbas.Alert, MBoxButtons btns = MBoxButtons.YesNo)
-	{
-		while(App.MainWindow is null) {
+	public async Task<TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Const.AppName, object? footer = null, Symbas symbas = Symbas.Alert, MBoxButtons btns = MBoxButtons.YesNo) {
+		while (App.MainWindow is null) {
 			await Task.Delay(250);
 		}
 		return await dispatcher.InvokeOnUiThread(async () => {

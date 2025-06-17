@@ -1,4 +1,5 @@
 ﻿using Chameleon.lib.Helpers;
+using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveValidation;
@@ -60,12 +61,8 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 
 	[RelayCommand]
 	public async Task AsyncCfV(string what) {
-		try {
-			await AsyncCommandMap[what]();
-			SetViewModelsFilter();
-		} catch (Exception e) {
-			Toaster.Error(what, e.Message);
-		}
+		await Exceptionz.TryCatch(AsyncCommandMap[what], what);
+		SetViewModelsFilter();
 	}
 
 	private IObjectValidator? _objectValidator;

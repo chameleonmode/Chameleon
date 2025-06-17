@@ -73,6 +73,9 @@
 
 	<!-- Button -->
 	<Style Selector="Button">
+		<Style Selector="^.square">
+			<Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
+		</Style>
 		<Style Selector="^.icon">
 			<Setter Property="Theme" Value="{DynamicResource AccentSymbleIconButton}" />
 		</Style>

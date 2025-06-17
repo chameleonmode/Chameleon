@@ -24,6 +24,7 @@ using Chameleon.lib.Services;
 namespace Chameleon.client;
 
 public partial class App : Application {
+	public static bool DEBUGGING { get; set; } = false;
 	public static Window? MainWindow => (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
 	public static T? TryGetResource<T>(string key) where T : class {
@@ -60,6 +61,7 @@ public partial class App : Application {
 		// Setup IoC
 		IoC.Instance.Init(action: async (inited) => {
 			if (inited) {
+				Toaster.Info("Starting...");
 				await RunAsync();
 				IoC.GetService<Features.Settings.ViewModel>()?.InitializSettings();
 
@@ -74,6 +76,7 @@ public partial class App : Application {
 	}
 
 	public override void OnFrameworkInitializationCompleted() {
+		base.OnFrameworkInitializationCompleted();
 		// Line below is needed to remove Avalonia data validation.
 		// Without this line you will get duplicate validations from both Avalonia and CT
 		BindingPlugins.DataValidators.RemoveAt(0);
@@ -88,44 +91,10 @@ public partial class App : Application {
 			window.TitleBar.ExtendsContentIntoTitleBar = true;
 			window.TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 #if DEBUG
+			DEBUGGING = true;
 			window.AttachDevTools();
 			window.Topmost = true;
 #endif
-
-			/** TODO: test if still happening on windows then remove fully 
-			Dictionary<Control, object> TooltipBackup = [];
-			window.Deactivated += (s, e) => {
-				var controlsWithTooltips = new List<Control>();
-				var queue = new Queue<Visual>();
-				queue.Enqueue(window);
-
-				while (queue.Count > 0) {
-					var current = queue.Dequeue();
-
-					if (current is Control control && ToolTip.GetTip(control) != null) controlsWithTooltips.Add(control);
-
-					foreach (var child in current.GetVisualChildren()) {
-						queue.Enqueue(child);
-					}
-				}
-				foreach (var control in controlsWithTooltips) {
-					var tooltip = ToolTip.GetTip(control);
-					if (tooltip != null) {
-						TooltipBackup[control] = tooltip;
-						ToolTip.SetTip(control, null);
-					}
-				}
-			};
-			window.Activated += (s, e) => {
-				var controlsToRestore = TooltipBackup.Keys.ToList();
-				foreach (var control in controlsToRestore) {
-					if (TooltipBackup.TryGetValue(control, out var tooltip)) {
-						ToolTip.SetTip(control, tooltip);
-						TooltipBackup.Remove(control);
-					}
-				}
-			};
-			**/
 			desktop.MainWindow = window;
 		} else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform) {
 			singleViewPlatform.MainView = new View {
@@ -133,7 +102,6 @@ public partial class App : Application {
 			};
 		}
 
-		base.OnFrameworkInitializationCompleted();
 	}
 
  	async Task RunAsync() {

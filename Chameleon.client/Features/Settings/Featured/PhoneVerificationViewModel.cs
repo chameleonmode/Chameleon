@@ -1,13 +1,11 @@
 ﻿using Avalonia.Collections;
 using Chameleon.lib.Util;
-using Chameleon.lib.Common.Util.ThirdParty.SMSapi.Codesverify;
-using Chameleon.lib.Common.Util.ThirdParty.SMSapi.SMSPool;
-using Chameleon.lib.Common.Util.ThirdParty.SMSapi.SMSPVA;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using Chameleon.lib.Common.Util.ThirdParty;
+using Chameleon.lib.ThirdParty;
+using Chameleon.lib.ThirdParty.PVA;
 
 namespace Chameleon.client.Features.Settings.Featured;
 

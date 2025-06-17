@@ -8,7 +8,6 @@ using System.Reactive.Linq;
 using DynamicData;
 using DynamicData.PLinq;
 
-using Chameleon.lib.Util;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.client.Features.Projects.Search;

@@ -21,12 +21,9 @@
 							<ColumnDefinition />
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
-						<TextBlock Text="{TemplateBinding Header}"
-								   VerticalAlignment="Center"
-								   Theme="{StaticResource SubtitleTextBlockStyle}"/>
-						<Button
+						<TextBlock Text="{ReflectionBinding Items.Count, StringFormat=' {0}'}" Classes="h4" />
+						<Button	Content="plus-in-circle"
 							Grid.Column="1"
-							Content="plus-in-circle"
 							Theme="{StaticResource SvgIconTextButton}"
 							Tag="{TemplateBinding Content}"
 							CommandParameter="AddItem"
@@ -52,6 +49,7 @@
 			<Setter Property="Tag" Value="Delete" />
 			<Setter Property="Content" Value="delete" />
 			<Setter Property="Theme" Value="{StaticResource SvgIconTextButton}" />
+			<Setter Property="Command" Value="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}"/>
 			<Setter Property="CommandParameter" Value="{Binding}" />
 		</Style>
 		<Style Selector="Expander.TheseExpanders">
@@ -60,8 +58,9 @@
 			<Setter Property="Background" Value="{StaticResource LayerFillColorDefaultBrush}" />
 		</Style>
 		<Style Selector="ItemsControl.TheseItemControls">
-			<Setter Property="Grid.Row" Value="1" />
+			<Setter Property="Grid.Row" Value="2" />
 			<Setter Property="Margin" Value="0 20 0 0" />
+			<Setter Property="ItemsSource" Value="{ReflectionBinding Items}" />
 		</Style>
 	</UserControl.Styles>
 	<Grid RowDefinitions="Auto,*">
@@ -87,9 +86,9 @@
 
                 
         <ProgressBar Grid.Row="1" 
-			Grid.ColumnSpan="2"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Top"
+						Grid.ColumnSpan="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Top"
             IsIndeterminate="True" 
             IsVisible="{Binding IsSaving}"
             Height="3"

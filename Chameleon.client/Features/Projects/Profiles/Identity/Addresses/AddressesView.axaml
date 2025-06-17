@@ -7,20 +7,14 @@
              xmlns:addresses="using:Chameleon.client.Features.Projects.Profiles.Identity.Addresses"
              x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Addresses.AddressesView"
              x:DataType="addresses:AddressesViewModel"
-             x:CompileBindings="True">
+             x:CompileBindings="False">
     <Panel>
     <!-- <ControlTheme x:Key="HasNoItemsTheme" TargetType="HeaderedContentControl"> -->
         <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" />
         <Grid RowDefinitions="Auto,Auto,*">
-            <HeaderedContentControl
-                Theme="{StaticResource TheseOptionsHeaderPanels}"
-                Header="{Binding Items.Count, StringFormat='You have {0} addresses added.'}"
-                Content="Add Address"
-                Tag="AddAddress"/>
+            <HeaderedContentControl Theme="{StaticResource TheseOptionsHeaderPanels}" Content="Add Address" />
 
-            <ItemsControl Grid.Row="2"
-                        Classes="TheseItemControls"
-                        ItemsSource="{Binding Path=Items}">
+            <ItemsControl Grid.Row="2" Classes="TheseItemControls" ItemsSource="{Binding Path=Items}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Expander Classes="TheseExpanders">
@@ -55,9 +49,7 @@
                                 <afv:HeaderdInputFieldsControl Title="Notes"
                                                          Text="{Binding Dto.Notes, FallbackValue=Notes}" PlaceholderText="Notes" />
 
-                                <Button Classes="TheseDeleteBtns"
-                                Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}"
-                                IsEnabled="{ReflectionBinding Path=$parent[ItemsControl].DataContext.IsNotLoading}" />
+                                <Button Classes="TheseDeleteBtns" Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}" />
                             </StackPanel>
                         </Expander>
                     </DataTemplate>

@@ -16,8 +16,6 @@ using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Tenants.Members;
 public partial class TenantMembersViewModel : ViewModelObjectBase {
-	private readonly UserAssistantRepo userAssistantRepo = UserAssistantRepo.Instance;
-
 	[ObservableProperty] int totalCount;
 
 	// 
@@ -32,9 +30,7 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 	public ObservableCollection<ObsFolder> SelectedFolders { get; } = [];
 
 	public TenantMembersViewModel() : base("Members") {
-		_ = userAssistantRepo.ObservableCache
-			.Connect()
-			.Transform(p => {
+		_ = UserAssistantRepo.Instance.ObservableCache.Connect().Transform(p => {
 				var vim = new AssistantUser(p);
 				_ = vim.InitAsync(p);
 				vim.IsNotActive = DB.Instance.DBusers?.Any(u => u.Email == p.EmailAddress) ?? false;
@@ -70,9 +66,7 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
-		if (!Loaded) {
-			await userAssistantRepo.Load();
-		}
+		if (!Loaded) await UserAssistantRepo.Instance.Load();
 	}
 
 	private async Task CreateNewUserAssistant() {
@@ -86,7 +80,7 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 					ArgumentException.ThrowIfNullOrEmpty(result.AssistantEmail);
 					var profileIds = result.SelectedProfiles.Select(p => p.Dto!.id).ToList();
 					var folderIds = result.SelectedFolders.Select(f => f.Dto!.id).ToList();
-					_ = await userAssistantRepo.Create(new AssistDto {
+					_ = await UserAssistantRepo.Instance.Create(new AssistDto {
 						UserName = result.AssistantName,
 						EmailAddress = result.AssistantEmail,
 						ProfileIds = profileIds,

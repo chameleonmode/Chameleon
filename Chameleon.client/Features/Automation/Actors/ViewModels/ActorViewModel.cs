@@ -18,6 +18,7 @@ using System.Reactive.Linq;
 using System.Text.Json.Serialization;
 using Chameleon.lib;
 using Chameleon.lib.Api.Dto;
+using Chameleon.lib.WebBrowser;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class Tag(TagDto dto) : ObservableObject {
@@ -36,6 +37,7 @@ public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable
 public partial class ActorViewModel : ViewModelObjectBase {
 	CancellationTokenSource? cts;
 	[ObservableProperty] bool running;
+	[ObservableProperty] BrowserOption selectedBrowserOption;
 	[ObservableProperty] AIR.Actors.Models.AI aiSettings;
 	[ObservableProperty] ArgsViewModel editableArgs;
 	[ObservableProperty] SettingsViewModel editableSettings;
@@ -52,6 +54,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		AiSettings = Actor.Options.AI;
 		EditableArgs = new(Actor.Options.Args);
 		EditableSettings = new(Actor.Options.Settings);
+		SelectedBrowserOption = ActorsViewModel.BrowserOptions.First();
 
 		Subscriptions.Add(TagsRepo.Connect()
 			.Filter(tag => tag.Items.Where(x => x.Key == TagItemType.Profile).Any())
@@ -77,8 +80,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					.ForEach(p => p.Active = p.IsSelected = t.IsSelected)
 			)));
 
-		AsyncCommandMap["Run"] = Runerer;
-		AsyncCommandMap["Save"] = Saverer;
+		AsyncCommandMap["Play"] = Runerer;
 		AsyncCommandMap["OpenProfileSelector"] = async () => {
 			using var profileSelectorVM = new ProfileSelectorViewModel(SelectedProfiles);
 			_ = await profileSelectorVM.ShowDialogAsync();
@@ -106,7 +108,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		EditableSettings = new(Actor.Options.Settings);
 	}
 
-	private async Task Saverer() {
+	public async Task Saverer() {
 		Actor.Options.Settings.Start.Feature.ThrowIfNullOrEmpty();
 		var currentArgs = EditableArgs.ToDictionary([], EditableArgs.Search.Split(','));
 		var currentSettings = EditableSettings.ToRecord();
@@ -142,7 +144,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				var opts = new Opts(AiSettings, EditableArgs.ToDictionary(selected, termer), EditableSettings.ToRecord(selection.Script.Title == "Surf" ? new(0, 0) : null));
 				Debug.WriteLine($"Running: \n\t '{profile.Title}', '{selection.Script.Title}', '{opts.Settings.Start.Feature}', {JSON.Serialize(opts)}");
 
-				var browser = await profile.OpenSystemBrowser(ActorsViewModel.Instance.SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
+				var browser = await profile.OpenSystemBrowser(SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
 				await Run.Script(new() { Port = browser!.Settings.Port, Script = selection.Script, Opts = opts }, cts.Token);
 				Toaster.Info($"Finished: '{selection.Script.Title}'", $"Waitnig '{EditableSettings.Delay}'");
 

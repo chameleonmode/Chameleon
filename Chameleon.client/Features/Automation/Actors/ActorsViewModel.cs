@@ -12,19 +12,15 @@ using Chameleon.lib.WebBrowser;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class ActorsViewModel : ViewModelObjectBase {
-	[ObservableProperty] BrowserOption selectedBrowserOption;
-	[ObservableProperty] ActorViewModel? selectedActor;
-
-	public IEnumerable<BrowserOption> BrowserOptions { get; } = [
-		new (SystemBrowserType.Chrome),
-		new (SystemBrowserType.Brave),
-	];
-	public ObservableCollection<ActorViewModel> Actors { get; set; } = [new (new RedditActor())];
+	public static IEnumerable<BrowserOption> BrowserOptions { get; } = [new (SystemBrowserType.Chrome),new (SystemBrowserType.Brave) ];
+	
+	public ObservableCollection<ActorViewModel> Actors { get; } = [new (new RedditActor())];
+	[ObservableProperty] ActorViewModel selectedActor;
 
 	public ActorsViewModel() {
-		SelectedBrowserOption = BrowserOptions.First();
 		SelectedActor = Actors[0];
-	 }
+		AsyncCommandMap["Save"] = async () => { await Actors.ForEach(a => a.Saverer()); };
+	}
 
 	private async Task LoadActorStates() {
 		foreach (var filePath in Directory.EnumerateFiles(FilePaths.Roboto, "*.json")) {

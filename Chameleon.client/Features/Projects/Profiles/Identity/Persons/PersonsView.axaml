@@ -5,33 +5,25 @@
 			 xmlns:afv="using:Chameleon.client.UI.Controls"
              xmlns:vm="using:Chameleon.client.Features.Projects.Profiles.Identity.ViewModels"
              xmlns:persons="using:Chameleon.client.Features.Projects.Profiles.Identity.Persons"
+             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Persons.PersonsView"
              x:DataType="persons:PersonsViewModel"
-             x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Persons.PersonsView">
+             x:CompileBindings="False">
     <Panel>
         <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" />
         <Grid RowDefinitions="Auto,Auto,*">
-            <HeaderedContentControl
-                Theme="{StaticResource TheseOptionsHeaderPanels}"
-                Header="{Binding Items.Count, StringFormat='You have {0} persons added.'}"
-                Content="Add Person"
-                Tag="AddPerson"/>
+            <HeaderedContentControl Theme="{StaticResource TheseOptionsHeaderPanels}" Content="Add Person" />
 
-            <ItemsControl Grid.Row="2"
-                        Classes="TheseItemControls"
-                        ItemsSource="{Binding Path=Items}">
+            <ItemsControl Classes="TheseItemControls" ItemsSource="{Binding Path=Items}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Expander Classes="TheseExpanders">
                             <StackPanel Spacing="18">
-                                <afv:HeaderdInputFieldsControl Title="Title"
-                                                           Text="{Binding Title, FallbackValue=Title}" PlaceholderText="Name" />
+                                <afv:HeaderdInputFieldsControl Title="Title" Text="{Binding Title, FallbackValue=Title}" PlaceholderText="Name" />
 
-                                <afv:HeaderdInputFieldsControl Title="Name first, middle, last"
-                                                           Header="False">
+                                <afv:HeaderdInputFieldsControl Title="Name first, middle, last" Header="False">
                                     <afv:HeaderdInputFieldsControl.TextBoxes>
-                                        <TextBox  Text="{Binding FirstName,FallbackValue=first}" Watermark="First" />
-                                        <TextBox  Text="{Binding MiddleName,FallbackValue=middle}" Watermark="Middle" />
+                                        <TextBox Text="{Binding FirstName,FallbackValue=first}" Watermark="First" />
+                                        <TextBox Text="{Binding MiddleName,FallbackValue=middle}" Watermark="Middle" />
                                         <TextBox Text="{Binding LastName,FallbackValue=last}" Watermark="Last"/>
                                     </afv:HeaderdInputFieldsControl.TextBoxes>
                                 </afv:HeaderdInputFieldsControl>
@@ -53,9 +45,7 @@
                                 <afv:HeaderdInputFieldsControl Title="Notes"
                                 Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes"/>
 
-                                <Button Classes="TheseDeleteBtns"
-                                    Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}"
-                                    IsEnabled="{ReflectionBinding Path=$parent[ItemsControl].DataContext.IsNotLoading}" />
+                                <Button Classes="TheseDeleteBtns" />
                             </StackPanel>
                         </Expander>
                     </DataTemplate>

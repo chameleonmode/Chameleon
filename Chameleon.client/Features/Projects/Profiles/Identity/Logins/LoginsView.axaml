@@ -2,49 +2,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:afv="using:Chameleon.client.UI.Controls"
+			       xmlns:afv="using:Chameleon.client.UI.Controls"
              xmlns:vm="using:Chameleon.client.Features.Projects.Profiles.Identity.ViewModels"
              xmlns:logins="using:Chameleon.client.Features.Projects.Profiles.Identity.Logins"
+             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Logins.LoginsView"
              x:DataType="logins:LoginsViewModel"
-             x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Logins.LoginsView">
+             x:CompileBindings="False">
     <Panel>
         <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" />
         <Grid RowDefinitions="Auto,Auto,*">
-            <HeaderedContentControl
-                Theme="{StaticResource TheseOptionsHeaderPanels}"
-                Header="{Binding Items.Count, StringFormat='You have {0} logins added.'}"
-                Content="Add Login"
-                Tag="AddLogin"/>
-
-            <ItemsControl Grid.Row="2"
-                        Classes="TheseItemControls"
-                        ItemsSource="{Binding Path=Items}">
+            <HeaderedContentControl Theme="{StaticResource TheseOptionsHeaderPanels}" Content="Add Login" />
+            <ItemsControl Classes="TheseItemControls" ItemsSource="{Binding Path=Items}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Expander Classes="TheseExpanders">
                             <StackPanel Spacing="18">
-                                <afv:HeaderdInputFieldsControl Title="Title"
-                                                         Text="{Binding Title, FallbackValue=Title}" PlaceholderText="Title" />
-
-                                <afv:HeaderdInputFieldsControl Title="WebSite"
-                                                         Text="{Binding WebSite, FallbackValue=WebSite}" PlaceholderText="WebSite" />
-
-                                <afv:HeaderdInputFieldsControl Title="Email"
-                                                         Text="{Binding Email, FallbackValue=Email}" PlaceholderText="Email" />
-
-                                <afv:HeaderdInputFieldsControl Title="UserName"
-                                                         Text="{Binding UserName, FallbackValue=UserName}" PlaceholderText="UserName" />
-
-                                <afv:HeaderdInputFieldsControl Title="Password"
-                                                         Text="{Binding Password, FallbackValue=Password}" PlaceholderText="Password" />
-
-                                <afv:HeaderdInputFieldsControl Title="Notes"
-                                                         Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes" />
-
-                                <Button Classes="TheseDeleteBtns"
-                                    Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}"
-                                    IsEnabled="{ReflectionBinding Path=$parent[ItemsControl].DataContext.IsNotLoading}" />
+                                <afv:HeaderdInputFieldsControl Title="Title" 
+                                  Text="{Binding Title, FallbackValue=Title}" PlaceholderText="Title" />
+                                <afv:HeaderdInputFieldsControl Title="WebSite" 
+                                  Text="{Binding WebSite, FallbackValue=WebSite}" PlaceholderText="WebSite" />
+                                <afv:HeaderdInputFieldsControl Title="Email" 
+                                  Text="{Binding Email, FallbackValue=Email}" PlaceholderText="Email" />
+                                <afv:HeaderdInputFieldsControl Title="UserName" 
+                                  Text="{Binding UserName, FallbackValue=UserName}" PlaceholderText="UserName" />
+                                <afv:HeaderdInputFieldsControl Title="Password" 
+                                  Text="{Binding Password, FallbackValue=Password}" PlaceholderText="Password" />
+                                <afv:HeaderdInputFieldsControl Title="Notes" 
+                                  Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes" />
+                                <Button Classes="TheseDeleteBtns" />
                             </StackPanel>
                         </Expander>
                     </DataTemplate>

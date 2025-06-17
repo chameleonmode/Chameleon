@@ -5,21 +5,15 @@
 			 xmlns:afv="using:Chameleon.client.UI.Controls"
              xmlns:vm="using:Chameleon.client.Features.Projects.Profiles.Identity.ViewModels"
              xmlns:businesses="using:Chameleon.client.Features.Projects.Profiles.Identity.Businesses"
-             x:DataType="businesses:BusinessesViewModel"
-             x:CompileBindings="True"
-             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Businesses.BusinessesView">
+             x:Class="Chameleon.client.Features.Projects.Profiles.Identity.Businesses.BusinessesView"
+             x:CompileBindings="False"
+             x:DataType="businesses:BusinessesViewModel">
     <Panel>
         <HeaderedContentControl Theme="{StaticResource HasNoItemsTheme}" />
         <Grid RowDefinitions="Auto,Auto,*">
-            <HeaderedContentControl
-                Theme="{StaticResource TheseOptionsHeaderPanels}"
-                Header="{Binding Items.Count, StringFormat='You have {0} businesses added.'}"
-                Content="Add Business"
-                Tag="AddBusiness"/>
+            <HeaderedContentControl Theme="{StaticResource TheseOptionsHeaderPanels}" Content="Add Business" />
 
-            <ItemsControl Grid.Row="2"
-                        Classes="TheseItemControls"
-                        ItemsSource="{Binding Path=Items}">
+            <ItemsControl Classes="TheseItemControls">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Expander Classes="TheseExpanders">
@@ -42,9 +36,7 @@
                                 <afv:HeaderdInputFieldsControl Title="Notes"
                                                          Text="{Binding Notes, FallbackValue=Notes}" PlaceholderText="Notes" />
 
-                                <Button Classes="TheseDeleteBtns"
-                                    Command="{ReflectionBinding Path=$parent[ItemsControl].DataContext.DeleteItemCommand}"
-                                    IsEnabled="{ReflectionBinding Path=$parent[ItemsControl].DataContext.IsNotLoading}" />
+                                <Button Classes="TheseDeleteBtns" />
                             </StackPanel>
                         </Expander>
                     </DataTemplate>

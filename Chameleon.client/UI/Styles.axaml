@@ -89,9 +89,13 @@
 
 	<!-- Button -->
 	<Style Selector="Button">
-		<Setter Property="Command" Value="{ReflectionBinding CfVCommand}" />
+		<Style Selector="^.cfv">
+			<Setter Property="Command" Value="{ReflectionBinding CfVCommand}" />
+			<Setter Property="CommandParameter" Value="{Binding $self.Content}" />
+		</Style>
 		<Style Selector="^.async">
 			<Setter Property="Command" Value="{ReflectionBinding AsyncCfVCommand}" />
+			<Setter Property="CommandParameter" Value="{Binding $self.Content}" />
 		</Style>
 	</Style>
 
