@@ -1,18 +1,25 @@
-﻿using System.Collections.ObjectModel;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+using Avalonia.VisualTree;
+using Chameleon.client.Features.Projects.Profiles.Dialogs;
+using Chameleon.client.MvvM;
+using Chameleon.client.Services;
+using Chameleon.lib.Api;
+using Chameleon.lib.Api.Dto;
+using Chameleon.lib.Api.Repos;
+using Chameleon.lib.Helpers;
+using Chameleon.lib.Util;
+using Chameleon.lib.WebBrowser;
+using Chameleon.lib.WebBrowser.Browsers;
+using Chameleon.lib.WebBrowser.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
-using Chameleon.lib.Api;
-using Chameleon.lib.Api.Repos;
-using Chameleon.client.MvvM;
-using Chameleon.lib.WebBrowser.Services;
-using Chameleon.lib.Util;
+using Microsoft.Playwright;
+using System.Collections.ObjectModel;
+using System.Text.Json;
+using PlaywrightOptions = Chameleon.lib.Playwright.Services.Options;
 
-using Chameleon.lib.WebBrowser;
-using Chameleon.lib.Helpers;
-using Chameleon.client.Features.Projects.Profiles.Dialogs;
-using Chameleon.client.Services;
-using Chameleon.lib.WebBrowser.Browsers;
-using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
@@ -63,6 +70,15 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		AsyncCommandMap["OpenFirefox"] = async () => await OpenSystemBrowser(SystemBrowserType.Firefox);
 		AsyncCommandMap["OpenChrome"] = async () => await OpenSystemBrowser(SystemBrowserType.Chrome);
 		AsyncCommandMap["OpenBrave"] = async () => await OpenSystemBrowser(SystemBrowserType.Brave);
+
+		AsyncCommandMap["ImportCookiesChrome"] = async () => await HandleCookieOperation("ImportCookiesChrome", SystemBrowserType.Chrome);
+		AsyncCommandMap["ImportCookiesBrave"] = async () => await HandleCookieOperation("ImportCookiesBrave", SystemBrowserType.Brave);
+		AsyncCommandMap["ImportCookiesFirefox"] = async () => await HandleCookieOperation("ImportCookiesFirefox", SystemBrowserType.Firefox);
+
+		AsyncCommandMap["ExportCookiesChrome"] = async () => await HandleCookieOperation("ExportCookiesChrome", SystemBrowserType.Chrome);
+		AsyncCommandMap["ExportCookiesBrave"] = async () => await HandleCookieOperation("ExportCookiesBrave", SystemBrowserType.Brave);
+		AsyncCommandMap["ExportCookiesFirefox"] = async () => await HandleCookieOperation("ExportCookiesFirefox", SystemBrowserType.Firefox);
+
 		AsyncCommandMap["Favorite"] = async () => {
 			_ = await UserProfilesRepo.SetProfileIsFavorite(profile);
 			OnPropertyChanged(nameof(IsFavorite));
@@ -131,4 +147,261 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 
 		return SBI[browserType];
 	}
+
+	private async Task HandleCookieOperation(string operation, SystemBrowserType browserType)
+	{
+		var isImport = operation.StartsWith("Import");
+		var browserName = browserType.ToString();
+		
+		var visual = TopLevel.GetTopLevel(App.MainWindow?.GetVisualRoot() as Visual); 
+		var topLevel = visual != null ? TopLevel.GetTopLevel(visual) : null;
+
+
+		if (isImport)
+		{
+			if (topLevel == null)
+			{
+				Toaster.Error($"Error getting top level window for dialog. Ensure the view is active.");
+				return;
+			}
+
+			var file = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+			{
+				Title = $"Import Cookies for {browserName}",
+				AllowMultiple = false,
+				FileTypeFilter = [new FilePickerFileType("JSON files") { Patterns = ["*.json"] }]
+			});
+
+			if (file.Count == 1)
+			{
+				try
+				{
+					await using var stream = await file[0].OpenReadAsync();
+					using var reader = new StreamReader(stream);
+					var json = await reader.ReadToEndAsync();
+					var cookies = JsonSerializer.Deserialize<List<Cookie>>(json);
+					if (cookies != null)
+					{
+						await SetCookiesAsync(browserType, cookies);
+						Toaster.Success($"Successfully imported {cookies.Count} cookies for {browserName}.");
+					}
+					else
+					{
+						Toaster.Error($"Failed to deserialize cookies for {browserName}.");
+					}
+				}
+				catch (Exception ex)
+				{
+					Toaster.Error($"Error importing cookies for {browserName}: {ex.Message}");
+				}
+			}
+		}
+		else
+		{
+			var cookiesToExport = await GetCookiesAsync(browserType);
+			if (cookiesToExport == null || !cookiesToExport.Any())
+			{
+				Toaster.Info($"No cookies found to export for {browserName}.");
+				return;
+			}
+
+			if (topLevel == null)
+			{
+				Toaster.Error($"Error getting top level window for dialog. Ensure the view is active.");
+				return;
+			}
+
+			var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+			{
+				Title = $"Export Cookies for {browserName}",
+				SuggestedFileName = $"{browserName}Cookies_{DateTime.Now:yyyyMMddHHmmss}.json",
+				DefaultExtension = "json",
+				FileTypeChoices = [new FilePickerFileType("JSON files") { Patterns = ["*.json"] }]
+			});
+
+			if (file != null)
+			{
+				try
+				{
+					var exportData = cookiesToExport.Select(c => new Cookie {
+						Name = c.Name,
+						Value = c.Value,
+						Domain = c.Domain,
+						Path = c.Path,
+						Expires = c.Expires,
+						HttpOnly = c.HttpOnly,
+						Secure = c.Secure,
+						SameSite = c.SameSite.ToString()
+					}).ToList();
+					var json = JsonSerializer.Serialize(exportData, new JsonSerializerOptions { WriteIndented = true });
+					await using var stream = await file.OpenWriteAsync();
+					await using var writer = new StreamWriter(stream);
+					await writer.WriteAsync(json);
+					Toaster.Success($"Successfully exported {cookiesToExport.Count()} cookies for {browserName} to {file.Name}.");
+				}
+				catch (Exception ex)
+				{
+					Toaster.Error($"Error exporting cookies for {browserName}: {ex.Message}");
+				}
+			}
+		}
+	}
+
+	private async Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookiesAsync(SystemBrowserType browserType)
+	{
+		var sysBrowserOpenOptions = new SysBrowserOpenOptions(browserType, SystemBrowserProfile);
+		var settings = new SysBrowserSettings(sysBrowserOpenOptions, Dto.proxy?.port ?? 0);
+		var userProfileDir = settings.SysBrowserProfileCachePath;
+
+		Proxy? playwrightProxy = null;
+		if (SystemBrowserProfile.Proxy != null && SystemBrowserProfile.Proxy.CanUse)
+		{
+			playwrightProxy = new Proxy
+			{
+				Server = SystemBrowserProfile.Proxy.Server!,
+				Username = SystemBrowserProfile.Proxy.UserName,
+				Password = SystemBrowserProfile.Proxy.Password
+			};
+		}
+
+		var options = new PlaywrightOptions(
+			sysBrowserOpenOptions, 
+			null // Ensure Playwright launches a new browser instance
+		);
+
+		try
+		{
+			return await lib.Playwright.Services.Util.GetCookies(options);
+		}
+		catch (Exception ex)
+		{
+			Toaster.Error($"Error getting cookies for {browserType}: {ex.Message}");
+			return null;
+		}
+	}
+
+	private async Task SetCookiesAsync(SystemBrowserType browserType, IEnumerable<Cookie> cookies)
+	{
+		var sysBrowserOpenOptions = new SysBrowserOpenOptions(browserType, SystemBrowserProfile);
+		var settings = new SysBrowserSettings(sysBrowserOpenOptions, Dto.proxy?.port ?? 0);
+		var userProfileDir = settings.SysBrowserProfileCachePath;
+
+		Proxy? playwrightProxy = null;
+		if (SystemBrowserProfile.Proxy != null && SystemBrowserProfile.Proxy.CanUse)
+		{
+			playwrightProxy = new Proxy
+			{
+				Server = SystemBrowserProfile.Proxy.Server!,
+				Username = SystemBrowserProfile.Proxy.UserName,
+				Password = SystemBrowserProfile.Proxy.Password
+			};
+		}
+		
+		var options = new PlaywrightOptions(
+			sysBrowserOpenOptions, 
+			null // Ensure Playwright launches a new browser instance
+		);
+
+		using var playwright = await Playwright.CreateAsync();
+		var pwBrowser = browserType == SystemBrowserType.Firefox ? playwright.Firefox : playwright.Chromium;
+		
+		var tempDir = Path.Combine(Path.GetTempPath(), "chameleon-cookie-import-temp", Guid.NewGuid().ToString());
+
+		try
+		{
+			_ = Directory.CreateDirectory(tempDir);
+
+			if (Directory.Exists(userProfileDir))
+			{
+				foreach (var dirPath in Directory.GetDirectories(userProfileDir, "*", SearchOption.AllDirectories))
+					_ = Directory.CreateDirectory(dirPath.Replace(userProfileDir, tempDir));
+				foreach (var newPath in Directory.GetFiles(userProfileDir, "*.*", SearchOption.AllDirectories))
+					File.Copy(newPath, newPath.Replace(userProfileDir, tempDir), true);
+			}
+
+			var launchOptions = new BrowserTypeLaunchPersistentContextOptions
+			{
+				Headless = true, 
+				Args = ["--allow-downgrade"], 
+				Proxy = playwrightProxy,
+			};
+			
+			var executablePath = await Chameleon.lib.Playwright.Services.Util.GetBrowseExecutablePath(browserType);
+			if (!string.IsNullOrEmpty(executablePath) && File.Exists(executablePath))
+			{
+				launchOptions.ExecutablePath = executablePath;
+			}
+			else
+			{
+				Toaster.Info($"Browser executable not found for {browserType}. Using default Playwright browser.");
+			}
+
+			await using var context = await pwBrowser.LaunchPersistentContextAsync(tempDir, launchOptions);
+			await context.AddCookiesAsync(cookies.Select(c => new Microsoft.Playwright.Cookie
+			{
+				Name = c.Name,
+				Value = c.Value,
+				Domain = c.Domain,
+				Path = c.Path,
+				Expires = (float?)c.Expires,
+				HttpOnly = c.HttpOnly,
+				Secure = c.Secure,
+				SameSite = Enum.TryParse<SameSiteAttribute>(c.SameSite, true, out var sameSiteEnum) ? sameSiteEnum : SameSiteAttribute.Lax
+			}));
+			await context.CloseAsync();
+
+			string sourceCookiesFilePath;
+			string targetCookiesFilePath;
+
+			if (browserType == SystemBrowserType.Firefox)
+			{
+				sourceCookiesFilePath = Path.Combine(tempDir, "cookies.sqlite");
+				targetCookiesFilePath = Path.Combine(userProfileDir, "cookies.sqlite");
+			}
+			else
+			{
+				sourceCookiesFilePath = Path.Combine(tempDir, "Default", "Cookies");
+				targetCookiesFilePath = Path.Combine(userProfileDir, "Default", "Cookies");
+			}
+
+			if (File.Exists(sourceCookiesFilePath))
+			{
+				try
+				{
+					_ = Directory.CreateDirectory(Path.GetDirectoryName(targetCookiesFilePath)!);
+					File.Copy(sourceCookiesFilePath, targetCookiesFilePath, true);
+					Toaster.Success($"Successfully imported cookies to {browserType} profile. Restart browser if running.");
+				}
+				catch (IOException ioEx)
+				{
+					Toaster.Error($"Could not copy cookies file to profile (browser might be running or file locked): {ioEx.Message}. Cookies were set in a temporary session only.");
+				}
+			}
+			else
+			{
+				Toaster.Info($"Cookies file not found in temporary session for {browserType}. Cookies might have been set in-memory or path is incorrect.");
+			}
+		}
+		catch (Exception ex)
+		{
+			Toaster.Error($"Error setting cookies for {browserType}: {ex.Message}");
+		}
+		finally
+		{
+			try { if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true); }
+			catch { /* Ignore cleanup errors */ }
+		}
+	}
+}
+
+public class Cookie
+{
+	public string Name { get; set; } = "";
+	public string Value { get; set; } = "";
+	public string Domain { get; set; } = "";
+	public string Path { get; set; } = "";
+	public double Expires { get; set; } = -1; // Unix timestamp in seconds. Playwright uses float.
+	public bool HttpOnly { get; set; }
+	public bool Secure { get; set; }
+	public string SameSite { get; set; } = "None"; // "Lax", "Strict", "None"
 }

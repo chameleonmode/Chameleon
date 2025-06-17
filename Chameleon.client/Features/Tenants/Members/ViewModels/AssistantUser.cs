@@ -114,7 +114,7 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 				?? throw new InvalidOperationException("Profile not found");
 
 				try {
-					var browserInstance = await profile.OpenSystemBrowser(bt) 
+					var browserInstance = await profile.OpenSystemBrowser(bt,false) 
 					?? throw new InvalidOperationException($"Failed to start {bt} browser for profile {profile.Dto!.title}");
 
 					using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
