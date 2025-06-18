@@ -38,10 +38,10 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 					Args: loadedState.Options.Args ?? vm.Actor.Options.Args,
 					Settings: loadedState.Options.Settings ?? vm.Actor.Options.Settings
 				);
-				vm.LoadFromCache(selections: loadedState.Selections,
+				vm.LoadFromCache(
+					selections: loadedState.Selections,
 				 	tags: loadedState.SelectedTags.Select(x => x.Dto.Name),
 					profiles: loadedState.SelectedProfileIds);
-				vm.EditableSettings.Rando = vm.Actor.Options.Settings.Start.Rando.Min;
 				Debug.WriteLine($"Loaded actor state from: {filePath}");
 			} catch (Exception ex) {
 				Debug.WriteLine($"Error loading actor state from {filePath}: {ex}");

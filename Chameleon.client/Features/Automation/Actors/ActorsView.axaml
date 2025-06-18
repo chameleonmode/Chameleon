@@ -40,7 +40,7 @@
 														<ToggleSwitch ToolTip.Tip="Run all selected automations for each profile, or run all profiles for each automation"
 																	  IsChecked="{Binding EditableSettings.EachProfile}" 
 																	  OffContent="Each Profile"  OnContent="Each Selection"/> -->
-														<ToggleSwitch IsChecked="{Binding EditableSettings.CloseOldBrowserProfileAfterRun}"
+														<ToggleSwitch IsChecked="{Binding EditableSettings.CloseAfterRun}"
 															 ToolTip.Tip="Close or keep open browser instances for the previous profile before moving to the next"
 															 OffContent="Open" OnContent="Close"/>
 													</StackPanel>
@@ -118,7 +118,7 @@
 															<ui:NumberBox Value="{Binding EditableSettings.Start.Attempts}"/>
 														</afv:Inputter>
 														<afv:Inputter Title="Rando:" Description="Min-max activity value for voting and joining">
-															<ui:NumberBox Value="{Binding EditableSettings.Rando}" />
+															<ui:NumberBox Value="{Binding EditableSettings.Start.Rando.Min}" />
 														</afv:Inputter>
 														<afv:Inputter Title="Speed:" Description="robo movement speed in milliseconds">
 															<ui:NumberBox Value="{Binding EditableSettings.Timeouts.Naps.Min}" />
@@ -134,23 +134,23 @@
 															<afv:Inputter Title="System:"
 																			   Description="most helpful for the model consistency"
 																			   Watermark="You are helpful..."
-																			   Text="{Binding AiSettings.Decorators.System, Mode=TwoWay}" />
+																			   Text="{Binding AISettings.Decorators.System, Mode=TwoWay}" />
 															<afv:Inputter Title="Human:"
 																			   Description="Human persona description"
 																			   Watermark="...(eg. reddit content creator, reddit user, etc.)"
-																			   Text="{Binding AiSettings.Decorators.Human, Mode=TwoWay}" />
+																			   Text="{Binding AISettings.Decorators.Human, Mode=TwoWay}" />
 															<afv:Inputter Title="Audience:"
 																			   Description="Target audience"
 																			   Watermark="...(eg: reddit users who are interested in..., reddit users who are looking for..., etc.)"
-																			   Text="{Binding AiSettings.Decorators.Audience, Mode=TwoWay}" />
+																			   Text="{Binding AISettings.Decorators.Audience, Mode=TwoWay}" />
 															<afv:Inputter Title="Background:"
 																			   Description="Background context"
 																			   Watermark="...(eg: I am surfing reddit... You... etc.)"
-																			   Text="{Binding AiSettings.Decorators.Background, Mode=TwoWay}" />
+																			   Text="{Binding AISettings.Decorators.Background, Mode=TwoWay}" />
 															<afv:Inputter Title="Tone:"
 																			   Description="Communication tone"
 																			   Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
-																			   Text="{Binding AiSettings.Decorators.Tone, Mode=TwoWay}" />
+																			   Text="{Binding AISettings.Decorators.Tone, Mode=TwoWay}" />
 														</StackPanel>
 													</Expander>
 												</StackPanel>
