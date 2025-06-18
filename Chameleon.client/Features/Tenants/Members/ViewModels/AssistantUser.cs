@@ -13,6 +13,7 @@ using Chameleon.client.Features.Tenants.Members.Dialogs;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.WebBrowser;
+using Chameleon.lib.WebBrowser.Browsers;
 
 namespace Chameleon.client.Features.Tenants.Members.ViewModels;
 public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisProfileDto> {
@@ -113,43 +114,20 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 				var profile = allProfiles.FirstOrDefault(x => x.Dto!.id == op.Dto!.ProfileId)
 				?? throw new InvalidOperationException("Profile not found");
 
-				try {
-					var browserInstance = await profile.OpenSystemBrowser(bt,false) 
-					?? throw new InvalidOperationException($"Failed to start {bt} browser for profile {profile.Dto!.title}");
+				var cookies = await profile.GetCookiesAsync(bt,true);
 
-					using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-					var isLoaded = await browserInstance.LoadedTCS.Task.WaitAsync(cts.Token);
-
-					if (!isLoaded) {
-						throw new InvalidOperationException($"Browser failed to initialize within the timeout period");
-					}
-
-					var port = browserInstance.Settings.Port;
-					if (port <= 0) {
-						throw new InvalidOperationException($"Invalid debugging port: {port}");
-					}
-
-					var cookies = await Util.GetCookies(new(new(bt, profile.SystemBrowserProfile), port));
-
-					if (cookies.Count > 0) {
-						await DB.Instance.EnsureUser();
-						var email = Dto!.id != Auther.AuthSession?.UserId ? Dto!.EmailAddress
-							: DB.Instance.DBusers?.SingleOrDefault(u => u.LicenseKey != null)?.Email;
-						var data = await DB.Routes.Cooky.SendCookies(email!, op.Dto!.ProfileId.ToString(), cookies);
-						if (data != null) {
-							Toaster.Success($"Cookies sent successfully ({cookies.Count} cookies)");
-						} else {
-							Toaster.Error($"Failed to send cookies to server");
-						}
+				if (cookies?.Count > 0) {
+					await DB.Instance.EnsureUser();
+					var email = Dto!.id != Auther.AuthSession?.UserId ? Dto!.EmailAddress
+						: DB.Instance.DBusers?.SingleOrDefault(u => u.LicenseKey != null)?.Email;
+					var data = await DB.Routes.Cooky.SendCookies(email!, op.Dto!.ProfileId.ToString(), cookies);
+					if (data != null) {
+						Toaster.Success($"Cookies sent successfully ({cookies.Count} cookies)");
 					} else {
-						Toaster.Info("No cookies found in the browser profile");
+						Toaster.Error($"Failed to send cookies to server");
 					}
-				} catch (TimeoutException) {
-					Toaster.Error("Browser initialization timed out. Please try again.");
-				} catch (OperationCanceledException) {
-					Toaster.Error("Browser initialization was cancelled or timed out.");
-				} catch (Exception ex) {
-					Toaster.Error($"Failed to extract cookies: {ex.Message}");
+				} else {
+					Toaster.Info("No cookies found in the browser profile");
 				}
 			}
 		)));
@@ -222,7 +200,7 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 					.Select(p => p.Dto!.id)
 					.ToList();
 
-				if (profilesToAdd.Count != 0 && 
+				if (profilesToAdd.Count != 0 &&
 					(await UserAssistantRepo.AddProfiles(Dto.id, profilesToAdd))?.success == true) {
 					await InitProfiles();
 					Toaster.Success($"profile(s) shared successfully");
@@ -239,7 +217,7 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 					.Select(f => f.Dto!.id)
 					.ToList();
 
-				if (foldersToAdd.Count != 0 && 
+				if (foldersToAdd.Count != 0 &&
 					(await ShareFoldersRepo.Share(Dto.id, foldersToAdd)).Length != 0) {
 					await InitFolders();
 					Toaster.Success($"folder(s) shared successfully");
