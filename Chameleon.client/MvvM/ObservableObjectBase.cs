@@ -7,6 +7,7 @@ using System.Collections;
 using System.ComponentModel;
 
 namespace Chameleon.client.MvvM;
+
 public interface IInitializer {
 	TaskCompletionSource<bool> LoadedTCS { get; }
 	Task InitializeAsync(object? param = null);
@@ -51,17 +52,13 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 
 	[RelayCommand]
 	public void CfV(string what) {
-		try {
-			CommandMap[what]();
-			SetViewModelsFilter();
-		} catch (Exception e) {
-			Toaster.Error(what, e.Message);
-		}
+		Exceptionz.TryCatch(CommandMap[what], caught: e => Toaster.Error(what, e.Message));
+		SetViewModelsFilter();
 	}
 
 	[RelayCommand]
 	public async Task AsyncCfV(string what) {
-		await Exceptionz.TryCatch(AsyncCommandMap[what], what);
+		await Exceptionz.TryCatch(AsyncCommandMap[what], caught: e => Toaster.Error(what, e.Message));
 		SetViewModelsFilter();
 	}
 
