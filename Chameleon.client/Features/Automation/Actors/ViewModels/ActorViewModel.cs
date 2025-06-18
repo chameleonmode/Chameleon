@@ -158,8 +158,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				var selection = selected.ElementAt(++selectionIndex >= selected.Count() ? selectionIndex = 0 : selectionIndex);
 				Toaster.Info($"Starting: '{selection.Script.Title}");
 
-				var urlser = ++urlsIndex >= urls.Count ? null : urls[urlsIndex];
-				var termer = terms.Count == 0 ? null : terms[++termsIndex >= terms.Count ? termsIndex = 0 : termsIndex];
+				string[] urlser = ++urlsIndex >= urls.Count ? [] : [urls[urlsIndex]];
+				string[] termer = terms.Count == 0 ? [] : [terms[++termsIndex >= terms.Count ? termsIndex = 0 : termsIndex]];
 
 				var browser = await profile.OpenSystemBrowser(SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
 				await Run.Script(new() {
@@ -167,8 +167,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					Script = selection.Script,
 					Opts = new Opts(
 					AiSettings,
-					EditableArgs.ToDictionary(selected, termer != null ? [termer] : []),
-					EditableSettings.ToRecord(urlser != null ? [urlser] : null, selection.Script.Title == "Surf" ? new(0, 0) : null, new(0, 0)))
+					EditableArgs.ToDictionary(selected, termer),
+					EditableSettings.ToRecord(urlser, selection.Script.Title == "Surf" ? new(0, 0) : null, new(0, 0)))
 				}, cts.Token);
 				Toaster.Info($"Finished: '{selection.Script.Title}'", $"Waitnig '{EditableSettings.Delay}'");
 

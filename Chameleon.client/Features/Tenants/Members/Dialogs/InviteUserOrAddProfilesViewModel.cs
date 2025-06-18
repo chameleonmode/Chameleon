@@ -28,14 +28,9 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 		ShowUserInfo = userInfo;
 		_ = UserProfilesRepo.Connect()
 		.Transform(i => new ObsProfile(i,
-			selectedChanged: p => {
-				if (p.IsSelected) {
-					if (!SelectedProfiles.Contains(p)) {
-						SelectedProfiles.Add(p);
-					}
-				} else {
-					SelectedProfiles.Remove(p);
-				}
+			selectedChanged: x => {
+				if (x.IsSelected) SelectedProfiles.AddIfNot(x);
+				else SelectedProfiles.Remove(x);
 			}) { IsActionOptionsVisible = false })
 		.Bind(out var profiles).Subscribe();
 		Profiles = profiles;
@@ -45,13 +40,9 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 			i.title ??= "All";
 			return new ObsFolder(i,
 			selectedChanged: x => {
-				if (x.IsSelected) {
-					if (!SelectedFolders.Contains(x)) {
-						SelectedFolders.Add(x);
-					}
-				} else {
-					SelectedFolders.Remove(x);
-				}
+				if (x.IsSelected) SelectedFolders.AddIfNot(x);
+				else SelectedFolders.Remove(x);
+				
 				Profiles.Where(p => p.Dto.folderId == i.id).ForEach(item => {
 					item.IsSelected = x.IsSelected;
 				});

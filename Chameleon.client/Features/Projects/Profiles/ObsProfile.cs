@@ -81,7 +81,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			}
 		};
 
-		CommandMap["OpenTopmostController"] = OpenTopmostController;
+		CommandMap["OpenTopmostController"] = () => SnapCracklePopViewModel.Open(Dto);
 		CommandMap["ShowViewProfile"] = () => DialogBox.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(
 			vm: new UserProfileSidePanelViewModel(profile),
 			title: "Copy Pasta",
@@ -102,33 +102,14 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		// browsers.ForEach(b => _ = SetRunning(b, true));
 	}
 
-	public void View() {
+	public void Navigate() {
 		if (!IsActionOptionsVisible) return;
-
 		Navigator.Instance.NavigateTo("IdentityView", Dto);
 	}
 
-	public void OpenTopmostController() {
-		DialogBox.ShowTopmost(
-			vm: SnapCracklePopViewModel.Instance,
-			v: SnapCracklePopUserControl.Instance,
-			initialize: vm => {
-				vm.RunningList.AddIfNotExists(new ObsProfile(Dto) { IsShowGlyph = false, IsShowCheckboxColumn = false }, p => p.Dto?.id == Dto.id);
-			},
-			onClosed: vm => {
-				vm.RunningList.Clear();
-			},
-			title: "SCP",
-			width: 172
-		);
-	}
-
 	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType, bool foreground = true) {
-		if (SBI[browserType] is IBrowserInstance browser) {
-			if (foreground && OperatingSystem.IsMacOS()) browser.Brocessor(false).Start();
-			else if (foreground) browser.InvokeEvent(SysBrowserEventType.Foreground);
-		} else SBI[browserType] = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile));
-
+		if (SBI[browserType] is IBrowserInstance browser && foreground) browser.InvokeEvent(SysBrowserEventType.Foreground);
+		else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile));
 		return SBI[browserType];
 	}
 }

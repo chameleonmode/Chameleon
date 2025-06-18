@@ -118,7 +118,7 @@ public partial class ProfilesViewModel : Profiler {
 		AsyncCommandMap["brave"] = () => OpenSystemBrowser(SystemBrowserType.Brave);
 		AsyncCommandMap["firefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
 		AsyncCommandMap["hwinds"] = () => {
-			GetSelectedProfiles?.ForEach(profile => profile.OpenTopmostController());
+			GetSelectedProfiles?.ForEach(profile => SnapCracklePopViewModel.Open(profile.Dto));
 			return Task.CompletedTask;
 		};
 		AsyncCommandMap["play"] = async () => {
