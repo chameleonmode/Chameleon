@@ -37,13 +37,13 @@
 							BorderThickness="1"
 							Width="34"
 							Height="34">
-							<TextBlock Text="{Binding Code,FallbackValue=N}"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center"
-									TextAlignment="Center"
-									Margin="0 0 0 0"
-									Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
-									Theme="{StaticResource BodyStrongTextBlockStyle}"/>
+						<TextBlock Text="{Binding Code,FallbackValue=N}"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								TextAlignment="Center"
+								Margin="0 0 0 0"
+								Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}"
+								Theme="{StaticResource BodyStrongTextBlockStyle}"/>
 					</Border>
 
 					<Panel IsVisible="{Binding IsSharedProfile}"
@@ -62,7 +62,7 @@
 					Text="{Binding Title, FallbackValue=x_x}"
 					Margin="12 0 0 0"
 					HorizontalAlignment="Left" />
-			<UniformGrid Grid.Column="3" 
+			<UniformGrid Grid.Column="3"
 					IsVisible="{Binding IsActionOptionsVisible}"
 					HorizontalAlignment="Right"
 					Rows="1">
@@ -100,19 +100,22 @@
 						Theme="{StaticResource SvgIconButton}">
 					<Button.Flyout>
 						<ui:FAMenuFlyout Placement="Bottom">
-							<!-- <ui:MenuFlyoutSubItem IconSource="Import" Text="Import Cookies">
-								<ui:MenuFlyoutItem Classes="sync-chrome" />
-								<ui:MenuFlyoutItem Classes="sync-brave" />
-								<ui:MenuFlyoutItem Classes="sync-firefox" />
+							
+							<ui:MenuFlyoutSubItem IconSource="Import" Text="Import Cookies">
+								<ui:MenuFlyoutItem Classes="sync-chrome" Command="{Binding AsyncCfVCommand}" CommandParameter="ImportCookiesChrome"/>
+								<ui:MenuFlyoutItem Classes="sync-brave" Command="{Binding AsyncCfVCommand}" CommandParameter="ImportCookiesBrave" />
+								<ui:MenuFlyoutItem Classes="sync-firefox" Command="{Binding AsyncCfVCommand}" CommandParameter="ImportCookiesFirefox" />
 							</ui:MenuFlyoutSubItem>
+							
 							<ui:MenuFlyoutSubItem IconSource="Export" Text="Export Cookies">
-								<ui:MenuFlyoutItem Classes="sync-chrome" CommandParameter="ExportCookiesChrome" />
-								<ui:MenuFlyoutItem Classes="sync-brave" CommandParameter="ExportCookiesBrave"/>
-								<ui:MenuFlyoutItem Classes="sync-firefox" CommandParameter="ExportCookiesFirefox"/>
+								<ui:MenuFlyoutItem Classes="sync-chrome" Command="{Binding AsyncCfVCommand}" CommandParameter="ExportCookiesChrome" />
+								<ui:MenuFlyoutItem Classes="sync-brave" Command="{Binding AsyncCfVCommand}" CommandParameter="ExportCookiesBrave"/>
+								<ui:MenuFlyoutItem Classes="sync-firefox" Command="{Binding AsyncCfVCommand}" CommandParameter="ExportCookiesFirefox"/>
 							</ui:MenuFlyoutSubItem>
 
-							<ui:MenuFlyoutSeparator /> -->
-							<ui:MenuFlyoutItem 
+							<ui:MenuFlyoutSeparator />
+							
+							<ui:MenuFlyoutItem
 								Text="Delete"
 								IconSource="Delete"
 								IsVisible="{Binding !IsSharedProfile}"
