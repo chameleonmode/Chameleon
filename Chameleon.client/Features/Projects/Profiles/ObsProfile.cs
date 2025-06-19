@@ -5,7 +5,6 @@ using Chameleon.lib.Api;
 using Chameleon.lib.Api.Repos;
 using Chameleon.client.MvvM;
 using Chameleon.lib.WebBrowser.Services;
-using Chameleon.lib.Util;
 
 using Chameleon.lib.WebBrowser;
 using Chameleon.lib.Helpers;
@@ -68,12 +67,12 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			OnPropertyChanged(nameof(IsFavorite));
 		};
 		AsyncCommandMap["DeleteUserProfile"] = async () => {
-			if (await MessageBox.Show(
-				title: "Delete User Profile",
+			if (
+				await MessageBox.Show(title: "Delete User Profile",
 				content: $"Are you sure you want to delete {profile.title}?",
 				btns: MBoxButtons.OkCancel,
-				fontIconInfo: "DeleteLines"
-			)) {
+				fontIconInfo: "DeleteLines")
+			) {
 				_ = await UserProfilesRepo.Instance.Delete(profile.id);
 				if (Navigator.Instance.IsCurrentView("IdentityView")) Navigator.GoBack();
 
