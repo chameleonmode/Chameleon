@@ -4,26 +4,26 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace Chameleon.client.Features.Automation.Actors.ViewModels;
 
 public partial class SettingsViewModel() : ObservableObject {
-	[ObservableProperty] Start? start;
-	[ObservableProperty] Timeouts? timeouts;
 	[ObservableProperty] bool asQue;
 	[ObservableProperty] int rando;
-	[ObservableProperty] int delay = 120;
 	[ObservableProperty] bool eachProfile;
 	[ObservableProperty] bool closeOldBrowserProfileAfterRun;
-	public SettingsViewModel(AIR.Actors.Models.Settings source): this() => Set(source);
+	[ObservableProperty] int delay = 120;
+	[ObservableProperty] Start start = new("x", 9, new(1, 1), new(1, 1));
+	[ObservableProperty] Timeouts timeouts = new(30, 15, 60, new(256, 512));
+	public SettingsViewModel(AIR.Actors.Models.Settings source) : this() => Set(source);
 	public void Set(AIR.Actors.Models.Settings source) {
 		Start = source.Start;
 		Timeouts = source.Timeouts;
 	}
-	public AIR.Actors.Models.Settings ToRecord(IEnumerable<string>? urls = null, Rando? rando = null, Rando? variations = null) {
+	public AIR.Actors.Models.Settings ToRecord(IEnumerable<string>? urls, Rando? rando = null, Rando? variations = null) {
 		return new(
-			Start! with {
+			Start with {
 				Rando = rando ?? new(Rando, Rando),
 				Variations = variations ?? Start.Variations,
-				Urls = urls ?? Start.Urls
+				Urls = urls
 			},
-			Timeouts! with {
+			Timeouts with {
 				Artifacto = new() { ["delay"] = Delay }
 			}
 		);

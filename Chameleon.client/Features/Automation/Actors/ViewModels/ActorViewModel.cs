@@ -12,7 +12,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using DynamicData.Binding;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text.Json.Serialization;
@@ -32,7 +31,6 @@ public partial class Tag(TagDto dto) : ObservableObject {
 
 	[JsonIgnore] public string ToolTipText => $"{ProfileIds.Count()} Profiles";
 }
-public record Selection(Script Script, bool Selected = false);
 public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<int> SelectedProfileIds);
 
 public partial class ActorViewModel : ViewModelObjectBase {
@@ -47,9 +45,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	public CompositeDisposable Subscriptions { get; } = [];
 	public ObservableCollection<Selection> Selections { get; } = [];
 	public ArgsViewModel EditableArgs { get; } = new();
-	public SettingsViewModel EditableSettings { get; } = new();
-
-	public AIR.Actors.Models.AI AiSettings => Actor.Options.AI;
+	public AIR.Actors.Models.AI AISettings => Actor.Options.AI;
+	public AIR.Actors.Models.Settings EditableSettings => Actor.Options.Settings; //new(new("x", 9, new(1, 1), new(1, 1)), new(30, 15, 60, new(256, 512)));
 
 	public ActorViewModel(IActor actor) {
 		Actor = actor;
@@ -102,16 +99,17 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			var selected = selections?.FirstOrDefault(x => x.Script.Title == s.Title)?.Selected ?? false;
 			return new Selection((Script)s, selected);
 		}).ForEach(Selections.Add);
-		OnPropertyChanged(nameof(AiSettings));
 		EditableArgs.Set(Actor.Options.Args);
-		EditableSettings.Set(Actor.Options.Settings);
+		OnPropertyChanged(nameof(AISettings));
+		OnPropertyChanged(nameof(EditableSettings));
+		OnPropertyChanged(nameof(EditableArgs));
 	}
 
 	public async Task Saverer() {
 		Actor.Options.Settings.Start.Feature.ThrowIfNullOrEmpty();
 		var currentArgs = EditableArgs.ToDictionary([], EditableArgs.Search.Split(','));
 		var currentSettings = EditableSettings.ToRecord();
-		var currentOpts = new Opts(AiSettings, currentArgs, currentSettings);
+		var currentOpts = new Opts(AISettings, currentArgs, currentSettings);
 		var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.IsSelected), SelectedProfiles.Select(x => x.Dto.id));
 		var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
 		var jsonContent = JSON.Serialize(stateToSave, JSON.EnumConverter);
@@ -121,7 +119,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 	public async Task Runerer() {
 		Running = true;
-		cts = new CancellationTokenSource();
+		cts = new();
 		try {
 			var profiles = SelectedProfiles.Where(p => p.Active);
 			if (!profiles.Any()) throw new Exception("No profiles selected to run.");
@@ -130,55 +128,49 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			if (!selected.Any()) throw new Exception("No scripts selected to run.");
 
 			var terms = EditableArgs.Search.Split(',').Select(x => x.Trim()).ToList();
-			var urls = EditableSettings.Start?.Url?.Split('\n').Where(x => x.IsNot()).Select(x => x.Trim()).ToArray() ?? [];
-			if (terms.Count == 0 && urls.Length == 0) throw new Exception("Search and URL's cannot be empty together.");
+			var urls = EditableSettings.Start.Url?.Split('\n').Where(x => x.IsNot()).Select(x => x.Trim()).ToList() ?? [];
+			if (terms.Count == 0 && urls.Count == 0) throw new Exception("Search and URL's cannot be empty together.");
 			else if (terms.Count != 0 && EditableSettings.Start?.Variations.Min > 0) {
 				Toaster.Info($"Generating {EditableSettings.Start.Variations.Min} terms for each search term");
-				var res = await Service.Routes.Promptee.Genorate(new(
-					new(
-						AiSettings.Decorators.System,
-						AiSettings.Decorators.Tone,
-						AiSettings.Decorators.Human,
-						AiSettings.Decorators.Audience,
-						AiSettings.Decorators.Background
+				var res = await Service.Routes.Promptee.Genorate(new(new(
+						AISettings.Decorators.System,
+						AISettings.Decorators.Tone,
+						AISettings.Decorators.Human,
+						AISettings.Decorators.Audience,
+						AISettings.Decorators.Background
 					),
 					EditableSettings.Start.Variations.Min,
 					terms
-				));
-				res?.Reply.ForEach(i => {
+				)).WaitAsync(cts.Token);
+				terms.AddRange(res?.Reply.SelectMany(i => {
 					var termy = i.Data.Split(',').Select(t => t.Trim()).Where(t => t.IsNot());
 					Toaster.Success($"Adding - {i.Data}");
-					terms.AddRange(termy);
-				});
+					return termy;
+				}) ?? []);
 				terms = [.. terms.OrderBy(s => new Random().Next())];
 			}
-			int selectionIndex = -1, executionIndex = -1;
+			int selectionIndex = -1, termsIndex = -1, urlsIndex = -1;
 
 			await profiles.ForEach(async profile => {
 				var selection = selected.ElementAt(++selectionIndex >= selected.Count() ? selectionIndex = 0 : selectionIndex);
 				Toaster.Info($"Starting: '{selection.Script.Title}");
 
-				if (++executionIndex >= terms.Count && executionIndex >= urls.Length) executionIndex = 0;
-				string[] termer = executionIndex < terms.Count ? [terms.ElementAt(executionIndex)] : [];
-				string[] urlser = termer.Length == 0 ? [urls.ElementAt(executionIndex)] : [];
-
-				var opts = new Opts(
-					AiSettings,
-					EditableArgs.ToDictionary(selected, termer),
-					EditableSettings.ToRecord(urlser, selection.Script.Title == "Surf" ? new(0, 0) : null, new(0, 0))
-				);
-				Debug.WriteLine($"Running: \n\t '{profile.Title}', '{selection.Script.Title}', {JSON.Serialize(opts)}");
+				string[] urlser = ++urlsIndex >= urls.Count ? [] : [urls[urlsIndex]];
+				string[] termer = terms.Count == 0 ? [] : [terms[++termsIndex >= terms.Count ? termsIndex = 0 : termsIndex]];
 
 				var browser = await profile.OpenSystemBrowser(SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
 				await Run.Script(new() {
 					Port = browser!.Settings.Port,
 					Script = selection.Script,
-					Opts = opts
+					Opts = new Opts(
+					AISettings,
+					EditableArgs.ToDictionary(selected, termer),
+					EditableSettings.ToRecord(urlser, selection.Script.Title == "Surf" ? new(0, 0) : null, new(0, 0)))
 				}, cts.Token);
 				Toaster.Info($"Finished: '{selection.Script.Title}'", $"Waitnig '{EditableSettings.Delay}'");
 
 				await Task.Delay(TimeSpan.FromSeconds(EditableSettings.Delay), cts.Token);
-				if (EditableSettings.CloseOldBrowserProfileAfterRun) {
+				if (EditableSettings.CloseAfterRun) {
 					await ProcessUtil.TryKillProcess(browser.Brocess);
 					browser.Close();
 				}

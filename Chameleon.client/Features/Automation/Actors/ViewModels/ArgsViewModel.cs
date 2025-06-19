@@ -62,8 +62,8 @@ public partial class ArgsViewModel : ObservableObject {
 						if (arrayEnumerator.MoveNext() && arrayEnumerator.Current.ValueKind == JsonValueKind.String) {
 							var stringValues = new List<string>();
 							do {
-								if (arrayEnumerator.Current.ValueKind == JsonValueKind.String) {
-									stringValues.Add(arrayEnumerator.Current.GetString()!);
+								if (arrayEnumerator.Current.ValueKind == JsonValueKind.String && arrayEnumerator.Current.GetString()?.Trim() is string term) {
+									stringValues.Add(term);
 								}
 							} while (arrayEnumerator.MoveNext());
 							return (T)(object)string.Join(", ", stringValues);

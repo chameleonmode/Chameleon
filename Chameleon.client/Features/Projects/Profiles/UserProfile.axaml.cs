@@ -14,6 +14,6 @@ public partial class UserProfileUserControl : UserControl {
 
 	private void OnPageTapped(object? sender, TappedEventArgs e) {
 		if (e.Source is Visual v && v.FindAncestorOfType<Button>(true) is null && DataContext is ObsProfile up) 
-			up.View();
+			up.Navigate();
 	}
 }

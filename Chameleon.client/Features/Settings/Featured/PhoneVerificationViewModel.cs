@@ -58,8 +58,7 @@ public partial class PVApiModel : ViewModelObjectBase, IPVApiModel {
 
 	public bool HasCancel { get; set; } = true;
 
-	public PVApiModel(IPVAInstance pnapinstance)
-	{
+	public PVApiModel(IPVAInstance pnapinstance) {
 		_pnapinstance = pnapinstance;
 		Title = pnapinstance.Name;
 
@@ -73,8 +72,7 @@ public partial class PVApiModel : ViewModelObjectBase, IPVApiModel {
 		CommandMap["Popout"] = Popout;
 	}
 
-	private async Task DoInit()
-	{
+	private async Task DoInit() {
 		await _pnapinstance.Init();
 		ApiKey = _pnapinstance.ApiKey;
 		Apps = new AvaloniaList<RService>(_pnapinstance.Services);
@@ -85,16 +83,14 @@ public partial class PVApiModel : ViewModelObjectBase, IPVApiModel {
 		OnPropertyChanged(nameof(Countries));
 		SelectedCountry = Countries[0];
 	}
-	public async Task Save()
-	{
+	public async Task Save() {
 		await MakeRequest(async () => {
 			_pnapinstance.ApiKey = ApiKey;
 			await _pnapinstance.Save();
 		}, e => Toaster.Error(e));
 	}
 
-	public async Task GetNumber()
-	{
+	public async Task GetNumber() {
 		if (SelectedCountry is null || SelectedApp is null)
 			return;
 
@@ -106,8 +102,7 @@ public partial class PVApiModel : ViewModelObjectBase, IPVApiModel {
 		}, e => LastFormatedResponse = e);
 	}
 
-	public async Task GetCode()
-	{
+	public async Task GetCode() {
 		if (lastJsonResponse.Is())
 			return;
 
@@ -118,8 +113,7 @@ public partial class PVApiModel : ViewModelObjectBase, IPVApiModel {
 		}, e => LastFormatedResponse = e);
 	}
 
-	private async Task CancelOrder()
-	{
+	private async Task CancelOrder() {
 		if (lastJsonResponse.Is())
 			return;
 
@@ -133,16 +127,14 @@ public partial class PVApiModel : ViewModelObjectBase, IPVApiModel {
 		}, e => LastFormatedResponse = e);
 	}
 
-	private async Task MakeRequest(Func<Task> func, Action<string> onErr)
-	{
+	private async Task MakeRequest(Func<Task> func, Action<string> onErr) {
 		IsAwaiting = true;
-		await Exceptionz.AsyncTryCatch(func, e => onErr(e.Message));
+		await Exceptionz.TryCatch(func, e => onErr(e.Message));
 		IsAwaiting = false;
 	}
 
-	public void Popout()
-	{
-		DialogBox.ShowTopmost<PVAUserControl, PVApiModel>(new PVApiModel(_pnapinstance) { 
+	public void Popout() {
+		DialogBox.ShowTopmost<PVAUserControl, PVApiModel>(new PVApiModel(_pnapinstance) {
 			HasCancel = HasCancel
 		}, async vm => {
 			vm.IsVisibleSave = false;
@@ -162,8 +154,7 @@ public partial class PhoneVerificationViewModel() : ViewModelObjectBase("Phone V
 	public IPVApiModel SMSPVA => PVApis[2];
 	public IPVApiModel SMSPool => PVApis[1];
 
-	public override async Task InitAsync(object? param)
-	{
+	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
 
 		OnPropertyChanged(nameof(PVApis));
