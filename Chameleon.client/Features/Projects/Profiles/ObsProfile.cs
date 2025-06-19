@@ -214,7 +214,8 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			Toaster.Error($"Failed to extract cookies from {browserType}: {ex.Message}");
 			return null;
 		} finally {
-			if (closeAfter && browserInstance != null && browserInstance.Brocess != null && !browserInstance.Brocess.HasExited) {
+			var alreadyRunningInUIMode = await IsBrowserRunningInUIModeAsync(browserInstance!, browserType);//Prevent closing browser if it was already started in UI mode
+			if (!alreadyRunningInUIMode && closeAfter && browserInstance != null && browserInstance.Brocess != null && !browserInstance.Brocess.HasExited) {
 				browserInstance.Close();
 				SBI[browserType] = null;
 			}
@@ -339,10 +340,46 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		} catch (Exception ex) {
 			Toaster.Error($"Failed to set cookies in running {browserType} instance: {ex.Message}");
 		} finally {
-			if (closeAfter && browserInstance != null && browserInstance.Brocess != null && !browserInstance.Brocess.HasExited) {
+			var alreadyRunningInUIMode = await IsBrowserRunningInUIModeAsync(browserInstance!, browserType);//Prevent closing browser if it was already started in UI mode
+			if (!alreadyRunningInUIMode && closeAfter && browserInstance != null && browserInstance.Brocess != null && !browserInstance.Brocess.HasExited) {
 				browserInstance.Close();
 				SBI[browserType] = null;
 			}
+		}
+	}
+
+	private async Task<bool> IsBrowserRunningInUIModeAsync(IBrowserInstance browserInstance, SystemBrowserType browserType) {
+
+		if (browserInstance == null || browserInstance.Brocess == null || browserInstance.Brocess.HasExited)
+			return false;
+
+		var headlessArg = browserType == SystemBrowserType.Firefox ? "-headless" : "--headless";
+		if (ProcessUtil.HasCommandLineArgument(browserInstance.Brocess, headlessArg))
+			return false;
+
+		var hasWindow = false;
+		try {
+			hasWindow = !browserInstance.Brocess.HasExited && browserInstance.Brocess.MainWindowHandle != IntPtr.Zero;
+		} catch (InvalidOperationException) {
+			return false;
+		}
+
+		if (!hasWindow) {
+			return false;
+		}
+
+		var port = browserInstance.Settings.Port;
+		if (port <= 0) {
+			return true;
+		}
+
+		try {
+			using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+			var playwrightBrowser = browserType == SystemBrowserType.Firefox ? playwright.Firefox : playwright.Chromium;
+			await using var browser = await playwrightBrowser.ConnectOverCDPAsync($"http://localhost:{port}", new() { Timeout = 2000 });
+			return browser.IsConnected;
+		} catch {
+			return false;
 		}
 	}
 }
