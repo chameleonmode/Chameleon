@@ -159,17 +159,17 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				string[] termer = terms.Count == 0 ? [] : [terms[++termsIndex >= terms.Count ? termsIndex = 0 : termsIndex]];
 
 				var browser = await profile.OpenSystemBrowser(SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
-				await Run.Script(new() {
-					Port = browser!.Settings.Port,
-					Script = selection.Script,
-					Opts = new Opts(
-					AISettings,
-					EditableArgs.ToDictionary(selected, termer),
-					EditableSettings.ToRecord(urlser, selection.Script.Title == "Surf" ? new(0, 0) : null, new(0, 0)))
-				}, cts.Token);
-				Toaster.Info($"Finished: '{selection.Script.Title}'", $"Waitnig '{EditableSettings.Delay}'");
+				// await Run.Script(new() {
+				// 	Port = browser!.Settings.Port,
+				// 	Script = selection.Script,
+				// 	Opts = new Opts(
+				// 	AISettings,
+				// 	EditableArgs.ToDictionary(selected, termer),
+				// 	EditableSettings.ToRecord(urlser, selection.Script.Title == "Surf" ? new(0, 0) : null, new(0, 0)))
+				// }, cts.Token);
+				// Toaster.Info($"Finished: '{selection.Script.Title}'", $"Waitnig '{EditableSettings.Delay}'");
 
-				await Task.Delay(TimeSpan.FromSeconds(EditableSettings.Delay), cts.Token);
+				// await Task.Delay(TimeSpan.FromSeconds(EditableSettings.Delay), cts.Token);
 				if (EditableSettings.CloseAfterRun) {
 					await ProcessUtil.TryKillProcess(browser.Brocess);
 					browser.Close();

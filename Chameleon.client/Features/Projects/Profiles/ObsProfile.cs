@@ -123,9 +123,13 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		Navigator.Instance.NavigateTo("IdentityView", Dto);
 	}
 
-	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType, bool foreground = true) {
-		if (SBI[browserType] is IBrowserInstance browser && foreground) browser.InvokeEvent(SysBrowserEventType.Foreground);
-		else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile));
+	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType, bool foreground = true, bool headless = false) {
+		if (SBI[browserType] is IBrowserInstance browser) {
+			if (browser.Settings.OpenOptions.Headless && !headless) return await SwitchToUIMode(browserType);
+			else if(foreground)browser.InvokeEvent(SysBrowserEventType.Foreground);
+			else browser.InvokeEvent(SysBrowserEventType.Background);
+		} 
+		else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile, foreground, headless));
 		return SBI[browserType];
 	}
 
@@ -325,7 +329,8 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		if (ProcessUtil.HasCommandLineArgument(browserInstance.Brocess, headlessArg))
 			return false;
 
-		var hasWindow = false;
+		bool hasWindow;
+
 		try {
 			hasWindow = !browserInstance.Brocess.HasExited && browserInstance.Brocess.MainWindowHandle != IntPtr.Zero;
 		} catch (InvalidOperationException) {
