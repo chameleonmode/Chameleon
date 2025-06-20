@@ -197,7 +197,7 @@
 							Classes="accent"
 							Width="72"
 							Command="{Binding AsyncCfVCommand}"
-							CommandParameter="playwright"
+							CommandParameter="play"
 							IsVisible="{Binding IsVisibleRunButton}">
 							<StackPanel Orientation="Horizontal" >
 								<ui:SymbolIcon
