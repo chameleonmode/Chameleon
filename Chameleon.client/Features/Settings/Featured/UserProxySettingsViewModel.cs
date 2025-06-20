@@ -95,6 +95,10 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		TotalCount = PaginatorViewModel.TotalCount;
 
 		AsyncCommandMap["ApplyProxy"] = ApplyProxy;
+		AsyncCommandMap["FillProxies"] = FillProxies;
+		CommandMap["UnselectItems"] = UnselectItems;
+		CommandMap["SelectAll"] = SelectAll;
+		CommandMap["SelectAllFromFolder"] = SelectAllFromFolder;
 	}
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
