@@ -125,8 +125,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 
 	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType, bool foreground = true, bool headless = false) {
 		if (SBI[browserType] is IBrowserInstance browser) {
-			if (browser.Settings.OpenOptions.Headless && !headless) return await SwitchToUIMode(browserType);
-			else if(foreground)browser.InvokeEvent(SysBrowserEventType.Foreground);
+			if (foreground) browser.InvokeEvent(SysBrowserEventType.Foreground);
 			else browser.InvokeEvent(SysBrowserEventType.Background);
 		} 
 		else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile, foreground, headless));
