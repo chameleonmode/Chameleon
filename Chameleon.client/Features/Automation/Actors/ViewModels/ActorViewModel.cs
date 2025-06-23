@@ -127,7 +127,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			var selected = Selections.OrderBy(s => new Random().Next()).Where(s => s.Selected);
 			if (!selected.Any()) throw new Exception("No scripts selected to run.");
 
-			var terms = EditableArgs.Search.Split(',').Select(x => x.Trim()).ToList();
+			var terms = EditableArgs.Search.Split(',').Where(x => x.IsNot()).Select(x => x.Trim()).ToList();
 			var urls = EditableSettings.Start.Url?.Split('\n').Where(x => x.IsNot()).Select(x => x.Trim()).ToList() ?? [];
 			if (terms.Count == 0 && urls.Count == 0) throw new Exception("Search and URL's cannot be empty together.");
 			else if (terms.Count != 0 && EditableSettings.Start?.Variations.Min > 0) {
