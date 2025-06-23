@@ -27,7 +27,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.assets\chameleon.assets.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib\Chameleon.lib.csproj" />
-    <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.AIR\Chameleon.lib.AIR.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Api\Chameleon.lib.Api.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.Playwright\Chameleon.lib.Playwright.csproj" />
     <ProjectReference Include="..\..\chameleon-lib\Chameleon.lib.WebBrowser\Chameleon.lib.WebBrowser.csproj" />
