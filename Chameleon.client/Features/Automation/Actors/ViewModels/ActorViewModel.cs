@@ -156,7 +156,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 				string[] urlser = ++urlsIndex >= urls.Count ? [] : [urls[urlsIndex]];
 				string[] termer = terms.Count == 0 ? [] : [terms[++termsIndex >= terms.Count ? termsIndex = 0 : termsIndex]];
 				Toaster.Info(
-					$"Starting: '{selection.Script.Title}",
+					$"Starting: '{selection.Script.Title}'",
 					$"Using URL: {string.Join(", ", urlser)}",
 					$"Using term: {string.Join(", ", termer)}");
 
