@@ -1,8 +1,7 @@
-using Chameleon.AIR.Actors.Models;
 using Chameleon.client.Features.Automation.Actors.Dialogs;
 using Chameleon.client.Features.Automation.Actors.ViewModels;
 using Chameleon.client.Features.Projects.Profiles;
-using Chameleon.lib.AIR.Scripts.Models;
+using Chameleon.lib.AIR.Scripts;
 using Chameleon.lib.Api.Repos;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
@@ -19,6 +18,7 @@ using Chameleon.lib;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.WebBrowser;
 using Chameleon.lib.Abs.Platformatic;
+using Chameleon.lib.AIR.Actors;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public partial class Tag(TagDto dto) : ObservableObject {
@@ -45,8 +45,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	public CompositeDisposable Subscriptions { get; } = [];
 	public ObservableCollection<Selection> Selections { get; } = [];
 	public ArgsViewModel EditableArgs { get; } = new();
-	public AIR.Actors.Models.AI AISettings => Actor.Options.AI;
-	public AIR.Actors.Models.Settings EditableSettings => Actor.Options.Settings; //new(new("x", 9, new(1, 1), new(1, 1)), new(30, 15, 60, new(256, 512)));
+	public lib.AIR.Actors.AI AISettings => Actor.Options.AI;
+	public lib.AIR.Actors.Settings EditableSettings => Actor.Options.Settings; //new(new("x", 9, new(1, 1), new(1, 1)), new(30, 15, 60, new(256, 512)));
 
 	public ActorViewModel(IActor actor) {
 		Actor = actor;
@@ -118,6 +118,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 	}
 
 	public async Task Runerer() {
+		var presearch = EditableArgs.Search;
 		Running = true;
 		cts = new();
 		try {
@@ -138,20 +139,26 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					terms
 				)).WaitAsync(cts.Token);
 				terms.AddRange(res?.Reply.SelectMany(i => {
-					var termy = i.Data.Split(',').Select(t => t.Trim()).Where(t => t.IsNot());
-					Toaster.Success($"Adding - {i.Data}");
-					return termy;
+					//var termy = i.Data.Split(',').Select(t => t.Trim()).Where(t => t.IsNot());
+					//return termy;
+					return i.Data.Select(t => t.Trim()).Where(t => t.IsNot());
 				}) ?? []);
-				terms = [.. terms.OrderBy(s => new Random().Next())];
+				for (var i = 0; i < terms.Count; i++) {
+					terms = [.. terms.OrderBy(s => new Random().Next())];
+				}
+				EditableArgs.Search = string.Join(", ", terms);
 			}
 			int selectionIndex = -1, termsIndex = -1, urlsIndex = -1;
 
 			await profiles.ForEach(async profile => {
 				var selection = selected.ElementAt(++selectionIndex >= selected.Count() ? selectionIndex = 0 : selectionIndex);
-				Toaster.Info($"Starting: '{selection.Script.Title}");
 
 				string[] urlser = ++urlsIndex >= urls.Count ? [] : [urls[urlsIndex]];
 				string[] termer = terms.Count == 0 ? [] : [terms[++termsIndex >= terms.Count ? termsIndex = 0 : termsIndex]];
+				Toaster.Info(
+					$"Starting: '{selection.Script.Title}",
+					$"Using URL: {string.Join(", ", urlser)}",
+					$"Using term: {string.Join(", ", termer)}");
 
 				var browser = await profile.OpenSystemBrowser(SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
 				await Run.Script(new() {
@@ -192,7 +199,10 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			// 	var selection = selected.ElementAt(selectionIndex);
 			// 	await ExecuteScriptAsync(selection, profile);
 			// }
-		} finally { Stoperer(); }
+		} finally {
+			Stoperer();
+			EditableArgs.Search = presearch;
+		}
 	}
 
 	private void Stoperer() {

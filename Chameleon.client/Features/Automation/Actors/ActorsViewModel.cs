@@ -1,13 +1,13 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Chameleon.client.MvvM;
-using RedditActor = Chameleon.AIR.Actors.Models.Reddit.Actor;
-using Chameleon.AIR.Actors.Models;
+using RedditActor = Chameleon.lib.AIR.Actors.Reddit.Actor;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using Chameleon.lib;
 using Chameleon.lib.WebBrowser;
+using Chameleon.lib.AIR.Actors;
 
 namespace Chameleon.client.Features.Automation.Actors;
 

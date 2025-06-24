@@ -98,7 +98,7 @@
 													<afv:Inputter Title="URL's:"
 														 Tag="True"
 														 Text="{Binding EditableSettings.Start.Url}"
-														 Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*" 
+														 Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/user/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*" 
 														 Description="list of urls seperated by a new line" />
 													
 													<UniformGrid Rows="1">

@@ -1,9 +1,9 @@
-﻿using Chameleon.AIR.Actors.Models;
-using Chameleon.AIR.Actors.Models.Reddit;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Chameleon.lib.AIR.Actors;
+using Chameleon.lib.AIR.Actors.Reddit;
 
 namespace Chameleon.client.Features.Automation.Actors.ViewModels;
 public partial class ArgsViewModel : ObservableObject {
