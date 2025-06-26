@@ -4,6 +4,7 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.client.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
+using Chameleon.lib.Helpers;
 
 namespace Chameleon.client.Features.Projects.Profiles.Dialogs;
 
@@ -22,8 +23,8 @@ public partial class AddUserProfilesPupViewModel : ViewModelObjectBase {
 							if (obs == null) return;
 
 							if (p.IsSelected && !SelectedProfiles.Contains(p)) SelectedProfiles.Add(obs);
-							else if(SelectedProfiles.Contains(p)) _ = SelectedProfiles.Remove(obs);
-							
+							else if (SelectedProfiles.Contains(p)) _ = SelectedProfiles.Remove(obs);
+
 						}) { IsActionOptionsVisible = false }
 					)
 					.SortAndBind(out var profiles, ProfilesViewModel.AscendingComparer)
@@ -40,5 +41,18 @@ public partial class AddUserProfilesPupViewModel : ViewModelObjectBase {
 						}
 					});
 		Profiles = profiles;
+	}
+}
+
+public static class AddProfilesPopup {
+	public static async Task<AddUserProfilesPupViewModel?> Show(UPFolderViewModel folder) {
+		var addViewModel = new AddUserProfilesPupViewModel { Title = "Add Profiles" };
+		return await MessageBox.ShowTaskDialog<AddUserProfilesPopupUserControl, AddUserProfilesPupViewModel>(new(
+				Initialize: () => addViewModel,
+				Header: addViewModel.Title,
+				SubHeader: $"Select profiles you want to add to {folder.Title} folder:",
+				Symbas: Symbas.Folder,
+				Btns: MBoxButtons.OkCancel)) == TaskDialogResult.OK && addViewModel.SelectedProfiles.Any()
+			? addViewModel : null;
 	}
 }

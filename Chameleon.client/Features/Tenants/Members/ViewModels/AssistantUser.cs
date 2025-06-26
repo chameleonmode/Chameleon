@@ -151,7 +151,7 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 
 	[RelayCommand]
 	private async Task DeleteAssistant() {
-		if (await MessageBox.Show("Delete User", $"Are you sure you want to delete {Dto!.UserName}", fontIconInfo: "Delete")) {
+		if (await MessageBox.Show("Delete User", $"Are you sure you want to delete {Dto!.UserName}", icon: "Delete")) {
 			try {
 				_ = await UserAssistantRepo.Instance.Delete(Dto!.id);
 			} catch {

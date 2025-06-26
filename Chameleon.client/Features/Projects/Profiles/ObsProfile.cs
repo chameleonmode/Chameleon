@@ -88,7 +88,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 				await MessageBox.Show(title: "Delete User Profile",
 				content: $"Are you sure you want to delete {profile.title}?",
 				btns: MBoxButtons.OkCancel,
-				fontIconInfo: "DeleteLines")
+				icon: "DeleteLines")
 			) {
 				_ = await UserProfilesRepo.Instance.Delete(profile.id);
 				if (Navigator.Instance.IsCurrentView("IdentityView")) Navigator.GoBack();

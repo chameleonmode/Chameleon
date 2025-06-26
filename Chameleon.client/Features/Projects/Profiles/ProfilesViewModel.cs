@@ -185,28 +185,22 @@ public partial class ProfilesViewModel : Profiler {
 				SetAutomationState(false);
 			}
 		};
+
 		AsyncCommandMap["Move"] = async () => {
 			if (!GetSelectedProfiles.Any() ||
 				await MoveProfilesPopup.Show(GetSelectedProfiles) is not { } mover) return;
 			else _ = await UserProfilesRepo.MoveUserProfileToFolder(
 				mover.Profiles.Select(a => a.Dto!.id), mover.SelectedFolder.Dto.id);
-
-			ObsProfiles.ForEach(p => p.IsShowCheckboxColumn = true); // temp fix for now TODO: findout root cause
 		};
 		AsyncCommandMap["Remove"] = async () => {
 			if (!GetSelectedProfiles.Any()) return;
 			await UserProfilesRepo.MoveUserProfileToFolder(GetSelectedProfiles.Select(a => a.Dto!.id), null);
 		};
 		AsyncCommandMap["Delete"] = async () => {
-			if (!GetSelectedProfiles.Any()) return;
-
-			var confirmed = await MessageBox.Show(
-				"Delete User Profiles",
+			if (!GetSelectedProfiles.Any() ||
+			 !await MessageBox.Show("Delete User Profiles",
 				$"Are you sure you want to delete {SelectedCount} profiles?",
-				MBoxButtons.OkCancel,
-				"DeleteLines");
-
-			if (!confirmed) return;
+				icon: "DeleteLines")) return;
 
 			foreach (var profile in GetSelectedProfiles.ToList()) {
 				var result = await UserProfilesRepo.Instance.Delete(profile.Dto!.id);
@@ -214,22 +208,10 @@ public partial class ProfilesViewModel : Profiler {
 			}
 		};
 		AsyncCommandMap["AddProfilesToFolder"] = async () => {
-			if (!HasFolder) return;
-
-			var addViewModel = new AddUserProfilesPupViewModel { Title = "Add Profiles" };
-
-			var dialogResult = await MessageBox.ShowTaskDialog<AddUserProfilesPopupUserControl, AddUserProfilesPupViewModel>(new(
-				Initialize: () => addViewModel,
-				Header: addViewModel.Title,
-				SubHeader: $"Select profiles you want to add to {Folder!.Title} folder:",
-				Symbas: Symbas.Folder,
-				Btns: MBoxButtons.OkCancel));
-
-			if (dialogResult == TaskDialogResult.OK && addViewModel.SelectedProfiles.Any()) {
-				await UserProfilesRepo.MoveUserProfileToFolder(
-					addViewModel.SelectedProfiles.Select(o => o.Dto.id),
-					Folder!.Id);
-			}
+			if (Folder is null ||
+			 await AddProfilesPopup.Show(Folder) is not { } add ||
+			 add.SelectedProfiles.Select(o => o.Dto.id) is not { } ids || !ids.Any()) return;
+			else _ = await UserProfilesRepo.MoveUserProfileToFolder(ids, Folder.Id);
 		};
 	}
 
@@ -296,6 +278,7 @@ public partial class ProfilesViewModel : Profiler {
 		);
 
 		RefreshProperties();
+		ObsProfiles.ForEach(p => p.IsShowCheckboxColumn = true); // temp fix for now TODO: findout root cause
 	}
 
 	private void RefreshProperties() {
