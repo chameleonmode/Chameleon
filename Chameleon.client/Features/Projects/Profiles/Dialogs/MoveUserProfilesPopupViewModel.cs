@@ -7,22 +7,39 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
 using Chameleon.client.Features.Projects.Folders;
+using DynamicData;
+using Chameleon.lib.Helpers;
 
 namespace Chameleon.client.Features.Projects.Profiles.Dialogs;
 
 public partial class MoveUserProfilesPopupViewModel : ViewModelObjectBase {
-	[ObservableProperty] ObsFolder? selectedFolder;
+	[ObservableProperty] ObsFolder selectedFolder;
 	[ObservableProperty] bool listIsVisible = true;
 
 	public ObservableCollection<ObsFolder> Folders { get; } = [];
 	public ObservableCollection<ObsProfile> Profiles { get; } = [];
 
-	public bool HasSelected => SelectedFolder != null;
-
-	partial void OnSelectedFolderChanged(ObsFolder? value) => OnPropertyChanged(nameof(HasSelected));
+	public MoveUserProfilesPopupViewModel() : base("Move User Profiles") {
+		// Initialize the folders and profiles collections if needed
+		Folders.AddRange(FoldersViewModel.Instance.Folders);
+		SelectedFolder = Folders.First();
+	}
 
 	[RelayCommand]
 	private void SelectFolder(ObsFolder selectedFolder) {
 		SelectedFolder = selectedFolder;
+	}
+}
+public static class MoveProfilesPopup {
+	public static async Task<MoveUserProfilesPopupViewModel?> Show(IEnumerable<ObsProfile> profils) {
+		var moveViewModel = new MoveUserProfilesPopupViewModel { Title = "Add To Folder" };
+		moveViewModel.Profiles.AddRange(profils);
+		return await MessageBox.ShowTaskDialog<MoveUserProfilesPopupUserControl, MoveUserProfilesPopupViewModel>(new(
+				Initialize: () => moveViewModel,
+				Header: moveViewModel.Title,
+				SubHeader: $"Select a folder to move the {profils.Count()} selected profiles:",
+				Symbas: Symbas.Folder,
+				Btns: MBoxButtons.OkCancel)) == TaskDialogResult.OK && moveViewModel.SelectedFolder?.Dto != null ?
+			moveViewModel : null;
 	}
 }

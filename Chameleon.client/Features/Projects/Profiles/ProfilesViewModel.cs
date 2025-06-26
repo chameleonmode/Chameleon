@@ -186,22 +186,12 @@ public partial class ProfilesViewModel : Profiler {
 			}
 		};
 		AsyncCommandMap["Move"] = async () => {
-			if (!GetSelectedProfiles.Any()) return;
+			if (!GetSelectedProfiles.Any() ||
+				await MoveProfilesPopup.Show(GetSelectedProfiles) is not { } mover) return;
+			else _ = await UserProfilesRepo.MoveUserProfileToFolder(
+				mover.Profiles.Select(a => a.Dto!.id), mover.SelectedFolder.Dto.id);
 
-			var moveViewModel = new MoveUserProfilesPopupViewModel { Title = "Add To Folder" };
-			moveViewModel.Profiles.AddRange(GetSelectedProfiles);
-			moveViewModel.Folders.AddRange(FoldersViewModel.Instance.Folders);
-
-			if (await MessageBox.ShowTaskDialog<MoveUserProfilesPopupUserControl, MoveUserProfilesPopupViewModel>(new(
-				Initialize: () => moveViewModel,
-				Header: moveViewModel.Title,
-				SubHeader: $"Select a folder to move the {GetSelectedProfiles.Count()} selected profiles:",
-				Symbas: Symbas.Folder,
-				Btns: MBoxButtons.OkCancel)) == TaskDialogResult.OK && moveViewModel.SelectedFolder?.Dto != null) {
-				_ = await UserProfilesRepo.MoveUserProfileToFolder(
-					moveViewModel.Profiles.Select(a => a.Dto!.id),
-					moveViewModel.SelectedFolder.Dto.id);
-			}
+			ObsProfiles.ForEach(p => p.IsShowCheckboxColumn = true); // temp fix for now TODO: findout root cause
 		};
 		AsyncCommandMap["Remove"] = async () => {
 			if (!GetSelectedProfiles.Any()) return;
