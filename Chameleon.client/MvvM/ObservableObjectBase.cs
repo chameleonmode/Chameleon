@@ -52,7 +52,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 
 	[RelayCommand]
 	public void CfV(string what) {
-		Exceptionz.TryCatch(CommandMap[what], caught: e => Toaster.Error(what, e.Message));
+		_ = Exceptionz.TryCatch(CommandMap[what], caught: e => Toaster.Error(what, e.Message));
 		SetViewModelsFilter();
 	}
 
