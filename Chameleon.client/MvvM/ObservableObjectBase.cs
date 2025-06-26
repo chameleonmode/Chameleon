@@ -58,7 +58,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 
 	[RelayCommand]
 	public async Task AsyncCfV(string what) {
-		await EX.Catch(AsyncCommandMap[what], caught: e => Toaster.Error(what, e.Message));
+		await EX.Try(AsyncCommandMap[what], caught: e => Toaster.Error(what, e.Message));
 		SetViewModelsFilter();
 	}
 
