@@ -40,7 +40,8 @@
 												ToolTip.Tip="Auto Update Proxies:"
 												Margin="4 0 0 0"
 												Theme="{StaticResource TransparentButton}"
-												Command="{Binding FillProxiesCommand}">
+												Command="{Binding AsyncCfVCommand}"
+												CommandParameter="FillProxies">
 											<ui:SymbolIcon Symbol="Refresh" FontSize="22" />
 										</Button>
 									</StackPanel>
@@ -56,12 +57,14 @@
 								VerticalAlignment="Center"
 								Tag="Select all"
 								Theme="{StaticResource SvgIconTextButton}"
-								Command="{Binding SelectAllCommand}" />
+								Command="{Binding CfVCommand}"
+								CommandParameter="SelectAll" />
 							<Button
 								Content="select-all"
 								Tag="Select all in folder"
 								Theme="{StaticResource SvgIconTextButton}"
-								Command="{Binding SelectAllFromFolderCommand}" />
+								Command="{Binding CfVCommand}"
+								CommandParameter="SelectAllFromFolder"/>
 							
 							<ui:FAComboBox PlaceholderText="Selected Folder"
 										   Header="Folder:"
