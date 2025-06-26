@@ -132,7 +132,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			var urls = EditableSettings.Start.Url?.Split('\n').Where(x => x.IsNot()).Select(x => x.Trim()).ToList() ?? [];
 			if (terms.Count == 0 && urls.Count == 0) throw new Exception("Search and URL's cannot be empty together.");
 			else if (terms.Count != 0 && EditableSettings.Start?.Variations.Min > 0) {
-				Toaster.Info($"Generating {EditableSettings.Start.Variations.Min} terms for each search term");
+				Toaster.Info($"Generating {EditableSettings.Start.Variations.Min} term(s) for each search term");
 				var res = await Service.Routes.Promptee.Genorate(new(
 					AISettings.Decorators,
 					EditableSettings.Start.Variations.Min,
