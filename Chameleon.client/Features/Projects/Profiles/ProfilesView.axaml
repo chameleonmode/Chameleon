@@ -179,59 +179,12 @@
 						</ui:FAComboBox.ItemTemplate>
 					</ui:FAComboBox>
 
-					<ToggleButton
-						Margin="20 0 6 0"
-						Grid.Column="1"
-						IsChecked="{Binding IsRecordSelected}"
-						ToolTip.Tip="Record">
-						<ui:SymbolIcon
-							Symbol="RadioButtonFilled"
-							Height="20" />
-					</ToggleButton>
-
-					<Panel
-						Grid.Column="2"
-						HorizontalAlignment="Right">
-						<!--Run Button-->
-						<Button
-							Classes="accent"
-							Width="72"
-							Command="{Binding AsyncCfVCommand}"
-							CommandParameter="play"
-							IsVisible="{Binding IsVisibleRunButton}">
-							<StackPanel Orientation="Horizontal" >
-								<ui:SymbolIcon
-									Symbol="Play"
-									Margin="0 0 5 0"/>
-								<TextBlock
-									Text="Run"/>
-							</StackPanel>
-						</Button>
-						<!--Stop Button-->
-						<Button
-							Classes="accent"
-							Width="72"
-							Command="{Binding CfVCommand}"
-							CommandParameter="StopAutomation"
-							IsVisible="{Binding IsVisibleStopButton}">
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon
-									Symbol="Stop"
-									Margin="0 0 5 0"/>
-								<TextBlock Text="Stop"/>
-							</StackPanel>
-						</Button>
-
-						<!--Wait Buttom-->
-						<Button
-							Classes="accent"
-							Width="72"
-							IsVisible="{Binding IsVisibleWaitButton}">
-							<ui:SymbolIcon
-								Symbol="Refresh"
-								Height="20"
-								Classes="spinner"/>
-						</Button>
+					<Panel Grid.Column="2" HorizontalAlignment="Right">
+					<StackPanel Classes="zontal">
+						<Button Classes="icon async" IsVisible="{Binding !Automationing}" Content="RadioButtonFilled" CommandParameter="Record" ToolTip.Tip="Record" />
+						<Button Classes="icon async" IsVisible="{Binding !Automationing}" Content="Play" />
+					</StackPanel>
+						<Button Content="Stop" Classes="icon cfv" IsVisible="{Binding Automationing}" />
 					</Panel>
 				</Grid>
 

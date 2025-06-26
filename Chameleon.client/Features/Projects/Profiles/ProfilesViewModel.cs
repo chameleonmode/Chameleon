@@ -3,7 +3,6 @@
 using DynamicData;
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
@@ -16,7 +15,6 @@ using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.client.UI.Components.ViewModels;
-using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
 
 using Chameleon.lib.Api.Dto;
@@ -53,11 +51,8 @@ public partial class UPFolderViewModel : ObservableObjectBase {
 public partial class ProfilesViewModel : Profiler {
 	[ObservableProperty] UPFolderViewModel? folder;
 	[ObservableProperty] Arguments? selectedPlaywrightScript;
-	[ObservableProperty] bool isVisibleRunButton = true;
-	[ObservableProperty] bool isVisibleStopButton;
-	[ObservableProperty] bool isVisibleWaitButton;
-	[ObservableProperty] bool isRecordSelected;
 	[ObservableProperty] string searchText = string.Empty;
+	[ObservableProperty] bool automationing;
 
 	readonly BehaviorSubject<Func<ObsProfile, bool>> filter;
 	readonly BehaviorSubject<IPageRequest> pageRequests;
@@ -95,14 +90,6 @@ public partial class ProfilesViewModel : Profiler {
 				profile.IsSelected = true;
 			}
 		}
-		void StopAutomation() {
-			IsVisibleStopButton = false;
-			IsVisibleWaitButton = true;
-			cts?.Cancel();
-			cts?.Dispose();
-			cts = null;
-		}
-		CommandMap["StopAutomation"] = StopAutomation;
 		CommandMap["SelectAll"] = SelectAll;
 		CommandMap["SelectAllProfilesFromFolder"] = () => {
 			PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
@@ -112,28 +99,29 @@ public partial class ProfilesViewModel : Profiler {
 			Profiles.ForEach(p => p.IsSelected = false);
 			PaginatorViewModel.UpdatePageCount(9);
 		};
-
 		AsyncCommandMap["SaveTags"] = () => TagsRepo.Instance.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
+		async Task OpenSystemBrowser(SystemBrowserType browserType) {
+			foreach (var profile in SelectedProfiles) {
+				_ = await profile.OpenSystemBrowser(browserType);
+			}
+		}
 		AsyncCommandMap["chrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);
 		AsyncCommandMap["brave"] = () => OpenSystemBrowser(SystemBrowserType.Brave);
 		AsyncCommandMap["firefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
 		AsyncCommandMap["hwinds"] = () => {
-			GetSelectedProfiles?.ForEach(profile => SnapCracklePopViewModel.Open(profile.Dto));
+			SelectedProfiles?.ForEach(profile => SnapCracklePopViewModel.Open(profile.Dto));
 			return Task.CompletedTask;
 		};
-		AsyncCommandMap["play"] = async () => {
-			if (!GetSelectedProfiles.Any() || SelectedPlaywrightScript is null || SelectedBrowserOption is null) {
-				Toaster.Error("Select one or more profiles to run the automation.");
-				return;
-			}
-			void SetAutomationState(bool running) {
-				IsVisibleRunButton = !running;
-				IsVisibleStopButton = running;
-				if (!running) {
-					StopAutomation();
-					IsVisibleWaitButton = false;
-				}
-			}
+
+		void StopAutomation() {
+			Automationing = false;
+			cts?.Cancel();
+			cts?.Dispose();
+			cts = null;
+		}
+		async Task StartAutomation(bool record) {
+			if (!SelectedProfiles.Any()) throw new InvalidOperationException("No profiles selected for automation.");
+			Automationing = true;
 			async Task ConfigureScriptParameters(ObsProfile profile) {
 				if (SelectedPlaywrightScript!.Description is not ScriptDescription description) return;
 
@@ -159,50 +147,44 @@ public partial class ProfilesViewModel : Profiler {
 				description.Parameters["email"] = login?.Email ?? description.Parameters.GetValueOrDefault("email", string.Empty);
 				description.Parameters["password"] = login?.Password ?? description.Parameters.GetValueOrDefault("password", string.Empty);
 			}
-			async Task RunAutomationForProfile(ObsProfile profile, CancellationToken cancellationToken) {
-				try {
+
+			cts = new CancellationTokenSource();
+			try {
+				foreach (var profile in SelectedProfiles) {
+					cts.Token.ThrowIfCancellationRequested();
 					await ConfigureScriptParameters(profile);
-					var browser = await profile.OpenSystemBrowser(SelectedBrowserOption.Option).WaitAsync(cancellationToken);
+					var browser = await profile.OpenSystemBrowser(SelectedBrowserOption.Option).WaitAsync(cts.Token);
 
 					SelectedPlaywrightScript!.Port = browser!.Settings.Port;
-					SelectedPlaywrightScript.Record = IsRecordSelected;
-					await Run.Script(SelectedPlaywrightScript, cancellationToken);
-				} catch (Exception ex) {
-					Toaster.Error($"{ex.Message}");
-				}
-			}
-			SetAutomationState(true);
-			cts = new CancellationTokenSource();
-
-			try {
-				foreach (var profile in GetSelectedProfiles) {
-					cts.Token.ThrowIfCancellationRequested();
-					await RunAutomationForProfile(profile, cts.Token);
+					SelectedPlaywrightScript.Record = record;
+					await Run.Script(SelectedPlaywrightScript, cts.Token);
 				}
 			} catch (Exception ex) {
 				Toaster.Error($"{ex.Message}");
 			} finally {
-				SetAutomationState(false);
+				StopAutomation();
 			}
-		};
+		}
+		CommandMap["Stop"] = StopAutomation;
+		AsyncCommandMap["Record"] = async () => await StartAutomation(true);
+		AsyncCommandMap["Play"] = async () => await StartAutomation(false);
 
 		AsyncCommandMap["Move"] = async () => {
-			if (!GetSelectedProfiles.Any() ||
-				await MoveProfilesPopup.Show(GetSelectedProfiles) is not { } mover) return;
-			else _ = await UserProfilesRepo.MoveUserProfileToFolder(
-				mover.Profiles.Select(a => a.Dto!.id), mover.SelectedFolder.Dto.id);
+			if (!SelectedProfiles.Any() ||
+				await MoveProfilesPopup.Show(SelectedProfiles) is not { } mover) return;
+			else _ = await UserProfilesRepo.MoveUserProfileToFolder(mover.Profiles.Select(a => a.Dto!.id), mover.SelectedFolder.Dto.id);
 		};
 		AsyncCommandMap["Remove"] = async () => {
-			if (!GetSelectedProfiles.Any()) return;
-			await UserProfilesRepo.MoveUserProfileToFolder(GetSelectedProfiles.Select(a => a.Dto!.id), null);
+			if (!SelectedProfiles.Any()) return;
+			else _ = await UserProfilesRepo.MoveUserProfileToFolder(SelectedProfiles.Select(a => a.Dto!.id), null);
 		};
 		AsyncCommandMap["Delete"] = async () => {
-			if (!GetSelectedProfiles.Any() ||
+			if (!SelectedProfiles.Any() ||
 			 !await MessageBox.Show("Delete User Profiles",
 				$"Are you sure you want to delete {SelectedCount} profiles?",
 				icon: "DeleteLines")) return;
 
-			foreach (var profile in GetSelectedProfiles.ToList()) {
+			foreach (var profile in SelectedProfiles.ToList()) {
 				var result = await UserProfilesRepo.Instance.Delete(profile.Dto!.id);
 				if (!result.success) profile.IsSelected = false;
 			}
@@ -217,10 +199,7 @@ public partial class ProfilesViewModel : Profiler {
 
 	public override async Task InitAsync(object? param) {
 		await base.InitAsync(param);
-		await InitializeScripts();
-	}
-
-	private async Task InitializeScripts() {
+		// await InitializeScripts();
 		PlaywrightScripts.Clear();
 		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());
 		PlaywrightScripts.AddRange(await BundledScriptsService.GetUserScripts());
@@ -229,40 +208,17 @@ public partial class ProfilesViewModel : Profiler {
 
 	partial void OnSearchTextChanged(string value) => SetViewModelsFilter();
 
-	private async Task OpenSystemBrowser(SystemBrowserType browserType) {
-		foreach (var profile in GetSelectedProfiles) {
-			_ = await profile.OpenSystemBrowser(browserType);
-		}
-	}
-
-	public async Task OpenAsync(UPFolderDto? folder) {
-		if (folder is not null) {
-			Folder = new UPFolderViewModel(folder);
-			Folder.Tags = await TagsRepo.Instance.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
-			SearchText = string.Empty;
-			SetViewModelsFilter();
-		}
+	public async Task OpenAsync(UPFolderDto folder) {
+		Folder = new UPFolderViewModel(folder);
+		Folder.Tags = await TagsRepo.Instance.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
+		SearchText = string.Empty;
+		SetViewModelsFilter();
 	}
 
 	public async Task<UserProfileDto?> CreateNewProfile() {
-		var folderId = HasFolder ? Folder?.Id : null;
-		var count = UserProfilesRepo.Instance.ObservableCache.Items.Count;
-		var baseName = "New Profile";
-		var profileName = $"{baseName} - {count}";
-
-		while (UserProfilesRepo.Instance.ObservableCache.Items.Any(i => i.title == profileName)) {
-			profileName = $"{baseName} - {++count}";
-		}
-
-		var result = await UserProfilesRepo.CreateProfile(profileName, folderId);
-		if (result != null) {
-			SetViewModelsFilter();
-		}
+		var result = await UserProfilesRepo.CreateProfile(folderId: Folder?.Id);
+		if (result != null) SetViewModelsFilter();
 		return result;
-	}
-
-	public async void Filter(ObsProfile? p = null) {
-		_ = await LoadedTCS.Task;
 	}
 
 	public override ObsProfile Deleted(ObsProfile profile) {
@@ -278,7 +234,6 @@ public partial class ProfilesViewModel : Profiler {
 		);
 
 		RefreshProperties();
-		ObsProfiles.ForEach(p => p.IsShowCheckboxColumn = true); // temp fix for now TODO: findout root cause
 	}
 
 	private void RefreshProperties() {
@@ -287,6 +242,7 @@ public partial class ProfilesViewModel : Profiler {
 		OnPropertyChanged(nameof(HasProfiles));
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedFolderTitle));
+		Profiles.ForEach(p => p.IsShowCheckboxColumn = true); // temp fix for now TODO: findout root cause
 	}
 
 	public static ProfilesViewModel Instance { get; } = new ProfilesViewModel();

@@ -16,8 +16,7 @@
 		<Grid RowDefinitions="Auto,Auto,*">
 			<afv:PageHeader TextType="Dashboard" Classes="smallest">
 				<afv:PageHeader.ContentObject>
-					<StackPanel Orientation="Horizontal"
-								Margin="6 -18 6 6">
+					<StackPanel Orientation="Horizontal" Margin="6 -18 6 6">
 						<Button Classes="icon clear"
 								Content="Sync"
 								Command="{Binding AsyncCfVCommand}"

@@ -18,7 +18,7 @@
 			<afv:ChameleonContentControl.TitleContent>
 					<StackPanel Classes="zontal" HorizontalAlignment="Right" Margin="4">
 						<Button Content="Save" Classes="icon clear async" />
-						</StackPanel>
+					</StackPanel>
 			</afv:ChameleonContentControl.TitleContent>
 			<afv:ChameleonContentControl.Content>
 				<ItemsControl Classes="uni-clm" ItemsSource="{Binding Actors}">

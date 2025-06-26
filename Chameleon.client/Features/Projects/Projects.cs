@@ -27,9 +27,9 @@ public abstract partial class Profiler : Profilearee {
 	public static readonly BehaviorSubject<IComparer<ObsProfile>> CompareObservable = new(AscendingComparer);
 	public IObservable<IChangeSet<ObsProfile, int>> Shared { get; }
 	public ReadOnlyObservableCollection<ObsProfile> ObsProfiles { get; }
-	public int SelectedCount => GetSelectedProfiles?.Count() ?? 0;
-	public bool HasSelectedItems => Profiles.Any(v => v.IsSelected);
-	public IEnumerable<ObsProfile> GetSelectedProfiles => Profiles.Where(i => i.IsSelected);
+	public IEnumerable<ObsProfile> SelectedProfiles => Profiles.Where(i => i.IsSelected);
+	public int SelectedCount => SelectedProfiles.Count();
+	public bool HasSelectedItems => SelectedProfiles.Any();
 
 	public Profiler(string? title = null) : base(title) {
 		// 1) Create a shared change‐set (after your Transform + Filter)
