@@ -125,74 +125,20 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 
 	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType, bool foreground = true, bool headless = false) {
 		if (SBI[browserType] is IBrowserInstance browser) {
-			if (browser.Settings.OpenOptions.Headless && !headless) return await SwitchToUIMode(browserType);
-			else if(foreground)browser.InvokeEvent(SysBrowserEventType.Foreground);
+			if (foreground) browser.InvokeEvent(SysBrowserEventType.Foreground);
 			else browser.InvokeEvent(SysBrowserEventType.Background);
 		} 
 		else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile, foreground, headless));
 		return SBI[browserType];
 	}
 
-	public async Task<IBrowserInstance?> SwitchToUIMode(SystemBrowserType browserType) {
-		if (SBI[browserType] is IBrowserInstance browser) {
-			if (browser.Settings.OpenOptions.Headless) {
-				browser.Close();
-				SBI[browserType] = null;
-				await Task.Delay(500);
-				return await OpenSystemBrowser(browserType, foreground: true, headless: false);
-			}
-			// If already in UI mode, just bring to foreground
-			browser.InvokeEvent(SysBrowserEventType.Foreground);
-			return browser;
-		}
-		// If not running, just launch in UI mode
-		return await OpenSystemBrowser(browserType, foreground: true, headless: false);
-	}
-
-	public async Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookiesAsync(SystemBrowserType browserType, bool closeAfter = false) {
-		var browserInstance = SBI.TryGetValue(browserType, out var inst) ? inst : null;
-		var needToLaunch = browserInstance == null || browserInstance.Brocess == null || browserInstance.Brocess.HasExited;
-		if (needToLaunch) {
-			browserInstance = await OpenSystemBrowser(browserType, foreground: false, headless: true);
-			if (browserInstance == null || browserInstance.Brocess == null || browserInstance.Brocess.HasExited) {
-				Toaster.Error($"Failed to launch {browserType} for cookie extraction.");
-				return null;
-			}
-		}
-
-		try {
-			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-			var isLoaded = await browserInstance!.LoadedTCS.Task.WaitAsync(cts.Token);
-			if (!isLoaded) {
-				Toaster.Error($"{browserType} failed to initialize for cookie extraction.");
-				return null;
-			}
-
-			var port = browserInstance.Settings.Port;
-			if (port <= 0) {
-				Toaster.Error($"Invalid debugging port for {browserType}.");
-				return null;
-			}
-
-			var cookies = await Util.GetCookies(new(new(browserType, SystemBrowserProfile), port));
-			return cookies;
-		} catch (TimeoutException) {
-			Toaster.Error($"{browserType} initialization timed out for cookie extraction.");
-			return null;
-		} catch (OperationCanceledException) {
-			Toaster.Error($"{browserType} initialization was cancelled or timed out for cookie extraction.");
-			return null;
-		} catch (Exception ex) {
-			Toaster.Error($"Failed to extract cookies from {browserType}: {ex.Message}");
-			return null;
-		} finally {
-			var alreadyRunningInUIMode = await IsBrowserRunningInUIModeAsync(browserInstance!, browserType);//Prevent closing browser if it was already started in UI mode
-			if (!alreadyRunningInUIMode && closeAfter && browserInstance != null && browserInstance.Brocess != null && !browserInstance.Brocess.HasExited) {
-				browserInstance.Close();
-				SBI[browserType] = null;
-			}
-		}
-	}
+	public Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookiesAsync(SystemBrowserType browserType, bool closeAfter = false) =>
+		ExecuteBrowserActionAsync(
+			browserType,
+			"cookie extraction",
+			port => Util.GetCookies(new(new(browserType, SystemBrowserProfile), port)),
+			closeAfter
+		);
 
 	private async Task HandleCookieOperation(string operation, SystemBrowserType browserType) {
 		var isImport = operation.StartsWith("Import");
@@ -272,31 +218,11 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		}
 	}
 
-	private async Task SetCookiesAsync(SystemBrowserType browserType, IEnumerable<Cookie> cookies,bool closeAfter = false) {
-		var browserInstance = SBI.TryGetValue(browserType, out var inst) ? inst : null;
-		var needToLaunch = browserInstance == null || browserInstance.Brocess == null || browserInstance.Brocess.HasExited;
-		if (needToLaunch) {
-			browserInstance = await OpenSystemBrowser(browserType, foreground: false, headless: true);
-			if (browserInstance == null || browserInstance.Brocess == null || browserInstance.Brocess.HasExited) {
-				Toaster.Error($"Failed to launch {browserType} for cookie import.");
-				return;
-			}
-		}
-
-		try {
-			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-			var isLoaded = await browserInstance!.LoadedTCS.Task.WaitAsync(cts.Token);
-			if (!isLoaded) {
-				Toaster.Error($"{browserType} failed to initialize for cookie import.");
-				return;
-			}
-			var port = browserInstance.Settings.Port;
-			if (port <= 0) {
-				Toaster.Error($"Invalid debugging port for {browserType}.");
-				return;
-			}
-
-			await Util.SetCookies(
+	private Task SetCookiesAsync(SystemBrowserType browserType, IEnumerable<Cookie> cookies, bool closeAfter = false) =>
+		ExecuteBrowserActionAsync(
+			browserType,
+			"cookie import",
+			port => Util.SetCookies(
 					new(new(browserType, SystemBrowserProfile), port),
 					cookies.Select(c => new Cookie {
 						Name = c.Name,
@@ -308,9 +234,45 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 						Secure = c.Secure,
 						SameSite = Enum.TryParse<SameSiteAttribute>(c.SameSite?.ToString(), true, out var sameSiteEnum) ? sameSiteEnum : SameSiteAttribute.Lax
 					})
-			);
+			),
+			closeAfter
+		);
+
+	private async Task<T?> ExecuteBrowserActionAsync<T>(SystemBrowserType browserType, string actionName, Func<int, Task<T>> action, bool closeAfter = false) where T : class {
+		var browserInstance = SBI.TryGetValue(browserType, out var inst) ? inst : null;
+		var needToLaunch = browserInstance == null || browserInstance.Brocess == null || browserInstance.Brocess.HasExited;
+		if (needToLaunch) {
+			browserInstance = await OpenSystemBrowser(browserType, foreground: false);
+			if (browserInstance == null || browserInstance.Brocess == null || browserInstance.Brocess.HasExited) {
+				Toaster.Error($"Failed to launch {browserType} for {actionName}.");
+				return default;
+			}
+		}
+
+		try {
+			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+			var isLoaded = await browserInstance!.LoadedTCS.Task.WaitAsync(cts.Token);
+			if (!isLoaded) {
+				Toaster.Error($"{browserType} failed to initialize for {actionName}.");
+				return default;
+			}
+
+			var port = browserInstance.Settings.Port;
+			if (port <= 0) {
+				Toaster.Error($"Invalid debugging port for {browserType}.");
+				return default;
+			}
+
+			return await action(port);
+		} catch (TimeoutException) {
+			Toaster.Error($"{browserType} initialization timed out for {actionName}.");
+			return default;
+		} catch (OperationCanceledException) {
+			Toaster.Error($"{browserType} initialization was cancelled or timed out for {actionName}.");
+			return default;
 		} catch (Exception ex) {
-			Toaster.Error($"Failed to set cookies in running {browserType} instance: {ex.Message}");
+			Toaster.Error($"Failed to perform {actionName} on {browserType}: {ex.Message}");
+			return default;
 		} finally {
 			var alreadyRunningInUIMode = await IsBrowserRunningInUIModeAsync(browserInstance!, browserType);//Prevent closing browser if it was already started in UI mode
 			if (!alreadyRunningInUIMode && closeAfter && browserInstance != null && browserInstance.Brocess != null && !browserInstance.Brocess.HasExited) {
