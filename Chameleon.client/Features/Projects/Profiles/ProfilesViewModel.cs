@@ -79,6 +79,13 @@ public partial class ProfilesViewModel : Profiler {
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(p => !HasFolder || p.Dto.folderId == Folder?.Id);
 		_ = Shared
 			.Filter(filter)
+			.Transform(i => new ObsProfile(i.Dto, 
+				selectedChanged: SelectedChanged,
+				onDeleted: p => Deleted(p))
+			{ 
+				IsShowCheckboxColumn = true,
+				IsShowGlyph = true 
+			})
 			.SortAndPage(AscendingComparer, pageRequests)
 			.SortAndBind(out var profiles, CompareObservable)
 			.Subscribe();

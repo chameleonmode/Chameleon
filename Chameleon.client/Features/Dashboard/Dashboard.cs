@@ -57,11 +57,6 @@ public partial class ViewModel : ViewModelObjectBase {
 		AsyncCommandMap["SyncCookiesFirefox"] = async () =>  await SyncCookies(SystemBrowserType.Firefox);
 	}
 
-	public override Task InitAsync(object? param) {
-		ProfilesViewModel.Instance.ObsProfiles.ForEach(p => p.IsShowCheckboxColumn = false);
-		return base.InitAsync(param);
-	} 
-
 	partial void OnSelectedTagChanged(TagViewModel? oldValue, TagViewModel? newValue) {
 		if (newValue == null) return;
 

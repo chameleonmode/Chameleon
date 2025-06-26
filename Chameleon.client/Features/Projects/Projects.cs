@@ -135,7 +135,8 @@ public partial class ViewModel : ViewModelObjectBase {
 		await FoldersViewModel.Instance.OnNavigatingTo(param as ObsFolder ?? FoldersViewModel.Instance.SelectedFolder);
 		if (param is ObsProfile up) ProfilesViewModel.Instance.SearchText = up.Title ?? "";
 		else if (param is string p) ProfilesViewModel.Instance.SearchText = p;
-		ProfilesViewModel.Instance.ObsProfiles.ForEach(p => p.IsShowCheckboxColumn = true);
+		// ProfilesViewModel handles its own checkbox visibility via Transform
+		// No need to mutate shared instances
 	}
 	public static ViewModel Instance { get; } = new();
 }

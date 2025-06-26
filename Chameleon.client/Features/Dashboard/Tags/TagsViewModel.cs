@@ -45,7 +45,7 @@ public partial class TagsViewModel : Dashboarder {
 								.Select(ids => new Func<ObsProfile, bool>(f => ids!.Any(id => id == f.Dto.id.ToString())))
 					)
 					.SortAndBind(out var profiles, Profiler.CompareObservable)
-					.Transform(i => { i.IsShowCheckboxColumn = false; return i;})
+					.Transform(i => new ObsProfile(i.Dto) { IsShowCheckboxColumn = false })
 					.Subscribe(_ => OnPropertyChanged(nameof(HasProfiles)));
 		Profiles = profiles;
 
