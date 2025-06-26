@@ -52,13 +52,13 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 
 	[RelayCommand]
 	public void CfV(string what) {
-		_ = Exceptionz.TryCatch(CommandMap[what], caught: e => Toaster.Error(what, e.Message));
+		_ = Exceptionz.Catch(CommandMap[what], caught: e => Toaster.Error(what, e.Message));
 		SetViewModelsFilter();
 	}
 
 	[RelayCommand]
 	public async Task AsyncCfV(string what) {
-		await Exceptionz.TryCatch(AsyncCommandMap[what], caught: e => Toaster.Error(what, e.Message));
+		await Exceptionz.Catch(AsyncCommandMap[what], caught: e => Toaster.Error(what, e.Message));
 		SetViewModelsFilter();
 	}
 

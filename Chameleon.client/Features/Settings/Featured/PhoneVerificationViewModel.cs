@@ -129,7 +129,7 @@ public partial class PVApiModel : ViewModelObjectBase, IPVApiModel {
 
 	private async Task MakeRequest(Func<Task> func, Action<string> onErr) {
 		IsAwaiting = true;
-		await Exceptionz.TryCatch(func, e => onErr(e.Message));
+		await Exceptionz.Catch(func, e => onErr(e.Message));
 		IsAwaiting = false;
 	}
 

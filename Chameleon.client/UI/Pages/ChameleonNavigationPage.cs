@@ -37,7 +37,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 			OnAfterNavigatedToViewModel(e.Parameter);
 		}
 		if (_animationPage != null && _animationPageParent != null) {
-			_ = Exceptionz.TryCatch(() => {
+			_ = Exceptionz.Catch(() => {
 				var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
 				var anim = svc.GetAnimation("BackAnimation");
 				if (anim == null || !GetNavAnimationVisuals()) return false;
@@ -66,7 +66,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 		_navParam = e.Parameter;
 		if (GetNavAnimationVisuals()) {
 			var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
-			_ = Exceptionz.TryCatch(() => {
+			_ = Exceptionz.Catch(() => {
 				return svc.PrepareToAnimate("ForwardAnimation", _animationPage);
 			}, e => {
 				_ = svc.GetAnimation("ForwardAnimation");

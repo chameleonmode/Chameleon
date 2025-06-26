@@ -163,7 +163,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 		if (animate is null) return;
 
 		// Only setup the ConnectedAnimation if it makes sense
-		_ = Exceptionz.TryCatch(() => {
+		_ = Exceptionz.Catch(() => {
 			var svc = ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this));
 			_ = svc.PrepareToAnimate("BackAnimation", animate);
 			return true;
