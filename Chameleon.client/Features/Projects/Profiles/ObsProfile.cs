@@ -71,9 +71,9 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		AsyncCommandMap["OpenChrome"] = async () => await OpenSystemBrowser(SystemBrowserType.Chrome);
 		AsyncCommandMap["OpenBrave"] = async () => await OpenSystemBrowser(SystemBrowserType.Brave);
 
-		AsyncCommandMap["ImportCookiesChrome"] = async () => await HandleCookieOperation("ImportCookiesChrome", SystemBrowserType.Chrome);
-		AsyncCommandMap["ImportCookiesBrave"] = async () => await HandleCookieOperation("ImportCookiesBrave", SystemBrowserType.Brave);
-		AsyncCommandMap["ImportCookiesFirefox"] = async () => await HandleCookieOperation("ImportCookiesFirefox", SystemBrowserType.Firefox);
+		AsyncCommandMap["SyncCookiesChrome"] = async () => await HandleCookieOperation("ImportCookiesChrome", SystemBrowserType.Chrome);
+		AsyncCommandMap["SyncCookiesBrave"] = async () => await HandleCookieOperation("ImportCookiesBrave", SystemBrowserType.Brave);
+		AsyncCommandMap["SyncCookiesFirefox"] = async () => await HandleCookieOperation("ImportCookiesFirefox", SystemBrowserType.Firefox);
 
 		AsyncCommandMap["ExportCookiesChrome"] = async () => await HandleCookieOperation("ExportCookiesChrome", SystemBrowserType.Chrome);
 		AsyncCommandMap["ExportCookiesBrave"] = async () => await HandleCookieOperation("ExportCookiesBrave", SystemBrowserType.Brave);
@@ -132,12 +132,11 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		return SBI[browserType];
 	}
 
-	public Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookiesAsync(SystemBrowserType browserType, bool closeAfter = false) =>
+	public Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookiesAsync(SystemBrowserType browserType) =>
 		ExecuteBrowserActionAsync(
 			browserType,
 			"cookie extraction",
-			port => Util.GetCookies(new(new(browserType, SystemBrowserProfile), port)),
-			closeAfter
+			port => Util.GetCookies(new(new(browserType, SystemBrowserProfile), port))
 		);
 
 	private async Task HandleCookieOperation(string operation, SystemBrowserType browserType) {
@@ -176,7 +175,27 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 							Secure = c.Secure,
 							SameSite = Enum.TryParse<SameSiteAttribute>(c.SameSite.ToString(), true, out var sameSiteEnum) ? sameSiteEnum : SameSiteAttribute.Lax
 						}).ToList();
-						await SetCookiesAsync(browserType, cookies);
+
+						await ExecuteBrowserActionAsync(
+							browserType,
+							"cookie import",
+							port => Util.SetCookies(
+									new(new(browserType, SystemBrowserProfile), port),
+									cookies.Select(c => new Cookie {
+										Name = c.Name,
+										Value = c.Value,
+										Domain = c.Domain,
+										Path = c.Path,
+										Expires = (float?)c.Expires,
+										HttpOnly = c.HttpOnly,
+										Secure = c.Secure,
+										SameSite =
+											Enum.TryParse<SameSiteAttribute>(c.SameSite?.ToString(), true, out var sameSiteEnum)
+											? sameSiteEnum 
+											: SameSiteAttribute.Lax
+									})
+							)
+						);
 						Toaster.Success($"Successfully imported {cookies.Count} cookies for {browserName}.");
 					} else {
 						Toaster.Error($"Failed to deserialize cookies for {browserName}.");
@@ -218,103 +237,28 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		}
 	}
 
-	private Task SetCookiesAsync(SystemBrowserType browserType, IEnumerable<Cookie> cookies, bool closeAfter = false) =>
-		ExecuteBrowserActionAsync(
-			browserType,
-			"cookie import",
-			port => Util.SetCookies(
-					new(new(browserType, SystemBrowserProfile), port),
-					cookies.Select(c => new Cookie {
-						Name = c.Name,
-						Value = c.Value,
-						Domain = c.Domain,
-						Path = c.Path,
-						Expires = (float?)c.Expires,
-						HttpOnly = c.HttpOnly,
-						Secure = c.Secure,
-						SameSite = Enum.TryParse<SameSiteAttribute>(c.SameSite?.ToString(), true, out var sameSiteEnum) ? sameSiteEnum : SameSiteAttribute.Lax
-					})
-			),
-			closeAfter
-		);
-
-	private async Task<T?> ExecuteBrowserActionAsync<T>(SystemBrowserType browserType, string actionName, Func<int, Task<T>> action, bool closeAfter = false) where T : class {
-		var browserInstance = SBI.TryGetValue(browserType, out var inst) ? inst : null;
-		var needToLaunch = browserInstance == null || browserInstance.Brocess == null || browserInstance.Brocess.HasExited;
-		if (needToLaunch) {
-			browserInstance = await OpenSystemBrowser(browserType, foreground: false);
-			if (browserInstance == null || browserInstance.Brocess == null || browserInstance.Brocess.HasExited) {
-				Toaster.Error($"Failed to launch {browserType} for {actionName}.");
-				return default;
-			}
-		}
+	private async Task<T?> ExecuteBrowserActionAsync<T>(SystemBrowserType browserType, string actionName, Func<int, Task<T>> action) where T : class {
+		var wasOpen = SBI.TryGetValue(browserType, out var browserInstance) && browserInstance != null;
+		browserInstance ??= await OpenSystemBrowser(browserType, foreground: false);
 
 		try {
 			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 			var isLoaded = await browserInstance!.LoadedTCS.Task.WaitAsync(cts.Token);
-			if (!isLoaded) {
-				Toaster.Error($"{browserType} failed to initialize for {actionName}.");
-				return default;
-			}
+			if (!isLoaded) throw new Exception($"Failed to load");
 
 			var port = browserInstance.Settings.Port;
-			if (port <= 0) {
-				Toaster.Error($"Invalid debugging port for {browserType}.");
-				return default;
-			}
-
-			return await action(port);
-		} catch (TimeoutException) {
-			Toaster.Error($"{browserType} initialization timed out for {actionName}.");
-			return default;
-		} catch (OperationCanceledException) {
-			Toaster.Error($"{browserType} initialization was cancelled or timed out for {actionName}.");
-			return default;
+			return port <= 0 ? throw new Exception($"Invalid debugging port") : await action(port);
 		} catch (Exception ex) {
-			Toaster.Error($"Failed to perform {actionName} on {browserType}: {ex.Message}");
-			return default;
+			var message = ex is TimeoutException or OperationCanceledException 
+				? $"{browserType} initialization timed out for {actionName}."
+				: $"{actionName} on {browserType}: {ex.Message}";
+			Toaster.Error(message);
 		} finally {
-			var alreadyRunningInUIMode = await IsBrowserRunningInUIModeAsync(browserInstance!, browserType);//Prevent closing browser if it was already started in UI mode
-			if (!alreadyRunningInUIMode && closeAfter && browserInstance != null && browserInstance.Brocess != null && !browserInstance.Brocess.HasExited) {
+			if (!wasOpen && browserInstance != null) {
+				await ProcessUtil.TryKillProcess(browserInstance.Brocess);
 				browserInstance.Close();
-				SBI[browserType] = null;
 			}
 		}
-	}
-
-	private async Task<bool> IsBrowserRunningInUIModeAsync(IBrowserInstance browserInstance, SystemBrowserType browserType) {
-
-		if (browserInstance == null || browserInstance.Brocess == null || browserInstance.Brocess.HasExited)
-			return false;
-
-		var headlessArg = browserType == SystemBrowserType.Firefox ? "-headless" : "--headless";
-		if (ProcessUtil.HasCommandLineArgument(browserInstance.Brocess, headlessArg))
-			return false;
-
-		bool hasWindow;
-
-		try {
-			hasWindow = !browserInstance.Brocess.HasExited && browserInstance.Brocess.MainWindowHandle != IntPtr.Zero;
-		} catch (InvalidOperationException) {
-			return false;
-		}
-
-		if (!hasWindow) {
-			return false;
-		}
-
-		var port = browserInstance.Settings.Port;
-		if (port <= 0) {
-			return true;
-		}
-
-		try {
-			using var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-			var playwrightBrowser = browserType == SystemBrowserType.Firefox ? playwright.Firefox : playwright.Chromium;
-			await using var browser = await playwrightBrowser.ConnectOverCDPAsync($"http://localhost:{port}", new() { Timeout = 2000 });
-			return browser.IsConnected;
-		} catch {
-			return false;
-		}
+		return default;
 	}
 }

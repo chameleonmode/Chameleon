@@ -102,15 +102,15 @@
 						<ui:FAMenuFlyout Placement="Bottom">
 							
 							<ui:MenuFlyoutSubItem IconSource="Import" Text="Import Cookies">
-								<ui:MenuFlyoutItem Classes="sync-chrome" Command="{Binding AsyncCfVCommand}" CommandParameter="ImportCookiesChrome"/>
-								<ui:MenuFlyoutItem Classes="sync-brave" Command="{Binding AsyncCfVCommand}" CommandParameter="ImportCookiesBrave" />
-								<ui:MenuFlyoutItem Classes="sync-firefox" Command="{Binding AsyncCfVCommand}" CommandParameter="ImportCookiesFirefox" />
+								<ui:MenuFlyoutItem Classes="sync-chrome" />
+								<ui:MenuFlyoutItem Classes="sync-brave" />
+								<ui:MenuFlyoutItem Classes="sync-firefox" />
 							</ui:MenuFlyoutSubItem>
 							
 							<ui:MenuFlyoutSubItem IconSource="Export" Text="Export Cookies">
-								<ui:MenuFlyoutItem Classes="sync-chrome" Command="{Binding AsyncCfVCommand}" CommandParameter="ExportCookiesChrome" />
-								<ui:MenuFlyoutItem Classes="sync-brave" Command="{Binding AsyncCfVCommand}" CommandParameter="ExportCookiesBrave"/>
-								<ui:MenuFlyoutItem Classes="sync-firefox" Command="{Binding AsyncCfVCommand}" CommandParameter="ExportCookiesFirefox"/>
+								<ui:MenuFlyoutItem Classes="sync-chrome" CommandParameter="ExportCookiesChrome" />
+								<ui:MenuFlyoutItem Classes="sync-brave" CommandParameter="ExportCookiesBrave"/>
+								<ui:MenuFlyoutItem Classes="sync-firefox" CommandParameter="ExportCookiesFirefox"/>
 							</ui:MenuFlyoutSubItem>
 
 							<ui:MenuFlyoutSeparator />

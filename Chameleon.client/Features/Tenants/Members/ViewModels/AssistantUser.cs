@@ -114,7 +114,7 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 				var profile = allProfiles.FirstOrDefault(x => x.Dto!.id == op.Dto!.ProfileId)
 				?? throw new InvalidOperationException("Profile not found");
 
-				var cookies = await profile.GetCookiesAsync(bt,true);
+				var cookies = await profile.GetCookiesAsync(bt);
 
 				if (cookies?.Count > 0) {
 					await DB.Instance.EnsureUser();
