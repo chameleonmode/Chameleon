@@ -136,8 +136,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		if (param is ObsProfile up) ProfilesViewModel.Instance.SearchText = up.Title ?? "";
 		else if (param is string p) ProfilesViewModel.Instance.SearchText = p;
 		
-		// State machine context is already applied in ProfilesViewModel reactive pipeline
-		// No need to apply it here to avoid race conditions
+		ProfileUIContextManager.SetModuleContext(ProfileUIModules.ProfilesView, ProfileUIContext.ProfilesView);
 	}
 	public static ViewModel Instance { get; } = new();
 }

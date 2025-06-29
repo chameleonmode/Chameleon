@@ -39,6 +39,8 @@ public static class ProfileUIContextManager {
 	private static void ApplyStateToProfile(ObsProfile profile, ProfileUIState state, ProfileUIContext context) {
 		profile.IsShowCheckboxColumn = state.IsShowCheckboxColumn;
 		profile.IsShowGlyph = state.IsShowGlyph;
+		profile.IsActionOptionsVisible = state.IsActionOptionsVisible;
+		profile.IsSelectionEnabled = state.IsSelectionEnabled;
 
 		if (profile is IProfileUIContextAware contextAware) {
 			contextAware.SetUIContext(context);

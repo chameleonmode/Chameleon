@@ -29,6 +29,8 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 	[ObservableProperty] string isFFRunning = "False";
 	[ObservableProperty] bool isShowGlyph = true;
 	[ObservableProperty] bool isShowCheckboxColumn = true;
+	[ObservableProperty] bool isActionOptionsVisible = true;
+	[ObservableProperty] bool isSelectionEnabled = true;
 
 	private ProfileUIContext currentContext = ProfileUIContext.ProfilesView;
 

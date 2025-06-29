@@ -58,6 +58,7 @@ public partial class ViewModel : ViewModelObjectBase {
 	}
 
 	public override Task InitAsync(object? param) {
+		ProfileUIContextManager.SetModuleContext(ProfileUIModules.FavouritesView, ProfileUIContext.DashboardFavorites);
 		ProfileUIContextManager.ApplyContextToProfiles(ProfilesViewModel.Instance.ObsProfiles, ProfileUIContext.DashboardFavorites);
 		return base.InitAsync(param);
 	} 
