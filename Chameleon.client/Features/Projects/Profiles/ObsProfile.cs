@@ -23,12 +23,14 @@ using System.Text.Json;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
-public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
+public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IProfileUIContextAware {
 	[ObservableProperty] string isChromeRunning = "False";
 	[ObservableProperty] string isBraveRunning = "False";
 	[ObservableProperty] string isFFRunning = "False";
 	[ObservableProperty] bool isShowGlyph = true;
 	[ObservableProperty] bool isShowCheckboxColumn = true;
+
+	private ProfileUIContext _currentContext = ProfileUIContext.ProfilesView;
 
 	public Dictionary<SystemBrowserType, IBrowserInstance?> SBI { get; } = new() {
 		[SystemBrowserType.Chrome] = null,
@@ -127,8 +129,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		if (SBI[browserType] is IBrowserInstance browser) {
 			if (foreground) browser.InvokeEvent(SysBrowserEventType.Foreground);
 			else browser.InvokeEvent(SysBrowserEventType.Background);
-		} 
-		else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile, foreground, headless));
+		} else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile, foreground, headless));
 		return SBI[browserType];
 	}
 
@@ -260,5 +261,28 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			}
 		}
 		return default;
+	}
+
+	public void SetUIContext(ProfileUIContext context) {
+		if (_currentContext == context) return;
+
+		var previousContext = _currentContext;
+		if (!ProfileUIStateMachine.CanTransition(previousContext, context)) {
+			throw new InvalidOperationException($"Cannot transition from {previousContext} to {context}");
+		}
+
+		_currentContext = context;
+		var state = ProfileUIStateMachine.GetStateFor(context);
+
+		IsShowCheckboxColumn = state.IsShowCheckboxColumn;
+		IsShowGlyph = state.IsShowGlyph;
+
+		OnContextChanged(previousContext, context);
+	}
+
+	public ProfileUIContext GetUIContext() => _currentContext;
+
+	protected virtual void OnContextChanged(ProfileUIContext from, ProfileUIContext to) {
+		
 	}
 }

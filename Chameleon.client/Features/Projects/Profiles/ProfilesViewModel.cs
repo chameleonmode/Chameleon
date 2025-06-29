@@ -70,6 +70,8 @@ public partial class ProfilesViewModel : Profiler {
 		: UserProfilesRepo.Instance.ObservableCache.Count;
 
 	public ProfilesViewModel() {
+		ProfileUIContextManager.SetModuleContext(ProfileUIModules.ProfilesView, ProfileUIContext.ProfilesView);
+
 		pageRequests = new(new PageRequest(0, 9));
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(p => !HasFolder || p.Dto.folderId == Folder?.Id);
 		_ = Shared
@@ -234,6 +236,13 @@ public partial class ProfilesViewModel : Profiler {
 		);
 
 		RefreshProperties();
+
+		// Apply the ProfilesView context after filter changes
+		// Use a small delay to ensure the reactive pipeline has completed
+		Task.Run(async () => {
+			await Task.Delay(10); // Small delay to let reactive chain update
+			ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.ProfilesView);
+		});
 	}
 
 	private void RefreshProperties() {

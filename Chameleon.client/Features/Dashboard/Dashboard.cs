@@ -58,7 +58,7 @@ public partial class ViewModel : ViewModelObjectBase {
 	}
 
 	public override Task InitAsync(object? param) {
-		ProfilesViewModel.Instance.ObsProfiles.ForEach(p => p.IsShowCheckboxColumn = false);
+		ProfileUIContextManager.ApplyContextToProfiles(ProfilesViewModel.Instance.ObsProfiles, ProfileUIContext.DashboardFavorites);
 		return base.InitAsync(param);
 	} 
 

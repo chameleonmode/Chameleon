@@ -34,7 +34,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 		if (param is UserProfileDto up) {
 			ProfileVM = ProfilesViewModel.Instance.Profiles.FirstOrDefault(p => p.Dto.id == up.id) ?? new (up);
-			ProfileVM.IsShowCheckboxColumn = false;
+			ProfileUIContextManager.ApplyContextToProfile(ProfileVM, ProfileUIContext.DialogSelection);
 			UserProfile = new UserProfileIdentityVM(up) {
 				Tags = await TagsRepo.Instance
 				.GetTagsAsync(TagItemType.Profile, up.ID)

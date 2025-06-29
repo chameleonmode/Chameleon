@@ -135,7 +135,9 @@ public partial class ViewModel : ViewModelObjectBase {
 		await FoldersViewModel.Instance.OnNavigatingTo(param as ObsFolder ?? FoldersViewModel.Instance.SelectedFolder);
 		if (param is ObsProfile up) ProfilesViewModel.Instance.SearchText = up.Title ?? "";
 		else if (param is string p) ProfilesViewModel.Instance.SearchText = p;
-		ProfilesViewModel.Instance.ObsProfiles.ForEach(p => p.IsShowCheckboxColumn = true);
+		
+		// State machine context is already applied in ProfilesViewModel reactive pipeline
+		// No need to apply it here to avoid race conditions
 	}
 	public static ViewModel Instance { get; } = new();
 }
