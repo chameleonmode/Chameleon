@@ -77,6 +77,10 @@ public partial class ProfilesViewModel : Profiler {
 		_ = Shared
 			.Filter(filter)
 			.SortAndPage(AscendingComparer, pageRequests)
+			.Do(changeSet => {
+				var profiles = changeSet.Select(c => c.Current);
+				ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.ProfilesView);
+			})
 			.SortAndBind(out var profiles, CompareObservable)
 			.Subscribe();
 		Profiles = profiles;
@@ -215,6 +219,9 @@ public partial class ProfilesViewModel : Profiler {
 		Folder.Tags = await TagsRepo.Instance.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
 		SearchText = string.Empty;
 		SetViewModelsFilter();
+		
+		await Task.Delay(20); // Allow reactive pipeline to update
+		ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.ProfilesView);
 	}
 
 	public async Task<UserProfileDto?> CreateNewProfile() {
@@ -249,7 +256,6 @@ public partial class ProfilesViewModel : Profiler {
 		OnPropertyChanged(nameof(HasProfiles));
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedFolderTitle));
-		Profiles.ForEach(p => p.IsShowCheckboxColumn = true); // temp fix for now TODO: findout root cause
 	}
 
 	public static ProfilesViewModel Instance { get; } = new ProfilesViewModel();
