@@ -30,7 +30,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 	[ObservableProperty] bool isShowGlyph = true;
 	[ObservableProperty] bool isShowCheckboxColumn = true;
 
-	private ProfileUIContext _currentContext = ProfileUIContext.ProfilesView;
+	private ProfileUIContext currentContext = ProfileUIContext.ProfilesView;
 
 	public Dictionary<SystemBrowserType, IBrowserInstance?> SBI { get; } = new() {
 		[SystemBrowserType.Chrome] = null,
@@ -264,14 +264,14 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 	}
 
 	public void SetUIContext(ProfileUIContext context) {
-		if (_currentContext == context) return;
+		if (currentContext == context) return;
 
-		var previousContext = _currentContext;
+		var previousContext = currentContext;
 		if (!ProfileUIStateMachine.CanTransition(previousContext, context)) {
 			throw new InvalidOperationException($"Cannot transition from {previousContext} to {context}");
 		}
 
-		_currentContext = context;
+		currentContext = context;
 		var state = ProfileUIStateMachine.GetStateFor(context);
 
 		IsShowCheckboxColumn = state.IsShowCheckboxColumn;
@@ -280,7 +280,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 		OnContextChanged(previousContext, context);
 	}
 
-	public ProfileUIContext GetUIContext() => _currentContext;
+	public ProfileUIContext GetUIContext() => currentContext;
 
 	protected virtual void OnContextChanged(ProfileUIContext from, ProfileUIContext to) {
 		

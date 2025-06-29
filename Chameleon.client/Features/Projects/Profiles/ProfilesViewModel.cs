@@ -237,9 +237,7 @@ public partial class ProfilesViewModel : Profiler {
 
 		RefreshProperties();
 
-		// Apply the ProfilesView context after filter changes
-		// Use a small delay to ensure the reactive pipeline has completed
-		Task.Run(async () => {
+		_ = Task.Run(async () => {
 			await Task.Delay(10); // Small delay to let reactive chain update
 			ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.ProfilesView);
 		});
