@@ -40,53 +40,26 @@
 				<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
 					<HeaderedContentControl.Header>
 						<StackPanel Orientation="Horizontal">
-							<Button
-								Content="chrome"
-								Theme="{StaticResource SvgIconButton}"
-								Command="{Binding AsyncCfVCommand}"
-								CommandParameter="chrome" />
-							<Button
-								Content="firefox"
-								Margin="3 0 0 0"
-								Theme="{StaticResource SvgIconButton}"
-								Command="{Binding AsyncCfVCommand}"
-								CommandParameter="firefox" />
-							<Button
-								Content="brave"
-								Margin="3 0 0 0"
-								Theme="{StaticResource SvgIconButton}"
-								Command="{Binding AsyncCfVCommand}"
-								CommandParameter="brave" />
-							<Button
-								Content="chameleon-logo"
-								Margin="3 0 0 0"
-								Theme="{StaticResource SvgIconButton}"
-								Command="{Binding AsyncCfVCommand}"
-								CommandParameter="hwinds" />
-
+							<Button Content="chrome" Classes="async svg" />
+							<Button Content="firefox" Margin="3 0 0 0" Classes="async svg" />
+							<Button Content="brave" Margin="3 0 0 0" Classes="async svg" />
+							<Button Content="chameleon-logo" Margin="3 0 0 0" Classes="async svg" />
 							<Border Classes="divider" Margin="18 6" />
 
-							<Button
-								Content="up-folder"
-								Tag="Move"
-								Theme="{StaticResource SvgIconTextButton}"
-								Command="{Binding AsyncCfVCommand}"
-								CommandParameter="Move"/>
-							<Button
-								Content="minus-in-circle"
-								Tag="Remove"
-								Theme="{StaticResource SvgIconTextButton}"
-								Margin="4 0 0 0"
-								IsVisible="{Binding HasFolder}"
-								Command="{Binding AsyncCfVCommand}"
-								CommandParameter="Remove"/>
-							<Button
-								Theme="{StaticResource SvgIconTextButton}"
-								Content="delete"
-								Tag="Delete"
-								Margin="3 0 0 0"
-								Command="{Binding AsyncCfVCommand}"
-								CommandParameter="Delete" />
+							<Button Content="up-folder" ToolTip.Tip="Move to folder" Classes="async svg" />
+							<Button Content="minus-in-circle" ToolTip.Tip="Remove from folder" Margin="4 0" IsVisible="{Binding HasFolder}" Classes="async svg" />
+							<Button Content="delete" ToolTip.Tip="Delete" Classes="async svg" />
+							<Border Classes="divider" Margin="18 6" />
+							<ComboBox SelectedItem="{Binding SelectedBrowserOption}"
+								 ItemsSource="{Binding BrowserOptions}"
+								 Margin="0 0 6 0">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<afv:SvgIcon IconName="{Binding IconName}" Height="20" Width="20"/>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+							<Button Classes="icon async" IsVisible="{Binding !Automationing}" Content="RadioButtonFilled" CommandParameter="Record" ToolTip.Tip="Record" />
 						</StackPanel>
 					</HeaderedContentControl.Header>
 				</HeaderedContentControl>
@@ -94,100 +67,36 @@
 		</afv:ChameleonContentControl.Header>
 
 		<afv:ChameleonContentControl.Options>
-			<StackPanel IsVisible="{Binding HasProfiles}" Spacing="12">
-				<Button
-					Content="select-all"
-					Tag="Select all"
-					Theme="{StaticResource SvgIconTextButton}"
-					Command="{Binding CfVCommand}"
-					CommandParameter="SelectAll" />
-				<Button
-					Content="select-all"
-					Tag="Select all in folder"
-					Theme="{StaticResource SvgIconTextButton}"
-					Command="{Binding CfVCommand}"
-					CommandParameter="SelectAllProfilesFromFolder" />
-				<StackPanel Orientation="Horizontal" Margin="2 0 0 0">
-					<StackPanel.IsVisible>
-						<MultiBinding Converter="{x:Static BoolConverters.And}">
-							<Binding Path="HasFolder"/>
-							<Binding Path="HasProfiles"/>
-						</MultiBinding>
-					</StackPanel.IsVisible>
-					<Button
-						Content="plus-in-circle"
-						Tag="Add profiles"
-						Theme="{StaticResource SvgIconTextButton}"
-						Command="{Binding AsyncCfVCommand}"
-						CommandParameter="AddProfilesToFolder" />
+			<StackPanel Spacing="12">
+				<Button	Tag="Add profiles" IsVisible="{Binding HasFolder}" Content="plus-in-circle" Classes="async svg-text" />
+				<StackPanel IsVisible="{Binding HasProfiles}" Spacing="12">
+					<Button Content="select-all" Tag="Select all" Classes="cfv svg-text" />
+					<Button Content="select-all" Tag="Select all in folder" Classes="cfv svg-text" CommandParameter="SelectAllProfilesFromFolder" />
+					<afv:HeaderdInputFieldsControl IsVisible="{Binding HasFolder}"
+						 Title="Tags:"
+						 Text="{Binding Folder.Tags, FallbackValue=something}">
+						<afv:HeaderdInputFieldsControl.Buttons>
+							<Button Content="Save" ToolTip.Tip="Save Tags" CommandParameter="SaveTags" Classes="icon accent async" />
+						</afv:HeaderdInputFieldsControl.Buttons>
+					</afv:HeaderdInputFieldsControl>
+					<Grid ColumnDefinitions="*, Auto" IsVisible="{Binding HasSelectedItems}">
+						<ComboBox ToolTip.Tip="Automation:"
+							 ItemsSource="{Binding PlaywrightScripts}"
+							 SelectedItem="{Binding SelectedPlaywrightScript}"
+							 Margin="0 0 6 0">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Description.Title}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+						<Button Grid.Column="1" Classes="icon async" Content="Play" IsVisible="{Binding !Automationing}" />
+						<Button Grid.Column="1" Classes="icon cfv" Content="Stop" IsVisible="{Binding Automationing}" />
+					</Grid>
+					<ComboBox ToolTip.Tip="Sort"
+						 ItemsSource="{Binding Sorts}"
+						 SelectedItem="{Binding Sort}" />
 				</StackPanel>
-				<afv:HeaderdInputFieldsControl Title="Tags:" Text="{Binding Folder.Tags, FallbackValue=somaccount}">
-					<afv:HeaderdInputFieldsControl.Buttons>
-						<Button
-							Content="Save"
-							ToolTip.Tip="Save"
-							CommandParameter="SaveTags"
-							Command="{Binding AsyncCfVCommand}"
-							Classes="accent"
-							Theme="{DynamicResource AccentSymbleIconButton}" />
-					</afv:HeaderdInputFieldsControl.Buttons>
-				</afv:HeaderdInputFieldsControl>
-				<ui:FAComboBox
-					Header="Sort:"
-					Width="200"
-					IsEditable="False"
-					HorizontalAlignment="Right"
-					ItemsSource="{Binding Sorts}"
-					SelectedItem="{Binding Sort}" />
-
-				<!--Automation Section in Options container-->
-				<!--Scripts-->
-				<ui:FAComboBox 
-					PlaceholderText="Select an automation..."
-					IsEditable="False"
-					HorizontalAlignment="Right"
-					Header="Automation:"
-					ItemsSource="{Binding PlaywrightScripts}"
-					SelectedItem="{Binding SelectedPlaywrightScript}"
-					Grid.Row="0"
-					Grid.Column="0"
-					Grid.ColumnSpan="3"
-					Width="200">
-					<ui:FAComboBox.ItemTemplate>
-						<DataTemplate>
-							<TextBlock
-								Text="{Binding Description.Title}"
-								TextTrimming="CharacterEllipsis"
-								ToolTip.Tip="{Binding Description.Title}" />
-						</DataTemplate>
-					</ui:FAComboBox.ItemTemplate>
-				</ui:FAComboBox>
-
-				<Grid ColumnDefinitions="Auto,Auto,Auto">
-					<!--Select Browser-->
-					<ui:FAComboBox
-						MaxWidth="66"
-						HorizontalAlignment="Left"
-						SelectedItem="{Binding SelectedBrowserOption}"
-						ItemsSource="{Binding BrowserOptions}">
-						<ui:FAComboBox.ItemTemplate>
-							<DataTemplate>
-								<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-									<afv:SvgIcon IconName="{Binding IconName}" Height="20" Width="20"/>
-								</StackPanel>
-							</DataTemplate>
-						</ui:FAComboBox.ItemTemplate>
-					</ui:FAComboBox>
-
-					<Panel Grid.Column="2" HorizontalAlignment="Right">
-					<StackPanel Classes="zontal">
-						<Button Classes="icon async" IsVisible="{Binding !Automationing}" Content="RadioButtonFilled" CommandParameter="Record" ToolTip.Tip="Record" />
-						<Button Classes="icon async" IsVisible="{Binding !Automationing}" Content="Play" />
-					</StackPanel>
-						<Button Content="Stop" Classes="icon cfv" IsVisible="{Binding Automationing}" />
-					</Panel>
-				</Grid>
-
 			</StackPanel>
 		</afv:ChameleonContentControl.Options>
 

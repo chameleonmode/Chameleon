@@ -5,36 +5,29 @@ using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.lib.Api.Dto;
+using Chameleon.lib.Util;
 
 namespace Chameleon.client.Features.Projects.Folders;
 
 public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
-
-	[ObservableProperty] bool isFavorite;
 	[ObservableProperty] int profilesCount;
 	[ObservableProperty] bool isRenamed;
 	[ObservableProperty] bool isActionOptionsVisible;
 
 	public bool IsContextMenuVisible => Dto!.id != 0;
 	public bool ShowFavoriteIcon => IsContextMenuItemEnabled && Dto?.id != 0;
+	public bool IsFavorite => Dto.isFavorite;
 	public bool IsSharedFolder => Dto?.creatorUserId != null && Dto?.creatorUserId != Auther.AuthSession?.UserId;
 	public bool IsContextMenuItemEnabled => Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CreatorUserId == Dto?.creatorUserId;
 	public bool IsFolderNotEmpty => UserProfilesRepo.Instance.ObservableCache.Items.Any(p => (p.folderId == null && Dto!.id == 0) || p.folderId == Dto!.id);
 
-	public ObsFolder(UPFolderDto folder,  Action<ObsFolder>? selectedChanged = default)
+	public ObsFolder(UPFolderDto folder, Action<ObsFolder>? selectedChanged = default)
 	: base(folder, onSelectedChanged: (vm) => selectedChanged?.Invoke((ObsFolder)vm)) {
-		isFavorite = Dto.isFavorite;
 		profilesCount = Dto.profilesCount;
 
 		CommandMap["StartRename"] = () => {
 			Title = Dto?.title;
 			IsRenamed = true;
-		};
-		CommandMap["SetFavoriteFolder"] = () => {
-			IsFavorite = !IsFavorite;
-
-			Dto!.isFavorite = IsFavorite;
-			_ = UserProfilesFolderRepo.Instance.Put(Dto);
 		};
 		CommandMap["ViewGroup"] = () => Navigator.Instance.NavigateTo("Features.Projects.View", this);
 		CommandMap["ChangeProxies"] = () => {
@@ -44,12 +37,9 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 
 		AsyncCommandMap["Open"] = async () => await FoldersViewModel.Instance.OnNavigatingTo(this);
 		AsyncCommandMap["SetFavorite"] = async () => {
-			IsFavorite = !IsFavorite;
-			Dto!.isFavorite = IsFavorite;
-
+			Dto.isFavorite = !Dto.isFavorite;
 			_ = await UserProfilesFolderRepo.Instance.Put(Dto);
-
-			OnPropertyChanged(nameof(Dto));
+			OnPropertyChanged(nameof(IsFavorite));
 		};
 		AsyncCommandMap["Delete"] = async () => {
 			if (await MessageBox.Show("Delete Folder",
@@ -71,10 +61,8 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 			}
 		};
 		AsyncCommandMap["SaveRename"] = async () => {
-			ArgumentException.ThrowIfNullOrEmpty(Title, nameof(Title));
-
-			if (FoldersViewModel.Instance.Folders?.Any(x => x.Dto.title == this.Title) == true)
-				throw new InvalidOperationException($"Folder named {this.Title} already exists");
+			Title.ThrowIfNullOrEmpty();
+			FoldersViewModel.Instance.Folders.ThrowIfAny(x => x.Dto.title == Title, $"Folder named {Title} already exists");
 
 			var res = await UserProfilesFolderRepo.Instance.Put(new UPFolderDto {
 				id = Dto.id,
@@ -83,7 +71,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 				creatorUserId = Dto.creatorUserId
 			});
 
-			Title = res != null ? (Dto.title = res.title) : Dto.title;
+			Title = res != null ? Dto.title = res.title : Dto.title;
 			IsRenamed = false;
 
 			// if (wasSelected) await AsyncCommandMap["Open"]();

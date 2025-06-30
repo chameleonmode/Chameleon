@@ -77,7 +77,7 @@
 
 	<!--StackPannel-->
 	<Style Selector="StackPanel.shared">
-		<Setter Property="Spacing" Value="6" />
+		<Setter Property="Spacing" Value="8" />
 		<Setter Property="Grid.IsSharedSizeScope" Value="True" />
 	</Style>
 	<Style Selector="StackPanel.zontal">
@@ -96,6 +96,12 @@
 		<Style Selector="^.async">
 			<Setter Property="Command" Value="{ReflectionBinding AsyncCfVCommand}" />
 			<Setter Property="CommandParameter" Value="{Binding $self.Content}" />
+		</Style>
+		<Style Selector="^.svg">
+			<Setter Property="Theme" Value="{StaticResource SvgIconButton}" />
+		</Style>
+		<Style Selector="^.svg-text">
+			<Setter Property="Theme" Value="{StaticResource SvgIconTextButton}" />
 		</Style>
 	</Style>
 

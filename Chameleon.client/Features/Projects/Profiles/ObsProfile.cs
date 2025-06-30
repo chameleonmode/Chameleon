@@ -20,7 +20,6 @@ using Microsoft.Playwright;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 
-
 namespace Chameleon.client.Features.Projects.Profiles;
 
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {

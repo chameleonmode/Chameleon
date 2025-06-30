@@ -90,7 +90,7 @@ public partial class ProfilesViewModel : Profiler {
 				profile.IsSelected = true;
 			}
 		}
-		CommandMap["SelectAll"] = SelectAll;
+		CommandMap["select-all"] = SelectAll;
 		CommandMap["SelectAllProfilesFromFolder"] = () => {
 			PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
 			SelectAll();
@@ -108,7 +108,7 @@ public partial class ProfilesViewModel : Profiler {
 		AsyncCommandMap["chrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);
 		AsyncCommandMap["brave"] = () => OpenSystemBrowser(SystemBrowserType.Brave);
 		AsyncCommandMap["firefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
-		AsyncCommandMap["hwinds"] = () => {
+		AsyncCommandMap["chameleon-logo"] = () => {
 			SelectedProfiles?.ForEach(profile => SnapCracklePopViewModel.Open(profile.Dto));
 			return Task.CompletedTask;
 		};
@@ -169,19 +169,20 @@ public partial class ProfilesViewModel : Profiler {
 		AsyncCommandMap["Record"] = async () => await StartAutomation(true);
 		AsyncCommandMap["Play"] = async () => await StartAutomation(false);
 
-		AsyncCommandMap["Move"] = async () => {
+		AsyncCommandMap["up-folder"] = async () => {
 			if (!SelectedProfiles.Any() ||
 				await MoveProfilesPopup.Show(SelectedProfiles) is not { } mover) return;
 			else _ = await UserProfilesRepo.MoveUserProfileToFolder(mover.Profiles.Select(a => a.Dto!.id), mover.SelectedFolder.Dto.id);
 		};
-		AsyncCommandMap["Remove"] = async () => {
+		AsyncCommandMap["minus-in-circle"] = async () => {
 			if (!SelectedProfiles.Any()) return;
 			else _ = await UserProfilesRepo.MoveUserProfileToFolder(SelectedProfiles.Select(a => a.Dto!.id), null);
 		};
 		AsyncCommandMap["Delete"] = async () => {
 			if (!SelectedProfiles.Any() ||
-			 !await MessageBox.Show("Delete User Profiles",
-				$"Are you sure you want to delete {SelectedCount} profiles?",
+			 !await MessageBox.Show(
+				title: "Delete User Profiles",
+				content: $"Are you sure you want to delete {SelectedCount} profiles?",
 				icon: "DeleteLines")) return;
 
 			foreach (var profile in SelectedProfiles.ToList()) {
@@ -189,7 +190,7 @@ public partial class ProfilesViewModel : Profiler {
 				if (!result.success) profile.IsSelected = false;
 			}
 		};
-		AsyncCommandMap["AddProfilesToFolder"] = async () => {
+		AsyncCommandMap["plus-in-circle"] = async () => {
 			if (Folder is null ||
 			 await AddProfilesPopup.Show(Folder) is not { } add ||
 			 add.SelectedProfiles.Select(o => o.Dto.id) is not { } ids || !ids.Any()) return;

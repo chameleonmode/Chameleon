@@ -46,8 +46,8 @@
 								<Button Grid.Column="2"
 										VerticalAlignment="Top"
 										Margin="5"
-										CommandParameter="SetFavoriteFolder"
-										Command="{Binding CfVCommand}"
+										CommandParameter="SetFavorite"
+										Command="{Binding AsyncCfVCommand}"
 										Theme="{StaticResource FavoriteButton}"/>
 							</StackPanel>
 						</Grid>
