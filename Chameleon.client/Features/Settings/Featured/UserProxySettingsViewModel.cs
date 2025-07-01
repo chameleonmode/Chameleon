@@ -118,7 +118,8 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 
 	partial void OnSelectedFolderChanged(ObsFolder? value) {
 		filter.OnNext(FilterPredicate);
-		PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
+		PaginatorViewModel.TotalCount = MaxInFolderItems;
+		PaginatorViewModel.UpdatePageCount(MaxInFolderItems > 0 ? 9 : 1);
 	}
 
 	[RelayCommand]

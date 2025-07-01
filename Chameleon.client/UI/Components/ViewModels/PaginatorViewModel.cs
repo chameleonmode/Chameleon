@@ -33,7 +33,7 @@ public partial class PaginatorViewModel : ViewModelObjectBase {
 
 	partial void OnPageCountChanged(int value) => UpdateAll();
 	partial void OnPageIndexChanged(int value) => UpdateAll();
-	partial void OnTotalCountChanged(int value) => UpdateStatus();
+	partial void OnTotalCountChanged(int value) => UpdateAll();
 
 	public void UpdatePageCount(int opi) {
 		OnPageItems = opi;

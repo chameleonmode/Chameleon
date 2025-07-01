@@ -234,7 +234,8 @@ public partial class ProfilesViewModel : Profiler {
 	}
 
 	public void SetViewModelsFilter() {
-		PaginatorViewModel.UpdatePageCount(SearchText.Length > 3 ? MaxInFolderItems : 9);
+		PaginatorViewModel.TotalCount = MaxInFolderItems;
+		PaginatorViewModel.UpdatePageCount(SearchText.Length > 3 ? MaxInFolderItems : MaxInFolderItems > 0 ? 9 : 1);
 		filter.OnNext(p =>
 			(!HasFolder || p.Dto.folderId == Folder?.Id) &&
 			(SearchText.Length < 3 || p.Title?.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) == true)
