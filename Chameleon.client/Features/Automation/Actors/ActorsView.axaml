@@ -136,23 +136,28 @@
 															<afv:Inputter Title="System:"
 																			   Description="most helpful for the model consistency"
 																			   Watermark="You are helpful..."
-																			   Text="{Binding AISettings.Decorators.System, Mode=TwoWay}" />
+																			   Text="{Binding AISettings.Decorators.System, Mode=TwoWay}"
+																				 Tag="True" />
 															<afv:Inputter Title="Human:"
 																			   Description="Human persona description"
 																			   Watermark="...(eg. reddit content creator, reddit user, etc.)"
-																			   Text="{Binding AISettings.Decorators.Human, Mode=TwoWay}" />
+																			   Text="{Binding AISettings.Decorators.Human, Mode=TwoWay}"
+																				 Tag="True" />
 															<afv:Inputter Title="Audience:"
 																			   Description="Target audience"
 																			   Watermark="...(eg: reddit users who are interested in..., reddit users who are looking for..., etc.)"
-																			   Text="{Binding AISettings.Decorators.Audience, Mode=TwoWay}" />
+																			   Text="{Binding AISettings.Decorators.Audience, Mode=TwoWay}"
+																				 Tag="True" />
 															<afv:Inputter Title="Background:"
 																			   Description="Background context"
 																			   Watermark="...(eg: I am surfing reddit... You... etc.)"
-																			   Text="{Binding AISettings.Decorators.Background, Mode=TwoWay}" />
+																			   Text="{Binding AISettings.Decorators.Background, Mode=TwoWay}"
+																				 Tag="True" />
 															<afv:Inputter Title="Tone:"
 																			   Description="Communication tone"
 																			   Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
-																			   Text="{Binding AISettings.Decorators.Tone, Mode=TwoWay}" />
+																			   Text="{Binding AISettings.Decorators.Tone, Mode=TwoWay}"
+																				 Tag="True" />
 														</StackPanel>
 													</Expander>
 												</StackPanel>

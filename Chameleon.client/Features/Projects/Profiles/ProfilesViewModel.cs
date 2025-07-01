@@ -18,6 +18,7 @@ using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
 
 using Chameleon.lib.Api.Dto;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
@@ -78,7 +79,7 @@ public partial class ProfilesViewModel : Profiler {
 			.SortAndBind(out var profiles, CompareObservable)
 			.Subscribe();
 		Profiles = profiles;
-		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
+		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
 		InitializeCommands();
@@ -89,9 +90,10 @@ public partial class ProfilesViewModel : Profiler {
 			foreach (var profile in Profiles) {
 				profile.IsSelected = true;
 			}
+			OnPropertyChanged(nameof(HasSelectedItems));
 		}
 		CommandMap["select-all"] = SelectAll;
-		CommandMap["SelectAllProfilesFromFolder"] = () => {
+		CommandMap["select-folder"] = () => {
 			PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
 			SelectAll();
 		};
@@ -170,15 +172,16 @@ public partial class ProfilesViewModel : Profiler {
 		AsyncCommandMap["Play"] = async () => await StartAutomation(false);
 
 		AsyncCommandMap["up-folder"] = async () => {
-			if (!SelectedProfiles.Any() ||
-				await MoveProfilesPopup.Show(SelectedProfiles) is not { } mover) return;
+			if (await MoveProfilesPopup.Show(SelectedProfiles) is not { } mover) return;
 			else _ = await UserProfilesRepo.MoveUserProfileToFolder(mover.Profiles.Select(a => a.Dto!.id), mover.SelectedFolder.Dto.id);
+			SetViewModelsFilter();
 		};
 		AsyncCommandMap["minus-in-circle"] = async () => {
 			if (!SelectedProfiles.Any()) return;
 			else _ = await UserProfilesRepo.MoveUserProfileToFolder(SelectedProfiles.Select(a => a.Dto!.id), null);
+			SetViewModelsFilter();
 		};
-		AsyncCommandMap["Delete"] = async () => {
+		AsyncCommandMap["delete"] = async () => {
 			if (!SelectedProfiles.Any() ||
 			 !await MessageBox.Show(
 				title: "Delete User Profiles",
@@ -189,12 +192,15 @@ public partial class ProfilesViewModel : Profiler {
 				var result = await UserProfilesRepo.Instance.Delete(profile.Dto!.id);
 				if (!result.success) profile.IsSelected = false;
 			}
+			PaginatorViewModel.CurrentIndex = 0;
+			SetViewModelsFilter();
 		};
 		AsyncCommandMap["plus-in-circle"] = async () => {
 			if (Folder is null ||
 			 await AddProfilesPopup.Show(Folder) is not { } add ||
 			 add.SelectedProfiles.Select(o => o.Dto.id) is not { } ids || !ids.Any()) return;
 			else _ = await UserProfilesRepo.MoveUserProfileToFolder(ids, Folder.Id);
+			SetViewModelsFilter();
 		};
 	}
 
@@ -227,13 +233,12 @@ public partial class ProfilesViewModel : Profiler {
 		return base.Deleted(profile);
 	}
 
-	public override void SetViewModelsFilter() {
+	public void SetViewModelsFilter() {
 		PaginatorViewModel.UpdatePageCount(SearchText.Length > 3 ? MaxInFolderItems : 9);
 		filter.OnNext(p =>
 			(!HasFolder || p.Dto.folderId == Folder?.Id) &&
 			(SearchText.Length < 3 || p.Title?.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) == true)
 		);
-
 		RefreshProperties();
 	}
 

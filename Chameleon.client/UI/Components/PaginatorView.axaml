@@ -6,94 +6,51 @@
 						 xmlns:vm="using:Chameleon.client.UI.Components.ViewModels"
              x:Class="Chameleon.client.UI.Components.PaginatorView"
 						 x:DataType="vm:PaginatorViewModel"
-						 x:CompileBindings="False">
-	<UserControl.Resources>
-		<ControlTheme TargetType="ListBoxItem"
-					  x:Key="PagenerListBoxItem"
-				  BasedOn="{StaticResource {x:Type ListBoxItem}}">
-			<Setter Property="BorderThickness" Value="0" />
-			<Setter Property="MaxWidth" Value="1" />
-			<Setter Property="FontFamily" Value="Open Sans" />
-			<Setter Property="FontSize" Value="12" />
-			<Setter Property="FontWeight" Value="Normal" />
-			<Setter Property="Padding" Value="16,0,12,0" />
-		</ControlTheme>
-	</UserControl.Resources>
-	<Grid x:Name="ParentGrid"
-		  Margin="0 0 0 6"
-		  HorizontalAlignment="Right"
-		  ColumnDefinitions="Auto,Auto,*,Auto">
-		<StackPanel
-			VerticalAlignment="Center"
-			x:Name="SpTotalInfo"
-			Orientation="Horizontal"
-			HorizontalAlignment="Left"
-			Margin="0 0 0 0">
-			<TextBlock Text="{Binding FirstVisibleElementNumber}"/>
-			<TextBlock Text="-"/>
-			<TextBlock Text="{Binding LastVisibleElementNumber}"/>
-			<TextBlock Text=" out of "/>
-			<TextBlock Text="{Binding TotalCount}"/>
-		</StackPanel>
+						 x:CompileBindings="True">
+	<Grid Margin="0 3" HorizontalAlignment="Right" ColumnDefinitions="Auto,Auto,*,Auto">
+		<TextBlock Margin="0 0 3 0">
+			<Run Text="{Binding FirstVisibleElementNumber}"/>
+			<Run Text="-"/>
+			<Run Text="{Binding LastVisibleElementNumber}"/>
+			<Run Text=" of "/>
+			<Run Text="{Binding TotalCount}"/>
+		</TextBlock>
 
 		<Button
-			Grid.Column="1"
-			Theme="{DynamicResource TransparentButton}"
-			x:Name="BtnPrev"
-			IsEnabled="{Binding PrevButtonIsEnabled}"
-			Command="{Binding PrevPageCommand}">
-			<StackPanel
-				Orientation="Horizontal">
-				<ui:SymbolIcon
-					Symbol="Previous"
-					Margin="3"/>
-				<TextBlock Text="Prev" />
-			</StackPanel>
-		</Button>
+			 Grid.Column="1"
+			 Classes="square icon clear cfv text-on-accent"
+			 Content="Previous"
+			 IsEnabled="{Binding PrevButtonIsEnabled}" />
 
 		<ListBox
 			Grid.Column="2"
-			x:Name="LbPaginationButtons"
 			ItemsSource="{Binding Buttons}"
 			SelectedValue="{Binding PageIndex, Mode=TwoWay}"
 			SelectedValueBinding="{Binding Index}"
-			Margin="5 0">
+			ItemsPanel="{StaticResource ZontalStackPanel}"
+			Margin="3 0">
 			<ListBox.Styles>
-				<Style Selector="ListBoxItem">
-					<Setter Property="IsEnabled" Value="{Binding !IsEllipsis}"/>
-					<Setter Property="Focusable" Value="{Binding !IsEllipsis}"/>
-				</Style>
+    		<Style Selector="ListBoxItem">
+    		  <Setter Property="IsEnabled" Value="{ReflectionBinding !IsEllipsis}"/>
+    		  <Setter Property="Focusable" Value="{ReflectionBinding !IsEllipsis}"/>
+					<Setter Property="MinWidth" Value="5"/>
+					<Setter Property="MinHeight" Value="5"/>
+					<Setter Property="Padding" Value="12 4"/>
+					<Setter Property="HorizontalAlignment" Value="Center"/>
+    		  <Setter Property="HorizontalContentAlignment" Value="Center" />
+    		</Style>
 			</ListBox.Styles>
 			<ListBox.ItemTemplate>
-				<DataTemplate x:DataType="vm:PaginatorButtonViewModel">
-					<Border>
-						<TextBlock
-							VerticalAlignment="Center"
-							HorizontalAlignment="Center"
-							Text="{Binding Text}"/>
-					</Border>
+				<DataTemplate>
+					<TextBlock Text="{Binding Text}"/>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
-			<ListBox.ItemsPanel>
-				<ItemsPanelTemplate>
-					<StackPanel Orientation="Horizontal" />
-				</ItemsPanelTemplate>
-			</ListBox.ItemsPanel>
 		</ListBox>
 
 		<Button
-			Grid.Column="3"
-			Theme="{DynamicResource TransparentButton}"
-			x:Name="BtnNext"
-			IsEnabled="{Binding NextButtonIsEnabled}"
-			Command="{Binding NextPageCommand}"
-			Margin="0 0 0 0">
-			<StackPanel Orientation="Horizontal">
-				<TextBlock Text="Next" />
-
-				<ui:SymbolIcon Symbol="Next"
-							   Margin="3"/>
-			</StackPanel>
-		</Button>
+			 Grid.Column="3"
+			 Classes="square icon clear cfv text-on-accent"
+			 Content="Next"
+			 IsEnabled="{Binding NextButtonIsEnabled}" />
 	</Grid>
 </UserControl>

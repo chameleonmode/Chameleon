@@ -6,6 +6,9 @@
 	<ItemsPanelTemplate x:Key="HorizontalStackPanel">
 		<StackPanel Orientation="Horizontal" Spacing="6" />
 	</ItemsPanelTemplate>
+	<ItemsPanelTemplate x:Key="ZontalStackPanel">
+		<StackPanel Orientation="Horizontal" />
+	</ItemsPanelTemplate>
 
 	<ItemsPanelTemplate x:Key="HorizontalWrapPanelTemplate">
 		<WrapPanel Orientation="Horizontal" />

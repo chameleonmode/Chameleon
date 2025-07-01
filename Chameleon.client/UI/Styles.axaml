@@ -105,12 +105,13 @@
 		</Style>
 	</Style>
 
-	<!--TextBlock-->
-	<Style Selector="TextBlock.NoWrap">
-		<Setter Property="ToolTip.Tip" Value="{Binding $self.Text}" />
-		<Setter Property="VerticalAlignment" Value="Center" />
-		<Setter Property="TextWrapping" Value="NoWrap" />
-		<Setter Property="Margin" Value="6" />
+	<!--TextBlock-->	
+	<Style Selector="TextBlock">
+		<Style Selector="^.NoWrap">
+			<Setter Property="ToolTip.Tip" Value="{Binding $self.Text}" />
+			<Setter Property="TextWrapping" Value="NoWrap" />
+			<Setter Property="Margin" Value="6" />
+		</Style>
 	</Style>
 	
 	<!--TextBox-->

@@ -71,7 +71,7 @@
 				<Button	Tag="Add profiles" IsVisible="{Binding HasFolder}" Content="plus-in-circle" Classes="async svg-text" />
 				<StackPanel IsVisible="{Binding HasProfiles}" Spacing="12">
 					<Button Content="select-all" Tag="Select all" Classes="cfv svg-text" />
-					<Button Content="select-all" Tag="Select all in folder" Classes="cfv svg-text" CommandParameter="SelectAllProfilesFromFolder" />
+					<Button Content="select-all" Tag="Select folder" Classes="cfv svg-text" CommandParameter="select-folder" />
 					<afv:HeaderdInputFieldsControl IsVisible="{Binding HasFolder}"
 						 Title="Tags:"
 						 Text="{Binding Folder.Tags, FallbackValue=something}">

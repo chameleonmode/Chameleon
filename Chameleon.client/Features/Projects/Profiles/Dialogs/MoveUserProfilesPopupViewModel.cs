@@ -32,6 +32,7 @@ public partial class MoveUserProfilesPopupViewModel : ViewModelObjectBase {
 }
 public static class MoveProfilesPopup {
 	public static async Task<MoveUserProfilesPopupViewModel?> Show(IEnumerable<ObsProfile> profils) {
+		if (profils == null || !profils.Any()) return null;
 		var moveViewModel = new MoveUserProfilesPopupViewModel { Title = "Add To Folder" };
 		moveViewModel.Profiles.AddRange(profils);
 		return await MessageBox.ShowTaskDialog<MoveUserProfilesPopupUserControl, MoveUserProfilesPopupViewModel>(new(
