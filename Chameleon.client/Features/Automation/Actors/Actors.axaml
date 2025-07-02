@@ -1,0 +1,224 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="1680"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:cc="using:Chameleon.client.UI.Controls"
+			 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
+			 xmlns:local="using:Chameleon.client.Features.Automation.Actors"
+			 xmlns:vmv="using:Chameleon.client.Features.Automation.Actors.ViewModels"
+			 xmlns:models="using:Chameleon.AIR.Actors.Models"
+			 xmlns:redditModels="using:Chameleon.AIR.Actors.Models.Reddit"
+			 x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
+			 x:DataType="local:ActorsViewModel"
+			 x:CompileBindings="True">
+	<Grid RowDefinitions="Auto, *">
+		<cc:ChameleonContentControl Title="Autonomous Agents" TitleDescription="Robotic Automation Agents">
+			<cc:ChameleonContentControl.TitleContent>
+					<StackPanel Classes="zontal" HorizontalAlignment="Right" Margin="4">
+						<Button Content="Save" Classes="square icon async clear" />
+					</StackPanel>
+			</cc:ChameleonContentControl.TitleContent>
+			<cc:ChameleonContentControl.Content>
+			<StackPanel>
+				<ItemsControl Classes="uni-clm" ItemsSource="{Binding Actors}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate x:DataType="local:ActorViewModel">
+							<ui:SettingsExpander Header="{Binding Settings.Start.Feature}" IsExpanded="True" Background="Transparent">
+								<ui:SettingsExpanderItem>
+									<StackPanel>
+										<cc:ChameleonContentControl Title="Options" TitleDescription="auto robo autonomous roboto automation options">
+												<cc:ChameleonContentControl.TitleContent>
+													<StackPanel Classes="zontal" HorizontalAlignment="Right" Margin="0 0">
+														<ToggleSwitch IsChecked="{Binding Settings.Start.New}" 
+															 ToolTip.Tip="to start in a new tab" 
+															 OffContent="Active" OnContent="New" />
+														<ToggleSwitch IsChecked="{Binding Settings.CloseAfterRun}"
+															 ToolTip.Tip="Close or keep open browser instances for the previous profile before moving to the next"
+															 OffContent="Open" OnContent="Close"/>
+											
+															<!-- TODO:<ToggleSwitch ToolTip.Tip="Run all actionable actions or one each"
+																	  IsChecked="{Binding Settings.AsQue}" 
+																	  OffContent="Run All" OnContent="One Each"/>
+														<ToggleSwitch ToolTip.Tip="Run all selected automations for each profile, or run all profiles for each automation"
+																	  IsChecked="{Binding Settings.EachProfile}" 
+																	  OffContent="Each Profile"  OnContent="Each Selection"/> -->
+													</StackPanel>
+											</cc:ChameleonContentControl.TitleContent>
+
+											<!-- <cc:ChameleonContentControl.Header>
+												<StackPanel>
+												</StackPanel>
+											</cc:ChameleonContentControl.Header> -->
+
+											<cc:ChameleonContentControl.Content>
+												<StackPanel Classes="shared">
+													<Expander>
+														<Expander.Header>
+															<StackPanel Classes="zontal">
+																<TextBlock Text="Profiles" Classes="b1" />
+															</StackPanel>
+														</Expander.Header>
+														<StackPanel>
+															<StackPanel Classes="zontal">
+																<Button Content="More" 
+																	 Classes="async icon clear text-on-accent"
+																	 ToolTip.Tip="add or remove additional profiles" />
+																<TextBlock Text="select tags and profiles and toggle their active state to play"
+																	 Classes="caption"
+																	 Margin="0 0 0 8" />
+															</StackPanel>
+															<TextBlock Text="Tags" Classes="b1" Margin="4 0" />
+															<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0 4 0 12">
+																<ItemsControl Classes="sp-zontal" ItemsSource="{Binding Tagz}">
+																	<ItemsControl.ItemTemplate>
+																		<DataTemplate>
+																			<ToggleButton IsChecked="{Binding IsSelected}"
+																				 Content="{Binding Dto.Name}" 
+																				 ToolTip.Tip="{Binding ToolTipText}" />
+																		</DataTemplate>
+																	</ItemsControl.ItemTemplate>
+																</ItemsControl>
+															</ScrollViewer>
+
+															<TextBlock Text="Profiles" Classes="b1" Margin="4 4 0 4" />
+															<ScrollViewer Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+																<ItemsControl Classes="sp-zontal" ItemsSource="{Binding SelectedProfiles}">
+																	<ItemsControl.ItemTemplate>
+																		<DataTemplate>
+																			<ToggleButton IsChecked="{Binding Active}"
+																				 Content="{Binding Title}"
+																			 	 ToolTip.Tip="Click to activate" />
+																		</DataTemplate>
+																	</ItemsControl.ItemTemplate>
+																</ItemsControl>
+															</ScrollViewer>
+														</StackPanel>
+													</Expander>
+
+													<Expander Header="Inception">
+														<StackPanel Classes="shared">
+															<TextBlock Text="these options help keep the auto robo model 'on brand' and controls how it acts" Classes="caption" Margin="0 0 0 8" />
+															<cc:Inputter Title="System:"
+																			   Description="most helpful for the model consistency"
+																			   Watermark="You are helpful..."
+																			   Text="{Binding AI.Decorators.System, Mode=TwoWay}"
+																				 Tag="True" />
+															<cc:Inputter Title="Human:"
+																			   Description="Human persona description"
+																			   Watermark="...(eg. reddit content creator, reddit user, etc.)"
+																			   Text="{Binding AI.Decorators.Human, Mode=TwoWay}"
+																				 Tag="True" />
+															<cc:Inputter Title="Audience:"
+																			   Description="Target audience"
+																			   Watermark="...(eg: reddit users who are interested in..., reddit users who are looking for..., etc.)"
+																			   Text="{Binding AI.Decorators.Audience, Mode=TwoWay}"
+																				 Tag="True" />
+															<cc:Inputter Title="Background:"
+																			   Description="Background context"
+																			   Watermark="...(eg: I am surfing reddit... You... etc.)"
+																			   Text="{Binding AI.Decorators.Background, Mode=TwoWay}"
+																				 Tag="True" />
+															<cc:Inputter Title="Tone:"
+																			   Description="Communication tone"
+																			   Watermark="...(eg: friendly and professional with..., public figure, adaptive to the task, etc.)"
+																			   Text="{Binding AI.Decorators.Tone, Mode=TwoWay}"
+																				 Tag="True" />
+														</StackPanel>
+													</Expander>
+													
+													<UniformGrid Rows="1" Margin="0 6">
+														<ComboBox ToolTip.Tip="Scope"
+															 ItemsSource="{Binding Args.Scopes}"
+															 SelectedItem="{Binding Args.Scope}" />
+														<ComboBox ToolTip.Tip="Sort"
+															 ItemsSource="{Binding Args.Sorts}"
+															 SelectedItem="{Binding Args.Sort}" 
+															 Margin="6 0" />
+														<ComboBox ToolTip.Tip="Filter"
+															 ItemsSource="{Binding Args.Filters}"
+															 SelectedItem="{Binding Args.Filter}" />
+												 	</UniformGrid>
+
+													<cc:Inputter Title="Search:"
+														 Description="comma seperated list of search terms"
+														 Watermark="comma seperated list of search terms"
+														 Text="{Binding Settings.Start.Terms}" />											
+														 
+													<cc:Inputter Title="URL's:"
+														 Tag="True"
+														 Text="{Binding Settings.Start.Url}"
+														 Watermark="https://www.reddit.com/r/*&#x0a;https://www.reddit.com/search/*&#x0a;https://www.reddit.com/user/*&#x0a;https://www.reddit.com/r/*/search/*&#x0a;https://www.reddit.com/r/*/comments/*" 
+														 Description="list of urls seperated by a new line" />
+													
+													<UniformGrid Rows="1">
+													 	<UniformGrid.Styles>
+													 		<Style Selector="ui|NumberBox">
+																<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
+																<Setter Property="Maximum" Value="999"/>
+															</Style>
+													 	</UniformGrid.Styles>
+														<cc:Inputter Title="Terms:" Description="Adds AI related keywords based on search terms">
+															<ui:NumberBox Value="{Binding Settings.Start.Variations.Min}" />
+														</cc:Inputter>
+														<cc:Inputter Title="Rerun:" Description="Number of times to rerun each search term to a different listing">
+															<ui:NumberBox Value="{Binding Settings.Start.Iterations.Min}" />
+														</cc:Inputter>
+														<cc:Inputter Title="Retry:" Description="Maximum retry on unexpected situations">
+															<ui:NumberBox Value="{Binding Settings.Start.Attempts}"/>
+														</cc:Inputter>
+														<cc:Inputter Title="Rando:" Description="Min-max activity value for voting and joining">
+															<ui:NumberBox Value="{Binding Settings.Start.Rando.Min}" />
+														</cc:Inputter>
+														<cc:Inputter Title="Speed:" Description="robo movement speed in milliseconds">
+															<ui:NumberBox Value="{Binding Settings.Timeouts.Naps.Min}" />
+														</cc:Inputter>
+														<cc:Inputter Title="Delay:" Description="auto loop speed between runs in seconds">
+															<ui:NumberBox Value="{Binding Settings.Delay}" />
+														</cc:Inputter>
+													</UniformGrid>
+												</StackPanel>
+											</cc:ChameleonContentControl.Content>
+										</cc:ChameleonContentControl>
+									</StackPanel>
+								</ui:SettingsExpanderItem>
+
+								<ui:SettingsExpander.Footer>
+									<StackPanel Classes="zontal">
+										<ItemsControl ItemsSource="{Binding Selections}" Classes="sp-zontal" >
+											<ItemsControl.ItemTemplate>
+												<DataTemplate>
+													<ToggleButton IsChecked="{Binding Selected}" 
+														Content="{Binding Script.Title}" 
+														ToolTip.Tip="{Binding Script.Description}" />
+												</DataTemplate>
+											</ItemsControl.ItemTemplate>
+										</ItemsControl>
+										<Border Classes="divider" />
+										<ComboBox SelectedItem="{Binding SelectedBrowserOption}" ItemsSource="{x:Static local:ActorsViewModel.BrowserOptions}">
+											<ComboBox.ItemTemplate>
+												<DataTemplate>
+													<cc:SvgIcon IconName="{Binding IconName}" Height="20" Width="20" />
+												</DataTemplate>
+											</ComboBox.ItemTemplate>
+										</ComboBox>
+											<!-- <ToggleButton IsChecked="{Binding Settings.Start.New}" 
+												 Content="New" 
+												 ToolTip.Tip="start the automation in a new tab or the active tab" />
+											<ToggleButton IsChecked="{Binding Settings.CloseAfterRun}"
+												 Content="Close"
+												 ToolTip.Tip="Close or keep open browser instances for the previous profile before moving to the next" /> -->
+										<Button Content="Play" Classes="icon async" IsVisible="{Binding !Running}" />
+										<Button Content="Stop" Classes="icon cfv" IsVisible="{Binding Running}" />
+									</StackPanel>
+								</ui:SettingsExpander.Footer>
+							</ui:SettingsExpander>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+				</StackPanel>
+			</cc:ChameleonContentControl.Content>
+		</cc:ChameleonContentControl>
+	</Grid>
+</UserControl>

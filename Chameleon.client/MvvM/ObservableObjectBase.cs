@@ -47,7 +47,6 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 	public virtual Task Init(object? param) => Task.CompletedTask;
 	public virtual Task OnNavigatedTo(object? param) => LoadedTCS.Task;
 	public virtual Task OnNavigatingFrom(object param) => Task.CompletedTask;
-	public virtual void SetViewModelsFilter() { }
   
 	public Task InvokeInitializeAsyncCommand(object? p = null) => InitializeAsyncCommand.ExecuteAsync(p);
 	public Task InitializeAsync(object? param) => InvokeInitializeAsyncCommand(param);

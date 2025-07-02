@@ -23,7 +23,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 
 
 	public IdentityViewModel() {
-		AsyncCommandMap["SaveChanges"] = SaveChanges;
+		AsyncCommandMap["Save"] = SaveChanges;
 	}
 
 	public override async Task Init(object? param) {

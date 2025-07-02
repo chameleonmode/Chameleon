@@ -69,31 +69,16 @@
 				<profiles:UserProfileUserControl Name="UPView" />
 			</Border>
 
-			<StackPanel Grid.Column="1"
-						Orientation="Horizontal"
-						HorizontalAlignment="Right"
-						Margin="6 6 12 0"
-						Spacing="4">
-				<Button
-					ToolTip.Tip="Save Changes"
-					Content="Save"
-					Classes="accent"
-					Theme="{StaticResource AccentSymbleIconButton}"
-					Command="{Binding AsyncCfVCommand}"
-					CommandParameter="SaveChanges"
-					IsEnabled="{Binding !IsSaving}"/>
-			</StackPanel>
-
-                
-        <ProgressBar Grid.Row="1" 
-						Grid.ColumnSpan="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Top"
-            IsIndeterminate="True" 
-            IsVisible="{Binding IsSaving}"
-            Height="3"
-            Margin="0,2,0,2"
-            Foreground="{DynamicResource SystemAccentColor}" />
+			<Button Content="Save" Grid.Column="1" Margin="0 0 6 0" Classes="icon clear async" />
+      <ProgressBar Grid.Row="1" 
+				 Grid.ColumnSpan="2"
+				 HorizontalAlignment="Stretch"
+				 VerticalAlignment="Top"
+         IsIndeterminate="True" 
+         IsVisible="{Binding IsSaving}"
+         Height="3"
+         Margin="0,2,0,2"
+         Foreground="{DynamicResource SystemAccentColor}" />
 		</Grid>
 
 		<TabControl Grid.Row="2"
