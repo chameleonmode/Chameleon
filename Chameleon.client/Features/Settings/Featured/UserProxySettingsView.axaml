@@ -11,10 +11,11 @@
 						 x:DataType="vm:UserProxySettingsViewModel"
 						 x:CompileBindings="True">
 	<Grid RowDefinitions="*,Auto">
-				<afv:ChameleonContentControl Title="Proxies list"
-											 TitleDescription="Select proxies to edit them">
+				<afv:ChameleonContentControl Title="Proxies list" TitleDescription="Select proxies to edit them">
 					<afv:ChameleonContentControl.TitleContent>
-						<uc:PaginatorView DataContext="{Binding PaginatorViewModel}" />
+					<Panel DataContext="{Binding PaginatorViewModel}">
+						<uc:PaginatorView />
+					</Panel>	
 					</afv:ChameleonContentControl.TitleContent>
 
 					<afv:ChameleonContentControl.Header>
@@ -61,7 +62,7 @@
 								CommandParameter="SelectAll" />
 							<Button
 								Content="select-all"
-								Tag="Select all in folder"
+								Tag="Select folder"
 								Theme="{StaticResource SvgIconTextButton}"
 								Command="{Binding CfVCommand}"
 								CommandParameter="SelectAllFromFolder"/>

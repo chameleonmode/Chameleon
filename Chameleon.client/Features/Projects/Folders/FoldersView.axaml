@@ -11,9 +11,7 @@
 						 x:DataType="local:FoldersViewModel"
 						 x:CompileBindings="True">
 	<UserControl.Resources>
-		<ControlTheme x:Key="OpenListViewItemButtonDataTemplate"
-					  x:DataType="local:ObsFolder"
-					  TargetType="ContentControl">
+		<ControlTheme x:Key="OpenListViewItemButtonDataTemplate" x:DataType="local:ObsFolder" TargetType="ContentControl">
 			<Setter Property="Template">
 				<ControlTemplate>
 					<Panel>
@@ -57,11 +55,8 @@
 		<DataTemplate x:Key="FoldersListViewTemplate" x:DataType="local:ObsFolder">
 			<Panel>
 				<ContentControl Theme="{StaticResource OpenListViewItemButtonDataTemplate}" />
-				<Grid>
-					<Grid Grid.ColumnSpan="2"
-					  ColumnDefinitions="*, Auto"
-						 Grid.Column="1"
-						 IsVisible="{Binding IsRenamed}">
+				<Panel>
+					<Grid Grid.ColumnSpan="2" ColumnDefinitions="*, Auto" Grid.Column="1"  IsVisible="{Binding IsRenamed}">
 						<TextBox
 							 Name="RenameTextBox"
 							 Text="{Binding Title}"
@@ -114,7 +109,7 @@
 							CommandParameter="SetFavorite"
 							Command="{Binding AsyncCfVCommand}"/>
 					</StackPanel>
-				</Grid>
+				</Panel>
 			</Panel>
 		</DataTemplate>
 	</UserControl.Resources>

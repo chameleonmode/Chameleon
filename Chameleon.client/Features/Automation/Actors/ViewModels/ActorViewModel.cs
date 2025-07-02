@@ -138,7 +138,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					EditableSettings.Start.Variations.Min,
 					terms
 				)).WaitAsync(cts.Token);
-				terms.AddRange(res?.Reply.SelectMany(i => {
+				terms.AddRange(res!.Reply.SelectMany(i => {
 					//var termy = i.Data.Split(',').Select(t => t.Trim()).Where(t => t.IsNot());
 					//return termy;
 					return i.Data.Select(t => t.Trim()).Where(t => t.IsNot());

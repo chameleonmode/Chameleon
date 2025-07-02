@@ -62,7 +62,6 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 	[ObservableProperty] ProxCountryDto? country;
 	[ObservableProperty] ObsFolder? selectedFolder;
 	[ObservableProperty] string? applingProxy;
-	[ObservableProperty] int totalCount;
 	[ObservableProperty] PaginatorViewModel paginatorViewModel;
 
 	public ObservableCollection<ProxCountryDto> Countries { get; } = [];
@@ -79,20 +78,19 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		: UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == SelectedFolder.Dto!.id);
 	public UserProxySettingsViewModel() : base("Proxy") {
 		filter = new BehaviorSubject<Func<ObsProxySetting, bool>>(FilterPredicate);
-
-		_ = UserProfilesRepo.Connect()
-		.Transform(i => new ObsProxySetting(new(i, selectedChanged: (p) => {
+		_ = UserProfilesRepo.Connect().Transform(i => new ObsProxySetting(new(i, selectedChanged: (p) => {
 			OnPropertyChanged(nameof(HasSelectedItems));
 			OnPropertyChanged(nameof(SelectedCount));
 		}) { IsShowCheckboxColumn = false }))
 		.Filter(filter)
 		.SortAndPage(AscendingComparer, pageRequests)
-		.Bind(out var proxies).Subscribe();
+		.Bind(out var proxies)
+		.Subscribe();
 		Proxies = proxies;
-		PaginatorViewModel = new PaginatorViewModel((p) => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
+		PaginatorViewModel = new PaginatorViewModel((p) => pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
-		TotalCount = PaginatorViewModel.TotalCount;
+		PaginatorViewModel.UpdatePageCount(9);
 
 		AsyncCommandMap["ApplyProxy"] = ApplyProxy;
 		AsyncCommandMap["FillProxies"] = FillProxies;
@@ -120,7 +118,8 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 
 	partial void OnSelectedFolderChanged(ObsFolder? value) {
 		filter.OnNext(FilterPredicate);
-		TotalCount = PaginatorViewModel.TotalCount = MaxInFolderItems;
+		PaginatorViewModel.TotalCount = MaxInFolderItems;
+		PaginatorViewModel.UpdatePageCount(MaxInFolderItems > 0 ? 9 : 1);
 	}
 
 	[RelayCommand]

@@ -79,13 +79,16 @@
 		<Style Selector="^.icon">
 			<Setter Property="Theme" Value="{DynamicResource AccentSymbleIconButton}" />
 		</Style>
-		<Style Selector="^.text">
-			<Setter Property="Theme" Value="{DynamicResource AccentTextButton}" />
+		<Style Selector="^.icon-text">
+			<Setter Property="Theme" Value="{StaticResource SymbolIconTextButton}" />
 		</Style>
 		<Style Selector="^.clear">
 			<Setter Property="Background" Value="Transparent" />
 			<Setter Property="BorderBrush" Value="Transparent" />
 			<Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
+		</Style>
+		<Style Selector="^.text-on-accent">
+			<Setter Property="Foreground" Value="{StaticResource TextOnAccentFillColorPrimaryBrush}" />
 		</Style>
 	</Style>
 

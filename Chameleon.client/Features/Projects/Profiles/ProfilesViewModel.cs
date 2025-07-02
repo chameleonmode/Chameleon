@@ -18,6 +18,7 @@ using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
 
 using Chameleon.lib.Api.Dto;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
@@ -84,7 +85,7 @@ public partial class ProfilesViewModel : Profiler {
 			.SortAndBind(out var profiles, CompareObservable)
 			.Subscribe();
 		Profiles = profiles;
-		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.CurrentIndex, p.OnPageItems))) {
+		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
 		InitializeCommands();
@@ -95,9 +96,10 @@ public partial class ProfilesViewModel : Profiler {
 			foreach (var profile in Profiles) {
 				profile.IsSelected = true;
 			}
+			OnPropertyChanged(nameof(HasSelectedItems));
 		}
-		CommandMap["SelectAll"] = SelectAll;
-		CommandMap["SelectAllProfilesFromFolder"] = () => {
+		CommandMap["select-all"] = SelectAll;
+		CommandMap["select-folder"] = () => {
 			PaginatorViewModel.UpdatePageCount(MaxInFolderItems);
 			SelectAll();
 		};
@@ -114,7 +116,7 @@ public partial class ProfilesViewModel : Profiler {
 		AsyncCommandMap["chrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);
 		AsyncCommandMap["brave"] = () => OpenSystemBrowser(SystemBrowserType.Brave);
 		AsyncCommandMap["firefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
-		AsyncCommandMap["hwinds"] = () => {
+		AsyncCommandMap["chameleon-logo"] = () => {
 			SelectedProfiles?.ForEach(profile => SnapCracklePopViewModel.Open(profile.Dto));
 			return Task.CompletedTask;
 		};
@@ -175,31 +177,36 @@ public partial class ProfilesViewModel : Profiler {
 		AsyncCommandMap["Record"] = async () => await StartAutomation(true);
 		AsyncCommandMap["Play"] = async () => await StartAutomation(false);
 
-		AsyncCommandMap["Move"] = async () => {
-			if (!SelectedProfiles.Any() ||
-				await MoveProfilesPopup.Show(SelectedProfiles) is not { } mover) return;
+		AsyncCommandMap["up-folder"] = async () => {
+			if (await MoveProfilesPopup.Show(SelectedProfiles) is not { } mover) return;
 			else _ = await UserProfilesRepo.MoveUserProfileToFolder(mover.Profiles.Select(a => a.Dto!.id), mover.SelectedFolder.Dto.id);
+			SetViewModelsFilter();
 		};
-		AsyncCommandMap["Remove"] = async () => {
+		AsyncCommandMap["minus-in-circle"] = async () => {
 			if (!SelectedProfiles.Any()) return;
 			else _ = await UserProfilesRepo.MoveUserProfileToFolder(SelectedProfiles.Select(a => a.Dto!.id), null);
+			SetViewModelsFilter();
 		};
-		AsyncCommandMap["Delete"] = async () => {
+		AsyncCommandMap["delete"] = async () => {
 			if (!SelectedProfiles.Any() ||
-			 !await MessageBox.Show("Delete User Profiles",
-				$"Are you sure you want to delete {SelectedCount} profiles?",
+			 !await MessageBox.Show(
+				title: "Delete User Profiles",
+				content: $"Are you sure you want to delete {SelectedCount} profiles?",
 				icon: "DeleteLines")) return;
 
 			foreach (var profile in SelectedProfiles.ToList()) {
 				var result = await UserProfilesRepo.Instance.Delete(profile.Dto!.id);
 				if (!result.success) profile.IsSelected = false;
 			}
+			PaginatorViewModel.CurrentIndex = 0;
+			SetViewModelsFilter();
 		};
-		AsyncCommandMap["AddProfilesToFolder"] = async () => {
+		AsyncCommandMap["plus-in-circle"] = async () => {
 			if (Folder is null ||
 			 await AddProfilesPopup.Show(Folder) is not { } add ||
 			 add.SelectedProfiles.Select(o => o.Dto.id) is not { } ids || !ids.Any()) return;
 			else _ = await UserProfilesRepo.MoveUserProfileToFolder(ids, Folder.Id);
+			SetViewModelsFilter();
 		};
 	}
 
@@ -235,13 +242,13 @@ public partial class ProfilesViewModel : Profiler {
 		return base.Deleted(profile);
 	}
 
-	public override void SetViewModelsFilter() {
-		PaginatorViewModel.UpdatePageCount(SearchText.Length > 3 ? MaxInFolderItems : 9);
+	public void SetViewModelsFilter() {
+		PaginatorViewModel.TotalCount = MaxInFolderItems;
+		PaginatorViewModel.UpdatePageCount(SearchText.Length > 3 ? MaxInFolderItems : MaxInFolderItems > 0 ? 9 : 1);
 		filter.OnNext(p =>
 			(!HasFolder || p.Dto.folderId == Folder?.Id) &&
 			(SearchText.Length < 3 || p.Title?.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) == true)
 		);
-
 		RefreshProperties();
 
 		_ = Task.Run(async () => {

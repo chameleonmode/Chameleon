@@ -9,12 +9,7 @@ public partial class FoldersViewModel : Folderer {
 
 	public FoldersViewModel() {
 		AsyncCommandMap["Create"] = async () => {
-			var pcount = UserProfilesFolderRepo.Instance.ObservableCache.Items.Count;
-			var pname = $"New Folder - {pcount}";
-			while (UserProfilesRepo.Instance.ObservableCache.Items.Any(i => i.title == pname))
-				pname = $"New Folder - {++pcount}";
-
-			var folder = await UserProfilesFolderRepo.CreateFolder(pname);
+			var folder = await UserProfilesFolderRepo.CreateFolder();
 			SetSelected(folder.id);
 		};
 	}

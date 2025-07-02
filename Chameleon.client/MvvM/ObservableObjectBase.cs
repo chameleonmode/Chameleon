@@ -48,19 +48,18 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 	public virtual Task OnNavigatedTo(object? param) => LoadedTCS.Task;
 	public virtual Task OnNavigatingFrom(object param) => Task.CompletedTask;
 	public virtual void SetViewModelsFilter() { }
+  
 	public Task InvokeInitializeAsyncCommand(object? p = null) => InitializeAsyncCommand.ExecuteAsync(p);
 	public Task InitializeAsync(object? param) => InvokeInitializeAsyncCommand(param);
 
 	[RelayCommand]
 	public void CfV(string what) {
-		EX.Try(CommandMap[what], caught: e => Toaster.Error(what, e.Message));
-		SetViewModelsFilter();
+		EX.Try(() => CommandMap[what](), caught: e => Toaster.Error(what, e.Message));
 	}
 
 	[RelayCommand]
 	public async Task AsyncCfV(string what) {
-		await EX.Try(AsyncCommandMap[what], caught: e => Toaster.Error(what, e.Message));
-		SetViewModelsFilter();
+		await EX.Try(async () => await AsyncCommandMap[what](), caught: e => Toaster.Error(what, e.Message));
 	}
 
 	private IObjectValidator? _objectValidator;
