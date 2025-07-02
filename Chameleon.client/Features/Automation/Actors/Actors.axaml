@@ -61,14 +61,14 @@
 															</StackPanel>
 														</Expander.Header>
 														<StackPanel>
-															<StackPanel Classes="zontal">
-																<Button Content="More" 
-																	 Classes="async icon clear text-on-accent"
-																	 ToolTip.Tip="add or remove additional profiles" />
-																<TextBlock Text="select tags and profiles and toggle their active state to play"
-																	 Classes="caption"
-																	 Margin="0 0 0 8" />
-															</StackPanel>
+															<Grid ColumnDefinitions="*, Auto" Margin="0 0 0 8">
+																<TextBlock Text="select and toggle tags or profiles active state to play"
+																	 Classes="caption" />
+																<Button Content="Edit" 
+																	 Grid.Column="1"
+																	 ToolTip.Tip="add or remove additional profiles"
+																	 Classes="async icon clear text-on-accent" />
+															</Grid>
 															<TextBlock Text="Tags" Classes="b1" Margin="4 0" />
 															<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0 4 0 12">
 																<ItemsControl Classes="sp-zontal" ItemsSource="{Binding Tagz}">

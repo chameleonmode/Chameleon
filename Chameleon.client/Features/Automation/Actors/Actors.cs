@@ -87,7 +87,7 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			)));
 
 		AsyncCommandMap["Play"] = Runerer;
-		AsyncCommandMap["More"] = async () => {
+		AsyncCommandMap["Edit"] = async () => {
 			using var profileSelectorVM = new ProfileSelectorViewModel(SelectedProfiles);
 			_ = await profileSelectorVM.ShowDialogAsync();
 		};
