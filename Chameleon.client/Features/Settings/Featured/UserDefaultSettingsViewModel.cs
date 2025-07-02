@@ -62,9 +62,9 @@ public partial class UserDefaultSettingsViewModel
 			.Subscribe();
 	}
 
-	public override async Task InitAsync(object? param)
+	public override async Task Init(object? param)
 	{
-		await base.InitAsync(param);
+		await base.Init(param);
 
 		if (!Loaded) {
 			await BrowserSettingsRepo.Instance.Load();

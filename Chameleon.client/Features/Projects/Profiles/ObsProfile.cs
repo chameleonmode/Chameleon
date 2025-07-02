@@ -22,12 +22,17 @@ using System.Text.Json;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
-public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
+public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IProfileUIContextAware {
 	[ObservableProperty] string isChromeRunning = "False";
 	[ObservableProperty] string isBraveRunning = "False";
 	[ObservableProperty] string isFFRunning = "False";
 	[ObservableProperty] bool isShowGlyph = true;
 	[ObservableProperty] bool isShowCheckboxColumn = true;
+	[ObservableProperty] bool isActionOptionsVisible = true;
+	[ObservableProperty] bool isSelectionEnabled = true;
+
+	public ProfileUIContext CurrentContext { get; private set; } = ProfileUIContext.Profiles;
+	public ProfileUIContext? PreviousContext { get; private set; }
 
 	public Dictionary<SystemBrowserType, IBrowserInstance?> SBI { get; } = new() {
 		[SystemBrowserType.Chrome] = null,
@@ -126,8 +131,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 		if (SBI[browserType] is IBrowserInstance browser) {
 			if (foreground) browser.InvokeEvent(SysBrowserEventType.Foreground);
 			else browser.InvokeEvent(SysBrowserEventType.Background);
-		} 
-		else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile, foreground, headless));
+		} else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile, foreground, headless));
 		return SBI[browserType];
 	}
 
@@ -259,5 +263,26 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto> {
 			}
 		}
 		return default;
+	}
+
+	public void SetUIContext(ProfileUIContext context) {
+		if (CurrentContext == context) return;
+
+		if (!ProfileUIStateMachine.CanTransition(CurrentContext, context)) {
+			throw new InvalidOperationException($"Cannot transition from {CurrentContext} to {context}");
+		}
+
+		PreviousContext = CurrentContext;
+		CurrentContext = context;
+		var state = ProfileUIStateMachine.GetStateFor(context);
+
+		IsShowCheckboxColumn = state.IsShowCheckboxColumn;
+		IsShowGlyph = state.IsShowGlyph;
+
+		OnContextChanged(PreviousContext, context);
+	}
+
+	protected virtual void OnContextChanged(ProfileUIContext? from, ProfileUIContext to) {
+
 	}
 }

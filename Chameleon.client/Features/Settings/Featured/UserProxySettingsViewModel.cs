@@ -98,8 +98,8 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 		CommandMap["SelectAll"] = SelectAll;
 		CommandMap["SelectAllFromFolder"] = SelectAllFromFolder;
 	}
-	public override async Task InitAsync(object? param) {
-		await base.InitAsync(param);
+	public override async Task Init(object? param) {
+		await base.Init(param);
 
 		if (Countries.Count == 0) {
 			var countries = await ProxyAccessRepo.GetCountries();
@@ -110,8 +110,8 @@ public partial class UserProxySettingsViewModel : ViewModelObjectBase {
 			Country = Countries.First();
 		}
 	}
-	public override async Task OnNavigatedToAsync(object? param) {
-		await base.OnNavigatedToAsync(param);
+	public override async Task OnNavigatedTo(object? param) {
+		await base.OnNavigatedTo(param);
 		SelectedFolder = FoldersViewModel.Instance.SelectedFolder;
 		SelectedFolder ??= Folders[0];
 	}

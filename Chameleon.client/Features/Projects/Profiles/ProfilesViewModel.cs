@@ -71,11 +71,17 @@ public partial class ProfilesViewModel : Profiler {
 		: UserProfilesRepo.Instance.ObservableCache.Count;
 
 	public ProfilesViewModel() {
+		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Profiles, ProfileUIContext.Profiles);
+
 		pageRequests = new(new PageRequest(0, 9));
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(p => !HasFolder || p.Dto.folderId == Folder?.Id);
 		_ = Shared
 			.Filter(filter)
 			.SortAndPage(AscendingComparer, pageRequests)
+			.Do(changeSet => {
+				var profiles = changeSet.Select(c => c.Current);
+				ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.Profiles);
+			})
 			.SortAndBind(out var profiles, CompareObservable)
 			.Subscribe();
 		Profiles = profiles;
@@ -204,8 +210,8 @@ public partial class ProfilesViewModel : Profiler {
 		};
 	}
 
-	public override async Task InitAsync(object? param) {
-		await base.InitAsync(param);
+	public override async Task Init(object? param) {
+		await base.Init(param);
 		// await InitializeScripts();
 		PlaywrightScripts.Clear();
 		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());
@@ -220,6 +226,9 @@ public partial class ProfilesViewModel : Profiler {
 		Folder.Tags = await TagsRepo.Instance.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
 		SearchText = string.Empty;
 		SetViewModelsFilter();
+		
+		await Task.Delay(20); // Allow reactive pipeline to update
+		ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.Profiles);
 	}
 
 	public async Task<UserProfileDto?> CreateNewProfile() {
@@ -241,6 +250,11 @@ public partial class ProfilesViewModel : Profiler {
 			(SearchText.Length < 3 || p.Title?.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) == true)
 		);
 		RefreshProperties();
+
+		_ = Task.Run(async () => {
+			await Task.Delay(10); // Small delay to let reactive chain update
+			ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.Profiles);
+		});
 	}
 
 	private void RefreshProperties() {
@@ -249,7 +263,6 @@ public partial class ProfilesViewModel : Profiler {
 		OnPropertyChanged(nameof(HasProfiles));
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedFolderTitle));
-		Profiles.ForEach(p => p.IsShowCheckboxColumn = true); // temp fix for now TODO: findout root cause
 	}
 
 	public static ProfilesViewModel Instance { get; } = new ProfilesViewModel();

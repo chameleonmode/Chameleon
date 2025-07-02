@@ -20,6 +20,9 @@ public partial class TagsViewModel : Dashboarder {
 	public override ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 	public override ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public TagsViewModel() : base("Tags") {
+
+		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Tags, ProfileUIContext.Dashboard);
+		
 		var tagItems = TagsRepo.Connect()
 			.Filter(tag => tag.Name == SelectedTagName);
 
@@ -44,8 +47,11 @@ public partial class TagsViewModel : Dashboarder {
 								.Where(ids => ids is not null)
 								.Select(ids => new Func<ObsProfile, bool>(f => ids!.Any(id => id == f.Dto.id.ToString())))
 					)
+					.Do(changeSet => {
+						var profiles = changeSet.Select(c => c.Current);
+						ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.Dashboard);
+					})
 					.SortAndBind(out var profiles, Profiler.CompareObservable)
-					.Transform(i => { i.IsShowCheckboxColumn = false; return i;})
 					.Subscribe(_ => OnPropertyChanged(nameof(HasProfiles)));
 		Profiles = profiles;
 

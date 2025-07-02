@@ -15,7 +15,7 @@ public abstract partial class Automatior : ViewModelObjectBase {
 	}
 }
 public class ViewModel : ViewModelObjectBase {
-  public override Task OnNavigatedToAsync(object? param) {
-    return base.OnNavigatedToAsync(param);
+  public override Task OnNavigatedTo(object? param) {
+    return base.OnNavigatedTo(param);
   } 
 }

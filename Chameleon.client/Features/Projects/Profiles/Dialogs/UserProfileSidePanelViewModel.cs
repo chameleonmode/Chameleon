@@ -51,7 +51,7 @@ public partial class UserProfileSidePanelViewModel : ViewModelObjectBase {
 		userProfile = new ObsProfile(up);
 	}
 
-	public override Task InitAsync(object? param) {
+	public override Task Init(object? param) {
 		return UPAdditionalDataRepo.Instance.Load();
 	}
 

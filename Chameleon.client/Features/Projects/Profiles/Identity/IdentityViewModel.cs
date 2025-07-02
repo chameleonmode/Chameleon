@@ -21,20 +21,21 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 	[ObservableProperty] AddressesViewModel? addressesVM;
 	[ObservableProperty] LoginsViewModel? loginsVM;
 
+
 	public IdentityViewModel() {
 		AsyncCommandMap["SaveChanges"] = SaveChanges;
 	}
 
-	public override async Task InitAsync(object? param) {
-		await base.InitAsync(param);
+	public override async Task Init(object? param) {
+		await base.Init(param);
 	}
 
-	public override async Task OnNavigatedToAsync(object? param) {
-		await base.OnNavigatedToAsync(param);
+	public override async Task OnNavigatedTo(object? param) {
+		await base.OnNavigatedTo(param);
 
 		if (param is UserProfileDto up) {
 			ProfileVM = ProfilesViewModel.Instance.Profiles.FirstOrDefault(p => p.Dto.id == up.id) ?? new (up);
-			ProfileVM.IsShowCheckboxColumn = false;
+			ProfileUIContextManager.ApplyContextToProfile(ProfileVM, ProfileUIContext.Identity);
 			UserProfile = new UserProfileIdentityVM(up) {
 				Tags = await TagsRepo.Instance
 				.GetTagsAsync(TagItemType.Profile, up.ID)
@@ -54,6 +55,12 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 			Title = ProfileVM.Title;
 			ShowHeaderRegion = false;
 		}
+	}
+
+	public override async Task OnNavigatingFrom(object param) {
+		await base.OnNavigatingFrom(param);
+		if (ProfileVM?.PreviousContext is null) return;
+		else ProfileUIContextManager.ApplyContextToProfile(ProfileVM, ProfileVM.PreviousContext ?? ProfileUIContext.Profiles);
 	}
 
 	private async Task SaveChanges() {

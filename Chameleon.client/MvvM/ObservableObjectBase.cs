@@ -33,7 +33,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 					OnPropertyChanged(nameof(IsBusy));
 
 					try {
-						await InitAsync(p);
+						await Init(p);
 					} finally {
 						_ = Interlocked.Decrement(ref _isBusy);
 						OnPropertyChanged(nameof(IsBusy));
@@ -44,8 +44,11 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 				AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
 		Validator = GetValidator();
 	}
-	public virtual Task InitAsync(object? param) => Task.CompletedTask;
-	public virtual Task OnNavigatedToAsync(object? param) => LoadedTCS.Task;
+	public virtual Task Init(object? param) => Task.CompletedTask;
+	public virtual Task OnNavigatedTo(object? param) => LoadedTCS.Task;
+	public virtual Task OnNavigatingFrom(object param) => Task.CompletedTask;
+	public virtual void SetViewModelsFilter() { }
+  
 	public Task InvokeInitializeAsyncCommand(object? p = null) => InitializeAsyncCommand.ExecuteAsync(p);
 	public Task InitializeAsync(object? param) => InvokeInitializeAsyncCommand(param);
 

@@ -4,6 +4,15 @@
                     xmlns:local="using:Chameleon.client.UI.Controls">
 	<local:SvgNameToDataConverter x:Key="svgz" />
 
+	<ControlTheme TargetType="local:ItemzControl" x:Key="{x:Type local:ItemzControl}">
+		<Setter Property="ItemsPanel" Value="{DynamicResource HorizontalStackPanel}" />
+  	<Setter Property="Template">
+  	  <ControlTemplate>
+  	    <ItemsPresenter />
+  	  </ControlTemplate>
+  	</Setter>
+</ControlTheme>
+
 	<ControlTheme x:Key="ListBoxNoScroller" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
 		<Setter Property="Template">
 			<ControlTemplate>

@@ -10,7 +10,6 @@ using DynamicData;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using Chameleon.client.Features.Projects;
-using Chameleon.lib.Util;
 using Chameleon.lib.WebBrowser;
 
 namespace Chameleon.client.Features.Dashboard;
@@ -57,9 +56,10 @@ public partial class ViewModel : ViewModelObjectBase {
 		AsyncCommandMap["SyncCookiesFirefox"] = async () =>  await SyncCookies(SystemBrowserType.Firefox);
 	}
 
-	public override Task InitAsync(object? param) {
-		ProfilesViewModel.Instance.ObsProfiles.ForEach(p => p.IsShowCheckboxColumn = false);
-		return base.InitAsync(param);
+	public override async Task Init(object? param) {
+		await base.Init(param);
+		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Favourites, ProfileUIContext.Favorites);
+		ProfileUIContextManager.ApplyContextToProfiles(ProfilesViewModel.Instance.ObsProfiles, ProfileUIContext.Favorites);
 	} 
 
 	partial void OnSelectedTagChanged(TagViewModel? oldValue, TagViewModel? newValue) {

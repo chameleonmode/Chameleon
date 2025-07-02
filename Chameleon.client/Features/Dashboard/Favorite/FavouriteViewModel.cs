@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using Chameleon.client.Features.Projects;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
@@ -10,9 +11,14 @@ public partial class FavouriteViewModel : Dashboarder {
 	public override ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 	public override ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public FavouriteViewModel() : base("Favourites") {
+		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Favourites, ProfileUIContext.Favorites);
+		
 		_ = ProfilesViewModel.Instance.Shared.Filter(p => p.Dto.isFavourite)     // only favourites
+		.Do(changeSet => {
+			var profiles = changeSet.Select(c => c.Current);
+			ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.Favorites);
+		})
 		.SortAndBind(out var profiles, Profiler.CompareObservable)
-		.Transform(i => { i.IsShowCheckboxColumn = false; return i;})
 		.Subscribe(_ => OnPropertyChanged(nameof(HasProfiles)));
 		Profiles = profiles;
 		// _ = UserProfilesRepo.Connect(i => i.isFavourite)
