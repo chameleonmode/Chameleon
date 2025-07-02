@@ -20,7 +20,6 @@ using Microsoft.Playwright;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 
-
 namespace Chameleon.client.Features.Projects.Profiles;
 
 public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IProfileUIContextAware {
@@ -32,7 +31,8 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 	[ObservableProperty] bool isActionOptionsVisible = true;
 	[ObservableProperty] bool isSelectionEnabled = true;
 
-	private ProfileUIContext currentContext = ProfileUIContext.ProfilesView;
+	public ProfileUIContext CurrentContext { get; private set; } = ProfileUIContext.Profiles;
+	public ProfileUIContext? PreviousContext { get; private set; }
 
 	public Dictionary<SystemBrowserType, IBrowserInstance?> SBI { get; } = new() {
 		[SystemBrowserType.Chrome] = null,
@@ -266,25 +266,23 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 	}
 
 	public void SetUIContext(ProfileUIContext context) {
-		if (currentContext == context) return;
+		if (CurrentContext == context) return;
 
-		var previousContext = currentContext;
-		if (!ProfileUIStateMachine.CanTransition(previousContext, context)) {
-			throw new InvalidOperationException($"Cannot transition from {previousContext} to {context}");
+		if (!ProfileUIStateMachine.CanTransition(CurrentContext, context)) {
+			throw new InvalidOperationException($"Cannot transition from {CurrentContext} to {context}");
 		}
 
-		currentContext = context;
+		PreviousContext = CurrentContext;
+		CurrentContext = context;
 		var state = ProfileUIStateMachine.GetStateFor(context);
 
 		IsShowCheckboxColumn = state.IsShowCheckboxColumn;
 		IsShowGlyph = state.IsShowGlyph;
 
-		OnContextChanged(previousContext, context);
+		OnContextChanged(PreviousContext, context);
 	}
 
-	public ProfileUIContext GetUIContext() => currentContext;
+	protected virtual void OnContextChanged(ProfileUIContext? from, ProfileUIContext to) {
 
-	protected virtual void OnContextChanged(ProfileUIContext from, ProfileUIContext to) {
-		
 	}
 }

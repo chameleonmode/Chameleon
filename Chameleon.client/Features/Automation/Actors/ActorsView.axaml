@@ -21,27 +21,26 @@
 					</StackPanel>
 			</afv:ChameleonContentControl.TitleContent>
 			<afv:ChameleonContentControl.Content>
+			<StackPanel>
 				<ItemsControl Classes="uni-clm" ItemsSource="{Binding Actors}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate x:DataType="local:ActorViewModel">
 							<ui:SettingsExpander Header="{Binding EditableSettings.Start.Feature}" IsExpanded="True" Background="Transparent">
 								<ui:SettingsExpanderItem>
 									<StackPanel>
-												<StackPanel>
 													<TextBlock Text="Tags" Classes="b1" Margin="4 6" ToolTip.Tip="activate and select hashtagged profiles" />
-													<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
+													<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0 0 0 6">
 														<ItemsControl ItemsPanel="{StaticResource HorizontalStackPanel}" ItemsSource="{Binding Tagz}">
 															<ItemsControl.ItemTemplate>
-																<DataTemplate x:DataType="local:Tag">
+																<DataTemplate>
 																	<ToggleButton IsChecked="{Binding IsSelected}" Content="{Binding Dto.Name}" ToolTip.Tip="{Binding ToolTipText}"/>
 																</DataTemplate>
 															</ItemsControl.ItemTemplate>
 														</ItemsControl>
 													</ScrollViewer>
-													
 													<TextBlock Text="Profiles" Margin="4 12 4 6" Classes="b1" ToolTip.Tip="activate and select profiles" />
 													<Grid ColumnDefinitions="Auto,*">
-														<Button Content="More" Classes="async icon" CommandParameter="OpenProfileSelector" ToolTip.Tip="Edit" Margin="4,6"/>
+														<Button Content="More" Classes="async icon clear" CommandParameter="OpenProfileSelector" ToolTip.Tip="Edit" Margin="4,6"/>
 														<ScrollViewer Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Auto">
 															<ItemsControl ItemsPanel="{StaticResource HorizontalStackPanel}" ItemsSource="{Binding SelectedProfiles}">
 																<ItemsControl.ItemTemplate>
@@ -52,7 +51,6 @@
 															</ItemsControl>
 														</ScrollViewer>
 													</Grid>
-												</StackPanel>
 										<afv:ChameleonContentControl Title="Options" TitleDescription="auto robo autonomous roboto automations">
 											<afv:ChameleonContentControl.TitleContent>
 													<StackPanel Classes="zontal" HorizontalAlignment="Right" Margin="0 0">
@@ -188,6 +186,7 @@
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
+				</StackPanel>
 			</afv:ChameleonContentControl.Content>
 		</afv:ChameleonContentControl>
 	</Grid>

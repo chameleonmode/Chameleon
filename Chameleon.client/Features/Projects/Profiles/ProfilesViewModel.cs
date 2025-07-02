@@ -70,7 +70,7 @@ public partial class ProfilesViewModel : Profiler {
 		: UserProfilesRepo.Instance.ObservableCache.Count;
 
 	public ProfilesViewModel() {
-		ProfileUIContextManager.SetModuleContext(ProfileUIModules.ProfilesView, ProfileUIContext.ProfilesView);
+		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Profiles, ProfileUIContext.Profiles);
 
 		pageRequests = new(new PageRequest(0, 9));
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(p => !HasFolder || p.Dto.folderId == Folder?.Id);
@@ -79,7 +79,7 @@ public partial class ProfilesViewModel : Profiler {
 			.SortAndPage(AscendingComparer, pageRequests)
 			.Do(changeSet => {
 				var profiles = changeSet.Select(c => c.Current);
-				ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.ProfilesView);
+				ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.Profiles);
 			})
 			.SortAndBind(out var profiles, CompareObservable)
 			.Subscribe();
@@ -203,8 +203,8 @@ public partial class ProfilesViewModel : Profiler {
 		};
 	}
 
-	public override async Task InitAsync(object? param) {
-		await base.InitAsync(param);
+	public override async Task Init(object? param) {
+		await base.Init(param);
 		// await InitializeScripts();
 		PlaywrightScripts.Clear();
 		PlaywrightScripts.AddRange(BundledScriptsService.Instance.GetBundledScrits());
@@ -221,7 +221,7 @@ public partial class ProfilesViewModel : Profiler {
 		SetViewModelsFilter();
 		
 		await Task.Delay(20); // Allow reactive pipeline to update
-		ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.ProfilesView);
+		ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.Profiles);
 	}
 
 	public async Task<UserProfileDto?> CreateNewProfile() {
@@ -246,7 +246,7 @@ public partial class ProfilesViewModel : Profiler {
 
 		_ = Task.Run(async () => {
 			await Task.Delay(10); // Small delay to let reactive chain update
-			ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.ProfilesView);
+			ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.Profiles);
 		});
 	}
 

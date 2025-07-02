@@ -46,8 +46,8 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 		AsyncCommandMap["SelectUserScriptFolder"] = SelectUserScriptFolder;
 	}
 
-	public override async Task InitAsync(object? param) {
-		await base.InitAsync(param);
+	public override async Task Init(object? param) {
+		await base.Init(param);
 		if (!Loaded) {
 			await InitializeUserScripts();
 		}

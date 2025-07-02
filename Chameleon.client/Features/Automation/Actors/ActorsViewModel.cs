@@ -49,14 +49,14 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 			}
 		}
 	}
-	public override async Task InitAsync(object? param) {
-		await base.InitAsync(param);
+	public override async Task Init(object? param) {
+		await base.Init(param);
 		_ = await lib.Playwright.Project.Initialized.Task;
 		if (!Loaded) await LoadActorStates();
 	}
 
-	public override async Task OnNavigatedToAsync(object? param) {
-		await base.OnNavigatedToAsync(param);
+	public override async Task OnNavigatedTo(object? param) {
+		await base.OnNavigatedTo(param);
 	}
 
 	public static ActorsViewModel Instance { get; } = new();

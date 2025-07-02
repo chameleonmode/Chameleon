@@ -32,7 +32,7 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 	public TenantMembersViewModel() : base("Members") {
 		_ = UserAssistantRepo.Instance.ObservableCache.Connect().Transform(p => {
 				var vim = new AssistantUser(p);
-				_ = vim.InitAsync(p);
+				_ = vim.Init(p);
 				vim.IsNotActive = DB.Instance.DBusers?.Any(u => u.Email == p.EmailAddress) ?? false;
 				return vim;
 			})
@@ -64,8 +64,8 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 		AsyncCommandMap["CreateNewUserAssistant"] = CreateNewUserAssistant;
 	}
 
-	public override async Task InitAsync(object? param) {
-		await base.InitAsync(param);
+	public override async Task Init(object? param) {
+		await base.Init(param);
 		if (!Loaded) await UserAssistantRepo.Instance.Load();
 	}
 

@@ -11,12 +11,12 @@ public partial class FavouriteViewModel : Dashboarder {
 	public override ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 	public override ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public FavouriteViewModel() : base("Favourites") {
-		ProfileUIContextManager.SetModuleContext(ProfileUIModules.FavouritesView, ProfileUIContext.DashboardFavorites);
+		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Favourites, ProfileUIContext.Favorites);
 		
 		_ = ProfilesViewModel.Instance.Shared.Filter(p => p.Dto.isFavourite)     // only favourites
 		.Do(changeSet => {
 			var profiles = changeSet.Select(c => c.Current);
-			ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.DashboardFavorites);
+			ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.Favorites);
 		})
 		.SortAndBind(out var profiles, Profiler.CompareObservable)
 		.Subscribe(_ => OnPropertyChanged(nameof(HasProfiles)));

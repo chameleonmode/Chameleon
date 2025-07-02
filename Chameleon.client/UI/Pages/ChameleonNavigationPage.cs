@@ -33,7 +33,7 @@ public class ChameleonNavigationPage : AutoViewModelLocatorControl {
 	private async void OnNavigatedTo(object? sender, NavigationEventArgs e) {
 		if (DataContext is ViewModelObjectBase pageViewModel) {
 			await Task.Delay(64);
-			await pageViewModel.OnNavigatedToAsync(e.Parameter);
+			await pageViewModel.OnNavigatedTo(e.Parameter);
 			OnAfterNavigatedToViewModel(e.Parameter);
 		}
 		if (_animationPage != null && _animationPageParent != null) {
