@@ -57,7 +57,7 @@ public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
 				var res = await UserProfilesFolderRepo.Instance.Delete(Dto!.id);
 				if (!res.success) throw new InvalidOperationException($"Failed to delete folder {Dto.title}:");
 				IsSelected = false;
-				_ = FoldersViewModel.Instance.OnNavigatingTo(null);
+				await FoldersViewModel.Instance.OnNavigatingTo(FoldersViewModel.Instance.Folders[0]);
 			}
 		};
 		AsyncCommandMap["SaveRename"] = async () => {
