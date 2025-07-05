@@ -265,5 +265,10 @@ public partial class ProfilesViewModel : Profiler {
 		OnPropertyChanged(nameof(SelectedFolderTitle));
 	}
 
+	public void ApplyProfilesContext() {
+		// Apply Profiles context when returning to the main profiles view
+		ProfileUIContextManager.ApplyContextToProfiles(ObsProfiles, ProfileUIContext.Profiles);
+	}
+
 	public static ProfilesViewModel Instance { get; } = new ProfilesViewModel();
 }

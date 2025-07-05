@@ -54,6 +54,8 @@ public partial class ViewModel : ViewModelObjectBase {
 		else if (param is string p) ProfilesViewModel.Instance.SearchText = p;
 		
 		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Profiles, ProfileUIContext.Profiles);
+		// Restore Profiles context when navigating back from other views (like Dashboard)
+		ProfilesViewModel.Instance.ApplyProfilesContext();
 	}
 	public static ViewModel Instance { get; } = new();
 }

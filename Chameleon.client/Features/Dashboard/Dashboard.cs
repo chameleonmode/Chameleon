@@ -1,4 +1,5 @@
 ﻿using Chameleon.client.Features.Dashboard.Tags;
+using Chameleon.client.Features.Dashboard.Favorite;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Api.Repos;
@@ -59,13 +60,22 @@ public partial class ViewModel : ViewModelObjectBase {
 	public override async Task Init(object? param) {
 		await base.Init(param);
 		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Favourites, ProfileUIContext.Favorites);
-		ProfileUIContextManager.ApplyContextToProfiles(ProfilesViewModel.Instance.ObsProfiles, ProfileUIContext.Favorites);
+		
+		// If Favourites is selected by default, apply the context
+		if (IsFavouriteSelected) {
+			FavouriteViewModel.Instance.ApplyFavoritesContext();
+		}
 	} 
 
 	partial void OnSelectedTagChanged(TagViewModel? oldValue, TagViewModel? newValue) {
 		if (newValue == null) return;
 
 		IsFavouriteSelected = newValue.Name == "Favourites";
+		
+		// Apply Favorites context when Favourites tab is selected
+		if (IsFavouriteSelected) {
+			FavouriteViewModel.Instance.ApplyFavoritesContext();
+		}
 		
 		if (!IsFavouriteSelected) TagsViewModel.Instance.SelectedTagName = newValue.Name;
 
