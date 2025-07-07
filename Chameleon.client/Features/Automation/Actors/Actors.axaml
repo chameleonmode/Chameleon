@@ -67,7 +67,7 @@
 																<Button Content="Edit" 
 																	 Grid.Column="1"
 																	 ToolTip.Tip="add or remove additional profiles"
-																	 Classes="async icon clear text-on-accent" />
+																	 Classes="async icon clear text" />
 															</Grid>
 															<TextBlock Text="Tags" Classes="b1" Margin="4 0" />
 															<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0 4 0 12">

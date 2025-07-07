@@ -18,7 +18,7 @@
 
 		<Button
 			 Grid.Column="1"
-			 Classes="square icon clear cfv text-on-accent"
+			 Classes="square icon clear cfv text"
 			 Content="Previous"
 			 IsEnabled="{Binding PrevButtonIsEnabled}" />
 
@@ -49,7 +49,7 @@
 
 		<Button
 			 Grid.Column="3"
-			 Classes="square icon clear cfv text-on-accent"
+			 Classes="square icon clear cfv text"
 			 Content="Next"
 			 IsEnabled="{Binding NextButtonIsEnabled}" />
 	</Grid>

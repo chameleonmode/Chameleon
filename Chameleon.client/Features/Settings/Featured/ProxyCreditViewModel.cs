@@ -36,6 +36,12 @@ public partial class ProxyCreditViewModel : ViewModelObjectBase {
 		selectedCreditPlan = CreditPlans.First();
 
 		AddObsProxyAccessItems(countProxies);
+
+		AsyncCommandMap["Refresh"] = async () => await UpdateProxyAccessAsync();
+		AsyncCommandMap["Copy"] = async () => {
+			var list = Accesses.Select(a => a.Url);
+			await CopyPasta.Copy(string.Join(Environment.NewLine, list));
+		};
 	}
 
 	public void AddObsProxyAccessItems(int amout) {
@@ -54,9 +60,7 @@ public partial class ProxyCreditViewModel : ViewModelObjectBase {
 		var countries = await ProxyAccessRepo.GetCountries();
 		Countries.Clear();
 
-		Countries.Add(new() {
-			Name = "Random Country"
-		});
+		Countries.Add(new() { Name = "Random" });
 		Countries.AddRange(countries);
 		Country = Countries[0];
 
@@ -68,11 +72,6 @@ public partial class ProxyCreditViewModel : ViewModelObjectBase {
 		Balance = credits.Amount;
 	}
 
-	[RelayCommand]//
-	public async Task CopyAllUrls() {
-		var list = Accesses.Select(a => a.Url);
-		await CopyPasta.Copy(string.Join(Environment.NewLine, list));
-	}
 	[RelayCommand]
 	private async Task PurchaseCredit() {
 		var res = await ProxyCreditRepo.CreateOrder(SelectedCreditPlan.Amount);
@@ -84,10 +83,6 @@ public partial class ProxyCreditViewModel : ViewModelObjectBase {
 	[RelayCommand]
 	private async Task Refresh() {
 		await UpdateBalanceAsync();
-	}
-	[RelayCommand]
-	private async Task RefreshProxies() {
-		await UpdateProxyAccessAsync();
 	}
 
 	[RelayCommand]
@@ -111,7 +106,6 @@ public partial class ProxyCreditViewModel : ViewModelObjectBase {
 			CountryId = Country?.id,
 			Count = Accesses.Count,
 		};
-
 
 		var urls = await ProxyAccessRepo.GetAccess(request);
 		for (var i = 0; i < urls.Length; ++i) {

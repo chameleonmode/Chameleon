@@ -97,7 +97,7 @@
 			<Setter Property="BorderBrush" Value="Transparent" />
 			<Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
 		</Style>
-		<Style Selector="^.text-on-accent">
+		<Style Selector="^.text">
 			<Setter Property="Foreground" Value="{StaticResource TextOnAccentFillColorPrimaryBrush}" />
 		</Style>
 	</Style>

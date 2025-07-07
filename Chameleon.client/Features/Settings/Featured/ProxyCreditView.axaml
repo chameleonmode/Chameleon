@@ -10,7 +10,7 @@
 						 x:DataType="vm:ProxyCreditViewModel"
 						 x:CompileBindings="True">
 		<StackPanel Spacing="8">
-			<afv:ChameleonContentControl Title="Residential Proxies" TitleDescription="Manage your proxy payment and top-ups here">
+			<afv:ChameleonContentControl Title="Creditz">
 				<afv:ChameleonContentControl.Content>
 					<Grid Grid.Row="2">
 						<Grid.ColumnDefinitions>
@@ -110,75 +110,34 @@
 				</afv:ChameleonContentControl.Content>
 			</afv:ChameleonContentControl>
 
-			<afv:ChameleonContentControl Title="Proxies" TitleDescription="Manage your proxies here">
-				<afv:ChameleonContentControl.Options>
-					<StackPanel Spacing="6">
-						<StackPanel Orientation="Horizontal">
-							<ui:FAComboBox
-								PlaceholderText="Select A Country"
-								Header="Proxy Country:"
-								Width="150"
-								IsTextSearchEnabled="True"
-								SelectedItem="{Binding Country}"
-								ItemsSource="{Binding Countries}"
-								DisplayMemberBinding="{Binding Name}" />
+			<afv:ChameleonContentControl Title="Proxiez">
+				<afv:ChameleonContentControl.TitleContent>
+				<Panel Margin="0 0 0 6">
+					<StackPanel Classes="zontal" HorizontalAlignment="Right">
+						<ComboBox Width="150"
+							SelectedItem="{Binding Country}"
+							ItemsSource="{Binding Countries}"
+							DisplayMemberBinding="{Binding Name}" />
 
-							<Button VerticalAlignment="Bottom"
-									Margin="4 0 0 0"
-									Theme="{StaticResource TransparentButton}"
-									Command="{Binding RefreshProxiesCommand}">
-								<ui:SymbolIcon Symbol="Refresh" FontSize="22" />
-							</Button>
-						</StackPanel>
-
-						<StackPanel Orientation="Horizontal">
-							<ui:FAComboBox
-								PlaceholderText="Select A Country"
-								Header="Show:"
-								Width="150"
-								IsTextSearchEnabled="True"
-								SelectedItem="{Binding CountProxies}"
-								ItemsSource="{Binding CountsProxies}"
-								DisplayMemberBinding="{Binding}" />
-
-							<Button VerticalAlignment="Bottom"
-									Margin="4 0 0 0"
-									Theme="{StaticResource TransparentButton}"
-									Command="{Binding RefreshProxiesCountCommand}">
-								<ui:SymbolIcon Symbol="Refresh" FontSize="22" />
-							</Button>
-						</StackPanel>
+						<ComboBox Width="72"
+							SelectedItem="{Binding CountProxies}"
+							ItemsSource="{Binding CountsProxies}"
+							DisplayMemberBinding="{Binding}" />
+							
+						<Button Content="Refresh" Classes="async icon clear text" />
+						<Button Content="Copy" Classes="async icon clear text" />
 					</StackPanel>
-				</afv:ChameleonContentControl.Options>
+					</Panel>
+				</afv:ChameleonContentControl.TitleContent>
+
 				<afv:ChameleonContentControl.Content>
-					<Grid HorizontalAlignment="Stretch">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto"/>
-							<RowDefinition Height="*"/>
-						</Grid.RowDefinitions>
-						<Grid Grid.Row="0"
-							  Margin="0 12 0 12"
-							  VerticalAlignment="Center">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="Auto"/>
-							</Grid.ColumnDefinitions>
-							<Button Grid.Column="1"
-									Command="{Binding CopyAllUrlsCommand}"
-									Content="Copy all"
-									VerticalAlignment="Center"
-									HorizontalAlignment="Right"
-									Theme="{DynamicResource TransparentButton}">
-							</Button>
-						</Grid>
-						<ItemsControl Grid.Row="1" ItemsSource="{Binding Accesses}">
+						<ItemsControl ItemsSource="{Binding Accesses}">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>				
 									<afv:HeaderdInputFieldsControl Text="{Binding Url}" Tag="copy" />
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
-					</Grid>
 				</afv:ChameleonContentControl.Content>
 			</afv:ChameleonContentControl>
 		</StackPanel>
