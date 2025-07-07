@@ -69,7 +69,13 @@
 				<profiles:UserProfileUserControl Name="UPView" />
 			</Border>
 
-			<Button Content="Save" Grid.Column="1" Margin="0 0 6 0" Classes="icon clear async" />
+			<Button Content="Save" 
+					Grid.Column="1" 
+					Margin="0 0 6 0" 
+					Classes="icon clear async"
+					Command="{Binding AsyncCfVCommand}"
+					CommandParameter="Save"
+					IsEnabled="{Binding !IsSaving}" />
       <ProgressBar Grid.Row="1" 
 				 Grid.ColumnSpan="2"
 				 HorizontalAlignment="Stretch"
