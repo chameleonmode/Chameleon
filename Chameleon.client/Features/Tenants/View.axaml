@@ -10,9 +10,7 @@
 						 x:CompileBindings="True">
 	<Panel>
 		<TabStrip Name="ActiveTabStrip">
-			<TabStripItem
-				Content="Members"
-				Tag="{StaticResource User}"/>
+			<TabStripItem Content="Members" Tag="{StaticResource User}"/>
 		</TabStrip>
 
 		<ui:Frame Name="NavigationFrame" />

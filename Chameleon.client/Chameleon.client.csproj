@@ -42,6 +42,9 @@
     <Compile Update="Features/Projects/View.axaml.cs">
       <DependentUpon>View.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Features/Tenants/Members/Members.axaml.cs">
+      <DependentUpon>Members.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

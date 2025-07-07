@@ -104,7 +104,7 @@ public partial class ViewModel : ViewModelObjectBase {
 
 	[RelayCommand]
 	public async Task Logout() {
-		await Session.Instance.Logout();
+		await Session.I.Logout();
 		Environment.Exit(0);
 	}
 

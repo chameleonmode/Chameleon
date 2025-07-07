@@ -57,8 +57,9 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 	}
 
 	[RelayCommand]
-	public async Task AsyncCfV(string what) {
-		await EX.Try(async () => await AsyncCommandMap[what](), caught: e => Toaster.Error(what, e.Message));
+	public async Task AsyncCfV(object what) {
+		var cmd = what.ToString();
+		await EX.Try(async () => await AsyncCommandMap[cmd!](), caught: e => Toaster.Error(cmd ?? "", e.Message));
 	}
 
 	private IObjectValidator? _objectValidator;

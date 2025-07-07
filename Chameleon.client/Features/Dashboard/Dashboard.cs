@@ -46,9 +46,7 @@ public partial class ViewModel : ViewModelObjectBase {
 			await CheckForCookies();
 		};
 		AsyncCommandMap["SyncCookiesClear"] = async () => {
-			await DB.Instance.DeleteDataInteractions(DB.Routes.Cooky.DataType);
-			Toaster.Success("Cookies Cleared");
-
+			await DB.I.Cooky.Delete();
 			await CheckForCookies();
 		};
 		AsyncCommandMap["SyncCookiesChrome"] = async () => await SyncCookies(SystemBrowserType.Chrome);;

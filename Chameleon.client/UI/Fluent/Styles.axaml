@@ -19,6 +19,7 @@
 	<!--ui:MenuFlyoutSubItem sync cooky-->
 	<Style Selector="ui|MenuFlyoutItem">
 		<Setter Property="Command" Value="{ReflectionBinding AsyncCfVCommand}" />
+		<Setter Property="CommandParameter" Value="{Binding $self.Text}" />
 		<Style Selector="^.sync-chrome">
 			<Setter Property="Text" Value="Chrome" />
 			<Setter Property="CommandParameter" Value="SyncCookiesChrome" />
@@ -30,6 +31,15 @@
 		<Style Selector="^.sync-firefox">
 			<Setter Property="Text" Value="Firefox" />
 			<Setter Property="CommandParameter" Value="SyncCookiesFirefox" />
+		</Style>
+	</Style>
+	<Style Selector="ui|CommandBarButton">
+		<Style Selector="^.cfv">
+			<Setter Property="Command" Value="{ReflectionBinding CfVCommand}" />
+		</Style>
+		<Style Selector="^.async">
+			<Setter Property="Command" Value="{ReflectionBinding AsyncCfVCommand}" />
+			<Setter Property="CommandParameter" Value="{Binding $self.IconSource, Converter={StaticResource iconSymbolConv}}" />
 		</Style>
 	</Style>
 

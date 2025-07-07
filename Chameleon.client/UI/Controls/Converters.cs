@@ -8,6 +8,7 @@ using System.Globalization;
 using Chameleon.lib.Util;
 using Avalonia.Data;
 using Avalonia.Controls.Primitives;
+using FluentAvalonia.UI.Controls;
 
 namespace Chameleon.client.UI.Controls;
 
@@ -39,6 +40,16 @@ public class SvgNameToDataConverter : IValueConverter {
 				data = data.Replace("fill=\"black\"", "fill=\"white\"");
 		}
 		return data;
+	}
+
+	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
+		return BindingNotification.UnsetValue;
+	}
+}
+
+public class IconSourceToString : IValueConverter {
+	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
+		return value == null || value is not SymbolIconSource iconSource ? "x" : iconSource.Symbol.ToString();
 	}
 
 	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {

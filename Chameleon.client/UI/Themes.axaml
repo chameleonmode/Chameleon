@@ -1,7 +1,8 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 										xmlns:svg="using:Avalonia.Controls.Skia"
-                    xmlns:local="using:Chameleon.client.UI.Controls">
+        						xmlns:local="using:Chameleon.client.UI.Controls">
+	<local:IconSourceToString x:Key="iconSymbolConv" />
 	<local:SvgNameToDataConverter x:Key="svgz" />
 
 	<ControlTheme TargetType="local:ItemzControl" x:Key="{x:Type local:ItemzControl}">

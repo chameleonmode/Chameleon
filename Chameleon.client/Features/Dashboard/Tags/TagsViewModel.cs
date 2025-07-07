@@ -20,26 +20,24 @@ public partial class TagsViewModel : Dashboarder {
 	public override ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 	public override ReadOnlyObservableCollection<ObsFolder> Folders { get; }
 	public TagsViewModel() : base("Tags") {
-
 		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Tags, ProfileUIContext.Dashboard);
-		
-		var tagItems = TagsRepo.Connect()
-			.Filter(tag => tag.Name == SelectedTagName);
+	
+		var tagItems = TagsRepo.Connect().Filter(tag => tag.Name == SelectedTagName);
 
 		_ = this.WhenValueChanged(x => x.SelectedTagName)
 			.Where(tagName => !string.IsNullOrEmpty(tagName))
 			.SelectMany(_ => tagItems)
 			.Subscribe(changeSet => {
 				var items = changeSet
-										.Select(change => change.Current)
-										.SelectMany(x => x.Items);
-
+					 .Select(change => change.Current)
+					 .SelectMany(x => x.Items);
+					 
 				FolderTagIds = items
-					.Where(x => x.Key == TagItemType.Folder)
-					.SelectMany(x => x.Value).Distinct();
+					 .Where(x => x.Key == TagItemType.Folder)
+					 .SelectMany(x => x.Value).Distinct();
 				ProfileTagIds = items
-					.Where(x => x.Key == TagItemType.Profile)
-					.SelectMany(x => x.Value).Distinct();
+					 .Where(x => x.Key == TagItemType.Profile)
+					 .SelectMany(x => x.Value).Distinct();
 			});
 		_ = ProfilesViewModel.Instance.Shared
 					.Filter(

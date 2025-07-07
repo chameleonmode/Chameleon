@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Abs.Platformatic;
 
-using Chameleon.client.Features.Projects.Profiles.Identity;
 using Chameleon.client.Features.Settings.Featured;
 
 namespace Chameleon.client.Features;
@@ -18,21 +17,13 @@ public static class Modules {
   .AddSingleton<Automation.Playwright.PlaywrightViewModel>()
   .AddSingleton<Automation.Actors.ActorsView>();
 
-  public static IServiceCollection WithProfilesAndFolders(this IServiceCollection services) => services
-  .AddSingleton<IdentityView>()
-  .AddSingleton<IdentityViewModel>()
-  .AddSingleton<Projects.View>();
-
-  public static IServiceCollection WithAllFeatures(this IServiceCollection services) => services
-  .Automation()
-  .WithProfilesAndFolders()
+  public static IServiceCollection Basic(this IServiceCollection services) => services
   .AddSingleton<Dashboard.View>()
   .AddSingleton<Dashboard.ViewModel>()
-  .AddSingleton<Tenants.ViewModel>()
-  .AddSingleton<Tenants.View>()
-  .AddSingleton<Tenants.Members.TenantMembersView>()
-  .AddSingleton<Tenants.Members.TenantMembersViewModel>()
+  .AddSingleton<Projects.View>()
   .AddSingleton<Settings.View>()
+  .AddSingleton<Projects.Profiles.Identity.IdentityView>()
+  .AddSingleton<Projects.Profiles.Identity.IdentityViewModel>()
   .AddSingleton<Settings.ViewModel>()
   //FunctionalSettings
   .AddSingleton<FunctionalSettingsView>()
@@ -46,8 +37,19 @@ public static class Modules {
   .AddSingleton<PhoneVerificationViewModel>()
   .AddSingleton<ProxyCreditViewModel>();
 
+  public static IServiceCollection Tenants(this IServiceCollection services) => services
+  .AddSingleton<Tenants.ViewModel>()
+  .AddSingleton<Tenants.View>()
+  .AddSingleton<Tenants.Members.TenantMembersView>()
+  .AddSingleton<Tenants.Members.TenantMembersViewModel>();
+
+  public static IServiceCollection All(this IServiceCollection services) => services
+  .Basic()
+  .Automation()
+  .Tenants();
+
   public static async Task Sync() {
-    await DB.Instance.EnsureUser();
+    await DB.I.EnsureUser();
     var tasks = new List<Task>() {
       UserProfilesRepo.Instance.Load(),
       UserProfilesFolderRepo.Instance.Load(),

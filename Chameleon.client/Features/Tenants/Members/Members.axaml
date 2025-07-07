@@ -57,29 +57,20 @@
 			
 		</afv:ChameleonContentControl>-->
 
-		<afv:ChameleonContentControl Grid.Row="1"
-									 Title="Users"
-									 TitleDescription="Taskforce users and resource access">
-
+		<afv:ChameleonContentControl Grid.Row="1" Title="Users" TitleDescription="Taskforce users and resource access">
 			<afv:ChameleonContentControl.TitleContent>
 				<ui:CommandBar HorizontalAlignment="Right" DefaultLabelPosition="Right">
 					<ui:CommandBar.PrimaryCommands>
-						<ui:CommandBarButton IconSource="Add"
-											 Label="Invite User"
-											 CommandParameter="CreateNewUserAssistant"
-											 Command="{Binding AsyncCfVCommand}"/>
+						<ui:CommandBarButton IconSource="Add" Label="Invite User" Classes="async" />
 					</ui:CommandBar.PrimaryCommands>
 				</ui:CommandBar>
 			</afv:ChameleonContentControl.TitleContent>
 
 			<afv:ChameleonContentControl.Content>
-				<ItemsControl Grid.Row="1"
-								  ItemsSource="{Binding Assistantz}">
+				<ItemsControl ItemsSource="{Binding Assistantz}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<Grid Margin="0 3"
-								  RowDefinitions="Auto, Auto, *"
-								  ColumnDefinitions="*, Auto">
+							<Grid Margin="0 3" RowDefinitions="Auto, Auto, *" ColumnDefinitions="*, Auto">
 								<TextBlock
 									VerticalAlignment="Top"
 									Theme="{StaticResource BodyStrongTextBlockStyle}"
@@ -90,53 +81,22 @@
 								</TextBlock>
 								<ui:CommandBar DefaultLabelPosition="Right" Grid.Column="1">
 									<ui:CommandBar.SecondaryCommands>
-										<ui:CommandBarButton
-											IconSource="Edit"
-											Label="Edit Access"
-											Command="{Binding AddMoreProfilesCommand}" 
-										/>
-
-										<ui:CommandBarButton
-											IconSource="Copy"
-											Label="Copy licence key"
-											Command="{Binding SendLicenceKeyCommand}" 
-										/>
-
-										<ui:CommandBarButton
-											IconSource="Add"
-											Label="Activate"
-											IsVisible="{Binding !IsNotActive}"
-											Command="{Binding ToggleActiveCommand}"
-										/>
-
-										<ui:CommandBarButton
-											IconSource="Remove"
-											Label="Deactivate"
-											IsVisible="{Binding IsNotActive}"
-											Command="{Binding ToggleDeActiveCommand}"
-										/>
-
+										<ui:CommandBarButton IconSource="Edit" Label="Edit Access" Classes="async" />
+										<ui:CommandBarButton IconSource="Copy" Label="Copy licence key" Classes="async" />
+										<ui:CommandBarSeparator />
+										
+										<ui:CommandBarButton IconSource="Add" Label="Activate" IsVisible="{Binding !IsNotActive}" Classes="async" />
+										<ui:CommandBarButton IconSource="Remove" Label="Deactivate" IsVisible="{Binding IsNotActive}" Classes="async" />
 										<ui:CommandBarSeparator />
 
-										<ui:CommandBarButton
-											IconSource="Delete"
-											Label="Delete"
-											Command="{Binding DeleteAssistantCommand}"
-										/>
+										<ui:CommandBarButton IconSource="Delete" Label="Delete" Classes="async" />
 									</ui:CommandBar.SecondaryCommands>
 								</ui:CommandBar>
 
-								<StackPanel Grid.Row="1"
-											Grid.ColumnSpan="2"
-											Spacing="6"
-											Margin="3 0 6 0">
-									<ui:SettingsExpander Header="Folders"
-														 IconSource="Folder">
+								<StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="6" Margin="3 0 6 0">
+									<ui:SettingsExpander Header="Folders" IconSource="Folder">
 										<ui:SettingsExpanderItem>
-											<ScrollViewer
-												VerticalScrollBarVisibility="Auto"
-												MaxHeight="220">
-												<ItemsControl
+											<ItemsControl
 													ItemsSource="{Binding Folderz}"
 													ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}">
 													<ItemsControl.ItemTemplate>
@@ -156,44 +116,19 @@
 																		Theme="{DynamicResource AccentSymbleIconButton}">
 																	<Button.Flyout>
 																		<ui:FAMenuFlyout>
-																			<!--<ui:MenuFlyoutSubItem IconSource="Share"
-																								  Text="Share Cookies">
-																				<ui:MenuFlyoutItem
-																					Text="Chrome"
-																					CommandParameter="SyncCookiesChrome"
-																					Command="{Binding AsyncCfVCommand}" />
-																				<ui:MenuFlyoutItem
-																					Text="Brave"
-																					CommandParameter="SyncCookiesBrave"
-																					Command="{Binding AsyncCfVCommand}" />
-																				<ui:MenuFlyoutItem
-																					Text="Firefox"
-																					CommandParameter="SyncCookiesFirefox"
-																					Command="{Binding AsyncCfVCommand}" />
-																			</ui:MenuFlyoutSubItem>
-
-																			<ui:MenuFlyoutSeparator />-->
-
-																			<ui:MenuFlyoutItem
-																				Text="Remove Access"
-																				IconSource="Clear"
-																				Command="{Binding UnshareCommand}" />
+																			<ui:MenuFlyoutItem Text="Unshare" IconSource="Clear" />
 																		</ui:FAMenuFlyout>
 																	</Button.Flyout>
 																</Button>
 															</StackPanel>
 														</DataTemplate>
 													</ItemsControl.ItemTemplate>
-												</ItemsControl>
-											</ScrollViewer>
+											</ItemsControl>
 										</ui:SettingsExpanderItem>
 									</ui:SettingsExpander>
 									<ui:SettingsExpander Header="Profiles" IconSource="Contact">
 										<ui:SettingsExpanderItem>
-											<ScrollViewer
-												VerticalScrollBarVisibility="Auto"
-												MaxHeight="220">
-												<ItemsControl
+											<ItemsControl
 													ItemsSource="{Binding Profilez}"
 													ItemsPanel="{StaticResource HorizontalWrapPanelTemplate}">
 													<ItemsControl.ItemTemplate>
@@ -221,19 +156,14 @@
 
 																			<ui:MenuFlyoutSeparator />
 
-																			<ui:MenuFlyoutItem
-																				Text="Remove Access"
-																				IconSource="Clear"
-																				CommandParameter="Unshare"
-																				Command="{Binding AsyncCfVCommand}" />
+																			<ui:MenuFlyoutItem Text="Unshare" IconSource="Clear" />
 																		</ui:FAMenuFlyout>
 																	</Button.Flyout>
 																</Button>
 															</StackPanel>
 														</DataTemplate>
 													</ItemsControl.ItemTemplate>
-												</ItemsControl>
-											</ScrollViewer>
+											</ItemsControl>
 										</ui:SettingsExpanderItem>
 									</ui:SettingsExpander>
 								</StackPanel>

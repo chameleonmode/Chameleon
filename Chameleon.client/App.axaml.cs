@@ -55,7 +55,7 @@ public partial class App : Application {
 			.AddSingleton<IMboxService, MboxService>()
 			.AddSingleton<IShowWindowService, ShowWindowService>()
 			.AddSingleton<ICopyPastaService, CopyPastaService>()
-			.WithAllFeatures();
+			.All();
 		});
 
 		// Setup IoC
@@ -104,54 +104,32 @@ public partial class App : Application {
 
 	}
 
- 	async Task RunAsync() {
-		if (!await RunAsync(0)) {
-			Toaster.Info("Login canceled, application closing");
-			Environment.Exit(0);
-		} else {
-			try {
-				Toaster.Success($"Hello {(Session.Instance.Login?.LoginName) ?? "World"}");
-				await ViewModel.Instance.Init();
-			} catch (Exception ex) {
-				_ = await MessageBox.ShowErrorAsync("Invalid Login", "Browser authentication must match application email.\n" + (ex.Message.Contains('\n') ? ex.Message[ex.Message.LastIndexOf('\n')..] : ex.Message));
-				await Session.Instance.Logout();
-				await RunAsync();
-			}
-		}
-	}	
-	async Task<bool> RunAsync(int trys) {
+	async Task RunAsync() {
+		if (!await RunAsync(0)) Environment.Exit(0);
 		try {
-			var loginSetings = IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) ?? new("", "", false);
-			var loginvm = new MboxLoginViewModel {
-				UserName = loginSetings.LoginName,
-				LicenceKey = loginSetings.LicenseKey,
-				AutoLogin = loginSetings.AutoLogin
-			};
-
-			if (!loginSetings.AutoLogin &&
-				await MessageBox.ShowTaskDialog<MboxLoginUserControl, MboxLoginViewModel>(new(
-					() => loginvm,
-					"User Login",
-					"Enter the provided activation information",
-					Symbas: Symbas.ContactInfo,
-					Btns: MBoxButtons.OkCancel
-				)) == TaskDialogResult.Cancel) {
-				return false;
-			}
-			ArgumentNullException.ThrowIfNull(loginvm.UserName, "UserName");
-			ArgumentNullException.ThrowIfNull(loginvm.LicenceKey, "LicenceKey");
-
-			await Auther.LoginAsync(loginvm.UserName, loginvm.LicenceKey);
-			_ = await Session.Instance.Authenticate();
-			Session.Instance.SetLogin(new LoginSettings(loginvm.UserName, loginvm.LicenceKey, loginvm.AutoLogin));
-			//var loginDetailsChanged = loginvm.UserName != loginSetings.LoginName || loginvm.LicenceKey != loginSetings.LicenseKey || loginvm.AutoLogin != loginSetings.AutoLogin;
-
+			Toaster.Success($"Greetings {(Session.I.Login?.LoginName) ?? "World"}");
+			await ViewModel.Instance.Init();
 		} catch (Exception ex) {
-			_ = await MessageBox.ShowErrorAsync("Error Logging In", ex.Message);
-			if (trys < 1)
-				return await RunAsync(trys++);
+			await MessageBox.Error("Invalid Login", "Browser auth mismatch.", ex);
+			await Session.I.Logout();
+			await RunAsync();
 		}
+	}
+	async Task<bool> RunAsync(int trys) {
+		if (trys > 3) return false;
+		try {
+			var settings = IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) ?? new("", "", false);
+			var login = new MboxLoginViewModel { UserName = settings.LoginName, LicenceKey = settings.LicenseKey, AutoLogin = true };
+			if (!settings.AutoLogin &&
+				!await MessageBox.Show<MboxLoginUserControl, MboxLoginViewModel>(new(() => login, "User Login", Symbas: Symbas.ContactInfo))
+			) return false;
 
-		return Auther.AuthSession is not null;
+			await Auther.LoginAsync(login.UserName, login.LicenceKey);
+			await Session.I.Logineer(new LoginSettings(login.UserName, login.LicenceKey, login.AutoLogin));
+			return Auther.AuthSession is not null ? true : throw new InvalidOperationException("Auth session is null after login");
+		} catch (Exception ex) {
+			await MessageBox.Error("Error Logging In", ex.Message);
+			return await RunAsync(trys + 1);
+		}
 	}
 }

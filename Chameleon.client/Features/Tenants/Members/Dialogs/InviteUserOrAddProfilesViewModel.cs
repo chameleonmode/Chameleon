@@ -8,8 +8,6 @@ using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
-using Chameleon.lib.Api.Dto;
-
 namespace Chameleon.client.Features.Tenants.Members.Dialogs;
 
 public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
@@ -62,16 +60,16 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 		return result == TaskDialogResult.OK ? this : null;
 	}
 	public async Task<InviteUserOrAddProfilesViewModel?> ShowDialog(
-		IEnumerable<AssisProfileDto> profilez,
-		IEnumerable<AssisShareFolderDto> folderz
+		 IEnumerable<AssistantUsersProfile> profilez,
+		 IEnumerable<AssistantUsersFolder> folderz
 	) {
 		SelectedProfiles.Clear();
 		Profiles.ForEach(i => {
-			i.IsSelected = profilez.Any(x => x.ProfileId == i.Dto.id);
+			i.IsSelected = profilez.Any(x => x.Dto.ProfileId == i.Dto.id);
 		});
 		SelectedFolders.Clear();
 		Folders.ForEach(i => {
-			i.IsSelected = folderz.Any(x => x.FolderId == i.Dto.id);
+			i.IsSelected = folderz.Any(x => x.Dto.FolderId == i.Dto.id);
 		});
 
 		return await ShowDialog();
