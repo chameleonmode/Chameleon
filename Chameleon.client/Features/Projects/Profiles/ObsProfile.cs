@@ -111,10 +111,10 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 		var browsers = SystemBrowser.I.HasInstanceOf(Dto.id, (sender, args) => {
 			// TODO: ? IsForeground = args.EventType == SysBrowserEventType.Foreground;
 			var runnin = args.EventType switch {
-				SysBrowserEventType.Foreground or
-				SysBrowserEventType.Background or
-				SysBrowserEventType.Opened => SetRunning(args.OpenOptions.BrowserType, true),
-				SysBrowserEventType.Closed => SetRunning(args.OpenOptions.BrowserType, false),
+				BrowserEventType.Foreground or
+				BrowserEventType.Background or
+				BrowserEventType.Opened => SetRunning(args.OpenOptions.BrowserType, true),
+				BrowserEventType.Closed => SetRunning(args.OpenOptions.BrowserType, false),
 				_ => "Error"
 			};
 			if (runnin is "Error" or "False") SBI[args.OpenOptions.BrowserType] = null;
@@ -129,9 +129,9 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 
 	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType, bool foreground = true) {
 		if (SBI[browserType] is IBrowserInstance browser) {
-			if (foreground) browser.InvokeEvent(SysBrowserEventType.Foreground);
-			else browser.InvokeEvent(SysBrowserEventType.Background);
-		} else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowser.I.Open((SysBrowserOpenOptions)new(browserType, SystemBrowserProfile));
+			if (foreground) browser.InvokeEvent(BrowserEventType.Foreground);
+			else browser.InvokeEvent(BrowserEventType.Background);
+		} else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowser.I.Open(new LaunchOptions(browserType, SystemBrowserProfile));
 		return SBI[browserType];
 	}
 

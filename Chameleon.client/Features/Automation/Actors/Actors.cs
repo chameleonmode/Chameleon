@@ -23,6 +23,7 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Abs.Platformatic;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<int> SelectedProfileIds);
@@ -144,11 +145,16 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			if (terms.Count == 0 && urls.Count == 0) throw new Exception("Search and URL's cannot be empty together.");
 			else if (terms.Count != 0 && Settings.Start?.Variations.Min > 0) {
 				Toaster.Info($"Generating {Settings.Start.Variations.Min} term(s) for each search term");
-				var generated = await Service.Routes.Promptee.Genorate(
-					new(AI.Decorators, Settings.Variations, terms)
-				).WaitAsync(cts.Token);
 
-				terms.AddRange(generated!.Reply.SelectMany(i => i.Data.Select(t => t.Trim()).Where(t => t.IsNot())));
+				async Task<IEnumerable<Service.Routes.Promptee.GenorateResponse>> TermGen(int tries = 3) {
+					var generated = await Service.Routes.Promptee.Genorate(
+						new(AI.Decorators, Settings.Variations, terms)
+					).WaitAsync(cts.Token);
+					return generated?.Reply ?? (tries > 0 ? await TermGen(tries - 1) : []);
+				}
+				var added = await TermGen().WaitAsync(cts.Token);
+
+				terms.AddRange(added.SelectMany(i => i.Data.Select(t => t.Trim()).Where(t => t.IsNot())));
 				do {
 					var zoro = terms[0];
 					terms = [.. terms.OrderBy(s => new Random().Next(18))];
@@ -210,7 +216,8 @@ public partial class ActorViewModel : ViewModelObjectBase {
 			// }
 		} finally {
 			Stoperer();
-			Settings.Start.Terms = presearch;
+			// Settings.Start.Terms = presearch;
+			// OnPropertyChanged(nameof(Settings));
 		}
 	}
 
