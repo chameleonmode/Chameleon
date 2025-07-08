@@ -71,7 +71,7 @@
 															</Grid>
 															<TextBlock Text="Tags" Classes="b1" Margin="4 0" />
 															<ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0 4 0 12">
-																<ItemsControl Classes="sp-zontal" ItemsSource="{Binding Tagz}">
+																<ItemsControl Classes="sp-zontal" ItemsSource="{Binding Tagz}" Padding="0 4">
 																	<ItemsControl.ItemTemplate>
 																		<DataTemplate>
 																			<ToggleButton IsChecked="{Binding IsSelected}"
@@ -84,7 +84,7 @@
 
 															<TextBlock Text="Profiles" Classes="b1" Margin="4 4 0 4" />
 															<ScrollViewer Grid.Column="1" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-																<ItemsControl Classes="sp-zontal" ItemsSource="{Binding SelectedProfiles}">
+																<ItemsControl Classes="sp-zontal" ItemsSource="{Binding SelectedProfiles}" Padding="0 4">
 																	<ItemsControl.ItemTemplate>
 																		<DataTemplate>
 																			<ToggleButton IsChecked="{Binding Active}"

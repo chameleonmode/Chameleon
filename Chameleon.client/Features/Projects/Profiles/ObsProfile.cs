@@ -128,10 +128,8 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 	}
 
 	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType, bool foreground = true) {
-		if (SBI[browserType] is IBrowserInstance browser) {
-			if (foreground) browser.InvokeEvent(BrowserEventType.Foreground);
-			else browser.InvokeEvent(BrowserEventType.Background);
-		} else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowser.I.Open(new LaunchOptions(browserType, SystemBrowserProfile));
+		if (SBI[browserType] is IBrowserInstance browser && foreground) browser.InvokeEvent(BrowserEventType.Foreground);
+		else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowser.I.Open(new LaunchOptions(browserType, SystemBrowserProfile));
 		return SBI[browserType];
 	}
 
