@@ -70,7 +70,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 		_ => throw new NotImplementedException()
 	};
 	public ObsProfile(UserProfileDto profile, Action<ObsProfile>? selectedChanged = default, Action<ObsProfile>? onDeleted = default)
-	: base(profile, onSelectedChanged: selectedChanged != null ? (vm) => selectedChanged((ObsProfile)vm) : null) {
+	 : base(profile, onSelectedChanged: selectedChanged != null ? (vm) => selectedChanged((ObsProfile)vm) : null) {
 		AsyncCommandMap["OpenFirefox"] = async () => await OpenSystemBrowser(SystemBrowserType.Firefox);
 		AsyncCommandMap["OpenChrome"] = async () => await OpenSystemBrowser(SystemBrowserType.Chrome);
 		AsyncCommandMap["OpenBrave"] = async () => await OpenSystemBrowser(SystemBrowserType.Brave);
