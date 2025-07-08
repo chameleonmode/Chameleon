@@ -21,7 +21,11 @@ rm -rf playwright.ps1
 cp -a /Users/dev/src/Chameleon/Chameleon.Desktop/bin/Release/net8.0/win-x64/.playwright/. .playwright
 rm -rf .playwright/node/darwin-x64
 7z a Chameleon.7z && 7z d Chameleon.7z -r '*.DS_Store'
+
+rm /Users/dev/src/Chameleon/publish/win/Chameleon.7z
 cp Chameleon.7z /Users/dev/src/Chameleon/publish/win
+
+rm /Users/dev/Library/CloudStorage/OneDrive-EagleFusion/current/Chameleon.7z
 cp Chameleon.7z /Users/dev/Library/CloudStorage/OneDrive-EagleFusion/current
 
  
