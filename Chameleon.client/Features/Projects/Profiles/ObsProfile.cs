@@ -108,7 +108,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 			width: 156
 		);
 
-		var browsers = SystemBrowserService.Instance.HasInstanceOf(Dto.id, (sender, args) => {
+		var browsers = SystemBrowser.Instance.HasInstanceOf(Dto.id, (sender, args) => {
 			// TODO: ? IsForeground = args.EventType == SysBrowserEventType.Foreground;
 			var runnin = args.EventType switch {
 				SysBrowserEventType.Foreground or
@@ -127,11 +127,11 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 		Navigator.Instance.NavigateTo("IdentityView", Dto);
 	}
 
-	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType, bool foreground = true, bool headless = false) {
+	public async Task<IBrowserInstance?> OpenSystemBrowser(SystemBrowserType browserType, bool foreground = true) {
 		if (SBI[browserType] is IBrowserInstance browser) {
 			if (foreground) browser.InvokeEvent(SysBrowserEventType.Foreground);
 			else browser.InvokeEvent(SysBrowserEventType.Background);
-		} else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowserService.Instance.Open(new(browserType, SystemBrowserProfile, foreground, headless));
+		} else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowser.Instance.Open(new(browserType, SystemBrowserProfile));
 		return SBI[browserType];
 	}
 
