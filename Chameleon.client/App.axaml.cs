@@ -42,7 +42,7 @@ public partial class App : Application {
 
 		// IoC.Instance.StartUps.Add(AddonsServer.Instance);
 
-		IoC.Instance.Configure(() => {
+		IoC.I.Configure(() => {
 			return new WritableConfiguration(new ConfigurationBuilder()
 				.SetBasePath(FilePaths.AppDataDir)
 				.AddJsonFile(Const.AppSettingsFileName, optional: true, reloadOnChange: true)
@@ -59,7 +59,7 @@ public partial class App : Application {
 		});
 
 		// Setup IoC
-		IoC.Instance.Init(action: async (inited) => {
+		IoC.I.Init(action: async (inited) => {
 			if (inited) {
 				Toaster.Info("Starting...");
 				await RunAsync();
@@ -101,35 +101,25 @@ public partial class App : Application {
 				DataContext = ViewModel.Instance
 			};
 		}
-
 	}
 
-	async Task RunAsync() {
+	static async Task RunAsync() {
 		if (!await RunAsync(0)) Environment.Exit(0);
 		try {
-			Toaster.Success($"Greetings {(Session.I.Login?.LoginName) ?? "World"}");
+			Toaster.Success($"Greetings {(Session.I.Settings?.LoginName) ?? "World"}");
 			await ViewModel.Instance.Init();
 		} catch (Exception ex) {
-			await MessageBox.Error("Invalid Login", "Browser auth mismatch.", ex);
 			await Session.I.Logout();
-			await RunAsync();
+			if (await MessageBox.Error("Login Error", "Try Again?", ex)) await RunAsync();
 		}
 	}
-	async Task<bool> RunAsync(int trys) {
-		if (trys > 3) return false;
-		try {
-			var settings = IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) ?? new("", "", false);
-			var login = new MboxLoginViewModel { UserName = settings.LoginName, LicenceKey = settings.LicenseKey, AutoLogin = true };
-			if (!settings.AutoLogin &&
-				!await MessageBox.Show<MboxLoginUserControl, MboxLoginViewModel>(new(() => login, "User Login", Symbas: Symbas.ContactInfo))
-			) return false;
-
-			await Auther.LoginAsync(login.UserName, login.LicenceKey);
-			await Session.I.Logineer(new LoginSettings(login.UserName, login.LicenceKey, login.AutoLogin));
-			return Auther.AuthSession is not null ? true : throw new InvalidOperationException("Auth session is null after login");
-		} catch (Exception ex) {
-			await MessageBox.Error("Error Logging In", ex.Message);
-			return await RunAsync(trys + 1);
-		}
+	static async Task<bool> RunAsync(int trys) {
+		var login = new MboxLoginViewModel(Session.I.Settings);
+		return trys <= 3 && await EX.Catch(async () => {
+			return (
+				 login.AutoLogin ||
+				 await MessageBox.Show<MboxLoginUserControl, MboxLoginViewModel>(new(() => login, "User Login", Symbas: Symbas.ContactInfo))
+				) && await Common.Project.Logineer(login.Settings);
+		}, async e => await RunAsync(trys + 1));
 	}
 }

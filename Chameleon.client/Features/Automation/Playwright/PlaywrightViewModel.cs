@@ -73,7 +73,7 @@ public partial class PlaywrightViewModel : ViewModelObjectBase {
 		}
 
 		if (selected[0]?.Path?.AbsolutePath != null)
-			IoC.Instance.Config?.SetValue("UserScriptsDirectory", selected[0]?.Path?.AbsolutePath);
+			IoC.I.Config?.SetValue("UserScriptsDirectory", selected[0]?.Path?.AbsolutePath);
 
 		await InitializeUserScripts();
 	}

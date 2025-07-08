@@ -85,8 +85,8 @@
 										<ui:CommandBarButton IconSource="Copy" Label="Copy licence key" Classes="async" />
 										<ui:CommandBarSeparator />
 										
-										<ui:CommandBarButton IconSource="Add" Label="Activate" IsVisible="{Binding !IsNotActive}" Classes="async" />
-										<ui:CommandBarButton IconSource="Remove" Label="Deactivate" IsVisible="{Binding IsNotActive}" Classes="async" />
+										<ui:CommandBarButton IconSource="Add" Label="Activate" IsVisible="{Binding !Active}" Classes="async" />
+										<ui:CommandBarButton IconSource="Remove" Label="Deactivate" IsVisible="{Binding Active}" Classes="async" />
 										<ui:CommandBarSeparator />
 
 										<ui:CommandBarButton IconSource="Delete" Label="Delete" Classes="async" />

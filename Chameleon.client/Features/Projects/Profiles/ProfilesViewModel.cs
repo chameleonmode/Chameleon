@@ -163,7 +163,7 @@ public partial class ProfilesViewModel : Profiler {
 					await ConfigureScriptParameters(profile);
 					var browser = await profile.OpenSystemBrowser(SelectedBrowserOption.Option).WaitAsync(cts.Token);
 
-					SelectedPlaywrightScript!.Port = browser!.Settings.Port;
+					SelectedPlaywrightScript!.Port = browser!.Settings.OpenOptions.Profile.Port;
 					SelectedPlaywrightScript.Record = record;
 					await Run.Script(SelectedPlaywrightScript, cts.Token);
 				}

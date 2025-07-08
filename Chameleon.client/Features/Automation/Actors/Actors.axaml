@@ -142,8 +142,8 @@
 												 	</UniformGrid>
 
 													<cc:Inputter Title="Search:"
-														 Description="comma seperated list of search terms"
-														 Watermark="comma seperated list of search terms"
+														 Description="comma separated list of search terms"
+														 Watermark="comma, separated, list, of, search, terms"
 														 Text="{Binding Settings.Start.Terms}" />											
 														 
 													<cc:Inputter Title="URL's:"

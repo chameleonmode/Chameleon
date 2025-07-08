@@ -98,7 +98,7 @@ public partial class ViewModel : ViewModelObjectBase {
 			UseCustomAccentColor = appSettings.UseCustomAccentColor;
 		}
 
-		if (IoC.GetJsonValue<LoginSettings>(nameof(LoginSettings)) is LoginSettings login)
+		if (IoC.GetJsonValue<lib.Auth.LoginSettings>(nameof(lib.Auth.LoginSettings)) is lib.Auth.LoginSettings login)
 			LiscencedTo = $"Licensed to: {login.LoginName}";
 	}
 

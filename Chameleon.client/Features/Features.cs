@@ -49,7 +49,7 @@ public static class Modules {
   .Tenants();
 
   public static async Task Sync() {
-    await DB.I.EnsureUser();
+    await DB.I.Userz.Load();
     var tasks = new List<Task>() {
       UserProfilesRepo.Instance.Load(),
       UserProfilesFolderRepo.Instance.Load(),

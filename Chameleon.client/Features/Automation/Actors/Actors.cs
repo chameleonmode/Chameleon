@@ -177,18 +177,15 @@ public partial class ActorViewModel : ViewModelObjectBase {
 
 				var browser = await profile.OpenSystemBrowser(SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
 				await Run.Script(new() {
-					Port = browser!.Settings.Port,
+					Port = browser!.Settings.Profile.Port,
 					Script = selection.Script,
 					Opts = new Opts(AI, Args.ToDictionary(selected), Settings.ToRecord(urlser, termer, selection, new(0, 0)))
 				}, cts.Token);
 				Toaster.Info($"Finished: '{selection.Script.Title}'", $"Waitnig '{Settings.Delay}'");
 
 				await Task.Delay(TimeSpan.FromSeconds(Settings.Delay), cts.Token);
-				if (Settings.CloseAfterRun) {
-					await ProcessUtil.TryKillProcess(browser.Brocess);
-					browser.Close();
-				}
-			});
+				if (Settings.CloseAfterRun) await browser.Closee().WaitAsync(cts.Token);
+			}, cts.Token);
 
 			// TODO:
 			// if (EditableSettings.EachProfile) foreach (var selection in selected) {

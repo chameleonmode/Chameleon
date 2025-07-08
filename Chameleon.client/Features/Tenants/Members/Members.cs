@@ -55,7 +55,7 @@ public partial class AssistantUsersFolder : DtoViewModelBase<AssisShareFolderDto
 }
 
 public partial class AssistantUser : DtoViewModelBase<AssistDto> {
-	[ObservableProperty] bool isNotActive;
+	[ObservableProperty] bool active;
 
 	public ReadOnlyObservableCollection<ObsProfile> All { get; }
 	public ObservableCollection<AssistantUsersProfile> Profilez { get; } = [];
@@ -66,6 +66,7 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 			 .Bind(out var all)
 			 .Subscribe();
 		All = all;
+		Active = DB.I.Userz.Users?.Any(u => u.Email == Dto.EmailAddress) == true;
 
 		AsyncCommandMap["Edit"] = async () => {
 			if (await new InviteUserOrAddProfilesViewModel().ShowDialog(Profilez, Folderz) is not { } result) return;
@@ -105,12 +106,11 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 			await CopyPasta.Copy($"{Dto.EmailAddress} {Dto.UserName} {Dto.Password}");
 		};
 		AsyncCommandMap["Add"] = async () => {
-			IsNotActive = await DB.I.Userz.Activate(Dto.EmailAddress!);
+			Active = await DB.I.Userz.Activate(Dto.EmailAddress!);
 			Toaster.Success($"User {Dto!.UserName} active status toggled successfully");
 		};
 		AsyncCommandMap["Remove"] = async () => {
-			_ = await DB.I.Userz.Delete(Dto.EmailAddress!);
-			IsNotActive = DB.I.Userz.Users?.Any(u => u.Email == Dto?.EmailAddress) == true;
+			Active = await DB.I.Userz.Delete(Dto.EmailAddress!) == false;
 			Toaster.Success($"User {Dto!.UserName} deactive status toggled successfully");
 		};
 		AsyncCommandMap["Delete"] = async () => {
@@ -155,7 +155,6 @@ public partial class TenantMembersViewModel : ViewModelObjectBase {
 		_ = UserAssistantRepo.Instance.ObservableCache.Connect().Transform(p => {
 			var vim = new AssistantUser(p);
 			_ = vim.Init(p);
-			vim.IsNotActive = DB.I.Userz.Users?.Any(u => u.Email == p.EmailAddress) ?? false;
 			return vim;
 		})
 			.Bind(out var assistants)

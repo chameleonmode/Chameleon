@@ -108,7 +108,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 			width: 156
 		);
 
-		var browsers = SystemBrowser.Instance.HasInstanceOf(Dto.id, (sender, args) => {
+		var browsers = SystemBrowser.I.HasInstanceOf(Dto.id, (sender, args) => {
 			// TODO: ? IsForeground = args.EventType == SysBrowserEventType.Foreground;
 			var runnin = args.EventType switch {
 				SysBrowserEventType.Foreground or
@@ -131,7 +131,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 		if (SBI[browserType] is IBrowserInstance browser) {
 			if (foreground) browser.InvokeEvent(SysBrowserEventType.Foreground);
 			else browser.InvokeEvent(SysBrowserEventType.Background);
-		} else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowser.Instance.Open(new(browserType, SystemBrowserProfile));
+		} else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowser.I.Open((SysBrowserOpenOptions)new(browserType, SystemBrowserProfile));
 		return SBI[browserType];
 	}
 
@@ -249,7 +249,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 			var isLoaded = await browserInstance!.LoadedTCS.Task.WaitAsync(cts.Token);
 			if (!isLoaded) throw new Exception($"Failed to load");
 
-			var port = browserInstance.Settings.Port;
+			var port = browserInstance.Settings.OpenOptions.Profile.Port;
 			return port <= 0 ? throw new Exception($"Invalid debugging port") : await action(port);
 		} catch (Exception ex) {
 			var message = ex is TimeoutException or OperationCanceledException 
