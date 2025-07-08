@@ -105,7 +105,7 @@ public partial class App : Application {
 
 	static async Task RunAsync() {
 		await EX.Try(async () => {
-			if (!await RunAsync(0)) throw new Exception("Login failed after 3 attempts");
+			if (!await RunAsync(3)) throw new Exception("Login failed after 3 attempts");
 			else {
 				Toaster.Success($"Greetings {(Session.I.Settings?.LoginName) ?? "World"}");
 				await ViewModel.Instance.Init();
@@ -120,11 +120,11 @@ public partial class App : Application {
 	}
 	static async Task<bool> RunAsync(int trys) {
 		var login = new MboxLoginViewModel(Session.I.Settings);
-		return trys <= 3 && await EX.Catch(async () => {
+		return trys > 0 && await EX.Catch(async () => {
 			return (
 				 login.AutoLogin ||
 				 await MessageBox.Show<MboxLoginUserControl, MboxLoginViewModel>(new(() => login, "User Login", Symbas: Symbas.ContactInfo))
 				) && await Common.Project.Logineer(login.Settings);
-		}, async e => await RunAsync(trys + 1));
+		}, async e => await RunAsync(trys - 1));
 	}
 }
