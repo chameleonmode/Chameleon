@@ -156,9 +156,9 @@ public abstract partial class Profiler : Profilearee {
   public static readonly BehaviorSubject<IComparer<ObsProfile>> CompareObservable = new(AscendingComparer);
   public IObservable<IChangeSet<ObsProfile, int>> Shared { get; }
   public ReadOnlyObservableCollection<ObsProfile> ObsProfiles { get; }
-  public IEnumerable<ObsProfile> SelectedProfiles => Profiles.Where(i => i.IsSelected);
-  public int SelectedCount => SelectedProfiles.Count();
-  public bool HasSelectedItems => SelectedProfiles.Any();
+  public virtual IEnumerable<ObsProfile> SelectedProfiles => Profiles.Where(i => i.IsSelected);
+  public virtual int SelectedCount => SelectedProfiles.Count();
+  public virtual bool HasSelectedItems => SelectedProfiles.Any();
 
   public Profiler(string? title = null) : base(title) {
     // 1) Create a shared change‐set (after your Transform + Filter)
@@ -176,10 +176,15 @@ public abstract partial class Profiler : Profilearee {
     // 4) Expose both lists
     ObsProfiles = allProfiles;
   }
-  public virtual void SelectedChanged(ObsProfile profile) {
-    OnPropertyChanged(nameof(HasSelectedItems));
-    OnPropertyChanged(nameof(SelectedCount));
+  public virtual void SelectedChanged(ObsProfile _) {
+    RefreshProperties();
   }
+  public virtual void RefreshProperties() {
+		OnPropertyChanged(nameof(HasProfiles));
+		OnPropertyChanged(nameof(SelectedCount));
+		OnPropertyChanged(nameof(HasSelectedItems));
+	}
+
   public virtual ObsProfile Deleted(ObsProfile profile) {
     return profile;
   }

@@ -27,8 +27,8 @@ public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
 		_ = UserProfilesRepo.Connect()
 		.Transform(i => new ObsProfile(i,
 			selectedChanged: x => {
-				if (x.IsSelected) SelectedProfiles.AddIfNot(x);
-				else SelectedProfiles.Remove(x);
+				if (x?.IsSelected == true) SelectedProfiles.AddIfNot(x);
+				else if (x?.IsSelected == false) SelectedProfiles.Remove(x);
 			}) { IsActionOptionsVisible = false })
 		.Bind(out var profiles).Subscribe();
 		Profiles = profiles;

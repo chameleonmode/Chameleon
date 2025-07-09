@@ -14,8 +14,7 @@ public abstract class DtoViewModelBase<T> : ViewModelObjectBase where T : Dto {
 	}
 }
 
-public abstract partial class ObservableDtoViewModelBase<T>(T dto, Action<ObservableDtoViewModelBase<T>>? onSelectedChanged = default)
-: DtoViewModelBase<T>(dto) where T : Dto {
+public abstract partial class ObservableDtoViewModelBase<T>(T dto, Action<ObservableDtoViewModelBase<T>>? onSelectedChanged = default) : DtoViewModelBase<T>(dto) where T : Dto {
 	public event Action<ObservableDtoViewModelBase<T>>? OnSelectedChanged = onSelectedChanged;
 	[ObservableProperty] bool isSelected;
 	[ObservableProperty] bool active;
