@@ -61,7 +61,7 @@ public partial class ProfilesViewModel : Profiler {
 	CancellationTokenSource? cts;
 
 	public override ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
-	public PaginatorViewModel PaginatorViewModel { get; }
+	public PaginatorViewModel Paginator { get; }
 	public AvaloniaList<Arguments> PlaywrightScripts { get; } = [];
 
 	public override bool HasSelectedItems => selectedProfileIds.Count > 0;
@@ -73,7 +73,7 @@ public partial class ProfilesViewModel : Profiler {
 			.ToList();
 	public bool HasFolder => Folder?.Id > 0;
 	public string SelectedFolderTitle => Folder?.Title ?? "x_x";
-	public int TotalCount => PaginatorViewModel.TotalCount = MaxInFolderItems;
+	public int TotalCount => Paginator.TotalCount = MaxInFolderItems;
 	public int MaxInFolderItems => HasFolder
 		? UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder?.Id)
 		: UserProfilesRepo.Instance.ObservableCache.Count;
@@ -97,7 +97,7 @@ public partial class ProfilesViewModel : Profiler {
 			.Subscribe();
 		Profiles = profiles;
 
-		PaginatorViewModel = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems))) {
+		Paginator = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
 		};
 		InitializeCommands();
@@ -140,7 +140,7 @@ public partial class ProfilesViewModel : Profiler {
 		CommandMap["UnselectItems"] = () => {
 			selectedProfileIds.Clear();
 			Profiles.ForEach(p => p.IsSelected = false);
-			PaginatorViewModel.UpdatePageCount(DefaultPageSize); // Reset page count to default
+			Paginator.UpdatePageCount(DefaultPageSize); // Reset page count to default
 			// Force a refresh to make sure the selection state is properly updated
 			SetViewModelsFilter();
 		};
@@ -169,7 +169,7 @@ public partial class ProfilesViewModel : Profiler {
 				var result = await UserProfilesRepo.Instance.Delete(id);
 				return result.success;
 			});
-			PaginatorViewModel.CurrentIndex = 0;
+			Paginator.CurrentIndex = 0;
 			SetViewModelsFilter();
 		};
 		AsyncCommandMap["plus-in-circle"] = async () => {
@@ -287,8 +287,8 @@ public partial class ProfilesViewModel : Profiler {
 	}
 
 	public void SetViewModelsFilter() {
-		PaginatorViewModel.TotalCount = MaxInFolderItems;
-		PaginatorViewModel.UpdatePageCount(SearchText.Length > 3 ? MaxInFolderItems : MaxInFolderItems > 0 ? DefaultPageSize : 1);
+		Paginator.TotalCount = MaxInFolderItems;
+		Paginator.UpdatePageCount(SearchText.Length > 3 ? MaxInFolderItems : MaxInFolderItems > 0 ? DefaultPageSize : 1);
 		filter.OnNext(p =>
 			(!HasFolder || p.Dto.folderId == Folder?.Id) &&
 			(SearchText.Length < 3 || p.Title?.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) == true)

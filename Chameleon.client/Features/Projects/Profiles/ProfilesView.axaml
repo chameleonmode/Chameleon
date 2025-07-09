@@ -29,7 +29,7 @@
 		  Title="{Binding SelectedFolderTitle}"
 		  TitleDescription="{Binding TotalCount, StringFormat='You have {0} profiles.'}">
 		<afv:ChameleonContentControl.TitleContent>
-			<uc:PaginatorView DataContext="{Binding PaginatorViewModel}" />
+			<uc:PaginatorView DataContext="{Binding Paginator}" />
 		</afv:ChameleonContentControl.TitleContent> 
 		
 
