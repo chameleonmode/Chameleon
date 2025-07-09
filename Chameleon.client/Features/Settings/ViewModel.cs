@@ -96,8 +96,8 @@ public partial class ViewModel : ViewModelObjectBase {
 	public override void InitializeObject() {
 		base.InitializeObject();
 		
-		AsyncCommandMap["CopyLogToClipboard"] = CopyLogToClipboard;
-		AsyncCommandMap["OpenLogFile"] = () => Task.Run(OpenLogFile);
+		AsyncCommandMap[nameof(CopyLogToClipboard)] = CopyLogToClipboard;
+		AsyncCommandMap[nameof(OpenLogFile)] = () => Task.Run(OpenLogFile);
 	}
 
 	public void InitializSettings() {
