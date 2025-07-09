@@ -60,6 +60,8 @@ public partial class UserDefaultSettingsViewModel
 			.Transform(p=> new UserDefaultSettingViewModel(p, OnSelectedChanged, OnSettingsDeleted))
 			.Bind(out settings)
 			.Subscribe();
+		
+		CommandMap["UnselectItems"] = UnselectItems;
 	}
 
 	public override async Task Init(object? param)
