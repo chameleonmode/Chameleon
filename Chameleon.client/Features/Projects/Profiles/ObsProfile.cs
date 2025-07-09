@@ -89,8 +89,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 		};
 		AsyncCommandMap["DeleteUserProfile"] = async () => {
 			if (
-				await MessageBox.Show(title: "Delete User Profile",
-				content: $"Are you sure you want to delete {profile.title}?",
+				await MessageBox.Show("Delete?", $"Are you sure you want to delete {profile.title}?",
 				btns: MBoxButtons.OkCancel,
 				icon: "DeleteLines")
 			) {
@@ -129,7 +128,7 @@ public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IP
 
 	public async Task<IBrowserInstance?> OpenBrowser(lib.WebBrowser.BrowserType browserType, bool foreground = true) {
 		if (SBI[browserType] is IBrowserInstance browser && foreground) browser.InvokeEvent(BrowserEventType.Foreground);
-		else if (SBI[browserType] is null) SBI[browserType] = await SystemBrowser.I.Open(new LaunchOptions(browserType, SystemBrowserProfile));
+		else if (SBI[browserType] is null) return SBI[browserType] = await SystemBrowser.I.Open(new LaunchOptions(browserType, SystemBrowserProfile));
 		return SBI[browserType];
 	}
 

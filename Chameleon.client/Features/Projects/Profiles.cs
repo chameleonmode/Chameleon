@@ -177,9 +177,9 @@ public abstract partial class Profiler : Profilearee {
     ObsProfiles = allProfiles;
   }
   public virtual void SelectedChanged(ObsProfile _) {
-    RefreshProperties();
+    OnPropertyChanges();
   }
-  public virtual void RefreshProperties() {
+  public virtual void OnPropertyChanges() {
 		OnPropertyChanged(nameof(HasProfiles));
 		OnPropertyChanged(nameof(SelectedCount));
 		OnPropertyChanged(nameof(HasSelectedItems));

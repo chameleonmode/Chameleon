@@ -77,10 +77,9 @@ public partial class ActorViewModel : Automatior {
 		Subscriptions.Add(ProfilesViewModel.Instance.ObsProfiles.ToObservableChangeSet()
 			.AutoRefresh(profile => profile.IsSelected)
 			.Filter(profile => profile.IsSelected)
-			.DistinctUntilChanged()
-			.Bind(out var selectedProfiles)
+			.Bind(out var profiles)
 			.Subscribe());
-		SelectedProfiles = selectedProfiles;
+		SelectedProfiles = profiles;
 
 		Subscriptions.Add(Tagz.ToObservableChangeSet()
 			.AutoRefresh(tag => tag.IsSelected).ToCollection()

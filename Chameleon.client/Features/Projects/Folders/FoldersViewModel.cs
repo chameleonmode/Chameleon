@@ -21,6 +21,7 @@ public partial class FoldersViewModel : Folderer {
 			SelectedFolder.IsSelected = false;
 			await ProfilesViewModel.Instance.OpenAsync(navigate.Dto);
 			SelectedFolder = navigate;
+			ProfilesViewModel.Instance.OnPropertyChanges();
 		}
 		SelectedFolder.IsSelected = true;
 		OnPropertyChanged(nameof(SelectedFolder));

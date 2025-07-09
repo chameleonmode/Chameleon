@@ -169,7 +169,7 @@ public partial class ProfilesViewModel : Profiler {
 				var result = await UserProfilesRepo.Instance.Delete(id);
 				return result.success;
 			});
-			Paginator.CurrentIndex = 0;
+			Paginator.CurrentIndex = Paginator.CurrentIndex > Paginator.PageCount ? Paginator.PageCount : Paginator.CurrentIndex;
 			SetViewModelsFilter();
 		};
 		AsyncCommandMap["plus-in-circle"] = async () => {
@@ -251,7 +251,7 @@ public partial class ProfilesViewModel : Profiler {
 	public override void SelectedChanged(ObsProfile profile) {
 		if (profile.Dto == null) return;
 		_ = profile.IsSelected ? selectedProfileIds.Add(profile.Dto.id) : selectedProfileIds.Remove(profile.Dto.id);
-		RefreshProperties();
+		OnPropertyChanges();
 	}
 
 	public override async Task Init(object? param) {
@@ -270,9 +270,6 @@ public partial class ProfilesViewModel : Profiler {
 		Folder.Tags = await TagsRepo.Instance.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
 		SearchText = string.Empty;
 		SetViewModelsFilter();
-		
-		await Task.Delay(20); // Allow reactive pipeline to update
-		ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.Profiles);
 	}
 
 	public async Task<UserProfileDto?> CreateNewProfile() {
@@ -293,16 +290,16 @@ public partial class ProfilesViewModel : Profiler {
 			(!HasFolder || p.Dto.folderId == Folder?.Id) &&
 			(SearchText.Length < 3 || p.Title?.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) == true)
 		);
-		RefreshProperties();
 
 		_ = Task.Run(async () => {
 			await Task.Delay(10); // Small delay to let reactive chain update
 			ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.Profiles);
 		});
+		OnPropertyChanges();
 	}
 
-	public override void RefreshProperties() {
-		base.RefreshProperties();
+	public override void OnPropertyChanges() {
+		base.OnPropertyChanges();
 		OnPropertyChanged(nameof(HasFolder));
 		OnPropertyChanged(nameof(TotalCount));
 		OnPropertyChanged(nameof(SelectedFolderTitle));
