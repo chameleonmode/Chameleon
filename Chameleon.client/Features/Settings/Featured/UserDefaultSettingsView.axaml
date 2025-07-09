@@ -16,9 +16,7 @@
 					<ui:CommandBar DefaultLabelPosition="Right"
 								   HorizontalAlignment="Right">
 						<ui:CommandBar.PrimaryCommands>
-							<ui:CommandBarButton IconSource="Save"
-												 Label="Save"
-												 Command="{Binding SaveLaunchSettingsCommand}"/>
+							<ui:CommandBarButton IconSource="Save" Label="Save" Classes="cfv" />
 						</ui:CommandBar.PrimaryCommands>
 					</ui:CommandBar>
 				</afv:ChameleonContentControl.TitleContent>
@@ -53,29 +51,19 @@
 				</afv:ChameleonContentControl.Content>
 			</afv:ChameleonContentControl>
 			
-			<afv:ChameleonContentControl Title="Default Launch Pages"
-							   TitleDescription="Select and edit default saved pages">
+			<afv:ChameleonContentControl Title="Default Pages" TitleDescription="Select and edit default pages launched on browser start and saved to bookmarks">
 				<afv:ChameleonContentControl.TitleContent>
-					<ui:CommandBar DefaultLabelPosition="Right"
-								   HorizontalAlignment="Right">
+					<ui:CommandBar DefaultLabelPosition="Right" HorizontalAlignment="Right">
 						<ui:CommandBar.PrimaryCommands>
-							<ui:CommandBarButton IconSource="Add"
-												 Label="New"
-												 Command="{Binding CreateNewDefaultSettingsCommand}"/>
-							<ui:CommandBarButton IconSource="Save"
-												 Label="Save"
-												 Command="{Binding SaveCommand}"/>
+							<ui:CommandBarButton IconSource="Add" Label="New" Classes="async" />
+							<ui:CommandBarButton IconSource="Save" Label="Save" Classes="async" />
 						</ui:CommandBar.PrimaryCommands>
 					</ui:CommandBar>
 				</afv:ChameleonContentControl.TitleContent>
 				<afv:ChameleonContentControl.Header>
 					<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
 						<HeaderedContentControl.Header>
-							<Button Theme="{StaticResource SvgIconTextButton}"
-									Content="delete"
-									Tag="Delete"
-									Margin="3 0 0 0"
-									Command="{Binding RemoveSelectedItemsCommand}" />
+							<Button Classes="async svg-text" Content="delete" Tag="Delete" Margin="3 0 0 0" />
 						</HeaderedContentControl.Header>
 					</HeaderedContentControl>
 				</afv:ChameleonContentControl.Header>
