@@ -83,13 +83,14 @@ public partial class ActorViewModel : Automatior {
 		SelectedProfiles = profiles;
 
 		Subscriptions.Add(Tagz.ToObservableChangeSet()
-			.AutoRefresh(tag => tag.IsSelected).ToCollection()
-			.Subscribe(next =>
-				next.ForEach(t =>
-					 ProfilesViewModel.Instance.ObsProfiles
-					.Where(x => t.ProfileIds.Contains(x.Dto.ID))
-					.ForEach(p => p.Active = p.IsSelected = t.IsSelected)
-			)));
+			.AutoRefresh(tag => tag.IsSelected)
+			.ToCollection()
+			.Subscribe(next => next.ForEach(t =>
+				 ProfilesViewModel.Instance.ObsProfiles
+				 .Where(x => t.ProfileIds.Contains(x.Dto.ID))
+				 .ForEach(p => p.Active = p.IsSelected = t.IsSelected)
+			)
+		));
 
 		CancellationTokenSource? cts = null;
 		void onStop() {
