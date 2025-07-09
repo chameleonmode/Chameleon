@@ -1,10 +1,14 @@
 ﻿using Avalonia;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Controls.ApplicationLifetimes;
 using System.Reflection;
+using System.Diagnostics;
 
 using Chameleon.lib;
 using Chameleon.client.MvvM;
+using Chameleon.lib.Util;
+using Chameleon.lib.Helpers;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -89,6 +93,13 @@ public partial class ViewModel : ViewModelObjectBase {
 	[ObservableProperty] Color? listBoxColor;
 	[ObservableProperty] string liscencedTo = "xxx";
 
+	public override void InitializeObject() {
+		base.InitializeObject();
+		
+		AsyncCommandMap["CopyLogToClipboard"] = CopyLogToClipboard;
+		AsyncCommandMap["OpenLogFile"] = () => Task.Run(OpenLogFile);
+	}
+
 	public void InitializSettings() {
 		if (IoC.GetJsonValue<AppSettings>(nameof(AppSettings)) is AppSettings appSettings) {
 			if (appSettings.UseCustomAccentColor && appSettings.CustomAccentColor is string coler) {
@@ -106,6 +117,37 @@ public partial class ViewModel : ViewModelObjectBase {
 	public async Task Logout() {
 		await Session.I.Logout();
 		Environment.Exit(0);
+	}
+
+	public async Task CopyLogToClipboard() {
+		var logContent = EX.GetLogContent();
+		if (!string.IsNullOrEmpty(logContent)) {
+			if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
+				var clipboard = desktop.MainWindow?.Clipboard;
+				if (clipboard != null) {
+					await clipboard.SetTextAsync(logContent);
+					Toaster.Success("Exception log copied to clipboard successfully");
+				} else {
+					Toaster.Error("Failed to access clipboard");
+				}
+			}
+		} else {
+			Toaster.Info("No exception log content available to copy");
+		}
+	}
+
+	public void OpenLogFile() {
+		var logPath = EX.GetLogFilePath();
+		if (File.Exists(logPath)) {
+			var startInfo = new ProcessStartInfo {
+				FileName = logPath,
+				UseShellExecute = true
+			};
+			_ = Process.Start(startInfo);
+			Toaster.Success("Exception log file opened successfully");
+		} else {
+			Toaster.Info("No exception log file found yet");
+		}
 	}
 
 	partial void OnUseCustomAccentColorChanged(bool oldValue, bool newValue) {
