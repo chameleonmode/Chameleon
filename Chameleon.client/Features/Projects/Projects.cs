@@ -42,7 +42,7 @@ public partial class ViewModel : ViewModelObjectBase {
 				if (
 					ex.Message == "limit_ex" &&
 					await MessageBox.Show("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles.")
-				) ProcessUtil.OpenBrowser(Const.PricingUrl);
+				) ProcessUtil.OpenBrowser("https://chameleonmode.com/pricing/");
 				else throw;
 			}
 		};

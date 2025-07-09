@@ -26,7 +26,7 @@ public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisPro
 			_ = user.Profilez.Remove(this);
 			Toaster.Success($"{Dto.ProfileName} was unshared successfully");
 		};
-		async Task onSendCookies(SystemBrowserType bt) {
+		async Task onSendCookies(BrowserType bt) {
 			var email =
 				user.Dto.id == Auther.AuthSession?.UserId
 				 ? DB.I.Userz.Users?.First(u => u.LicenseKey != null).Email
@@ -37,9 +37,9 @@ public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisPro
 				 email ?? throw new InvalidOperationException("User email not found"),
 				 cookies ?? throw new InvalidOperationException("Failed to get cookies from profile"));
 		}
-		AsyncCommandMap["SyncCookiesChrome"] = async () => await onSendCookies(SystemBrowserType.Chrome);
-		AsyncCommandMap["SyncCookiesBrave"] = async () => await onSendCookies(SystemBrowserType.Brave);
-		AsyncCommandMap["SyncCookiesFirefox"] = async () => await onSendCookies(SystemBrowserType.Firefox);
+		AsyncCommandMap["SyncCookiesChrome"] = async () => await onSendCookies(BrowserType.Chrome);
+		AsyncCommandMap["SyncCookiesBrave"] = async () => await onSendCookies(BrowserType.Brave);
+		AsyncCommandMap["SyncCookiesFirefox"] = async () => await onSendCookies(BrowserType.Firefox);
 	}
 }
 public partial class AssistantUsersFolder : DtoViewModelBase<AssisShareFolderDto> {

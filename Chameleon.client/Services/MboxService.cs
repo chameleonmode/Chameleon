@@ -12,7 +12,7 @@ using Chameleon.lib.Services;
 namespace Chameleon.client.Services;
 
 public partial class MBoxViewModel : ObservableObject {
-	[ObservableProperty] string title = Const.AppName;
+	[ObservableProperty] string title = IoC.AppName;
 	[ObservableProperty] string glyph = "E946";
 }
 public class MboxService(IDispatchService dispatcher) : IMboxService {
@@ -38,7 +38,7 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 		});
 	}
 
-	public async Task<TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = Const.AppName, object? footer = null, Symbas symbas = Symbas.Alert, MBoxButtons btns = MBoxButtons.YesNo) {
+	public async Task<TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = IoC.AppName, object? footer = null, Symbas symbas = Symbas.Alert, MBoxButtons btns = MBoxButtons.YesNo) {
 		while (App.MainWindow is null) {
 			await Task.Delay(250);
 		}

@@ -96,11 +96,10 @@ public static class ProfileUIContextManager {
   });
 
   public static async void SetModuleContext(ProfileUIModule moduleId, ProfileUIContext context) => await Locker(() => {
-    var previousContext = ModuleContexts.GetValueOrDefault(moduleId, ProfileUIContext.Profiles);
-
-    ModuleContexts[moduleId] = ProfileUIStateMachine.CanTransition(previousContext, context)
+    var current = ModuleContexts.GetValueOrDefault(moduleId, ProfileUIContext.Profiles);
+    ModuleContexts[moduleId] = ProfileUIStateMachine.CanTransition(current, context)
       ? context
-      : throw new InvalidOperationException($"Cannot transition from {previousContext} to {context}");
+      : throw new InvalidOperationException($"Cannot transition from {current} to {context}");
   });
 
   public static async Task<ProfileUIContext> GetCurrentContext(ProfileUIModule moduleId) => await Locker(() => {

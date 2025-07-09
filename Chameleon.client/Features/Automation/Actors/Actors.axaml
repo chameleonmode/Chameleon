@@ -162,7 +162,7 @@
 														<cc:Inputter Title="Terms:" Description="Adds AI related keywords based on search terms">
 															<ui:NumberBox Value="{Binding Settings.Start.Variations.Min}" />
 														</cc:Inputter>
-														<cc:Inputter Title="Rerun:" Description="Number of times to rerun each search term to a different listing">
+														<cc:Inputter Title="Runs:" Description="Number of times to rerun each search term to a different listing">
 															<ui:NumberBox Value="{Binding Settings.Start.Iterations.Min}" />
 														</cc:Inputter>
 														<cc:Inputter Title="Retry:" Description="Maximum retry on unexpected situations">
@@ -196,6 +196,7 @@
 											</ItemsControl.ItemTemplate>
 										</ItemsControl>
 										<Border Classes="divider" />
+
 										<ComboBox SelectedItem="{Binding SelectedBrowserOption}" ItemsSource="{x:Static local:ActorsViewModel.BrowserOptions}">
 											<ComboBox.ItemTemplate>
 												<DataTemplate>
@@ -203,12 +204,10 @@
 												</DataTemplate>
 											</ComboBox.ItemTemplate>
 										</ComboBox>
-											<!-- <ToggleButton IsChecked="{Binding Settings.Start.New}" 
-												 Content="New" 
-												 ToolTip.Tip="start the automation in a new tab or the active tab" />
-											<ToggleButton IsChecked="{Binding Settings.CloseAfterRun}"
-												 Content="Close"
-												 ToolTip.Tip="Close or keep open browser instances for the previous profile before moving to the next" /> -->
+										
+										<TextBlock Text="{Binding CurrentScriptTitle, Mode=TwoWay}" />
+										<ui:ProgressRing IsActive="{Binding Running}" IsVisible="{Binding Running}" Width="24" Height="24" />
+
 										<Button Content="Play" Classes="icon async" IsVisible="{Binding !Running}" />
 										<Button Content="Stop" Classes="icon cfv" IsVisible="{Binding Running}" />
 									</StackPanel>

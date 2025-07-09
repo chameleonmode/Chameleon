@@ -108,16 +108,14 @@ public partial class ProfilesViewModel : Profiler {
 			PaginatorViewModel.UpdatePageCount(9);
 		};
 		AsyncCommandMap["SaveTags"] = () => TagsRepo.Instance.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
-		async Task OpenSystemBrowser(SystemBrowserType browserType) {
-			foreach (var profile in SelectedProfiles) {
-				_ = await profile.OpenSystemBrowser(browserType);
-			}
+		async Task OpenSystemBrowser(BrowserType browserType) {
+			await SelectedProfiles.ForEach(async profile => await profile.OpenBrowser(browserType));
 		}
-		AsyncCommandMap["chrome"] = () => OpenSystemBrowser(SystemBrowserType.Chrome);
-		AsyncCommandMap["brave"] = () => OpenSystemBrowser(SystemBrowserType.Brave);
-		AsyncCommandMap["firefox"] = () => OpenSystemBrowser(SystemBrowserType.Firefox);
+		AsyncCommandMap["chrome"] = () => OpenSystemBrowser(BrowserType.Chrome);
+		AsyncCommandMap["brave"] = () => OpenSystemBrowser(BrowserType.Brave);
+		AsyncCommandMap["firefox"] = () => OpenSystemBrowser(BrowserType.Firefox);
 		AsyncCommandMap["chameleon-logo"] = () => {
-			SelectedProfiles?.ForEach(profile => SnapCracklePopViewModel.Open(profile.Dto));
+			SelectedProfiles?.ForEach(profile => SnapCracklePopViewModel.Open(profile));
 			return Task.CompletedTask;
 		};
 
@@ -161,7 +159,7 @@ public partial class ProfilesViewModel : Profiler {
 				foreach (var profile in SelectedProfiles) {
 					cts.Token.ThrowIfCancellationRequested();
 					await ConfigureScriptParameters(profile);
-					var browser = await profile.OpenSystemBrowser(SelectedBrowserOption.Option).WaitAsync(cts.Token);
+					var browser = await profile.OpenBrowser(SelectedBrowserOption.Option).WaitAsync(cts.Token);
 
 					SelectedPlaywrightScript!.Port = browser!.Settings.OpenOptions.Profile.Port;
 					SelectedPlaywrightScript.Record = record;

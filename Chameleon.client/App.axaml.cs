@@ -41,13 +41,13 @@ public partial class App : Application {
 		}
 
 		// IoC.Instance.StartUps.Add(AddonsServer.Instance);
-
+		const string file = "appsettings.json";
 		IoC.I.Configure(() => {
 			return new WritableConfiguration(new ConfigurationBuilder()
 				.SetBasePath(FilePaths.AppDataDir)
-				.AddJsonFile(Const.AppSettingsFileName, optional: true, reloadOnChange: true)
+				.AddJsonFile(file, optional: true, reloadOnChange: true)
 				.AddEnvironmentVariables()
-				.Build(), Path.Combine(FilePaths.AppDataDir, Const.AppSettingsFileName));
+				.Build(), Path.Combine(FilePaths.AppDataDir, file));
 		}, (services) => {
 			_ = services
 			.AddSingleton<IDispatchService, DispatchService>()

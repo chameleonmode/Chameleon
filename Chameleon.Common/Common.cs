@@ -11,7 +11,7 @@ public class Project {
     Session.I.Auth0Client.OidcBrowser.Open = async url => {
       var browser = await EX.Catch(
         async () => await SystemBrowser.I.Open(Factorially.Chrome(url)),
-        ex => { if (!BrowserInfo.Find(SystemBrowserType.Chrome).Exists) ProcessUtil.OpenBrowser(url); }
+        ex => { if (!BrowserInfo.Find(BrowserType.Chrome).Exists) ProcessUtil.OpenBrowser(url); }
       );
       _ = Session.I.Auth0Client.OidcBrowser.TaskCompletion?.Task.ContinueWith(_ => browser?.Closee());
     };

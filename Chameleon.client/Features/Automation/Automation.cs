@@ -6,8 +6,8 @@ namespace Chameleon.client.Features.Automation;
 public abstract partial class Automatior : ViewModelObjectBase {
 	[ObservableProperty] BrowserOption selectedBrowserOption;
 	public IEnumerable<BrowserOption> BrowserOptions { get; } = [
-		new (SystemBrowserType.Chrome),
-		new (SystemBrowserType.Brave),
+		new (BrowserType.Chrome),
+		new (BrowserType.Brave),
 	];
 
 	public Automatior(string? title = null): base(title) {

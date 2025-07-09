@@ -49,9 +49,9 @@ public partial class ViewModel : ViewModelObjectBase {
 			await DB.I.Cooky.Delete();
 			await CheckForCookies();
 		};
-		AsyncCommandMap["SyncCookiesChrome"] = async () => await SyncCookies(SystemBrowserType.Chrome);;
-		AsyncCommandMap["SyncCookiesBrave"] = async () => await SyncCookies(SystemBrowserType.Brave);
-		AsyncCommandMap["SyncCookiesFirefox"] = async () =>  await SyncCookies(SystemBrowserType.Firefox);
+		AsyncCommandMap["SyncCookiesChrome"] = async () => await SyncCookies(BrowserType.Chrome);;
+		AsyncCommandMap["SyncCookiesBrave"] = async () => await SyncCookies(BrowserType.Brave);
+		AsyncCommandMap["SyncCookiesFirefox"] = async () =>  await SyncCookies(BrowserType.Firefox);
 	}
 
 	public override async Task Init(object? param) {
@@ -80,7 +80,7 @@ public partial class ViewModel : ViewModelObjectBase {
 		}
 	}
 
-	static async Task SyncCookies(SystemBrowserType systemBrowserType) {
+	static async Task SyncCookies(BrowserType systemBrowserType) {
 		await PlaywrightCookiesSyncService.Instance.SyncCookies(systemBrowserType);
 		Toaster.Success("Cookies Synced");
 	}

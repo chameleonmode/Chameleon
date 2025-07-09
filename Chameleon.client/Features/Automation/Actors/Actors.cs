@@ -23,10 +23,15 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Abs.Platformatic;
-using Avalonia.Markup.Xaml.MarkupExtensions;
+using ExCSS;
 namespace Chameleon.client.Features.Automation.Actors;
 
-public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<int> SelectedProfileIds);
+public static class Actorz {
+	public record State(Opts Options, IEnumerable<Selection> Selections, IEnumerable<Tag> SelectedTags, IEnumerable<int> SelectedProfileIds);
+	public static string CacheDir => FilePaths.EnsureDirectoryExists(
+		FilePaths.AppDataDir, "Roboto"
+	);
+}
 
 public partial class Tag(TagDto dto) : ObservableObject {
 	[ObservableProperty] bool isSelected;
@@ -40,10 +45,9 @@ public partial class Tag(TagDto dto) : ObservableObject {
 	[JsonIgnore] public string ToolTipText => $"{ProfileIds.Count()} Profiles";
 }
 
-public partial class ActorViewModel : ViewModelObjectBase {
-	CancellationTokenSource? cts;
+public partial class ActorViewModel : Automatior {
 	[ObservableProperty] bool running;
-	[ObservableProperty] BrowserOption selectedBrowserOption = ActorsViewModel.BrowserOptions.First();
+	[ObservableProperty] string currentScriptTitle = string.Empty;
 
 	public IActor Actor { get; }
 	public ReadOnlyObservableCollection<Tag> Tagz { get; }
@@ -87,13 +91,82 @@ public partial class ActorViewModel : ViewModelObjectBase {
 					.ForEach(p => p.Active = p.IsSelected = t.IsSelected)
 			)));
 
-		AsyncCommandMap["Play"] = Runerer;
+		CancellationTokenSource? cts = null;
+		void onStop() {
+			Running = false;
+			CurrentScriptTitle = string.Empty;
+			cts?.Cancel();
+			cts?.Dispose();
+			cts = null;
+		}
+		CancellationTokenSource onStart() {
+			onStop();
+			Running = true;
+			cts = new CancellationTokenSource();
+			return cts;
+		}
+		AsyncCommandMap["Play"] = async () => {
+			try {
+				var cts = onStart();
+				var profiles = SelectedProfiles.Where(p => p.Active);
+				if (!profiles.Any()) throw new Exception("No profiles selected to run.");
+
+				var selected = Selections.OrderBy(s => new Random().Next()).Where(s => s.Selected).ToArray();
+				if (selected.Length == 0) throw new Exception("No scripts selected to run.");
+
+				var terms = Settings.Start.Terms.Split(',').Select(x => x.Trim()).Where(x => x.IsNot()).ToList();
+				var urls = Settings.Start.Url?.Split('\n').Select(x => x.Trim()).Where(x => x.IsNot()).ToArray() ?? [];
+				if (terms.Count == 0 && urls.Length == 0) throw new Exception("Search and URL's cannot be empty together.");
+				else if (terms.Count != 0 && Settings.Start.Variations.Min > 0) terms.AddRange(
+					await Service.I.Robo.Terms(new(AI.Decorators, Settings.Variations, terms)
+				).WaitAsync(cts.Token));
+				
+				var termz = terms.OrderBy(s => new Random().Next(96)).ToArray();
+				Actor.Options = Actor.Options with {
+					Settings = Actor.Options.Settings with {
+						Start = Actor.Options.Settings.Start with {
+							Terms = string.Join(", ", termz)
+						}
+					}
+				};
+				OnPropertyChanged(nameof(Settings));
+				int selectionIndex = 0, termsIndex = 0, urlsIndex = 0;
+				await profiles.TryEach(async profile => {
+					// Safer array access with proper bounds checking
+					var selection = selected[selectionIndex++ % selected.Length];
+					string[] urlser = urls.Length > 0 ? [urls[urlsIndex++ % urls.Length]] : [];
+					string[] termer = termz.Length > 0 ? [termz[termsIndex++ % termz.Length]] : [];
+					CurrentScriptTitle = selection.Script.Title + "...";
+					Toaster.Info(
+						$"Starting: '{CurrentScriptTitle}'",
+						$"Using URL: {string.Join(", ", urlser)}",
+						$"Using term: {string.Join(", ", termer)}"
+					);
+
+					var browser = await profile.OpenBrowser(SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
+					await Run.Script(new() {
+						Port = browser!.Settings.Profile.Port,
+						Script = selection.Script,
+						Opts = new Opts(
+							AI, Args.ToDictionary(selected), Settings.ToRecord(urlser, termer, selection, new(0, 0))
+						)
+					}, cts.Token).WaitAsync(cts.Token);
+
+					Toaster.Info($"Finished: '{selection.Script.Title}'", $"Waiting '{Settings.Delay}'");
+					await Task.Delay(TimeSpan.FromSeconds(Settings.Delay), cts.Token);
+					
+					if (Settings.CloseAfterRun) await browser.Closee().WaitAsync(cts.Token);
+				});
+			} finally {
+				onStop();
+			}
+		};
 		AsyncCommandMap["Edit"] = async () => {
 			using var profileSelectorVM = new ProfileSelectorViewModel(SelectedProfiles);
 			_ = await profileSelectorVM.ShowDialogAsync();
 		};
 
-		CommandMap["Stop"] = Stoperer;
+		CommandMap["Stop"] = onStop;
 	}
 
 	public void LoadFromCache(IEnumerable<Selection>? selections, IEnumerable<string>? tags, IEnumerable<int>? profiles) {
@@ -122,115 +195,16 @@ public partial class ActorViewModel : ViewModelObjectBase {
 		var currentArgs = Args.ToDictionary([]);
 		var currentSettings = Settings.ToRecord();
 		var currentOpts = new Opts(AI, currentArgs, currentSettings);
-		var stateToSave = new State(currentOpts, Selections, Tagz.Where(x => x.IsSelected), SelectedProfiles.Select(x => x.Dto.id));
-		var filePath = Path.Combine(FilePaths.Roboto, $"{Actor.Options.Settings.Start.Feature}.json");
+		var stateToSave = new Actorz.State(currentOpts, Selections, Tagz.Where(x => x.IsSelected), SelectedProfiles.Select(x => x.Dto.id));
+		var filePath = Path.Combine(Actorz.CacheDir, $"{Actor.Options.Settings.Start.Feature}.json");
 		var jsonContent = JSON.Serialize(stateToSave, JSON.EnumConverter);
-		await File.WriteAllTextAsync(filePath, jsonContent, cts?.Token ?? CancellationToken.None);
+		await File.WriteAllTextAsync(filePath, jsonContent);
 		Toaster.Success("Saved");
-	}
-
-	public async Task Runerer() {
-		var presearch = Settings.Start.Terms;
-		Running = true;
-		cts = new();
-		try {
-			var profiles = SelectedProfiles.Where(p => p.Active);
-			if (!profiles.Any()) throw new Exception("No profiles selected to run.");
-
-			var selected = Selections.OrderBy(s => new Random().Next()).Where(s => s.Selected);
-			if (!selected.Any()) throw new Exception("No scripts selected to run.");
-
-			var terms = Settings.Start.Terms.Split(',').Where(x => x.IsNot()).Select(x => x.Trim()).ToList();
-			var urls = Settings.Start.Url?.Split('\n').Where(x => x.IsNot()).Select(x => x.Trim()).ToList() ?? [];
-			if (terms.Count == 0 && urls.Count == 0) throw new Exception("Search and URL's cannot be empty together.");
-			else if (terms.Count != 0 && Settings.Start?.Variations.Min > 0) {
-				Toaster.Info($"Generating {Settings.Start.Variations.Min} term(s) for each search term");
-
-				async Task<IEnumerable<Service.Routes.Promptee.GenorateResponse>> TermGen(int tries = 3) {
-					var generated = await Service.Routes.Promptee.Genorate(
-						new(AI.Decorators, Settings.Variations, terms)
-					).WaitAsync(cts.Token);
-					return generated?.Reply ?? (tries > 0 ? await TermGen(tries - 1) : []);
-				}
-				var added = await TermGen().WaitAsync(cts.Token);
-
-				terms.AddRange(added.SelectMany(i => i.Data.Select(t => t.Trim()).Where(t => t.IsNot())));
-				do {
-					var zoro = terms[0];
-					terms = [.. terms.OrderBy(s => new Random().Next(18))];
-					if (terms[0] != zoro) break; // If the first term is not the same as the original, we are done
-				} while (!cts.IsCancellationRequested);
-				Actor.Options = Actor.Options with {
-					Settings = Actor.Options.Settings with {
-						Start = Actor.Options.Settings.Start with {
-							Terms = string.Join(", ", terms)
-						}
-					}
-				};
-				OnPropertyChanged(nameof(Settings));
-			}
-			int selectionIndex = -1, termsIndex = -1, urlsIndex = -1;
-
-			await profiles.ForEach(async profile => {
-				var selection = selected.ElementAt(++selectionIndex >= selected.Count() ? selectionIndex = 0 : selectionIndex);
-
-				string[] urlser = ++urlsIndex >= urls.Count ? [] : [urls[urlsIndex]];
-				string[] termer = terms.Count == 0 ? [] : [terms[++termsIndex >= terms.Count ? termsIndex = 0 : termsIndex]];
-				Toaster.Info(
-					$"Starting: '{selection.Script.Title}'",
-					$"Using URL: {string.Join(", ", urlser)}",
-					$"Using term: {string.Join(", ", termer)}");
-
-				var browser = await profile.OpenSystemBrowser(SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
-				await Run.Script(new() {
-					Port = browser!.Settings.Profile.Port,
-					Script = selection.Script,
-					Opts = new Opts(AI, Args.ToDictionary(selected), Settings.ToRecord(urlser, termer, selection, new(0, 0)))
-				}, cts.Token);
-				Toaster.Info($"Finished: '{selection.Script.Title}'", $"Waitnig '{Settings.Delay}'");
-
-				await Task.Delay(TimeSpan.FromSeconds(Settings.Delay), cts.Token);
-				if (Settings.CloseAfterRun) await browser.Closee().WaitAsync(cts.Token);
-			}, cts.Token);
-
-			// TODO:
-			// if (EditableSettings.EachProfile) foreach (var selection in selected) {
-			// 		foreach (var profile in profiles) {
-			// 			var browser = await ExecuteScriptAsync(selection, profile);
-			// 			await BrowserShutdown(browser);
-			// 		}
-			// 	}
-			// else foreach (var profile in profiles) {
-			// 		IBrowserInstance? browser = null;
-			// 		foreach (var selection in EditableSettings.AsQue
-			// 		? [selected.ElementAt(selectionIndex++ >= selected.Count() ? selectionIndex = 0 : selectionIndex)] : selected) {
-			// 			browser = await ExecuteScriptAsync(selection, profile);
-			// 			if (EditableSettings.AsQue) await BrowserShutdown(browser);
-			// 		}
-			// 		if (!EditableSettings.AsQue) await BrowserShutdown(browser);
-			// 	}
-			// foreach (var profile in profiles) {
-			// 	if (++selectionIndex >= selected.Count()) selectionIndex = 0;
-			// 	var selection = selected.ElementAt(selectionIndex);
-			// 	await ExecuteScriptAsync(selection, profile);
-			// }
-		} finally {
-			Stoperer();
-			// Settings.Start.Terms = presearch;
-			// OnPropertyChanged(nameof(Settings));
-		}
-	}
-
-	private void Stoperer() {
-		cts?.Cancel();
-		cts?.Dispose();
-		cts = null;
-		Running = false;
 	}
 }
 
 public partial class ActorsViewModel : ViewModelObjectBase {
-	public static IEnumerable<BrowserOption> BrowserOptions { get; } = [new(SystemBrowserType.Chrome), new(SystemBrowserType.Brave)];
+	public static IEnumerable<BrowserOption> BrowserOptions { get; } = [new(BrowserType.Chrome), new(BrowserType.Brave)];
 
 	[ObservableProperty] ActorViewModel selectedActor;
 	public ObservableCollection<ActorViewModel> Actors { get; } = [new(new Reddit())];
@@ -241,10 +215,10 @@ public partial class ActorsViewModel : ViewModelObjectBase {
 	}
 
 	private async Task LoadActorStates() {
-		foreach (var filePath in Directory.EnumerateFiles(FilePaths.Roboto, "*.json")) {
+		foreach (var filePath in Directory.EnumerateFiles(Actorz.CacheDir, "*.json")) {
 			try {
 				var jsonContent = await File.ReadAllTextAsync(filePath);
-				var loadedState = JSON.Deserialize<State>(jsonContent, JSON.EnumConverter);
+				var loadedState = JSON.Deserialize<Actorz.State>(jsonContent, JSON.EnumConverter);
 				ArgumentNullException.ThrowIfNull(loadedState, nameof(loadedState));
 
 				var vm = loadedState.Options.Settings.Start.Feature.ToLowerInvariant() switch {
