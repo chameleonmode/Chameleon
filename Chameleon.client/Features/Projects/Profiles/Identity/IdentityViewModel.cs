@@ -9,6 +9,7 @@ using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.lib.Api.Dto;
+using System.Diagnostics;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity;
 
