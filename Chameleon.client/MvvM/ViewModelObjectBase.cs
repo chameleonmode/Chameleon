@@ -19,7 +19,7 @@ public partial class ViewModelObjectBase : ObservableObjectBase {
 	public virtual void InitializeObject() { }
 
 	[RelayCommand]
-	async Task Copy(object param) {
+	public async Task Copy(object param) {
 		await CopyPasta.Copy(param as string ?? "");
 	}
 }

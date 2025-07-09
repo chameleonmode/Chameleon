@@ -226,10 +226,7 @@
 				<ui:SettingsExpanderItem Content="Exception Log">
 					<ui:SettingsExpanderItem.Footer>
 						<StackPanel Orientation="Horizontal" Spacing="8">
-							<Button Content="Copy to Clipboard"
-									Command="{Binding AsyncCfVCommand}"
-									CommandParameter="CopyLogToClipboard"
-									MinWidth="120" />
+						<Button Content="Copy" Classes="async icon clear text" />
 							<Button Content="Open Log File"
 									Command="{Binding AsyncCfVCommand}"
 									CommandParameter="OpenLogFile"

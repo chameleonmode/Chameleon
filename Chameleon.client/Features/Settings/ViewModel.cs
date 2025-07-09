@@ -95,8 +95,8 @@ public partial class ViewModel : ViewModelObjectBase {
 
 	public override void InitializeObject() {
 		base.InitializeObject();
-		
-		AsyncCommandMap[nameof(CopyLogToClipboard)] = CopyLogToClipboard;
+
+		AsyncCommandMap[nameof(Copy)] = async () => await Copy(EX.LogContent.ThrowIfNullOrEmpty());
 		AsyncCommandMap[nameof(OpenLogFile)] = () => Task.Run(OpenLogFile);
 	}
 
@@ -119,35 +119,12 @@ public partial class ViewModel : ViewModelObjectBase {
 		Environment.Exit(0);
 	}
 
-	public async Task CopyLogToClipboard() {
-		var logContent = EX.GetLogContent();
-		if (!string.IsNullOrEmpty(logContent)) {
-			if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-				var clipboard = desktop.MainWindow?.Clipboard;
-				if (clipboard != null) {
-					await clipboard.SetTextAsync(logContent);
-					Toaster.Success("Exception log copied to clipboard successfully");
-				} else {
-					Toaster.Error("Failed to access clipboard");
-				}
-			}
-		} else {
-			Toaster.Info("No exception log content available to copy");
-		}
-	}
-
 	public void OpenLogFile() {
-		var logPath = EX.GetLogFilePath();
-		if (File.Exists(logPath)) {
-			var startInfo = new ProcessStartInfo {
-				FileName = logPath,
-				UseShellExecute = true
-			};
-			_ = Process.Start(startInfo);
-			Toaster.Success("Exception log file opened successfully");
-		} else {
-			Toaster.Info("No exception log file found yet");
-		}
+		var startInfo = new ProcessStartInfo {
+			FileName = EX.LogFile,
+			UseShellExecute = true
+		};
+		_ = Process.Start(startInfo);
 	}
 
 	partial void OnUseCustomAccentColorChanged(bool oldValue, bool newValue) {
