@@ -24,6 +24,7 @@ using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Abs.Platformatic;
 using ExCSS;
+using Microsoft.AspNetCore.Http.Metadata;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public static class Actorz {
@@ -131,7 +132,7 @@ public partial class ActorViewModel : Automatior {
 				OnPropertyChanged(nameof(Settings));
 				int selectionIndex = 0, termsIndex = 0, urlsIndex = 0;
 				await profiles.TryEach(async profile => {
-					cts.Token.ThrowIfCancellationRequested();
+					if (cts.IsCancellationRequested) return; // Check for cancellation before proceeding
 					// Safer array access with proper bounds checking
 					var selection = selected[selectionIndex++ % selected.Length];
 					string[] urlser = urls.Length > 0 ? [urls[urlsIndex++ % urls.Length]] : [];
@@ -150,13 +151,13 @@ public partial class ActorViewModel : Automatior {
 						Opts = new Opts(
 							AI, Args.ToDictionary(selected), Settings.ToRecord(urlser, termer, selection, new(0, 0))
 						)
-					}, cts.Token).WaitAsync(cts.Token);
+					}, cts.Token);
 
 					Toaster.Info($"Finished: '{selection.Script.Title}'", $"Waiting '{Settings.Delay}'");
 					await Task.Delay(TimeSpan.FromSeconds(Settings.Delay), cts.Token);
 					
 					if (Settings.CloseAfterRun) await browser.Closee().WaitAsync(cts.Token);
-				}, cts.Token);
+				});
 			} finally {
 				onStop();
 			}
