@@ -67,38 +67,44 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 		if (IsSaving) return; // Prevent multiple concurrent saves
 		try {
 			IsSaving = true;
-			var saveAllTasks = Task.WhenAll([
-				LoginsVM!.SaveAll().RunInBackground(),
-				PersonsVM!.SaveAll().RunInBackground(),
-				AddressesVM!.SaveAll().RunInBackground(),
-				BusinessesVM!.SaveAll().RunInBackground()
-			]);
+			
+			try {
+				var saveAllTasks = Task.WhenAll([
+					LoginsVM!.SaveAll().RunInBackground(),
+					PersonsVM!.SaveAll().RunInBackground(),
+					AddressesVM!.SaveAll().RunInBackground(),
+					BusinessesVM!.SaveAll().RunInBackground()
+				]);
 
-			if (UserProfile!.Validator?.IsValid == false) {
-				Toaster.Info("Profile validation failed. Some changes may not be saved.");
-			}
+				if (UserProfile!.Validator?.IsValid == false) {
+					Toaster.Info("Profile validation failed. Some changes may not be saved.");
+				}
 
-			var res = await UserProfilesRepo.Instance.Put(UserProfile!.ToDto());
+				var res = await UserProfilesRepo.Instance.Put(UserProfile!.ToDto());
 
-			await saveAllTasks;
+				await saveAllTasks;
 
-			if (res != null) {
-				_ = TagsRepo.Instance
-				.SaveTagsAsync(TagItemType.Profile, UserProfile.Id.ToString(), UserProfile.Tags.ToTagsList())
-				.RunInBackground();
+				if (res != null) {
+					_ = TagsRepo.Instance
+					.SaveTagsAsync(TagItemType.Profile, UserProfile.Id.ToString(), UserProfile.Tags.ToTagsList())
+					.RunInBackground();
 
-				UserProfile.Tags = await TagsRepo.Instance
-				.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync()
-				.RunInBackgroundWithResult();
+					UserProfile.Tags = await TagsRepo.Instance
+					.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync()
+					.RunInBackgroundWithResult();
 
-				PersonsVM.UpdateFilter();
-				BusinessesVM.UpdateFilter();
-				AddressesVM.UpdateFilter();
-				LoginsVM.UpdateFilter();
+					PersonsVM.UpdateFilter();
+					BusinessesVM.UpdateFilter();
+					AddressesVM.UpdateFilter();
+					LoginsVM.UpdateFilter();
 
-				Toaster.Success($"Update was successful.");
-			} else {
-				Toaster.Error("Failed to update profile. Server returned null response.");
+					Toaster.Success($"Update was successful.");
+				} else {
+					Toaster.Error("Failed to update profile. Server returned null response.");
+				}
+			} catch (Exception ex) {
+				Debug.WriteLine($"Exception occurred in SaveChanges: {ex}");
+				Toaster.Error("Save failed", $"An error occurred while saving the profile: {ex.Message}");
 			}
 		} finally {
 			ShowValidationErrors();
