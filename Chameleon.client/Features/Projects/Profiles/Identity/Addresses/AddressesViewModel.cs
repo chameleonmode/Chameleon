@@ -9,7 +9,7 @@ using ReactiveValidation.Extensions;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.Addresses;
 
-public partial class UPAddressViewModel(UPAddressDto dto) : MappableViewModelBase<UPAddressDto>(dto) {
+public partial class UPAddressViewModel(UPAddressDto dto) : MVM<UPAddressDto>(dto) {
 	[ObservableProperty] int? countryId = dto.CountryId;
 	[ObservableProperty] string? addressLine1 = dto.AddressLine1;
 	[ObservableProperty] string? addressLine2 = dto.AddressLine2;

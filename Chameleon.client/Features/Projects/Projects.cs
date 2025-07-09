@@ -30,7 +30,7 @@ public abstract partial class Projector(string? title = null) : Profilearee(titl
 	}
 }
 
-public partial class ViewModel : ViewModelObjectBase {
+public partial class ViewModel : OOVM {
 	public bool IsCreateProfileBtnVisible { get; } = Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CanCreateProfiles == true;
 
 	ViewModel() : base("") {

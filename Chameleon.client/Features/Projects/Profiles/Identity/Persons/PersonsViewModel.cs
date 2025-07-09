@@ -8,7 +8,7 @@ using Chameleon.client.MvvM;
 using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.Persons;
-public partial class UPPersonViewModel(UPPersonDto dto) : MappableViewModelBase<UPPersonDto>(dto) {
+public partial class UPPersonViewModel(UPPersonDto dto) : MVM<UPPersonDto>(dto) {
 	[ObservableProperty] string? firstName = dto.FirstName;
 	[ObservableProperty] string? lastName = dto.LastName;
 	[ObservableProperty] string? middleName = dto.MiddleName;

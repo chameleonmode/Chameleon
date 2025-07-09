@@ -12,9 +12,9 @@ using System.Reactive.Subjects;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
 
-public abstract partial class IdentiyElementVM<TDto, TViewModel> : ViewModelObjectBase
+public abstract partial class IdentiyElementVM<TDto, TViewModel> : OOVM
 		where TDto : UP, new()
-		where TViewModel : MappableViewModelBase<TDto> {
+		where TViewModel : MVM<TDto> {
 	readonly BehaviorSubject<Func<UP, bool>> filter;
 	[ObservableProperty] UserProfileIdentityVM userProfile;
 	[ObservableProperty] bool isLoading = true;

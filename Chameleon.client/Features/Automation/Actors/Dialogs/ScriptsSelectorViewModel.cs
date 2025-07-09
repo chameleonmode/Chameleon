@@ -4,7 +4,7 @@ using Chameleon.lib.Helpers;
 
 namespace Chameleon.client.Features.Automation.Actors.Dialogs;
 
-public partial class ScriptsSelectorViewModel(List<Selection> selections) : ViewModelObjectBase("Select Automations") {
+public partial class ScriptsSelectorViewModel(List<Selection> selections) : OOVM("Select Automations") {
 	public List<Selection> AvailableSelections { get; } = selections;
 
 	public IEnumerable<Selection> SelectedScripts => AvailableSelections.Where(s => s.Selected);

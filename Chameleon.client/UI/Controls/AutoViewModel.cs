@@ -10,7 +10,7 @@ namespace Chameleon.client.UI.Controls;
 public class AutoViewModelInitControl : UserControl {
 	protected override void OnLoaded(RoutedEventArgs e) {
 		base.OnLoaded(e);
-		_ = (DataContext as IInitializer)?.InitializeAsync(e);
+		_ = (DataContext as IInitializer)?.Initialize(e);
 	}
 }
 

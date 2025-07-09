@@ -7,7 +7,7 @@ using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles.Dialogs;
 
-public partial class UserProfileSidePanelViewModel : ViewModelObjectBase {
+public partial class UserProfileSidePanelViewModel : OOVM {
 	private readonly ReadOnlyObservableCollection<UPAddressDto> addresses;
 	private readonly ReadOnlyObservableCollection<UPLoginDto> logins;
 	private readonly ReadOnlyObservableCollection<UPPersonDto> persons;

@@ -202,7 +202,7 @@ public partial class ActorViewModel : Automatior {
 	}
 }
 
-public partial class ActorsViewModel : ViewModelObjectBase {
+public partial class ActorsViewModel : OOVM {
 	public static IEnumerable<BrowserOption> BrowserOptions { get; } = [new(BrowserType.Chrome), new(BrowserType.Brave)];
 
 	[ObservableProperty] ActorViewModel selectedActor;

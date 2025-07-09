@@ -26,7 +26,7 @@ public partial class TagViewModel(Action<TagViewModel> OnSelectChanged) : Observ
 	}
 }
 
-public partial class ViewModel : ViewModelObjectBase {
+public partial class ViewModel : OOVM {
 	[ObservableProperty] bool isSyncChangesBtnVisible = true;
 	[ObservableProperty] bool hasCookiesToSync = false;
 	[ObservableProperty] bool isFavouriteSelected = true;

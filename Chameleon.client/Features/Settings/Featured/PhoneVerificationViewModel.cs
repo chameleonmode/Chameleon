@@ -26,7 +26,7 @@ public interface IPVApiModel {
 	IList<RService>? Apps { get; set; }
 	RService? SelectedApp { get; set; }
 }
-public partial class PVApiModel : ViewModelObjectBase, IPVApiModel {
+public partial class PVApiModel : OOVM, IPVApiModel {
 	private readonly IPVAInstance _pnapinstance;
 
 	[ObservableProperty]
@@ -143,7 +143,7 @@ public partial class PVApiModel : ViewModelObjectBase, IPVApiModel {
 	}
 }
 
-public partial class PhoneVerificationViewModel() : ViewModelObjectBase("Phone Verification") {
+public partial class PhoneVerificationViewModel() : OOVM("Phone Verification") {
 	public AvaloniaList<IPVApiModel> PVApis { get; set; } =
 	[
 			new PVApiModel(CodesVerifyAPI.Instance){ HasCancel = false},

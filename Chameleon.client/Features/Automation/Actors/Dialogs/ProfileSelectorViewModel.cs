@@ -138,7 +138,7 @@ public partial class GroupedProfiles : ObservableObject {
 	}
 }
 
-public partial class ProfileSelectorViewModel : ViewModelObjectBase, IDisposable {
+public partial class ProfileSelectorViewModel : OOVM, IDisposable {
 	private readonly IDisposable filterSubscription;
 	private readonly HashSet<string?> initiallySelectedProfileIds = [];
 

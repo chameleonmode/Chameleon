@@ -9,7 +9,7 @@ using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.Businesses;
 
-public partial class UPBusinessViewModel(UPBusinessDto dto) : MappableViewModelBase<UPBusinessDto>(dto) {
+public partial class UPBusinessViewModel(UPBusinessDto dto) : MVM<UPBusinessDto>(dto) {
 	[ObservableProperty] string? companyName = dto.CompanyName;
 	[ObservableProperty] string? department = dto.Department;
 	[ObservableProperty] string? phoneNumber = dto.PhoneNumber;

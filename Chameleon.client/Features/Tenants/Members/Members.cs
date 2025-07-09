@@ -16,7 +16,7 @@ using Chameleon.lib.WebBrowser;
 
 namespace Chameleon.client.Features.Tenants.Members;
 
-public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisProfileDto> {
+public partial class AssistantUsersProfile : OODTOVM<AssisProfileDto> {
 	public AssistantUsersProfile(AssisProfileDto dto, AssistantUser user) : base(dto) {
 		AsyncCommandMap["Unshare"] = async () => {
 			if (!await MessageBox.Show("Unshare Profile", $"Are you sure you want to unshare {Dto.ProfileName}?")) return;
@@ -42,7 +42,7 @@ public partial class AssistantUsersProfile : ObservableDtoViewModelBase<AssisPro
 		AsyncCommandMap["SyncCookiesFirefox"] = async () => await onSendCookies(BrowserType.Firefox);
 	}
 }
-public partial class AssistantUsersFolder : DtoViewModelBase<AssisShareFolderDto> {
+public partial class AssistantUsersFolder : DTOVM<AssisShareFolderDto> {
 	public AssistantUsersFolder(AssisShareFolderDto dto, AssistantUser user) : base(dto) {
 		AsyncCommandMap["Unshare"] = async () => {
 			if (!await MessageBox.Show("Unshare Folder", $"Are you sure you want to unshare {Dto.FolderName}? This will not affect other folders.")) return;
@@ -54,7 +54,7 @@ public partial class AssistantUsersFolder : DtoViewModelBase<AssisShareFolderDto
 	}
 }
 
-public partial class AssistantUser : DtoViewModelBase<AssistDto> {
+public partial class AssistantUser : DTOVM<AssistDto> {
 	[ObservableProperty] bool active;
 
 	public ReadOnlyObservableCollection<ObsProfile> All { get; }
@@ -141,7 +141,7 @@ public partial class AssistantUser : DtoViewModelBase<AssistDto> {
 		Folderz.AddRange(folders.Select(f => new AssistantUsersFolder(f, this)));
 	}
 }
-public partial class TenantMembersViewModel : ViewModelObjectBase {
+public partial class TenantMembersViewModel : OOVM {
 	[ObservableProperty] int totalCount;
 
 	public ReadOnlyObservableCollection<AssistantUser> Assistantz { get; }

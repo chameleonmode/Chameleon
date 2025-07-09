@@ -159,7 +159,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 	}
 
 	private async void OnNavigatingFrom(object? sender, NavigatingCancelEventArgs e) {
-		if (DataContext is ViewModelObjectBase pageViewModel) {
+		if (DataContext is OOVM pageViewModel) {
 			await pageViewModel.OnNavigatingFrom(new { sender, e });
 		}
 		var animate = AnimateVisual ?? _previewImageHost;
@@ -174,7 +174,7 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 	}
 
 	private async void OnNavigatedTo(object? sender, NavigationEventArgs e) {
-		if (DataContext is ViewModelObjectBase pageViewModel) {
+		if (DataContext is OOVM pageViewModel) {
 			await pageViewModel.OnNavigatedTo(e.Parameter);
 			ControlName ??= pageViewModel.Title ?? "xxx";
 			ShowHeaderRegion = pageViewModel.ShowHeaderRegion;

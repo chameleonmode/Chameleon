@@ -9,7 +9,7 @@ public record PaginatorButtonViewModel(int Index, bool IsEllipsis = false) {
 	public string Text { get; } = IsEllipsis ? "..." : (Index + 1).ToString();
 }
 
-public partial class PaginatorViewModel : ViewModelObjectBase {
+public partial class PaginatorViewModel : OOVM {
 	private readonly Action<PaginatorViewModel> changePageIndex;
 	[ObservableProperty] int pageCount;
 	[ObservableProperty] int totalCount;

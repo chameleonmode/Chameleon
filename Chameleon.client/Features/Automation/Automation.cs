@@ -3,7 +3,7 @@ using Chameleon.lib.WebBrowser;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.client.Features.Automation;
-public abstract partial class Automatior : ViewModelObjectBase {
+public abstract partial class Automatior : OOVM {
 	[ObservableProperty] BrowserOption selectedBrowserOption;
 	public IEnumerable<BrowserOption> BrowserOptions { get; } = [
 		new (BrowserType.Chrome),
@@ -14,7 +14,7 @@ public abstract partial class Automatior : ViewModelObjectBase {
 		SelectedBrowserOption = BrowserOptions.First();
 	}
 }
-public class ViewModel : ViewModelObjectBase {
+public class ViewModel : OOVM {
   public override Task OnNavigatedTo(object? param) {
     return base.OnNavigatedTo(param);
   } 

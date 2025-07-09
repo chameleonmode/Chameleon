@@ -19,7 +19,7 @@ using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Settings.Featured;
 
-public partial class ObsProxySetting : ViewModelObjectBase {
+public partial class ObsProxySetting : OOVM {
 	[ObservableProperty] string? host;
 	[ObservableProperty] int port = 80;
 	[ObservableProperty] string? userName;
@@ -48,11 +48,11 @@ public partial class ObsProxySetting : ViewModelObjectBase {
 	}
 }
 
-public partial class ObsProxyAccess : ViewModelObjectBase {
+public partial class ObsProxyAccess : OOVM {
 	[ObservableProperty] string? url;
 }
 
-public partial class UserProxySettingsViewModel : ViewModelObjectBase {
+public partial class UserProxySettingsViewModel : OOVM {
 	public static SortExpressionComparer<ObsProxySetting> AscendingComparer => SortExpressionComparer<ObsProxySetting>.Descending(p => p.ObsProfile.IsSelected).ThenByAscending(p => p.ObsProfile.Title!);
 	public static SortExpressionComparer<ObsProxySetting> DescendingComparer => SortExpressionComparer<ObsProxySetting>.Descending(p => p.ObsProfile.Title!);
 

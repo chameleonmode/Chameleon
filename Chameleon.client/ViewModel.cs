@@ -23,7 +23,7 @@ using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client;
 
-public partial class ViewModel : ObservableObjectBase {
+public partial class ViewModel : OO {
   [ObservableProperty] MainAppSearchItem? selectedSearchTerm;
   [ObservableProperty] bool isSplashVisible = true;
   [ObservableProperty] bool infoBarOpen;
@@ -85,7 +85,7 @@ public partial class ViewModel : ObservableObjectBase {
   partial void OnSelectedSearchTermChanged(MainAppSearchItem? oldValue, MainAppSearchItem? newValue) {
     if (newValue is null) return;
 
-    if (newValue.ViewModel is ViewModelObjectBase nfs)
+    if (newValue.ViewModel is OOVM nfs)
       nfs.Navigated = false;
 
     Navigator.NavigateToType(typeof(Features.Projects.View), newValue.ViewModel);

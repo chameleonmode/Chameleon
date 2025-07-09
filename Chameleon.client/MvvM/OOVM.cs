@@ -3,16 +3,20 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.client.MvvM;
-public partial class ViewModelObjectBase : ObservableObjectBase {
+[AttributeUsage(AttributeTargets.Class)]
+public class ViewModelAttribute(Type type) : Attribute {
+	public Type Type { get; private set; } = type;
+}
+public partial class OOVM : OO {
 
 	[ObservableProperty] bool showHeaderRegion = true;
 	public bool Navigated { get; set; }
 
-	public ViewModelObjectBase() {
+	public OOVM() {
 		InitializeObject();
 	}
 
-	public ViewModelObjectBase(string? title) : this() {
+	public OOVM(string? title) : this() {
 		Title = title;
 	}
 

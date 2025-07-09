@@ -21,7 +21,7 @@ using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
-public partial class UPFolderViewModel : ObservableObjectBase {
+public partial class UPFolderViewModel : OO {
 	public UPFolderViewModel(UPFolderDto folder) {
 		Id = folder.id;
 		Title = folder.title;

@@ -5,7 +5,7 @@ using Chameleon.lib.Util;
 
 namespace Chameleon.client.Features.Projects.Profiles.Dialogs;
 
-public class SnapCracklePopViewModel : ViewModelObjectBase {
+public class SnapCracklePopViewModel : OOVM {
 	SnapCracklePopViewModel() { }
 	public ObservableCollection<ObsProfile> RunningList { get; set; } = [];
 	public static void Open(ObsProfile obs) {

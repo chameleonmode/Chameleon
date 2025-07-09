@@ -9,7 +9,7 @@ using DynamicData.Binding;
 
 namespace Chameleon.client.Features.Projects;
 
-public abstract partial class Folderer : ViewModelObjectBase {
+public abstract partial class Folderer : OOVM {
 	public static SortExpressionComparer<ObsFolder> AscendingComparer => SortExpressionComparer<ObsFolder>.Ascending(p => p.Dto!.title!);
 	public static SortExpressionComparer<ObsFolder> DescendingComparer => SortExpressionComparer<ObsFolder>.Descending(p => p.Dto!.title!);
 	public static BehaviorSubject<IComparer<ObsFolder>> CompareObservable { get; } = new(AscendingComparer);

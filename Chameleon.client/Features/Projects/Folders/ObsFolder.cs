@@ -9,7 +9,7 @@ using Chameleon.lib.Util;
 
 namespace Chameleon.client.Features.Projects.Folders;
 
-public partial class ObsFolder : ObservableDtoViewModelBase<UPFolderDto> {
+public partial class ObsFolder : OODTOVM<UPFolderDto> {
 	[ObservableProperty] int profilesCount;
 	[ObservableProperty] bool isRenamed;
 	[ObservableProperty] bool isActionOptionsVisible;

@@ -22,7 +22,7 @@ using System.Text.Json;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
-public partial class ObsProfile : ObservableDtoViewModelBase<UserProfileDto>, IProfileUIContextAware {
+public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAware {
 	[ObservableProperty] string isChromeRunning = "False";
 	[ObservableProperty] string isBraveRunning = "False";
 	[ObservableProperty] string isFFRunning = "False";

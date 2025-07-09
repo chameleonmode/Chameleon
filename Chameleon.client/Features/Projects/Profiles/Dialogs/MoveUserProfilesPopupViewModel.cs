@@ -12,7 +12,7 @@ using Chameleon.lib.Helpers;
 
 namespace Chameleon.client.Features.Projects.Profiles.Dialogs;
 
-public partial class MoveUserProfilesPopupViewModel : ViewModelObjectBase {
+public partial class MoveUserProfilesPopupViewModel : OOVM {
 	[ObservableProperty] ObsFolder selectedFolder;
 	[ObservableProperty] bool listIsVisible = true;
 

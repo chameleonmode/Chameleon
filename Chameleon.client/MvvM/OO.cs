@@ -10,9 +10,9 @@ namespace Chameleon.client.MvvM;
 
 public interface IInitializer {
 	TaskCompletionSource<bool> LoadedTCS { get; }
-	Task InitializeAsync(object? param = null);
+	Task Initialize(object? param = null);
 }
-public abstract partial class ObservableObjectBase : ObservableObject, IInitializer, IValidatableObject {
+public abstract partial class OO : ObservableObject, IInitializer, IValidatableObject {
 	[ObservableProperty] string? title;
 	[ObservableProperty] string? tags;
 	[ObservableProperty] bool loaded;
@@ -26,7 +26,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 	public IAsyncRelayCommand InitializeAsyncCommand { get; }
 	public TaskCompletionSource<bool> LoadedTCS { get; } = new();
 
-	public ObservableObjectBase() {
+	public OO() {
 		InitializeAsyncCommand = new AsyncRelayCommand<object>(
 				async (p) => {
 					_ = Interlocked.Increment(ref _isBusy);
@@ -48,8 +48,8 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 	public virtual Task OnNavigatedTo(object? param) => LoadedTCS.Task;
 	public virtual Task OnNavigatingFrom(object param) => Task.CompletedTask;
   
-	public Task InvokeInitializeAsyncCommand(object? p = null) => InitializeAsyncCommand.ExecuteAsync(p);
-	public Task InitializeAsync(object? param) => InvokeInitializeAsyncCommand(param);
+	public Task InvokeInitialize(object? p = null) => InitializeAsyncCommand.ExecuteAsync(p);
+	public Task Initialize(object? param) => InvokeInitialize(param);
 
 	[RelayCommand]
 	public void CfV(string what) {
@@ -90,7 +90,7 @@ public abstract partial class ObservableObjectBase : ObservableObject, IInitiali
 	}
 
 	protected virtual IObjectValidator GetValidator() {
-		var builder = new ValidationBuilder<ObservableObjectBase>();
+		var builder = new ValidationBuilder<OO>();
 		return builder.Build(this);
 	}
 

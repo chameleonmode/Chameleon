@@ -10,7 +10,7 @@ using Chameleon.lib.Api.Repos;
 using DynamicData;
 namespace Chameleon.client.Features.Tenants.Members.Dialogs;
 
-public partial class InviteUserOrAddProfilesViewModel : ViewModelObjectBase {
+public partial class InviteUserOrAddProfilesViewModel : OOVM {
 	[ObservableProperty] string? assistantName;
 	[ObservableProperty] string? assistantEmail;
 	[ObservableProperty] bool showUserInfo;

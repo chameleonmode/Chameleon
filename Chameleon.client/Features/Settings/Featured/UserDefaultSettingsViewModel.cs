@@ -12,7 +12,7 @@ using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Settings.Featured;
 
-public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action OnSelectedChanged, Action<BrowserSettingDto> OnSettingsDeleted) : ViewModelObjectBase {
+public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action OnSelectedChanged, Action<BrowserSettingDto> OnSettingsDeleted) : OOVM {
 	[ObservableProperty] string defaultUrl = bsd.DefaultUrl ?? "https://example.com/";
 	[ObservableProperty] bool isChecked;
 
@@ -36,7 +36,7 @@ public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action O
 }
 
 public partial class UserDefaultSettingsViewModel
-			 : ViewModelObjectBase {
+			 : OOVM {
 	[ObservableProperty]
 	private EmulationOptions defaultEmulationOptions = IoC.GetJsonValue<EmulationOptions>(nameof(EmulationOptions)) ?? new();
 

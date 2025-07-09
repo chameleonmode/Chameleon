@@ -12,7 +12,7 @@ using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity;
 
-public partial class IdentityViewModel : ViewModelObjectBase {
+public partial class IdentityViewModel : OOVM {
 	[ObservableProperty] bool isSaving;
 	[ObservableProperty] UserProfileIdentityVM? userProfile;
 	[ObservableProperty] ObsProfile? profileVM;

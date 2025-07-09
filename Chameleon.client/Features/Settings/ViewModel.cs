@@ -20,7 +20,7 @@ namespace Chameleon.client.Features.Settings;
 
 public record AppSettings(string? CurrentAppTheme, string? CustomAccentColor, bool UseCustomAccentColor);
 
-public partial class ViewModel : ViewModelObjectBase {
+public partial class ViewModel : OOVM {
 	private const string _system = "System";
 	private const string _dark = "Dark";
 	private const string _light = "Light";

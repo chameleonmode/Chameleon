@@ -6,7 +6,7 @@ using ReactiveValidation.Extensions;
 using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.ViewModels;
-public partial class UserProfileIdentityVM : ObservableObjectBase {
+public partial class UserProfileIdentityVM : OO {
 
 	public UserProfileIdentityVM(UserProfileDto profile) {
 		Id = profile.id;
@@ -71,7 +71,7 @@ public partial class UserProfileIdentityVM : ObservableObjectBase {
 	}
 }
 
-public partial class ProxyViewModel : ObservableObjectBase {
+public partial class ProxyViewModel : OO {
 
 	public ProxyViewModel(ProxDto proxy) {
 		Id = proxy.id;
@@ -135,7 +135,7 @@ public partial class ProxyViewModel : ObservableObjectBase {
 	}
 }
 
-public partial class WebrowserViewModel : ObservableObjectBase {
+public partial class WebrowserViewModel : OO {
 	public WebrowserViewModel(WebrowserDto webrowser) {
 		WebRTC = webrowser.webRTC;
 		WebGL = webrowser.webGL;

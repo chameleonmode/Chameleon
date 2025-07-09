@@ -8,7 +8,7 @@ using Chameleon.lib.Helpers;
 
 namespace Chameleon.client.Features.Projects.Profiles.Dialogs;
 
-public partial class AddUserProfilesPupViewModel : ViewModelObjectBase {
+public partial class AddUserProfilesPupViewModel : OOVM {
 	public ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
 	public ObservableCollection<ObsProfile> SelectedProfiles { get; init; } = [];
 

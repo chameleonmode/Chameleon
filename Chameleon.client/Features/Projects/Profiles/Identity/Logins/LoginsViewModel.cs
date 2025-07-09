@@ -7,7 +7,7 @@ using ReactiveValidation;
 using ReactiveValidation.Extensions;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity.Logins;
-public partial class UPLoginViewModel(UPLoginDto dto) : MappableViewModelBase<UPLoginDto>(dto) {
+public partial class UPLoginViewModel(UPLoginDto dto) : MVM<UPLoginDto>(dto) {
 	[ObservableProperty] string? webSite = dto.WebSite;
 	[ObservableProperty] string? email = dto.Email;
 	[ObservableProperty] string? userName = dto.UserName;

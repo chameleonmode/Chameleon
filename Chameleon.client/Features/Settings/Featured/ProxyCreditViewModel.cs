@@ -13,7 +13,7 @@ using Chameleon.lib.Api.Dto;
 namespace Chameleon.client.Features.Settings.Featured;
 
 public record CreditPlan(decimal Amount, string Size, bool IsChecked = false);
-public partial class ProxyCreditViewModel : ViewModelObjectBase {
+public partial class ProxyCreditViewModel : OOVM {
 	[ObservableProperty]
 	private CreditPlan selectedCreditPlan;
 	[ObservableProperty]

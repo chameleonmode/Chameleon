@@ -5,17 +5,17 @@ using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.MvvM;
 
-public abstract class DtoViewModelBase<T> : ViewModelObjectBase where T : Dto {
+public abstract class DTOVM<T> : OOVM where T : Dto {
 	public T Dto { get; set; }
-	public DtoViewModelBase(T dto) {
+	public DTOVM(T dto) {
 		Dto = dto;
 		Title = dto.title;
 		Tags = dto.Tags;
 	}
 }
 
-public abstract partial class ObservableDtoViewModelBase<T>(T dto, Action<ObservableDtoViewModelBase<T>>? onSelectedChanged = default) : DtoViewModelBase<T>(dto) where T : Dto {
-	public event Action<ObservableDtoViewModelBase<T>>? OnSelectedChanged = onSelectedChanged;
+public abstract partial class OODTOVM<T>(T dto, Action<OODTOVM<T>>? onSelectedChanged = default) : DTOVM<T>(dto) where T : Dto {
+	public event Action<OODTOVM<T>>? OnSelectedChanged = onSelectedChanged;
 	[ObservableProperty] bool isSelected;
 	[ObservableProperty] bool active;
 	[ObservableProperty] bool isActionOptionsVisible = true;
@@ -40,7 +40,7 @@ public abstract partial class ObservableDtoViewModelBase<T>(T dto, Action<Observ
 	public virtual void OnAnyIsSelectedChanged(bool value) { }
 }
 
-public abstract class MappableViewModelBase<T>(T dto) : DtoViewModelBase<T>(dto) where T : Dto {
+public abstract class MVM<T>(T dto) : DTOVM<T>(dto) where T : Dto {
   public virtual T ToDto() {
     var viewModelType = GetType();
     var dtoType = typeof(T);

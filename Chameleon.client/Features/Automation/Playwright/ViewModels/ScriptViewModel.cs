@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Chameleon.client.Features.Automation.Playwright.ViewModels;
-public partial class ScriptViewModel(Arguments args, List<ScriptParametersValues> saved) : ViewModelObjectBase(args.Description?.Title) {
+public partial class ScriptViewModel(Arguments args, List<ScriptParametersValues> saved) : OOVM(args.Description?.Title) {
   public Action<string>? OnOpenEdit;
 
   [ObservableProperty]
