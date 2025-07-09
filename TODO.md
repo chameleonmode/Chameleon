@@ -22,3 +22,6 @@ foreach (var profile in profiles) {
 	await ExecuteScriptAsync(selection, profile);
 }
 ```
+
+Chameleon.client/Features/Projects/Profiles/Identity/IdentityView.axaml
+[nitpick] Using a magic string for the command parameter can lead to typos; consider defining a named constant or enum for Save to improve maintainability.
