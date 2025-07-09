@@ -131,6 +131,7 @@ public partial class ActorViewModel : Automatior {
 				OnPropertyChanged(nameof(Settings));
 				int selectionIndex = 0, termsIndex = 0, urlsIndex = 0;
 				await profiles.TryEach(async profile => {
+					cts.Token.ThrowIfCancellationRequested();
 					// Safer array access with proper bounds checking
 					var selection = selected[selectionIndex++ % selected.Length];
 					string[] urlser = urls.Length > 0 ? [urls[urlsIndex++ % urls.Length]] : [];
@@ -138,8 +139,8 @@ public partial class ActorViewModel : Automatior {
 					CurrentScriptTitle = selection.Script.Title + "...";
 					Toaster.Info(
 						$"Starting: '{CurrentScriptTitle}'",
-						$"Using URL: {string.Join(", ", urlser)}",
-						$"Using term: {string.Join(", ", termer)}"
+						$"URL: {string.Join(", ", urlser)}",
+						$"Search: {string.Join(", ", termer)}"
 					);
 
 					var browser = await profile.OpenBrowser(SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
@@ -155,7 +156,7 @@ public partial class ActorViewModel : Automatior {
 					await Task.Delay(TimeSpan.FromSeconds(Settings.Delay), cts.Token);
 					
 					if (Settings.CloseAfterRun) await browser.Closee().WaitAsync(cts.Token);
-				});
+				}, cts.Token);
 			} finally {
 				onStop();
 			}
