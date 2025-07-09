@@ -103,6 +103,7 @@ public partial class IdentityViewModel : ViewModelObjectBase {
 					Toaster.Error("Failed to update profile. Server returned null response.");
 				}
 			} catch (Exception ex) {
+				Debug.WriteLine($"Exception occurred in SaveChanges: {ex}");
 				Toaster.Error("Save failed", $"An error occurred while saving the profile: {ex.Message}");
 			}
 		} finally {
