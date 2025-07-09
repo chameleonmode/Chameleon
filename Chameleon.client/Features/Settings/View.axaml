@@ -223,6 +223,17 @@
 						<SelectableTextBlock Text="https://help.chameleonmode.com" />
 					</ui:SettingsExpanderItem.Footer>
 				</ui:SettingsExpanderItem>
+				<ui:SettingsExpanderItem Content="Exception Log">
+					<ui:SettingsExpanderItem.Footer>
+						<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Content="Copy" Classes="async icon clear text" />
+							<Button Content="Open Log File"
+									Command="{Binding AsyncCfVCommand}"
+									CommandParameter="OpenLogFile"
+									MinWidth="120" />
+						</StackPanel>
+					</ui:SettingsExpanderItem.Footer>
+				</ui:SettingsExpanderItem>
 				<ui:SettingsExpanderItem>
 					<StackPanel Spacing="4">
 						<TextBlock Text="License" />
