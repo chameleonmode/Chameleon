@@ -11,20 +11,19 @@ using Chameleon.lib.WebBrowser;
 using Chameleon.lib.Api.Dto;
 
 namespace Chameleon.client.Features.Settings.Featured;
+
 public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action OnSelectedChanged, Action<BrowserSettingDto> OnSettingsDeleted) : ViewModelObjectBase {
 	[ObservableProperty]
 	public string? defaultUrl = bsd.DefaultUrl;
 	[ObservableProperty]
 	private bool isChecked;
 
-	partial void OnIsCheckedChanged(bool value)
-	{
+	partial void OnIsCheckedChanged(bool value) {
 		OnSelectedChanged();
 	}
 
 	[RelayCommand]
-	public async Task SaveUrlFromViewText()
-	{
+	public async Task SaveUrlFromViewText() {
 		if (DefaultUrl.Is() || DefaultUrl == bsd.DefaultUrl) {
 			return;
 		}
@@ -34,8 +33,7 @@ public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action O
 	}
 
 	[RelayCommand]
-	public async Task DeleteDefaultSettings()
-	{
+	public async Task DeleteDefaultSettings() {
 		_ = await BrowserSettingsRepo.Instance.Delete(bsd.id);
 		OnSelectedChanged();
 		OnSettingsDeleted(bsd);
@@ -53,37 +51,32 @@ public partial class UserDefaultSettingsViewModel
 	public bool HasSelectedItems => SelectedCount > 0;
 	public int SelectedCount => ViewModels.Count(v => v.IsChecked);
 
-	public UserDefaultSettingsViewModel() : base("Default Browser Settings")
-	{
+	public UserDefaultSettingsViewModel() : base("Default Browser Settings") {
 		_ = BrowserSettingsRepo.Instance.ObservableCache
 			.Connect()
-			.Transform(p=> new UserDefaultSettingViewModel(p, OnSelectedChanged, OnSettingsDeleted))
+			.Transform(p => new UserDefaultSettingViewModel(p, OnSelectedChanged, OnSettingsDeleted))
 			.Bind(out settings)
 			.Subscribe();
-		
+
 		CommandMap["UnselectItems"] = UnselectItems;
 	}
 
-	public override async Task Init(object? param)
-	{
+	public override async Task Init(object? param) {
 		await base.Init(param);
 
 		if (!Loaded) {
 			await BrowserSettingsRepo.Instance.Load();
 		}
 	}
-
-	[RelayCommand]
-	private void UnselectItems()
-	{
+	
+	private void UnselectItems() {
 		foreach (var setting in ViewModels) {
 			setting.IsChecked = false;
 		}
 	}
 
 	[RelayCommand]
-	private async Task RemoveSelectedItems()
-	{
+	private async Task RemoveSelectedItems() {
 		var _selectedDefaultSetting = ViewModels.Where(v => v.IsChecked);
 		if (_selectedDefaultSetting == null || !_selectedDefaultSetting.Any()) {
 			return;
@@ -97,14 +90,12 @@ public partial class UserDefaultSettingsViewModel
 	}
 
 	[RelayCommand]
-	private async Task CreateNewDefaultSettings()
-	{
+	private async Task CreateNewDefaultSettings() {
 		_ = await BrowserSettingsRepo.Instance.Create(new BrowserSettingDto() { DefaultUrl = "https://example.com/" });
 	}
 
 	[RelayCommand]
-	private async Task Save()
-	{
+	private async Task Save() {
 		foreach (var viewModel in settings.ToArray()) {
 			await viewModel.SaveUrlFromViewText();
 		}
@@ -112,8 +103,7 @@ public partial class UserDefaultSettingsViewModel
 	}
 
 	[RelayCommand]
-	private void SaveLaunchSettings()
-	{
+	private void SaveLaunchSettings() {
 		IoC.SetJsonValue(DefaultEmulationOptions, nameof(EmulationOptions));
 	}
 
@@ -121,8 +111,7 @@ public partial class UserDefaultSettingsViewModel
 		IoC.SetJsonValue(settings.Select(v => v.DefaultUrl).ToArray(), "DefaultHomePageSettings");
 	}
 
-	private void OnSelectedChanged()
-	{
+	private void OnSelectedChanged() {
 		OnPropertyChanged(nameof(HasSelectedItems));
 		OnPropertyChanged(nameof(SelectedCount));
 	}
