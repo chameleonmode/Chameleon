@@ -14,10 +14,6 @@ public partial class FavouriteViewModel : Dashboarder {
 		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Favourites, ProfileUIContext.Favorites);
 		
 		_ = ProfilesViewModel.Instance.Shared.Filter(p => p.Dto.isFavourite)     // only favourites
-		.Do(changeSet => {
-			var profiles = changeSet.Select(c => c.Current);
-			ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.Favorites);
-		})
 		.SortAndBind(out var profiles, Profiler.CompareObservable)
 		.Subscribe(_ => OnPropertyChanged(nameof(HasProfiles)));
 		Profiles = profiles;
@@ -39,4 +35,8 @@ public partial class FavouriteViewModel : Dashboarder {
 	}
 
 	public static FavouriteViewModel Instance { get; } = new FavouriteViewModel();
+
+	public void ApplyFavoritesContext() {
+		ProfileUIContextManager.ApplyContextToProfiles(Profiles, ProfileUIContext.Favorites);
+	}
 }
