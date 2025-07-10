@@ -211,7 +211,7 @@ public partial class ProfilesViewModel : Profiler {
 					description.Parameters.GetValueOrDefault("title", "").Equals("google", StringComparison.CurrentCultureIgnoreCase) ||
 					description.Parameters.GetValueOrDefault("website", "").Equals("google.com", StringComparison.CurrentCultureIgnoreCase);
 
-				if (!await TaskUtil.AwaitFor(() => profile.ProfileLogins.Count > 0, 4)) {
+				if (await EX.Poly<bool>(() => Task.FromResult(profile.ProfileLogins.Count > 0 ? true : throw new Exception())) == true) {
 					throw new Exception("No logins found in the profile.");
 				}
 				UPLoginDto? FindMatchingLogin() =>
@@ -233,7 +233,7 @@ public partial class ProfilesViewModel : Profiler {
 					await ConfigureScriptParameters(profile);
 					var browser = await profile.OpenBrowser(SelectedBrowserOption.Option).WaitAsync(cts.Token);
 
-					SelectedPlaywrightScript!.Port = browser!.Settings.OpenOptions.Profile.Port;
+					SelectedPlaywrightScript!.Port = browser!.Settings.Profile.Port;
 					SelectedPlaywrightScript.Record = record;
 					await Run.Script(SelectedPlaywrightScript, cts.Token);
 				}

@@ -19,6 +19,7 @@ using DynamicData;
 using Microsoft.Playwright;
 using System.Collections.ObjectModel;
 using System.Text.Json;
+using BrowserType = Chameleon.lib.WebBrowser.BrowserType;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
@@ -34,10 +35,10 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	public ProfileUIContext CurrentContext { get; private set; } = ProfileUIContext.Profiles;
 	public ProfileUIContext? PreviousContext { get; private set; }
 
-	public Dictionary<lib.WebBrowser.BrowserType, IBrowserInstance?> SBI { get; } = new() {
-		[lib.WebBrowser.BrowserType.Chrome] = null,
-		[lib.WebBrowser.BrowserType.Firefox] = null,
-		[lib.WebBrowser.BrowserType.Brave] = null
+	public Dictionary<BrowserType, IBrowserInstance?> SBI { get; } = new() {
+		[BrowserType.Chrome] = null,
+		[BrowserType.Firefox] = null,
+		[BrowserType.Brave] = null
 	};
 
 	public bool IsSharedProfile => Dto.creatorUserId != Auther.AuthSession?.UserId;
@@ -63,25 +64,25 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		}
 	}
 
-	string SetRunning(lib.WebBrowser.BrowserType args, bool running) => args switch {
-		lib.WebBrowser.BrowserType.Chrome => IsChromeRunning = running.ToString(),
-		lib.WebBrowser.BrowserType.Firefox => IsFFRunning = running.ToString(),
-		lib.WebBrowser.BrowserType.Brave => IsBraveRunning = running.ToString(),
+	string SetRunning(BrowserType args, bool running) => args switch {
+		BrowserType.Chrome => IsChromeRunning = running.ToString(),
+		BrowserType.Firefox => IsFFRunning = running.ToString(),
+		BrowserType.Brave => IsBraveRunning = running.ToString(),
 		_ => throw new NotImplementedException()
 	};
 	public ObsProfile(UserProfileDto profile, Action<ObsProfile>? selectedChanged = default, Action<ObsProfile>? onDeleted = default)
 	 : base(profile, onSelectedChanged: selectedChanged != null ? (vm) => selectedChanged((ObsProfile)vm) : null) {
-		AsyncCommandMap["OpenFirefox"] = async () => await OpenBrowser(lib.WebBrowser.BrowserType.Firefox);
-		AsyncCommandMap["OpenChrome"] = async () => await OpenBrowser(lib.WebBrowser.BrowserType.Chrome);
-		AsyncCommandMap["OpenBrave"] = async () => await OpenBrowser(lib.WebBrowser.BrowserType.Brave);
+		AsyncCommandMap["OpenFirefox"] = async () => await OpenBrowser(BrowserType.Firefox);
+		AsyncCommandMap["OpenChrome"] = async () => await OpenBrowser(BrowserType.Chrome);
+		AsyncCommandMap["OpenBrave"] = async () => await OpenBrowser(BrowserType.Brave);
 
-		AsyncCommandMap["SyncCookiesChrome"] = async () => await HandleCookieOperation("ImportCookiesChrome", lib.WebBrowser.BrowserType.Chrome);
-		AsyncCommandMap["SyncCookiesBrave"] = async () => await HandleCookieOperation("ImportCookiesBrave", lib.WebBrowser.BrowserType.Brave);
-		AsyncCommandMap["SyncCookiesFirefox"] = async () => await HandleCookieOperation("ImportCookiesFirefox", lib.WebBrowser.BrowserType.Firefox);
+		AsyncCommandMap["SyncCookiesChrome"] = async () => await HandleCookieOperation("ImportCookiesChrome", BrowserType.Chrome);
+		AsyncCommandMap["SyncCookiesBrave"] = async () => await HandleCookieOperation("ImportCookiesBrave", BrowserType.Brave);
+		AsyncCommandMap["SyncCookiesFirefox"] = async () => await HandleCookieOperation("ImportCookiesFirefox", BrowserType.Firefox);
 
-		AsyncCommandMap["ExportCookiesChrome"] = async () => await HandleCookieOperation("ExportCookiesChrome", lib.WebBrowser.BrowserType.Chrome);
-		AsyncCommandMap["ExportCookiesBrave"] = async () => await HandleCookieOperation("ExportCookiesBrave", lib.WebBrowser.BrowserType.Brave);
-		AsyncCommandMap["ExportCookiesFirefox"] = async () => await HandleCookieOperation("ExportCookiesFirefox", lib.WebBrowser.BrowserType.Firefox);
+		AsyncCommandMap["ExportCookiesChrome"] = async () => await HandleCookieOperation("ExportCookiesChrome", BrowserType.Chrome);
+		AsyncCommandMap["ExportCookiesBrave"] = async () => await HandleCookieOperation("ExportCookiesBrave", BrowserType.Brave);
+		AsyncCommandMap["ExportCookiesFirefox"] = async () => await HandleCookieOperation("ExportCookiesFirefox", BrowserType.Firefox);
 
 		AsyncCommandMap["Favorite"] = async () => {
 			_ = await UserProfilesRepo.SetProfileIsFavorite(profile);
@@ -126,20 +127,20 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		Navigator.Instance.NavigateTo("IdentityView", Dto);
 	}
 
-	public async Task<IBrowserInstance?> OpenBrowser(lib.WebBrowser.BrowserType browserType, bool foreground = true) {
+	public async Task<IBrowserInstance?> OpenBrowser(BrowserType browserType, bool foreground = true) {
 		if (SBI[browserType] is IBrowserInstance browser && foreground) browser.InvokeEvent(BrowserEventType.Foreground);
-		else if (SBI[browserType] is null) return SBI[browserType] = await SystemBrowser.I.Open(new LaunchOptions(browserType, SystemBrowserProfile));
+		else if (SBI[browserType] is null) return SBI[browserType] = await SystemBrowser.I.Open(new BrowserSetting(browserType, SystemBrowserProfile));
 		return SBI[browserType];
 	}
 
-	public Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookiesAsync(lib.WebBrowser.BrowserType browserType) =>
+	public Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookiesAsync(BrowserType browserType) =>
 		ExecuteBrowserActionAsync(
 			browserType,
 			"cookie extraction",
 			port => Util.GetCookies(new(new(browserType, SystemBrowserProfile), port))
 		);
 
-	private async Task HandleCookieOperation(string operation, lib.WebBrowser.BrowserType browserType) {
+	private async Task HandleCookieOperation(string operation, BrowserType browserType) {
 		var isImport = operation.StartsWith("Import");
 		var browserName = browserType.ToString();
 
@@ -237,7 +238,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		}
 	}
 
-	private async Task<T?> ExecuteBrowserActionAsync<T>(lib.WebBrowser.BrowserType browserType, string actionName, Func<int, Task<T>> action) where T : class {
+	private async Task<T?> ExecuteBrowserActionAsync<T>(BrowserType browserType, string actionName, Func<int, Task<T>> action) where T : class {
 		var wasOpen = SBI.TryGetValue(browserType, out var browser) && browser != null;
 		browser ??= await OpenBrowser(browserType, foreground: false);
 
@@ -246,7 +247,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			var isLoaded = await browser!.LoadedTCS.Task.WaitAsync(cts.Token);
 			if (!isLoaded) throw new Exception($"Failed to load");
 
-			var port = browser.Settings.OpenOptions.Profile.Port;
+			var port = browser.Settings.Profile.Port;
 			return port <= 0 ? throw new Exception($"Invalid debugging port") : await action(port);
 		} catch (Exception ex) {
 			var message = ex is TimeoutException or OperationCanceledException 
