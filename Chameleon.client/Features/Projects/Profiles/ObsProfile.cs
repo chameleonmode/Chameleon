@@ -110,11 +110,11 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 
 		var browsers = SystemBrowser.I.HasInstanceOf(Dto.id, (sender, args) => {
 			// TODO: ? IsForeground = args.EventType == SysBrowserEventType.Foreground;
-			var runnin = args.EventType switch {
-				BrowserEventType.Foreground or
-				BrowserEventType.Background or
-				BrowserEventType.Opened => SetRunning(args.OpenOptions.BrowserType, true),
-				BrowserEventType.Closed => SetRunning(args.OpenOptions.BrowserType, false),
+			var runnin = args.Event switch {
+				Event.Foreground or
+				Event.Background or
+				Event.Opened => SetRunning(args.OpenOptions.BrowserType, true),
+				Event.Closed => SetRunning(args.OpenOptions.BrowserType, false),
 				_ => "Error"
 			};
 			if (runnin is "Error" or "False") SBI[args.OpenOptions.BrowserType] = null;
@@ -128,7 +128,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	}
 
 	public async Task<IBrowserInstance?> OpenBrowser(BrowserType browserType, bool foreground = true) {
-		if (SBI[browserType] is IBrowserInstance browser && foreground) browser.InvokeEvent(BrowserEventType.Foreground);
+		if (SBI[browserType] is IBrowserInstance browser && foreground) browser.InvokeEvent(Event.Foreground);
 		else if (SBI[browserType] is null) return SBI[browserType] = await SystemBrowser.I.Open(new BrowserSetting(browserType, SystemBrowserProfile));
 		return SBI[browserType];
 	}
