@@ -8,7 +8,6 @@ public class ViewModelAttribute(Type type) : Attribute {
 	public Type Type { get; private set; } = type;
 }
 public partial class OOVM : OO {
-
 	[ObservableProperty] bool showHeaderRegion = true;
 	public bool Navigated { get; set; }
 

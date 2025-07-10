@@ -10,7 +10,6 @@ using Chameleon.client.MvvM;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Controls.Experimental;
 using FluentAvalonia.UI.Navigation;
-using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Util;
 

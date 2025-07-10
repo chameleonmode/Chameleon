@@ -46,6 +46,18 @@
     <Compile Update="Features/Projects/View.axaml.cs">
       <DependentUpon>View.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Features/Settings/Featured/Featured.axaml.cs">
+      <DependentUpon>Featured.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Features/Settings/Featured/Tabs/Default.axaml.cs">
+      <DependentUpon>Default.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Features/Settings/Featured/Tabs/PVAView.axaml.cs">
+      <DependentUpon>PVAView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Features/Settings/Settings.axaml.cs">
+      <DependentUpon>Settings.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Features/Tenants/Members/Members.axaml.cs">
       <DependentUpon>Members.axaml</DependentUpon>
     </Compile>

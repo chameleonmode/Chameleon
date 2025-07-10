@@ -35,8 +35,7 @@ public partial class UserDefaultSettingViewModel(BrowserSettingDto bsd, Action O
 	}
 }
 
-public partial class UserDefaultSettingsViewModel
-			 : OOVM {
+public partial class UserDefaultSettingsViewModel : OOVM {
 	[ObservableProperty]
 	private EmulationOptions defaultEmulationOptions = IoC.GetJsonValue<EmulationOptions>(nameof(EmulationOptions)) ?? new();
 

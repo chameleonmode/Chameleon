@@ -180,7 +180,10 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 			ShowHeaderRegion = pageViewModel.ShowHeaderRegion;
 		}
 
-		var svc = await TaskUtil.TryAwaitFor(() => ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this)), 2);   //TODO: might crash if wrong page
+		var svc = await EX.Poly(
+			() => Task.FromResult(ConnectedAnimationService.GetForView(TopLevel.GetTopLevel(this))),
+			new(sleep: 250, retries: 2)
+		);   //TODO: might crash if wrong page
 		if (svc == null) return;
 
 		var animation = svc.GetAnimation("ForwardAnimation");
