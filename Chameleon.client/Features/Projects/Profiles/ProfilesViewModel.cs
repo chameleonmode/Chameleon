@@ -181,7 +181,7 @@ public partial class ProfilesViewModel : Profiler {
 		};
 
 		async Task OpenSystemBrowser(BrowserType browserType) {
-			await SelectedProfiles.ForEach(async profile => await profile.OpenBrowser(browserType));
+			await SelectedProfiles.TryEach(async profile => await profile.OpenBrowser(browserType));
 		}
 		AsyncCommandMap["chrome"] = () => OpenSystemBrowser(BrowserType.Chrome);
 		AsyncCommandMap["brave"] = () => OpenSystemBrowser(BrowserType.Brave);
