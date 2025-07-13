@@ -63,13 +63,38 @@ public abstract partial class OO : ObservableObject, IInitializer, IValidatableO
 
 	[RelayCommand]
 	public void CfV(string what) {
-		EX.Try(() => CommandMap[what](), caught: e => Toaster.Error(what, e.Message));
+		EX.Try(() => CommandMap[what](), caught: e => HandleCommandException(what, e));
 	}
 
 	[RelayCommand]
 	public async Task AsyncCfV(object what) {
 		var cmd = what.ToString();
-		await EX.Try(async () => await AsyncCommandMap[cmd!](), caught: e => Toaster.Error(cmd ?? "", e.Message));
+		await EX.Try(async () => await AsyncCommandMap[cmd!](), caught: e => HandleCommandException(cmd ?? "", e));
+	}
+
+	protected virtual void HandleCommandException(string commandName, Exception exception) {
+		var (title, message) = exception switch {
+			KeyNotFoundException => ("Command Not Found", $"The command '{commandName}' is not available"),
+			InvalidOperationException => ("Invalid Operation", $"Cannot execute '{commandName}' in the current state"),
+			UnauthorizedAccessException => ("Access Denied", $"You don't have permission to execute '{commandName}'"),
+			ArgumentException => ("Invalid Argument", $"Invalid parameters provided for '{commandName}'"),
+			TimeoutException => ("Timeout", $"Command '{commandName}' took too long to execute"),
+			TaskCanceledException => ("Cancelled", $"Command '{commandName}' was cancelled"),
+			HttpRequestException httpEx => ("Network Error", $"Failed to execute '{commandName}': {GetHttpErrorMessage(commandName, httpEx)}"),
+			_ => ("Error", $"Failed to execute '{commandName}': {exception.Message}")
+		};
+		
+		Toaster.Error(title, message);
+	}
+
+	protected virtual string GetHttpErrorMessage(string commandName, HttpRequestException httpEx) {
+		var message = httpEx.Message;
+		if (message.Contains("500")) return "Server error occurred (Internal Server Error)";
+		if (message.Contains("404")) return "Resource not found";
+		if (message.Contains("401")) return "Authentication required";
+		if (message.Contains("403")) return "Access forbidden";
+		if (message.Contains("timeout")) return "Request timed out";
+		return message;
 	}
 
 	public virtual void OnPropertyMessagesChanged(string propertyName) {

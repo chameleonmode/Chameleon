@@ -136,6 +136,15 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		return SBI[browserType];
 	}
 
+	protected override void HandleCommandException(string commandName, Exception exception) {
+		if(commandName == "OpenChrome" && exception is InvalidOperationException) {
+			Toaster.Error("Failed to start Chrome", "This can occur if another Chrome instance is already running with " +
+				"the same profile or the proxy connection failed.");
+			return;
+		}
+		base.HandleCommandException(commandName, exception);
+	}
+
 	public Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookiesAsync(BrowserType browserType) =>
 		ExecuteBrowserActionAsync(
 			browserType,
