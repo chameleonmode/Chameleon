@@ -62,8 +62,4 @@
       <DependentUpon>Members.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features/Automation/Actors/ViewModels/" />
-  </ItemGroup>
 </Project>

@@ -64,12 +64,6 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		}
 	}
 
-	string SetRunning(BrowserType args, bool running) => args switch {
-		BrowserType.Chrome => IsChromeRunning = running.ToString(),
-		BrowserType.Firefox => IsFFRunning = running.ToString(),
-		BrowserType.Brave => IsBraveRunning = running.ToString(),
-		_ => throw new NotImplementedException()
-	};
 	public ObsProfile(UserProfileDto profile, Action<ObsProfile>? selectedChanged = default, Action<ObsProfile>? onDeleted = default)
 	 : base(profile, onSelectedChanged: selectedChanged != null ? (vm) => selectedChanged((ObsProfile)vm) : null) {
 		AsyncCommandMap["OpenFirefox"] = async () => await OpenBrowser(BrowserType.Firefox);
@@ -90,7 +84,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		};
 		AsyncCommandMap["DeleteUserProfile"] = async () => {
 			if (
-				await MessageBox.Show("Delete?", $"Are you sure you want to delete {profile.title}?",
+				await MessageBox.Show("Delete", $"Are you sure you want to delete {profile.title}?",
 				btns: MBoxButtons.OkCancel,
 				icon: "DeleteLines")
 			) {
@@ -108,18 +102,22 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			width: 156
 		);
 
-		var browsers = SystemBrowser.I.HasInstanceOf(Dto.id, (sender, args) => {
-			// TODO: ? IsForeground = args.EventType == SysBrowserEventType.Foreground;
-			var runnin = args.Event switch {
-				Event.Foreground or
-				Event.Background or
-				Event.Opened => SetRunning(args.OpenOptions.BrowserType, true),
-				Event.Closed => SetRunning(args.OpenOptions.BrowserType, false),
+		_ = SystemBrowser.I.HasInstanceOf(Dto.id, (sender, args) => {
+			var isRunning = args.Event switch {
+				Event.Foreground or Event.Background or Event.Opened => true.ToString(),
+				Event.Closed => false.ToString(),
 				_ => "Error"
 			};
-			if (runnin is "Error" or "False") SBI[args.OpenOptions.BrowserType] = null;
+
+			switch (args.Settings.BrowserType) {
+				case BrowserType.Chrome: IsChromeRunning = isRunning; break;
+				case BrowserType.Firefox: IsFFRunning = isRunning; break;
+				case BrowserType.Brave: IsBraveRunning = isRunning; break;
+			}
+
+			if (args.Event is not Event.Foreground or Event.Background or Event.Opened) SBI[args.Settings.BrowserType] = null;
 		});
-		// browsers.ForEach(b => _ = SetRunning(b, true));
+		//@ TODO:  _.ForEach(b => _ = SetRunning(b, true)); n remove
 	}
 
 	public void Navigate() {
@@ -256,7 +254,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			Toaster.Error(message);
 		} finally {
 			if (!wasOpen && browser != null) {
-				await ProcessUtil.TryKillProcess(browser.Brocess);
+				await Processez.TryKillProcess(browser.Brocess);
 				browser.Close();
 			}
 		}

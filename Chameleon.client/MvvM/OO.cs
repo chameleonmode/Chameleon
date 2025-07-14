@@ -17,8 +17,19 @@ public abstract partial class OO : ObservableObject, IInitializer, IValidatableO
 	[ObservableProperty] string? tags;
 	[ObservableProperty] bool loaded;
 
-	private long _isBusy;
-	public bool IsBusy => Interlocked.Read(ref _isBusy) > 0;
+	private long isBusy;
+	public bool IsBusy => Interlocked.Read(ref isBusy) > 0;
+
+	private IObjectValidator? validator;
+	public IObjectValidator? Validator {
+		get => validator;
+		set {
+			validator?.Dispose();
+			validator = value;
+			validator?.Revalidate();
+		}
+	}
+	bool INotifyDataErrorInfo.HasErrors => Validator?.IsValid == false || Validator?.HasWarnings == true;
 
 	public virtual Dictionary<string, Action> CommandMap { get; } = [];
 	public virtual Dictionary<string, Func<Task>> AsyncCommandMap { get; } = [];
@@ -27,22 +38,21 @@ public abstract partial class OO : ObservableObject, IInitializer, IValidatableO
 	public TaskCompletionSource<bool> LoadedTCS { get; } = new();
 
 	public OO() {
-		InitializeAsyncCommand = new AsyncRelayCommand<object>(
-				async (p) => {
-					_ = Interlocked.Increment(ref _isBusy);
-					OnPropertyChanged(nameof(IsBusy));
-
-					try {
-						await Init(p);
-					} finally {
-						_ = Interlocked.Decrement(ref _isBusy);
-						OnPropertyChanged(nameof(IsBusy));
-					}
-					Loaded = true;
-					_ = LoadedTCS.TrySetResult(false);
-				},
-				AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
 		Validator = GetValidator();
+		InitializeAsyncCommand = new AsyncRelayCommand<object>(
+		async (p) => {
+			_ = Interlocked.Increment(ref isBusy);
+			OnPropertyChanged(nameof(IsBusy));
+			try {
+				await Init(p);
+			} finally {
+				_ = Interlocked.Decrement(ref isBusy);
+				OnPropertyChanged(nameof(IsBusy));
+			}
+			Loaded = true;
+			_ = LoadedTCS.TrySetResult(false);
+		},
+		AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
 	}
 	public virtual Task Init(object? param) => Task.CompletedTask;
 	public virtual Task OnNavigatedTo(object? param) => LoadedTCS.Task;
@@ -62,23 +72,9 @@ public abstract partial class OO : ObservableObject, IInitializer, IValidatableO
 		await EX.Try(async () => await AsyncCommandMap[cmd!](), caught: e => Toaster.Error(cmd ?? "", e.Message));
 	}
 
-	private IObjectValidator? _objectValidator;
-	public IObjectValidator? Validator {
-		get => _objectValidator;
-		set {
-			_objectValidator?.Dispose();
-			_objectValidator = value;
-			_objectValidator?.Revalidate();
-		}
-	}
-
 	public virtual void OnPropertyMessagesChanged(string propertyName) {
 		ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
 	}
-
-	bool INotifyDataErrorInfo.HasErrors => Validator?.IsValid == false || Validator?.HasWarnings == true;
-
-	public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
 	public IEnumerable GetErrors(string? propertyName) {
 		var error = Validator == null
@@ -110,4 +106,5 @@ public abstract partial class OO : ObservableObject, IInitializer, IValidatableO
 		}
 		return false;
 	}
+	public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 }

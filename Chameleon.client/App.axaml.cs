@@ -13,7 +13,6 @@ using Chameleon.client.Features.Projects.Profiles.Identity;
 using Chameleon.client.Features;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Auth;
-using Chameleon.lib.Api;
 using Chameleon.client.Services;
 using Chameleon.client.UI.Components;
 using FluentAvalonia.UI.Windowing;
@@ -41,13 +40,8 @@ public partial class App : Application {
 		}
 
 		// IoC.Instance.StartUps.Add(AddonsServer.Instance);
-		const string file = "appsettings.json";
-		IoC.I.Configure(() => {
-			return new WritableConfiguration(new ConfigurationBuilder()
-				.SetBasePath(FilePaths.AppDataDir)
-				.AddJsonFile(file, optional: true, reloadOnChange: true)
-				.AddEnvironmentVariables()
-				.Build(), Path.Combine(FilePaths.AppDataDir, file));
+		IoC.I.Configure((b) => {
+			_ = b.SetBasePath(FilePaths.AppDataDir);
 		}, (services) => {
 			_ = services
 			.AddSingleton<IDispatchService, DispatchService>()

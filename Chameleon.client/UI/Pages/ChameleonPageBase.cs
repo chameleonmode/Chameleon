@@ -18,7 +18,9 @@ namespace Chameleon.client.UI.Pages;
 
 public class ChameleonPageBase : AutoViewModelLocatorControl {
 	private bool _isSmallWidth2;
-	private bool _hasLoaded;
+
+	private long isBusy;
+	public bool HasLoaded => Interlocked.Read(ref isBusy) > 0;
 
 	private Panel? _detailsPanel;
 	private IconSourceElement? _previewImageHost;
@@ -73,7 +75,6 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 
 	protected override void OnLoaded(RoutedEventArgs e) {
 		base.OnLoaded(e);
-		_hasLoaded = true;
 		if (_detailsPanel == null) return;
 
 		var ec = ElementComposition.GetElementVisual(_detailsPanel);
@@ -90,11 +91,12 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 		ani["Offset"] = offsetAnimation;
 
 		ec.ImplicitAnimations = ani;
+		Interlocked.Exchange(ref isBusy, 1);
 	}
 
 	protected override void OnUnloaded(RoutedEventArgs e) {
 		base.OnUnloaded(e);
-		_hasLoaded = false;
+		Interlocked.Exchange(ref isBusy, 0);
 	}
 
 	protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
@@ -114,36 +116,33 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 		PseudoClasses.Set(":smallWidth", sz < 710);
 		PseudoClasses.Set(":smallWidth2", isSmallWidth2);
 
-		async Task AnimateOptions(bool toSmall) {
-			if (!await TaskUtil.AwaitFor(() => _hasLoaded))
-				return;
+		async Task AnimateOptions(bool small) {
+			if (
+				await EX.Poly(() => Task.FromResult(HasLoaded.ThrowIfFalse() == false),
+				new(sleep: 50, retries: 2))
+			) return;
 
-			double x = toSmall ? 70 : -70;
-			double y = toSmall ? -30 : 30;
+			double x = small ? 70 : -70;
+			double y = small ? -30 : 30;
 			_ = new Animation {
 				Duration = TimeSpan.FromSeconds(0.25),
-				Children =
-				{
-					new KeyFrame
-					{
-							Cue = new Cue(0d),
-							Setters =
-							{
-									new Setter(TranslateTransform.XProperty, x),
-									new Setter(TranslateTransform.YProperty, y),
-									new Setter(OpacityProperty, 0d)
-							}
+				Children = {
+					new () {
+						Cue = new Cue(0d),
+						Setters = {
+							new Setter(TranslateTransform.XProperty, x),
+							new Setter(TranslateTransform.YProperty, y),
+							new Setter(OpacityProperty, 0d)
+						}
 					},
-					new KeyFrame
-					{
-							Cue = new Cue(1d),
-							Setters =
-							{
-									new Setter(TranslateTransform.XProperty, 0d),
-									new Setter(TranslateTransform.YProperty, 0d),
-									new Setter(OpacityProperty, 1d)
-							},
-							KeySpline = new KeySpline(0, 0, 0, 1)
+					new () {
+						Cue = new Cue(1d),
+						Setters = {
+							new Setter(TranslateTransform.XProperty, 0d),
+							new Setter(TranslateTransform.YProperty, 0d),
+							new Setter(OpacityProperty, 1d)
+						},
+						KeySpline = new KeySpline(0, 0, 0, 1)
 					}
 				}
 			};
@@ -159,9 +158,8 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 	}
 
 	private async void OnNavigatingFrom(object? sender, NavigatingCancelEventArgs e) {
-		if (DataContext is OOVM pageViewModel) {
-			await pageViewModel.OnNavigatingFrom(new { sender, e });
-		}
+		if (DataContext is OOVM oovm) await oovm.OnNavigatingFrom(new { sender, e });
+		
 		var animate = AnimateVisual ?? _previewImageHost;
 		if (animate is null) return;
 
@@ -192,9 +190,11 @@ public class ChameleonPageBase : AutoViewModelLocatorControl {
 		if (_detailsPanel != null) _detailsPanel.IsVisible = false;
 		// PreviewImageHost is inside a Viewbox which can really mess with the Composition 
 		// animation - use the viewbox directly for the animation to ensure it works correctly
-		_ = await TaskUtil.AwaitFor(() => AnimateVisual != null, 1)
-			? animation.TryStart(AnimateVisual, [_scroller])
-			: animation.TryStart(_previewImageHost?.Parent as Control, [_detailsHost, _scroller]);
-
+		var started = await EX.Poly(async () => {
+			await Task.Delay(25);
+			ArgumentNullException.ThrowIfNull(AnimateVisual);
+			return animation.TryStart(AnimateVisual, [_scroller]);
+		}, new(sleep: 250, retries: 2));
+		if (!started) _ = animation.TryStart(_previewImageHost?.Parent as Control, [_detailsHost, _scroller]);
 	}
 }

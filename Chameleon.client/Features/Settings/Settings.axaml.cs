@@ -17,7 +17,7 @@ public partial class View : ChameleonNavigationPage {
 	{
 		var uri = new Uri("https://github.com/chameleonmode/chameleon.app-CommunityPipeline");
 		try {
-			ProcessUtil.OpenBrowser(uri.ToString());
+			Processez.OpenBrowser(uri.ToString());
 		} catch {
 			Toaster.Error($"Error navigationg to {uri}");
 		}

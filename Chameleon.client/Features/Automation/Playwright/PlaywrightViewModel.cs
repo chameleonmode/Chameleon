@@ -68,13 +68,9 @@ public partial class PlaywrightViewModel : OOVM {
 	async Task SelectUserScriptFolder() {
 		var dialog = App.MainWindow!.StorageProvider;
 		var selected = await dialog.OpenFolderPickerAsync(new() { AllowMultiple = false });
-		if (selected == null || selected.Count == 0) {
-			return;
-		}
+		if (selected == null || selected.Count == 0)return;
 
-		if (selected[0]?.Path?.AbsolutePath != null)
-			IoC.I.Config?.SetValue("UserScriptsDirectory", selected[0]?.Path?.AbsolutePath);
-
+		IoC.SetValue(selected[0].Path.AbsolutePath, "UserScriptsDirectory");
 		await InitializeUserScripts();
 	}
 
@@ -84,7 +80,7 @@ public partial class PlaywrightViewModel : OOVM {
 			async void OnChanged(object sender, FileSystemEventArgs e) =>
 				await InitializeUserScripts();
 
-			UserScriptsDirectory = IoC.GetValue<string>("UserScriptsDirectory") ?? "";
+			UserScriptsDirectory = IoC.GetValue("UserScriptsDirectory") ?? "";
 			if (!Directory.Exists(UserScriptsDirectory)) return;
 
 			if (watcher == null) {

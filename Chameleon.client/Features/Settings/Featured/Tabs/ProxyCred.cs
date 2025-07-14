@@ -76,7 +76,7 @@ public partial class ProxyCreditViewModel : OOVM {
 	private async Task PurchaseCredit() {
 		var res = await ProxyCreditRepo.CreateOrder(SelectedCreditPlan.Amount);
 		if (res?.Url != null) {
-			ProcessUtil.OpenBrowser(res.Url);
+			Processez.OpenBrowser(res.Url);
 		}
 	}
 

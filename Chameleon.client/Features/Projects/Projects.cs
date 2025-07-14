@@ -42,7 +42,7 @@ public partial class ViewModel : OOVM {
 				if (
 					ex.Message == "limit_ex" &&
 					await MessageBox.Show("PROFILES LIMIT REACHED", "You have reached the maximum number of profiles.")
-				) ProcessUtil.OpenBrowser("https://chameleonmode.com/pricing/");
+				) Processez.OpenBrowser("https://chameleonmode.com/pricing/");
 				else throw;
 			}
 		};
