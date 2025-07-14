@@ -97,28 +97,23 @@ public partial class App : Application {
 		}
 	}
 
-	static async Task RunAsync() {
+	static async Task RunAsync(int trys = 3) {
 		await EX.Try(async () => {
-			if (!await RunAsync(3)) throw new Exception("Login failed after 3 attempts");
-			else {
-				Toaster.Success($"Greetings {(Session.I.Settings?.LoginName) ?? "World"}");
-				await ViewModel.Instance.Init();
-			}
+			if (trys == 0) throw new Exception("Failed after 3 attempts");
+			else if (await EX.Catch(
+				async () => await Common.Project.Logineer(
+					Session.I.Settings.AutoLogin ? Session.I.Settings : (
+						await MessageBox.Show<MboxLoginUserControl, MboxLoginViewModel>(
+						new(Session.I.Settings), new("User Login", Symbas: Symbas.ContactInfo))
+					)!.Settings
+				), async e => await RunAsync(trys - 1))
+			) await ViewModel.Instance.Init();
 		}, async e => {
-			if (await MessageBox.Error("Login Error", "Try Again?", e)) await RunAsync();
+			if (await MessageBox.Error("Login Error", "Try again with last saved login info?", e)) await RunAsync();
 			else {
 				await Session.I.Logout();
 				await RunAsync();
 			}
 		});
-	}
-	static async Task<bool> RunAsync(int trys) {
-		var login = new MboxLoginViewModel(Session.I.Settings);
-		return trys > 0 && await EX.Catch(async () => {
-			return (
-				 login.AutoLogin ||
-				 await MessageBox.Show<MboxLoginUserControl, MboxLoginViewModel>(new(() => login, "User Login", Symbas: Symbas.ContactInfo))
-				) && await Common.Project.Logineer(login.Settings);
-		}, async e => await RunAsync(trys - 1));
 	}
 }

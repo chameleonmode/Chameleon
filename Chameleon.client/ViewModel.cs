@@ -20,6 +20,7 @@ using Chameleon.client.Features;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.client.Services;
 using Chameleon.lib.Api.Dto;
+using Chameleon.lib.Auth;
 
 namespace Chameleon.client;
 
@@ -98,6 +99,7 @@ public partial class ViewModel : OO {
   }
 
   public async Task Init() {
+    Toaster.Success($"Greetings {(Session.I.Settings?.LoginName) ?? "World"}");
     // This is where you can initialize any data or state needed for the ViewModel
     // For example, you might want to load initial data from a repository or service
     await Modules.Sync();

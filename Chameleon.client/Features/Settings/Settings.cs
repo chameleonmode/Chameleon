@@ -25,17 +25,17 @@ public static class Settings {
 }
 
 public partial class ViewModel : OOVM {
-		private const string _system = "System";
-		private const string _dark = "Dark";
-		private const string _light = "Light";
+	private const string _system = "System";
+	private const string _dark = "Dark";
+	private const string _light = "Light";
 
-		private readonly FluentAvaloniaTheme? _faTheme = Application.Current?.Styles[0] as FluentAvaloniaTheme;
+	private readonly FluentAvaloniaTheme? _faTheme = Application.Current?.Styles[0] as FluentAvaloniaTheme;
 
-		//TODO: refactor
-		public string CurrentVersion { get; } = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
-		public string[] AppThemes => [_system, _light, _dark];
-		public List<Color> PredefinedColors => [
-			Color.FromRgb(255,185,0),
+	//TODO: refactor
+	public string CurrentVersion { get; } = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
+	public string[] AppThemes => [_system, _light, _dark];
+	public List<Color> PredefinedColors => [
+		Color.FromRgb(255,185,0),
 		Color.FromRgb(255,140,0),
 		Color.FromRgb(247,99,12),
 		Color.FromRgb(202,80,16),
@@ -83,106 +83,106 @@ public partial class ViewModel : OOVM {
 		Color.FromRgb(82,94,84),
 		Color.FromRgb(132,117,69),
 		Color.FromRgb(126,115,95)
-		];
+	];
 
-		[ObservableProperty] bool hasProxySettingsView;
-		[ObservableProperty] bool hasProxyCredit;
-		[ObservableProperty] bool hasPhoneVerification;
-		[ObservableProperty] bool hasAssistantUsers;
-		[ObservableProperty] bool hasImport;
-		[ObservableProperty] bool hasExport;
-		[ObservableProperty] string currentAppTheme = _system;
-		[ObservableProperty] bool useCustomAccentColor = false;
-		[ObservableProperty] Color customAccentColor = Colors.SlateBlue;
-		[ObservableProperty] Color? listBoxColor;
-		[ObservableProperty] string liscencedTo = "xxx";
+	[ObservableProperty] bool hasProxySettingsView;
+	[ObservableProperty] bool hasProxyCredit;
+	[ObservableProperty] bool hasPhoneVerification;
+	[ObservableProperty] bool hasAssistantUsers;
+	[ObservableProperty] bool hasImport;
+	[ObservableProperty] bool hasExport;
+	[ObservableProperty] string currentAppTheme = _system;
+	[ObservableProperty] bool useCustomAccentColor = false;
+	[ObservableProperty] Color customAccentColor = Colors.SlateBlue;
+	[ObservableProperty] Color? listBoxColor;
+	[ObservableProperty] string liscencedTo = "xxx";
 
-		public override void InitializeObject() {
-			base.InitializeObject();
+	public override void InitializeObject() {
+		base.InitializeObject();
 
-			AsyncCommandMap[nameof(Copy)] = async () => await Copy(EX.LogContent.ThrowIfNullOrEmpty());
-			AsyncCommandMap[nameof(OpenLogFile)] = () => Task.Run(OpenLogFile);
-		}
+		AsyncCommandMap[nameof(Copy)] = async () => await Copy(EX.LogContent.ThrowIfNullOrEmpty());
+		AsyncCommandMap[nameof(OpenLogFile)] = () => Task.Run(OpenLogFile);
+	}
 
-		public void InitializSettings() {
-			if (IoC.GetJsonValue<AppSettings>(nameof(AppSettings)) is AppSettings appSettings) {
-				if (appSettings.UseCustomAccentColor && appSettings.CustomAccentColor is string coler) {
-					UpdateAppAccentColor(Color.Parse(coler));
-				}
-				CurrentAppTheme = appSettings.CurrentAppTheme ?? _system;
-				UseCustomAccentColor = appSettings.UseCustomAccentColor;
+	public void InitializSettings() {
+		if (IoC.GetJsonValue<AppSettings>(nameof(AppSettings)) is AppSettings appSettings) {
+			if (appSettings.UseCustomAccentColor && appSettings.CustomAccentColor is string coler) {
+				UpdateAppAccentColor(Color.Parse(coler));
 			}
-
-			if (IoC.GetJsonValue<lib.Auth.LoginSettings>(nameof(lib.Auth.LoginSettings)) is lib.Auth.LoginSettings login)
-				LiscencedTo = $"Licensed to: {login.LoginName}";
+			CurrentAppTheme = appSettings.CurrentAppTheme ?? _system;
+			UseCustomAccentColor = appSettings.UseCustomAccentColor;
 		}
 
-		[RelayCommand]
-		public async Task Logout() {
-			await Session.I.Logout();
-			Environment.Exit(0);
-		}
+		if (IoC.GetJsonValue<lib.Auth.LoginSettings>(nameof(lib.Auth.LoginSettings)) is lib.Auth.LoginSettings login)
+			LiscencedTo = $"Licensed to: {login.LoginName}";
+	}
 
-		public void OpenLogFile() {
-			var startInfo = new ProcessStartInfo {
-				FileName = EX.LogFile,
-				UseShellExecute = true
-			};
-			_ = Process.Start(startInfo);
-		}
+	[RelayCommand]
+	public async Task Logout() {
+		await Session.I.Logout();
+		Environment.Exit(0);
+	}
 
-		partial void OnUseCustomAccentColorChanged(bool oldValue, bool newValue) {
-			if (newValue) {
-				//SetCustomAccentColorFromSystem();
-				if (_faTheme?.TryGetResource("SystemAccentColor", null, out var curColor) == true) {
-					CustomAccentColor = (Color)curColor;
-					ListBoxColor = CustomAccentColor;
-				}
-			} else {
-				//ResetCustomAccentColor();
-				CustomAccentColor = default;
-				ListBoxColor = default;
-				UpdateAppAccentColor(null);
+	public void OpenLogFile() {
+		var startInfo = new ProcessStartInfo {
+			FileName = EX.LogFile,
+			UseShellExecute = true
+		};
+		_ = Process.Start(startInfo);
+	}
+
+	partial void OnUseCustomAccentColorChanged(bool oldValue, bool newValue) {
+		if (newValue) {
+			//SetCustomAccentColorFromSystem();
+			if (_faTheme?.TryGetResource("SystemAccentColor", null, out var curColor) == true) {
+				CustomAccentColor = (Color)curColor;
+				ListBoxColor = CustomAccentColor;
 			}
-		}
-
-		partial void OnCustomAccentColorChanged(Color oldValue, Color newValue) {
-			UpdateAppAccentColor(newValue);
-		}
-		partial void OnListBoxColorChanged(Color? oldValue, Color? newValue) {
-			UpdateAppAccentColor(newValue);
-		}
-
-		partial void OnCurrentAppThemeChanged(string? oldValue, string newValue) {
-			//ApplyThemeVariant(newValue);
-			static ThemeVariant? GetThemeVariant(string value) => value switch {
-				_light => ThemeVariant.Light,
-				_dark => ThemeVariant.Dark,
-				_system or _ => null,
-			};
-
-			var newTheme = GetThemeVariant(newValue);
-			if (newTheme != null && Application.Current != null) {
-				Application.Current.RequestedThemeVariant = newTheme;
-			}
-
-			if (_faTheme != null) {
-				_faTheme.PreferSystemTheme = newValue == _system;
-			}
-			SaveIfNeeded();
-		}
-
-		private void UpdateAppAccentColor(Color? color) {
-			if (_faTheme != null && _faTheme.CustomAccentColor != color) {
-				_faTheme.CustomAccentColor = color;
-			}
-
-			SaveIfNeeded();
-		}
-
-		private void SaveIfNeeded() {
-			if (Loaded) {
-				IoC.SetJsonValue(new AppSettings(CurrentAppTheme, _faTheme?.CustomAccentColor?.ToString(), UseCustomAccentColor), nameof(AppSettings));
-			}
+		} else {
+			//ResetCustomAccentColor();
+			CustomAccentColor = default;
+			ListBoxColor = default;
+			UpdateAppAccentColor(null);
 		}
 	}
+
+	partial void OnCustomAccentColorChanged(Color oldValue, Color newValue) {
+		UpdateAppAccentColor(newValue);
+	}
+	partial void OnListBoxColorChanged(Color? oldValue, Color? newValue) {
+		UpdateAppAccentColor(newValue);
+	}
+
+	partial void OnCurrentAppThemeChanged(string? oldValue, string newValue) {
+		//ApplyThemeVariant(newValue);
+		static ThemeVariant? GetThemeVariant(string value) => value switch {
+			_light => ThemeVariant.Light,
+			_dark => ThemeVariant.Dark,
+			_system or _ => null,
+		};
+
+		var newTheme = GetThemeVariant(newValue);
+		if (newTheme != null && Application.Current != null) {
+			Application.Current.RequestedThemeVariant = newTheme;
+		}
+
+		if (_faTheme != null) {
+			_faTheme.PreferSystemTheme = newValue == _system;
+		}
+		SaveIfNeeded();
+	}
+
+	private void UpdateAppAccentColor(Color? color) {
+		if (_faTheme != null && _faTheme.CustomAccentColor != color) {
+			_faTheme.CustomAccentColor = color;
+		}
+
+		SaveIfNeeded();
+	}
+
+	private void SaveIfNeeded() {
+		if (Loaded) {
+			IoC.SetJsonValue(new AppSettings(CurrentAppTheme, _faTheme?.CustomAccentColor?.ToString(), UseCustomAccentColor), nameof(AppSettings));
+		}
+	}
+}
