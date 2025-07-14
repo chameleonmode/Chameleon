@@ -141,17 +141,8 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	private async Task HandleCookieOperation(string operation, BrowserType browserType) {
 		var isImport = operation.StartsWith("Import");
 		var browserName = browserType.ToString();
-
-		var visual = TopLevel.GetTopLevel(App.MainWindow?.GetVisualRoot() as Visual);
-		var topLevel = visual != null ? TopLevel.GetTopLevel(visual) : null;
-
 		if (isImport) {
-			if (topLevel == null) {
-				Toaster.Error($"Error getting top level window for dialog. Ensure the view is active.");
-				return;
-			}
-
-			var file = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
+			var file = await App.MainWindow!.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
 				Title = $"Import Cookies for {browserName}",
 				AllowMultiple = false,
 				FileTypeFilter = [new FilePickerFileType("JSON files") { Patterns = ["*.json"] }]
@@ -204,18 +195,10 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 				}
 			}
 		} else {
-			var cookiesToExport = await GetCookiesAsync(browserType);
-			if (cookiesToExport == null || !cookiesToExport.Any()) {
-				Toaster.Info($"No cookies found to export for {browserName}.");
-				return;
-			}
+			var cookiesToExport = await GetCookiesAsync(browserType) ?? [];
+			cookiesToExport.Any().ThrowFalse($"No cookies found to export for {browserName}.");
 
-			if (topLevel == null) {
-				Toaster.Error($"Error getting top level window for dialog. Ensure the view is active.");
-				return;
-			}
-
-			var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions {
+			var file = await App.MainWindow!.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions {
 				Title = $"Export Cookies for {browserName}",
 				SuggestedFileName = $"{browserName}Cookies_{DateTime.Now:yyyyMMddHHmmss}.json",
 				DefaultExtension = "json",
