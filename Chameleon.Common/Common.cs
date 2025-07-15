@@ -10,7 +10,7 @@ public class Project {
   public static async Task<bool> Logineer(LoginSettings login) {
     Session.I.Auth0Client.OidcBrowser.Open = async url => {
       var browser = await EX.Catch(
-        async () => await SystemBrowser.I.Open(FactorySettings.Chrome(url)),
+        async () => await Browzio.I.Open(FactorySettings.Chrome(url)),
         ex => { if (!BrowserInfo.Find(BrowserType.Chrome).Exists) Processez.OpenBrowser(url); }
       );
       _ = Session.I.Auth0Client.OidcBrowser.TaskCompletion?.Task.ContinueWith(_ => browser?.Closee());

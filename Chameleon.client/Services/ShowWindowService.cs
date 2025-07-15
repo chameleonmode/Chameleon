@@ -1,7 +1,6 @@
-﻿
-using Avalonia.Controls;
-using Chameleon.lib.Helpers;
+﻿using Avalonia.Controls;
 using Chameleon.client.UI.Windows;
+using Chameleon.lib.Services;
 
 namespace Chameleon.client.Services;
 

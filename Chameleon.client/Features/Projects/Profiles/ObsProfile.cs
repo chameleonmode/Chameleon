@@ -1,7 +1,5 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Platform.Storage;
-using Avalonia.VisualTree;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
 using Chameleon.client.MvvM;
 using Chameleon.client.Services;
@@ -10,26 +8,27 @@ using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
+using Chameleon.lib.Services;
 using Chameleon.lib.Util;
 using Chameleon.lib.WebBrowser;
-using Chameleon.lib.WebBrowser.Browsers;
 using Chameleon.lib.WebBrowser.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using Microsoft.Playwright;
 using System.Collections.ObjectModel;
 using System.Text.Json;
+using static Chameleon.lib.WebBrowser.IBrowserInstance;
 using BrowserType = Chameleon.lib.WebBrowser.BrowserType;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
 public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAware {
-	[ObservableProperty] string isChromeRunning = "False";
-	[ObservableProperty] string isBraveRunning = "False";
-	[ObservableProperty] string isFFRunning = "False";
+	[ObservableProperty] int isChromeRunning;
+	[ObservableProperty] int isBraveRunning;
+	[ObservableProperty] int isFFRunning;
+	[ObservableProperty] bool foreground;
 	[ObservableProperty] bool isShowGlyph = true;
 	[ObservableProperty] bool isShowCheckboxColumn = true;
-	[ObservableProperty] bool isActionOptionsVisible = true;
 	[ObservableProperty] bool isSelectionEnabled = true;
 
 	public ProfileUIContext CurrentContext { get; private set; } = ProfileUIContext.Profiles;
@@ -102,20 +101,26 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			width: 156
 		);
 
-		_ = SystemBrowser.I.HasInstanceOf(Dto.id, (sender, args) => {
-			var isRunning = args.Event switch {
-				Event.Foreground or Event.Background or Event.Opened => true.ToString(),
-				Event.Closed => false.ToString(),
-				_ => "Error"
+		_ = Browzio.I.HasInstanceOf(Dto.id, (s, e) => {
+			Foreground = false; // @TODO: optimization
+			if (Dto.id != e.Settings.Profile.Id) return;
+			Foreground = e.Event is Event.Foreground or Event.Opened;
+
+			// Update running state based on event
+			var running = e.Event switch {
+				Event.Foreground or Event.Background or Event.Opened => 1,
+				Event.Error => -1,
+				_ => 0
 			};
 
-			switch (args.Settings.BrowserType) {
-				case BrowserType.Chrome: IsChromeRunning = isRunning; break;
-				case BrowserType.Firefox: IsFFRunning = isRunning; break;
-				case BrowserType.Brave: IsBraveRunning = isRunning; break;
-			}
-
-			if (args.Event is not Event.Foreground or Event.Background or Event.Opened) SBI[args.Settings.BrowserType] = null;
+			int SetRunning(int current) => (current != -1 || running == 1) ? running : current;
+			_ = e.Settings.BrowserType switch {
+				BrowserType.Chrome => IsChromeRunning = SetRunning(IsChromeRunning),
+				BrowserType.Firefox => IsFFRunning = SetRunning(IsFFRunning),
+				BrowserType.Brave => IsBraveRunning = SetRunning(IsBraveRunning),
+				_ => 0
+			};
+			if (running <= 0) SBI[e.Settings.BrowserType] = null;
 		});
 		//@ TODO:  _.ForEach(b => _ = SetRunning(b, true)); n remove
 	}
@@ -127,7 +132,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 
 	public async Task<IBrowserInstance?> OpenBrowser(BrowserType browserType, bool foreground = true) {
 		if (SBI[browserType] is IBrowserInstance browser && foreground) browser.InvokeEvent(Event.Foreground);
-		else if (SBI[browserType] is null) return SBI[browserType] = await SystemBrowser.I.Open(new BrowserSetting(browserType, SystemBrowserProfile));
+		else if (SBI[browserType] is null) return SBI[browserType] = await Browzio.I.Open(new BrowserSetting(browserType, SystemBrowserProfile));
 		return SBI[browserType];
 	}
 

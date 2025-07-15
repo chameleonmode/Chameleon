@@ -6,6 +6,7 @@ using Chameleon.lib.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Util;
+using Chameleon.lib.Services;
 
 namespace Chameleon.client.Features.Projects.Folders;
 

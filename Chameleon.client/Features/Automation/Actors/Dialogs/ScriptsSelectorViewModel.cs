@@ -1,6 +1,7 @@
 ﻿using Chameleon.client.MvvM;
 using Chameleon.lib.AIR.Actors;
 using Chameleon.lib.Helpers;
+using Chameleon.lib.Services;
 
 namespace Chameleon.client.Features.Automation.Actors.Dialogs;
 

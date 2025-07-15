@@ -4,6 +4,7 @@ using Avalonia;
 using Chameleon.lib.Services;
 
 namespace Chameleon.client.Services;
+
 public class ToasterService(IDispatchService dispatcher)
 								: IToasterService {
 	private int _notificationTimeout = 9;
@@ -17,8 +18,7 @@ public class ToasterService(IDispatchService dispatcher)
 		}
 	}
 
-	private Notification CreateNotification(string message, NotificationType notificationType, string title = "Chameleon")
-	{
+	private Notification CreateNotification(string message, NotificationType notificationType, string title = "Chameleon") {
 		return new Notification(
 				title,
 				message,
@@ -26,8 +26,7 @@ public class ToasterService(IDispatchService dispatcher)
 				TimeSpan.FromSeconds(_notificationTimeout));
 	}
 
-	private void ShowOnUI(string message, NotificationType notificationType)
-	{
+	private void ShowOnUI(string message, NotificationType notificationType) {
 		if (_notificationManager is WindowNotificationManager nm) {
 			_dispatcher?.InvokeOnUiThread(() => {
 				nm.Show(CreateNotification(message, notificationType));
@@ -39,15 +38,14 @@ public class ToasterService(IDispatchService dispatcher)
 					MaxItems = 6,
 					Margin = new Thickness(0, 0, 15, 40)
 				};
-			  ShowOnUI(message, notificationType);
+				ShowOnUI(message, notificationType);
 			});
 		}
 	}
 
 	/// <summary>Set the host window.</summary>
 	/// <param name="hostWindow">Parent window.</param>
-	public void SetHostWindow(object? hostWindow)
-	{
+	public void SetHostWindow(object? hostWindow) {
 		var notificationManager = new WindowNotificationManager((hostWindow as TopLevel) ?? App.MainWindow) {
 			Position = NotificationPosition.BottomRight,
 			MaxItems = 2,
@@ -56,28 +54,23 @@ public class ToasterService(IDispatchService dispatcher)
 
 		_notificationManager = notificationManager;
 	}
-	public void ShowInformation(string message)
-	{
+	public void ShowInformation(string message) {
 		ShowOnUI(message, NotificationType.Information);
 	}
 
-	public void ShowError(string message)
-	{
+	public void ShowError(string message) {
 		ShowOnUI(message, NotificationType.Error);
 	}
 
-	public void ShowSuccess(string message)
-	{
+	public void ShowSuccess(string message) {
 		ShowOnUI(message, NotificationType.Success);
 	}
 
-	public void ShowWarning(string message)
-	{
+	public void ShowWarning(string message) {
 		ShowOnUI(message, NotificationType.Warning);
 	}
 
-	public void ClearAllMessages()
-	{
+	public void ClearAllMessages() {
 		throw new NotImplementedException();
 	}
 }

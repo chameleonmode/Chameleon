@@ -23,14 +23,25 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 		c.Glyph = icons.FirstOrDefault(i => i.Name == icon)?.Glyph ?? "E946";
 
 		return await dispatcher.InvokeOnUiThread(async () => {
-
 			var dialog = new ContentDialog() {
 				Title = new MboxTitleUserControl(),
 				Content = content,
 				DataContext = c,
-				PrimaryButtonText = btns.PrimaryBtnText(),
-				SecondaryButtonText = btns.SecondaryBtnText(),
-				CloseButtonText = btns.CloseBtnText(),
+				PrimaryButtonText = btns switch {
+					MBoxButtons.Ok or MBoxButtons.OkCancel => "OK",
+					MBoxButtons.YesNoCancel or MBoxButtons.YesNo => "Yes",
+					_ => "OK"
+				},
+				SecondaryButtonText = btns switch {
+					MBoxButtons.YesNoCancel => "No",
+					_ => null
+				},
+				CloseButtonText = btns switch {
+					MBoxButtons.YesNo => "No",
+					MBoxButtons.YesNoCancel or
+					MBoxButtons.OkCancel => "Cancel",
+					_ => null
+				},
 				DefaultButton = ContentDialogButton.Primary,
 			};
 			var res = await dialog.ShowAsync();

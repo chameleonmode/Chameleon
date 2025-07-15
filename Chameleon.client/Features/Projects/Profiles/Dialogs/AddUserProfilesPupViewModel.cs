@@ -5,6 +5,7 @@ using Chameleon.client.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using Chameleon.lib.Helpers;
+using Chameleon.lib.Services;
 
 namespace Chameleon.client.Features.Projects.Profiles.Dialogs;
 

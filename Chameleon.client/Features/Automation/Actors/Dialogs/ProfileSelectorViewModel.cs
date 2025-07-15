@@ -3,6 +3,7 @@ using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
+using Chameleon.lib.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using DynamicData.Binding;

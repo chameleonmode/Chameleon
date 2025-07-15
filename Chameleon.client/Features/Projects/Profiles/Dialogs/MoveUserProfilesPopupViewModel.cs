@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using Chameleon.client.Features.Projects.Folders;
 using DynamicData;
 using Chameleon.lib.Helpers;
+using Chameleon.lib.Services;
 
 namespace Chameleon.client.Features.Projects.Profiles.Dialogs;
 

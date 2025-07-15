@@ -8,6 +8,7 @@ using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
+using Chameleon.lib.Services;
 namespace Chameleon.client.Features.Tenants.Members.Dialogs;
 
 public partial class InviteUserOrAddProfilesViewModel : OOVM {
@@ -26,11 +27,10 @@ public partial class InviteUserOrAddProfilesViewModel : OOVM {
 		ShowUserInfo = userInfo;
 		_ = UserProfilesRepo.Connect()
 		.Transform(i => new ObsProfile(i,
-			selectedChanged: x => {
-				if (x?.IsSelected == true) SelectedProfiles.AddIfNot(x);
-				else if (x?.IsSelected == false) SelectedProfiles.Remove(x);
-			}) { IsActionOptionsVisible = false })
-		.Bind(out var profiles).Subscribe();
+			selectedChanged: x => SelectedProfiles.AddOrRemove(x, () => x.IsSelected)
+		) { IsActionOptionsVisible = false })
+		.Bind(out var profiles)
+		.Subscribe();
 		Profiles = profiles;
 
 		_ = UserProfilesFolderRepo.Connect()
@@ -38,14 +38,15 @@ public partial class InviteUserOrAddProfilesViewModel : OOVM {
 			i.title ??= "All";
 			return new ObsFolder(i,
 			selectedChanged: x => {
-				if (x.IsSelected) SelectedFolders.AddIfNot(x);
-				else SelectedFolders.Remove(x);
-				
+				SelectedFolders.AddOrRemove(x, () => x.IsSelected);
+
 				Profiles.Where(p => p.Dto.folderId == i.id).ForEach(item => {
 					item.IsSelected = x.IsSelected;
 				});
-			}) { IsActionOptionsVisible = false };})
-		.Bind(out var folders).Subscribe();
+			}) { IsActionOptionsVisible = false };
+		})
+		.Bind(out var folders)
+		.Subscribe();
 		Folders = folders;
 	}
 

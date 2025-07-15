@@ -19,6 +19,7 @@ using FluentAvalonia.UI.Windowing;
 using Chameleon.client.Features.Settings.Featured;
 using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.lib.Services;
+using Chameleon.lib.WebBrowser.Services;
 
 namespace Chameleon.client;
 
@@ -43,30 +44,24 @@ public partial class App : Application {
 		IoC.I.Configure((b) => {
 			_ = b.SetBasePath(FilePaths.AppDataDir);
 		}, (services) => {
-			_ = services
-			.AddSingleton<IDispatchService, DispatchService>()
-			.AddSingleton<IToasterService, ToasterService>()
-			.AddSingleton<IMboxService, MboxService>()
-			.AddSingleton<IShowWindowService, ShowWindowService>()
-			.AddSingleton<ICopyPastaService, CopyPastaService>()
-			.All();
+			_ = services.All();
 		});
 
-		// Setup IoC
-		IoC.I.Init(action: async (inited) => {
-			if (inited) {
-				Toaster.Info("Starting...");
-				await RunAsync();
-				IoC.GetService<Features.Settings.ViewModel>()?.InitializSettings();
-
-				_ = await lib.WebBrowser.Project.Init();
-				_ = await lib.Playwright.Project.Init();
-			}
-		});
+		// Register views
+			IoC.GetService<Features.Settings.ViewModel>()?.InitializSettings();
 
 		Navigator.Instance.RegisterView("Features.Projects.View", typeof(Features.Projects.View));
 		Navigator.Instance.RegisterView(nameof(IdentityView), typeof(IdentityView));
 		Navigator.Instance.RegisterView(nameof(FunctionalSettingsView), typeof(FunctionalSettingsView));
+
+		Toaster.Info("Starting...");
+		_ = Task.Run(async () => {
+			await RunAsync();
+			await AddonsServer.I.Start();
+
+			_ = await lib.WebBrowser.Project.Init();
+			_ = await lib.Playwright.Project.Init();
+		});
 	}
 
 	public override void OnFrameworkInitializationCompleted() {
@@ -100,14 +95,18 @@ public partial class App : Application {
 	static async Task RunAsync(int trys = 3) {
 		await EX.Try(async () => {
 			if (trys == 0) throw new Exception("Failed after 3 attempts");
-			else if (await EX.Catch(
+			else {
+				await EX.Catch(
 				async () => await Common.Project.Logineer(
 					Session.I.Settings.AutoLogin ? Session.I.Settings : (
 						await MessageBox.Show<MboxLoginUserControl, MboxLoginViewModel>(
 						new(Session.I.Settings), new("User Login", Symbas: Symbas.ContactInfo))
 					)!.Settings
-				), async e => await RunAsync(trys - 1))
-			) await ViewModel.Instance.Init();
+				), async e => await RunAsync(trys - 1));
+
+				Toaster.Success($"Greetings {(Session.I.Settings?.LoginName) ?? "World"}");
+				await ViewModel.Instance.Init();
+			}
 		}, async e => {
 			if (await MessageBox.Error("Login Error", "Try again with last saved login info?", e)) await RunAsync();
 			else {

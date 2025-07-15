@@ -11,17 +11,20 @@
 		 x:DataType="local:ObsProfile"
 		 x:CompileBindings="True">
 	<UserControl.Styles>
-		<Style Selector=":is(Button)[Tag=True]">
+		<Style Selector=":is(Button)[Tag=1]">
 			<Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}"/>
 		</Style>
-		<Style Selector=":is(Button)[Tag=Error]">
+		<Style Selector=":is(Button)[Tag=0]">
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+		<Style Selector=":is(Button)[Tag=-1]">
 			<Setter Property="Background" Value="{DynamicResource SystemFillColorCautionBackgroundBrush}"/>
 		</Style>
-		<Style Selector=":is(Border)[Tag=True]">
-			<Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}"/>
+		<Style Selector=":is(Border).glyph[Tag=False]">
+			<Setter Property="Background" Value="{StaticResource AccentFillColorDefaultBrush}" />
 		</Style>
-		<Style Selector=":is(Border)[Tag=False]">
-			<Setter Property="Background" Value="Transparent" />
+		<Style Selector=":is(Border).glyph[Tag=True]">
+			<Setter Property="Background" Value="{StaticResource SystemFillColorSuccessBrush}" />
 		</Style>
 	</UserControl.Styles>
 
@@ -31,12 +34,13 @@
 				<CheckBox Margin="6 0 -6 0" IsChecked="{Binding IsSelected}" IsVisible="{Binding IsShowCheckboxColumn}" />
 
 				<Panel Name="IconHost" Tag="{Binding Dto}" VerticalAlignment="Center">
-					<Border Background="{StaticResource AccentFillColorDefaultBrush}"
-							BorderBrush="{StaticResource ControlStrokeColorOnAccentDefaultBrush}"
-							CornerRadius="180"
-							BorderThickness="1"
-							Width="34"
-							Height="34">
+					<Border Classes="glyph"
+						 Tag="{Binding Foreground, Mode=TwoWay}"
+						 BorderBrush="{StaticResource ControlStrokeColorOnAccentDefaultBrush}"
+						 CornerRadius="180"
+						 BorderThickness="1"
+						 Width="34"
+						 Height="34">
 						<TextBlock Text="{Binding Code,FallbackValue=N}"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center"
@@ -96,8 +100,7 @@
 						Command="{Binding CfVCommand}"
 						CommandParameter="ShowViewProfile"/>
 
-				<Button Content="three-dots"
-						Theme="{StaticResource SvgIconButton}">
+				<Button Content="three-dots" Theme="{StaticResource SvgIconButton}">
 					<Button.Flyout>
 						<ui:FAMenuFlyout Placement="Bottom">
 							

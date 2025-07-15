@@ -60,9 +60,7 @@ public partial class ViewModel : OOVM {
 		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Favourites, ProfileUIContext.Favorites);
 		
 		// If Favourites is selected by default, apply the context
-		if (IsFavouriteSelected) {
-			FavouriteViewModel.Instance.ApplyFavoritesContext();
-		}
+		FavouriteViewModel.Instance.ApplyFavoritesContext();
 	} 
 
 	partial void OnSelectedTagChanged(TagViewModel? oldValue, TagViewModel? newValue) {
