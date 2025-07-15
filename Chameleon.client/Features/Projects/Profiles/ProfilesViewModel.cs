@@ -9,7 +9,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
 using Chameleon.lib.Util;
-using Chameleon.lib.WebBrowser;
 using Chameleon.lib.Api.Repos;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
@@ -18,6 +17,7 @@ using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
 
 using Chameleon.lib.Api.Dto;
+using Chameleon.lib.Browzer;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 

@@ -6,19 +6,21 @@ using Chameleon.client.Services;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Api.Repos;
+using Chameleon.lib.Browzer;
+using Chameleon.lib.Browzer.Services;
 using Chameleon.lib.Helpers;
+using Chameleon.lib.Playwright;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Services;
 using Chameleon.lib.Util;
-using Chameleon.lib.WebBrowser;
-using Chameleon.lib.WebBrowser.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
+using FluentAvalonia.Core;
 using Microsoft.Playwright;
 using System.Collections.ObjectModel;
 using System.Text.Json;
-using static Chameleon.lib.WebBrowser.IBrowserInstance;
-using BrowserType = Chameleon.lib.WebBrowser.BrowserType;
+using static Chameleon.lib.Browzer.IBrowserInstance;
+using BrowserType = Chameleon.lib.Browzer.BrowserType;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
@@ -69,13 +71,13 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		AsyncCommandMap["OpenChrome"] = async () => await OpenBrowser(BrowserType.Chrome);
 		AsyncCommandMap["OpenBrave"] = async () => await OpenBrowser(BrowserType.Brave);
 
-		AsyncCommandMap["SyncCookiesChrome"] = async () => await HandleCookieOperation("ImportCookiesChrome", BrowserType.Chrome);
-		AsyncCommandMap["SyncCookiesBrave"] = async () => await HandleCookieOperation("ImportCookiesBrave", BrowserType.Brave);
-		AsyncCommandMap["SyncCookiesFirefox"] = async () => await HandleCookieOperation("ImportCookiesFirefox", BrowserType.Firefox);
+		AsyncCommandMap["SyncCookiesChrome"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Chrome);
+		AsyncCommandMap["SyncCookiesBrave"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Brave);
+		AsyncCommandMap["SyncCookiesFirefox"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Firefox);
 
-		AsyncCommandMap["ExportCookiesChrome"] = async () => await HandleCookieOperation("ExportCookiesChrome", BrowserType.Chrome);
-		AsyncCommandMap["ExportCookiesBrave"] = async () => await HandleCookieOperation("ExportCookiesBrave", BrowserType.Brave);
-		AsyncCommandMap["ExportCookiesFirefox"] = async () => await HandleCookieOperation("ExportCookiesFirefox", BrowserType.Firefox);
+		AsyncCommandMap["ExportCookiesChrome"] = async () => await HandleCookieOperation(CookieOp.Export, BrowserType.Chrome);
+		AsyncCommandMap["ExportCookiesBrave"] = async () => await HandleCookieOperation(CookieOp.Export, BrowserType.Brave);
+		AsyncCommandMap["ExportCookiesFirefox"] = async () => await HandleCookieOperation(CookieOp.Export, BrowserType.Firefox);
 
 		AsyncCommandMap["Favorite"] = async () => {
 			_ = await UserProfilesRepo.SetProfileIsFavorite(profile);
@@ -136,117 +138,77 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		return SBI[browserType];
 	}
 
-	public Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookiesAsync(BrowserType browserType) =>
-		ExecuteBrowserActionAsync(
-			browserType,
-			"cookie extraction",
-			port => Util.GetCookies(new(new(browserType, SystemBrowserProfile), port))
-		);
+	public Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookies(BrowserType browserType) => ExecuteBrowserAction(
+		browserType,
+		port => Util.GetCookies(new(new(browserType, SystemBrowserProfile), port))
+	);
 
-	private async Task HandleCookieOperation(string operation, BrowserType browserType) {
-		var isImport = operation.StartsWith("Import");
-		var browserName = browserType.ToString();
-		if (isImport) {
+	private async Task HandleCookieOperation(CookieOp operation, BrowserType browserType) {
+		if (operation == CookieOp.Import) {
 			var file = await App.MainWindow!.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
-				Title = $"Import Cookies for {browserName}",
+				Title = $"Import Cookies for {browserType}",
 				AllowMultiple = false,
 				FileTypeFilter = [new FilePickerFileType("JSON files") { Patterns = ["*.json"] }]
 			});
+			(file.Count == 1).ThrowFalse($"Select a single file to import cookies for {browserType}.");
 
-			if (file.Count == 1) {
-				try {
-					await using var stream = await file[0].OpenReadAsync();
-					using var reader = new StreamReader(stream);
-					var json = await reader.ReadToEndAsync();
-					var pwCookies = JsonSerializer.Deserialize<List<BrowserContextCookiesResult>>(json);
-					if (pwCookies != null) {
-						var cookies = pwCookies.Select(c => new Cookie {
-							Name = c.Name,
-							Value = c.Value,
-							Domain = c.Domain,
-							Path = c.Path,
-							Expires = c.Expires,
-							HttpOnly = c.HttpOnly,
-							Secure = c.Secure,
-							SameSite = Enum.TryParse<SameSiteAttribute>(c.SameSite.ToString(), true, out var sameSiteEnum) ? sameSiteEnum : SameSiteAttribute.Lax
-						}).ToList();
+			await using var stream = await file[0].OpenReadAsync();
+			using var reader = new StreamReader(stream);
+			var json = await reader.ReadToEndAsync();
+			var pwCookies = JSON.Deserialize<List<BrowserContextCookiesResult>>(json);
+			ArgumentNullException.ThrowIfNull(pwCookies, "Failed to deserialize cookies from JSON file."); ;
 
-						await ExecuteBrowserActionAsync(
-							browserType,
-							"cookie import",
-							port => Util.SetCookies(
-									new(new(browserType, SystemBrowserProfile), port),
-									cookies.Select(c => new Cookie {
-										Name = c.Name,
-										Value = c.Value,
-										Domain = c.Domain,
-										Path = c.Path,
-										Expires = (float?)c.Expires,
-										HttpOnly = c.HttpOnly,
-										Secure = c.Secure,
-										SameSite =
-											Enum.TryParse<SameSiteAttribute>(c.SameSite?.ToString(), true, out var sameSiteEnum)
-											? sameSiteEnum 
-											: SameSiteAttribute.Lax
-									})
-							)
-						);
-						Toaster.Success($"Successfully imported {cookies.Count} cookies for {browserName}.");
-					} else {
-						Toaster.Error($"Failed to deserialize cookies for {browserName}.");
-					}
-				} catch (Exception ex) {
-					Toaster.Error($"Error importing cookies for {browserName}: {ex.Message}");
-				}
-			}
+			await ExecuteBrowserAction(
+				browserType,
+				port => Util.SetCookies(
+					new(new(browserType, SystemBrowserProfile), port),
+					pwCookies.Select(c => new Cookie {
+						Name = c.Name,
+						Value = c.Value,
+						Domain = c.Domain,
+						Path = c.Path,
+						Expires = c.Expires,
+						HttpOnly = c.HttpOnly,
+						Secure = c.Secure,
+						SameSite = Enum.TryParse<SameSiteAttribute>(c.SameSite.ToString(), true, out var sameSiteEnum) ? sameSiteEnum : SameSiteAttribute.Lax
+					}).ToList()
+			));
 		} else {
-			var cookiesToExport = await GetCookiesAsync(browserType) ?? [];
-			cookiesToExport.Any().ThrowFalse($"No cookies found to export for {browserName}.");
+			var cookiesToExport = await GetCookies(browserType) ?? [];
+			cookiesToExport.Any().ThrowFalse($"No cookies found to export for {browserType}.");
 
 			var file = await App.MainWindow!.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions {
-				Title = $"Export Cookies for {browserName}",
-				SuggestedFileName = $"{browserName}Cookies_{DateTime.Now:yyyyMMddHHmmss}.json",
+				Title = $"Export Cookies for {browserType}",
+				SuggestedFileName = $"{browserType}Cookies_{DateTime.Now:yyyyMMddHHmmss}.json",
 				DefaultExtension = "json",
 				FileTypeChoices = [new FilePickerFileType("JSON files") { Patterns = ["*.json"] }]
 			});
+			ArgumentNullException.ThrowIfNull(file, "File selection was cancelled or failed.");
 
-			if (file != null) {
-				try {
-					var json = JsonSerializer.Serialize(cookiesToExport, new JsonSerializerOptions { WriteIndented = true });
-					await using var stream = await file.OpenWriteAsync();
-					await using var writer = new StreamWriter(stream);
-					await writer.WriteAsync(json);
-					Toaster.Success($"Successfully exported {cookiesToExport.Count()} cookies for {browserName} to {file.Name}.");
-				} catch (Exception ex) {
-					Toaster.Error($"Error exporting cookies for {browserName}: {ex.Message}");
-				}
-			}
+			var json = JSON.Serialize(cookiesToExport);
+			await using var stream = await file.OpenWriteAsync();
+			await using var writer = new StreamWriter(stream);
+			await writer.WriteAsync(json);
 		}
+
+		Toaster.Success($"Successfully {operation}ed cookies for {browserType}.");
 	}
 
-	private async Task<T?> ExecuteBrowserActionAsync<T>(BrowserType browserType, string actionName, Func<int, Task<T>> action) where T : class {
+	private async Task<T?> ExecuteBrowserAction<T>(BrowserType browserType, Func<int, Task<T>> action) where T : class {
 		var wasOpen = SBI.TryGetValue(browserType, out var browser) && browser != null;
 		browser ??= await OpenBrowser(browserType, foreground: false);
-
 		try {
 			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 			var isLoaded = await browser!.LoadedTCS.Task.WaitAsync(cts.Token);
 			if (!isLoaded) throw new Exception($"Failed to load");
-
 			var port = browser.Settings.Profile.Port;
 			return port <= 0 ? throw new Exception($"Invalid debugging port") : await action(port);
-		} catch (Exception ex) {
-			var message = ex is TimeoutException or OperationCanceledException 
-				? $"{browserType} initialization timed out for {actionName}."
-				: $"{actionName} on {browserType}: {ex.Message}";
-			Toaster.Error(message);
 		} finally {
 			if (!wasOpen && browser != null) {
 				await Processez.TryKillProcess(browser.Brocess);
 				browser.Close();
 			}
 		}
-		return default;
 	}
 
 	public void SetUIContext(ProfileUIContext context) {

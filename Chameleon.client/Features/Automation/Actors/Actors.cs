@@ -12,7 +12,6 @@ using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using Chameleon.lib;
-using Chameleon.lib.WebBrowser;
 using Chameleon.lib.AIR.Actors;
 using Chameleon.lib.AIR.Actors.Reddit;
 using Chameleon.lib.Helpers;
@@ -25,6 +24,7 @@ using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Abs.Platformatic;
 using ExCSS;
 using Microsoft.AspNetCore.Http.Metadata;
+using Chameleon.lib.Browzer;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public static class Actorz {

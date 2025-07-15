@@ -12,7 +12,7 @@ using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Dto;
 using Chameleon.client.Features.Projects;
-using Chameleon.lib.WebBrowser;
+using Chameleon.lib.Browzer;
 
 namespace Chameleon.client.Features.Tenants.Members;
 
@@ -31,7 +31,7 @@ public partial class AssistantUsersProfile : OODTOVM<AssisProfileDto> {
 				user.Dto.id == Auther.AuthSession?.UserId
 				 ? DB.I.Userz.Users?.First(u => u.LicenseKey != null).Email
 				 : user.Dto.EmailAddress;
-			var cookies = await user.All.First(x => x.Dto.id == Dto.ProfileId).GetCookiesAsync(bt);
+			var cookies = await user.All.First(x => x.Dto.id == Dto.ProfileId).GetCookies(bt);
 			await DB.I.Cooky.SendCookies(
 				 Dto.ProfileId,
 				 email ?? throw new InvalidOperationException("User email not found"),

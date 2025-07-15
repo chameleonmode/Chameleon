@@ -19,7 +19,8 @@ using FluentAvalonia.UI.Windowing;
 using Chameleon.client.Features.Settings.Featured;
 using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.lib.Services;
-using Chameleon.lib.WebBrowser.Services;
+using Chameleon.lib.Browzer;
+using Chameleon.lib.Browzer.Services;
 
 namespace Chameleon.client;
 
@@ -57,9 +58,9 @@ public partial class App : Application {
 		Toaster.Info("Starting...");
 		_ = Task.Run(async () => {
 			await RunAsync();
-			await AddonsServer.I.Start();
+			await AddonsServer.I.Init();
 
-			_ = await lib.WebBrowser.Project.Init();
+			_ = await Project.Initialize();
 			_ = await lib.Playwright.Project.Init();
 		});
 	}

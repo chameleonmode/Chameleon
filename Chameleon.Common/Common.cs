@@ -1,8 +1,8 @@
 ﻿using Chameleon.lib.Api;
 using Chameleon.lib.Auth;
+using Chameleon.lib.Browzer;
+using Chameleon.lib.Browzer.Services;
 using Chameleon.lib.Util;
-using Chameleon.lib.WebBrowser;
-using Chameleon.lib.WebBrowser.Services;
 
 namespace Chameleon.Common;
 

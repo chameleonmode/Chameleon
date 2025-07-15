@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Chameleon-lib/Chameleon.lib.Api/Chameleon.lib.Api.csproj" />
-    <ProjectReference Include="../../Chameleon-lib/Chameleon.lib.WebBrowser/Chameleon.lib.WebBrowser.csproj" />
     <ProjectReference Include="../../Chameleon-lib/Chameleon.lib/Chameleon.lib.csproj" />
   </ItemGroup>
 

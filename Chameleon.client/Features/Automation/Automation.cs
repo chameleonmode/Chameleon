@@ -1,5 +1,5 @@
 using Chameleon.client.MvvM;
-using Chameleon.lib.WebBrowser;
+using Chameleon.lib.Browzer;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.client.Features.Automation;
