@@ -48,7 +48,18 @@ public class MboxService(IDispatchService dispatcher) : IMboxService {
 			return (MboxResult)res;
 		});
 	}
-
+	public async Task<TaskDialogResult> ShowTaskDialog<TViewModel, Tview>(Func<TViewModel> initialize, string header, string? subHeader = null, string title = IoC.AppName, object? footer = null, Symbas symbas = Symbas.Alert, MBoxButtons btns = MBoxButtons.YesNo) where Tview : new() {
+		var result = await ShowTaskDialog(
+		initialize,
+		dispatcher.InvokeOnUiThread(() => Task.FromResult(new Tview())),
+		header,
+		subHeader,
+		title,
+		footer,
+		symbas,
+		btns);
+		return result;
+	}
 	public async Task<TaskDialogResult> ShowTaskDialog<TViewModel>(Func<TViewModel> initialize, object content, string header, string? subHeader = null, string title = IoC.AppName, object? footer = null, Symbas symbas = Symbas.Alert, MBoxButtons btns = MBoxButtons.YesNo) {
 		while (App.MainWindow is null) {
 			await Task.Delay(250);

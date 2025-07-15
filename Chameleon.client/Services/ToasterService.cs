@@ -5,8 +5,7 @@ using Chameleon.lib.Services;
 
 namespace Chameleon.client.Services;
 
-public class ToasterService(IDispatchService dispatcher)
-								: IToasterService {
+public class ToasterService(IDispatchService dispatcher) : IToasterService {
 	private int _notificationTimeout = 9;
 	private WindowNotificationManager? _notificationManager;
 	private readonly IDispatchService _dispatcher = dispatcher;

@@ -16,8 +16,7 @@ public class PageModelBase {
 	public string IconKey { get; set; } = "HomeIcon"; // Default to "HomeIcon
 	public bool ShowsInFooter { get; set; }
 
-	public NavigationViewItemBase GetNavigationViewItemBase(UserControl c)
-	{
+	public NavigationViewItemBase GetNavigationViewItemBase(UserControl c) {
 		var nvi = new NavigationViewItem {
 			Content = NavHeader,
 			Tag = this,

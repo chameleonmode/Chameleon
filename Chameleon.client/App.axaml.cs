@@ -48,7 +48,7 @@ public partial class App : Application {
 		});
 
 		// Register views
-			IoC.GetService<Features.Settings.ViewModel>()?.InitializSettings();
+		IoC.GetService<Features.Settings.ViewModel>()?.InitializSettings();
 
 		Navigator.Instance.RegisterView("Features.Projects.View", typeof(Features.Projects.View));
 		Navigator.Instance.RegisterView(nameof(IdentityView), typeof(IdentityView));
