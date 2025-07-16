@@ -188,7 +188,7 @@
 
 								<ui:SettingsExpander.Footer>
 									<StackPanel Classes="zontal">
-										<ItemsControl ItemsSource="{Binding Selections}" Classes="sp-zontal" >
+										<ItemsControl ItemsSource="{Binding Selections}" Classes="sp-zontal" IsVisible="{Binding !Running}">
 											<ItemsControl.ItemTemplate>
 												<DataTemplate>
 													<ToggleButton IsChecked="{Binding Selected}" 
@@ -199,7 +199,9 @@
 										</ItemsControl>
 										<Border Classes="divider" />
 
-										<ComboBox SelectedItem="{Binding SelectedBrowserOption}" ItemsSource="{x:Static local:ActorsViewModel.BrowserOptions}">
+										<ComboBox SelectedItem="{Binding SelectedBrowserOption}"
+											 ItemsSource="{x:Static local:ActorsViewModel.BrowserOptions}"
+											 IsVisible="{Binding !Running}">
 											<ComboBox.ItemTemplate>
 												<DataTemplate>
 													<cc:SvgIcon IconName="{Binding IconName}" Height="20" Width="20" />
@@ -207,7 +209,9 @@
 											</ComboBox.ItemTemplate>
 										</ComboBox>
 
-										<ComboBox SelectedItem="{Binding AI.Model}" ItemsSource="{x:Static local:ActorsViewModel.Models}" />
+										<ComboBox SelectedItem="{Binding AI.Model}" 
+											 ItemsSource="{x:Static local:ActorsViewModel.Models}"
+											 IsVisible="{Binding !Running}" />
 
 										<Button Content="Play" Classes="icon async" IsVisible="{Binding !Running}" />
 										<Button Content="Stop" Classes="icon cfv" IsVisible="{Binding Running}" />
