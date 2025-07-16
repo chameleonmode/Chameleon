@@ -6,6 +6,7 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 						 xmlns:afv="using:Chameleon.client.UI.Controls"
 						 xmlns:uc="using:Chameleon.client.UI.Components"
+			 			 xmlns:auto="using:Chameleon.client.Features.Automation.Actors"
 						 xmlns:local="using:Chameleon.client.Features.Projects.Profiles"
              x:Class="Chameleon.client.Features.Projects.Profiles.ProfilesView"
 						 x:DataType="local:ProfilesViewModel"
@@ -51,7 +52,7 @@
 							<Button Content="delete" ToolTip.Tip="Delete" Classes="async svg" />
 							<Border Classes="divider" Margin="18 6" />
 							<ComboBox SelectedItem="{Binding SelectedBrowserOption}"
-								 ItemsSource="{Binding BrowserOptions}"
+								 ItemsSource="{x:Static auto:ActorsViewModel.BrowserOptions}"
 								 Margin="0 0 6 0">
 								<ComboBox.ItemTemplate>
 									<DataTemplate>

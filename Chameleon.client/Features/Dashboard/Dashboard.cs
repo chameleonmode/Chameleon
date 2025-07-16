@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using Chameleon.client.Features.Projects;
 using Chameleon.lib.Browzer;
+using Chameleon.lib.Util;
 
 namespace Chameleon.client.Features.Dashboard;
 
@@ -57,23 +58,18 @@ public partial class ViewModel : OOVM {
 
 	public override async Task Init(object? param) {
 		await base.Init(param);
-		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Favourites, ProfileUIContext.Favorites);
-		
-		// If Favourites is selected by default, apply the context
-		FavouriteViewModel.Instance.ApplyFavoritesContext();
+		ProfileUIContextManager.ApplyContextToProfiles(FavouriteViewModel.Instance.Profiles, ProfileUIContext.Dashboard);
+		ProfileUIContextManager.ApplyContextToProfiles(TagsViewModel.Instance.Profiles, ProfileUIContext.Dashboard);
 	} 
 
 	partial void OnSelectedTagChanged(TagViewModel? oldValue, TagViewModel? newValue) {
 		if (newValue == null) return;
 
 		IsFavouriteSelected = newValue.Name == "Favourites";
-		
+
 		// Apply Favorites context when Favourites tab is selected
-		if (IsFavouriteSelected) {
-			FavouriteViewModel.Instance.ApplyFavoritesContext();
-		}
-		
-		if (!IsFavouriteSelected) TagsViewModel.Instance.SelectedTagName = newValue.Name;
+		if (IsFavouriteSelected) ProfileUIContextManager.SetModuleContext(ProfileUIModule.Favourites, ProfileUIContext.Dashboard);
+		else TagsViewModel.Instance.SelectedTagName = newValue.Name;
 
 		if (!newValue.IsSelected) newValue.IsSelected = true;
 		if (oldValue != null && oldValue.IsSelected) oldValue.IsSelected = false;

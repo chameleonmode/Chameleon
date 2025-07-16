@@ -207,6 +207,8 @@
 											</ComboBox.ItemTemplate>
 										</ComboBox>
 
+										<ComboBox SelectedItem="{Binding AI.Model}" ItemsSource="{x:Static local:ActorsViewModel.Models}" />
+
 										<Button Content="Play" Classes="icon async" IsVisible="{Binding !Running}" />
 										<Button Content="Stop" Classes="icon cfv" IsVisible="{Binding Running}" />
 										

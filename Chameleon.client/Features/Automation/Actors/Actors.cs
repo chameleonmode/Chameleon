@@ -58,8 +58,7 @@ public partial class ActorViewModel : Automatior {
 	public ObservableCollection<Selection> Selections { get; } = [];
 
 	public lib.AIR.Actors.AI AI => Actor.Options.AI;
-	public lib.AIR.Actors.Reddit.Args Args => Actor.Args as lib.AIR.Actors.Reddit.Args ??
-		new lib.AIR.Actors.Reddit.Args(); // Ensure we have a valid Args instance TODO make more generic
+	public lib.AIR.Actors.Reddit.Args Args => Actor.Args as lib.AIR.Actors.Reddit.Args ?? new lib.AIR.Actors.Reddit.Args(); // Ensure we have a valid Args instance @TODO make more generic
 	public lib.AIR.Actors.Settings Settings => Actor.Options.Settings; //new(new("x", 9, new(1, 1), new(1, 1)), new(30, 15, 60, new(256, 512)));
 
 	public ActorViewModel(IActor actor) {
@@ -207,6 +206,11 @@ public partial class ActorViewModel : Automatior {
 
 public partial class ActorsViewModel : OOVM {
 	public static IEnumerable<BrowserOption> BrowserOptions { get; } = [new(BrowserType.Chrome), new(BrowserType.Brave)];
+	public static IEnumerable<string> Models { get; } = [
+		// Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.Gpt41),
+		Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.O4Mini),
+		Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.Grok4)
+	];
 
 	[ObservableProperty] ActorViewModel selectedActor;
 	public ObservableCollection<ActorViewModel> Actors { get; } = [new(new Reddit())];
