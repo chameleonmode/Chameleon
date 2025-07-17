@@ -19,8 +19,8 @@ using FluentAvalonia.UI.Windowing;
 using Chameleon.client.Features.Settings.Featured;
 using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.lib.Services;
-using Chameleon.lib.Browzer;
-using Chameleon.lib.Browzer.Services;
+using Chameleon.lib.Browzio;
+using Chameleon.lib.Browzio.Services;
 using Chameleon.lib.Api;
 
 namespace Chameleon.client;
@@ -61,7 +61,7 @@ public partial class App : Application {
 			await RunAsync();
 			await AddonsServer.I.Init();
 
-			_ = await Project.Initialize();
+			await Browzio.I.Init();
 			_ = await lib.Playwright.Project.Init();
 		});
 	}
@@ -97,10 +97,10 @@ public partial class App : Application {
 	static async Task<bool> Logineer(LoginSettings login) {
 		Session.I.Auth0Client.OidcBrowser.Open = async url => {
 			var browser = await EX.Catch(
-				async () => await Browzio.I.Open(FactorySettings.Chrome(url)),
+				async () => await Browzers.I.Open(Browzio.Factory.Chrome(url)),
 				ex => { if (!BrowserInfo.Find(BrowserType.Chrome).Exists) Processez.OpenBrowser(url); }
 			);
-			_ = Session.I.Auth0Client.OidcBrowser.TaskCompletion?.Task.ContinueWith(_ => browser?.Closee());
+			Session.I.Auth0Client.OidcBrowser.TaskCompletion?.Task.ContinueWith(_ => browser?.Closee());
 		};
 		await Session.I.Login(login);
 		await Auther.LoginAsync(login.LoginName, login.LicenseKey);

@@ -24,7 +24,7 @@ using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Abs.Platformatic;
 using ExCSS;
 using Microsoft.AspNetCore.Http.Metadata;
-using Chameleon.lib.Browzer;
+using Chameleon.lib.Browzio;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public static class Actorz {
@@ -146,7 +146,7 @@ public partial class ActorViewModel : Automatior {
 
 					var browser = await profile.OpenBrowser(SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
 					await Run.Script(new() {
-						Port = browser!.Settings.Profile.Port,
+						Port = browser!.Settings.Port,
 						Script = selection.Script,
 						Opts = new Opts(
 							AI, Args.ToDictionary(selected), Settings.ToRecord(urlser, termer, selection, new(0, 0))

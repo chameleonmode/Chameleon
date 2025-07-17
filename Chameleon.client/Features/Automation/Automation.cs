@@ -1,6 +1,6 @@
 using Chameleon.client.Features.Automation.Actors;
 using Chameleon.client.MvvM;
-using Chameleon.lib.Browzer;
+using Chameleon.lib.Browzio;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Chameleon.client.Features.Automation;

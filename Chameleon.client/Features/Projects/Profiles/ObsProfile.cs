@@ -6,8 +6,8 @@ using Chameleon.client.Services;
 using Chameleon.lib.Api;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Api.Repos;
-using Chameleon.lib.Browzer;
-using Chameleon.lib.Browzer.Services;
+using Chameleon.lib.Browzio;
+using Chameleon.lib.Browzio.Services;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright;
 using Chameleon.lib.Playwright.Services;
@@ -19,8 +19,8 @@ using FluentAvalonia.Core;
 using Microsoft.Playwright;
 using System.Collections.ObjectModel;
 using System.Text.Json;
-using static Chameleon.lib.Browzer.IBrowserInstance;
-using BrowserType = Chameleon.lib.Browzer.BrowserType;
+using static Chameleon.lib.Browzio.IBrowserInstance;
+using BrowserType = Chameleon.lib.Browzio.BrowserType;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
@@ -103,7 +103,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			width: 156
 		);
 
-		_ = Browzio.I.HasInstanceOf(Dto.id, (s, e) => {
+		_ = Browzers.I.HasInstanceOf(Dto.id, (s, e) => {
 			Foreground = false; // @TODO: optimization
 			if (Dto.id != e.Settings.Profile.Id) return;
 			Foreground = e.Event is Event.Foreground or Event.Opened;
@@ -134,7 +134,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 
 	public async Task<IBrowserInstance?> OpenBrowser(BrowserType browserType, bool foreground = true) {
 		if (SBI[browserType] is IBrowserInstance browser && foreground) browser.InvokeEvent(Event.Foreground);
-		else if (SBI[browserType] is null) return SBI[browserType] = await Browzio.I.Open(new BrowserSetting(browserType, SystemBrowserProfile));
+		else if (SBI[browserType] is null) return SBI[browserType] = await Browzers.I.Open(new BrowserSetting(browserType, SystemBrowserProfile));
 		return SBI[browserType];
 	}
 
@@ -201,7 +201,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 			var isLoaded = await browser!.LoadedTCS.Task.WaitAsync(cts.Token);
 			if (!isLoaded) throw new Exception($"Failed to load");
-			var port = browser.Settings.Profile.Port;
+			var port = browser.Settings.Port;
 			return port <= 0 ? throw new Exception($"Invalid debugging port") : await action(port);
 		} finally {
 			if (!wasOpen && browser != null) {

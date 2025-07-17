@@ -17,7 +17,7 @@ using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.client.Features.Projects.Profiles.Dialogs;
 
 using Chameleon.lib.Api.Dto;
-using Chameleon.lib.Browzer;
+using Chameleon.lib.Browzio;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
@@ -233,7 +233,7 @@ public partial class ProfilesViewModel : Profiler {
 					await ConfigureScriptParameters(profile);
 					var browser = await profile.OpenBrowser(SelectedBrowserOption.Option).WaitAsync(cts.Token);
 
-					SelectedPlaywrightScript!.Port = browser!.Settings.Profile.Port;
+					SelectedPlaywrightScript!.Port = browser!.Settings.Port;
 					SelectedPlaywrightScript.Record = record;
 					await Run.Script(SelectedPlaywrightScript, cts.Token);
 				}

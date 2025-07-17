@@ -11,7 +11,7 @@ using DynamicData;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using Chameleon.client.Features.Projects;
-using Chameleon.lib.Browzer;
+using Chameleon.lib.Browzio;
 using Chameleon.lib.Util;
 
 namespace Chameleon.client.Features.Dashboard;

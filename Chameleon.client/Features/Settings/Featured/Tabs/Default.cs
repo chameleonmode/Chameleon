@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using Chameleon.lib.Util;
 using Chameleon.lib;
-using Chameleon.lib.Browzer;
+using Chameleon.lib.Browzio;
 
 namespace Chameleon.client.Features.Settings.Featured;
 

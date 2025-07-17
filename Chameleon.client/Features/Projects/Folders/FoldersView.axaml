@@ -116,13 +116,11 @@
 	<afv:ChameleonContentControl Title="Folders" TitleDescription="Select a folder to view profiles">
 		<afv:ChameleonContentControl.TitleContent>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-				<Button Tag="New"
-						Margin="0 0 6 6"
-						Content="new-folder"
-						ToolTip.Tip="Create Folder"
-						Theme="{StaticResource SvgIconTextButton}"
-						CommandParameter="Create"
-						Command="{Binding AsyncCfVCommand}"/>
+				<Button Margin="0 0 6 6"
+						Classes="async icon clear accent"
+						Content="Folder"
+						ToolTip.Tip="Create a Folder"
+						CommandParameter="Create" />
 			</StackPanel>
 		</afv:ChameleonContentControl.TitleContent>
 		<ItemsControl

@@ -12,7 +12,7 @@ using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Dto;
 using Chameleon.client.Features.Projects;
-using Chameleon.lib.Browzer;
+using Chameleon.lib.Browzio;
 
 namespace Chameleon.client.Features.Tenants.Members;
 
