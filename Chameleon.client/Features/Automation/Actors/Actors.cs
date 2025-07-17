@@ -143,8 +143,8 @@ public partial class ActorViewModel : Automatior {
 						$"URL: {string.Join(", ", urlser)}",
 						$"Search: {string.Join(", ", termer)}"
 					);
-
-					var browser = await profile.OpenBrowser(SelectedBrowserOption.Option, false).WaitAsync(cts.Token);
+					await profile.AsyncCfVCommand.ExecuteAsync(SelectedBrowserOption.Option.ToString().ToLower());
+					var browser = profile.SBI[SelectedBrowserOption.Option];
 					await Run.Script(new() {
 						Port = browser!.Settings.Port,
 						Script = selection.Script,

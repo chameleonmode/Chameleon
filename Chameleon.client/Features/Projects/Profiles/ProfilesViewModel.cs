@@ -69,7 +69,7 @@ public partial class ProfilesViewModel : Profiler {
 	public override IEnumerable<ObsProfile> SelectedProfiles => 
 		UserProfilesRepo.Instance.ObservableCache.Items
 			.Where(dto => selectedProfileIds.Contains(dto.id))
-			.Select(dto => new ObsProfile(dto))
+			.Select(dto => ObsProfiles.First(p => p.Dto.id == dto.id))
 			.ToList();
 	public bool HasFolder => Folder?.Id > 0;
 	public string SelectedFolderTitle => Folder?.Title ?? "x_x";
@@ -180,12 +180,12 @@ public partial class ProfilesViewModel : Profiler {
 			SetViewModelsFilter();
 		};
 
-		async Task OpenSystemBrowser(BrowserType browserType) {
-			await SelectedProfiles.TryEach(async profile => await profile.OpenBrowser(browserType));
+		async Task OpenBrowser(BrowserType bt) {
+			await SelectedProfiles.TryEach(async profile => await profile.AsyncCfVCommand.ExecuteAsync(bt.ToString().ToLower()));
 		}
-		AsyncCommandMap["chrome"] = () => OpenSystemBrowser(BrowserType.Chrome);
-		AsyncCommandMap["brave"] = () => OpenSystemBrowser(BrowserType.Brave);
-		AsyncCommandMap["firefox"] = () => OpenSystemBrowser(BrowserType.Firefox);
+		AsyncCommandMap["chrome"] = () => OpenBrowser(BrowserType.Chrome);
+		AsyncCommandMap["brave"] = () => OpenBrowser(BrowserType.Brave);
+		AsyncCommandMap["firefox"] = () => OpenBrowser(BrowserType.Firefox);
 		AsyncCommandMap["chameleon-logo"] = () => {
 			SelectedProfiles?.ForEach(profile => SnapCracklePopViewModel.Open(profile));
 			return Task.CompletedTask;

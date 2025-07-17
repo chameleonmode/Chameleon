@@ -13,6 +13,8 @@ public interface IInitializer {
 	Task Initialize(object? param = null);
 }
 public abstract partial class OO : ObservableObject, IInitializer, IValidatableObject {
+	public SemaphoreSlim Semaphore { get; } = new(1, 1);
+
 	[ObservableProperty] string? title;
 	[ObservableProperty] string? tags;
 	[ObservableProperty] bool loaded;
@@ -68,8 +70,10 @@ public abstract partial class OO : ObservableObject, IInitializer, IValidatableO
 
 	[RelayCommand]
 	public async Task AsyncCfV(object what) {
+		await Semaphore.WaitAsync();
 		var cmd = what.ToString();
 		await EX.Try(async () => await AsyncCommandMap[cmd!](), caught: e => Toaster.Error(cmd ?? "", e.Message));
+		Semaphore.Release();
 	}
 
 	public virtual void OnPropertyMessagesChanged(string propertyName) {

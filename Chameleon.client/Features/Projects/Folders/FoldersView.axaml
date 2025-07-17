@@ -117,7 +117,7 @@
 		<afv:ChameleonContentControl.TitleContent>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 				<Button Margin="0 0 6 6"
-						Classes="async icon clear accent"
+						Classes="async icon clear text"
 						Content="Folder"
 						ToolTip.Tip="Create a Folder"
 						CommandParameter="Create" />

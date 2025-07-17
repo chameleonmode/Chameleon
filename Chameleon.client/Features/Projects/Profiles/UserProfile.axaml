@@ -70,24 +70,15 @@
 					IsVisible="{Binding IsActionOptionsVisible}"
 					HorizontalAlignment="Right"
 					Rows="1">
-				<Button
-					Content="chrome"
-					Tag="{Binding IsChromeRunning, Mode=TwoWay}"
-					Theme="{StaticResource SvgIconButton}"
-					Command="{Binding AsyncCfVCommand}"
-					CommandParameter="OpenChrome" />
-				<Button
-					Content="firefox"
-					Tag="{Binding IsFFRunning}"
-					Theme="{StaticResource SvgIconButton}"
-					Command="{Binding AsyncCfVCommand}"
-					CommandParameter="OpenFirefox" />
-				<Button
-					Content="brave"
-					Tag="{Binding IsBraveRunning}"
-					Theme="{StaticResource SvgIconButton}"
-					Command="{Binding AsyncCfVCommand}"
-					CommandParameter="OpenBrave"/>
+					<Button Content="chrome"
+						Classes="async svg"
+						Tag="{Binding IsChromeRunning}" />
+					<Button Content="firefox" 
+						Classes="async svg"
+						Tag="{Binding IsFFRunning}" />
+					<Button Content="brave" 
+						Classes="async svg"
+						Tag="{Binding IsBraveRunning}" />
 
 				<Button
 					Content="chameleon-logo"

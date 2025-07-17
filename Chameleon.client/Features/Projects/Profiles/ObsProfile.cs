@@ -18,7 +18,6 @@ using DynamicData;
 using FluentAvalonia.Core;
 using Microsoft.Playwright;
 using System.Collections.ObjectModel;
-using System.Text.Json;
 using static Chameleon.lib.Browzio.IBrowserInstance;
 using BrowserType = Chameleon.lib.Browzio.BrowserType;
 
@@ -64,12 +63,12 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			return logins;
 		}
 	}
-
+ 
 	public ObsProfile(UserProfileDto profile, Action<ObsProfile>? selectedChanged = default, Action<ObsProfile>? onDeleted = default)
 	 : base(profile, onSelectedChanged: selectedChanged != null ? (vm) => selectedChanged((ObsProfile)vm) : null) {
-		AsyncCommandMap["OpenFirefox"] = async () => await OpenBrowser(BrowserType.Firefox);
-		AsyncCommandMap["OpenChrome"] = async () => await OpenBrowser(BrowserType.Chrome);
-		AsyncCommandMap["OpenBrave"] = async () => await OpenBrowser(BrowserType.Brave);
+		AsyncCommandMap["brave"] = () => OpenBrowser(BrowserType.Brave);
+		AsyncCommandMap["chrome"] = () => OpenBrowser(BrowserType.Chrome);
+		AsyncCommandMap["firefox"] = () => OpenBrowser(BrowserType.Firefox);
 
 		AsyncCommandMap["SyncCookiesChrome"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Chrome);
 		AsyncCommandMap["SyncCookiesBrave"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Brave);
@@ -132,8 +131,8 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		Navigator.Instance.NavigateTo("IdentityView", Dto);
 	}
 
-	public async Task<IBrowserInstance?> OpenBrowser(BrowserType browserType, bool foreground = true) {
-		if (SBI[browserType] is IBrowserInstance browser && foreground) browser.InvokeEvent(Event.Foreground);
+	public async Task<IBrowserInstance?> OpenBrowser(BrowserType browserType) {
+		if (SBI[browserType] is IBrowserInstance browser) browser.InvokeEvent(Event.Foreground);
 		else if (SBI[browserType] is null) return SBI[browserType] = await Browzers.I.Open(new BrowserSetting(browserType, SystemBrowserProfile));
 		return SBI[browserType];
 	}
@@ -196,7 +195,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 
 	private async Task<T?> ExecuteBrowserAction<T>(BrowserType browserType, Func<int, Task<T>> action) where T : class {
 		var wasOpen = SBI.TryGetValue(browserType, out var browser) && browser != null;
-		browser ??= await OpenBrowser(browserType, foreground: false);
+		browser ??= await OpenBrowser(browserType);
 		try {
 			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 			var isLoaded = await browser!.LoadedTCS.Task.WaitAsync(cts.Token);
