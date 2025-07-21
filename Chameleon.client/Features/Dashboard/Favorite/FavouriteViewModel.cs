@@ -21,7 +21,7 @@ public partial class FavouriteViewModel : Dashboarder {
 					var profiles = changeSet.Select(c => c.Current);
 			 		ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.Dashboard);
 			 })
-			.Bind(out var profiles)
+			.SortAndBind(out var profiles, Profiler.AscendingComparer)
 			.Subscribe(_ => OnPropertyChanged(nameof(HasProfiles)));
 		Profiles = profiles;
 

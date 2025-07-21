@@ -23,7 +23,6 @@ using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Abs.Platformatic;
 using ExCSS;
-using Microsoft.AspNetCore.Http.Metadata;
 using Chameleon.lib.Browzio;
 namespace Chameleon.client.Features.Automation.Actors;
 
@@ -205,7 +204,7 @@ public partial class ActorViewModel : Automatior {
 }
 
 public partial class ActorsViewModel : OOVM {
-	public static IEnumerable<BrowserOption> BrowserOptions { get; } = [new(BrowserType.Chrome), new(BrowserType.Brave)];
+	public static IEnumerable<BrowserOption> BrowserOptions { get; } = [new(BrowserType.Chrome)];//, new(BrowserType.Brave)];
 	public static IEnumerable<string> Models { get; } = [
 		// Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.Gpt41),
 		Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.O4Mini),
