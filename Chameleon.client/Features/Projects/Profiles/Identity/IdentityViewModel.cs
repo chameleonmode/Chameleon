@@ -21,7 +21,6 @@ public partial class IdentityViewModel : OOVM {
 	[ObservableProperty] AddressesViewModel? addressesVM;
 	[ObservableProperty] LoginsViewModel? loginsVM;
 
-
 	public IdentityViewModel() {
 		AsyncCommandMap["Save"] = SaveChanges;
 	}

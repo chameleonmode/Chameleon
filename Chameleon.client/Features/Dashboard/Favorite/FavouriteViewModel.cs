@@ -5,6 +5,7 @@ using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Api.Repos;
 using DynamicData;
+using DynamicData.Binding;
 
 namespace Chameleon.client.Features.Dashboard.Favorite;
 
@@ -16,11 +17,11 @@ public partial class FavouriteViewModel : Dashboarder {
 
 		_ = ProfilesViewModel.Instance.Shared
 			.Filter(p => p.Dto.isFavourite)     // only favourites
-			 .Do(changeSet => {
+			.Do(changeSet => {
 					var profiles = changeSet.Select(c => c.Current);
 			 		ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.Dashboard);
 			 })
-			.SortAndBind(out var profiles, Profiler.CompareObservable)
+			.Bind(out var profiles)
 			.Subscribe(_ => OnPropertyChanged(nameof(HasProfiles)));
 		Profiles = profiles;
 

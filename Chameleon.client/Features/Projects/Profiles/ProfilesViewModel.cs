@@ -181,7 +181,10 @@ public partial class ProfilesViewModel : Profiler {
 		};
 
 		async Task OpenBrowser(BrowserType bt) {
-			await SelectedProfiles.TryEach(async profile => await profile.AsyncCfVCommand.ExecuteAsync(bt.ToString().ToLower()));
+			await SelectedProfiles.TryEach(async profile => {
+				await profile.AsyncCfVCommand.ExecuteAsync(bt.ToString().ToLower());
+				await Task.Delay(300); // Small delay to prevent rapid opening
+			});
 		}
 		AsyncCommandMap["chrome"] = () => OpenBrowser(BrowserType.Chrome);
 		AsyncCommandMap["brave"] = () => OpenBrowser(BrowserType.Brave);

@@ -25,7 +25,6 @@ using Chameleon.lib.Api;
 namespace Chameleon.client;
 
 public partial class App : Application {
-	public static bool DEBUGGING { get; set; } = false;
 	public static Window? MainWindow => (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
 	public static T? TryGetResource<T>(string key) where T : class {
@@ -81,7 +80,6 @@ public partial class App : Application {
 			window.TitleBar.ExtendsContentIntoTitleBar = true;
 			window.TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 #if DEBUG
-			DEBUGGING = true;
 			window.AttachDevTools();
 			window.Topmost = true;
 #endif
@@ -97,7 +95,8 @@ public partial class App : Application {
 		Session.I.Auth0Client.OidcBrowser.Open = async url => {
 			var browser = await EX.Catch(
 				async () => await Browzers.I.Open(Browzio.Factory.Chrome(url)),
-				ex => { if (!Browzio.Utilities.IsInstalled(BrowserType.Chrome)) Processez.OpenBrowser(url); }
+				ex => { if (!Browzio.Utilities.Info.GetBrowser(BrowserType.Chrome).Exists) Processez.OpenBrowser(url); }
+				// ex => { if (!Browzio.Utilities.IsInstalled(BrowserType.Chrome)) Processez.OpenBrowser(url); }
 			);
 			Session.I.Auth0Client.OidcBrowser.TaskCompletion?.Task.ContinueWith(_ => browser?.Closee());
 		};

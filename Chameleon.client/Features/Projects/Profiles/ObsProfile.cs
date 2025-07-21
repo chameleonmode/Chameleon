@@ -18,7 +18,7 @@ using DynamicData;
 using FluentAvalonia.Core;
 using Microsoft.Playwright;
 using System.Collections.ObjectModel;
-using static Chameleon.lib.Browzio.IBrowserInstance;
+using static Chameleon.lib.Browzio.Browzio;
 using BrowserType = Chameleon.lib.Browzio.BrowserType;
 
 namespace Chameleon.client.Features.Projects.Profiles;
@@ -127,7 +127,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	}
 
 	public void Navigate() {
-		if (!IsActionOptionsVisible) return;
+		if (!IsActionOptionsVisible || ProfilesViewModel.Instance.AsyncCfVCommand.IsRunning) return;
 		Navigator.Instance.NavigateTo("IdentityView", Dto);
 	}
 
