@@ -34,7 +34,7 @@ public class ToasterService(IDispatchService dispatcher) : IToasterService {
 			_dispatcher?.InvokeOnUiThread(() => {
 				_notificationManager = new WindowNotificationManager(App.MainWindow) {
 					Position = NotificationPosition.BottomRight,
-					MaxItems = 6,
+					MaxItems = 3,
 					Margin = new Thickness(0, 0, 15, 40)
 				};
 				ShowOnUI(message, notificationType);

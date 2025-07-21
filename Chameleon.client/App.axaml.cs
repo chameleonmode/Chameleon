@@ -7,7 +7,6 @@ using Avalonia.Styling;
 using Chameleon.lib;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Chameleon.lib.Util;
 using Chameleon.client.Features.Projects.Profiles.Identity;
 using Chameleon.client.Features;
@@ -98,7 +97,7 @@ public partial class App : Application {
 		Session.I.Auth0Client.OidcBrowser.Open = async url => {
 			var browser = await EX.Catch(
 				async () => await Browzers.I.Open(Browzio.Factory.Chrome(url)),
-				ex => { if (!BrowserInfo.Find(BrowserType.Chrome).Exists) Processez.OpenBrowser(url); }
+				ex => { if (!Browzio.Utilities.IsInstalled(BrowserType.Chrome)) Processez.OpenBrowser(url); }
 			);
 			Session.I.Auth0Client.OidcBrowser.TaskCompletion?.Task.ContinueWith(_ => browser?.Closee());
 		};

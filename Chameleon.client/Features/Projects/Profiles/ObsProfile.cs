@@ -137,10 +137,12 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		return SBI[browserType];
 	}
 
-	public Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookies(BrowserType browserType) => ExecuteBrowserAction(
-		browserType,
-		port => Util.GetCookies(new(new(browserType, SystemBrowserProfile), port))
-	);
+	public async Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookies(BrowserType browserType) {
+		return await ExecuteBrowserAction(
+			browserType,
+			async port => await Sync.GetCookies(new(new(browserType, SystemBrowserProfile), port))
+		);
+	}
 
 	private async Task HandleCookieOperation(CookieOp operation, BrowserType browserType) {
 		if (operation == CookieOp.Import) {
@@ -159,7 +161,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 
 			await ExecuteBrowserAction(
 				browserType,
-				port => Util.SetCookies(
+				port => Sync.SetCookies(
 					new(new(browserType, SystemBrowserProfile), port),
 					pwCookies.Select(c => new Cookie {
 						Name = c.Name,
@@ -193,21 +195,10 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		Toaster.Success($"Successfully {operation}ed cookies for {browserType}.");
 	}
 
-	private async Task<T?> ExecuteBrowserAction<T>(BrowserType browserType, Func<int, Task<T>> action) where T : class {
+	private async Task<T?> ExecuteBrowserAction<T>(BrowserType browserType, Func<int?, Task<T>> action) {
 		var wasOpen = SBI.TryGetValue(browserType, out var browser) && browser != null;
-		browser ??= await OpenBrowser(browserType);
-		try {
-			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-			var isLoaded = await browser!.LoadedTCS.Task.WaitAsync(cts.Token);
-			if (!isLoaded) throw new Exception($"Failed to load");
-			var port = browser.Settings.Port;
-			return port <= 0 ? throw new Exception($"Invalid debugging port") : await action(port);
-		} finally {
-			if (!wasOpen && browser != null) {
-				await Processez.TryKillProcess(browser.Brocess);
-				browser.Close();
-			}
-		}
+		if (browserType == BrowserType.Firefox) await Processez.TryKillProcess(browser?.Brocess);
+		return await action(SBI[browserType]?.Settings.Port);
 	}
 
 	public void SetUIContext(ProfileUIContext context) {

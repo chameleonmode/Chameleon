@@ -78,14 +78,14 @@ public partial class ViewModel : OOVM {
 	private async Task CheckForCookies() {
 		HasCookiesToSync = false;
 		try {
-			HasCookiesToSync = await PlaywrightCookiesSyncService.Instance.HasCookies();
+			HasCookiesToSync = await Sync.Instance.HasCookies();
 		} catch (Exception e) {
 			Toaster.Error("Failed to check for cookies. " + e.Message);
 		}
 	}
 
 	static async Task SyncCookies(BrowserType systemBrowserType) {
-		await PlaywrightCookiesSyncService.Instance.SyncCookies(systemBrowserType);
+		await Sync.Instance.SyncCookies(systemBrowserType);
 		Toaster.Success("Cookies Synced");
 	}
 	public static ViewModel Instance { get; } = new();
