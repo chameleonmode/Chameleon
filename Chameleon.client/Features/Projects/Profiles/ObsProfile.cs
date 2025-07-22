@@ -23,9 +23,6 @@ using BrowserType = Chameleon.lib.Browzio.BrowserType;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
-// public record AvailableBrowser(BrowserType Type, string ExecutablePath, string Version, BrowserEngine Engine) : BrowserInfo(Type, ExecutablePath, Version, Engine) {
-// 	//public byte[]? IconData { get; } = IconExtractor.ExtractIcon(ExecutablePath);
-// }
 public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAware {
 	[ObservableProperty] int isChromeRunning;
 	[ObservableProperty] int isBraveRunning;
@@ -35,14 +32,14 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	[ObservableProperty] bool isShowCheckboxColumn = true;
 	[ObservableProperty] bool isSelectionEnabled = true;
 
-	public ObservableCollection<BrowserInfo> Browsers { get; } = [];
+	public ObservableCollection<AvailableBrowser> Browsers { get; } = [];
 	public ProfileUIContext CurrentContext { get; private set; } = ProfileUIContext.Profiles;
 	public ProfileUIContext? PreviousContext { get; private set; }
 
 	public Dictionary<BrowserType, IBrowserInstance?> SBI { get; } = new() {
-		[BrowserType.Chrome] = null,
-		[BrowserType.Firefox] = null,
-		[BrowserType.Brave] = null
+		// [BrowserType.Chrome] = null,
+		// [BrowserType.Firefox] = null,
+		// [BrowserType.Brave] = null
 	};
 
 	public bool IsSharedProfile => Dto.creatorUserId != Auther.AuthSession?.UserId;
@@ -71,8 +68,13 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	public ObsProfile(UserProfileDto profile, Action<ObsProfile>? selectedChanged = default, Action<ObsProfile>? onDeleted = default)
 	 : base(profile, onSelectedChanged: selectedChanged != null ? (vm) => selectedChanged((ObsProfile)vm) : null) {
 		//@ TODO: remove for more optimized implementation
-		Browsers.AddRange(Browzio.Utilities.DetectBrowsers().Select(b => new BrowserInfo(b.Type, b.ExecutablePath, b.Version, b.Engine)));
-
+		Browsers.AddRange(
+			ProfilesViewModel.Instance.Browsers.Select(b => new AvailableBrowser(b.Info))
+		);
+		foreach (var browser in Browsers) {
+			AsyncCommandMap[browser.Info.Type.ToString()] = () => OpenBrowser(browser.Info.Type);
+			SBI[browser.Info.Type] = null;
+		}
 		Browzers.I.AddObserver(Dto.id, (s, e) => {
 			Foreground = false; // @TODO: optimization
 			if (Dto.id != e.Settings.Profile.Id) return;
@@ -86,6 +88,9 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			};
 
 			int SetRunning(int current) => (current != -1 || running == 1) ? running : current;
+			var browser = Browsers.FirstOrDefault(b => b.Info.Type == e.Settings.BrowserType);
+			if (browser is not null) browser.Running = SetRunning(browser.Running);
+
 			_ = e.Settings.BrowserType switch {
 				BrowserType.Chrome => IsChromeRunning = SetRunning(IsChromeRunning),
 				BrowserType.Firefox => IsFFRunning = SetRunning(IsFFRunning),

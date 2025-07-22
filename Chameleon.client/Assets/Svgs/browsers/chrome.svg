@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 336 336">
+  <!-- Red arc -->
+  <circle
+    cx="168" cy="168" r="116"
+    fill="none" stroke="#DB4437" stroke-width="80"
+    stroke-dasharray="241 482"
+    transform="rotate(-90 168 168)" />
+  <!-- Green arc -->
+  <circle
+    cx="168" cy="168" r="116"
+    fill="none" stroke="#0F9D58" stroke-width="80"
+    stroke-dasharray="241 482"
+    transform="rotate(30 168 168)" />
+  <!-- Yellow arc -->
+  <circle
+    cx="168" cy="168" r="116"
+    fill="none" stroke="#F4B400" stroke-width="80"
+    stroke-dasharray="241 482"
+    transform="rotate(150 168 168)" />
+  <!-- White separator ring -->
+  <circle
+    cx="168" cy="168" r="80"
+    fill="none" stroke="#FFFFFF" stroke-width="16" />
+  <!-- Blue core -->
+  <circle
+    cx="168" cy="168" r="64"
+    fill="#4285F4" />
+</svg>
+
+

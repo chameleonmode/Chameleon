@@ -323,6 +323,38 @@
 			</ControlTemplate>
 		</Setter>
 	</ControlTheme>
+	
+	<ControlTheme x:Key="SvgIconButton" TargetType="Button">
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="180" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Root"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+					<Border Name="Panel"
+							Background="Transparent"
+							CornerRadius="{TemplateBinding CornerRadius}">
+						<local:SvgIcon IconName="{TemplateBinding Content}" />
+					</Border>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^:pointerover /template/ Border#Panel">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ Border#Panel">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector="^:disabled /template/ Border#Panel">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
+		</Style>
+	</ControlTheme>
 
 	<ControlTheme x:Key="FavoriteButton" TargetType="Button">
 		<Setter Property="CornerRadius" Value="180" />
@@ -355,8 +387,22 @@
 		</Setter>
 	</ControlTheme>
 
+	<ControlTheme x:Key="SvgIconTextButton" TargetType="Button">
+		<Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="Rootz" CornerRadius="{TemplateBinding CornerRadius}">
+					<StackPanel Orientation="Horizontal" Margin="6">
+						<local:SvgIcon IconName="{TemplateBinding Content}" Margin="0 0 10 0" Width="16" Height="16" />
+						<TextBlock Text="{TemplateBinding Tag}" Margin="0 0 12 0" VerticalAlignment="Center"/>
+					</StackPanel> 		  
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
 
-	<ControlTheme x:Key="SvgIconButton" TargetType="Button">
+
+	<ControlTheme x:Key="ImageButton" TargetType="Button">
 		<Setter Property="BorderBrush" Value="Transparent" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="CornerRadius" Value="180" />
@@ -365,14 +411,18 @@
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border Name="Root"
-                Background="{TemplateBinding Background}"
-                BorderBrush="{TemplateBinding BorderBrush}"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                CornerRadius="{TemplateBinding CornerRadius}">
+           Background="{TemplateBinding Background}"
+           BorderBrush="{TemplateBinding BorderBrush}"
+           BorderThickness="{TemplateBinding BorderThickness}"
+           CornerRadius="{TemplateBinding CornerRadius}">
 					<Border Name="Panel"
-							Background="Transparent"
-							CornerRadius="{TemplateBinding CornerRadius}">
-						<local:SvgIcon IconName="{TemplateBinding Content}" Width="18" Height="18"/>
+							 Background="Transparent"
+							 CornerRadius="{TemplateBinding CornerRadius}">
+							<Image Source="{TemplateBinding Content}" 
+								 Width="24" 
+								 Height="24"
+       					 Stretch="Uniform"
+       					 RenderOptions.BitmapInterpolationMode="HighQuality" />
 					</Border>
 				</Border>
 			</ControlTemplate>
@@ -386,20 +436,6 @@
 		<Style Selector="^:disabled /template/ Border#Panel">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorDisabledBrush}" />
 		</Style>
-	</ControlTheme>
-
-	<ControlTheme x:Key="SvgIconTextButton" TargetType="Button">
-		<Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
-		<Setter Property="Template">
-			<ControlTemplate>
-				<Border Name="Rootz" CornerRadius="{TemplateBinding CornerRadius}">
-					<StackPanel Orientation="Horizontal" Margin="6">
-						<local:SvgIcon IconName="{TemplateBinding Content}" Margin="0 0 10 0" Width="16" Height="16" />
-						<TextBlock Text="{TemplateBinding Tag}" Margin="0 0 12 0" VerticalAlignment="Center"/>
-					</StackPanel> 		  
-				</Border>
-			</ControlTemplate>
-		</Setter>
 	</ControlTheme>
 	
 	<ControlTheme TargetType="local:ChameleonDialogControl" x:Key="{x:Type local:ChameleonDialogControl}">

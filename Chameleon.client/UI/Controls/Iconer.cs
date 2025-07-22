@@ -30,8 +30,8 @@ public class SvgNameToDataConverter : IValueConverter {
 		using var stream = AssetLoader.Open(new Uri(uri));
 		using var reader = new StreamReader(stream);
 		var data = reader.ReadToEnd();
-
-		if (Application.Current?.TryGetResource("AccentFillColorDefaultBrush", Application.Current.ActualThemeVariant, out var accentbrush) == true) {
+		if(uri.Contains("browsers", StringComparison.OrdinalIgnoreCase)) return data;
+		else if (Application.Current?.TryGetResource("AccentFillColorDefaultBrush", Application.Current.ActualThemeVariant, out var accentbrush) == true) {
 			var acc = accentbrush?.ToString()?.Replace("#ff", "#");
 			data = data.Replace("#5D25A6", acc);
 			data = data.Replace("#8094AE", acc);

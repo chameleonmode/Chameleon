@@ -21,6 +21,11 @@ using Chameleon.lib.Browzio;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
+public partial class AvailableBrowser(BrowserInfo info) : ObservableObject {
+	//public byte[]? IconData { get; } = IconExtractor.ExtractIcon(ExecutablePath);
+	[ObservableProperty] int running;
+	public BrowserInfo Info { get; } = info;
+}
 public partial class UPFolderViewModel : OO {
 	public UPFolderViewModel(UPFolderDto folder) {
 		Id = folder.id;
@@ -61,6 +66,7 @@ public partial class ProfilesViewModel : Profiler {
 	CancellationTokenSource? cts;
 
 	public override ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
+	public ObservableCollection<AvailableBrowser> Browsers { get; } = [];
 	public PaginatorViewModel Paginator { get; }
 	public AvaloniaList<Arguments> PlaywrightScripts { get; } = [];
 
@@ -96,6 +102,12 @@ public partial class ProfilesViewModel : Profiler {
 			.SortAndBind(out var profiles, CompareObservable)
 			.Subscribe();
 		Profiles = profiles;
+
+		Browsers.AddRange(
+			Browzio.Utilities.DetectBrowsers()
+			.Where(b => b.Engine == BrowserEngine.Chromium || b.Type == BrowserType.Firefox)
+			.Select(b => new AvailableBrowser(b))
+		);
 
 		Paginator = new PaginatorViewModel(p => pageRequests.OnNext(new PageRequest(p.PageIndex + 1, p.OnPageItems))) {
 			TotalCount = UserProfilesRepo.Instance.ObservableCache.Count,
@@ -182,9 +194,12 @@ public partial class ProfilesViewModel : Profiler {
 
 		async Task OpenBrowser(BrowserType bt) {
 			await SelectedProfiles.TryEach(async profile => {
-				await profile.AsyncCfVCommand.ExecuteAsync(bt.ToString().ToLower());
+				await profile.AsyncCfVCommand.ExecuteAsync(bt.ToString());
 				await Task.Delay(300); // Small delay to prevent rapid opening
 			});
+		}
+		foreach (var browser in Browsers) {
+			AsyncCommandMap[browser.Info.Type.ToString()] = () => OpenBrowser(browser.Info.Type);
 		}
 		AsyncCommandMap["chrome"] = () => OpenBrowser(BrowserType.Chrome);
 		AsyncCommandMap["brave"] = () => OpenBrowser(BrowserType.Brave);
@@ -234,8 +249,8 @@ public partial class ProfilesViewModel : Profiler {
 				foreach (var profile in SelectedProfiles) {
 					cts.Token.ThrowIfCancellationRequested();
 					await ConfigureScriptParameters(profile);
-					var browser = await profile.OpenBrowser(SelectedBrowserOption.Option).WaitAsync(cts.Token);
-
+					await profile.AsyncCfVCommand.ExecuteAsync(SelectedBrowserOption.Option.ToString()).WaitAsync(cts.Token);
+					var browser = profile.SBI[SelectedBrowserOption.Option];
 					SelectedPlaywrightScript!.Port = browser!.Settings.Port;
 					SelectedPlaywrightScript.Record = record;
 					await Run.Script(SelectedPlaywrightScript, cts.Token);

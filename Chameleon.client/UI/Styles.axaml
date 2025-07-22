@@ -103,6 +103,9 @@
 		<Style Selector="^.svg-text">
 			<Setter Property="Theme" Value="{StaticResource SvgIconTextButton}" />
 		</Style>
+		<Style Selector="^.img">
+			<Setter Property="Theme" Value="{StaticResource ImageButton}" />
+		</Style>
 	</Style>
 
 	<!--TextBlock-->	

@@ -11,6 +11,10 @@
              x:Class="Chameleon.client.Features.Projects.Profiles.ProfilesView"
 						 x:DataType="local:ProfilesViewModel"
 						 x:CompileBindings="True">
+<UserControl.Resources>
+		<local:BrowserInfoToIconConverter x:Key="BrowserInfoToIconConverter"/>
+		<local:EngineToBrushConverter x:Key="EngineToBrushConverter"/>
+</UserControl.Resources>
 	<UserControl.Styles>
 		<Style Selector="ui|SymbolIcon.spinner">
 			<Style.Animations>
@@ -41,9 +45,39 @@
 				<HeaderedContentControl Theme="{StaticResource HasSelectedItemsBorder}">
 					<HeaderedContentControl.Header>
 						<StackPanel Orientation="Horizontal">
-							<Button Content="chrome" Classes="async svg" />
+							<!-- <Button Content="chrome" Classes="async svg" />
 							<Button Content="firefox" Margin="3 0 0 0" Classes="async svg" />
-							<Button Content="brave" Margin="3 0 0 0" Classes="async svg" />
+							<Button Content="brave" Margin="3 0 0 0" Classes="async svg" /> -->
+
+							<ItemsControl Classes="uni-row" ItemsSource="{Binding Browsers}">
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<Button Classes="svg"
+												Tag="{Binding Running}"
+												Command="{Binding $parent[ItemsControl].DataContext.AsyncCfVCommand}"
+												CommandParameter="{Binding Info.Type}"
+												Content="{Binding Info, Converter={StaticResource BrowserInfoToIconConverter}}">
+												<ToolTip.Tip>
+      				            <Grid ColumnDefinitions="*,Auto">
+      				                <StackPanel VerticalAlignment="Center">
+      				                    <TextBlock Text="{Binding Info.DisplayName}" />
+      				                    <TextBlock Text="{Binding Info.Type}" />
+      				                    <TextBlock Text="{Binding Info.ExecutablePath}" Classes="caption" />
+      				                </StackPanel>
+      				                <Border Grid.Column="2" 
+      				                        Background="{Binding Info.Engine, Converter={StaticResource EngineToBrushConverter}}"
+      				                        CornerRadius="12" 
+      				                        Padding="8,4" 
+      				                        Margin="8,0"
+      				                        VerticalAlignment="Top">
+      				                    <TextBlock Text="{Binding Info.Engine}" Classes="b1" />
+      				                </Border>
+      				            </Grid>
+												</ToolTip.Tip>
+											</Button>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+							</ItemsControl>
 							<Button Content="chameleon-logo" Margin="3 0 0 0" Classes="async svg" />
 							<Border Classes="divider" Margin="18 6" />
 
