@@ -34,8 +34,10 @@
 		</Style>
 	</Style>
 	<Style Selector="ui|CommandBarButton">
+		<Setter Property="Cursor" Value="Hand" />
 		<Style Selector="^.cfv">
 			<Setter Property="Command" Value="{ReflectionBinding CfVCommand}" />
+			<Setter Property="CommandParameter" Value="{Binding $self.IconSource, Converter={StaticResource iconSymbolConv}}" />
 		</Style>
 		<Style Selector="^.async">
 			<Setter Property="Command" Value="{ReflectionBinding AsyncCfVCommand}" />

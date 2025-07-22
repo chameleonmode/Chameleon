@@ -50,7 +50,7 @@ public partial class UserDefaultSettingsViewModel : OOVM {
 			await Task.CompletedTask;
 			var settings = ViewModels.Select(v => v.DefaultUrl).ToArray() ?? [];
 			IoC.SetJsonValue(settings, "Bookmarks");
-			if (StartPage.IsNot()) IoC.SetValue(nameof(StartPage), StartPage);
+			await IoC.SetValue<string>(nameof(StartPage), StartPage ?? "");
 		};
 		CommandMap["UnselectItems"] = () => {
 			foreach (var setting in ViewModels) {
