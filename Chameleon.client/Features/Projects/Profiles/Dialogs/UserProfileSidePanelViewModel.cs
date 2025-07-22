@@ -4,6 +4,7 @@ using Chameleon.client.MvvM;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using Chameleon.lib.Api.Dto;
+using Chameleon.lib.Helpers;
 
 namespace Chameleon.client.Features.Projects.Profiles.Dialogs;
 
@@ -56,5 +57,13 @@ public partial class UserProfileSidePanelViewModel : OOVM {
 	}
 
 	partial void OnSelectedAddressChanged(UPAddressDto? value) => OnPropertyChanged(nameof(CountryName));
+
+	public static void Open(ObsProfile profile) {
+		DialogBox.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(
+			vm: new UserProfileSidePanelViewModel(profile.Dto),
+			title: "Copy Pasta",
+			width: 156
+		);
+	}
 }
 

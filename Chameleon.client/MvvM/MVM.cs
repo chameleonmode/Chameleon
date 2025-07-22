@@ -27,8 +27,8 @@ public abstract partial class OODTOVM<T>(T dto, Action<OODTOVM<T>>? onSelectedCh
 			IsSelected = false;
 		};
 
-		_ = this.WhenValueChanged(x => x.IsSelected)
-		.Subscribe(x => OnSelectedChanged?.Invoke(this));
+		// _ = this.WhenValueChanged(x => x.IsSelected)
+		// .Subscribe(x => OnSelectedChanged?.Invoke(this));
 	}
 
 	partial void OnIsSelectedChanged(bool value) {

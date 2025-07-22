@@ -75,7 +75,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			AsyncCommandMap[browser.Info.Type.ToString()] = () => OpenBrowser(browser.Info.Type);
 			SBI[browser.Info.Type] = null;
 		}
-		Browzers.I.AddObserver(Dto.id, (s, e) => {
+		Browzio.I.Browzas.AddObserver(Dto.id, (s, e) => {
 			Foreground = false; // @TODO: optimization
 			if (Dto.id != e.Settings.Profile.Id) return;
 			Foreground = e.Event is Event.Foreground or Event.Opened;
@@ -100,9 +100,9 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			if (running <= 0) SBI[e.Settings.BrowserType] = null;
 		});
 		#region  commands
-		AsyncCommandMap["brave"] = () => OpenBrowser(BrowserType.Brave);
-		AsyncCommandMap["chrome"] = () => OpenBrowser(BrowserType.Chrome);
-		AsyncCommandMap["firefox"] = () => OpenBrowser(BrowserType.Firefox);
+		// AsyncCommandMap["brave"] = () => OpenBrowser(BrowserType.Brave);
+		// AsyncCommandMap["chrome"] = () => OpenBrowser(BrowserType.Chrome);
+		// AsyncCommandMap["firefox"] = () => OpenBrowser(BrowserType.Firefox);
 
 		AsyncCommandMap["SyncCookiesChrome"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Chrome);
 		AsyncCommandMap["SyncCookiesBrave"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Brave);
@@ -129,12 +129,8 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			}
 		};
 
-		CommandMap["OpenTopmostController"] = () => SnapCracklePopViewModel.Open(this);
-		CommandMap["ShowViewProfile"] = () => DialogBox.ShowTopmost<UserProfileSidePanelUserControl, UserProfileSidePanelViewModel>(
-			vm: new UserProfileSidePanelViewModel(profile),
-			title: "Copy Pasta",
-			width: 156
-		);
+		CommandMap["expand"] = () => SnapCracklePopViewModel.Open(this);
+		CommandMap["copy"] = () => UserProfileSidePanelViewModel.Open(this);
 		#endregion
 	}
 
@@ -145,7 +141,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 
 	public async Task<IBrowserInstance?> OpenBrowser(BrowserType bt) {
 		if (SBI[bt] is IBrowserInstance browser) browser.InvokeEvent(Event.Foreground);
-		else if (SBI[bt] is null) return SBI[bt] = await Browzers.I.Open(Browzio.Factory.BrowserSettings(bt, BP));
+		else if (SBI[bt] is null) return SBI[bt] = await Browzio.I.Browzas.Open(Browzio.Factory.BrowserSettings(bt, BP));
 		return SBI[bt];
 	}
 

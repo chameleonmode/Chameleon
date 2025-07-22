@@ -9,13 +9,11 @@ public class SnapCracklePopViewModel : OOVM {
 	SnapCracklePopViewModel() { }
 	public ObservableCollection<ObsProfile> RunningList { get; set; } = [];
 	public static void Open(ObsProfile obs) {
-		DialogBox.ShowTopmost(vm: Instance, v: SnapCracklePopUserControl.Instance,
-			initialize: vm => {
-				vm.RunningList.AddIfNot(obs);
-			},
-			onClosed: vm => {
-				vm.RunningList.Clear();
-			},
+		DialogBox.ShowTopmost(
+			vm: Instance,
+			v: SnapCracklePopUserControl.Instance,
+			initialize: vm => vm.RunningList.AddOrRemove(obs, () => !vm.RunningList.Contains(obs) || vm.RunningList.Count == 1),
+			onClosed: vm => vm.RunningList.Clear(),
 			title: "SCP",
 			width: 256
 		);

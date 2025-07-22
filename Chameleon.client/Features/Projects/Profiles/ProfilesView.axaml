@@ -78,7 +78,8 @@
 										</DataTemplate>
 									</ItemsControl.ItemTemplate>
 							</ItemsControl>
-							<Button Content="chameleon-logo" Margin="3 0 0 0" Classes="async svg" />
+							<Button Content="expand" Classes="async svg" Margin="3 0 0 0"  />
+							<!-- <Button Content="chameleon-logo" Margin="3 0 0 0" Classes="async svg" /> -->
 							<Border Classes="divider" Margin="18 6" />
 
 							<Button Content="up-folder" ToolTip.Tip="Move to folder" Classes="async svg" />

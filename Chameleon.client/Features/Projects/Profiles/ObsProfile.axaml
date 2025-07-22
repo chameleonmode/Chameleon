@@ -35,7 +35,7 @@
 	<Border Padding="6" Background="Transparent">
 		<Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto">
 			<StackPanel Orientation="Horizontal" ToolTip.Tip="{Binding Title, FallbackValue=x}">
-				<CheckBox Margin="6 0 -6 0" IsChecked="{Binding IsSelected}" IsVisible="{Binding IsShowCheckboxColumn}" />
+				<CheckBox Margin="6 0 -3 0" IsChecked="{Binding IsSelected}" IsVisible="{Binding IsShowCheckboxColumn}" />
 
 				<Panel Name="IconHost" Tag="{Binding Dto}" VerticalAlignment="Center">
 					<Border Classes="glyph"
@@ -112,16 +112,8 @@
 						Classes="async svg"
 						Tag="{Binding IsBraveRunning}" /> -->
 
-				<Button
-					Content="chameleon-logo"
-					Theme="{StaticResource SvgIconButton}"
-					Command="{Binding CfVCommand}"
-					CommandParameter="OpenTopmostController"/>
-
-				<Button Content="copy"
-						Theme="{StaticResource SvgIconButton}"
-						Command="{Binding CfVCommand}"
-						CommandParameter="ShowViewProfile"/>
+				<Button Content="expand" Classes="cfv svg" ToolTip.Tip="Add to Tracker Overlay" />
+				<Button Content="copy" Classes="cfv svg" ToolTip.Tip="Expand into Copy Pasta Overlay" />
 
 				<Button Content="three-dots" Theme="{StaticResource SvgIconButton}">
 					<Button.Flyout>

@@ -14,7 +14,7 @@ public class ShowWindowService : IShowWindowService {
 			w = new() {
 				Topmost = true,
 				WindowStartupLocation = WindowStartupLocation.CenterScreen,
-				Width = width,
+				SizeToContent = SizeToContent.WidthAndHeight,
 				Title = title,
 			};
 			windows[viewModel!] = w;

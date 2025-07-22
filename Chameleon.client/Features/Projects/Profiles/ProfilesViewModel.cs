@@ -89,9 +89,8 @@ public partial class ProfilesViewModel : Profiler {
 		filter = new BehaviorSubject<Func<ObsProfile, bool>>(p => !HasFolder || p.Dto.folderId == Folder?.Id);
 
 		_ = Shared.Filter(filter)
-			.SortAndPage(AscendingComparer, pageRequests)
-			.Do(changeSet => {
-				var profiles = changeSet.Select(c => c.Current);
+			.Do(changes => {
+				var profiles = changes.Select(c => c.Current);
 				ProfileUIContextManager.ApplyContextToProfiles(profiles, ProfileUIContext.Profiles);
 
 				foreach (var profile in profiles) {
@@ -99,6 +98,7 @@ public partial class ProfilesViewModel : Profiler {
 					profile.OnSelectedChanged += p => SelectedChanged((ObsProfile)p);
 				}
 			})
+			.SortAndPage(AscendingComparer, pageRequests)
 			.SortAndBind(out var profiles, CompareObservable)
 			.Subscribe();
 		Profiles = profiles;
@@ -116,49 +116,7 @@ public partial class ProfilesViewModel : Profiler {
 	}
 
 	private void InitializeCommands() {
-		void SelectAll() {
-			foreach (var profile in Profiles) {
-				profile.IsSelected = true;
-			}
-			OnPropertyChanged(nameof(HasSelectedItems));
-		}
-		CommandMap["select-all"] = SelectAll;
-		CommandMap["select-folder"] = () => {
-			foreach (var profile in Profiles) {
-				profile.IsSelected = true;
-			}
-
-			if (HasFolder) {
-				// Get all profile DTOs in this folder and mark them as selected internally
-				var profileIdsInFolder = UserProfilesRepo.Instance.ObservableCache.Items
-					.Where(dto => dto.folderId == Folder?.Id)
-					.Select(dto => dto.id)
-					.ToList();
-
-				// Store these IDs for use when other pages are loaded
-				selectedProfileIds.UnionWith(profileIdsInFolder);
-			} else {
-				// Select all profiles
-				var allProfileIds = UserProfilesRepo.Instance.ObservableCache.Items
-					.Select(dto => dto.id)
-					.ToList();
-
-				selectedProfileIds.UnionWith(allProfileIds);
-			}
-
-			OnPropertyChanged(nameof(HasSelectedItems));
-			OnPropertyChanged(nameof(SelectedCount));
-		};
-		CommandMap["UnselectItems"] = () => {
-			selectedProfileIds.Clear();
-			Profiles.ForEach(p => p.IsSelected = false);
-			Paginator.UpdatePageCount(DefaultPageSize); // Reset page count to default
-			// Force a refresh to make sure the selection state is properly updated
-			SetViewModelsFilter();
-		};
-
 		AsyncCommandMap["SaveTags"] = () => TagsRepo.Instance.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
-
 		AsyncCommandMap["up-folder"] = async () => {
 			if (await MoveProfilesPopup.Show(SelectedProfiles) is not { } mover) return;
 			else _ = await UserProfilesRepo.MoveUserProfileToFolder(mover.Profiles.Select(a => a.Dto!.id), mover.SelectedFolder.Dto.id);
@@ -192,6 +150,50 @@ public partial class ProfilesViewModel : Profiler {
 			SetViewModelsFilter();
 		};
 
+		CommandMap["select-all"] = ()=> {
+			foreach (var profile in Profiles) {
+				profile.IsSelected = true;
+			}
+			OnPropertyChanged(nameof(HasSelectedItems));
+		};
+		CommandMap["select-folder"] = () => {
+			foreach (var profile in Profiles) {
+				profile.IsSelected = true;
+			}
+
+			if (HasFolder) {
+				// Get all profile DTOs in this folder and mark them as selected internally
+				var profileIdsInFolder = UserProfilesRepo.Instance.ObservableCache.Items
+					.Where(dto => dto.folderId == Folder?.Id)
+					.Select(dto => dto.id)
+					.ToList();
+
+				// Store these IDs for use when other pages are loaded
+				selectedProfileIds.UnionWith(profileIdsInFolder);
+			} else {
+				// Select all profiles
+				var allProfileIds = UserProfilesRepo.Instance.ObservableCache.Items
+					.Select(dto => dto.id)
+					.ToList();
+
+				selectedProfileIds.UnionWith(allProfileIds);
+			}
+
+			OnPropertyChanged(nameof(HasSelectedItems));
+			OnPropertyChanged(nameof(SelectedCount));
+		};
+		CommandMap["UnselectItems"] = () => {
+			selectedProfileIds.Clear();
+			Profiles.ForEach(p => p.IsSelected = false);
+			Paginator.UpdatePageCount(DefaultPageSize); // Reset page count to default
+			// Force a refresh to make sure the selection state is properly updated
+			SetViewModelsFilter();
+		};
+		AsyncCommandMap["expand"] = () => {
+			SelectedProfiles?.ForEach(profile => SnapCracklePopViewModel.Open(profile));
+			return Task.CompletedTask;
+		};
+
 		async Task OpenBrowser(BrowserType bt) {
 			await SelectedProfiles.TryEach(async profile => {
 				await profile.AsyncCfVCommand.ExecuteAsync(bt.ToString());
@@ -201,13 +203,9 @@ public partial class ProfilesViewModel : Profiler {
 		foreach (var browser in Browsers) {
 			AsyncCommandMap[browser.Info.Type.ToString()] = () => OpenBrowser(browser.Info.Type);
 		}
-		AsyncCommandMap["chrome"] = () => OpenBrowser(BrowserType.Chrome);
-		AsyncCommandMap["brave"] = () => OpenBrowser(BrowserType.Brave);
-		AsyncCommandMap["firefox"] = () => OpenBrowser(BrowserType.Firefox);
-		AsyncCommandMap["chameleon-logo"] = () => {
-			SelectedProfiles?.ForEach(profile => SnapCracklePopViewModel.Open(profile));
-			return Task.CompletedTask;
-		};
+		// AsyncCommandMap["chrome"] = () => OpenBrowser(BrowserType.Chrome);
+		// AsyncCommandMap["brave"] = () => OpenBrowser(BrowserType.Brave);
+		// AsyncCommandMap["firefox"] = () => OpenBrowser(BrowserType.Firefox);
 
 		void StopAutomation() {
 			Automationing = false;
