@@ -26,7 +26,7 @@ public class SvgNameToDataConverter : IValueConverter {
 	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
 		if (value == null || value.ToString().Is()) value = "x";
 
-		var uri = $"avares://Chameleon.client/Assets/svgs/{value}.svg";
+		var uri = $"avares://Chameleon.client/Assets/Svgs/{value}.svg";
 		using var stream = AssetLoader.Open(new Uri(uri));
 		using var reader = new StreamReader(stream);
 		var data = reader.ReadToEnd();
