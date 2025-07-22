@@ -95,9 +95,8 @@ public partial class App : Application {
 	static async Task<bool> Logineer(LoginSettings login) {
 		Session.I.Auth0Client.OidcBrowser.Open = async url => {
 			var browser = await EX.Catch(
-				async () => await Browzers.I.Open(Browzio.Factory.Chrome(url)),
-				ex => { if (!Browzio.Utilities.Info.GetBrowser(BrowserType.Chrome).Exists) Processez.OpenBrowser(url); }
-				// ex => { if (!Browzio.Utilities.IsInstalled(BrowserType.Chrome)) Processez.OpenBrowser(url); }
+				async () => await Browzers.I.Open(Browzio.Factory.Chrome(new(url))),
+				ex => { if (!Browzio.Utilities.IsInstalled(BrowserType.Chrome)) Processez.OpenBrowser(url); }
 			);
 			Session.I.Auth0Client.OidcBrowser.TaskCompletion?.Task.ContinueWith(_ => browser?.Closee());
 		};

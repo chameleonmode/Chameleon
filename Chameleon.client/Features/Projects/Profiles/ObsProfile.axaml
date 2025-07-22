@@ -29,7 +29,7 @@
 	</UserControl.Styles>
 
 	<Border Padding="6" Background="Transparent">
-		<Grid ColumnDefinitions="Auto,Auto,*,Auto">
+		<Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto">
 			<StackPanel Orientation="Horizontal" ToolTip.Tip="{Binding Title, FallbackValue=x}">
 				<CheckBox Margin="6 0 -6 0" IsChecked="{Binding IsSelected}" IsVisible="{Binding IsShowCheckboxColumn}" />
 
@@ -66,10 +66,16 @@
 					Text="{Binding Title, FallbackValue=x_x}"
 					Margin="12 0 0 0"
 					HorizontalAlignment="Left" />
-			<UniformGrid Grid.Column="3"
-					IsVisible="{Binding IsActionOptionsVisible}"
-					HorizontalAlignment="Right"
-					Rows="1">
+
+			<ItemsControl Classes="uni-clm" ItemsSource="{Binding Browsers}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Name}" />
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<UniformGrid Grid.Column="4" IsVisible="{Binding IsActionOptionsVisible}" HorizontalAlignment="Right" Rows="1">
 					<Button Content="chrome"
 						Classes="async svg"
 						Tag="{Binding IsChromeRunning}" />
@@ -94,7 +100,6 @@
 				<Button Content="three-dots" Theme="{StaticResource SvgIconButton}">
 					<Button.Flyout>
 						<ui:FAMenuFlyout Placement="Bottom">
-							
 							<ui:MenuFlyoutSubItem IconSource="Import" Text="Import Cookies">
 								<ui:MenuFlyoutItem Classes="sync-chrome" />
 								<ui:MenuFlyoutItem Classes="sync-brave" />

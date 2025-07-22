@@ -37,8 +37,8 @@
     <Compile Update="Features/Automation/Automation.axaml.cs">
       <DependentUpon>Automation.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Features/Projects/Profiles/UserProfile.axaml.cs">
-      <DependentUpon>UserProfile.axaml</DependentUpon>
+    <Compile Update="Features/Projects/Profiles/ObsProfile.axaml.cs">
+      <DependentUpon>ObsProfile.axaml</DependentUpon>
     </Compile>
     <Compile Update="Features/Projects/Projects.axaml.cs">
       <DependentUpon>Projects.axaml</DependentUpon>

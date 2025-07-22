@@ -18,11 +18,14 @@ using DynamicData;
 using FluentAvalonia.Core;
 using Microsoft.Playwright;
 using System.Collections.ObjectModel;
-using static Chameleon.lib.Browzio.Browzio;
+using Event = Chameleon.lib.Browzio.Browzio.Event;
 using BrowserType = Chameleon.lib.Browzio.BrowserType;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
+// public record AvailableBrowser(BrowserType Type, string ExecutablePath, string Version, BrowserEngine Engine) : BrowserInfo(Type, ExecutablePath, Version, Engine) {
+// 	//public byte[]? IconData { get; } = IconExtractor.ExtractIcon(ExecutablePath);
+// }
 public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAware {
 	[ObservableProperty] int isChromeRunning;
 	[ObservableProperty] int isBraveRunning;
@@ -32,6 +35,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	[ObservableProperty] bool isShowCheckboxColumn = true;
 	[ObservableProperty] bool isSelectionEnabled = true;
 
+	public ObservableCollection<BrowserInfo> Browsers { get; } = [];
 	public ProfileUIContext CurrentContext { get; private set; } = ProfileUIContext.Profiles;
 	public ProfileUIContext? PreviousContext { get; private set; }
 
@@ -45,7 +49,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
 	public bool IsFavorite => Dto.isFavourite;
 
-	public BrowserProfile SystemBrowserProfile => new() {
+	public BrowserProfile BP => new() {
 		Id = Dto.id,
 		Proxy = new BrowserProxy() {
 			Host = Dto.proxy?.host,
@@ -63,9 +67,34 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			return logins;
 		}
 	}
- 
+
 	public ObsProfile(UserProfileDto profile, Action<ObsProfile>? selectedChanged = default, Action<ObsProfile>? onDeleted = default)
 	 : base(profile, onSelectedChanged: selectedChanged != null ? (vm) => selectedChanged((ObsProfile)vm) : null) {
+		//@ TODO: remove for more optimized implementation
+		Browsers.AddRange(Browzio.Utilities.DetectBrowsers().Select(b => new BrowserInfo(b.Type, b.ExecutablePath, b.Version, b.Engine)));
+
+		Browzers.I.AddObserver(Dto.id, (s, e) => {
+			Foreground = false; // @TODO: optimization
+			if (Dto.id != e.Settings.Profile.Id) return;
+			Foreground = e.Event is Event.Foreground or Event.Opened;
+
+			// Update running state based on event
+			var running = e.Event switch {
+				Event.Foreground or Event.Background or Event.Opened => 1,
+				Event.Error => -1,
+				_ => 0
+			};
+
+			int SetRunning(int current) => (current != -1 || running == 1) ? running : current;
+			_ = e.Settings.BrowserType switch {
+				BrowserType.Chrome => IsChromeRunning = SetRunning(IsChromeRunning),
+				BrowserType.Firefox => IsFFRunning = SetRunning(IsFFRunning),
+				BrowserType.Brave => IsBraveRunning = SetRunning(IsBraveRunning),
+				_ => 0
+			};
+			if (running <= 0) SBI[e.Settings.BrowserType] = null;
+		});
+		#region  commands
 		AsyncCommandMap["brave"] = () => OpenBrowser(BrowserType.Brave);
 		AsyncCommandMap["chrome"] = () => OpenBrowser(BrowserType.Chrome);
 		AsyncCommandMap["firefox"] = () => OpenBrowser(BrowserType.Firefox);
@@ -101,29 +130,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			title: "Copy Pasta",
 			width: 156
 		);
-
-		_ = Browzers.I.HasInstanceOf(Dto.id, (s, e) => {
-			Foreground = false; // @TODO: optimization
-			if (Dto.id != e.Settings.Profile.Id) return;
-			Foreground = e.Event is Event.Foreground or Event.Opened;
-
-			// Update running state based on event
-			var running = e.Event switch {
-				Event.Foreground or Event.Background or Event.Opened => 1,
-				Event.Error => -1,
-				_ => 0
-			};
-
-			int SetRunning(int current) => (current != -1 || running == 1) ? running : current;
-			_ = e.Settings.BrowserType switch {
-				BrowserType.Chrome => IsChromeRunning = SetRunning(IsChromeRunning),
-				BrowserType.Firefox => IsFFRunning = SetRunning(IsFFRunning),
-				BrowserType.Brave => IsBraveRunning = SetRunning(IsBraveRunning),
-				_ => 0
-			};
-			if (running <= 0) SBI[e.Settings.BrowserType] = null;
-		});
-		//@ TODO:  _.ForEach(b => _ = SetRunning(b, true)); n remove
+		#endregion
 	}
 
 	public void Navigate() {
@@ -131,16 +138,16 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		Navigator.Instance.NavigateTo("IdentityView", Dto);
 	}
 
-	public async Task<IBrowserInstance?> OpenBrowser(BrowserType browserType) {
-		if (SBI[browserType] is IBrowserInstance browser) browser.InvokeEvent(Event.Foreground);
-		else if (SBI[browserType] is null) return SBI[browserType] = await Browzers.I.Open(new BrowserSetting(browserType, SystemBrowserProfile));
-		return SBI[browserType];
+	public async Task<IBrowserInstance?> OpenBrowser(BrowserType bt) {
+		if (SBI[bt] is IBrowserInstance browser) browser.InvokeEvent(Event.Foreground);
+		else if (SBI[bt] is null) return SBI[bt] = await Browzers.I.Open(Browzio.Factory.BrowserSettings(bt, BP));
+		return SBI[bt];
 	}
 
 	public async Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookies(BrowserType browserType) {
 		return await ExecuteBrowserAction(
 			browserType,
-			async port => await Sync.GetCookies(new(new(browserType, SystemBrowserProfile), port))
+			async port => await Sync.GetCookies(new(new(browserType, BP), port))
 		);
 	}
 
@@ -162,7 +169,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			await ExecuteBrowserAction(
 				browserType,
 				port => Sync.SetCookies(
-					new(new(browserType, SystemBrowserProfile), port),
+					new(new(browserType, BP), port),
 					pwCookies.Select(c => new Cookie {
 						Name = c.Name,
 						Value = c.Value,
