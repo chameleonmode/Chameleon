@@ -7,7 +7,7 @@ using Chameleon.lib.Api;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Browzio;
-using Chameleon.lib.Browzio.Services;
+using Chameleon.lib.Browzio.Services.Browzas;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright;
 using Chameleon.lib.Playwright.Services;

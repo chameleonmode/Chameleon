@@ -21,6 +21,7 @@ using Chameleon.lib.Services;
 using Chameleon.lib.Browzio;
 using Chameleon.lib.Browzio.Services;
 using Chameleon.lib.Api;
+using Chameleon.lib.Browzio.Services.Browzas;
 
 namespace Chameleon.client;
 
