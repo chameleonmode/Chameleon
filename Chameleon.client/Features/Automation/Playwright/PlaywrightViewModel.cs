@@ -60,7 +60,7 @@ public partial class PlaywrightViewModel : OOVM {
 		// Convert parameters to dictionary as in your original code
 		var data = SelectedBundledScript.Parameters.ToDictionary(p => p.Key, p => p.Value);
 		var table = SelectedBundledScript.RunOptions.Script!.TableName;
-		IoC.SetJsonValue(data, table);
+		IoC.SetJsonValue(table, data);
 
 		// TODO: Save the data to the database
 	});
@@ -70,7 +70,7 @@ public partial class PlaywrightViewModel : OOVM {
 		var selected = await dialog.OpenFolderPickerAsync(new() { AllowMultiple = false });
 		if (selected == null || selected.Count == 0)return;
 
-		IoC.SetValue(selected[0].Path.AbsolutePath, "UserScriptsDirectory");
+		IoC.SetValue(nameof(UserScriptsDirectory), selected[0].Path.AbsolutePath);
 		await InitializeUserScripts();
 	}
 
@@ -80,7 +80,7 @@ public partial class PlaywrightViewModel : OOVM {
 			async void OnChanged(object sender, FileSystemEventArgs e) =>
 				await InitializeUserScripts();
 
-			UserScriptsDirectory = IoC.GetValue("UserScriptsDirectory") ?? "";
+			UserScriptsDirectory = IoC.GetValue(nameof(UserScriptsDirectory)) ?? "";
 			if (!Directory.Exists(UserScriptsDirectory)) return;
 
 			if (watcher == null) {

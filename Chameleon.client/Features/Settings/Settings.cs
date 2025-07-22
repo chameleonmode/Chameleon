@@ -182,7 +182,7 @@ public partial class ViewModel : OOVM {
 
 	private void SaveIfNeeded() {
 		if (Loaded) {
-			IoC.SetJsonValue(new AppSettings(CurrentAppTheme, _faTheme?.CustomAccentColor?.ToString(), UseCustomAccentColor), nameof(AppSettings));
+			IoC.SetJsonValue(nameof(AppSettings), new AppSettings(CurrentAppTheme, _faTheme?.CustomAccentColor?.ToString(), UseCustomAccentColor));
 		}
 	}
 }

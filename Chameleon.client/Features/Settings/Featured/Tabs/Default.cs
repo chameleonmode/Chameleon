@@ -49,8 +49,8 @@ public partial class UserDefaultSettingsViewModel : OOVM {
 		AsyncCommandMap["Save"] = async () => {
 			await Task.CompletedTask;
 			var settings = ViewModels.Select(v => v.DefaultUrl).ToArray() ?? [];
-			IoC.SetJsonValue(settings, "Bookmarks");
-			await IoC.SetValue<string>(nameof(StartPage), StartPage ?? "");
+			IoC.SetJsonValue("Bookmarks", settings);
+			IoC.SetValue(nameof(StartPage), StartPage);
 		};
 		CommandMap["UnselectItems"] = () => {
 			foreach (var setting in ViewModels) {
@@ -58,7 +58,7 @@ public partial class UserDefaultSettingsViewModel : OOVM {
 			}
 		};
 		CommandMap["Save"] = () => {
-			IoC.SetJsonValue(DefaultEmulationOptions, nameof(EmulationOptions));
+			IoC.SetJsonValue(nameof(EmulationOptions), DefaultEmulationOptions);
 		};
 	}
 
