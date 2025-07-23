@@ -6,7 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1920"
         xmlns:local="clr-namespace:Chameleon.client"
         x:Class="Chameleon.client.UI.Windows.Main"
-        Icon="../../Assets/logo-symbol.ico"
+        Icon="avares://Chameleon.client/Assets/logo-symbol.iconset/icon_32x32.png"
         Title="Chameleon">
         <local:View />
 </Window>

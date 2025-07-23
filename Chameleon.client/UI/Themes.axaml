@@ -244,15 +244,13 @@
 					CornerRadius="{StaticResource ControlCornerRadius}"
 					Margin="0 0 0 3"
 					BoxShadow="0 8 32 0 #66000000">
-					<Grid Margin="24 0"
-						 ColumnDefinitions="*,Auto">
+					<Grid Margin="24 0" ColumnDefinitions="*,Auto">
 						<TextBlock VerticalAlignment="Center">
 							<Run Text="{ReflectionBinding SelectedCount}" />
 							<Run Text=" Selected" />
 						</TextBlock>
 
-						<StackPanel Orientation="Horizontal"
-									Grid.Column="1">
+						<StackPanel Orientation="Horizontal" Grid.Column="1">
 							<Border
 								BorderBrush="{StaticResource DividerStrokeColorDefaultBrush}"
 								Margin="18 6"

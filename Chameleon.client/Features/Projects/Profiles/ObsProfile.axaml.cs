@@ -28,6 +28,19 @@ public partial class UserProfileUserControl : UserControl {
 	}
 }
 
+//BrowserInfoToCommandParameterConverter
+public class BrowserInfoToCommandParameterConverter : IValueConverter {
+	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
+		if (value is not BrowserInfo info)
+			return BindingNotification.UnsetValue;
+			return $"sync-in-{info.Type}";
+	}
+
+	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
+		return BindingNotification.UnsetValue;
+	}
+}
+
 // 1. ExecutablePathToIconConverter - Basic converter for executable paths
 // public class ExecutablePathToIconConverter : IValueConverter {
 // 	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {

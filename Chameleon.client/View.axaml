@@ -137,10 +137,12 @@
 	<Grid RowDefinitions="Auto,*">
 		<Grid Name="TitleBarHost" ColumnDefinitions="Auto,Auto,*,Auto">
 			<Image Margin="12 6"
+					Source="avares://Chameleon.client/Assets/logo-symbol.iconset/icon_32x32.png"
 					IsHitTestVisible="False"
-					Source="Assets/logosymbol.ico"
 					DockPanel.Dock="Left"
 					Name="WindowLogoIcon"
+					Width="32"
+					Height="32"
 					RenderOptions.BitmapInterpolationMode="HighQuality">
 				<Image.IsVisible>
 					<OnPlatform Default="False">

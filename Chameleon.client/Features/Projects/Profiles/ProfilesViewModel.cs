@@ -18,13 +18,24 @@ using Chameleon.client.Features.Projects.Profiles.Dialogs;
 
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Browzio;
+using CommunityToolkit.Mvvm.Input;
+using Chameleon.lib.Playwright;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
-public partial class AvailableBrowser(BrowserInfo info) : ObservableObject {
+public partial class AvailableBrowser(BrowserInfo info, Func<CookieOp, Task>? sync = null) : OO {
 	//public byte[]? IconData { get; } = IconExtractor.ExtractIcon(ExecutablePath);
 	[ObservableProperty] int running;
 	public BrowserInfo Info { get; } = info;
+	[RelayCommand]
+	public void SyncIn() {
+		sync?.Invoke(CookieOp.Import);
+	}
+	[RelayCommand]
+	public void SyncOut() {
+		sync?.Invoke(CookieOp.Export);
+	}
+
 }
 public partial class UPFolderViewModel : OO {
 	public UPFolderViewModel(UPFolderDto folder) {

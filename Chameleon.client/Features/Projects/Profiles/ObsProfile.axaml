@@ -2,6 +2,7 @@
 		 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		 xmlns:ref="clr-namespace:Avalonia.Markup.Xaml.MarkupExtensions;assembly=Avalonia.Markup.Xaml"
 		 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
 		 xmlns:ui="using:FluentAvalonia.UI.Controls"
 		 xmlns:avCommon="using:Chameleon.Avalonia.Common"
@@ -13,6 +14,7 @@
 <UserControl.Resources>
 		<local:BrowserInfoToIconConverter x:Key="BrowserInfoToIconConverter"/>
 		<local:EngineToBrushConverter x:Key="EngineToBrushConverter"/>
+		<local:BrowserInfoToCommandParameterConverter x:Key="BrowserInfoToCommandParameterConverter"/>
 </UserControl.Resources>
 	<UserControl.Styles>
 		<Style Selector=":is(Button)[Tag=1]">
@@ -102,22 +104,25 @@
 			</ItemsControl>
 
 			<UniformGrid Grid.Column="4" IsVisible="{Binding IsActionOptionsVisible}" HorizontalAlignment="Right" Rows="1">
-					<!-- <Button Content="chrome"
-						Classes="async svg"
-						Tag="{Binding IsChromeRunning}" />
-					<Button Content="firefox" 
-						Classes="async svg"
-						Tag="{Binding IsFFRunning}" />
-					<Button Content="brave" 
-						Classes="async svg"
-						Tag="{Binding IsBraveRunning}" /> -->
-
 				<Button Content="expand" Classes="cfv svg" ToolTip.Tip="Add to Tracker Overlay" />
 				<Button Content="copy" Classes="cfv svg" ToolTip.Tip="Expand into Copy Pasta Overlay" />
 
-				<Button Content="three-dots" Theme="{StaticResource SvgIconButton}">
+				<Button Name="HostButton" Content="three-dots" Theme="{StaticResource SvgIconButton}">
 					<Button.Flyout>
 						<ui:FAMenuFlyout Placement="Bottom">
+						 <!-- DYNAMIC list via ItemsSource -->
+			<!-- Broken <ui:MenuFlyoutSubItem 
+				 Text="Import Cookies" 
+				 IconSource="Import"
+         ItemsSource="{Binding Browsers}">
+        <ui:MenuFlyoutSubItem.ItemTemplate>
+          <DataTemplate>
+            <ui:MenuFlyoutItem 
+            	 Command="{Binding DataContext.SyncInCommand, ElementName=HostButton}"
+            	 Text="{Binding DataContext.Info, ElementName=HostButton, Converter={StaticResource conv:BrowserInfoToCommandParameterConverter}}}" />
+          </DataTemplate>
+        </ui:MenuFlyoutSubItem.ItemTemplate>
+      </ui:MenuFlyoutSubItem> -->
 							<ui:MenuFlyoutSubItem IconSource="Import" Text="Import Cookies">
 								<ui:MenuFlyoutItem Classes="sync-chrome" />
 								<ui:MenuFlyoutItem Classes="sync-brave" />
@@ -135,9 +140,7 @@
 							<ui:MenuFlyoutItem
 								Text="Delete"
 								IconSource="Delete"
-								IsVisible="{Binding !IsSharedProfile}"
-								Command="{Binding AsyncCfVCommand}"
-								CommandParameter="DeleteUserProfile" />
+								IsVisible="{Binding !IsSharedProfile}" />
 						</ui:FAMenuFlyout>
 					</Button.Flyout>
 				</Button>

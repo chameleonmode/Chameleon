@@ -64,10 +64,11 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	 : base(profile, onSelectedChanged: selectedChanged != null ? (vm) => selectedChanged((ObsProfile)vm) : null) {
 		//@ TODO: remove for more optimized implementation
 		Browsers.AddRange(
-			ProfilesViewModel.Instance.Browsers.Select(b => new AvailableBrowser(b.Info))
+			ProfilesViewModel.Instance.Browsers.Select(b => new AvailableBrowser(b.Info, sync: (op) => HandleCookieOperation(op, b.Info.Type)))
 		);
 		foreach (var browser in Browsers) {
 			AsyncCommandMap[browser.Info.Type.ToString()] = () => OpenBrowser(browser.Info.Type);
+			AsyncCommandMap[$"sync-in-{browser.Info.Type}"] = () => HandleCookieOperation(CookieOp.Import, browser.Info.Type);
 			SBI[browser.Info.Type] = null;
 		}
 		Browzio.I.Browzas.AddObserver(Dto.id, (s, e) => {
@@ -111,7 +112,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			_ = await UserProfilesRepo.SetProfileIsFavorite(profile);
 			OnPropertyChanged(nameof(IsFavorite));
 		};
-		AsyncCommandMap["DeleteUserProfile"] = async () => {
+		AsyncCommandMap["Delete"] = async () => {
 			if (
 				await MessageBox.Show("Delete", $"Are you sure you want to delete {profile.title}?",
 				btns: MBoxButtons.OkCancel,
