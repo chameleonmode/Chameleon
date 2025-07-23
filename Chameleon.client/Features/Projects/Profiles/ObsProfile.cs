@@ -24,9 +24,6 @@ using BrowserType = Chameleon.lib.Browzio.BrowserType;
 namespace Chameleon.client.Features.Projects.Profiles;
 
 public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAware {
-	[ObservableProperty] int isChromeRunning;
-	[ObservableProperty] int isBraveRunning;
-	[ObservableProperty] int isFFRunning;
 	[ObservableProperty] bool foreground;
 	[ObservableProperty] bool isShowGlyph = true;
 	[ObservableProperty] bool isShowCheckboxColumn = true;
@@ -68,7 +65,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		);
 		foreach (var browser in Browsers) {
 			AsyncCommandMap[browser.Info.Type.ToString()] = () => OpenBrowser(browser.Info.Type);
-			AsyncCommandMap[$"sync-in-{browser.Info.Type}"] = () => HandleCookieOperation(CookieOp.Import, browser.Info.Type);
+			// TODO: AsyncCommandMap[$"sync-in-{browser.Info.Type}"] = () => HandleCookieOperation(CookieOp.Import, browser.Info.Type);
 			SBI[browser.Info.Type] = null;
 		}
 		Browzio.I.Browzas.AddObserver(Dto.id, (s, e) => {
@@ -86,20 +83,9 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			int SetRunning(int current) => (current != -1 || running == 1) ? running : current;
 			var browser = Browsers.FirstOrDefault(b => b.Info.Type == e.Settings.BrowserType);
 			if (browser is not null) browser.Running = SetRunning(browser.Running);
-
-			_ = e.Settings.BrowserType switch {
-				BrowserType.Chrome => IsChromeRunning = SetRunning(IsChromeRunning),
-				BrowserType.Firefox => IsFFRunning = SetRunning(IsFFRunning),
-				BrowserType.Brave => IsBraveRunning = SetRunning(IsBraveRunning),
-				_ => 0
-			};
 			if (running <= 0) SBI[e.Settings.BrowserType] = null;
 		});
-		#region  commands
-		// AsyncCommandMap["brave"] = () => OpenBrowser(BrowserType.Brave);
-		// AsyncCommandMap["chrome"] = () => OpenBrowser(BrowserType.Chrome);
-		// AsyncCommandMap["firefox"] = () => OpenBrowser(BrowserType.Firefox);
-
+		#region commands
 		AsyncCommandMap["SyncCookiesChrome"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Chrome);
 		AsyncCommandMap["SyncCookiesBrave"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Brave);
 		AsyncCommandMap["SyncCookiesFirefox"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Firefox);
