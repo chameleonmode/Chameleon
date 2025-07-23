@@ -24,6 +24,7 @@ using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Abs.Platformatic;
 using ExCSS;
 using Chameleon.lib.Browzio;
+using Chameleon.lib.Playwright;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public static class Actorz {
@@ -248,7 +249,7 @@ public partial class ActorsViewModel : OOVM {
 	}
 	public override async Task Init(object? param) {
 		await base.Init(param);
-		_ = await lib.Playwright.Project.Initialized.Task;
+		_ = await Playwrightio.I.Initialized.Task;
 		if (!Loaded) await LoadActorStates();
 	}
 

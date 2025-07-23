@@ -18,7 +18,7 @@ using DynamicData;
 using FluentAvalonia.Core;
 using Microsoft.Playwright;
 using System.Collections.ObjectModel;
-using Event = Chameleon.lib.Browzio.Browzio.Event;
+using Event = Chameleon.lib.Browzio.Browzers.Event;
 using BrowserType = Chameleon.lib.Browzio.BrowserType;
 
 namespace Chameleon.client.Features.Projects.Profiles;
@@ -48,12 +48,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 
 	public BrowserProfile BP => new() {
 		Id = Dto.id,
-		Proxy = new BrowserProxy() {
-			Host = Dto.proxy?.host,
-			Port = Dto.proxy?.port ?? 0,
-			UserName = Dto.proxy?.userName,
-			Password = Dto.proxy?.password
-		}
+		Proxy = new (Dto.proxy?.host, Dto.proxy?.port ?? 0, Dto.proxy?.userName, Dto.proxy?.password)
 	};
 	public ReadOnlyObservableCollection<UPLoginDto> ProfileLogins {
 		get {

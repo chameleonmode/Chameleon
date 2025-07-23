@@ -22,6 +22,7 @@ using Chameleon.lib.Browzio;
 using Chameleon.lib.Browzio.Services;
 using Chameleon.lib.Api;
 using Chameleon.lib.Browzio.Services.Browzas;
+using Chameleon.lib.Playwright;
 
 namespace Chameleon.client;
 
@@ -58,10 +59,9 @@ public partial class App : Application {
 		Toaster.Info("Starting...");
 		_ = Task.Run(async () => {
 			await RunAsync();
-			await AddonsServer.I.Init();
 
 			await Browzio.I.Init();
-			_ = await lib.Playwright.Project.Init();
+			await Playwrightio.I.Init();
 		});
 	}
 
