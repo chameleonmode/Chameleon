@@ -127,21 +127,21 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		return SBI[bt];
 	}
 
-	public async Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookies(BrowserType browserType) {
+	public async Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookies(BrowserType bt) {
 		return await ExecuteBrowserAction(
-			browserType,
-			async port => await Sync.GetCookies(new(new(browserType, BP), port))
+			bt,
+			async port => await Sync.GetCookies(new(bt, BP) { Port = port })
 		);
 	}
 
-	private async Task HandleCookieOperation(CookieOp operation, BrowserType browserType) {
+	private async Task HandleCookieOperation(CookieOp operation, BrowserType bt) {
 		if (operation == CookieOp.Import) {
 			var file = await App.MainWindow!.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
-				Title = $"Import Cookies for {browserType}",
+				Title = $"Import Cookies for {bt}",
 				AllowMultiple = false,
 				FileTypeFilter = [new FilePickerFileType("JSON files") { Patterns = ["*.json"] }]
 			});
-			(file.Count == 1).ThrowFalse($"Select a single file to import cookies for {browserType}.");
+			(file.Count == 1).ThrowFalse($"Select a single file to import cookies for {bt}.");
 
 			await using var stream = await file[0].OpenReadAsync();
 			using var reader = new StreamReader(stream);
@@ -150,9 +150,9 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			ArgumentNullException.ThrowIfNull(pwCookies, "Failed to deserialize cookies from JSON file."); ;
 
 			await ExecuteBrowserAction(
-				browserType,
+				bt,
 				port => Sync.SetCookies(
-					new(new(browserType, BP), port),
+					new(bt, BP) { Port = port },
 					pwCookies.Select(c => new Cookie {
 						Name = c.Name,
 						Value = c.Value,
@@ -165,12 +165,12 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 					}).ToList()
 			));
 		} else {
-			var cookiesToExport = await GetCookies(browserType) ?? [];
-			cookiesToExport.Any().ThrowFalse($"No cookies found to export for {browserType}.");
+			var cookiesToExport = await GetCookies(bt) ?? [];
+			cookiesToExport.Any().ThrowFalse($"No cookies found to export for {bt}.");
 
 			var file = await App.MainWindow!.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions {
-				Title = $"Export Cookies for {browserType}",
-				SuggestedFileName = $"{browserType}Cookies_{DateTime.Now:yyyyMMddHHmmss}.json",
+				Title = $"Export Cookies for {bt}",
+				SuggestedFileName = $"{bt}Cookies_{DateTime.Now:yyyyMMddHHmmss}.json",
 				DefaultExtension = "json",
 				FileTypeChoices = [new FilePickerFileType("JSON files") { Patterns = ["*.json"] }]
 			});
@@ -182,13 +182,13 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			await writer.WriteAsync(json);
 		}
 
-		Toaster.Success($"Successfully {operation}ed cookies for {browserType}.");
+		Toaster.Success($"Successfully {operation}ed cookies for {bt}.");
 	}
 
-	private async Task<T?> ExecuteBrowserAction<T>(BrowserType browserType, Func<int?, Task<T>> action) {
+	private async Task<T?> ExecuteBrowserAction<T>(BrowserType browserType, Func<int, Task<T>> action) {
 		var wasOpen = SBI.TryGetValue(browserType, out var browser) && browser != null;
-		if (browserType == BrowserType.Firefox) await Processez.TryKillProcess(browser?.Brocess);
-		return await action(SBI[browserType]?.Settings.Port);
+		if (browserType == BrowserType.Firefox && wasOpen) await Processez.TryKillProcess(browser?.Brocess);
+		return await action(SBI[browserType]?.Settings.Port ?? 0);
 	}
 
 	public void SetUIContext(ProfileUIContext context) {
