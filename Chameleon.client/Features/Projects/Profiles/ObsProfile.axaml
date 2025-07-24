@@ -85,7 +85,6 @@
                   <Grid ColumnDefinitions="*,Auto">
                       <StackPanel VerticalAlignment="Center">
                           <TextBlock Text="{Binding Info.DisplayName}" />
-                          <TextBlock Text="{Binding Info.ExecutablePath}" Classes="caption" />
                       </StackPanel>
                       <Border Grid.Column="2" 
                               Background="{Binding Info.Engine, Converter={StaticResource EngineToBrushConverter}}"

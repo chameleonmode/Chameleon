@@ -20,12 +20,7 @@
 								Classes="async icon square"
 								Content="Add"
 								CommandParameter="CreateProfile"
-								IsVisible="{Binding IsCreateProfileBtnVisible}">
-							<!-- <StackPanel Orientation="Horizontal" Spacing="8">
-								<ui:SymbolIcon Symbol="Add"  />
-								<TextBlock Text="New Profile" VerticalAlignment="Center"/>
-							</StackPanel> -->
-						</Button>
+								IsVisible="{Binding IsCreateProfileBtnVisible}" />
 					</StackPanel>
 				</afv:PageHeader.ContentObject>
 			</afv:PageHeader>

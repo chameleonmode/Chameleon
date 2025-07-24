@@ -8,7 +8,7 @@ public partial class FoldersViewModel : Folderer {
 	public ObsFolder AllProfiles => Folders[0];
 
 	public FoldersViewModel() {
-		AsyncCommandMap["Create"] = async () => {
+		AsyncCommandMap["Add"] = async () => {
 			var folder = await UserProfilesFolderRepo.CreateFolder();
 			SetSelected(folder.id);
 		};
