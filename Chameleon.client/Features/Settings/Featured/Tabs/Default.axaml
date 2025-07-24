@@ -25,26 +25,26 @@
 						<UniformGrid Columns="2">
 							<CheckBox
 								Content="Canvas Resistance"
-								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofCanvasFingerprint}" />
+								IsChecked="{Binding Path=DefaultEmulationOptions.Canvas}" />
 							<CheckBox
 								Content="WebGl Resistance"
-								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofWebGLFingerprint}" />
+								IsChecked="{Binding Path=DefaultEmulationOptions.WebGL}" />
 							<CheckBox
 								Content="Client Rects Resistance"
-								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofClientRects}" />
+								IsChecked="{Binding Path=DefaultEmulationOptions.Rects}" />
 							<CheckBox
 								Content="Font Resistance"
-								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofFontFingerprint}" />							
+								IsChecked="{Binding Path=DefaultEmulationOptions.Font}" />							
 							<CheckBox
 								Content="Audio Resistance"
-								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofAudio}" />
+								IsChecked="{Binding Path=DefaultEmulationOptions.Audio}" />
 							<CheckBox
 								Content="Auto Geo Location"
-								IsChecked="{Binding Path=DefaultEmulationOptions.SpoofGeoLocation}" />
+								IsChecked="{Binding Path=DefaultEmulationOptions.Geo}" />
 
 							<CheckBox
 								Content="Auto Timezone"
-								IsChecked="{Binding Path=DefaultEmulationOptions.AutoTimezone}" />
+								IsChecked="{Binding Path=DefaultEmulationOptions.Timezone}" />
 						</UniformGrid>
 					</StackPanel>
 				</cc:ChameleonContentControl.Content>
