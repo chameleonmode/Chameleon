@@ -82,8 +82,6 @@ public partial class AssistantUser : DTOVM<AssistDto> {
 				);
 				await InitProfiles();
 				Toaster.Success($"profile(s) shared successfully");
-			}, ex => {
-				Toaster.Error($"Failed to share profile(s). {ex.Message}.");
 			});
 
 			// Folderz
@@ -98,8 +96,6 @@ public partial class AssistantUser : DTOVM<AssistDto> {
 				);
 				await InitFolders();
 				Toaster.Success($"folder(s) shared successfully");
-			}, ex => {
-				Toaster.Error($"Failed to share folder(s). {ex.Message}.");
 			});
 		};
 		AsyncCommandMap["Copy"] = async () => {

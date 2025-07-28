@@ -33,11 +33,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	public ProfileUIContext CurrentContext { get; private set; } = ProfileUIContext.Profiles;
 	public ProfileUIContext? PreviousContext { get; private set; }
 
-	public Dictionary<BrowserType, IBrowserInstance?> SBI { get; } = new() {
-		// [BrowserType.Chrome] = null,
-		// [BrowserType.Firefox] = null,
-		// [BrowserType.Brave] = null
-	};
+	public Dictionary<BrowserType, IBrowserInstance?> SBI { get; } = [];
 
 	public bool IsSharedProfile => Dto.creatorUserId != Auther.AuthSession?.UserId;
 	public char Code => string.IsNullOrWhiteSpace(Title) ? '0' : Title[0];
@@ -61,7 +57,9 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	 : base(profile, onSelectedChanged: selectedChanged != null ? (vm) => selectedChanged((ObsProfile)vm) : null) {
 		//@ TODO: remove for more optimized implementation
 		Browsers.AddRange(
-			ProfilesViewModel.Instance.Browsers.Select(b => new AvailableBrowser(b.Info, sync: (op) => HandleCookieOperation(op, b.Info.Type)))
+			Browzio.Utilities.DetectBrowsers()
+			.Where(b => b.Type == BrowserType.Firefox || b.Engine == BrowserEngine.Chromium)
+			.Select(b => new AvailableBrowser(b))
 		);
 		foreach (var browser in Browsers) {
 			AsyncCommandMap[browser.Info.Type.ToString()] = () => OpenBrowser(browser.Info.Type);
