@@ -23,6 +23,7 @@ using Chameleon.lib.Browzio.Services;
 using Chameleon.lib.Api;
 using Chameleon.lib.Browzio.Services.Browzas;
 using Chameleon.lib.Playwright;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Chameleon.client;
 
@@ -92,35 +93,30 @@ public partial class App : Application {
 		}
 	}
 
-	static async Task<bool> Logineer(LoginSettings login) {
-		Session.I.Auth0Client.OidcBrowser.Open = async url => {
-			var browser = await EX.Catch(
-				async () => await Browzio.I.Browzas.Open(Browzio.Factory.Chrome(new(url))),
-				ex => { if (!Browzio.Utilities.IsInstalled(BrowserType.Chrome)) Processez.OpenBrowser(url); }
-			);
-			Session.I.Auth0Client.OidcBrowser.TaskCompletion?.Task.ContinueWith(_ => browser?.Closee());
-		};
-		await Session.I.Login(login);
-		await Auther.LoginAsync(login.LoginName, login.LicenseKey);
-		return Auther.AuthSession is not null ? true : throw new InvalidOperationException("Auth session is invalid after login");
-	}
 	static async Task RunAsync(int trys = 3) {
 		await EX.Try(async () => {
 			if (trys == 0) throw new Exception("Failed after 3 attempts");
 			else {
 				await EX.Catch(
-				async () => await Logineer(
-					Session.I.Settings.AutoLogin ? Session.I.Settings : (
-						await MessageBox.Show<MboxLoginUserControl, MboxLoginViewModel>(
-						new(Session.I.Settings), new("User Login", Symbas: Symbas.ContactInfo))
-					)!.Settings
-				), async e => await RunAsync(trys - 1));
+					async () => {
+						var login = Session.I.Settings.AutoLogin
+							? Session.I.Settings 
+							: (await MessageBox.Show<MboxLoginUserControl, MboxLoginViewModel>(
+									new(Session.I.Settings),
+									new("User Login", Symbas: Symbas.ContactInfo)
+								))!.Settings;
+						await Session.I.Login(login);
+						await Auther.LoginAsync(login.LoginName, login.LicenseKey);
+						return Auther.AuthSession is not null ? true : throw new InvalidOperationException("Auth session is invalid after login");
+					},
+					async e => await RunAsync(trys - 1)
+				);
 
 				Toaster.Success($"Greetings {(Session.I.Settings?.LoginName) ?? "World"}");
 				await ViewModel.Instance.Init();
 			}
 		}, async e => {
-			if (await MessageBox.Error("Login Error", "Try again with last saved login info?", e)) await RunAsync();
+			if (await MessageBox.Error("Login Error", "Click Ok to try again or Cancel to inspect credentials", e)) await RunAsync();
 			else {
 				await Session.I.Logout();
 				await RunAsync();
