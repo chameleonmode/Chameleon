@@ -143,8 +143,8 @@ public partial class ActorViewModel : Automatior {
 						$"URL: {string.Join(", ", urlser)}",
 						$"Search: {string.Join(", ", termer)}"
 					);
-					await profile.AsyncCfVCommand.ExecuteAsync(SelectedBrowserOption.Option.ToString());
-					var browser = profile.SBI[SelectedBrowserOption.Option];
+					await profile.AsyncCfVCommand.ExecuteAsync(SelectedBrowserOption.Info.Type.ToString());
+					var browser = profile.SBI[SelectedBrowserOption.Info.Type];
 					await Run.Script(new() {
 						Port = browser!.Settings.Port,
 						Script = selection.Script,
@@ -205,7 +205,10 @@ public partial class ActorViewModel : Automatior {
 }
 
 public partial class ActorsViewModel : OOVM {
-	public static IEnumerable<BrowserOption> BrowserOptions { get; } = [new(BrowserType.Chrome)];//, new(BrowserType.Brave)];
+	public IEnumerable<AvailableBrowser> BrowserOptions { get; } = ProfilesViewModel.Instance.Browsers
+	  .Where(b => b.Info.Type == BrowserType.Chrome)
+		.Select(b => new AvailableBrowser(b.Info));
+
 	public static IEnumerable<string> Models { get; } = [
 		// Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.Gpt41),
 		Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.O4Mini),

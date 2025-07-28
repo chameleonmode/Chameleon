@@ -258,8 +258,8 @@ public partial class ProfilesViewModel : Profiler {
 				foreach (var profile in SelectedProfiles) {
 					cts.Token.ThrowIfCancellationRequested();
 					await ConfigureScriptParameters(profile);
-					await profile.AsyncCfVCommand.ExecuteAsync(SelectedBrowserOption.Option.ToString()).WaitAsync(cts.Token);
-					var browser = profile.SBI[SelectedBrowserOption.Option];
+					await profile.AsyncCfVCommand.ExecuteAsync(SelectedBrowserOption.Info.Type.ToString()).WaitAsync(cts.Token);
+					var browser = profile.SBI[SelectedBrowserOption.Info.Type];
 					SelectedPlaywrightScript!.Port = browser!.Settings.Port;
 					SelectedPlaywrightScript.Record = record;
 					await Run.Script(SelectedPlaywrightScript, cts.Token);

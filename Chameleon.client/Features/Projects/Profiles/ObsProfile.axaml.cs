@@ -69,45 +69,6 @@ public class BrowserInfoToCommandParameterConverter : IValueConverter {
 // 	}
 // }
 
-// 2. BrowserInfoToIconConverter - Enhanced converter for BrowserInfo objects
-public class BrowserInfoToIconConverter : IValueConverter {
-	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
-		if (value is not BrowserInfo info)
-			return BindingNotification.UnsetValue;
-
-		// You can embed default icons as resources and load them here
-		var icon = info.Type switch {
-			BrowserType.Chrome => "chrome",
-			BrowserType.Firefox => "firefox",
-			BrowserType.Edge => "edge",
-			BrowserType.Safari => "safari",
-			BrowserType.Brave => "brave",
-			BrowserType.Opera => "opera",
-			BrowserType.Vivaldi => "vivaldi",
-			BrowserType.Chromium => "chromium",
-			BrowserType.Waterfox => "waterfox",
-			BrowserType.LibreWolf => "librewolf",
-			BrowserType.Yandex => "yandex",
-			BrowserType.Arc => "arc",
-			BrowserType.InternetExplorer => "ie",
-			_ => "browser"
-		};
-		return $"browsers/{icon}";
-		// // Load from embedded resources
-		// // Make sure to add these icons to your Assets/Icons folder and set Build Action to "AvaloniaResource"
-		// var uri = new Uri($"avares://Chameleon.client/Assets/pngs/{iconName}");
-		// return new Bitmap(AssetLoader.Open(uri));
-		// var uri = $"avares://Chameleon.client/Assets/Svgs/browsers/{icon}.svg";
-		// using var stream = AssetLoader.Open(new Uri(uri));
-		// using var reader = new StreamReader(stream);
-		// var data = reader.ReadToEnd();
-		// return data;
-	}
-
-	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
-		return BindingNotification.UnsetValue;
-	}
-}
 
 // 3. CachedExecutablePathToIconConverter - Performance-optimized converter with caching
 // public class CachedExecutablePathToIconConverter : IValueConverter {

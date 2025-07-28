@@ -12,7 +12,7 @@
 						 x:DataType="local:ProfilesViewModel"
 						 x:CompileBindings="True">
 <UserControl.Resources>
-		<local:BrowserInfoToIconConverter x:Key="BrowserInfoToIconConverter"/>
+		<afv:BrowserInfoToIconConverter x:Key="BrowserInfoToIconConverter"/>
 		<local:EngineToBrushConverter x:Key="EngineToBrushConverter"/>
 </UserControl.Resources>
 	<UserControl.Styles>
@@ -87,11 +87,11 @@
 							<Button Content="delete" ToolTip.Tip="Delete" Classes="async svg" />
 							<Border Classes="divider" Margin="18 6" />
 							<ComboBox SelectedItem="{Binding SelectedBrowserOption}"
-								 ItemsSource="{x:Static auto:ActorsViewModel.BrowserOptions}"
+								 ItemsSource="{Binding BrowserOptions}"
 								 Margin="0 0 6 0">
 								<ComboBox.ItemTemplate>
 									<DataTemplate>
-										<afv:SvgIcon IconName="{Binding IconName}" Height="20" Width="20"/>
+										<afv:SvgIcon IconName="{Binding Info, Converter={StaticResource BrowserInfoToIconConverter}}" Height="20" Width="20"/>
 									</DataTemplate>
 								</ComboBox.ItemTemplate>
 							</ComboBox>

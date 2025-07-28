@@ -9,6 +9,7 @@ using Chameleon.lib.Util;
 using Avalonia.Data;
 using Avalonia.Controls.Primitives;
 using FluentAvalonia.UI.Controls;
+using Chameleon.lib.Browzio;
 
 namespace Chameleon.client.UI.Controls;
 
@@ -40,6 +41,38 @@ public class SvgNameToDataConverter : IValueConverter {
 				data = data.Replace("fill=\"black\"", "fill=\"white\"");
 		}
 		return data;
+	}
+
+	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
+		return BindingNotification.UnsetValue;
+	}
+}
+
+
+// 2. BrowserInfoToIconConverter - Enhanced converter for BrowserInfo objects
+public class BrowserInfoToIconConverter : IValueConverter {
+	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
+		if (value is not BrowserInfo info)
+			return BindingNotification.UnsetValue;
+
+		// You can embed default icons as resources and load them here
+		var icon = info.Type switch {
+			BrowserType.Chrome => "chrome",
+			BrowserType.Firefox => "firefox",
+			BrowserType.Edge => "edge",
+			BrowserType.Safari => "safari",
+			BrowserType.Brave => "brave",
+			BrowserType.Opera => "opera",
+			BrowserType.Vivaldi => "vivaldi",
+			BrowserType.Chromium => "chromium",
+			BrowserType.Waterfox => "waterfox",
+			BrowserType.LibreWolf => "librewolf",
+			BrowserType.Yandex => "yandex",
+			BrowserType.Arc => "arc",
+			BrowserType.InternetExplorer => "ie",
+			_ => "browser"
+		};
+		return $"browsers/{icon}";
 	}
 
 	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {

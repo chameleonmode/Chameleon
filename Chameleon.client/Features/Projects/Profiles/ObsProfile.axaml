@@ -5,14 +5,13 @@
 		 xmlns:ref="clr-namespace:Avalonia.Markup.Xaml.MarkupExtensions;assembly=Avalonia.Markup.Xaml"
 		 xmlns:conv="using:Chameleon.Avalonia.Common.Converters.ValueConverters"
 		 xmlns:ui="using:FluentAvalonia.UI.Controls"
-		 xmlns:avCommon="using:Chameleon.Avalonia.Common"
-		 xmlns:afv="using:Chameleon.Av.Fluent.Common.Controls"
+		 xmlns:cc="using:Chameleon.client.UI.Controls"
 		 xmlns:local="using:Chameleon.client.Features.Projects.Profiles"
 		 x:Class="Chameleon.client.Features.Projects.Profiles.UserProfileUserControl"
 		 x:DataType="local:ObsProfile"
 		 x:CompileBindings="True">
 <UserControl.Resources>
-		<local:BrowserInfoToIconConverter x:Key="BrowserInfoToIconConverter"/>
+		<cc:BrowserInfoToIconConverter x:Key="BrowserInfoToIconConverter"/>
 		<local:EngineToBrushConverter x:Key="EngineToBrushConverter"/>
 		<local:BrowserInfoToCommandParameterConverter x:Key="BrowserInfoToCommandParameterConverter"/>
 </UserControl.Resources>

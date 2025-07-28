@@ -13,6 +13,9 @@
 			 x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
 			 x:DataType="local:ActorsViewModel"
 			 x:CompileBindings="True">
+<UserControl.Resources>
+	<cc:BrowserInfoToIconConverter x:Key="BrowserInfoToIconConverter"/>
+</UserControl.Resources>
 	<Grid RowDefinitions="Auto, *">
 		<cc:ChameleonContentControl Title="Autonomous Agents" TitleDescription="Robotic Automation Agents">
 			<cc:ChameleonContentControl.TitleContent>
@@ -200,11 +203,11 @@
 										<Border Classes="divider" />
 
 										<ComboBox SelectedItem="{Binding SelectedBrowserOption}"
-											 ItemsSource="{x:Static local:ActorsViewModel.BrowserOptions}"
+											 ItemsSource="{Binding BrowserOptions}"
 											 IsVisible="{Binding !Running}">
 											<ComboBox.ItemTemplate>
 												<DataTemplate>
-													<cc:SvgIcon IconName="{Binding IconName}" Height="20" Width="20" />
+													<cc:SvgIcon IconName="{Binding Info, Converter={StaticResource BrowserInfoToIconConverter}}" Height="20" Width="20" />
 												</DataTemplate>
 											</ComboBox.ItemTemplate>
 										</ComboBox>

@@ -18,7 +18,7 @@ using DynamicData;
 using FluentAvalonia.Core;
 using Microsoft.Playwright;
 using System.Collections.ObjectModel;
-using Event = Chameleon.lib.Browzio.Browzers.Event;
+using Event = Chameleon.lib.Browzio.Services.Browzers.Event;
 using BrowserType = Chameleon.lib.Browzio.BrowserType;
 
 namespace Chameleon.client.Features.Projects.Profiles;
