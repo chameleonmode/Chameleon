@@ -86,7 +86,7 @@
 											 Margin="4 2" />
 										<Button Content="Delete"
 												 Grid.Column="2"
-												 Classes="icon clear text"
+												 Classes="icon clear text-accent-foreground"
 												 Command="{Binding DeleteCommand}" /> 
 									</Grid>
 								</DataTemplate>

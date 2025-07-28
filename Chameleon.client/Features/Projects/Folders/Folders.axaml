@@ -113,14 +113,16 @@
 			</Panel>
 		</DataTemplate>
 	</UserControl.Resources>
-	<afv:ChameleonContentControl Title="Folders" TitleDescription="Select a folder to view profiles">
+	<afv:ChameleonContentControl 
+		 Title="Folders"
+		 TitleDescription="{Binding TotalCount, StringFormat=' {0} folders.'}">
 		<afv:ChameleonContentControl.TitleContent>
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-				<Button Margin="0 0 6 6"
-						Classes="async icon clear text"
-						Content="Add"
-						ToolTip.Tip="New Folder" />
-			</StackPanel>
+				<Button 
+					Classes="async icon clear text-accent-foreground"
+					Content="Add"
+					ToolTip.Tip="New Folder"
+					Margin="0 0 3 6"
+					HorizontalAlignment="Right" />
 		</afv:ChameleonContentControl.TitleContent>
 		<ItemsControl
 			ItemsSource="{Binding Folders}"

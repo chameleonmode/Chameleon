@@ -1,39 +1,19 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
-
-using Chameleon.client.MvvM;
-using Chameleon.client.Services;
+﻿using Chameleon.client.Services;
 using Chameleon.client.Features.Projects.Folders;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.client.Features.Projects.Profiles.Identity;
 
-using Chameleon.lib;
 using Chameleon.lib.Util;
 using Chameleon.lib.Api;
 using Chameleon.lib.Helpers;
+using Chameleon.client.Features.Automation;
 
 namespace Chameleon.client.Features.Projects;
 
-public abstract partial class Projector(string? title = null) : Profilearee(title) {
-	[ObservableProperty] ChangeComparereOption sortFolder = ChangeComparereOption.Ascending;
-
-	public abstract ReadOnlyObservableCollection<ObsFolder> Folders { get; }
-
-	public bool HasFolders => Folders.Count > 0;
-	public bool HasNoItems => !HasFolders && !HasProfiles;
-
-	partial void OnSortFolderChanged(ChangeComparereOption value) {
-		Folderer.CompareObservable.OnNext(value switch {
-			ChangeComparereOption.Descending => Folderer.DescendingComparer,
-			_ => Folderer.AscendingComparer
-		});
-	}
-}
-
-public partial class ViewModel : OOVM {
+public partial class Projects : Automatior {
 	public bool IsCreateProfileBtnVisible { get; } = Auther.AuthSession?.CreatorUserId == null || Auther.AuthSession?.CanCreateProfiles == true;
 
-	ViewModel() : base("") {
+	Projects() {
 		AsyncCommandMap["CreateProfile"] = async () => {
 			try {
 				var p = await ProfilesViewModel.Instance.CreateNewProfile();
@@ -54,8 +34,7 @@ public partial class ViewModel : OOVM {
 		else if (param is string p) ProfilesViewModel.Instance.SearchText = p;
 		
 		ProfileUIContextManager.SetModuleContext(ProfileUIModule.Profiles, ProfileUIContext.Profiles);
-		// Restore Profiles context when navigating back from other views (like Dashboard)
 		ProfilesViewModel.Instance.ApplyProfilesContext();
 	}
-	public static ViewModel Instance { get; } = new();
+	public static Projects I { get; } = new();
 }

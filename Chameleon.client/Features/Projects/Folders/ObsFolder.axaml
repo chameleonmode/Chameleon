@@ -34,8 +34,8 @@
 			<Button
 				Content="View"
 				Theme="{StaticResource TransparentButton}"
-					CommandParameter="ViewGroup"
-					Command="{Binding CfVCommand}"/>
+				CommandParameter="ViewGroup"
+				Command="{Binding CfVCommand}"/>
 			<Button Grid.Column="2"
 					VerticalAlignment="Top"
 					Margin="5"

@@ -124,8 +124,8 @@
 							ItemsSource="{Binding CountsProxies}"
 							DisplayMemberBinding="{Binding}" />
 							
-						<Button Content="Refresh" Classes="async icon clear text" />
-						<Button Content="Copy" Classes="async icon clear text" />
+						<Button Content="Refresh" Classes="async icon clear text-accent-foreground" />
+						<Button Content="Copy" Classes="async icon clear text-accent-foreground" />
 					</StackPanel>
 					</Panel>
 				</afv:ChameleonContentControl.TitleContent>

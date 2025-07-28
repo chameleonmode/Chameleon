@@ -9,7 +9,7 @@
 						 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
 						 xmlns:local="using:Chameleon.client.Features.Projects"
              x:Class="Chameleon.client.Features.Projects.View"
-						 x:DataType="local:ViewModel">
+						 x:DataType="local:Projects">
 	<ScrollViewer Padding="{StaticResource ScrollviewerAppPageMargin}">
 		<StackPanel>
 			<afv:PageHeader TextType="Profiles" Classes="smallest">

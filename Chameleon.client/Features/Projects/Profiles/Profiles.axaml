@@ -32,7 +32,7 @@
 
 	<afv:ChameleonContentControl
 		  Title="{Binding SelectedFolderTitle}"
-		  TitleDescription="{Binding TotalCount, StringFormat='You have {0} profiles.'}">
+		  TitleDescription="{Binding TotalCount, StringFormat=' {0} profiles.'}">
 		<afv:ChameleonContentControl.TitleContent>
 			<uc:PaginatorView DataContext="{Binding Paginator}" />
 		</afv:ChameleonContentControl.TitleContent> 
@@ -85,17 +85,6 @@
 							<Button Content="up-folder" ToolTip.Tip="Move to folder" Classes="async svg" />
 							<Button Content="minus-in-circle" ToolTip.Tip="Remove from folder" Margin="4 0" IsVisible="{Binding HasFolder}" Classes="async svg" />
 							<Button Content="delete" ToolTip.Tip="Delete" Classes="async svg" />
-							<Border Classes="divider" Margin="18 6" />
-							<ComboBox SelectedItem="{Binding SelectedBrowserOption}"
-								 ItemsSource="{Binding BrowserOptions}"
-								 Margin="0 0 6 0">
-								<ComboBox.ItemTemplate>
-									<DataTemplate>
-										<afv:SvgIcon IconName="{Binding Info, Converter={StaticResource BrowserInfoToIconConverter}}" Height="20" Width="20"/>
-									</DataTemplate>
-								</ComboBox.ItemTemplate>
-							</ComboBox>
-							<Button Classes="icon async" IsVisible="{Binding !Automationing}" Content="RadioButtonFilled" CommandParameter="Record" ToolTip.Tip="Record" />
 						</StackPanel>
 					</HeaderedContentControl.Header>
 				</HeaderedContentControl>
@@ -103,9 +92,9 @@
 		</afv:ChameleonContentControl.Header>
 
 		<afv:ChameleonContentControl.Options>
-			<StackPanel Spacing="12">
+			<StackPanel Spacing="6">
 				<Button	Tag="Add profiles" IsVisible="{Binding HasFolder}" Content="plus-in-circle" Classes="async svg-text" />
-				<StackPanel IsVisible="{Binding HasProfiles}" Spacing="12">
+				<StackPanel IsVisible="{Binding HasProfiles}" Spacing="6">
 					<Button Content="select-all" Tag="Select all" Classes="cfv svg-text" />
 					<Button Content="select-all" Tag="Select folder" Classes="cfv svg-text" CommandParameter="select-folder" />
 					<afv:HeaderdInputFieldsControl IsVisible="{Binding HasFolder}"
@@ -115,23 +104,51 @@
 							<Button Content="Save" ToolTip.Tip="Save Tags" CommandParameter="SaveTags" Classes="icon accent async" />
 						</afv:HeaderdInputFieldsControl.Buttons>
 					</afv:HeaderdInputFieldsControl>
-					<Grid ColumnDefinitions="*, Auto" IsVisible="{Binding HasSelectedItems}">
-						<ComboBox ToolTip.Tip="Automation:"
-							 ItemsSource="{Binding PlaywrightScripts}"
-							 SelectedItem="{Binding SelectedPlaywrightScript}"
-							 Margin="0 0 6 0">
-							<ComboBox.ItemTemplate>
-								<DataTemplate>
-									<TextBlock Text="{Binding Description.Title}" />
-								</DataTemplate>
-							</ComboBox.ItemTemplate>
-						</ComboBox>
-						<Button Grid.Column="1" Classes="icon async" Content="Play" IsVisible="{Binding !Automationing}" />
-						<Button Grid.Column="1" Classes="icon cfv" Content="Stop" IsVisible="{Binding Automationing}" />
-					</Grid>
-					<ComboBox ToolTip.Tip="Sort"
+					<!-- <ComboBox ToolTip.Tip="Sort"
 						 ItemsSource="{Binding Sorts}"
-						 SelectedItem="{Binding Sort}" />
+						 SelectedItem="{Binding Sort}" /> -->
+					<StackPanel IsVisible="{Binding HasSelectedItems}" Spacing="6">
+							<ComboBox ToolTip.Tip="Automation:"
+								 ItemsSource="{Binding PlaywrightScripts}"
+								 SelectedItem="{Binding SelectedPlaywrightScript}">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Description.Title}" />
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+						<Grid ColumnDefinitions="Auto, Auto, Auto">
+							<ComboBox SelectedItem="{Binding SelectedBrowserOption}"
+								 ItemsSource="{Binding BrowserOptions}"
+								 Margin="0 0 3 0">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<afv:SvgIcon IconName="{Binding Info, Converter={StaticResource BrowserInfoToIconConverter}}" Height="20" Width="20"/>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+							<Button 
+								 Grid.Column="1" 
+								 Classes="icon async"
+								 IsVisible="{Binding !Automationing}"
+								 Content="RadioButtonFilled"
+								 CommandParameter="Record"
+								 ToolTip.Tip="Record" />
+							<Button 
+								Grid.Column="2"
+								Classes="icon async" 
+								Content="Play" 
+								IsVisible="{Binding !Automationing}"
+								Margin="3 0 0 0" />
+							<Button
+								 Grid.Column="1"
+								 Classes="icon cfv"
+								 Content="Stop"
+								 IsVisible="{Binding Automationing}" />
+						</Grid>
+						<Grid ColumnDefinitions="*, Auto">
+						</Grid>
+					</StackPanel>
 				</StackPanel>
 			</StackPanel>
 		</afv:ChameleonContentControl.Options>

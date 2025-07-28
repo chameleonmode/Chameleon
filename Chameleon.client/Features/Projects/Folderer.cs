@@ -16,21 +16,24 @@ public abstract partial class Folderer : OOVM {
 
 	public IObservable<IChangeSet<ObsFolder, int>> Shared { get; }
 	public virtual ReadOnlyObservableCollection<ObsFolder> Folders { get; }
-  
+
+	public int TotalCount => Folders.Count;
 	public bool HasNoItems => Folders.Count == 0;
 	public int SelectedCount => Folders.Where(i => i.IsSelected)?.Count() ?? 0;
 	public bool HasSelectedItems => SelectedCount > 0;
 
 	public Folderer(string? title = null) : base(title) {
 		Shared = UserProfilesFolderRepo.Connect()
-		.Transform(i => {
-			i.title ??= "All";
-			return new ObsFolder(folder: i, selectedChanged: SelectedChanged);
-		})
-		.Publish()    // <-- multicast
-		.RefCount();  // <-- auto-connect when first subscriber appears
+			.Transform(i => {
+				i.title ??= "All";
+				return new ObsFolder(folder: i, selectedChanged: SelectedChanged);
+			})
+			.Publish()    // <-- multicast
+			.RefCount();  // <-- auto-connect when first subscriber appears
 
-		_ = Shared.SortAndBind(out var folders, AscendingComparer).Subscribe();
+		_ = Shared
+			.SortAndBind(out var folders, AscendingComparer)
+			.Subscribe(_ => OnPropertyChanged(nameof(TotalCount)));
 		Folders = folders;
 	}
 	public virtual void SelectedChanged(ObsFolder folder) {

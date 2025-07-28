@@ -226,7 +226,7 @@
 				<ui:SettingsExpanderItem Content="Exception Log">
 					<ui:SettingsExpanderItem.Footer>
 						<StackPanel Orientation="Horizontal" Spacing="8">
-						<Button Content="Copy" Classes="async icon clear text" />
+						<Button Content="Copy" Classes="async icon clear text-accent-foreground" />
 							<Button Content="Open Log File"
 									Command="{Binding AsyncCfVCommand}"
 									CommandParameter="OpenLogFile"

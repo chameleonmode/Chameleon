@@ -83,17 +83,17 @@ public partial class ProfilesViewModel : Profiler {
 
 	public override bool HasSelectedItems => selectedProfileIds.Count > 0;
 	public override int SelectedCount => selectedProfileIds.Count;
-	public override IEnumerable<ObsProfile> SelectedProfiles => 
-		UserProfilesRepo.Instance.ObservableCache.Items
-			.Where(dto => selectedProfileIds.Contains(dto.id))
-			.Select(dto => ObsProfiles.First(p => p.Dto.id == dto.id))
-			.ToList();
 	public bool HasFolder => Folder?.Id > 0;
 	public string SelectedFolderTitle => Folder?.Title ?? "x_x";
 	public int TotalCount => Paginator.TotalCount = MaxInFolderItems;
 	public int MaxInFolderItems => HasFolder
 		? UserProfilesRepo.Instance.ObservableCache.Items.Count(i => i.folderId == Folder?.Id)
 		: UserProfilesRepo.Instance.ObservableCache.Count;
+	public override IEnumerable<ObsProfile> SelectedProfiles => 
+		UserProfilesRepo.Instance.ObservableCache.Items
+			.Where(dto => selectedProfileIds.Contains(dto.id))
+			.Select(dto => ObsProfiles.First(p => p.Dto.id == dto.id))
+			.ToList();
 
 	public ProfilesViewModel() {
 		pageRequests = new(new PageRequest(0, DefaultPageSize));
@@ -214,10 +214,7 @@ public partial class ProfilesViewModel : Profiler {
 		foreach (var browser in Browsers) {
 			AsyncCommandMap[browser.Info.Type.ToString()] = () => OpenBrowser(browser.Info.Type);
 		}
-		// AsyncCommandMap["chrome"] = () => OpenBrowser(BrowserType.Chrome);
-		// AsyncCommandMap["brave"] = () => OpenBrowser(BrowserType.Brave);
-		// AsyncCommandMap["firefox"] = () => OpenBrowser(BrowserType.Firefox);
-
+		
 		void StopAutomation() {
 			Automationing = false;
 			cts?.Cancel();

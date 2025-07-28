@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Chameleon.client.Features.Automation;
 using Chameleon.client.Features.Projects.Profiles;
+using Chameleon.client.MvvM;
 using Chameleon.lib.Api.Repos;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
@@ -137,7 +138,7 @@ public static class ProfileUIContextManager {
   });
 }
 
-public abstract partial class Profilearee(string? title = null) : Automatior(title) {
+public abstract partial class Profilearee(string? title = null) : OOVM(title) {
   [ObservableProperty] ChangeComparereOption sort = ChangeComparereOption.Ascending;
   public abstract ReadOnlyObservableCollection<ObsProfile> Profiles { get; }
   public ChangeComparereOption[] Sorts { get; } = (ChangeComparereOption[])Enum.GetValues(typeof(ChangeComparereOption));
@@ -159,6 +160,8 @@ public abstract partial class Profiler : Profilearee {
   public virtual IEnumerable<ObsProfile> SelectedProfiles => Profiles.Where(i => i.IsSelected);
   public virtual int SelectedCount => SelectedProfiles.Count();
   public virtual bool HasSelectedItems => SelectedProfiles.Any();
+  public virtual AvailableBrowser SelectedBrowserOption => Projects.I.SelectedBrowserOption;
+  public virtual IEnumerable<AvailableBrowser> BrowserOptions => Projects.I.BrowserOptions;
 
   public Profiler(string? title = null) : base(title) {
     // 1) Create a shared change‐set (after your Transform + Filter)

@@ -7,5 +7,5 @@ public partial class View : ChameleonNavigationPage {
 		InitializeComponent();
 	}
 
-	protected override object? ViewModel => Projects.ViewModel.Instance;
+	protected override object? ViewModel => Projects.I;
 }

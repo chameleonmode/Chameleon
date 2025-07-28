@@ -13,10 +13,25 @@ using System.Reactive.Linq;
 using Chameleon.client.Features.Projects;
 using Chameleon.lib.Browzio;
 using Chameleon.lib.Util;
+using Chameleon.client.Features.Projects.Folders;
 
 namespace Chameleon.client.Features.Dashboard;
 
-public abstract partial class Dashboarder(string? title) : Projector(title) { }
+public abstract partial class Dashboarder(string? title) : Profilearee(title) {
+	[ObservableProperty] ChangeComparereOption sortFolder = ChangeComparereOption.Ascending;
+
+	public abstract ReadOnlyObservableCollection<ObsFolder> Folders { get; }
+
+	public bool HasFolders => Folders.Count > 0;
+	public bool HasNoItems => !HasFolders && !HasProfiles;
+
+	partial void OnSortFolderChanged(ChangeComparereOption value) {
+		Folderer.CompareObservable.OnNext(value switch {
+			ChangeComparereOption.Descending => Folderer.DescendingComparer,
+			_ => Folderer.AscendingComparer
+		});
+	}
+}
 
 public partial class TagViewModel(Action<TagViewModel> OnSelectChanged) : ObservableObject {
 	[ObservableProperty] string name = null!;
