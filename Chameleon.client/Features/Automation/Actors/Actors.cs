@@ -11,7 +11,6 @@ using Chameleon.client.MvvM;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-using Chameleon.lib;
 using Chameleon.lib.AIR.Actors;
 using Chameleon.lib.AIR.Actors.Reddit;
 using Chameleon.lib.Helpers;
@@ -22,8 +21,6 @@ using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Abs.Platformatic;
-using ExCSS;
-using Chameleon.lib.Browzio;
 using Chameleon.lib.Playwright;
 namespace Chameleon.client.Features.Automation.Actors;
 
@@ -90,7 +87,6 @@ public partial class ActorViewModel : Automatior {
 				 .ForEach(p => p.Active = p.IsSelected = t.IsSelected)
 			)
 		));
-
 		CancellationTokenSource? cts = null;
 		void onStop() {
 			Running = false;
@@ -205,10 +201,6 @@ public partial class ActorViewModel : Automatior {
 }
 
 public partial class ActorsViewModel : OOVM {
-	public IEnumerable<AvailableBrowser> BrowserOptions { get; } = ProfilesViewModel.Instance.Browsers
-	  .Where(b => b.Info.Type == BrowserType.Chrome)
-		.Select(b => new AvailableBrowser(b.Info));
-
 	public static IEnumerable<string> Models { get; } = [
 		// Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.Gpt41),
 		Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.O4Mini),
