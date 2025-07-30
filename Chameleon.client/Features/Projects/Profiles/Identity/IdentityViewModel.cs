@@ -68,9 +68,9 @@ public partial class IdentityViewModel : OOVM {
 		await EX.Try(async () => {
 			var saveAllTasks = Task.WhenAll([
 				LoginsVM!.SaveAll().RunInBackground(),
-					PersonsVM!.SaveAll().RunInBackground(),
-					AddressesVM!.SaveAll().RunInBackground(),
-					BusinessesVM!.SaveAll().RunInBackground()
+				PersonsVM!.SaveAll().RunInBackground(),
+				AddressesVM!.SaveAll().RunInBackground(),
+				BusinessesVM!.SaveAll().RunInBackground()
 			]);
 
 			if (UserProfile!.Validator?.IsValid == false) {
@@ -82,6 +82,7 @@ public partial class IdentityViewModel : OOVM {
 			await saveAllTasks;
 
 			if (res != null) {
+				if(ProfileVM != null) ProfileVM.Dto = res;
 				_ = TagsRepo.Instance
 				.SaveTagsAsync(TagItemType.Profile, UserProfile.Id.ToString(), UserProfile.Tags.ToTagsList())
 				.RunInBackground();
