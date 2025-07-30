@@ -25,7 +25,5 @@ rm -rf .playwright/node/darwin-x64
 rm /Users/dev/src/Chameleon/publish/win/Chameleon.7z
 cp Chameleon.7z /Users/dev/src/Chameleon/publish/win
 
-rm /Users/dev/Library/CloudStorage/OneDrive-EagleFusion/current/Chameleon.7z
-cp Chameleon.7z /Users/dev/Library/CloudStorage/OneDrive-EagleFusion/current
-
- 
+# rm /Users/dev/Library/CloudStorage/OneDrive-EagleFusion/current/Chameleon.7z
+# cp Chameleon.7z /Users/dev/Library/CloudStorage/OneDrive-EagleFusion/current

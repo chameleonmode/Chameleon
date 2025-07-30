@@ -81,10 +81,7 @@ public partial class ViewModel : OOVM {
 		if (newValue == null) return;
 
 		IsFavouriteSelected = newValue.Name == "Favourites";
-
-		// Apply Favorites context when Favourites tab is selected
-		if (IsFavouriteSelected) ProfileUIContextManager.SetModuleContext(ProfileUIModule.Favourites, ProfileUIContext.Dashboard);
-		else TagsViewModel.Instance.SelectedTagName = newValue.Name;
+		if (!IsFavouriteSelected) TagsViewModel.Instance.SelectedTagName = newValue.Name;
 
 		if (!newValue.IsSelected) newValue.IsSelected = true;
 		if (oldValue != null && oldValue.IsSelected) oldValue.IsSelected = false;

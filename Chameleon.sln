@@ -35,6 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A0E6
 		scripts\winpload.sh = scripts\winpload.sh
 		scripts\macship.sh = scripts\macship.sh
 		scripts\deploy.sh = scripts\deploy.sh
+		scripts\winpre.sh = scripts\winpre.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{3A8DF596-E814-FECC-DD4B-D8EF8AAC1A0D}"

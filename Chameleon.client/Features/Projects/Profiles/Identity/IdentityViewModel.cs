@@ -63,7 +63,7 @@ public partial class IdentityViewModel : OOVM {
 	}
 
 	private async Task SaveChanges() {
-		if (IsSaving) return; // Prevent multiple concurrent saves
+		if (IsSaving || ProfileVM == null) return; // Prevent multiple concurrent saves
 		IsSaving = true;
 		await EX.Try(async () => {
 			var saveAllTasks = Task.WhenAll([
@@ -73,7 +73,7 @@ public partial class IdentityViewModel : OOVM {
 				BusinessesVM!.SaveAll().RunInBackground()
 			]);
 
-			if (UserProfile!.Validator?.IsValid == false) {
+			if (UserProfile?.Validator?.IsValid == false) {
 				Toaster.Info("Profile validation failed. Some changes may not be saved.");
 			}
 
@@ -82,14 +82,10 @@ public partial class IdentityViewModel : OOVM {
 			await saveAllTasks;
 
 			if (res != null) {
-				if(ProfileVM != null) ProfileVM.Dto = res;
+				ProfileVM.Dto = res;
 				_ = TagsRepo.Instance
-				.SaveTagsAsync(TagItemType.Profile, UserProfile.Id.ToString(), UserProfile.Tags.ToTagsList())
+				.SaveTagsAsync(TagItemType.Profile, ProfileVM.Dto.ID, UserProfile.Tags.ToTagsList())
 				.RunInBackground();
-
-				UserProfile.Tags = await TagsRepo.Instance
-				.GetTagsAsync(TagItemType.Profile, UserProfile.Id.ToString()).ToStringAsync()
-				.RunInBackgroundWithResult();
 
 				PersonsVM.UpdateFilter();
 				BusinessesVM.UpdateFilter();
