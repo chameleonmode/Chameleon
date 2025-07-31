@@ -19,11 +19,11 @@ public partial class CookySyncDialog : OOVM {
   public IEnumerable<CookieOp> CookieOps { get; } = Enum.GetValues<CookieOp>();
 
   public CookySyncDialog() {
-		BrowserOptions.AddRange(
-			Browzio.Utilities.DetectBrowsers()
-			.Where(b => b.Type != BrowserType.Vivaldi)
-			.Select(b => new AvailableBrowser(b))
-		);
+    BrowserOptions.AddRange(
+      Browzio.Utilities.DetectBrowsers()
+      .Where(b => b.Type != BrowserType.Vivaldi && (b.Type == BrowserType.Firefox || b.Engine == BrowserEngine.Chromium))
+      .Select(b => new AvailableBrowser(b))
+    );
     FromBrowserOption = BrowserOptions[0];
     IntoBrowserOption = BrowserOptions[1];
   }
@@ -33,7 +33,6 @@ public partial class CookySyncDialog : OOVM {
   public static async Task<CookySyncDialog?> Show() {
     return await MessageBox.Show<CookySyncView, CookySyncDialog>(new(
         Header: "Sync Cookies",
-        SubHeader: $"Select browser(s) to sync cookies:",
         Symbas: Symbas.Sync
       ));
   }

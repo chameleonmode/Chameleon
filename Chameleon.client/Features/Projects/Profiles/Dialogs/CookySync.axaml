@@ -3,23 +3,34 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:cc="using:Chameleon.client.UI.Controls"
              xmlns:local="using:Chameleon.client.Features.Projects.Profiles.Dialogs"
              x:Class="Chameleon.client.Features.Projects.Profiles.Dialogs.CookySyncView"
              x:DataType="local:CookySyncDialog">
-  <StackPanel Classes="zontal" HorizontalAlignment="Center">
+  <StackPanel Classes="zontal" HorizontalAlignment="Center" VerticalAlignment="Center">
     <ComboBox
        Margin="0 0 6 0"
        ItemsSource="{Binding CookieOps}"
        SelectedItem="{Binding Operation}"
-       ToolTip.Tip="Select the operation to perform on cookies" />
+       ToolTip.Tip="Select the operation to perform on cookies">
+    	<ComboBox.ItemTemplate>
+    		<DataTemplate>
+    			<ui:SymbolIcon Symbol="{Binding ., Converter={StaticResource OperationToIconSourceConverter}}" 
+             ToolTip.Tip="{Binding}"
+             Margin="0 0 0 0"
+             Height="26" Width="26" />
+    		</DataTemplate>
+    	</ComboBox.ItemTemplate>
+    </ComboBox>
 
     <ComboBox
        SelectedItem="{Binding FromBrowserOption}"
        ItemsSource="{Binding BrowserOptions}">
     	<ComboBox.ItemTemplate>
     		<DataTemplate>
-    			<cc:SvgIcon IconName="{Binding Info, Converter={StaticResource BrowserInfoToIconConverter}}" />
+    			<cc:SvgIcon IconName="{Binding Info, Converter={StaticResource BrowserInfoToIconConverter}}"
+             Width="26" Height="26" />
     		</DataTemplate>
     	</ComboBox.ItemTemplate>
     </ComboBox>
@@ -30,7 +41,8 @@
        IsVisible="{Binding IsSync}">
     	<ComboBox.ItemTemplate>
     		<DataTemplate>
-    			<cc:SvgIcon IconName="{Binding Info, Converter={StaticResource BrowserInfoToIconConverter}}" />
+    			<cc:SvgIcon IconName="{Binding Info, Converter={StaticResource BrowserInfoToIconConverter}}"
+             Width="26" Height="26" />
     		</DataTemplate>
     	</ComboBox.ItemTemplate>
     </ComboBox>

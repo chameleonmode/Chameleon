@@ -5,6 +5,7 @@
 	<local:IconSourceToString x:Key="iconSymbolConv" />
 	<local:SvgNameToDataConverter x:Key="svgz" />
 	<local:BrowserInfoToIconConverter x:Key="BrowserInfoToIconConverter"/>
+	<local:OperationToIconSourceConverter x:Key="OperationToIconSourceConverter" />
 
 	<ControlTheme TargetType="local:ItemzControl" x:Key="{x:Type local:ItemzControl}">
 		<Setter Property="ItemsPanel" Value="{DynamicResource HorizontalStackPanel}" />

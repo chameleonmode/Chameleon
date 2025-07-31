@@ -10,6 +10,7 @@ using Avalonia.Data;
 using Avalonia.Controls.Primitives;
 using FluentAvalonia.UI.Controls;
 using Chameleon.lib.Browzio;
+using Chameleon.lib.Playwright;
 
 namespace Chameleon.client.UI.Controls;
 
@@ -31,7 +32,7 @@ public class SvgNameToDataConverter : IValueConverter {
 		using var stream = AssetLoader.Open(new Uri(uri));
 		using var reader = new StreamReader(stream);
 		var data = reader.ReadToEnd();
-		if(uri.Contains("browsers", StringComparison.OrdinalIgnoreCase)) return data;
+		if (uri.Contains("browsers", StringComparison.OrdinalIgnoreCase)) return data;
 		else if (Application.Current?.TryGetResource("AccentFillColorDefaultBrush", Application.Current.ActualThemeVariant, out var accentbrush) == true) {
 			var acc = accentbrush?.ToString()?.Replace("#ff", "#");
 			data = data.Replace("#5D25A6", acc);
@@ -47,7 +48,6 @@ public class SvgNameToDataConverter : IValueConverter {
 		return BindingNotification.UnsetValue;
 	}
 }
-
 
 // 2. BrowserInfoToIconConverter - Enhanced converter for BrowserInfo objects
 public class BrowserInfoToIconConverter : IValueConverter {
@@ -83,6 +83,21 @@ public class BrowserInfoToIconConverter : IValueConverter {
 public class IconSourceToString : IValueConverter {
 	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
 		return value == null || value is not SymbolIconSource iconSource ? "x" : iconSource.Symbol.ToString();
+	}
+
+	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
+		return BindingNotification.UnsetValue;
+	}
+}
+
+public class OperationToIconSourceConverter : IValueConverter {
+	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
+		return value == null || value is not CookieOp iconSource ? Symbol.Help : iconSource switch {
+			CookieOp.Import => Symbol.Download,
+			CookieOp.Export => Symbol.Upload,
+			CookieOp.Sync => Symbol.Sync,
+			_ => Symbol.Help
+		};
 	}
 
 	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {

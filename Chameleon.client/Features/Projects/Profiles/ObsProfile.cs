@@ -129,11 +129,13 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 	}
 
 	public async Task<IReadOnlyList<BrowserContextCookiesResult>> GetCookies(BrowserType bt) {
+		Toaster.Info($"Getting cookies from {bt}...");
 		return await ExecuteBrowserAction(bt,
 			async port => await Sync.GetCookies(new(bt, BP) { Port = port })
 		) ?? throw new Exception("Failed to get cookies");
 	}
 	public async Task SetCookies(BrowserType bt, IEnumerable<BrowserContextCookiesResult> cookies) {
+		Toaster.Info($"Setting cookies into {bt}...");
 		await ExecuteBrowserAction(bt,
 			port => Sync.SetCookies(
 				new(bt, BP) { Port = port },
@@ -145,7 +147,9 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 					Expires = c.Expires,
 					HttpOnly = c.HttpOnly,
 					Secure = c.Secure,
-					SameSite = Enum.TryParse<SameSiteAttribute>(c.SameSite.ToString(), true, out var sameSiteEnum) ? sameSiteEnum : SameSiteAttribute.Lax
+					SameSite = Enum.TryParse<SameSiteAttribute>(c.SameSite.ToString(), true, out var sameSiteEnum)
+						? sameSiteEnum 
+						: SameSiteAttribute.Lax
 				})
 		));
 	}
