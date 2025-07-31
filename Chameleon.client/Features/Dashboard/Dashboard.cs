@@ -1,8 +1,6 @@
 ﻿using Chameleon.client.Features.Dashboard.Tags;
 using Chameleon.client.Features.Dashboard.Favorite;
-using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.Abs.Platformatic;
-using Chameleon.lib.Api.Repos;
 using Chameleon.client.MvvM;
 using Chameleon.lib.Helpers;
 using Chameleon.lib.Playwright.Services;
@@ -12,8 +10,8 @@ using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using Chameleon.client.Features.Projects;
 using Chameleon.lib.Browzio;
-using Chameleon.lib.Util;
 using Chameleon.client.Features.Projects.Folders;
+using Chameleon.lib.Abs.Repos;
 
 namespace Chameleon.client.Features.Dashboard;
 

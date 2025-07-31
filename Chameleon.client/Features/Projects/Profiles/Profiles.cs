@@ -20,6 +20,7 @@ using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Browzio;
 using CommunityToolkit.Mvvm.Input;
 using Chameleon.lib.Playwright;
+using Chameleon.lib.Abs.Repos;
 
 namespace Chameleon.client.Features.Projects.Profiles;
 
@@ -127,7 +128,7 @@ public partial class ProfilesViewModel : Profiler {
 	}
 
 	private void InitializeCommands() {
-		AsyncCommandMap["SaveTags"] = () => TagsRepo.Instance.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
+		AsyncCommandMap["SaveTags"] = () => TagsRepo.I.SaveTagsAsync(TagItemType.Folder, Folder!.Id.ToString(), Folder.Tags.ToTagsList());
 		AsyncCommandMap["up-folder"] = async () => {
 			if (await MoveProfilesPopup.Show(SelectedProfiles) is not { } mover) return;
 			else _ = await UserProfilesRepo.MoveUserProfileToFolder(mover.Profiles.Select(a => a.Dto!.id), mover.SelectedFolder.Dto.id);
@@ -291,7 +292,7 @@ public partial class ProfilesViewModel : Profiler {
 
 	public async Task OpenAsync(UPFolderDto folder) {
 		Folder = new UPFolderViewModel(folder);
-		Folder.Tags = await TagsRepo.Instance.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
+		Folder.Tags = await TagsRepo.I.GetTagsAsync(TagItemType.Folder, Folder.Id.ToString()).ToStringAsync();
 		SearchText = string.Empty;
 		SetViewModelsFilter();
 	}

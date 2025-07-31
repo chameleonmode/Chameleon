@@ -18,12 +18,7 @@ using FluentAvalonia.UI.Windowing;
 using Chameleon.client.Features.Settings.Featured;
 using Chameleon.client.UI.Components.ViewModels;
 using Chameleon.lib.Services;
-using Chameleon.lib.Browzio;
-using Chameleon.lib.Browzio.Services;
 using Chameleon.lib.Api;
-using Chameleon.lib.Browzio.Services.Browzas;
-using Chameleon.lib.Playwright;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Chameleon.client;
 
@@ -58,12 +53,7 @@ public partial class App : Application {
 		Navigator.Instance.RegisterView(nameof(FunctionalSettingsView), typeof(FunctionalSettingsView));
 
 		Toaster.Info("Starting...");
-		_ = Task.Run(async () => {
-			await RunAsync();
-
-			await Browzio.I.Init();
-			await Playwrightio.I.Init();
-		});
+		_ = Task.Run(() => RunAsync());
 	}
 
 	public override void OnFrameworkInitializationCompleted() {

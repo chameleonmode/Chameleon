@@ -9,6 +9,7 @@ using Chameleon.lib.Helpers;
 using Chameleon.lib.Util;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Chameleon.lib.Api.Dto;
+using Chameleon.lib.Abs.Repos;
 
 namespace Chameleon.client.Features.Projects.Profiles.Identity;
 
@@ -36,7 +37,7 @@ public partial class IdentityViewModel : OOVM {
 			ProfileVM = ProfilesViewModel.Instance.Profiles.FirstOrDefault(p => p.Dto.id == up.id) ?? new(up);
 			ProfileUIContextManager.ApplyContextToProfile(ProfileVM, ProfileUIContext.Identity);
 			UserProfile = new UserProfileIdentityVM(up) {
-				Tags = await TagsRepo.Instance
+				Tags = await TagsRepo.I
 				.GetTagsAsync(TagItemType.Profile, up.ID)
 				.ToStringAsync()
 				.RunInBackgroundWithResult()
@@ -83,7 +84,8 @@ public partial class IdentityViewModel : OOVM {
 
 			if (res != null) {
 				ProfileVM.Dto = res;
-				_ = TagsRepo.Instance
+				ProfileVM.Title = res.title;
+				_ = TagsRepo.I
 				.SaveTagsAsync(TagItemType.Profile, ProfileVM.Dto.ID, UserProfile.Tags.ToTagsList())
 				.RunInBackground();
 

@@ -19,8 +19,9 @@ using Chameleon.lib.Abs.Platformatic;
 using Chameleon.client.Features;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.client.Services;
-using Chameleon.lib.Api.Dto;
-using Chameleon.lib.Auth;
+using Chameleon.lib.Browzio;
+using Chameleon.lib.Playwright;
+using Chameleon.lib.Abs.Repos;
 
 namespace Chameleon.client;
 
@@ -72,7 +73,8 @@ public partial class ViewModel : OO {
         TagItemType.Folder => new TagFolderSearchViewModel(t),
         TagItemType.Profile => new TagProfilesSearchViewModel(t),
         _ => null
-      }))})
+      }))
+    })
     .Bind(out _boundTags)
     .Subscribe(i => { OnPropertyChanged(nameof(SearchTerms)); });
 
@@ -101,10 +103,12 @@ public partial class ViewModel : OO {
   public async Task Init() {
     // This is where you can initialize any data or state needed for the ViewModel
     // For example, you might want to load initial data from a repository or service
+    await Browzio.I.Init();
+    await Playwrightio.I.Init();
     await Modules.Sync();
     IsSplashVisible = false;
-    #if DEBUG
-    #else
+#if DEBUG
+#else
     try {
       var current = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "2024.x.x.x";
       var appClientInfo = await Service.Routes.App.GetLatestVersion;
@@ -116,7 +120,7 @@ public partial class ViewModel : OO {
     } catch (Exception e) {
       Toaster.Error(e.Message);
     }
-    #endif
+#endif
   }
 
   public static ViewModel Instance { get; } = new();

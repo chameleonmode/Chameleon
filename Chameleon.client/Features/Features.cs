@@ -6,6 +6,8 @@ using Chameleon.lib.Abs.Platformatic;
 using Chameleon.client.Features.Settings.Featured;
 using Chameleon.lib.Services;
 using Chameleon.client.Services;
+using Chameleon.lib.Abs.Repos;
+using Chameleon.lib.Api;
 namespace Chameleon.client.Features;
 	public enum ChangeComparereOption { Ascending, Descending }
 public static class Modules {
@@ -52,19 +54,23 @@ public static class Modules {
    .AddSingleton<ICopyPastaService, CopyPastaService>();
 
   public static IServiceCollection All(this IServiceCollection services) => services
-  .Services()
-  .Basic()
-  .Automation()
-  .Tenants();
+   .Services()
+   .Basic()
+   .Automation()
+   .Tenants();
 
   public static async Task Sync() {
     await DB.I.Userz.Load();
     var tasks = new List<Task>() {
       UserProfilesRepo.Instance.Load(),
       UserProfilesFolderRepo.Instance.Load(),
-      TagsRepo.Instance.Load(),
+      TagsRepo.I.Load(),
       UPAdditionalDataRepo.Instance.Load(),
     };
     await Task.WhenAll(tasks);
+    if (Auther.AuthSession?.CreatorUserId == null) await TagsRepo.I.CleanStaleTags(
+      UserProfilesRepo.Instance.ObservableCache.Keys,
+      UserProfilesFolderRepo.Instance.ObservableCache.Keys
+    );
   }
 }

@@ -17,11 +17,10 @@ using Chameleon.lib.Helpers;
 using Chameleon.client.Features.Automation.Actors.Dialogs;
 using Chameleon.client.Features.Projects.Profiles;
 using Chameleon.lib.AIR.Scripts;
-using Chameleon.lib.Api.Repos;
 using Chameleon.lib.Playwright.Services;
-using Chameleon.lib.Api.Dto;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Playwright;
+using Chameleon.lib.Abs.Repos;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public static class Actorz {
