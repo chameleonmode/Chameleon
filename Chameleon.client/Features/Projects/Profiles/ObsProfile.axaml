@@ -120,7 +120,7 @@
           </DataTemplate>
         </ui:MenuFlyoutSubItem.ItemTemplate>
       </ui:MenuFlyoutSubItem> -->
-							<ui:MenuFlyoutSubItem IconSource="Import" Text="Import Cookies">
+							<!-- <ui:MenuFlyoutSubItem IconSource="Import" Text="Import Cookies">
 								<ui:MenuFlyoutItem Classes="sync-chrome" />
 								<ui:MenuFlyoutItem Classes="sync-brave" />
 								<ui:MenuFlyoutItem Classes="sync-firefox" />
@@ -130,7 +130,9 @@
 								<ui:MenuFlyoutItem Classes="sync-chrome" CommandParameter="ExportCookiesChrome" />
 								<ui:MenuFlyoutItem Classes="sync-brave" CommandParameter="ExportCookiesBrave"/>
 								<ui:MenuFlyoutItem Classes="sync-firefox" CommandParameter="ExportCookiesFirefox"/>
-							</ui:MenuFlyoutSubItem>
+							</ui:MenuFlyoutSubItem> -->
+							
+							<ui:MenuFlyoutItem IconSource="Sync" Text="Cookies" />
 
 							<ui:MenuFlyoutSeparator />
 							

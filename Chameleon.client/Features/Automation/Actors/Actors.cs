@@ -21,6 +21,7 @@ using Chameleon.lib.Playwright.Services;
 using Chameleon.lib.Abs.Platformatic;
 using Chameleon.lib.Playwright;
 using Chameleon.lib.Abs.Repos;
+using Chameleon.lib.Browzio;
 namespace Chameleon.client.Features.Automation.Actors;
 
 public static class Actorz {
@@ -200,18 +201,38 @@ public partial class ActorViewModel : Automatior {
 }
 
 public partial class ActorsViewModel : OOVM {
+	[ObservableProperty] bool chromiumMode;
+	[ObservableProperty] ActorViewModel selectedActor;
+	public ObservableCollection<ActorViewModel> Actors { get; } = [new(new Reddit())];
+
 	public static IEnumerable<string> Models { get; } = [
 		// Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.Gpt41),
 		Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.O4Mini),
 		Service.Routes.Roboto.GetModelString(Service.Routes.Roboto.Model.Grok4)
 	];
-
-	[ObservableProperty] ActorViewModel selectedActor;
-	public ObservableCollection<ActorViewModel> Actors { get; } = [new(new Reddit())];
-
 	public ActorsViewModel() {
 		SelectedActor = Actors[0];
 		AsyncCommandMap["Save"] = async () => { await Actors.ForEach(a => a.Saverer()); };
+	}
+
+	partial void OnChromiumModeChanged(bool value) {
+		foreach (var actor in Actors) {
+			actor.BrowserOptions.Clear();
+			if (value) {
+				actor.BrowserOptions.AddRange(
+					Browzio.Utilities.DetectBrowsers()
+					.Where(b => b.Engine == BrowserEngine.Chromium && b.Type != BrowserType.Vivaldi)
+					.Select(b => new AvailableBrowser(b))
+				);
+			} else {
+				actor.BrowserOptions.AddRange(
+					Browzio.Utilities.DetectBrowsers()
+					.Where(b => b.Type == BrowserType.Chrome)
+					.Select(b => new AvailableBrowser(b))
+				);
+			}
+			actor.SelectedBrowserOption = actor.BrowserOptions[0];
+		}
 	}
 
 	private async Task LoadActorStates() {

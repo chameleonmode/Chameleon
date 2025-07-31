@@ -30,8 +30,12 @@ public class ShowWindowService : IShowWindowService {
 		w.Show();
 	}
 
-	public void ShowTopmost<TView, TViewModel>(Action<TViewModel> initialize,
-			Action<TViewModel>? onClosed = null, string title = "CP", int width = 256) where TView : new() where TViewModel : new() {
+	public void ShowTopmost<TView, TViewModel>(
+		Action<TViewModel> initialize,
+		Action<TViewModel>? onClosed = null,
+		string title = "CP",
+		int width = 256
+	) where TView : new() where TViewModel : new() {
 		var vm = new TViewModel();
 		ShowTopmost<TView, TViewModel>(vm, initialize, onClosed, title, width);
 	}

@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:local="using:Chameleon.client.Features.Projects.Profiles.Dialogs"
-			 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
-             x:Class="Chameleon.client.Features.Projects.Profiles.Dialogs.SnapCracklePopUserControl"
-			 x:DataType="local:SnapCracklePopViewModel"
-			 x:CompileBindings="True">
+			 			 xmlns:local="using:Chameleon.client.Features.Projects.Profiles.Dialogs"
+			 			 xmlns:profiles="using:Chameleon.client.Features.Projects.Profiles"
+       			 x:Class="Chameleon.client.Features.Projects.Profiles.Dialogs.SnapCracklePopUserControl"
+			 			 x:DataType="local:SnapCracklePopViewModel"
+			 			 x:CompileBindings="True">
 		<ListBox VerticalAlignment="Top"
 				 ItemsSource="{Binding RunningList}"
 				 Theme="{StaticResource ListBoxNoScroller}"

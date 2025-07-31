@@ -66,6 +66,16 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			// TODO: AsyncCommandMap[$"sync-in-{browser.Info.Type}"] = () => HandleCookieOperation(CookieOp.Import, browser.Info.Type);
 			SBI[browser.Info.Type] = null;
 		}
+		AsyncCommandMap["Cookies"] = async () => {
+			if (await CookySyncDialog.Show() is not { } dialog) return;
+			else if (dialog.Operation != CookieOp.Sync) await HandleCookieOperation(dialog.Operation, dialog.FromBrowserOption.Info.Type);
+			else
+				await SetCookies(
+					dialog.IntoBrowserOption.Info.Type,
+					await GetCookies(dialog.FromBrowserOption.Info.Type)
+				);
+			Toaster.Success($"Successfully {dialog.Operation}ed cookies.");
+		};
 		Browzio.I.Browzas.AddObserver(Dto.id, (s, e) => {
 			Foreground = false; // @TODO: optimization
 			if (Dto.id != e.Settings.Profile.Id) return;
@@ -84,13 +94,6 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			if (running <= 0) SBI[e.Settings.BrowserType] = null;
 		});
 		#region commands
-		AsyncCommandMap["SyncCookiesChrome"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Chrome);
-		AsyncCommandMap["SyncCookiesBrave"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Brave);
-		AsyncCommandMap["SyncCookiesFirefox"] = async () => await HandleCookieOperation(CookieOp.Import, BrowserType.Firefox);
-
-		AsyncCommandMap["ExportCookiesChrome"] = async () => await HandleCookieOperation(CookieOp.Export, BrowserType.Chrome);
-		AsyncCommandMap["ExportCookiesBrave"] = async () => await HandleCookieOperation(CookieOp.Export, BrowserType.Brave);
-		AsyncCommandMap["ExportCookiesFirefox"] = async () => await HandleCookieOperation(CookieOp.Export, BrowserType.Firefox);
 
 		AsyncCommandMap["Favorite"] = async () => {
 			_ = await UserProfilesRepo.SetProfileIsFavorite(profile);
@@ -125,11 +128,26 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 		return SBI[bt];
 	}
 
-	public async Task<IReadOnlyList<BrowserContextCookiesResult>?> GetCookies(BrowserType bt) {
-		return await ExecuteBrowserAction(
-			bt,
+	public async Task<IReadOnlyList<BrowserContextCookiesResult>> GetCookies(BrowserType bt) {
+		return await ExecuteBrowserAction(bt,
 			async port => await Sync.GetCookies(new(bt, BP) { Port = port })
-		);
+		) ?? throw new Exception("Failed to get cookies");
+	}
+	public async Task SetCookies(BrowserType bt, IEnumerable<BrowserContextCookiesResult> cookies) {
+		await ExecuteBrowserAction(bt,
+			port => Sync.SetCookies(
+				new(bt, BP) { Port = port },
+				cookies.Select(c => new Cookie {
+					Name = c.Name,
+					Value = c.Value,
+					Domain = c.Domain,
+					Path = c.Path,
+					Expires = c.Expires,
+					HttpOnly = c.HttpOnly,
+					Secure = c.Secure,
+					SameSite = Enum.TryParse<SameSiteAttribute>(c.SameSite.ToString(), true, out var sameSiteEnum) ? sameSiteEnum : SameSiteAttribute.Lax
+				})
+		));
 	}
 
 	private async Task HandleCookieOperation(CookieOp operation, BrowserType bt) {
@@ -144,24 +162,9 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 			await using var stream = await file[0].OpenReadAsync();
 			using var reader = new StreamReader(stream);
 			var json = await reader.ReadToEndAsync();
-			var pwCookies = JSON.Deserialize<List<BrowserContextCookiesResult>>(json);
-			ArgumentNullException.ThrowIfNull(pwCookies, "Failed to deserialize cookies from JSON file."); ;
-
-			await ExecuteBrowserAction(
-				bt,
-				port => Sync.SetCookies(
-					new(bt, BP) { Port = port },
-					pwCookies.Select(c => new Cookie {
-						Name = c.Name,
-						Value = c.Value,
-						Domain = c.Domain,
-						Path = c.Path,
-						Expires = c.Expires,
-						HttpOnly = c.HttpOnly,
-						Secure = c.Secure,
-						SameSite = Enum.TryParse<SameSiteAttribute>(c.SameSite.ToString(), true, out var sameSiteEnum) ? sameSiteEnum : SameSiteAttribute.Lax
-					}).ToList()
-			));
+			var pwCookies = JSON.Deserialize<List<BrowserContextCookiesResult>>(json)
+				?? throw new Exception("Failed to deserialize cookies from JSON file.");
+			await SetCookies(bt, pwCookies);
 		} else {
 			var cookiesToExport = await GetCookies(bt) ?? [];
 			cookiesToExport.Any().ThrowFalse($"No cookies found to export for {bt}.");
@@ -171,8 +174,7 @@ public partial class ObsProfile : OODTOVM<UserProfileDto>, IProfileUIContextAwar
 				SuggestedFileName = $"{bt}Cookies_{DateTime.Now:yyyyMMddHHmmss}.json",
 				DefaultExtension = "json",
 				FileTypeChoices = [new FilePickerFileType("JSON files") { Patterns = ["*.json"] }]
-			});
-			ArgumentNullException.ThrowIfNull(file, "File selection was cancelled or failed.");
+			}) ?? throw new InvalidOperationException("File selection was cancelled or failed.");
 
 			var json = JSON.Serialize(cookiesToExport);
 			await using var stream = await file.OpenWriteAsync();

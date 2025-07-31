@@ -13,14 +13,17 @@
 			 x:Class="Chameleon.client.Features.Automation.Actors.ActorsView"
 			 x:DataType="local:ActorsViewModel"
 			 x:CompileBindings="True">
-<UserControl.Resources>
-	<cc:BrowserInfoToIconConverter x:Key="BrowserInfoToIconConverter"/>
-</UserControl.Resources>
 	<Grid RowDefinitions="Auto, *">
 		<cc:ChameleonContentControl Title="Autonomous Agents" TitleDescription="Robotic Automation Agents">
 			<cc:ChameleonContentControl.TitleContent>
 					<StackPanel Classes="zontal" HorizontalAlignment="Right" Margin="4">
-						<Button Content="Save" Classes="square icon async clear" />
+						<ToggleSwitch 
+							 IsChecked="{Binding ChromiumMode}" 
+							 OffContent="Standard" OnContent="Chromium Mode"
+							 ToolTip.Tip="Toggle to activate untested chromium browser availability mode" />
+						<Button 
+							 Content="Save"
+							 Classes="square icon async clear" />
 					</StackPanel>
 			</cc:ChameleonContentControl.TitleContent>
 			<cc:ChameleonContentControl.Content>
@@ -40,13 +43,6 @@
 														<ToggleSwitch IsChecked="{Binding Settings.CloseAfterRun}"
 															 ToolTip.Tip="Close or keep open browser instances for the previous profile before moving to the next"
 															 OffContent="Open" OnContent="Close"/>
-											
-															<!-- TODO:<ToggleSwitch ToolTip.Tip="Run all actionable actions or one each"
-																	  IsChecked="{Binding Settings.AsQue}" 
-																	  OffContent="Run All" OnContent="One Each"/>
-														<ToggleSwitch ToolTip.Tip="Run all selected automations for each profile, or run all profiles for each automation"
-																	  IsChecked="{Binding Settings.EachProfile}" 
-																	  OffContent="Each Profile"  OnContent="Each Selection"/> -->
 													</StackPanel>
 											</cc:ChameleonContentControl.TitleContent>
 

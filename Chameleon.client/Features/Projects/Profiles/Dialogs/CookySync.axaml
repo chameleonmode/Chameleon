@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:cc="using:Chameleon.client.UI.Controls"
+             xmlns:local="using:Chameleon.client.Features.Projects.Profiles.Dialogs"
+             x:Class="Chameleon.client.Features.Projects.Profiles.Dialogs.CookySyncView"
+             x:DataType="local:CookySyncDialog">
+  <StackPanel Classes="zontal" HorizontalAlignment="Center">
+    <ComboBox
+       Margin="0 0 6 0"
+       ItemsSource="{Binding CookieOps}"
+       SelectedItem="{Binding Operation}"
+       ToolTip.Tip="Select the operation to perform on cookies" />
+
+    <ComboBox
+       SelectedItem="{Binding FromBrowserOption}"
+       ItemsSource="{Binding BrowserOptions}">
+    	<ComboBox.ItemTemplate>
+    		<DataTemplate>
+    			<cc:SvgIcon IconName="{Binding Info, Converter={StaticResource BrowserInfoToIconConverter}}" />
+    		</DataTemplate>
+    	</ComboBox.ItemTemplate>
+    </ComboBox>
+    <TextBlock Text="->" Classes="h4" Margin="4 0" IsVisible="{Binding IsSync}" />
+    <ComboBox
+       SelectedItem="{Binding IntoBrowserOption}"
+       ItemsSource="{Binding BrowserOptions}"
+       IsVisible="{Binding IsSync}">
+    	<ComboBox.ItemTemplate>
+    		<DataTemplate>
+    			<cc:SvgIcon IconName="{Binding Info, Converter={StaticResource BrowserInfoToIconConverter}}" />
+    		</DataTemplate>
+    	</ComboBox.ItemTemplate>
+    </ComboBox>
+  </StackPanel>
+</UserControl>

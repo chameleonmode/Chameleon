@@ -4,6 +4,7 @@
         						xmlns:local="using:Chameleon.client.UI.Controls">
 	<local:IconSourceToString x:Key="iconSymbolConv" />
 	<local:SvgNameToDataConverter x:Key="svgz" />
+	<local:BrowserInfoToIconConverter x:Key="BrowserInfoToIconConverter"/>
 
 	<ControlTheme TargetType="local:ItemzControl" x:Key="{x:Type local:ItemzControl}">
 		<Setter Property="ItemsPanel" Value="{DynamicResource HorizontalStackPanel}" />
