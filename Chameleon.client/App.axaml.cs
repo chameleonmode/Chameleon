@@ -84,33 +84,31 @@ public partial class App : Application {
 	}
 
 	static async Task RunAsync(int trys = 3) {
-		await EX.Try(async () => {
+		try {
 			if (trys == 0) throw new Exception("Failed after 3 attempts");
 			else {
-				await EX.Catch(
-					async () => {
-						var login = Session.I.Settings.AutoLogin
-							? Session.I.Settings 
+				try {
+					var login = Session.I.Settings.AutoLogin
+							? Session.I.Settings
 							: (await MessageBox.Show<MboxLoginUserControl, MboxLoginViewModel>(
 									new(Session.I.Settings),
 									new("User Login", Symbas: Symbas.ContactInfo)
 								))!.Settings;
-						await Session.I.Login(login);
-						await Auther.LoginAsync(login.LoginName, login.LicenseKey);
-						return Auther.AuthSession is not null ? true : throw new InvalidOperationException("Auth session is invalid after login");
-					},
-					async e => await RunAsync(trys - 1)
-				);
-
-				Toaster.Success($"Greetings {(Session.I.Settings?.LoginName) ?? "World"}");
-				await ViewModel.Instance.Init();
+					await Session.I.Login(login);
+					await Auther.LoginAsync(login.LoginName, login.LicenseKey);
+					_ = Auther.AuthSession is not null ? true : throw new InvalidOperationException("Auth session is invalid after login");
+					Toaster.Success($"Greetings {(Session.I.Settings?.LoginName) ?? "World"}");
+					await ViewModel.Instance.Init();
+				} catch {
+					await RunAsync(trys - 1);
+				}
 			}
-		}, async e => {
+		} catch (Exception e) {
 			if (await MessageBox.Error("Login Error", "Click Ok to try again or Cancel to inspect credentials", e)) await RunAsync();
 			else {
 				await Session.I.Logout();
 				await RunAsync();
 			}
-		});
+		}
 	}
 }
