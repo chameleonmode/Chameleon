@@ -96,11 +96,14 @@ public partial class App : Application {
 								))!.Settings;
 					await Session.I.Login(login);
 					await Auther.LoginAsync(login.LoginName, login.LicenseKey);
-					_ = Auther.AuthSession is not null ? true : throw new InvalidOperationException("Auth session is invalid after login");
+					_ = Auther.AuthSession is not null
+					? true
+					: throw new InvalidOperationException("Auth session is invalid after login");
 					Toaster.Success($"Greetings {(Session.I.Settings?.LoginName) ?? "World"}");
 					await ViewModel.Instance.Init();
 				} catch {
 					await RunAsync(trys - 1);
+					return;
 				}
 			}
 		} catch (Exception e) {
